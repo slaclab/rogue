@@ -128,7 +128,6 @@ class Device(pr.Node,rim.Hub):
                  size=0,
                  hidden=False,
                  groups=None,
-                 blockSize=None,
                  expand=False,
                  enabled=True,
                  defaults=None,
@@ -145,12 +144,12 @@ class Device(pr.Node,rim.Hub):
         rim.Hub.__init__(self,offset,hubMin,hubMax)
 
         # Blocks
-        self._blocks    = []
-        self._memBase   = memBase
-        self._memLock   = threading.RLock()
-        self._size      = size
-        self._blockSize = blockSize
-        self._defaults  = defaults if defaults is not None else {}
+        self._blocks     = []
+        self._custBlocks = []
+        self._memBase    = memBase
+        self._memLock    = threading.RLock()
+        self._size       = size
+        self._defaults   = defaults if defaults is not None else {}
 
         self.forceCheckEach = False
 
@@ -195,6 +194,10 @@ class Device(pr.Node,rim.Hub):
     @property
     def memBaseId(self):
         return self._reqSlaveId()
+
+    def addCustomBlock(self, block):
+        self._custBlocks.append(block)
+        self._custBlocks.sort(key=lambda x: (x.offset, x.size))
 
     def add(self,node):
         # Call node add
@@ -262,7 +265,7 @@ class Device(pr.Node,rim.Hub):
 
     def hardReset(self):
         for block in self._blocks:
-            block._forceStale()
+            block.forceStale()
         for key,value in self.devices.items():
             value.hardReset()
 
@@ -279,8 +282,9 @@ class Device(pr.Node,rim.Hub):
         """
         Write all of the blocks held by this Device to memory
         """
-        self._log.debug(f'Calling {self.path}._writeBlocks')
+        if (self.enable.value() is not True): return
 
+        self._log.debug(f'Calling {self.path}._writeBlocks')
         checkEach = checkEach or self.forceCheckEach
 
         # Process local blocks.
@@ -302,6 +306,7 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
+        if (self.enable.value() is not True): return
         #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
 
         checkEach = checkEach or self.forceCheckEach        
@@ -324,10 +329,11 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
+        if (self.enable.value() is not True): return
         self._log.debug(f'Calling {self.path}._readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
         #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')
 
-        checkEach = checkEach or self.forceCheckEach        
+        checkEach = checkEach or self.forceCheckEach
 
         # Process local blocks. 
         if variable is not None:
@@ -345,18 +351,18 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        self._log.debug(f'Calling {self.path}._checkBlocks')
+        self._log.debug(f'Calling {self.path}.checkBlocks')
 
         with self.root.updateGroup():
 
             # Process local blocks
             if variable is not None:
                 for b,v in self._getBlocks(variable).items():
-                    b._checkTransaction()
+                    b.checkTransaction()
 
             else:
                 for block in self._blocks:
-                    block._checkTransaction()
+                    block.checkTransaction()
 
                 if recurse:
                     for key,value in self.devices.items():
@@ -490,13 +496,8 @@ class Device(pr.Node,rim.Hub):
     def _buildBlocks(self):
         remVars = []
 
+        # Use min block size, larger blocks can be pre-created
         blkSize = self._blkMinAccess()
-
-        if self._blockSize is not None:
-            if self._blockSize > self._blkMaxAccess():
-                blkSize = self._blkMaxAccess()
-            else:
-                blkSize = self._blockSize
 
         # Process all of the variables
         for k,n in self.nodes.items():
@@ -505,7 +506,7 @@ class Device(pr.Node,rim.Hub):
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
-            # Align to min access, create list sorted by offset 
+            # Align to min access, create list of remote variables
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
@@ -524,14 +525,54 @@ class Device(pr.Node,rim.Hub):
 
                 if n.varBytes > blk['size']: blk['size'] = n.varBytes
 
+            # We need a new block for this variable
             else:
-                blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n]}
-                blocks.append(blk)
+                blk = None
 
-        # Create blocks
+                # Look for pre-made block which overlaps
+                for b in self._custBlocks:
+                    if ( (n.offset >= b.offset) and ((b.offset + b.size) > n.offset)):
+
+                        # Just in case a variable extends past the end of pre-made block, user mistake
+                        if n.varBytes > b.size:
+                            msg = 'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
+                            raise MemoryError(name=self.path, address=self.address, msg=msg)
+
+                        blk = {'offset':b.offset, 'size':b.size, 'vars':[n], 'block':b}
+                        break
+
+                # Block not found
+                if blk is None:
+                    blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n], 'block':None}
+                    blocks.append(blk)
+
+        # Clear pre-made list
+        self._custBlocks = []
+
+        # Create new blocks and add new and pre-made blocks to device
+        # Add variables to the block
         for b in blocks:
-            self._blocks.append(pr.RemoteBlock(offset=b['offset'], size=b['size'], variables=b['vars']))
-            self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
+
+            # Create new block
+            if b['block'] is None:
+                newBlock = pr.RemoteBlock(offset=b['offset'], size=b['size'])
+                self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
+            else:
+                newBlock = b['block']
+
+            # Verify the block is not too small or large for the memory interface
+            if newBlock.size > self._reqMaxAccess() or newBlock.size < self._reqMinAccess():
+                msg = f'Block size {newBlock.size} is not in the range: {self._reqMinAccess()} - {self._reqMaxAccess()}'
+                raise MemoryError(name=self.path, address=self.address, msg=msg)
+
+            # Add variables to the block
+            newBlock.addVariables(b['vars'])
+        
+            # Set varible block links
+            for v in b['vars']: v._block = newBlock
+
+            # Add to device
+            self._blocks.append(newBlock)
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)

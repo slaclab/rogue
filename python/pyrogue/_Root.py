@@ -336,9 +336,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
                 # Check for instances when device comes before block and when block comes before device 
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.BaseBlock) and \
+                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.RemoteBlock) and \
                          (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i]._overlapEn))) and \
-                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],pr.BaseBlock) and \
+                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],pr.RemoteBlock) and \
                         (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1]._overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(

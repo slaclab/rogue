@@ -123,6 +123,7 @@ class BaseVariable(pr.Node):
                 ):
 
         # Public Attributes
+        self._bulkEn        = True
         self._mode          = mode
         self._units         = units
         self._minimum       = minimum
@@ -666,7 +667,7 @@ class RemoteVariable(BaseVariable):
             
     def _setDefault(self):
         if self._default is not None:
-            self._block._setDefault(self, self.parseDisp(self._default))
+            self._block.setDefault(self, self.parseDisp(self._default))
 
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:

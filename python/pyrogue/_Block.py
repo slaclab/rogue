@@ -36,34 +36,24 @@ class MemoryError(Exception):
         return repr(self._value)
 
 
-class BaseBlock(object):
-
-    def __init__(self, *, path, mode, device):
-
-        self._path      = path
-        self._mode      = mode
-        self._device    = device
+class LocalBlock(object):
+    def __init__(self, *, variable, localSet, localGet, value):
+        self._path      = variable.path
+        self._mode      = variable.mode
+        self._device    = variable.parent
+        self._localSet  = localSet
+        self._localGet  = localGet
+        self._variable  = variable
+        self._variables = [variable] # Used by poller
+        self._value     = value
         self._lock      = threading.RLock()
         self._doUpdate  = False
 
         # Setup logging
-        self._log = pr.logInit(cls=self,name=path)
-
+        self._log = pr.logInit(cls=self,name=self._path)
 
     def __repr__(self):
-        return repr(self.path)
-
-    def backgroundTransaction(self,type):
-        """
-        Perform a background transaction
-        """
-        self.startTransaction(type, check=False)
-
-    def blockingTransaction(self,type):
-        """
-        Perform a blocking transaction
-        """
-        self.startTransaction(type, check=True)
+        return repr(self._path)
 
     @property
     def path(self):
@@ -82,60 +72,15 @@ class BaseBlock(object):
         pass
 
     @property
-    def error(self):
-        return 0
-
-    @error.setter
-    def error(self,value):
-        pass
-
-    @property
     def bulkEn(self):
         return True
 
-    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
-        """
-        Start a transaction.
-        """
-        with self._lock:
-            self._doUpdate = True
-
-    def _checkTransaction(self):
-        """
-        Check status of block.
-        If update=True notify variables if read
-        """
-        doUpdate = False
-        with self._lock:
-            doUpdate = self._doUpdate
-            self._doUpdate = False
-
-        # Update variables outside of lock
-        if doUpdate: self.updated()
-
-    def _forceStale(self):
-        pass
-        
-    def updated(self):
-        pass
-
-class LocalBlock(BaseBlock):
-    def __init__(self, *, variable, localSet, localGet, value):
-        BaseBlock.__init__(self, path=variable.path, mode=variable.mode, device=variable.parent)
-
-        self._localSet = localSet
-        self._localGet = localGet
-        self._variable = variable
-        self._variables = [variable] # Used by poller
-        self._value = value
-
-    @property
-    def value(self):
-        return self._value
-        
     @property
     def stale(self):
         return False
+
+    def forceStale(self):
+        pass
 
     def set(self, var, value):
         with self._lock:
@@ -165,86 +110,106 @@ class LocalBlock(BaseBlock):
 
         return self._value
 
-    def updated(self):
-        self._variable._queueUpdate()
+    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
+        """
+        Start a transaction.
+        """
+        with self._lock:
+            self._doUpdate = True
+
+    def checkTransaction(self):
+        """
+        Check status of block.
+        If update=True notify variables if read
+        """
+        doUpdate = False
+        with self._lock:
+            doUpdate = self._doUpdate
+            self._doUpdate = False
+
+        # Update variables outside of lock
+        if doUpdate: 
+            self._variable._queueUpdate()
 
     def _iadd(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _isub(self, other):
         with self._lock:
             self.set(None, self.get(None) - other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _imul(self, other):
         with self._lock:
             self.set(None, self.get(None) * other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _imatmul(self, other):
         with self._lock:
             self.set(None, self.get(None) @ other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _itruediv(self, other):
         with self._lock:
             self.set(None, self.get(None) / other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _ifloordiv(self, other):
         with self._lock:
             self.set(None, self.get(None) // other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _imod(self, other):
         with self._lock:
             self.set(None, self.get(None) % other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _ipow(self, other):
         with self._lock:
             self.set(None, self.get(None) ** other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _ilshift(self, other):
         with self._lock:
             self.set(None, self.get(None) << other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _irshift(self, other):
         with self._lock:
             self.set(None, self.get(None) >> other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _iand(self, other):
         with self._lock:
             self.set(None, self.get(None) & other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _ixor(self, other):
         with self._lock:
             self.set(None, self.get(None) ^ other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _ior(self, other):
         with self._lock:
             self.set(None, self.get(None) | other)
-            self.updated()
+            self._variable._queueUpdate()
 
 
-class RemoteBlock(BaseBlock, rim.Master):
-    def __init__(self, *, offset, size, variables):
-     
+class RemoteBlock(rim.Master):
+
+    def __init__(self, *, memBase, offset, size):
         rim.Master.__init__(self)
-        self._setSlave(variables[0].parent)
+        self._setSlave(memBase)
         
-        BaseBlock.__init__(self, path=variables[0].path, mode=variables[0].mode, device=variables[0].parent)
-        self._verifyEn    = False
+        self._variables   = []
+        self._path        = "Undefined"
+        self._mode        = "RW"
         self._bulkEn      = False
-        self._verifyRange = None
+        self._verifyEn    = False
         self._verifyWr    = False
+        self._verifyRange = None
         self._sData       = bytearray(size)  # Set data
         self._sDataMask   = bytearray(size)  # Set data mask
         self._bData       = bytearray(size)  # Block data
@@ -252,72 +217,41 @@ class RemoteBlock(BaseBlock, rim.Master):
         self._vDataMask   = bytearray(size)  # Verify data mask
         self._size        = size
         self._offset      = offset
-        self._minSize     = self._reqMinAccess()
-        self._maxSize     = self._reqMaxAccess()
-        self._variables   = variables
+        self._lock        = threading.RLock()
+        self._doUpdate    = False
 
-        if self._minSize == 0 or self._maxSize == 0:
-            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max memory interface size. Device or Variable may be unconnected!")
-
-        # Range check
-        if self._size > self._maxSize:
-            msg = f'Block {self.path} size {self._size} exceeds maxSize {self._maxSize}'
-            raise MemoryError(name=self.path, address=self.address, msg=msg)
-
-        # Temp bit masks
-        excMask = bytearray(size)  # Variable bit mask for exclusive variables
-        oleMask = bytearray(size)  # Variable bit mask for overlap enabled variables
-
-        # Go through variables
-        for var in variables:
-
-            # Link variable to block
-            var._block = self
-
-            if not isinstance(var, pr.BaseCommand):
-                self._bulkEn = True
-
-            self._log.debug(f"Adding variable {var.name} to block {self.path} at offset {self.offset:#02x}")
-
-            # If variable modes mismatch, set block to read/write
-            if var.mode != self._mode:
-                self._mode = 'RW'
-
-            # Update variable masks
-            for x in range(len(var.bitOffset)):
-
-                # Variable allows overlaps, add to overlap enable mask
-                if var._overlapEn:
-                    self._setBits(oleMask,var.bitOffset[x],var.bitSize[x])
-
-                # Otherwise add to exclusive mask and check for existing mapping
-                else:
-                    if self._anyBits(excMask,var.bitOffset[x],var.bitSize[x]):
-                        raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
-                    self._setBits(excMask,var.bitOffset[x],var.bitSize[x])
-
-                # update verify mask
-                if var.mode == 'RW' and var.verify is True:
-                    self._verifyEn = True
-                    self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
-
-        # Check for overlaps by anding exclusive and overlap bit vectors
-        for b1, b2 in zip(oleMask, excMask):
-            if b1 & b2 != 0:
-                raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
-
-        # Set exclusive flag
-        self._overlapEn = all (excMask[i] == 0 for i in range(size))
-
-        # Force block to be stale at startup
-        self._forceStale()
+        # Setup Initial logging
+        self._log = pr.logInit(cls=self,name=self._path)
 
     def __repr__(self):
         return repr(self._variables)
 
     @property
+    def path(self):
+        return self._path
+
+    @property
+    def mode(self):
+        return self._mode
+
+    @property
+    def timeout(self):
+        return float(self._getTimeout()) / 1000000.0
+
+    @timeout.setter
+    def timeout(self,value):
+        self._setTimeout(int(value*1000000))
+
+    @property
+    def bulkEn(self):
+        return self._bulkEn
+
+    @property
     def stale(self):
         return any([b != 0 for b in self._sDataMask])
+
+    def forceStale(self):
+        for b in self._sDataMask: b = 0xFF
 
     @property
     def offset(self):
@@ -334,22 +268,6 @@ class RemoteBlock(BaseBlock, rim.Master):
     @property
     def memBaseId(self):
         return self._reqSlaveId()
-
-    @property
-    def timeout(self):
-        return float(self._getTimeout()) / 1000000.0
-
-    @timeout.setter
-    def timeout(self,value):
-        self._setTimeout(int(value*1000000))
-
-    @property
-    def error(self):
-        return self._getError()
-
-    @property
-    def bulkEn(self):
-        return self._bulkEn
 
     def set(self, var, value):
         """
@@ -427,10 +345,6 @@ class RemoteBlock(BaseBlock, rim.Master):
                 self._sData = bytearray(self._size)
                 self._sDataMask = bytearray(self._size)
 
-            # Do not write to hardware for a disabled device
-            if (self._device.enable.value() is not True):
-                return
-
             self._log.debug(f'startTransaction type={type}')
             self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, vDataMask = {len(self._vDataMask)}')
 
@@ -440,8 +354,8 @@ class RemoteBlock(BaseBlock, rim.Master):
                 self._verifyWr = self._verifyEn
 
             # Derive offset and size based upon min transaction size
-            offset = math.floor(lowByte / self._minSize) * self._minSize
-            size   = math.ceil((highByte-lowByte+1) / self._minSize) * self._minSize
+            offset = math.floor(lowByte / self._reqMinAccess()) * self._reqMinAcccess()
+            size   = math.ceil((highByte-lowByte+1) / self._reqMinAccess()) * self._reqMinAccess()
 
             # Setup transaction
             self._verifyRange = [offset,offset+size] if  (type == rim.Verify) else None
@@ -457,10 +371,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             #print(f'Checking {self.path}.startTransaction(check={check})')
             self._checkTransaction()
 
-    def _forceStale(self):
-        for b in self._sDataMask: b = 0xFF
-
-    def _checkTransaction(self):
+    def checkTransaction(self):
         
         doUpdate = False
         with self._lock:
@@ -469,7 +380,7 @@ class RemoteBlock(BaseBlock, rim.Master):
             #print(f'Checking {self.path}._checkTransaction()')            
 
             # Error
-            err = self.error
+            err = self._getError()
             self._clearError()
 
             if err != "":
@@ -492,9 +403,11 @@ class RemoteBlock(BaseBlock, rim.Master):
             self._doUpdate = False
 
         # Update variables outside of lock
-        if doUpdate: self.updated()
+        if doUpdate:
+            for v in self._variables:
+                v._queueUpdate()
 
-    def _setDefault(self, var, value):
+    def setDefault(self, var, value):
         with self._lock:
             # Stage the default data        
             self.set(var, value)
@@ -505,8 +418,56 @@ class RemoteBlock(BaseBlock, rim.Master):
                 self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
 
 
-    def updated(self):
-        self._log.debug(f'Block {self._path} _update called')
-        for v in self._variables:
-            v._queueUpdate()
+    def _addVariables(self, variables):
+        self._variables = variables
+        self._path      = variables[0].path
+        self._mode      = variables[0].mode
+
+        # Re-setup logging
+        self._log = pr.logInit(cls=self,name=self._path)
+
+        # Temp bit masks
+        excMask = bytearray(size)  # Variable bit mask for exclusive variables
+        oleMask = bytearray(size)  # Variable bit mask for overlap enabled variables
+
+        # Go through variables
+        for var in variables:
+
+            # Variable supports bulk operations
+            if var._bulkEn: self._bulkEn = True
+
+            self._log.debug(f"Adding variable {var.name} to block {self.path} at offset {self.offset:#02x}")
+
+            # If variable modes mismatch, set block to read/write
+            if var.mode != self._mode:
+                self._mode = 'RW'
+
+            # Update variable masks
+            for x in range(len(var.bitOffset)):
+
+                # Variable allows overlaps, add to overlap enable mask
+                if var._overlapEn:
+                    self._setBits(oleMask,var.bitOffset[x],var.bitSize[x])
+
+                # Otherwise add to exclusive mask and check for existing mapping
+                else:
+                    if self._anyBits(excMask,var.bitOffset[x],var.bitSize[x]):
+                        raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
+                    self._setBits(excMask,var.bitOffset[x],var.bitSize[x])
+
+                # update verify mask
+                if var.mode == 'RW' and var.verify is True:
+                    self._verifyEn = True
+                    self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
+
+        # Check for overlaps by anding exclusive and overlap bit vectors
+        for b1, b2 in zip(oleMask, excMask):
+            if b1 & b2 != 0:
+                raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
+
+        # Set exclusive flag
+        self._overlapEn = all (excMask[i] == 0 for i in range(size))
+
+        # Force block to be stale at startup
+        self.forceStale()
 

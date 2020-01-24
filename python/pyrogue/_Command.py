@@ -57,6 +57,9 @@ class BaseCommand(pr.BaseVariable):
         self._lock = threading.Lock()
         self._background = background
 
+        # Disable bulk operations for commands
+        self._bulkEn = False
+
         if self._background:
             self._log.error("Background commands are deprecated. Please use a Process device instead.")
 
@@ -257,6 +260,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             overlapEn=overlapEn,
             verify=False)
 
+        # Disable bulk operations for commands
+        self._bulkEn = False
 
     def set(self, value, write=True):
         self._log.debug("{}.set({})".format(self, value))
