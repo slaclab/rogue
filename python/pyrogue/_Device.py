@@ -555,7 +555,7 @@ class Device(pr.Node,rim.Hub):
 
             # Create new block
             if b['block'] is None:
-                newBlock = pr.RemoteBlock(offset=b['offset'], size=b['size'])
+                newBlock = pr.RemoteBlock(memBase=self, offset=b['offset'], size=b['size'])
                 self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
             else:
                 newBlock = b['block']
@@ -604,7 +604,7 @@ class Device(pr.Node,rim.Hub):
         """
 
         for block in self._blocks:
-            block.timeout = timeout
+            block._setTimeout(int(timeout*1000000))
 
         rim.Master._setTimeout(self, int(timeout*1000000))
 

@@ -45,7 +45,6 @@ class ModelMeta(type):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
  
-
     def __call__(cls, *args, **kwargs):
         key = cls.__name__ + str(args) + str(kwargs)
 
@@ -65,9 +64,6 @@ class Model(object, metaclass=ModelMeta):
         self.bitSize = bitSize
         self.name = self.__class__.__name__        
         
-    def check(self, value):
-        return type(value) == self.pytype
-
 
 class UInt(Model):
 
@@ -80,10 +76,10 @@ class UInt(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
 
-    def check(self, value):
-        return (type(value) == self.pytype and self.bitSize >= value.bit_length())
-
     def toBytes(self, value):
+        if type(value) != self.pytype or self.bitSize < value.bit_length():
+            raise Exception("Base type mismatch!")
+
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(self, ba):
@@ -111,6 +107,9 @@ class Int(UInt):
     signed = True
 
     def toBytes(self, value):
+        if type(value) != self.pytype or self.bitSize < value.bit_length():
+            raise Exception("Base type mismatch!")
+
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
             newValue = value & (2**(self.bitSize)-1) # Strip upper bits
             ba = newValue.to_bytes(byteCount(self.bitSize), self.endianness, signed=False)
@@ -153,6 +152,9 @@ class Bool(Model):
         super().__init__(bitSize)
 
     def toBytes(self, value):
+        if type(value) != self.pytype:
+            raise Exception("Base type error!")
+
         return value.to_bytes(1, 'little', signed=False)
 
     def fromBytes(self, ba):
@@ -172,10 +174,10 @@ class String(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'      
 
-    def check(self, value):
-        return (type(val) == self.pytype and self.bitSize >= (len(value) * 8))
-
     def toBytes(self, value):
+        if type(val) != self.pytype or self.bitSize < (len(value) * 8):
+            raise Exception("Base type mismatch!")
+
         ba = bytearray(value, self.encoding)
         ba.extend(bytearray(1))
         return ba
@@ -201,6 +203,9 @@ class Float(Model):
         self.name = f'{self.__class__.__name__}{self.bitSize}'
 
     def toBytes(self, value):
+        if type(value) != self.pytype:
+            raise Exception("Base type error!")
+
         return bytearray(struct.pack(self.fstring, value))
 
     def fromBytes(self, ba):
@@ -208,7 +213,6 @@ class Float(Model):
 
     def fromString(self, string):
         return float(string)
-
 
 
 class Double(Float):
@@ -243,11 +247,10 @@ class Fixed(Model):
             
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
 
-
-    def check(self, value):
-        return value <= self.maxValue and value >= self.minValue
-
     def toBytes(self, value):
+        if type(value) != self.pytype or value > self.maxValue or value < self.minValue:
+            raise Exception("Base type error!")
+
         i = int(round(value * math.pow(2, self.binPoint)))
         return i.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 

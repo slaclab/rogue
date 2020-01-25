@@ -64,14 +64,6 @@ class LocalBlock(object):
         return self._mode
 
     @property
-    def timeout(self):
-        return 0
-
-    @timeout.setter
-    def timeout(self,value):
-        pass
-
-    @property
     def bulkEn(self):
         return True
 
@@ -130,6 +122,9 @@ class LocalBlock(object):
         # Update variables outside of lock
         if doUpdate: 
             self._variable._queueUpdate()
+
+    def _setTimeout(self,value):
+        pass
 
     def _iadd(self, other):
         with self._lock:
@@ -235,14 +230,6 @@ class RemoteBlock(rim.Master):
         return self._mode
 
     @property
-    def timeout(self):
-        return float(self._getTimeout()) / 1000000.0
-
-    @timeout.setter
-    def timeout(self,value):
-        self._setTimeout(int(value*1000000))
-
-    @property
     def bulkEn(self):
         return self._bulkEn
 
@@ -269,32 +256,25 @@ class RemoteBlock(rim.Master):
     def memBaseId(self):
         return self._reqSlaveId()
 
-    def set(self, var, value):
+    def set(self, var, ba):
         """
         Update block with bitSize bits from passed byte array.
         Offset sets the starting point in the block array.
         """
-        if not var._base.check(value):
-            msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
-            raise MemoryError(name=var.path, address=self.address, msg=msg)
-
         with self._lock:
-            ba = var._base.toBytes(value)
-
             srcBit = 0
             for x in range(len(var.bitOffset)):
                 self._copyBits(self._sData, var.bitOffset[x], ba, srcBit, var.bitSize[x])
                 self._setBits(self._sDataMask, var.bitOffset[x], var.bitSize[x])
                 srcBit += var.bitSize[x]
 
-    def get(self, var):
+    def get(self, var, ba):
         """
         Get bitSize bytes from block data.
         Offset sets the starting point in the block array.
         bytearray is returned
         """
         with self._lock:
-            ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
 
             dstBit = 0
             for x in range(len(var.bitOffset)):
@@ -303,8 +283,6 @@ class RemoteBlock(rim.Master):
                 else:
                     self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
                 dstBit += var.bitSize[x]
-
-            return var._base.fromBytes(ba)
 
     def startTransaction(self, type, check=False, lowByte=None, highByte=None):
         """
@@ -354,7 +332,7 @@ class RemoteBlock(rim.Master):
                 self._verifyWr = self._verifyEn
 
             # Derive offset and size based upon min transaction size
-            offset = math.floor(lowByte / self._reqMinAccess()) * self._reqMinAcccess()
+            offset = math.floor(lowByte / self._reqMinAccess()) * self._reqMinAccess()
             size   = math.ceil((highByte-lowByte+1) / self._reqMinAccess()) * self._reqMinAccess()
 
             # Setup transaction
@@ -418,7 +396,7 @@ class RemoteBlock(rim.Master):
                 self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
 
 
-    def _addVariables(self, variables):
+    def addVariables(self, variables):
         self._variables = variables
         self._path      = variables[0].path
         self._mode      = variables[0].mode
@@ -427,8 +405,8 @@ class RemoteBlock(rim.Master):
         self._log = pr.logInit(cls=self,name=self._path)
 
         # Temp bit masks
-        excMask = bytearray(size)  # Variable bit mask for exclusive variables
-        oleMask = bytearray(size)  # Variable bit mask for overlap enabled variables
+        excMask = bytearray(self._size)  # Variable bit mask for exclusive variables
+        oleMask = bytearray(self._size)  # Variable bit mask for overlap enabled variables
 
         # Go through variables
         for var in variables:
@@ -466,7 +444,7 @@ class RemoteBlock(rim.Master):
                 raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
 
         # Set exclusive flag
-        self._overlapEn = all (excMask[i] == 0 for i in range(size))
+        self._overlapEn = all (excMask[i] == 0 for i in range(self._size))
 
         # Force block to be stale at startup
         self.forceStale()
