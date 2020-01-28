@@ -84,7 +84,7 @@ namespace rogue {
                uint64_t offset_;
 
                // List of variables
-               std::map<std::string, std::shared_ptr<rogue::interfaces::memory::BlockVariable> > variables_;
+               std::map<std::string, std::shared_ptr<rogue::interfaces::memory::BlockVariable> > blockVars_;
 
                // Update Flag
                bool doUpdate_;
@@ -97,6 +97,9 @@ namespace rogue {
 
                // Overlap Enable
                bool overlapEn_;
+
+               // Variable list
+               boost::python::object variables_;
 
             public:
 
@@ -268,6 +271,10 @@ namespace rogue {
                 * @param variables Variable list
                 */
                void addVariables(boost::python::object variables);
+
+               //! Return a list of variables in the block
+               boost::python::object variables();
+
          };
 
          //! Alias for using shared pointer as BlockPtr

@@ -71,6 +71,10 @@ class LocalBlock(object):
     def stale(self):
         return False
 
+    @property
+    def variables(self):
+        return self._variables
+
     def forceStale(self):
         pass
 

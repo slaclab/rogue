@@ -56,6 +56,7 @@ void rim::Block::setup_python() {
        .def("checkTransaction",   &rim::Block::checkTransaction)
        .def("setDefault",         &rim::Block::setDefault)
        .def("addVariables",       &rim::Block::addVariables)
+       .add_property("variables", &rim::Block::variables)
    ;
 
    bp::implicitly_convertible<rim::BlockPtr, rim::MasterPtr>();
@@ -201,7 +202,7 @@ void rim::Block::set(boost::python::object var, boost::python::object value) {
 
    std::string name = bp::extract<std::string>(var.attr("name"));
 
-   rim::BlockVariablePtr bv = variables_[name];
+   rim::BlockVariablePtr bv = blockVars_[name];
 
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Block::set","Python Buffer Error"));
@@ -228,7 +229,7 @@ void rim::Block::get(boost::python::object var, boost::python::object value) {
 
    std::string name = bp::extract<std::string>(var.attr("name"));
 
-   rim::BlockVariablePtr bv = variables_[name];
+   rim::BlockVariablePtr bv = blockVars_[name];
 
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Block::set","Python Buffer Error"));
@@ -261,7 +262,7 @@ void rim::Block::setDefault(boost::python::object var, boost::python::object val
 
    std::string name = bp::extract<std::string>(var.attr("name"));
 
-   rim::BlockVariablePtr bv = variables_[name];
+   rim::BlockVariablePtr bv = blockVars_[name];
 
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Block::set","Python Buffer Error"));
@@ -401,7 +402,7 @@ void rim::Block::varUpdate() {
 
    rogue::ScopedGil gil;
 
-   for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) 
+   for ( vit = blockVars_.begin(); vit != blockVars_.end(); ++vit ) 
       vit->second->var.attr("_queueUpdate")();
 }
 
@@ -417,6 +418,8 @@ void rim::Block::addVariables(boost::python::object variables) {
 
    memset(excMask,0,size_);
    memset(oleMask,0,size_);
+
+   variables_ = variables;
 
    bp::list vl = (bp::list)variables;
 
@@ -437,7 +440,7 @@ void rim::Block::addVariables(boost::python::object variables) {
       vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
       vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
 
-      variables_[vb->name] = vb;
+      blockVars_[vb->name] = vb;
 
       if ( x == 0 ) {
          path_ = std::string(bp::extract<char *>(vl[x].attr("_path")));
@@ -494,5 +497,10 @@ void rim::Block::addVariables(boost::python::object variables) {
 
    // Force block to be stale
    forceStale();
+}
+
+//! Return a list of variables in the block
+bp::object rim::Block::variables() {
+   return variables_;
 }
 
