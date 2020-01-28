@@ -273,6 +273,10 @@ namespace rogue {
                void addVariables(boost::python::object variables);
 
                //! Return a list of variables in the block
+               /** Return the list of variables associated with this block
+                *
+                * Exposed as variables property to Python
+                */
                boost::python::object variables();
 
          };
