@@ -641,7 +641,7 @@ class RemoteVariable(BaseVariable):
         try:
             ba = self._base.toBytes(value)
             self._block.set(self, ba)
-            self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
+            self._block.startTransaction(rogue.interfaces.memory.Post, True, 0, 0)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -685,15 +685,10 @@ class RemoteVariable(BaseVariable):
 
     def _setDefault(self):
         if self._default is not None:
-            value = self.parseDisp(self._default)
-
-            if not self._base.check(value):
-                self._log.error("Error setting value '{}' to variable '{}' with type {}. Invalid value for base type {}".format(value,self.path,self.typeStr,self._base.pytype))
-                return
-
             try:
 
                 # Set value to block
+                value = self.parseDisp(self._default)
                 ba = self._base.toBytes(value)
                 self._block.setDefault(self, ba)
 
@@ -796,7 +791,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
+            self._block.startTransaction(rogue.interfaces.memory.Post, True, 0, 0)
 
         except Exception as e:
             pr.logException(self._log,e)

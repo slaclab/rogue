@@ -27,7 +27,8 @@ import math
 import numpy as np
 
 
-#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
+rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
+rogue.Logging.setFilter('pyrogue.memory.block',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
 #logger = logging.getLogger('pyrogue')

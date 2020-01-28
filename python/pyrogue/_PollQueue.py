@@ -151,7 +151,7 @@ class PollQueue(object):
                         self._log.debug(f'Polling Block {entry.block.path}')
                         blockEntries.append(entry)
                         try:
-                            entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
+                            entry.block.startTransaction(rogue.interfaces.memory.Read, False, 0, 0)
                         except Exception as e:
                             pr.logException(self._log,e)
 

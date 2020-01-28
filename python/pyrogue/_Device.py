@@ -291,12 +291,12 @@ class Device(pr.Node,rim.Hub):
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
                 if (force or b.stale):
-                    b.startTransaction(rim.Write, check=checkEach, lowByte=v[0], highByte=v[1])
+                    b.startTransaction(rim.Write, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if (force or block.stale) and block.bulkEn:
-                    block.startTransaction(rim.Write, check=checkEach)
+                    block.startTransaction(rim.Write, checkEach, 0, 0)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -314,12 +314,12 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Verify, check=checkEach, lowByte=v[0], highByte=v[1])
+                b.startTransaction(rim.Verify, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Verify, checkEach)
+                    block.startTransaction(rim.Verify, checkEach, 0, 0)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -338,12 +338,12 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks. 
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Read, check=checkEach, lowByte=v[0], highByte=v[1])
+                b.startTransaction(rim.Read, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, check=checkEach)
+                    block.startTransaction(rim.Read, checkEach, 0, 0)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -555,10 +555,13 @@ class Device(pr.Node,rim.Hub):
 
             # Create new block
             if b['block'] is None:
-                newBlock = pr.RemoteBlock(memBase=self, offset=b['offset'], size=b['size'])
+                newBlock = rim.Block(b['offset'], b['size'])
                 self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
             else:
                 newBlock = b['block']
+
+            # Set memory slave  
+            newBlock._setSlave(self)
 
             # Verify the block is not too small or large for the memory interface
             if newBlock.size > self._reqMaxAccess() or newBlock.size < self._reqMinAccess():

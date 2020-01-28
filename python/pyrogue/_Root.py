@@ -16,7 +16,8 @@
 import sys
 import os
 import glob
-import rogue.interfaces.memory
+import rogue
+import rogue.interfaces.memory as rim
 import threading
 from collections import OrderedDict as odict
 import logging
@@ -317,7 +318,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for d in self.deviceList:
             tmpList.append(d)
             for b in d._blocks:
-                if isinstance(b, pr.RemoteBlock):
+                if isinstance(b, rim.Block):
                     tmpList.append(b)
 
         # Sort the list by address/size
@@ -336,10 +337,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
                 # Check for instances when device comes before block and when block comes before device 
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.RemoteBlock) and \
-                         (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i]._overlapEn))) and \
-                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],pr.RemoteBlock) and \
-                        (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1]._overlapEn))):
+                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and \
+                         (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
+                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and \
+                        (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
                                        tmpList[i].path,tmpList[i].address,

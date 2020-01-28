@@ -27,6 +27,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/TcpClient.h>
 #include <rogue/interfaces/memory/TcpServer.h>
+#include <rogue/interfaces/memory/Block.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -56,6 +57,6 @@ void rim::setup_module() {
    rim::TransactionLock::setup_python(); 
    rim::TcpClient::setup_python(); 
    rim::TcpServer::setup_python(); 
-
+   rim::Block::setup_python(); 
 }
 

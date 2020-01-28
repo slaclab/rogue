@@ -269,7 +269,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             self._block.set(self, value)
 
             if write:
-                self._block.startTransaction(rogue.interfaces.memory.Write, check=True)
+                self._block.startTransaction(rogue.interfaces.memory.Write, True, 0, 0)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -278,7 +278,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def get(self, read=True):
         try:
             if read:
-                self._block.startTransaction(rogue.interfaces.memory.Read, check=True)
+                self._block.startTransaction(rogue.interfaces.memory.Read, True, 0, 0)
                 
             ret = self._block.get(self)
 
