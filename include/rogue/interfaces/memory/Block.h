@@ -289,8 +289,6 @@ namespace rogue {
 
                boost::python::object var;
 
-               //std::string model;
-               //
                std::string mode;
 
                std::string name;
@@ -302,8 +300,6 @@ namespace rogue {
                bool verify;
 
                uint32_t varBytes;
-
-               //uint8_t * buffer;
 
                uint32_t count;
 
