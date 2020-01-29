@@ -169,8 +169,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
         self._updateLock   = threading.Lock()
-        self._updateCount  = 0
-        self._updateDict   = {}
+        self._updateCount  = {}
+        self._updateList   = {}
 
         # SQL URL
         self._sqlLog = None
@@ -453,10 +453,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @contextmanager
     def updateGroup(self):
+        tid = threading.get_ident()
 
         # At with call
         with self._updateLock:
-            self._updateCount += 1
+            if not tid in self._updateCount:
+                self._updateList[tid] = {}
+                self._updateCount[tid] = 1
+            else:
+                self._updateCount[tid] += 1
 
         try:
             yield
@@ -464,12 +469,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             with self._updateLock:
-                self._updateCount -= 1
-
-                # Context is clear
-                if self._updateCount == 0:
-                    self._updateQueue.put(self._updateDict)
-                    self._updateDict = {}
+                if self._updateCount[tid] == 1:
+                    self._updateCount[tid] = 0
+                    self._updateQueue.put(self._updateList[tid])
+                    self._updateList[tid] = {}
+                else:
+                    self._updateCount[tid] -= 1
 
     @contextmanager
     def pollBlock(self):
@@ -828,7 +833,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _queueUpdates(self,var):
         with self._updateLock:
-            self._updateDict[var.path] = var
+            tid = threading.get_ident()
+            self._updateList[tid][var.path] = var
 
     # Worker thread
     def _updateWorker(self):
