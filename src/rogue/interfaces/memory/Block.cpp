@@ -212,6 +212,7 @@ void rim::Block::get(boost::python::object var, boost::python::object value) {
    uint8_t * data;
    uint32_t  dstBit;
    uint32_t  x;
+   uint32_t  y;
 
    std::string name = bp::extract<std::string>(var.attr("name"));
 
@@ -228,7 +229,7 @@ void rim::Block::get(boost::python::object var, boost::python::object value) {
    dstBit = 0;
    for (x=0; x < bv->count; x++) {
 
-      if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) )
+      if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) 
          copyBits(data, dstBit, stagedData_, bv->bitOffset[x], bv->bitSize[x]);
       else 
          copyBits(data, dstBit, blockData_, bv->bitOffset[x], bv->bitSize[x]);
@@ -295,7 +296,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
       // Write only occur if stale or if forceWr is set
       doTran = (forceWr || (type != rim::Write));
 
-      // Move staged write data to block, clear stale
+      // Move staged write data to block on writes
       if ( type == rim::Write || type == rim::Post ) {
          for (x=0; x < size_; x++) {
             blockData_[x] &= (stagedMask_[x] ^ 0xFF);
@@ -307,14 +308,15 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
                if ( x > highByte ) highByte = x;
                doTran = true;
             }
-
-            stagedData_[x] = 0;
-            stagedMask_[x] = 0;
          }
       }
 
       // Device is disabled
       if ( ! (enable_ && doTran) ) return;
+
+      // Clear the stale state for the range of the transaction
+      memset(stagedData_+lowByte,0,highByte-lowByte+1);
+      memset(stagedMask_+lowByte,0,highByte-lowByte+1);
 
       bLog_->debug("Start transaction type = %i",type);
 
