@@ -570,6 +570,7 @@ class RemoteVariable(BaseVariable):
         self._verify    = verify
         self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
+        self._valBytes  = int(math.ceil(float(sum(self.bitSize)) / 8.0))
         self._overlapEn = overlapEn
 
 
@@ -661,7 +662,7 @@ class RemoteVariable(BaseVariable):
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            ba = bytearray(int(math.ceil(float(sum(self.bitSize)) / 8.0)))
+            ba = bytearray(self._valBytes)
             self._block.get(self,ba)
             ret = self._base.fromBytes(ba)
 
