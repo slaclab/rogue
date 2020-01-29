@@ -296,7 +296,7 @@ class Device(pr.Node,rim.Hub):
         else:
             for block in self._blocks:
                 if (force or block.stale) and block.bulkEn:
-                    block.startTransaction(rim.Write, checkEach, 0, 0)
+                    block.startTransaction(rim.Write, checkEach, -1, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -319,7 +319,7 @@ class Device(pr.Node,rim.Hub):
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Verify, checkEach, 0, 0)
+                    block.startTransaction(rim.Verify, checkEach, -1, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -343,7 +343,7 @@ class Device(pr.Node,rim.Hub):
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, checkEach, 0, 0)
+                    block.startTransaction(rim.Read, checkEach, -1, -1)
 
             if recurse:
                 for key,value in self.devices.items():

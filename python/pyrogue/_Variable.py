@@ -641,7 +641,7 @@ class RemoteVariable(BaseVariable):
         try:
             ba = self._base.toBytes(value)
             self._block.set(self, ba)
-            self._block.startTransaction(rogue.interfaces.memory.Post, True, 0, 0)
+            self._block.startTransaction(rogue.interfaces.memory.Post, True, -1, -1)
 
         except Exception as e:
             pr.logException(self._log,e)
