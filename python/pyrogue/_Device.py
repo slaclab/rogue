@@ -280,9 +280,6 @@ class Device(pr.Node,rim.Hub):
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
-    def _startTransaction(self, block, type, forceWr, checkEach, lowByte, highByte):
-        block.startTransaction(type, forceWr, checkEach, lowByte, highByte)
-
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
         Write all of the blocks held by this Device to memory
@@ -293,12 +290,12 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                self._startTransaction(b, rim.Write, True, checkEach, v[0], v[1])
+                b.startTransaction(rim.Write, True, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    self._startTransaction(block, rim.Write, force, checkEach, 0, -1)
+                    block.startTransaction(rim.Write, force, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -315,12 +312,12 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                self._startTransaction(b, rim.Verify, False, checkEach, v[0], v[1])
+                b.startTransaction(rim.Verify, False, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    self._startTransaction(block, rim.Verify, False, checkEach, 0, -1)
+                    block.startTransaction(rim.Verify, False, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -337,19 +334,16 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks. 
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                self._startTransaction(b, rim.Read, False, checkEach, v[0], v[1])
+                b.startTransaction(rim.Read, False, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    self._startTransaction(block, rim.Read, False, checkEach, 0, -1)
+                    block.startTransaction(rim.Read, False, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True, checkEach=checkEach)
-
-    def _checkTransaction(self, block):
-        block.checkTransaction()
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
@@ -360,11 +354,11 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                self._checkTransaction(b)
+                b.checkTransaction()
 
         else:
             for block in self._blocks:
-                self._checkTransaction(block)
+                block.checkTransaction()
 
             if recurse:
                 for key,value in self.devices.items():
