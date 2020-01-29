@@ -20,6 +20,7 @@ from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
 import threading
+import math
 
 class CommandError(Exception):
     """ Exception for command errors."""

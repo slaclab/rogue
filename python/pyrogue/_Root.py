@@ -861,7 +861,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Process list
             elif len(uvars) > 0:
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-                print(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
                 strm = odict()
                 zmq  = odict()
 
