@@ -170,6 +170,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
         self._updateLock   = threading.Lock()
         self._updateCount  = 0
+        self._updateDict   = {}
 
         # SQL URL
         self._sqlLog = None
@@ -457,7 +458,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self._updateLock:
             self._updateCount += 1
 
-        # Return to block within with call
         try:
             yield
         finally:
@@ -468,7 +468,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Context is clear
                 if self._updateCount == 0:
-                    self._updateQueue.put(True)
+                    self._updateQueue.put(self._updateDict)
+                    self._updateDict = {}
 
     @contextmanager
     def pollBlock(self):
@@ -826,36 +827,25 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.set(SystemLogInit)
 
     def _queueUpdates(self,var):
-        self._updateQueue.put(var)
+        with self._updateLock:
+            self._updateDict[var.path] = var
 
     # Worker thread
     def _updateWorker(self):
         self._log.info("Starting update thread")
 
-        # Init
-        doWork = False
-        uvars = {}
-
         while True:
-            ent = self._updateQueue.get()
+            uvars = self._updateQueue.get()
 
             # Done
-            if ent is None:
+            if uvars is None:
                 self._log.info("Stopping update thread")
                 return
 
-            # Increment
-            elif ent is True:
-                doWork = True
-
-            # Variable
-            else:
-                uvars[ent.path] = ent
-
-            # Process list if doWork is set
-            if doWork and len(uvars) > 0:
-
+            # Process list
+            elif len(uvars) > 0:
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                print(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
                 strm = odict()
                 zmq  = odict()
 
@@ -902,9 +892,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 # Send over zmq link
                 if self._zmqServer is not None:
                     self._zmqServer._publish(jsonpickle.encode(zmq))
-
-                # Init var list
-                uvars = {}
 
             # Set done
             self._updateQueue.task_done()
