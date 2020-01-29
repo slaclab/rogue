@@ -48,6 +48,7 @@ class LocalBlock(object):
         self._value     = value
         self._lock      = threading.RLock()
         self._doUpdate  = False
+        self._enable    = True
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self._path)
@@ -67,16 +68,21 @@ class LocalBlock(object):
     def bulkEn(self):
         return True
 
+    def forceStale(self):
+        pass
+
     @property
-    def stale(self):
-        return False
+    def enable(self):
+        return self._enable
+
+    @enable.setter
+    def enable(self,value):
+        with self._lock:
+            self._enable = value
 
     @property
     def variables(self):
         return self._variables
-
-    def forceStale(self):
-        pass
 
     def set(self, var, value):
         with self._lock:
@@ -88,7 +94,7 @@ class LocalBlock(object):
             self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
-            if self._localSet is not None:
+            if self._enable and self._localSet is not None:
 
                 # Possible args
                 pargs = {'dev' : self._device, 'var' : self._variable, 'value' : self._value, 'changed' : changed}
@@ -96,7 +102,7 @@ class LocalBlock(object):
                 pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
 
     def get(self, var):
-        if self._localGet is not None:
+        if self._enable and self._localGet is not None:
             with self._lock:
 
                 # Possible args
@@ -106,44 +112,43 @@ class LocalBlock(object):
 
         return self._value
 
-    def startTransaction(self, type, check, lowByte, highByte):
+    def startTransaction(self, type, forceWr, check, lowByte, highByte):
         """
         Start a transaction.
         """
-        with self._lock:
-            self._doUpdate = True
+        if self._enable:
+            with self._lock:
+                self._doUpdate = True
 
     def checkTransaction(self):
         """
         Check status of block.
         If update=True notify variables if read
         """
-        doUpdate = False
-        with self._lock:
-            doUpdate = self._doUpdate
-            self._doUpdate = False
+        if self._enable:
+            doUpdate = False
+            with self._lock:
+                doUpdate = self._doUpdate
+                self._doUpdate = False
 
-        # Update variables outside of lock
-        if doUpdate: 
-            self._variable._queueUpdate()
-
-    def _setTimeout(self,value):
-        pass
+            # Update variables outside of lock
+            if doUpdate: 
+                self._variable._queueUpdate()
 
     def _iadd(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _isub(self, other):
         with self._lock:
             self.set(None, self.get(None) - other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _imul(self, other):
         with self._lock:
             self.set(None, self.get(None) * other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _imatmul(self, other):
         with self._lock:
@@ -153,46 +158,46 @@ class LocalBlock(object):
     def _itruediv(self, other):
         with self._lock:
             self.set(None, self.get(None) / other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _ifloordiv(self, other):
         with self._lock:
             self.set(None, self.get(None) // other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _imod(self, other):
         with self._lock:
             self.set(None, self.get(None) % other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _ipow(self, other):
         with self._lock:
             self.set(None, self.get(None) ** other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _ilshift(self, other):
         with self._lock:
             self.set(None, self.get(None) << other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _irshift(self, other):
         with self._lock:
             self.set(None, self.get(None) >> other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _iand(self, other):
         with self._lock:
             self.set(None, self.get(None) & other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _ixor(self, other):
         with self._lock:
             self.set(None, self.get(None) ^ other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
     def _ior(self, other):
         with self._lock:
             self.set(None, self.get(None) | other)
-            self._variable._queueUpdate()
+            if self._enable: self._variable._queueUpdate()
 
 

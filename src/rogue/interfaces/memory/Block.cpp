@@ -43,13 +43,12 @@ void rim::Block::setup_python() {
        .add_property("mode",      &rim::Block::mode)
        .add_property("bulkEn",    &rim::Block::bulkEn)
        .add_property("overlapEn", &rim::Block::overlapEn)
-       .add_property("stale",     &rim::Block::stale)
-       .def("forceStale",         &rim::Block::forceStale)
-       .def("clearStale",         &rim::Block::clearStale)
        .add_property("offset",    &rim::Block::offset)
        .add_property("address",   &rim::Block::address)
        .add_property("size",      &rim::Block::size)
        .add_property("memBaseId", &rim::Block::memBaseId)
+       .def("forceStale",         &rim::Block::forceStale)
+       .def("setEnable",          &rim::Block::setEnable)
        .def("set",                &rim::Block::set)
        .def("get",                &rim::Block::get)
        .def("startTransaction",   &rim::Block::startTransaction)
@@ -73,6 +72,7 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    verifyWr_   = false;
    doUpdate_   = false;
    blockTrans_ = false;
+   enable_     = false;
 
    verifyBase_ = 0; // Verify Range
    verifySize_ = 0; // Verify Range
@@ -100,6 +100,9 @@ rim::Block::~Block() {
    free(blockData_);
    free(verifyData_);
    free(verifyMask_);
+
+   // Free variable list
+
 }
 
 // Return the path of the block
@@ -122,19 +125,6 @@ bool rim::Block::overlapEn() {
    return overlapEn_;
 }
 
-// Return stale flag
-bool rim::Block::stale() {
-   uint32_t x;
-
-   rogue::GilRelease noGil;
-   std::lock_guard<std::mutex> lock(mtx_);
-
-   for (x=0; x < size_; x++) 
-      if ( stagedMask_[x] != 0 ) return true;
-
-   return false;
-}
-
 // Force the block to be stale
 void rim::Block::forceStale() {
    uint32_t x;
@@ -154,21 +144,11 @@ void rim::Block::forceStale() {
    }
 }
 
-// Clear the block stale state
-void rim::Block::clearStale() {
-   uint32_t x;
-
-   if ( blockTrans_ ) return;
-
+// Set enable state
+void rim::Block::setEnable(bool newState) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
-
-   for (x=0; x < size_; x++) {
-      blockData_[x] &= (stagedMask_[x] ^ 0xFF);
-      blockData_[x] |= (stagedData_[x] & stagedMask_[x]);
-      stagedData_[x] = 0;
-      stagedMask_[x] = 0;
-   }
+   enable_ = newState;
 }
 
 // Get offset of this Block
@@ -282,10 +262,9 @@ void rim::Block::setDefault(boost::python::object var, boost::python::object val
 }
 
 // Start a transaction for this block
-void rim::Block::startTransaction(uint32_t type, bool check, int32_t lowByte, int32_t highByte) {
-   uint32_t  lowB;
-   uint32_t  highB;
+void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint32_t lowByte, int32_t highByte) {
    uint32_t  x;
+   bool      doTran;
    uint32_t  tOff;
    uint32_t  tSize;
    uint8_t * tData;
@@ -304,9 +283,20 @@ void rim::Block::startTransaction(uint32_t type, bool check, int32_t lowByte, in
       waitTransaction(0);
       clearError();
 
-      // Set default low and high bytes
-      lowB  = (lowByte  < 0)?0:lowByte;
-      highB = (highByte < 0)?size_-1:highByte;
+      // Only write if stale or forceWr is set
+      if ( type == rim::Write && ! forceWr ) {
+         doTran = false;
+         for (x=0; x < size_; x++) {
+            if ( stagedMask_[x] != 0 ) {
+               doTran = true;
+               break;
+            }
+         }
+         if ( ! doTran ) return;
+      }
+
+      // Set default high bytes
+      if ( highByte == -1 ) highByte = size_-1;
 
       // Move staged write data to block, clear stale
       if ( type == rim::Write || type == rim::Post ) {
@@ -316,14 +306,17 @@ void rim::Block::startTransaction(uint32_t type, bool check, int32_t lowByte, in
 
             // Adjust range to stale data
             if ( stagedMask_[x] != 0 ) {
-               if ( x < lowB  ) lowB  = x;
-               if ( x > highB ) highB = x;
+               if ( x < lowByte  ) lowByte  = x;
+               if ( x > highByte ) highByte = x;
             }
 
             stagedData_[x] = 0;
             stagedMask_[x] = 0;
          }
       }
+
+      // Device is disabled
+      if ( ! enable_ ) return;
 
       bLog_->debug("Start transaction type = %i",type);
 
@@ -332,8 +325,8 @@ void rim::Block::startTransaction(uint32_t type, bool check, int32_t lowByte, in
       if ( type == rim::Write ) verifyWr_ = verifyEn_;
 
       // Derive offset and size based upon min transaction size
-      tOff  = std::floor(lowB / reqMinAccess()) * reqMinAccess();
-      tSize = std::ceil((highB-lowB+1) / reqMinAccess()) * reqMinAccess();
+      tOff  = std::floor(lowByte / reqMinAccess()) * reqMinAccess();
+      tSize = std::ceil((highByte-lowByte+1) / reqMinAccess()) * reqMinAccess();
 
       // Setup transaction
       if ( type == rim::Verify) {
@@ -347,7 +340,7 @@ void rim::Block::startTransaction(uint32_t type, bool check, int32_t lowByte, in
       }
       doUpdate_   = true;
 
-      // Start transaction, outside of lock
+      // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
    }
             
@@ -375,6 +368,9 @@ void rim::Block::checkTransaction() {
             "Transaction error for block %s with address 0x%.8x. Error %s",
             path_.c_str(), address(), err.c_str()));
       }
+
+      // Device is disabled
+      if ( ! enable_ ) return;
 
       if ( verifySize_ != 0 ) {
          verifyWr_ = false;
@@ -416,6 +412,12 @@ void rim::Block::addVariables(boost::python::object variables) {
    uint8_t excMask[size_];
    uint8_t oleMask[size_];
 
+   std::string name;
+   std::string mode;
+   bool bulkEn;
+   bool overlapEn;
+   bool verify;
+
    memset(excMask,0,size_);
    memset(oleMask,0,size_);
 
@@ -427,34 +429,33 @@ void rim::Block::addVariables(boost::python::object variables) {
 
       rim::BlockVariablePtr vb = std::make_shared<rim::BlockVariable>();
 
-      vb->var       = vl[x];
-      vb->varBytes  = bp::extract<uint32_t>(vb->var.attr("_bytes"));
-      vb->name      = std::string(bp::extract<char *>(vb->var.attr("_name")));
-      vb->mode      = std::string(bp::extract<char *>(vb->var.attr("_mode")));
-      vb->bulkEn    = bp::extract<bool>(vb->var.attr("_bulkEn"));
-      vb->overlapEn = bp::extract<bool>(vb->var.attr("_overlapEn"));
-      vb->verify    = bp::extract<bool>(vb->var.attr("_verify"));
+      vb->var = vl[x];
+
+      name      = std::string(bp::extract<char *>(vb->var.attr("_name")));
+      mode      = std::string(bp::extract<char *>(vb->var.attr("_mode")));
+      bulkEn    = bp::extract<bool>(vb->var.attr("_bulkEn"));
+      overlapEn = bp::extract<bool>(vb->var.attr("_overlapEn"));
+      verify    = bp::extract<bool>(vb->var.attr("_verify"));
 
       vb->count     = len(vb->var.attr("_bitSize"));
-
       vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
       vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
 
-      blockVars_[vb->name] = vb;
+      blockVars_[name] = vb;
 
       if ( x == 0 ) {
          path_ = std::string(bp::extract<char *>(vl[x].attr("_path")));
          std::string logName = "memory.block." + path_;
          bLog_ = rogue::Logging::create(logName.c_str());
-         mode_ = vb->mode;
+         mode_ = mode;
       }
 
-      if ( vb->bulkEn ) bulkEn_ = true;
+      if ( bulkEn ) bulkEn_ = true;
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",name.c_str(),path_.c_str(),offset_);
 
       // If variable modes mismatch, set block to read/write
-      if ( mode_ != vb->mode ) mode_ = "RW";
+      if ( mode_ != mode ) mode_ = "RW";
 
       // Update variable masks
       for (y=0; y < vb->count; y++) {
@@ -462,7 +463,7 @@ void rim::Block::addVariables(boost::python::object variables) {
          vb->bitSize[y]   = bp::extract<uint32_t>(vb->var.attr("_bitSize")[y]);
 
          // Variable allows overlaps, add to overlap enable mask
-         if ( vb->overlapEn ) setBits(oleMask,vb->bitOffset[y],vb->bitSize[y]);
+         if ( overlapEn ) setBits(oleMask,vb->bitOffset[y],vb->bitSize[y]);
 
          // Otherwise add to exclusive mask and check for existing mapping
          else {
@@ -475,7 +476,7 @@ void rim::Block::addVariables(boost::python::object variables) {
          }
 
          // update verify mask
-         if ( vb->mode == "RW" && vb->verify ) {
+         if ( mode == "RW" && verify ) {
             verifyEn_ = true;
             setBits(verifyMask_,vb->bitOffset[y],vb->bitSize[y]);
          }

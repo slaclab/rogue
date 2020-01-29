@@ -34,11 +34,9 @@ namespace rogue {
          class BlockVariable;
 
          //! Memory interface Block device
-         /** 
-          */
          class Block : public Master {
 
-               //! Mutex
+               // Mutex
                std::mutex mtx_;
 
                // Path
@@ -101,6 +99,9 @@ namespace rogue {
                // Variable list
                boost::python::object variables_;
 
+               // Enable flag
+               bool enable_;
+
             public:
 
                //! Class factory which returns a pointer to a Block (BlockPtr)
@@ -155,27 +156,19 @@ namespace rogue {
                 */
                bool overlapEn();
 
-               //! Return stale flag
-               /** Return the state sate flag.
+               //! Force stale state
+               /** Force the stale state
                 *
-                * Exposed as stale property to Python
-                * @return stale state flag
-                */
-               bool stale();
-
-               //! Force the block to be stale
-               /** Force the internal stale state.
-                *
-                * Exposed as forceStale method to Python
+                * Exposed as forceStale() method to Python
                 */
                void forceStale();
 
-               //! Clear the block stale state.
-               /** Clear the internal stale state.
+               //! Set enable state
+               /** Set the enable state
                 *
-                * Exposed as clearStale method to Python
+                * Exposed as setEneable method to Python
                 */
-               void clearStale();
+               void setEnable(bool);
 
                //! Get offset of this Block
                /** Return the offset of this Block
@@ -235,12 +228,13 @@ namespace rogue {
                 *
                 * Exposed as startTransaction() method to Python
                 *
-                * @param type     Transaction type
-                * @param check    Flag to indicate if the transaction results should be immediately checked
-                * @param lowByte  Low byte of block to include in transaction.
-                * @param highByte High byte of block to include in transaction.
+                * @param type    Transaction type
+                * @param forceWr Force write of non-stale block
+                * @param check   Flag to indicate if the transaction results should be immediately checked
+                * @param lowByte  Low byte of block to include in transaction., -1 for default
+                * @param highByte High byte of block to include in transaction., -1 for default
                 */
-               void startTransaction(uint32_t type, bool check, int32_t lowByte, int32_t highByte);
+               void startTransaction(uint32_t type, bool forceWr, bool check, uint32_t lowByte, int32_t highByte);
 
                //! Check transaction result
                /** Check transaction result, an exception is thrown if an error occured.
@@ -259,8 +253,11 @@ namespace rogue {
                 */
                void setDefault(boost::python::object var, boost::python::object value);
 
-
                //! Call variable update for all variables
+               /** Add the passed list of variables to this block
+                *
+                * Not exposed to python
+                */
                void varUpdate();
 
                //! Add variables to block
@@ -288,18 +285,6 @@ namespace rogue {
             public:
 
                boost::python::object var;
-
-               std::string mode;
-
-               std::string name;
-
-               bool bulkEn;
-
-               bool overlapEn;
-
-               bool verify;
-
-               uint32_t varBytes;
 
                uint32_t count;
 

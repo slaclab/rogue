@@ -134,6 +134,8 @@ class BaseVariable(pr.Node):
         self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
+        self._lowByte       = 0
+        self._highByte      = -1
         self._pollInterval  = pollInterval
         self._nativeType    = None
         self._listeners     = []
@@ -641,7 +643,7 @@ class RemoteVariable(BaseVariable):
         try:
             ba = self._base.toBytes(value)
             self._block.set(self, ba)
-            self._block.startTransaction(rogue.interfaces.memory.Post, True, -1, -1)
+            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -720,6 +722,8 @@ class RemoteVariable(BaseVariable):
 
         self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
 
+        self._lowByte  = int(math.floor(self._bitOffset[0] / 8))
+        self._highByte = int(math.floor((self._bitOffset[-1] + self._bitSize[-1] - 1) / 8))
 
 
 class LocalVariable(BaseVariable):
@@ -791,7 +795,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, True, 0, 0)
+            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
 
         except Exception as e:
             pr.logException(self._log,e)

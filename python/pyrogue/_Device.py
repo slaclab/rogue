@@ -274,29 +274,31 @@ class Device(pr.Node,rim.Hub):
             value.countReset()
 
     def enableChanged(self,value):
-        pass # Do nothing
+        for block in self._blocks:
+            block.setEnable(value == True)
+
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
+
+    def _startTransaction(self, block, type, forceWr, checkEach, lowByte, highByte):
+        block.startTransaction(type, forceWr, checkEach, lowByte, highByte)
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
         Write all of the blocks held by this Device to memory
         """
-        if (self.enable.value() is not True): return
-
-        self._log.debug(f'Calling {self.path}._writeBlocks')
+        self._log.debug(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
         checkEach = checkEach or self.forceCheckEach
 
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                if (force or b.stale):
-                    b.startTransaction(rim.Write, checkEach, v[0], v[1])
+                self._startTransaction(b, rim.Write, True, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
-                if (force or block.stale) and block.bulkEn:
-                    block.startTransaction(rim.Write, checkEach, -1, -1)
+                if block.bulkEn:
+                    self._startTransaction(block, rim.Write, force, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -306,20 +308,19 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        if (self.enable.value() is not True): return
-        #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
+        self._log.debug(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
 
-        checkEach = checkEach or self.forceCheckEach        
+        checkEach = checkEach or self.forceCheckEach
 
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Verify, checkEach, v[0], v[1])
+                self._startTransaction(b, rim.Verify, False, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Verify, checkEach, -1, -1)
+                    self._startTransaction(block, rim.Verify, False, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -329,40 +330,41 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        if (self.enable.value() is not True): return
-        self._log.debug(f'Calling {self.path}._readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-        #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')
+        self._log.debug(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
 
         checkEach = checkEach or self.forceCheckEach
 
         # Process local blocks. 
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Read, checkEach, v[0], v[1])
+                self._startTransaction(b, rim.Read, False, checkEach, v[0], v[1])
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, checkEach, -1, -1)
+                    self._startTransaction(block, rim.Read, False, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True, checkEach=checkEach)
 
+    def _checkTransaction(self, block):
+        block.checkTransaction()
+
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        self._log.debug(f'Calling {self.path}.checkBlocks')
+        self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
 
         with self.root.updateGroup():
 
             # Process local blocks
             if variable is not None:
                 for b,v in self._getBlocks(variable).items():
-                    b.checkTransaction()
+                    self._checkTransaction(b)
 
             else:
                 for block in self._blocks:
-                    block.checkTransaction()
+                    self._checkTransaction(block)
 
                 if recurse:
                     for key,value in self.devices.items():
@@ -468,7 +470,7 @@ class Device(pr.Node,rim.Hub):
         Variables must belong to this device!
         """
         if isinstance(variables, pr.BaseVariable):
-            variables = [variables]
+            return {variables._block: [variables._lowByte, variables._highByte]}
 
         blocks = {}
 
@@ -476,20 +478,11 @@ class Device(pr.Node,rim.Hub):
             if v.parent is not self:
                 raise DeviceError(
                     f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
-            elif v._block is not None:
-
-                if isinstance(v,pr.RemoteVariable):
-                    lowByte  = math.floor(v.bitOffset[0] / 8)
-                    highByte = math.floor((v.bitOffset[-1] + v.bitSize[-1] - 1) / 8)
-                else:
-                    lowByte  = None
-                    highByte = None
-
-                if v._block not in blocks:
-                    blocks[v._block] = [lowByte, highByte]
-                elif lowByte is not None and highByte is not None:
-                    if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
-                    if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
+            if v._block not in blocks:
+                blocks[v._block] = [v._lowByte, v._highByte]
+            else:
+                if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
+                if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
 
         return blocks
 
@@ -576,6 +569,7 @@ class Device(pr.Node,rim.Hub):
 
             # Add to device
             self._blocks.append(newBlock)
+            newBlock.setEnable(self.enable.value() == True)
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
