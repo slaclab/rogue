@@ -168,6 +168,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Variable update worker
         self._updateQueue = queue.Queue()
         self._updateThread = None
+        self._updateLock   = threading.Lock()
+        self._updateCount  = 0
 
         # SQL URL
         self._sqlLog = None
@@ -452,7 +454,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def updateGroup(self):
 
         # At with call
-        self._updateQueue.put(True)
+        with self._updateLock:
+            self._updateCount += 1
 
         # Return to block within with call
         try:
@@ -460,7 +463,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         finally:
 
             # After with is done
-            self._updateQueue.put(False)
+            with self._updateLock:
+                self._updateCount -= 1
+
+                # Context is clear
+                if self._updateCount == 0:
+                    self._updateQueue.put(True)
 
     @contextmanager
     def pollBlock(self):
@@ -825,7 +833,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Starting update thread")
 
         # Init
-        count = 0
+        doWork = False
         uvars = {}
 
         while True:
@@ -838,19 +846,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Increment
             elif ent is True:
-                count += 1
-
-            # Decrement
-            elif ent is False:
-                if count > 0:
-                    count -= 1
+                doWork = True
 
             # Variable
             else:
                 uvars[ent.path] = ent
 
-            # Process list if count = 0
-            if count == 0 and len(uvars) > 0:
+            # Process list if doWork is set
+            if doWork and len(uvars) > 0:
 
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
                 strm = odict()

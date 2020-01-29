@@ -95,14 +95,20 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
 
 // Destroy the Hub
 rim::Block::~Block() {
+   std::map<std::string, rim::BlockVariablePtr>::iterator vit;
+
+   // Free variable list
+   for ( vit = blockVars_.begin(); vit != blockVars_.end(); ++vit ) {
+      free(vit->second->bitOffset);
+      free(vit->second->bitSize);
+   }
+   blockVars_.clear();
+
    free(stagedData_);
    free(stagedMask_);
    free(blockData_);
    free(verifyData_);
    free(verifyMask_);
-
-   // Free variable list
-
 }
 
 // Return the path of the block
