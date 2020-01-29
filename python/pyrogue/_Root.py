@@ -459,9 +459,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self._updateLock:
             if not tid in self._updateCount:
                 self._updateList[tid] = {}
-                self._updateCount[tid] = 1
-            else:
-                self._updateCount[tid] += 1
+                self._updateCount[tid] = 0
+
+            self._updateCount[tid] += 1
 
         try:
             yield
@@ -583,8 +583,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _heartbeat(self):
         if self._running and self._doHeartbeat:
-            threading.Timer(1.0,self._heartbeat).start()
-            self.Time.set(time.time())
+            with self.updateGroup():
+                threading.Timer(1.0,self._heartbeat).start()
+                self.Time.set(time.time())
 
     def _exit(self):
         self.stop()
@@ -832,9 +833,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.set(SystemLogInit)
 
     def _queueUpdates(self,var):
+        tid = threading.get_ident()
+
         with self._updateLock:
-            tid = threading.get_ident()
+            if not tid in self._updateCount:
+                self._updateList[tid] = {}
+                self._updateCount[tid] = 0
+
             self._updateList[tid][var.path] = var
+
+            if self._updateCount[tid] == 0:
+                self._updateQueue.put(self._updateList[tid])
+                self._updateList[tid] = {}
 
     # Worker thread
     def _updateWorker(self):

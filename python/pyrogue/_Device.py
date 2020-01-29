@@ -353,22 +353,22 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
+        #self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
 
-        with self.root.updateGroup():
+        #with self.root.updateGroup():
 
-            # Process local blocks
-            if variable is not None:
-                for b,v in self._getBlocks(variable).items():
-                    self._checkTransaction(b)
+        # Process local blocks
+        if variable is not None:
+            for b,v in self._getBlocks(variable).items():
+                self._checkTransaction(b)
 
-            else:
-                for block in self._blocks:
-                    self._checkTransaction(block)
+        else:
+            for block in self._blocks:
+                self._checkTransaction(block)
 
-                if recurse:
-                    for key,value in self.devices.items():
-                            value.checkBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                        value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Useful for committing any stale variables"""
