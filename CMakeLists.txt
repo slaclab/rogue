@@ -276,17 +276,28 @@ else()
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif()
 
-if(STATIC_LIB) 
-set(LINK_MODE STATIC)
-else()
-set(LINK_MODE SHARED)
-endif()
-
 # Create rogue core library
-add_library(rogue-core ${LINK_MODE} "")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_library(rogue-core OBJECT "")
 
 # Find rogue core sources
 add_subdirectory(src/rogue)
+
+if ( NOT STATIC_LIB AND NOT SHARED_LIB )
+    set (SHARED_LIB TRUE)
+endif()
+
+if(STATIC_LIB) 
+    add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
+    set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
+    set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
+endif()
+
+if(SHARED_LIB) 
+    add_library(rogue-core-shared SHARED $<TARGET_OBJECTS:rogue-core> "")
+    set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
+    set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
+endif()
 
 # Link rogue core to boost, python and bzip
 TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
@@ -366,7 +377,12 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 
 # Always install core libraries and config files
-install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+if (STATIC_LIB)
+install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+endif()
+if (SHARED_LIB)
+install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+endif()
 install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
@@ -451,6 +467,9 @@ message("")
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
 if (STATIC_LIB)
    message("-- Link static rogue library!")
+endif()
+if (SHARED_LIB)
+   message("-- Link dynamic rogue library!")
 endif()
 
 
