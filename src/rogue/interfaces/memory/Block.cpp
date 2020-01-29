@@ -283,20 +283,11 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
       waitTransaction(0);
       clearError();
 
-      // Only write if stale or forceWr is set
-      if ( type == rim::Write && ! forceWr ) {
-         doTran = false;
-         for (x=0; x < size_; x++) {
-            if ( stagedMask_[x] != 0 ) {
-               doTran = true;
-               break;
-            }
-         }
-         if ( ! doTran ) return;
-      }
-
       // Set default high bytes
       if ( highByte == -1 ) highByte = size_-1;
+
+      // Write only occur if stale or if forceWr is set
+      doTran = (forceWr || (type != rim::Write));
 
       // Move staged write data to block, clear stale
       if ( type == rim::Write || type == rim::Post ) {
@@ -308,6 +299,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
             if ( stagedMask_[x] != 0 ) {
                if ( x < lowByte  ) lowByte  = x;
                if ( x > highByte ) highByte = x;
+               doTran = true;
             }
 
             stagedData_[x] = 0;
@@ -316,7 +308,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
       }
 
       // Device is disabled
-      if ( ! enable_ ) return;
+      if ( ! (enable_ && doTran) ) return;
 
       bLog_->debug("Start transaction type = %i",type);
 
