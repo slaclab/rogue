@@ -25,6 +25,7 @@
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GeneralError.h>
 #include <memory>
+#include <stdarg.h>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <sys/time.h>
