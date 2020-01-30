@@ -312,7 +312,7 @@ class Device(pr.Node,rim.Hub):
         # Process local blocks.
         if variable is not None:
             for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Verify, False, checkEach, v[0], v[1])
+                b.startTransaction(rim.Verify, False, checkEach, 0, -1) # Verify range is set by previous write
 
         else:
             for block in self._blocks:

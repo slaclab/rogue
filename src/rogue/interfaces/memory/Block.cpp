@@ -69,7 +69,7 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    offset_     = offset;
    size_       = size;
    verifyEn_   = false;
-   verifyWr_   = false;
+   verifyReq_  = false;
    doUpdate_   = false;
    blockTrans_ = false;
    enable_     = false;
@@ -282,7 +282,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
    if ( (type == rim::Write  and (mode_ == "RO")) ||
         (type == rim::Post   and (mode_ == "RO")) ||
         (type == rim::Read   and (mode_ == "WO")) ||
-        (type == rim::Verify and (mode_ == "WO" || mode_ == "RO" || !verifyWr_ ) ) ) return;
+        (type == rim::Verify and (mode_ == "WO" || mode_ == "RO" || !verifyReq_ ) ) ) return;
 
    {
       rogue::GilRelease noGil;
@@ -293,16 +293,16 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
       // Set default high bytes
       if ( highByte == -1 ) highByte = size_-1;
 
-      // Write only occur if stale or if forceWr is set
+      // Write only occurs if stale or if forceWr is set
       doTran = (forceWr || (type != rim::Write));
 
-      // Move staged write data to block on writes
+      // Move staged write data to block on writes or post
       if ( type == rim::Write || type == rim::Post ) {
          for (x=0; x < size_; x++) {
             blockData_[x] &= (stagedMask_[x] ^ 0xFF);
             blockData_[x] |= (stagedData_[x] & stagedMask_[x]);
 
-            // Adjust range to stale data
+            // Adjust transaction range to stale data
             if ( stagedMask_[x] != 0 ) {
                if ( x < lowByte  ) lowByte  = x;
                if ( x > highByte ) highByte = x;
@@ -314,31 +314,38 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
       // Device is disabled
       if ( ! (enable_ && doTran) ) return;
 
-      // Clear the stale state for the range of the transaction
-      memset(stagedData_+lowByte,0,highByte-lowByte+1);
-      memset(stagedMask_+lowByte,0,highByte-lowByte+1);
-
       bLog_->debug("Start transaction type = %i",type);
 
-      // Track verify after writes. 
-      // Only verify blocks that have been written since last verify
-      if ( type == rim::Write ) verifyWr_ = verifyEn_;
-
-      // Derive offset and size based upon min transaction size
-      tOff  = std::floor(lowByte / reqMinAccess()) * reqMinAccess();
-      tSize = std::ceil((highByte-lowByte+1) / reqMinAccess()) * reqMinAccess();
-
-      // Setup transaction
+      // Setup verify data, clear verify write flag if verify transaction
       if ( type == rim::Verify) {
-         verifyBase_ = tOff;
-         verifySize_ = tSize;
-         tData = verifyData_ + tOff;
-      } else {
-         verifyBase_ = 0;
-         verifySize_ = 0;
-         tData = blockData_ + tOff;
+         tData = verifyData_ + verifyBase_;
+         tSize = verifySize_;
+         verifyReq_ = false;
       }
-      doUpdate_   = true;
+
+      // Not a verify transaction
+      else {
+
+         // Derive offset and size based upon min transaction size
+         tOff  = std::floor(lowByte / reqMinAccess()) * reqMinAccess();
+         tSize = std::ceil((highByte-lowByte+1) / reqMinAccess()) * reqMinAccess();
+
+         // Clear the stale state for the range of the transaction
+         memset(stagedData_+tOff,0,tSize);
+         memset(stagedMask_+tOff,0,tSize);
+
+         // Set transaction pointer
+         tData = blockData_ + tOff;
+
+         // Track verify after writes. 
+         // Only verify blocks that have been written since last verify
+         if ( type == rim::Write ) {
+            verifyBase_ = tOff;
+            verifySize_ = (verifyEn_)?tSize:0;
+            verifyReq_  = verifyEn_;
+         }
+      }
+      doUpdate_ = true;
 
       // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
@@ -372,8 +379,8 @@ void rim::Block::checkTransaction() {
       // Device is disabled
       if ( ! enable_ ) return;
 
-      if ( verifySize_ != 0 ) {
-         verifyWr_ = false;
+      // Check verify data if verify size is set and verifyReq is not set
+      if ( verifySize_ != 0 && ! verifyReq_ ) {
 
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
@@ -382,6 +389,7 @@ void rim::Block::checkTransaction() {
                   path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
             }
          }
+         verifySize_ = 0;
       }
 
       locUpdate = doUpdate_;

@@ -48,16 +48,16 @@ namespace rogue {
                // Bulk Enable
                bool bulkEn_;
 
-               // Verify Enable
+               // Persistant Block Verify Enable
                bool verifyEn_;
 
-               // Verify Write
-               bool verifyWr_;
+               // Verify Requred After Write
+               bool verifyRequired_;
 
-               // verifyBase
+               // verifyBase byte
                uint32_t verifyBase_;
 
-               // verifyTop
+               // verify Size
                uint32_t verifySize_;
 
                // Staged data
