@@ -52,7 +52,7 @@ namespace rogue {
                bool verifyEn_;
 
                // Verify Requred After Write
-               bool verifyRequired_;
+               bool verifyReq_;
 
                // verifyBase byte
                uint32_t verifyBase_;
