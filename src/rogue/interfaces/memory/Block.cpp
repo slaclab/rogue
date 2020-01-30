@@ -200,6 +200,7 @@ void rim::Block::set(boost::python::object var, boost::python::object value) {
 
    srcBit = 0;
    for (x=0; x < bv->count; x++) {
+      bLog_->debug("Setting data for %s. x=%i, BitOffset=%i, BitSize=%i",name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
       copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
       setBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]);
       srcBit += bv->bitSize[x];
@@ -229,10 +230,14 @@ void rim::Block::get(boost::python::object var, boost::python::object value) {
    dstBit = 0;
    for (x=0; x < bv->count; x++) {
 
-      if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) 
+      if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) {
          copyBits(data, dstBit, stagedData_, bv->bitOffset[x], bv->bitSize[x]);
-      else 
+         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
+      }
+      else {
          copyBits(data, dstBit, blockData_, bv->bitOffset[x], bv->bitSize[x]);
+         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
+      }
 
       dstBit += bv->bitSize[x];
    }
@@ -275,6 +280,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
    uint32_t  tOff;
    uint32_t  tSize;
    uint8_t * tData;
+   float     minA;
 
    if ( blockTrans_ ) return;
 
@@ -314,21 +320,23 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
       // Device is disabled
       if ( ! (enable_ && doTran) ) return;
 
-      bLog_->debug("Start transaction type = %i",type);
-
       // Setup verify data, clear verify write flag if verify transaction
       if ( type == rim::Verify) {
-         tData = verifyData_ + verifyBase_;
+         tOff  = verifyBase_;
          tSize = verifySize_;
+         tData = verifyData_ + verifyBase_;
          verifyReq_ = false;
       }
 
       // Not a verify transaction
       else {
 
+         // Get allows access sizes
+         minA = (float)reqMinAccess();
+
          // Derive offset and size based upon min transaction size
-         tOff  = std::floor(lowByte / reqMinAccess()) * reqMinAccess();
-         tSize = std::ceil((highByte-lowByte+1) / reqMinAccess()) * reqMinAccess();
+         tOff  = (int)std::floor((float)lowByte / minA) * minA;
+         tSize = (int)std::ceil((float)(highByte-lowByte+1) / minA) * minA;
 
          // Clear the stale state for the range of the transaction
          memset(stagedData_+tOff,0,tSize);
@@ -346,6 +354,8 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
          }
       }
       doUpdate_ = true;
+
+      bLog_->debug("Start transaction type = %i, Offset=0x%x, lByte=%i, hByte=%i, tOff=0x%x, tSize=%i",type,offset_,lowByte,highByte,tOff,tSize);
 
       // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
@@ -381,6 +391,7 @@ void rim::Block::checkTransaction() {
 
       // Check verify data if verify size is set and verifyReq is not set
       if ( verifySize_ != 0 && ! verifyReq_ ) {
+         bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
 
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
@@ -391,6 +402,7 @@ void rim::Block::checkTransaction() {
          }
          verifySize_ = 0;
       }
+      bLog_->debug("Transaction complete");
 
       locUpdate = doUpdate_;
       doUpdate_ = false;
