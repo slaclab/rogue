@@ -73,6 +73,7 @@ class RootLogHandler(logging.Handler):
 
                     msg += jsonpickle.encode(se) + ']'
                     self._root.SystemLog.set(msg)
+                    #print(f"Error: {msg}")
 
                 # Log to database
                 if self._root._sqlLog is not None:

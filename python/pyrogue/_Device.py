@@ -285,10 +285,8 @@ class Device(pr.Node,rim.Hub):
         self._log.debug(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
         checkEach = checkEach or self.forceCheckEach
 
-        # Process local blocks.
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Write, True, checkEach, v[0], v[1])
+            variable._block.startTransaction(rim.Write, True, checkEach, variable._lowByte, variable._highByte)
 
         else:
             for block in self._blocks:
@@ -307,10 +305,8 @@ class Device(pr.Node,rim.Hub):
 
         checkEach = checkEach or self.forceCheckEach
 
-        # Process local blocks.
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Verify, False, checkEach, 0, -1) # Verify range is set by previous write
+            variable._block.startTransaction(rim.Verify, False, checkEach, 0, -1) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
@@ -331,8 +327,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks. 
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Read, False, checkEach, v[0], v[1])
+            variable._block.startTransaction(rim.Read, False, checkEach, variable._lowByte, variable._highByte)
 
         else:
             for block in self._blocks:
@@ -351,8 +346,7 @@ class Device(pr.Node,rim.Hub):
 
         # Process local blocks
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                b.checkTransaction()
+            variable._block.checkTransaction()
 
         else:
             for block in self._blocks:
@@ -360,7 +354,7 @@ class Device(pr.Node,rim.Hub):
 
             if recurse:
                 for key,value in self.devices.items():
-                        value.checkBlocks(recurse=True)
+                    value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Useful for committing any stale variables"""
@@ -451,32 +445,6 @@ class Device(pr.Node,rim.Hub):
                 
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
-
-
-    def _getBlocks(self, variables):
-        """
-        Get a list of unique blocks from a list of Variables. 
-        The returned dictionary has the block as the key with each block associated
-        with a list. The first list item is the low byte associated with the variable list,
-        the second is the high byte associated with the variable list.
-        Variables must belong to this device!
-        """
-        if isinstance(variables, pr.BaseVariable):
-            return {variables._block: [variables._lowByte, variables._highByte]}
-
-        blocks = {}
-
-        for v in variables:
-            if v.parent is not self:
-                raise DeviceError(
-                    f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
-            if v._block not in blocks:
-                blocks[v._block] = [v._lowByte, v._highByte]
-            else:
-                if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
-                if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
-
-        return blocks
 
     def _buildBlocks(self):
         remVars = []
