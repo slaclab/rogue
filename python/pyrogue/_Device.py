@@ -325,7 +325,6 @@ class Device(pr.Node,rim.Hub):
 
         checkEach = checkEach or self.forceCheckEach
 
-        # Process local blocks. 
         if variable is not None:
             variable._block.startTransaction(rim.Read, False, checkEach, variable._lowByte, variable._highByte)
 
@@ -340,11 +339,10 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        #self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
+        self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
 
         #with self.root.updateGroup():
 
-        # Process local blocks
         if variable is not None:
             variable._block.checkTransaction()
 
