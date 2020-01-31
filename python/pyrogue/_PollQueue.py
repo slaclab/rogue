@@ -120,6 +120,8 @@ class PollQueue(object):
                 # Sleep until woken
                 with self._condLock:
                     self._condLock.wait()
+
+                continue
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
