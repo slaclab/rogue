@@ -431,8 +431,6 @@ void rim::Block::addVariables(bp::object variables) {
       vb->subCount  = len(vb->var.attr("_bitSize"));
       vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->subCount);
       vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->subCount);
-      vb->byteSize  = bp::extract<uint32_t>(vb->var.attr("_valBytes"));
-      vb->getBuffer = (uint8_t  *)malloc(vb->byteSize);
       vb->bitTotal  = 0;
 
       if ( x == 0 ) {
@@ -476,6 +474,9 @@ void rim::Block::addVariables(bp::object variables) {
             setBits(verifyMask_,vb->bitOffset[y],vb->bitSize[y]);
          }
       }
+
+      vb->byteSize  = (int)std::ceil((float)vb->bitTotal / 8.0);
+      vb->getBuffer = (uint8_t *)malloc(vb->byteSize);
    }
 
    // Init overlap enable before check
