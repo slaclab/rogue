@@ -166,7 +166,7 @@ void rim::Block::setBytes ( uint8_t *data, rim::BlockVariablePtr &bv ) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    srcBit = 0;
-   for (x=0; x < bv->count; x++) {
+   for (x=0; x < bv->subCount; x++) {
       copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
       setBits(stagedMask_,  bv->bitOffset[x], bv->bitSize[x]);
       srcBit += bv->bitSize[x];
@@ -208,7 +208,7 @@ void rim::Block::getBytes( uint8_t *data, rim::BlockVariablePtr &bv ) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    dstBit = 0;
-   for (x=0; x < bv->count; x++) {
+   for (x=0; x < bv->subCount; x++) {
 
       if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) {
          copyBits(data, dstBit, stagedData_, bv->bitOffset[x], bv->bitSize[x]);
@@ -428,11 +428,12 @@ void rim::Block::addVariables(bp::object variables) {
       overlapEn = bp::extract<bool>(vb->var.attr("_overlapEn"));
       verify    = bp::extract<bool>(vb->var.attr("_verify"));
 
-      vb->count     = len(vb->var.attr("_bitSize"));
-      vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
-      vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
-      vb->size      = bp::extract<uint32_t>(vb->var.attr("_valBytes"));
-      vb->getBuffer = (uint8_t  *)malloc(vb->size);
+      vb->subCount  = len(vb->var.attr("_bitSize"));
+      vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->subCount);
+      vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->subCount);
+      vb->byteSize  = bp::extract<uint32_t>(vb->var.attr("_valBytes"));
+      vb->getBuffer = (uint8_t  *)malloc(vb->byteSize);
+      vb->bitTotal  = 0;
 
       if ( x == 0 ) {
          path_ = std::string(bp::extract<char *>(vl[x].attr("_path")));
@@ -451,9 +452,10 @@ void rim::Block::addVariables(bp::object variables) {
       if ( mode_ != mode ) mode_ = "RW";
 
       // Update variable masks
-      for (y=0; y < vb->count; y++) {
+      for (y=0; y < vb->subCount; y++) {
          vb->bitOffset[y] = bp::extract<uint32_t>(vb->var.attr("_bitOffset")[y]);
          vb->bitSize[y]   = bp::extract<uint32_t>(vb->var.attr("_bitSize")[y]);
+         vb->bitTotal    += vb->bitSize[y];
 
          // Variable allows overlaps, add to overlap enable mask
          if ( overlapEn ) setBits(oleMask,vb->bitOffset[y],vb->bitSize[y]);

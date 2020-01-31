@@ -279,15 +279,21 @@ namespace rogue {
                boost::python::object var;
 
                std::string name;
+               //std::string pType;
+               //std::string cType;
 
-               uint32_t  size;
+               //bool bigEndian;
+               //bool isSigned;
+               //bool bitReverse;
+
+               uint32_t bitTotal;
+               uint32_t byteSize;
 
                uint8_t * getBuffer;
 
-               uint32_t count;
+               uint32_t subCount;
 
                uint32_t * bitOffset;
-
                uint32_t * bitSize;
          };
 
