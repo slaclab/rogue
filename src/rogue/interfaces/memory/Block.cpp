@@ -175,14 +175,17 @@ void rim::Block::setBytes ( uint8_t *data, rim::BlockVariablePtr &bv ) {
 
 // Set data from python byte array to internal staged memory
 void rim::Block::setByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
-   Py_buffer valueBuf;
+   //Py_buffer valueBuf;
 
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
+   //if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      //throw(rogue::GeneralError("Block::set","Python Buffer Error"));
 
-   setBytes((uint8_t *)valueBuf.buf,bv);
+   uint32_t tmp = bp::extract<uint32_t>(value);
+   setBytes((uint8_t *)&tmp,bv);
 
-   PyBuffer_Release(&valueBuf);
+   //setBytes((uint8_t *)valueBuf.buf,bv);
+
+   //PyBuffer_Release(&valueBuf);
 }
 
 // Set value from RemoteVariable

@@ -620,8 +620,9 @@ class RemoteVariable(BaseVariable):
         try:
 
             # Set value to block
-            ba = self._base.toBytes(value)
-            self._block.set(self, ba)
+            #ba = self._base.toBytes(value)
+            #self._block.set(self, ba)
+            self._block.set(self, value)
 
             if write:
                 self._parent.writeBlocks(force=True, recurse=False, variable=self)
