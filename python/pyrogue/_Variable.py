@@ -686,19 +686,6 @@ class RemoteVariable(BaseVariable):
         except Exception as e:
             pr.logException(self._log,e)
 
-    def _setDefault(self):
-        if self._default is not None:
-            try:
-
-                # Set value to block
-                value = self.parseDisp(self._default)
-                ba = self._base.toBytes(value)
-                self._block.setDefault(self, ba)
-
-            except Exception as e:
-                pr.logException(self._log,e)
-                self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
-
     @pr.expose
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):

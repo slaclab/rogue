@@ -47,13 +47,11 @@ void rim::Block::setup_python() {
        .add_property("address",   &rim::Block::address)
        .add_property("size",      &rim::Block::size)
        .add_property("memBaseId", &rim::Block::memBaseId)
-       .def("forceStale",         &rim::Block::forceStale)
        .def("setEnable",          &rim::Block::setEnable)
        .def("set",                &rim::Block::set)
        .def("get",                &rim::Block::get)
        .def("startTransaction",   &rim::Block::startTransaction)
        .def("checkTransaction",   &rim::Block::checkTransaction)
-       .def("setDefault",         &rim::Block::setDefault)
        .def("addVariables",       &rim::Block::addVariables)
        .add_property("variables", &rim::Block::variables)
    ;
@@ -131,25 +129,6 @@ bool rim::Block::overlapEn() {
    return overlapEn_;
 }
 
-// Force the block to be stale
-void rim::Block::forceStale() {
-   uint32_t x;
-
-   if ( blockTrans_ ) return;
-
-   rogue::GilRelease noGil;
-   std::lock_guard<std::mutex> lock(mtx_);
-
-   for (x=0; x < size_; x++) {
-
-      // Copy only the unstale bits from the block
-      stagedData_[x] &= stagedMask_[x];
-      stagedData_[x] |= (blockData_[x] & (stagedMask_[x] ^ 0xFF));
-      
-      stagedMask_[x] = 0xFF;
-   }
-}
-
 // Set enable state
 void rim::Block::setEnable(bool newState) {
    rogue::GilRelease noGil;
@@ -177,52 +156,49 @@ uint32_t rim::Block::memBaseId() {
    return(reqSlaveId());
 }
 
-// Set value from RemoteVariable
-void rim::Block::set(boost::python::object var, boost::python::object value) {
-   Py_buffer valueBuf;
-   uint8_t * data;
-   uint32_t  srcBit;
-   uint32_t  x;
-
-   if ( blockTrans_ ) return;
-
-   std::string name = bp::extract<std::string>(var.attr("name"));
-
-   rim::BlockVariablePtr bv = blockVars_[name];
-
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
-
-   data = (uint8_t *)valueBuf.buf;
+// Set data from pointer to internal staged memory
+void rim::Block::setBytes ( uint8_t *data, rim::BlockVariablePtr &bv ) {
+   uint32_t srcBit;
+   uint32_t x;
 
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
 
    srcBit = 0;
    for (x=0; x < bv->count; x++) {
-      bLog_->debug("Setting data for %s. x=%i, BitOffset=%i, BitSize=%i",name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
       copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
-      setBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]);
+      setBits(stagedMask_,  bv->bitOffset[x], bv->bitSize[x]);
       srcBit += bv->bitSize[x];
    }
 }
 
-// Get value from RemoteVariable
-void rim::Block::get(boost::python::object var, boost::python::object value) {
+// Set data from python byte array to internal staged memory
+void rim::Block::setByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
    Py_buffer valueBuf;
-   uint8_t * data;
-   uint32_t  dstBit;
-   uint32_t  x;
-   uint32_t  y;
+
+   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
+
+   setBytes((uint8_t *)valueBuf.buf,bv);
+
+   PyBuffer_Release(&valueBuf);
+}
+
+// Set value from RemoteVariable
+void rim::Block::set(bp::object var, bp::object value) {
+   if ( blockTrans_ ) return;
 
    std::string name = bp::extract<std::string>(var.attr("name"));
 
    rim::BlockVariablePtr bv = blockVars_[name];
 
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
+   setByteArray(value,bv);
+}
 
-   data = (uint8_t *)valueBuf.buf;
+// Get data to pointer from internal block or staged memory
+void rim::Block::getBytes( uint8_t *data, rim::BlockVariablePtr &bv ) {
+   uint32_t  dstBit;
+   uint32_t  x;
 
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
@@ -232,45 +208,35 @@ void rim::Block::get(boost::python::object var, boost::python::object value) {
 
       if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) {
          copyBits(data, dstBit, stagedData_, bv->bitOffset[x], bv->bitSize[x]);
-         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
+         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",bv->name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
       }
       else {
          copyBits(data, dstBit, blockData_, bv->bitOffset[x], bv->bitSize[x]);
-         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
+         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",bv->name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
       }
 
       dstBit += bv->bitSize[x];
    }
 }
 
-// Set default value
-void rim::Block::setDefault(boost::python::object var, boost::python::object value) {
+// Get data to python byte array from internal block or staged memory
+void rim::Block::getByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
    Py_buffer valueBuf;
-   uint8_t * data;
-   uint32_t  srcBit;
-   uint32_t  x;
-
-   if ( blockTrans_ ) return;
-
-   std::string name = bp::extract<std::string>(var.attr("name"));
-
-   rim::BlockVariablePtr bv = blockVars_[name];
 
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Block::set","Python Buffer Error"));
 
-   data = (uint8_t *)valueBuf.buf;
+   getBytes((uint8_t *)valueBuf.buf, bv);
+   PyBuffer_Release(&valueBuf);
+}
 
-   rogue::GilRelease noGil;
-   std::lock_guard<std::mutex> lock(mtx_);
+// Get value from RemoteVariable
+void rim::Block::get(bp::object var, bp::object value) {
 
-   srcBit = 0;
-   for (x=0; x < bv->count; x++) {
-      copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
-      setBits(stagedMask_,  bv->bitOffset[x], bv->bitSize[x]);
-      copyBits(blockData_,  bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
-      srcBit += bv->bitSize[x];
-   }
+   std::string name = bp::extract<std::string>(var.attr("name"));
+   rim::BlockVariablePtr bv = blockVars_[name];
+
+   getByteArray(value, bv);
 }
 
 // Start a transaction for this block
@@ -315,6 +281,10 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
                doTran = true;
             }
          }
+
+         // Clear the stale state for the range of the transaction
+         memset(stagedData_,0,size_);
+         memset(stagedMask_,0,size_);
       }
 
       // Device is disabled
@@ -337,10 +307,6 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
          // Derive offset and size based upon min transaction size
          tOff  = (int)std::floor((float)lowByte / minA) * minA;
          tSize = (int)std::ceil((float)(highByte-lowByte+1) / minA) * minA;
-
-         // Clear the stale state for the range of the transaction
-         memset(stagedData_+tOff,0,tSize);
-         memset(stagedMask_+tOff,0,tSize);
 
          // Set transaction pointer
          tData = blockData_ + tOff;
@@ -423,7 +389,7 @@ void rim::Block::varUpdate() {
 }
 
 // Add variables to block
-void rim::Block::addVariables(boost::python::object variables) {
+void rim::Block::addVariables(bp::object variables) {
    char tmpBuff[100];
 
    uint32_t x;
@@ -432,7 +398,6 @@ void rim::Block::addVariables(boost::python::object variables) {
    uint8_t excMask[size_];
    uint8_t oleMask[size_];
 
-   std::string name;
    std::string mode;
    bool bulkEn;
    bool overlapEn;
@@ -451,7 +416,7 @@ void rim::Block::addVariables(boost::python::object variables) {
 
       vb->var = vl[x];
 
-      name      = std::string(bp::extract<char *>(vb->var.attr("_name")));
+      vb->name  = std::string(bp::extract<char *>(vb->var.attr("_name")));
       mode      = std::string(bp::extract<char *>(vb->var.attr("_mode")));
       bulkEn    = bp::extract<bool>(vb->var.attr("_bulkEn"));
       overlapEn = bp::extract<bool>(vb->var.attr("_overlapEn"));
@@ -461,7 +426,7 @@ void rim::Block::addVariables(boost::python::object variables) {
       vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
       vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
 
-      blockVars_[name] = vb;
+      blockVars_[vb->name] = vb;
 
       if ( x == 0 ) {
          path_ = std::string(bp::extract<char *>(vl[x].attr("_path")));
@@ -472,7 +437,7 @@ void rim::Block::addVariables(boost::python::object variables) {
 
       if ( bulkEn ) bulkEn_ = true;
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",name.c_str(),path_.c_str(),offset_);
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
 
       // If variable modes mismatch, set block to read/write
       if ( mode_ != mode ) mode_ = "RW";
@@ -515,9 +480,6 @@ void rim::Block::addVariables(boost::python::object variables) {
 
       if ( excMask[x] != 0 ) overlapEn_ = false;
    }
-
-   // Force block to be stale
-   forceStale();
 }
 
 //! Return a list of variables in the block

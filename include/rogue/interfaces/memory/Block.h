@@ -36,6 +36,8 @@ namespace rogue {
          //! Memory interface Block device
          class Block : public Master {
 
+            protected:
+
                // Mutex
                std::mutex mtx_;
 
@@ -102,6 +104,21 @@ namespace rogue {
                // Enable flag
                bool enable_;
 
+               // Call variable update for all variables
+               void varUpdate();
+
+               // Set data from pointer to internal staged memory
+               void setBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Set data from python byte array to internal staged memory
+               void setByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Get data to pointer from internal block or staged memory
+               void getBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Get data to python byte array from internal block or staged memory
+               void getByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
             public:
 
                //! Class factory which returns a pointer to a Block (BlockPtr)
@@ -155,13 +172,6 @@ namespace rogue {
                 * @return overlap enable flag
                 */
                bool overlapEn();
-
-               //! Force stale state
-               /** Force the stale state
-                *
-                * Exposed as forceStale() method to Python
-                */
-               void forceStale();
 
                //! Set enable state
                /** Set the enable state
@@ -243,23 +253,6 @@ namespace rogue {
                 */
                void checkTransaction();
 
-               //! Set default value
-               /** Set the default value and apply it to both shadow and staged memory
-                *
-                * Exposed as setDefault() method to Python
-                *
-                * @param var     Variable object to apply default to
-                * @param value   Byte array containing default value
-                */
-               void setDefault(boost::python::object var, boost::python::object value);
-
-               //! Call variable update for all variables
-               /** Add the passed list of variables to this block
-                *
-                * Not exposed to python
-                */
-               void varUpdate();
-
                //! Add variables to block
                /** Add the passed list of variables to this block
                 *
@@ -275,7 +268,6 @@ namespace rogue {
                 * Exposed as variables property to Python
                 */
                boost::python::object variables();
-
          };
 
          //! Alias for using shared pointer as BlockPtr
@@ -285,6 +277,8 @@ namespace rogue {
             public:
 
                boost::python::object var;
+
+               std::string name;
 
                uint32_t count;
 
