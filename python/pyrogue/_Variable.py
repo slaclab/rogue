@@ -662,14 +662,13 @@ class RemoteVariable(BaseVariable):
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            ba = bytearray(self._valBytes)
-            self._block.get(self,ba)
-            ret = self._base.fromBytes(ba)
+            #ret = self._base.fromBytes(self._block.get(self))
+            return self._block.get(self)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
-            ret = None
+            return None
 
         return ret
 

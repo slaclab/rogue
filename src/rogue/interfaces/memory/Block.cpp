@@ -99,6 +99,7 @@ rim::Block::~Block() {
    for ( vit = blockVars_.begin(); vit != blockVars_.end(); ++vit ) {
       free(vit->second->bitOffset);
       free(vit->second->bitSize);
+      free(vit->second->getBuffer);
    }
    blockVars_.clear();
 
@@ -220,23 +221,25 @@ void rim::Block::getBytes( uint8_t *data, rim::BlockVariablePtr &bv ) {
 }
 
 // Get data to python byte array from internal block or staged memory
-void rim::Block::getByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
-   Py_buffer valueBuf;
+bp::object rim::Block::getByteArray ( rim::BlockVariablePtr &bv ) {
+   uint32_t value;
 
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
-
-   getBytes((uint8_t *)valueBuf.buf, bv);
-   PyBuffer_Release(&valueBuf);
+   getBytes((uint8_t *)&value,bv);
+   //getBytes(bv->getBuffer, bv);
+   //PyObject *val = Py_BuildValue("y#",bv->getBuffer,bv->size);
+   PyObject *val = Py_BuildValue("i",value);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
 }
 
 // Get value from RemoteVariable
-void rim::Block::get(bp::object var, bp::object value) {
+bp::object rim::Block::get(bp::object var) {
 
    std::string name = bp::extract<std::string>(var.attr("name"));
    rim::BlockVariablePtr bv = blockVars_[name];
 
-   getByteArray(value, bv);
+   return getByteArray(bv);
 }
 
 // Start a transaction for this block
@@ -425,8 +428,8 @@ void rim::Block::addVariables(bp::object variables) {
       vb->count     = len(vb->var.attr("_bitSize"));
       vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
       vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
-
-      blockVars_[vb->name] = vb;
+      vb->size      = bp::extract<uint32_t>(vb->var.attr("_valBytes"));
+      vb->getBuffer = (uint8_t  *)malloc(vb->size);
 
       if ( x == 0 ) {
          path_ = std::string(bp::extract<char *>(vl[x].attr("_path")));
@@ -434,6 +437,8 @@ void rim::Block::addVariables(bp::object variables) {
          bLog_ = rogue::Logging::create(logName.c_str());
          mode_ = mode;
       }
+
+      blockVars_[vb->name] = vb;
 
       if ( bulkEn ) bulkEn_ = true;
 
@@ -465,7 +470,7 @@ void rim::Block::addVariables(bp::object variables) {
             verifyEn_ = true;
             setBits(verifyMask_,vb->bitOffset[y],vb->bitSize[y]);
          }
-      } 
+      }
    }
 
    // Init overlap enable before check

@@ -117,7 +117,7 @@ namespace rogue {
                void getBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
                // Get data to python byte array from internal block or staged memory
-               void getByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+               boost::python::object getByteArray (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
             public:
 
@@ -231,7 +231,7 @@ namespace rogue {
                 * @param var     Variable object this transaction is associated with
                 * @param value   Byte array to copy data into
                 */
-               void get(boost::python::object var, boost::python::object value);
+               boost::python::object get(boost::python::object var);
 
                //! Start a transaction for this block
                /** Start a transaction with the passed type and access range
@@ -279,6 +279,10 @@ namespace rogue {
                boost::python::object var;
 
                std::string name;
+
+               uint32_t  size;
+
+               uint8_t * getBuffer;
 
                uint32_t count;
 
