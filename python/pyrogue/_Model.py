@@ -85,15 +85,6 @@ class UInt(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
 
-    def toBytes(self, value):
-        if type(value) != self.pytype or self.bitSize < value.bit_length():
-            raise Exception("Base type mismatch!")
-
-        return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
-
-    def fromBytes(self, ba):
-        return int.from_bytes(ba, self.endianness, signed=self.signed)
-
     def fromString(self, string):
         return int(string, 0)
 
@@ -101,6 +92,7 @@ class UInt(Model):
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
     reverseBits = True
+    blockFunc   = rim.PyFunc # Not yet supported
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
@@ -115,30 +107,7 @@ class Int(UInt):
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
     signed      = True
-
-    def toBytes(self, value):
-        if type(value) != self.pytype or self.bitSize < value.bit_length():
-            raise Exception("Base type mismatch!")
-
-        if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
-            newValue = value & (2**(self.bitSize)-1) # Strip upper bits
-            ba = newValue.to_bytes(byteCount(self.bitSize), self.endianness, signed=False)
-        else:
-            ba = value.to_bytes(byteCount(self.bitSize), self.endianness, signed=True)
-
-        return ba
-
-    def fromBytes(self,ba):
-        if (self.bitSize < (byteCount(self.bitSize)*8)):
-            value = int.from_bytes(ba, self.endianness, signed=False)
-
-            if value >= 2**(self.bitSize-1):
-                value -= 2**self.bitSize
-
-        else:
-            value = int.from_bytes(ba, self.endianness, signed=True)
-
-        return value
+    blockFunc   = rim.UInt
 
     def fromString(self, string):
         i = int(string, 0)
@@ -156,6 +125,7 @@ class IntBE(Int):
 class Bool(Model):
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
+    blockFunc   = rim.Bool
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -183,18 +153,6 @@ class String(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'      
 
-    def toBytes(self, value):
-        if type(val) != self.pytype or self.bitSize < (len(value) * 8):
-            raise Exception("Base type mismatch!")
-
-        ba = bytearray(value, self.encoding)
-        ba.extend(bytearray(1))
-        return ba
-
-    def fromBytes(self, ba):
-        s = ba.rstrip(bytearray(1))
-        return s.decode(self.encoding)
-
     def fromString(self, string):
         return string
 
@@ -205,20 +163,12 @@ class Float(Model):
     defaultdisp = '{:f}'
     pytype      = float
     fstring     = 'f'
+    blockFunc   = rim.Float
 
     def __init__(self, bitSize):
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
-
-    def toBytes(self, value):
-        if type(value) != self.pytype:
-            raise Exception("Base type error!")
-
-        return bytearray(struct.pack(self.fstring, value))
-
-    def fromBytes(self, ba):
-        return struct.unpack(self.fstring, ba)
 
     def fromString(self, string):
         return float(string)
@@ -226,6 +176,7 @@ class Float(Model):
 
 class Double(Float):
     fstring = 'd'
+    blockFunc = rim.Double
 
     def __init__(self, bitSize):
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
@@ -233,38 +184,20 @@ class Double(Float):
         self.name = f'{self.__class__.__name__}{self.bitSize}'
 
 class FloatBE(Float):
+    endianness = 'big'
     fstring = '!f'
 
 class DoubleBE(Double):
+    endianness = 'big'
     fstring = '!d'
 
 class Fixed(Model):
     pytype = float
     signed = True
+    blockFunc = rim.Fixed
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
 
-        # Pre-compute max and min allowable values
-        if signed:
-            self.maxValue = math.pow(2, (bitSize-binPoint))/2-1
-            self.minValue = -1.0 * self.maxValue + 1
-            sign = 'S'
-        else:
-            self.maxValue = math.pow(2,(bitSize-binPoint))-1
-            self.minValue = 0.0
-            sign = 'U'
-            
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
-
-    def toBytes(self, value):
-        if type(value) != self.pytype or value > self.maxValue or value < self.minValue:
-            raise Exception("Base type error!")
-
-        i = int(round(value * math.pow(2, self.binPoint)))
-        return i.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
-
-    def fromBytes(self, ba):
-        i = int.from_bytes(ba, self.endianness, signed=self.signed)
-        return i * math.pow(2, -1*self.binPoint)
 

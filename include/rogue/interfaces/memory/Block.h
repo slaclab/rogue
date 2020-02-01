@@ -378,12 +378,13 @@ namespace rogue {
                uint32_t bitTotal;
                uint32_t byteSize;
 
-               uint8_t * getBuffer;
-
                uint32_t subCount;
 
                uint32_t * bitOffset;
                uint32_t * bitSize;
+
+               double minValue;
+               double maxValue;
          };
 
          typedef std::shared_ptr<rogue::interfaces::memory::BlockVariable> BlockVariablePtr;
