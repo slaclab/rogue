@@ -388,9 +388,6 @@ void rim::Block::addVariables(bp::object variables) {
       vb->byteSize  = (int)std::ceil((float)vb->bitTotal / 8.0);
       vb->getBuffer = (uint8_t *)malloc(vb->byteSize);
 
-      if ( vb->bitTotal < 64 ) vb->bitMask = (((uint64_t)1 << vb->bitTotal) - 1);
-      else vb->bitMask = 0xFFFFFFFFFFFFFFFF;
-
       // Extract model values
       vb->func        = bp::extract<uint8_t>(vb->var.attr("_base").attr("blockFunc"));
       vb->bitReverse  = bp::extract<bool>(vb->var.attr("_base").attr("reverseBits"));
