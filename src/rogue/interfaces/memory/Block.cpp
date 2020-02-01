@@ -388,6 +388,9 @@ void rim::Block::addVariables(bp::object variables) {
       vb->byteSize  = (int)std::ceil((float)vb->bitTotal / 8.0);
       vb->getBuffer = (uint8_t *)malloc(vb->byteSize);
 
+      if ( vb->bitTotal < 64 ) vb->bitMask = (((uint64_t)1 << vb->bitTotal) - 1);
+      else vb->bitMask = 0xFFFFFFFFFFFFFFFF;
+
       // Extract model values
       vb->func        = bp::extract<uint8_t>(vb->var.attr("_base").attr("blockFunc"));
       vb->bitReverse  = bp::extract<bool>(vb->var.attr("_base").attr("reverseBits"));
@@ -598,6 +601,9 @@ bp::object rim::Block::getByteArray ( rim::BlockVariablePtr &bv ) {
 // Set data using unsigned int
 void rim::Block::setUInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
    uint64_t tmp = bp::extract<uint64_t>(value);
+
+   if ( bv->bitTotal != 64 ) tmp &= bv->bitMask;
+
    setBytes((uint8_t *)&tmp,bv);
 }
 
@@ -606,6 +612,8 @@ bp::object rim::Block::getUInt ( rim::BlockVariablePtr &bv ) {
    uint64_t tmp;
 
    getBytes((uint8_t *)&tmp,bv);
+
+   if ( bv->bitTotal != 64 ) tmp &= bv->bitMask;
 
    PyObject *val = Py_BuildValue("l",tmp);
    bp::object ret(bp::handle<>(val));
@@ -620,7 +628,7 @@ void rim::Block::setInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
    int64_t tmp = bp::extract<int64_t>(value);
 
    // Strip upper bits
-   if ( bv->bitTotal != 64 ) tmp &= ((2^bv->bitTotal)-1);
+   if ( bv->bitTotal != 64 ) tmp &= bv->bitMask;
 
    setBytes((uint8_t *)&tmp,bv);
 }
@@ -632,7 +640,7 @@ bp::object rim::Block::getInt ( rim::BlockVariablePtr &bv ) {
    getBytes((uint8_t *)&tmp,bv);
 
    if ( bv->bitTotal != 64 ) {
-      if ( tmp >= 2^(bv->bitTotal-1) ) tmp -= 2^bv->bitTotal;
+      if ( tmp >= (uint64_t)pow(2,bv->bitTotal-1)) tmp -= (uint64_t)pow(2,bv->bitTotal);
    }
 
    PyObject *val = Py_BuildValue("l",tmp);
@@ -675,7 +683,7 @@ void rim::Block::setString ( bp::object &value, rim::BlockVariablePtr &bv ) {
 bp::object rim::Block::getString ( rim::BlockVariablePtr &bv ) {
    getBytes(bv->getBuffer, bv);
 
-   PyObject *val = Py_BuildValue("y#",bv->getBuffer,bv->byteSize);
+   PyObject *val = Py_BuildValue("s#",bv->getBuffer,bv->byteSize);
    bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);

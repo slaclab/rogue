@@ -376,6 +376,7 @@ namespace rogue {
 
                uint32_t binPoint;
                uint32_t bitTotal;
+               uint64_t bitMask;
                uint32_t byteSize;
 
                uint8_t * getBuffer;

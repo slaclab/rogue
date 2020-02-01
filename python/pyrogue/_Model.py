@@ -79,6 +79,7 @@ class Model(object, metaclass=ModelMeta):
 class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
+    blockFunc   = rim.UInt
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -176,6 +177,7 @@ class String(Model):
     encoding    = 'utf-8'
     defaultdisp = '{}'
     pytype      = str
+    blockFunc   = rim.String
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
