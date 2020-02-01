@@ -668,8 +668,6 @@ class RemoteVariable(BaseVariable):
             self._log.error("Error reading value from variable '{}'".format(self.path))
             return None
 
-        return ret
-
     @pr.expose
     def write(self):
         """
