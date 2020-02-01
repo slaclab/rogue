@@ -56,21 +56,27 @@ class ModelMeta(type):
 
 
 class Model(object, metaclass=ModelMeta):
-
-    pytype = None
+    fstring     = None
+    encoding    = None
+    pytype      = None
     defaultdisp = '{}'    
+    reverseBits = False
+    signed      = False
+    endianess   = 'little'
+    blockFunc   = rim.PyFunc
 
-    def __init__(self, bitSize):
-        self.bitSize = bitSize
-        self.name = self.__class__.__name__        
-        
+    def __init__(self, bitSize, binPoint=0):
+        self.binPoint = binPoint
+        self.bitSize  = bitSize
+        self.name     = self.__class__.__name__
+
+    @property
+    def isBigEndian(self):
+        return self.endianess == 'big'
 
 class UInt(Model):
-
+    pytype      = int
     defaultdisp = '{:#x}'
-    pytype = int
-    signed = False
-    endianness = 'little'
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -91,6 +97,7 @@ class UInt(Model):
 
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+    reverseBits = True
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
@@ -104,7 +111,7 @@ class Int(UInt):
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
-    signed = True
+    signed      = True
 
     def toBytes(self, value):
         if type(value) != self.pytype or self.bitSize < value.bit_length():
@@ -144,9 +151,8 @@ class IntBE(Int):
     endianness = 'big'
 
 class Bool(Model):
-    
+    pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
-    pytype = bool
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -165,10 +171,9 @@ class Bool(Model):
 
     
 class String(Model):
-
-    encoding = 'utf-8'
+    encoding    = 'utf-8'
     defaultdisp = '{}'
-    pytype = str
+    pytype      = str
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -194,12 +199,12 @@ class Float(Model):
     """Converter for 32-bit float"""
 
     defaultdisp = '{:f}'
-    pytype = float
-    fstring = 'f'
-    bitSize = 32
+    pytype      = float
+    fstring     = 'f'
 
     def __init__(self, bitSize):
-        assert bitSize == self.__class__.bitSize, f"The bitSize param of Model {self.__class__.__name__} must be {self.__class__.bitSize}"
+        assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
+        super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
 
     def toBytes(self, value):
@@ -217,7 +222,11 @@ class Float(Model):
 
 class Double(Float):
     fstring = 'd'
-    bitSize = 64
+
+    def __init__(self, bitSize):
+        assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
+        super().__init__(bitSize)
+        self.name = f'{self.__class__.__name__}{self.bitSize}'
 
 class FloatBE(Float):
     fstring = '!f'
@@ -226,14 +235,11 @@ class DoubleBE(Double):
     fstring = '!d'
 
 class Fixed(Model):
-
     pytype = float
+    signed = True
 
-    def __init__(self, bitSize, binPoint, signed=False, endianness='little'):
-        self.bitSize = bitSize
-        self.binPoint = binPoint
-        self.signed = signed
-        self.endianness = endianness
+    def __init__(self, bitSize, binPoint):
+        super().__init__(bitSize,binPoint)
 
         # Pre-compute max and min allowable values
         if signed:

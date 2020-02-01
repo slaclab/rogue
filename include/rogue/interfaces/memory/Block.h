@@ -369,7 +369,7 @@ namespace rogue {
 
                std::string name;
 
-               uint8_t model;
+               uint8_t func;
 
                bool bitReverse;
                bool byteReverse;

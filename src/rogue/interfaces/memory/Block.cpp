@@ -356,8 +356,6 @@ void rim::Block::addVariables(bp::object variables) {
 
       if ( bulkEn ) bulkEn_ = true;
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
-
       // If variable modes mismatch, set block to read/write
       if ( mode_ != mode ) mode_ = "RW";
 
@@ -389,6 +387,14 @@ void rim::Block::addVariables(bp::object variables) {
 
       vb->byteSize  = (int)std::ceil((float)vb->bitTotal / 8.0);
       vb->getBuffer = (uint8_t *)malloc(vb->byteSize);
+
+      // Extract model values
+      vb->func        = bp::extract<uint8_t>(vb->var.attr("_base").attr("blockFunc"));
+      vb->bitReverse  = bp::extract<bool>(vb->var.attr("_base").attr("reverseBits"));
+      vb->byteReverse = bp::extract<bool>(vb->var.attr("_base").attr("isBigEndian"));
+      vb->binPoint    = bp::extract<uint32_t>(vb->var.attr("_base").attr("binPoint"));
+
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
    }
 
    // Init overlap enable before check
@@ -498,7 +504,7 @@ void rim::Block::set(bp::object var, bp::object value) {
 
    rim::BlockVariablePtr bv = blockVars_[name];
 
-   switch (bv->model) {
+   switch (bv->func) {
       case rim::PyFunc : setPyFunc(value,bv);    break;
       case rim::Bytes  : setByteArray(value,bv); break;
       case rim::UInt   : setUInt(value,bv);      break;
@@ -517,7 +523,7 @@ bp::object rim::Block::get(bp::object var) {
    std::string name = bp::extract<std::string>(var.attr("name"));
    rim::BlockVariablePtr bv = blockVars_[name];
 
-   switch (bv->model) {
+   switch (bv->func) {
       case rim::PyFunc : return getPyFunc(bv);    break;
       case rim::Bytes  : return getByteArray(bv); break;
       case rim::UInt   : return getUInt(bv);      break;
