@@ -17,6 +17,8 @@ import pyrogue as pr
 import struct
 import math
 
+import rogue.interfaces.memory as rim
+
 def wordCount(bits, wordSize):
     ret = bits // wordSize
     if (bits % wordSize != 0 or bits == 0):
@@ -62,7 +64,7 @@ class Model(object, metaclass=ModelMeta):
     defaultdisp = '{}'    
     reverseBits = False
     signed      = False
-    endianess   = 'little'
+    endianness  = 'little'
     blockFunc   = rim.PyFunc
 
     def __init__(self, bitSize, binPoint=0):
@@ -72,7 +74,7 @@ class Model(object, metaclass=ModelMeta):
 
     @property
     def isBigEndian(self):
-        return self.endianess == 'big'
+        return self.endianness == 'big'
 
 class UInt(Model):
     pytype      = int

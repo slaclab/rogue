@@ -501,6 +501,7 @@ void rim::Block::set(bp::object var, bp::object value) {
    if ( blockTrans_ ) return;
 
    std::string name = bp::extract<std::string>(var.attr("name"));
+   bLog_->debug("Set called for variable %s.",name.c_str());
 
    rim::BlockVariablePtr bv = blockVars_[name];
 
@@ -521,6 +522,8 @@ void rim::Block::set(bp::object var, bp::object value) {
 bp::object rim::Block::get(bp::object var) {
 
    std::string name = bp::extract<std::string>(var.attr("name"));
+   bLog_->debug("Get called for variable %s.",name.c_str());
+
    rim::BlockVariablePtr bv = blockVars_[name];
 
    switch (bv->func) {
@@ -562,7 +565,6 @@ bp::object rim::Block::getPyFunc ( rim::BlockVariablePtr &bv ) {
 
    bp::object ret = bv->var.attr("_base").attr("fromBytes")(bp::object(handle));
 
-   delete val;
    return ret;
 }
 
