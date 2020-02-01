@@ -602,18 +602,14 @@ bp::object rim::Block::getByteArray ( rim::BlockVariablePtr &bv ) {
 void rim::Block::setUInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
    uint64_t tmp = bp::extract<uint64_t>(value);
 
-   if ( bv->bitTotal != 64 ) tmp &= bv->bitMask;
-
    setBytes((uint8_t *)&tmp,bv);
 }
 
 // Get data using unsigned int
 bp::object rim::Block::getUInt ( rim::BlockVariablePtr &bv ) {
-   uint64_t tmp;
+   uint64_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,bv);
-
-   if ( bv->bitTotal != 64 ) tmp &= bv->bitMask;
 
    PyObject *val = Py_BuildValue("l",tmp);
    bp::object ret(bp::handle<>(val));
@@ -621,21 +617,18 @@ bp::object rim::Block::getUInt ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
-// Unsigned Int
+// Signed Int
 
 // Set data using int
 void rim::Block::setInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
    int64_t tmp = bp::extract<int64_t>(value);
-
-   // Strip upper bits
-   if ( bv->bitTotal != 64 ) tmp &= bv->bitMask;
 
    setBytes((uint8_t *)&tmp,bv);
 }
 
 // Get data using int
 bp::object rim::Block::getInt ( rim::BlockVariablePtr &bv ) {
-   int64_t tmp;
+   int64_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,bv);
 
