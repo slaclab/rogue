@@ -283,20 +283,6 @@ add_library(rogue-core OBJECT "")
 # Find rogue core sources
 add_subdirectory(src/rogue)
 
-if(STATIC_LIB) 
-    add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
-    set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
-    set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
-
-    # Link rogue core to boost, python and bzip
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
-endif()
-
 # Always build shared library
 add_library(rogue-core-shared SHARED $<TARGET_OBJECTS:rogue-core> "")
 set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
@@ -315,6 +301,20 @@ if (APPLE)
 else()
    TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${PYTHON_LIBRARIES})
    TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
+endif()
+
+if(STATIC_LIB) 
+    add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
+    set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
+    set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
+
+    # Link rogue core to boost, python and bzip
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
 endif()
 
 #####################################
@@ -350,7 +350,7 @@ set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES LINK_PUBLIC rogue-core-shared)
+   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
 else()
    if (APPLE)
       set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
@@ -379,7 +379,7 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 
 # Always install core libraries and config files
 if (STATIC_LIB)
-install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+   install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 endif()
 
 install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
