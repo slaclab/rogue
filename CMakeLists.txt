@@ -283,38 +283,39 @@ add_library(rogue-core OBJECT "")
 # Find rogue core sources
 add_subdirectory(src/rogue)
 
-if ( NOT STATIC_LIB AND NOT SHARED_LIB )
-    set (SHARED_LIB TRUE)
-endif()
-
 if(STATIC_LIB) 
     add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
     set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
     set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
+
+    # Link rogue core to boost, python and bzip
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
 endif()
 
-if(SHARED_LIB) 
-    add_library(rogue-core-shared SHARED $<TARGET_OBJECTS:rogue-core> "")
-    set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
-    set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
-endif()
+# Always build shared library
+add_library(rogue-core-shared SHARED $<TARGET_OBJECTS:rogue-core> "")
+set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
+set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
+set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 # Link rogue core to boost, python and bzip
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICS_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${ZeroMQ_LIBRARY})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${EPICS_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
 if (APPLE)
-   set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   set_target_properties(rogue-core-shared PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
-   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
+   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
 endif()
-
-# Set output library names
-set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 #####################################
 # Setup build, python library
@@ -336,7 +337,7 @@ if (NOT NO_PYTHON)
    endif()
 
    # Link to rogue core
-   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
+   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core-shared)
 
 else()
    add_definitions( -DNO_PYTHON )
@@ -349,7 +350,7 @@ set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
+   set(CONF_LIBRARIES LINK_PUBLIC rogue-core-shared)
 else()
    if (APPLE)
       set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
@@ -380,10 +381,10 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 if (STATIC_LIB)
 install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 endif()
-if (SHARED_LIB)
+
 install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
-endif()
-install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
+
+install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
@@ -392,8 +393,7 @@ endif()
 
 # Install header files for non local installs
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
-   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
-           DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
 
 # Conda activate and deactivate functions
@@ -467,13 +467,11 @@ message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
 message("")
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
 message("")
+message("-- Link dynamic rogue library!")
+
 if (STATIC_LIB)
    message("-- Link static rogue library!")
 endif()
-if (SHARED_LIB)
-   message("-- Link dynamic rogue library!")
-endif()
-
 
 message("----------------------------------------------------------------------")
 message("")
