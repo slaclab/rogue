@@ -833,6 +833,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Done
             if ent is None:
                 self._log.info("Stopping update thread")
+                self._updateQueue.task_done()
                 return
 
             # Increment
