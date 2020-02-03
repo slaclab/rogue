@@ -857,6 +857,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Done
             if uvars is None:
                 self._log.info("Stopping update thread")
+                self._updateQueue.task_done()
                 return
 
             # Process list
