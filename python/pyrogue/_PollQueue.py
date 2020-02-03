@@ -120,7 +120,11 @@ class PollQueue(object):
                 with self._condLock:
                     self._condLock.wait()
 
-                continue
+                if self._run is False:
+                    self._log.info("PollQueue thread exiting")
+                    return
+                else:
+                    continue
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
