@@ -114,15 +114,21 @@ class PollQueue(object):
     def _poll(self):
         """Run by the poll thread"""
         while True:
-            now = datetime.datetime.now()
 
             if self.empty() or self.paused():
                 # Sleep until woken
                 with self._condLock:
                     self._condLock.wait()
+
+                if self._run is False:
+                    self._log.info("PollQueue thread exiting")
+                    return
+                else:
+                    continue
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
+                now = datetime.datetime.now()
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
                 with self._condLock:
