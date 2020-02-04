@@ -113,13 +113,19 @@ namespace rogue {
                // byte reverse
                static inline void reverseBytes ( uint8_t *data, uint32_t byteSize );
 
+               //////////////////////////////////////////
+               // Byte array set/get helpers
+               //////////////////////////////////////////
+
                // Set data from pointer to internal staged memory
                void setBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
                // Get data to pointer from internal block or staged memory
                void getBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Python functions
+               //////////////////////////////////////////
 
                // Set data using python function
                inline void setPyFunc ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -127,7 +133,9 @@ namespace rogue {
                // Get data using python function
                inline boost::python::object getPyFunc (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Raw Bytes
+               //////////////////////////////////////////
 
                // Set data using byte array
                inline void setByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -136,7 +144,9 @@ namespace rogue {
                // Get data using byte array
                inline boost::python::object getByteArray (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Unsigned int
+               //////////////////////////////////////////
 
                // Set data using unsigned int
                inline void setUInt ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -145,7 +155,9 @@ namespace rogue {
                // Get data using unsigned int
                inline boost::python::object getUInt (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Int
+               //////////////////////////////////////////
 
                // Set data using int
                inline void setInt ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -154,7 +166,9 @@ namespace rogue {
                // Get data using int
                inline boost::python::object getInt (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Bool
+               //////////////////////////////////////////
 
                // Set data using bool
                inline void setBool ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -163,7 +177,9 @@ namespace rogue {
                // Get data using bool
                inline boost::python::object getBool (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // String
+               //////////////////////////////////////////
 
                // Set data using String
                inline void setString ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -172,7 +188,9 @@ namespace rogue {
                // Get data using String
                inline boost::python::object getString (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Float
+               //////////////////////////////////////////
 
                // Set data using Float
                inline void setFloat ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -181,7 +199,9 @@ namespace rogue {
                // Get data using Float
                inline boost::python::object getFloat (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Double
+               //////////////////////////////////////////
 
                // Set data using Double
                inline void setDouble ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -190,7 +210,9 @@ namespace rogue {
                // Get data using Double
                inline boost::python::object getDouble (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Fixed Point
+               //////////////////////////////////////////
 
                // Set data using Fixed Point
                inline void setFixed ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -199,7 +221,12 @@ namespace rogue {
                // Get data using Fixed Point
                inline boost::python::object getFixed (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
+               //////////////////////////////////////////
                // Custom Type
+               //////////////////////////////////////////
+
+               // Custom init function called after addVariables
+               virtual void customInit();
 
                // Set data using Custom Function
                virtual void setCustom ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
@@ -226,7 +253,7 @@ namespace rogue {
                Block (uint64_t offset, uint32_t size);
 
                // Destroy the Hub
-               ~Block();
+               virtual ~Block();
 
                //! Return the path of the block
                /** Return the path of the block in the device tree
@@ -385,6 +412,8 @@ namespace rogue {
 
                double minValue;
                double maxValue;
+
+               void * customData;
          };
 
          typedef std::shared_ptr<rogue::interfaces::memory::BlockVariable> BlockVariablePtr;

@@ -440,6 +440,9 @@ void rim::Block::addVariables(bp::object variables) {
       vb->minValue = (exMin.check() && (exMin > typeMin))?exMin:typeMin;
       vb->maxValue = (exMax.check() && (exMax < typeMax))?exMax:typeMax;
 
+      // Custom data
+      vb->customData = NULL;
+
       bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
    }
 
@@ -455,6 +458,9 @@ void rim::Block::addVariables(bp::object variables) {
 
       if ( excMask[x] != 0 ) overlapEn_ = false;
    }
+
+   // Execute custom init
+   customInit();
 }
 
 //! Return a list of variables in the block
@@ -581,7 +587,9 @@ bp::object rim::Block::get(bp::object var) {
    }
 }
 
+//////////////////////////////////////////
 // Python functions
+//////////////////////////////////////////
 
 // Set data using python function
 void rim::Block::setPyFunc ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -612,7 +620,9 @@ bp::object rim::Block::getPyFunc ( rim::BlockVariablePtr &bv ) {
    return ret;
 }
 
+//////////////////////////////////////////
 // Byte Array
+//////////////////////////////////////////
 
 // Set data using byte array
 void rim::Block::setByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -640,7 +650,9 @@ bp::object rim::Block::getByteArray ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Unsigned Int
+//////////////////////////////////////////
 
 // Set data using unsigned int
 void rim::Block::setUInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -671,7 +683,9 @@ bp::object rim::Block::getUInt (rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Signed Int
+//////////////////////////////////////////
 
 // Set data using int
 void rim::Block::setInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -706,7 +720,9 @@ bp::object rim::Block::getInt ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Bool
+//////////////////////////////////////////
 
 // Set data using bool
 void rim::Block::setBool ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -731,7 +747,9 @@ bp::object rim::Block::getBool ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // String
+//////////////////////////////////////////
 
 // Set data using string
 void rim::Block::setString ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -759,7 +777,9 @@ bp::object rim::Block::getString ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Float
+//////////////////////////////////////////
 
 // Set data using float
 void rim::Block::setFloat ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -790,7 +810,9 @@ bp::object rim::Block::getFloat ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Double
+//////////////////////////////////////////
 
 // Set data using double
 void rim::Block::setDouble ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -821,7 +843,9 @@ bp::object rim::Block::getDouble ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Fixed Point
+//////////////////////////////////////////
 
 // Set data using fixed point
 void rim::Block::setFixed ( bp::object &value, rim::BlockVariablePtr &bv ) {
@@ -859,7 +883,12 @@ bp::object rim::Block::getFixed ( rim::BlockVariablePtr &bv ) {
    return bp::object(handle);
 }
 
+//////////////////////////////////////////
 // Custom
+//////////////////////////////////////////
+
+// Custom Init function called after addVariables
+void rim::Block::customInit ( ) { }
 
 // Set data using custom
 void rim::Block::setCustom ( bp::object &value, rim::BlockVariablePtr &bv ) { }
