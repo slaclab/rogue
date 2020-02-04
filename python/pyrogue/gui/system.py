@@ -174,25 +174,25 @@ class DataLink(QObject):
 
         name = path.split('.')[-1]
 
-        if name == 'dataFile':
+        if name == 'DataFile':
             self.updateDataFile.emit(value.valueDisp)
 
-        elif name == 'isOpen':
+        elif name == 'IsOpen':
             self.updateOpenState.emit(value.valueDisp)
 
-        elif name == 'bufferSize':
+        elif name == 'BufferSize':
             self.updateBufferSize.emit(value.valueDisp)
 
-        elif name == 'maxFileSize':
+        elif name == 'MaxFileSize':
             self.updateMaxSize.emit(value.valueDisp)
 
-        elif name == 'totalSize':
+        elif name == 'TotalSize':
             self.updateTotalSize.emit(value.valueDisp)
 
-        elif name == 'currentSize':
+        elif name == 'CurrentSize':
             self.updateCurrentSize.emit(value.valueDisp)
 
-        elif name == 'frameCount':
+        elif name == 'FrameCount':
             self.updateFrameCount.emit(value.valueDisp)
 
     @pyqtSlot()
