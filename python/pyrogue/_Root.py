@@ -73,6 +73,7 @@ class RootLogHandler(logging.Handler):
 
                     msg += jsonpickle.encode(se) + ']'
                     self._root.SystemLog.set(msg)
+                    #print(f"Error: {msg}")
 
                 # Log to database
                 if self._root._sqlLog is not None:
@@ -856,6 +857,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Done
             if uvars is None:
                 self._log.info("Stopping update thread")
+                self._updateQueue.task_done()
                 return
 
             # Process list

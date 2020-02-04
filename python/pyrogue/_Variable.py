@@ -570,7 +570,6 @@ class RemoteVariable(BaseVariable):
         self._verify    = verify
         self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
-        self._valBytes  = int(math.ceil(float(sum(self.bitSize)) / 8.0))
         self._overlapEn = overlapEn
 
 
@@ -620,8 +619,7 @@ class RemoteVariable(BaseVariable):
         try:
 
             # Set value to block
-            ba = self._base.toBytes(value)
-            self._block.set(self, ba)
+            self._block.set(self, value)
 
             if write:
                 self._parent.writeBlocks(force=True, recurse=False, variable=self)
@@ -642,8 +640,9 @@ class RemoteVariable(BaseVariable):
         self._log.debug("{}.post({})".format(self, value))
 
         try:
-            ba = self._base.toBytes(value)
-            self._block.set(self, ba)
+
+            # Set value to block
+            self._block.set(self, value)
             self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
 
         except Exception as e:
@@ -662,16 +661,12 @@ class RemoteVariable(BaseVariable):
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            ba = bytearray(self._valBytes)
-            self._block.get(self,ba)
-            ret = self._base.fromBytes(ba)
+            return self._block.get(self)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
-            ret = None
-
-        return ret
+            return None
 
     @pr.expose
     def write(self):

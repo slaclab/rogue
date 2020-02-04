@@ -107,17 +107,106 @@ namespace rogue {
                // Call variable update for all variables
                void varUpdate();
 
+               // bit reverse
+               static inline void reverseBits ( uint8_t *data, uint32_t bitSize );
+
+               // byte reverse
+               static inline void reverseBytes ( uint8_t *data, uint32_t byteSize );
+
                // Set data from pointer to internal staged memory
                void setBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
-
-               // Set data from python byte array to internal staged memory
-               void setByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
                // Get data to pointer from internal block or staged memory
                void getBytes ( uint8_t *data, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
-               // Get data to python byte array from internal block or staged memory
-               void getByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+               // Python functions
+
+               // Set data using python function
+               inline void setPyFunc ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Get data using python function
+               inline boost::python::object getPyFunc (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Raw Bytes
+
+               // Set data using byte array
+               inline void setByteArray ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using byte array
+               inline boost::python::object getByteArray (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Unsigned int
+
+               // Set data using unsigned int
+               inline void setUInt ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using unsigned int
+               inline boost::python::object getUInt (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Int
+
+               // Set data using int
+               inline void setInt ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using int
+               inline boost::python::object getInt (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Bool
+
+               // Set data using bool
+               inline void setBool ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using bool
+               inline boost::python::object getBool (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // String
+
+               // Set data using String
+               inline void setString ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using String
+               inline boost::python::object getString (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Float
+
+               // Set data using Float
+               inline void setFloat ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using Float
+               inline boost::python::object getFloat (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Double
+
+               // Set data using Double
+               inline void setDouble ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using Double
+               inline boost::python::object getDouble (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Fixed Point
+
+               // Set data using Fixed Point
+               inline void setFixed ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using Fixed Point
+               inline boost::python::object getFixed (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+               // Custom Type
+
+               // Set data using Custom Function
+               virtual void setCustom ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
+
+
+               // Get data using Custom Function
+               virtual boost::python::object getCustom (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
             public:
 
@@ -213,26 +302,6 @@ namespace rogue {
                 */
                uint32_t memBaseId();
 
-               //! Set value from RemoteVariable
-               /** Set the internal shadow memory with the requested variable value
-                *
-                * Exposed as set() method to Python
-                *
-                * @param var     Variable object this transaction is associated with
-                * @param value   Byte array containing variable value
-                */
-               void set(boost::python::object var, boost::python::object value);
-
-               //! Get value from RemoteVariable
-               /** Copy the shadow memory value into the passed byte array.
-                *
-                * Exposed as get() method to Python
-                *
-                * @param var     Variable object this transaction is associated with
-                * @param value   Byte array to copy data into
-                */
-               void get(boost::python::object var, boost::python::object value);
-
                //! Start a transaction for this block
                /** Start a transaction with the passed type and access range
                 *
@@ -268,6 +337,26 @@ namespace rogue {
                 * Exposed as variables property to Python
                 */
                boost::python::object variables();
+
+               //! Set value from RemoteVariable
+               /** Set the internal shadow memory with the requested variable value
+                *
+                * Exposed as set() method to Python
+                *
+                * @param var     Variable object this transaction is associated with
+                * @param value   Byte array containing variable value
+                */
+               void set(boost::python::object var, boost::python::object value);
+
+               //! Get value from RemoteVariable
+               /** Copy the shadow memory value into the passed byte array.
+                *
+                * Exposed as get() method to Python
+                *
+                * @param var     Variable object this transaction is associated with
+                * @param value   Byte array to copy data into
+                */
+               boost::python::object get(boost::python::object var);
          };
 
          //! Alias for using shared pointer as BlockPtr
@@ -280,11 +369,22 @@ namespace rogue {
 
                std::string name;
 
-               uint32_t count;
+               uint8_t func;
+
+               bool bitReverse;
+               bool byteReverse;
+
+               uint32_t binPoint;
+               uint32_t bitTotal;
+               uint32_t byteSize;
+
+               uint32_t subCount;
 
                uint32_t * bitOffset;
-
                uint32_t * bitSize;
+
+               double minValue;
+               double maxValue;
          };
 
          typedef std::shared_ptr<rogue::interfaces::memory::BlockVariable> BlockVariablePtr;

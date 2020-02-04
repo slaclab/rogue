@@ -156,89 +156,6 @@ uint32_t rim::Block::memBaseId() {
    return(reqSlaveId());
 }
 
-// Set data from pointer to internal staged memory
-void rim::Block::setBytes ( uint8_t *data, rim::BlockVariablePtr &bv ) {
-   uint32_t srcBit;
-   uint32_t x;
-
-   rogue::GilRelease noGil;
-   std::lock_guard<std::mutex> lock(mtx_);
-
-   srcBit = 0;
-   for (x=0; x < bv->count; x++) {
-      copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
-      setBits(stagedMask_,  bv->bitOffset[x], bv->bitSize[x]);
-      srcBit += bv->bitSize[x];
-   }
-}
-
-// Set data from python byte array to internal staged memory
-void rim::Block::setByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
-   Py_buffer valueBuf;
-
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
-
-   setBytes((uint8_t *)valueBuf.buf,bv);
-
-   PyBuffer_Release(&valueBuf);
-}
-
-// Set value from RemoteVariable
-void rim::Block::set(bp::object var, bp::object value) {
-   if ( blockTrans_ ) return;
-
-   std::string name = bp::extract<std::string>(var.attr("name"));
-
-   rim::BlockVariablePtr bv = blockVars_[name];
-
-   setByteArray(value,bv);
-}
-
-// Get data to pointer from internal block or staged memory
-void rim::Block::getBytes( uint8_t *data, rim::BlockVariablePtr &bv ) {
-   uint32_t  dstBit;
-   uint32_t  x;
-
-   rogue::GilRelease noGil;
-   std::lock_guard<std::mutex> lock(mtx_);
-
-   dstBit = 0;
-   for (x=0; x < bv->count; x++) {
-
-      if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) {
-         copyBits(data, dstBit, stagedData_, bv->bitOffset[x], bv->bitSize[x]);
-         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",bv->name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
-      }
-      else {
-         copyBits(data, dstBit, blockData_, bv->bitOffset[x], bv->bitSize[x]);
-         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",bv->name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
-      }
-
-      dstBit += bv->bitSize[x];
-   }
-}
-
-// Get data to python byte array from internal block or staged memory
-void rim::Block::getByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
-   Py_buffer valueBuf;
-
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Block::set","Python Buffer Error"));
-
-   getBytes((uint8_t *)valueBuf.buf, bv);
-   PyBuffer_Release(&valueBuf);
-}
-
-// Get value from RemoteVariable
-void rim::Block::get(bp::object var, bp::object value) {
-
-   std::string name = bp::extract<std::string>(var.attr("name"));
-   rim::BlockVariablePtr bv = blockVars_[name];
-
-   getByteArray(value, bv);
-}
-
 // Start a transaction for this block
 void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint32_t lowByte, int32_t highByte) {
    uint32_t  x;
@@ -403,6 +320,11 @@ void rim::Block::addVariables(bp::object variables) {
    bool overlapEn;
    bool verify;
 
+   double typeMin;
+   double typeMax;
+
+   bool minMaxEn;
+
    memset(excMask,0,size_);
    memset(oleMask,0,size_);
 
@@ -422,11 +344,10 @@ void rim::Block::addVariables(bp::object variables) {
       overlapEn = bp::extract<bool>(vb->var.attr("_overlapEn"));
       verify    = bp::extract<bool>(vb->var.attr("_verify"));
 
-      vb->count     = len(vb->var.attr("_bitSize"));
-      vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
-      vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->count);
-
-      blockVars_[vb->name] = vb;
+      vb->subCount  = len(vb->var.attr("_bitSize"));
+      vb->bitOffset = (uint32_t *)malloc(sizeof(uint32_t) * vb->subCount);
+      vb->bitSize   = (uint32_t *)malloc(sizeof(uint32_t) * vb->subCount);
+      vb->bitTotal  = 0;
 
       if ( x == 0 ) {
          path_ = std::string(bp::extract<char *>(vl[x].attr("_path")));
@@ -435,17 +356,18 @@ void rim::Block::addVariables(bp::object variables) {
          mode_ = mode;
       }
 
-      if ( bulkEn ) bulkEn_ = true;
+      blockVars_[vb->name] = vb;
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
+      if ( bulkEn ) bulkEn_ = true;
 
       // If variable modes mismatch, set block to read/write
       if ( mode_ != mode ) mode_ = "RW";
 
       // Update variable masks
-      for (y=0; y < vb->count; y++) {
+      for (y=0; y < vb->subCount; y++) {
          vb->bitOffset[y] = bp::extract<uint32_t>(vb->var.attr("_bitOffset")[y]);
          vb->bitSize[y]   = bp::extract<uint32_t>(vb->var.attr("_bitSize")[y]);
+         vb->bitTotal    += vb->bitSize[y];
 
          // Variable allows overlaps, add to overlap enable mask
          if ( overlapEn ) setBits(oleMask,vb->bitOffset[y],vb->bitSize[y]);
@@ -465,7 +387,60 @@ void rim::Block::addVariables(bp::object variables) {
             verifyEn_ = true;
             setBits(verifyMask_,vb->bitOffset[y],vb->bitSize[y]);
          }
-      } 
+      }
+
+      vb->byteSize  = (int)std::ceil((float)vb->bitTotal / 8.0);
+
+      // Extract model values
+      vb->func        = bp::extract<uint8_t>(vb->var.attr("_base").attr("blockFunc"));
+      vb->bitReverse  = bp::extract<bool>(vb->var.attr("_base").attr("reverseBits"));
+      vb->byteReverse = bp::extract<bool>(vb->var.attr("_base").attr("isBigEndian"));
+      vb->binPoint    = bp::extract<uint32_t>(vb->var.attr("_base").attr("binPoint"));
+      
+      // min/max for UInt
+      if ( vb->func == rim::UInt ) {
+         typeMin = 0;
+         typeMax = pow(2,vb->bitTotal)-1;
+      }
+
+      // min/max for Int
+      else if ( vb->func == rim::Int ) {
+         typeMin = -1 * (pow(2,vb->bitTotal-1)-1);
+         typeMax = pow(2,vb->bitTotal-1)-1;
+      }
+
+      // min/max for float
+      else if ( vb->func == rim::Float ) {
+         typeMin = std::numeric_limits<float>::lowest();
+         typeMax = std::numeric_limits<float>::max();
+      }
+
+      // min/max for double
+      else if ( vb->func == rim::Double ) {
+         typeMin = std::numeric_limits<double>::lowest();
+         typeMax = std::numeric_limits<double>::max();
+      }
+
+      // min/max for fixed
+      else if ( vb->func == rim::Fixed ) {
+         typeMax = pow(2, (vb->bitTotal-vb->binPoint))/2-1;
+         typeMin = -1.0 * typeMax + 1;
+      }
+
+      else {
+         typeMax = 0;
+         typeMin = 0;
+      }
+
+      // Extract min/max settings in variable
+      bp::extract<double> exMin(vb->var.attr("minimum"));
+      bp::extract<double> exMax(vb->var.attr("maximum"));
+
+      // Determine if configured range is more restrictive than type range
+      vb->minValue = (exMin.check() && (exMin > typeMin))?exMin:typeMin;
+      vb->maxValue = (exMax.check() && (exMax < typeMax))?exMax:typeMax;
+
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",vb->name.c_str(),path_.c_str(),offset_);
    }
 
    // Init overlap enable before check
@@ -485,5 +460,415 @@ void rim::Block::addVariables(bp::object variables) {
 //! Return a list of variables in the block
 bp::object rim::Block::variables() {
    return variables_;
+}
+
+// Helper Functions
+
+// bit reverse
+void rim::Block::reverseBits ( uint8_t *data, uint32_t bitSize ) {
+   uint32_t x;
+   uint32_t tmp;
+   uint32_t byte;
+   uint32_t bit;
+
+   // TODO 
+
+
+
+}
+
+// byte reverse
+void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
+   uint32_t x;
+   uint32_t tmp;
+
+   for (x=0; x < byteSize/2; x++) {
+      tmp = data[x];
+      data[x] = data[byteSize-x];
+      data[byteSize-x] = tmp;
+   }
+}
+
+// Set data from pointer to internal staged memory
+void rim::Block::setBytes ( uint8_t *data, rim::BlockVariablePtr &bv ) {
+   uint32_t srcBit;
+   uint32_t x;
+   uint8_t  tmp;
+
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(mtx_);
+
+   // Change byte order
+   if ( bv->byteReverse ) reverseBytes(data,bv->byteSize);
+
+   // Change bit order
+   if ( bv->bitReverse ) reverseBits(data,bv->bitTotal);
+
+   srcBit = 0;
+   for (x=0; x < bv->subCount; x++) {
+      copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
+      setBits(stagedMask_,  bv->bitOffset[x], bv->bitSize[x]);
+      srcBit += bv->bitSize[x];
+   }
+}
+
+// Get data to pointer from internal block or staged memory
+void rim::Block::getBytes( uint8_t *data, rim::BlockVariablePtr &bv ) {
+   uint32_t  dstBit;
+   uint32_t  x;
+
+   rogue::GilRelease noGil;
+   std::lock_guard<std::mutex> lock(mtx_);
+
+   dstBit = 0;
+   for (x=0; x < bv->subCount; x++) {
+
+      if ( anyBits(stagedMask_, bv->bitOffset[x], bv->bitSize[x]) ) {
+         copyBits(data, dstBit, stagedData_, bv->bitOffset[x], bv->bitSize[x]);
+         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",bv->name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
+      }
+      else {
+         copyBits(data, dstBit, blockData_, bv->bitOffset[x], bv->bitSize[x]);
+         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",bv->name.c_str(),x,bv->bitOffset[x],bv->bitSize[0]);
+      }
+
+      dstBit += bv->bitSize[x];
+   }
+
+   // Change bit order
+   if ( bv->bitReverse ) reverseBits(data,bv->bitTotal);
+
+   // Change byte order
+   if ( bv->byteReverse ) reverseBytes(data,bv->byteSize);
+}
+
+// Set value from RemoteVariable
+void rim::Block::set(bp::object var, bp::object value) {
+   if ( blockTrans_ ) return;
+
+   std::string name = bp::extract<std::string>(var.attr("name"));
+   rim::BlockVariablePtr bv = blockVars_[name];
+
+   switch (bv->func) {
+      case rim::PyFunc : setPyFunc(value,bv);    break;
+      case rim::Bytes  : setByteArray(value,bv); break;
+      case rim::UInt   : setUInt(value,bv);      break;
+      case rim::Int    : setInt(value,bv);       break;
+      case rim::Bool   : setBool(value,bv);      break;
+      case rim::String : setString(value,bv);    break;
+      case rim::Float  : setFloat(value,bv);     break;
+      case rim::Fixed  : setFixed(value,bv);     break;
+      default          : setCustom(value,bv);    break;
+   }
+}
+
+// Get value from RemoteVariable
+bp::object rim::Block::get(bp::object var) {
+
+   std::string name = bp::extract<std::string>(var.attr("name"));
+   rim::BlockVariablePtr bv = blockVars_[name];
+
+   switch (bv->func) {
+      case rim::PyFunc : return getPyFunc(bv);    break;
+      case rim::Bytes  : return getByteArray(bv); break;
+      case rim::UInt   : return getUInt(bv);      break;
+      case rim::Int    : return getInt(bv);       break;
+      case rim::Bool   : return getBool(bv);      break;
+      case rim::String : return getString(bv);    break;
+      case rim::Float  : return getFloat(bv);     break;
+      case rim::Fixed  : return getFixed(bv);     break;
+      default          : return getCustom(bv);    break;
+   }
+}
+
+// Python functions
+
+// Set data using python function
+void rim::Block::setPyFunc ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   Py_buffer valueBuf;
+
+   bp::object ret = bv->var.attr("_base").attr("toBytes")(value);
+
+   if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",bv->name.c_str()));
+
+   setBytes((uint8_t *)valueBuf.buf,bv);
+
+   PyBuffer_Release(&valueBuf);
+}
+
+// Get data using python function
+bp::object rim::Block::getPyFunc ( rim::BlockVariablePtr &bv ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(bv->byteSize);
+
+   getBytes(getBuffer, bv);
+   PyObject *val = Py_BuildValue("y#",getBuffer,bv->byteSize);
+
+   bp::handle<> handle(val);
+
+   bp::object ret = bv->var.attr("_base").attr("fromBytes")(bp::object(handle));
+
+   free(getBuffer);
+   return ret;
+}
+
+// Byte Array
+
+// Set data using byte array
+void rim::Block::setByteArray ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   Py_buffer valueBuf;
+
+   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",bv->name.c_str()));
+
+   setBytes((uint8_t *)valueBuf.buf,bv);
+
+   PyBuffer_Release(&valueBuf);
+}
+
+// Get data using byte array
+bp::object rim::Block::getByteArray ( rim::BlockVariablePtr &bv ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(bv->byteSize);
+
+   getBytes(getBuffer, bv);
+   PyObject *val = Py_BuildValue("y#",getBuffer,bv->byteSize);
+
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+
+   free(getBuffer);
+   return bp::object(handle);
+}
+
+// Unsigned Int
+
+// Set data using unsigned int
+void rim::Block::setUInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   bp::extract<uint64_t> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",bv->name.c_str()));
+
+   uint64_t val = tmp;
+
+   // Check range
+   if ( val > bv->maxValue || val < bv->minValue ) 
+      throw(rogue::GeneralError::create("Block::setUInt",
+         "Value range error for %s. Value=%li, Min=%f, Max=%f",bv->name.c_str(),val,bv->minValue,bv->maxValue));
+
+   setBytes((uint8_t *)&val,bv);
+}
+
+// Get data using unsigned int
+bp::object rim::Block::getUInt (rim::BlockVariablePtr &bv ) {
+   uint64_t tmp = 0;
+
+   getBytes((uint8_t *)&tmp,bv);
+
+   PyObject *val = Py_BuildValue("l",tmp);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
+}
+
+// Signed Int
+
+// Set data using int
+void rim::Block::setInt ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   bp::extract<uint64_t> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",bv->name.c_str()));
+
+   uint64_t val = tmp;
+
+   // Check range
+   if ( val > bv->maxValue || val < bv->minValue ) 
+      throw(rogue::GeneralError::create("Block::setInt",
+         "Value range error for %s. Value=%li, Min=%f, Max=%f",bv->name.c_str(),val,bv->minValue,bv->maxValue));
+
+   setBytes((uint8_t *)&val,bv);
+}
+
+// Get data using int
+bp::object rim::Block::getInt ( rim::BlockVariablePtr &bv ) {
+   int64_t tmp = 0;
+
+   getBytes((uint8_t *)&tmp,bv);
+
+   if ( bv->bitTotal != 64 ) {
+      if ( tmp >= (uint64_t)pow(2,bv->bitTotal-1)) tmp -= (uint64_t)pow(2,bv->bitTotal);
+   }
+
+   PyObject *val = Py_BuildValue("l",tmp);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
+}
+
+// Bool
+
+// Set data using bool
+void rim::Block::setBool ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   bp::extract<bool> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",bv->name.c_str()));
+
+   uint8_t val = (uint8_t)tmp;
+   setBytes((uint8_t *)&val,bv);
+}
+
+// Get data using bool
+bp::object rim::Block::getBool ( rim::BlockVariablePtr &bv ) {
+   uint8_t tmp;
+
+   getBytes((uint8_t *)&tmp,bv);
+
+   PyObject *val = Py_BuildValue("i",tmp); // TODO: Not Correct
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
+}
+
+// String
+
+// Set data using string
+void rim::Block::setString ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(bv->byteSize);
+   bp::extract<char *> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",bv->name.c_str()));
+
+   memcpy(getBuffer,tmp,bv->byteSize);
+   setBytes((uint8_t *)getBuffer,bv);
+}
+
+// Get data using int
+bp::object rim::Block::getString ( rim::BlockVariablePtr &bv ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(bv->byteSize);
+
+   getBytes(getBuffer, bv);
+
+   PyObject *val = Py_BuildValue("s#",getBuffer,bv->byteSize);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+
+   free(getBuffer);
+   return bp::object(handle);
+}
+
+// Float
+
+// Set data using float
+void rim::Block::setFloat ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   bp::extract<float> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",bv->name.c_str()));
+
+   float val = tmp;
+
+   // Check range
+   if ( val > bv->maxValue || val < bv->minValue )
+      throw(rogue::GeneralError::create("Block::setFloat",
+         "Value range error for %s. Value=%f, Min=%f, Max=%f",bv->name.c_str(),val,bv->minValue,bv->maxValue));
+
+   setBytes((uint8_t *)&val,bv);
+}
+
+// Get data using float
+bp::object rim::Block::getFloat ( rim::BlockVariablePtr &bv ) {
+   float tmp;
+
+   getBytes((uint8_t *)&tmp,bv);
+
+   PyObject *val = Py_BuildValue("f",tmp);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
+}
+
+// Double
+
+// Set data using double
+void rim::Block::setDouble ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   bp::extract<double> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",bv->name.c_str()));
+
+   double val = tmp;
+
+   // Check range
+   if ( val > bv->maxValue || val < bv->minValue )
+      throw(rogue::GeneralError::create("Block::setDouble",
+         "Value range error for %s. Value=%f, Min=%f, Max=%f",bv->name.c_str(),val,bv->minValue,bv->maxValue));
+
+   setBytes((uint8_t *)&val,bv);
+}
+
+// Get data using double
+bp::object rim::Block::getDouble ( rim::BlockVariablePtr &bv ) {
+   double tmp;
+
+   getBytes((uint8_t *)&tmp,bv);
+
+   PyObject *val = Py_BuildValue("d",tmp);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
+}
+
+// Fixed Point
+
+// Set data using fixed point
+void rim::Block::setFixed ( bp::object &value, rim::BlockVariablePtr &bv ) {
+   bp::extract<double> tmp(value);
+
+   if ( !tmp.check() ) 
+      throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",bv->name.c_str()));
+
+   double tmp2 = tmp;
+
+   // Check range
+   if ( tmp2 > bv->maxValue || tmp2 < bv->minValue )
+      throw(rogue::GeneralError::create("Block::setFIxed",
+         "Value range error for %s. Value=%f, Min=%f, Max=%f",bv->name.c_str(),tmp2,bv->minValue,bv->maxValue));
+
+   // I don't think this is correct!
+   uint64_t fPoint = (uint64_t)round(tmp2 * pow(2,bv->binPoint));
+
+   setBytes((uint8_t *)&fPoint,bv);
+}
+
+// Get data using fixed point
+bp::object rim::Block::getFixed ( rim::BlockVariablePtr &bv ) {
+   uint64_t fPoint;
+   double tmp;
+
+   getBytes((uint8_t *)&fPoint,bv);
+
+   // I don't think this is correct!
+   tmp = (double)fPoint * pow(2,-1*bv->binPoint);
+
+   PyObject *val = Py_BuildValue("d",tmp);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
+}
+
+// Custom
+
+// Set data using custom
+void rim::Block::setCustom ( bp::object &value, rim::BlockVariablePtr &bv ) { }
+
+// Get data using custom
+bp::object rim::Block::getCustom ( rim::BlockVariablePtr &bv ) {
+   PyObject *val = Py_BuildValue("s",NULL);
+   bp::object ret(bp::handle<>(val));
+   bp::handle<> handle(val);
+   return bp::object(handle);
 }
 
