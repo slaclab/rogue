@@ -467,21 +467,6 @@ bp::object rim::Block::variables() {
    return variables_;
 }
 
-// Helper Functions
-
-// bit reverse
-void rim::Block::reverseBits ( uint8_t *data, uint32_t bitSize ) {
-   uint32_t x;
-   uint32_t tmp;
-   uint32_t byte;
-   uint32_t bit;
-
-   // TODO 
-
-
-
-}
-
 // byte reverse
 void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
    uint32_t x;
@@ -636,7 +621,6 @@ bp::object rim::Block::getByteArray ( rim::BlockVariablePtr &bv ) {
    getBytes(getBuffer, bv);
    PyObject *val = Py_BuildValue("y#",getBuffer,bv->byteSize);
 
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
 
    free(getBuffer);
@@ -671,7 +655,6 @@ bp::object rim::Block::getUInt (rim::BlockVariablePtr &bv ) {
    getBytes((uint8_t *)&tmp,bv);
 
    PyObject *val = Py_BuildValue("l",tmp);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -708,7 +691,6 @@ bp::object rim::Block::getInt ( rim::BlockVariablePtr &bv ) {
    }
 
    PyObject *val = Py_BuildValue("l",tmp);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -734,9 +716,7 @@ bp::object rim::Block::getBool ( rim::BlockVariablePtr &bv ) {
 
    getBytes((uint8_t *)&tmp,bv);
 
-   PyObject *val = Py_BuildValue("i",tmp); // TODO: Not Correct
-   bp::object ret(bp::handle<>(val));
-   bp::handle<> handle(val);
+   bp::handle<> handle(tmp?Py_True:Py_False);
    return bp::object(handle);
 }
 
@@ -763,7 +743,6 @@ bp::object rim::Block::getString ( rim::BlockVariablePtr &bv ) {
    getBytes(getBuffer, bv);
 
    PyObject *val = Py_BuildValue("s#",getBuffer,bv->byteSize);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
 
    free(getBuffer);
@@ -798,7 +777,6 @@ bp::object rim::Block::getFloat ( rim::BlockVariablePtr &bv ) {
    getBytes((uint8_t *)&tmp,bv);
 
    PyObject *val = Py_BuildValue("f",tmp);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -831,7 +809,6 @@ bp::object rim::Block::getDouble ( rim::BlockVariablePtr &bv ) {
    getBytes((uint8_t *)&tmp,bv);
 
    PyObject *val = Py_BuildValue("d",tmp);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -871,7 +848,6 @@ bp::object rim::Block::getFixed ( rim::BlockVariablePtr &bv ) {
    tmp = (double)fPoint * pow(2,-1*bv->binPoint);
 
    PyObject *val = Py_BuildValue("d",tmp);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -889,7 +865,6 @@ void rim::Block::setCustom ( bp::object &value, rim::BlockVariablePtr &bv ) { }
 // Get data using custom
 bp::object rim::Block::getCustom ( rim::BlockVariablePtr &bv ) {
    PyObject *val = Py_BuildValue("s",NULL);
-   bp::object ret(bp::handle<>(val));
    bp::handle<> handle(val);
    return bp::object(handle);
 }
