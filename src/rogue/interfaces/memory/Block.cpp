@@ -95,6 +95,9 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
 rim::Block::~Block() {
    std::map<std::string, rim::BlockVariablePtr>::iterator vit;
 
+   // Custom clean
+   customClean();
+
    // Free variable list
    for ( vit = blockVars_.begin(); vit != blockVars_.end(); ++vit ) {
       free(vit->second->bitOffset);
@@ -858,6 +861,9 @@ bp::object rim::Block::getFixed ( rim::BlockVariablePtr &bv ) {
 
 // Custom Init function called after addVariables
 void rim::Block::customInit ( ) { }
+
+// Custom Clean function called before delete
+void rim::Block::customClean ( ) { }
 
 // Set data using custom
 void rim::Block::setCustom ( bp::object &value, rim::BlockVariablePtr &bv ) { }

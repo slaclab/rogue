@@ -225,6 +225,9 @@ namespace rogue {
                // Custom init function called after addVariables
                virtual void customInit();
 
+               // Custom cleanup function called before delete
+               virtual void customClean();
+
                // Set data using Custom Function
                virtual void setCustom ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
 
