@@ -107,9 +107,6 @@ namespace rogue {
                // Call variable update for all variables
                void varUpdate();
 
-               // bit reverse
-               static inline void reverseBits ( uint8_t *data, uint32_t bitSize );
-
                // byte reverse
                static inline void reverseBytes ( uint8_t *data, uint32_t byteSize );
 
@@ -398,7 +395,6 @@ namespace rogue {
 
                uint8_t func;
 
-               bool bitReverse;
                bool byteReverse;
 
                uint32_t binPoint;

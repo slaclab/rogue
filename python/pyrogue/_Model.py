@@ -62,7 +62,6 @@ class Model(object, metaclass=ModelMeta):
     encoding    = None
     pytype      = None
     defaultdisp = '{}'    
-    reverseBits = False
     signed      = False
     endianness  = 'little'
     blockFunc   = rim.PyFunc
@@ -91,15 +90,14 @@ class UInt(Model):
 
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
-    reverseBits = True
-    blockFunc   = rim.PyFunc # Not yet supported
+    blockFunc = rim.PyFunc # Not yet supported
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
-        return super().toBytes(valueReverse)
+        return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(cls, ba):
-        valueReverse = super().fromBytes(ba)
+        valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
         return reverseBits(valueReverse, self.bitSize)
 
 class Int(UInt):
@@ -107,7 +105,7 @@ class Int(UInt):
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
     signed      = True
-    blockFunc   = rim.UInt
+    blockFunc   = rim.Int
 
     def fromString(self, string):
         i = int(string, 0)
@@ -129,15 +127,6 @@ class Bool(Model):
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-
-    def toBytes(self, value):
-        if type(value) != self.pytype:
-            raise Exception("Base type error!")
-
-        return value.to_bytes(1, 'little', signed=False)
-
-    def fromBytes(self, ba):
-        return bool(int.from_bytes(ba, 'little', signed=False))
 
     def fromString(self, string):
         return str.lower(string) == "true"

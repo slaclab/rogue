@@ -393,7 +393,6 @@ void rim::Block::addVariables(bp::object variables) {
 
       // Extract model values
       vb->func        = bp::extract<uint8_t>(vb->var.attr("_base").attr("blockFunc"));
-      vb->bitReverse  = bp::extract<bool>(vb->var.attr("_base").attr("reverseBits"));
       vb->byteReverse = bp::extract<bool>(vb->var.attr("_base").attr("isBigEndian"));
       vb->binPoint    = bp::extract<uint32_t>(vb->var.attr("_base").attr("binPoint"));
       
@@ -507,9 +506,6 @@ void rim::Block::setBytes ( uint8_t *data, rim::BlockVariablePtr &bv ) {
    // Change byte order
    if ( bv->byteReverse ) reverseBytes(data,bv->byteSize);
 
-   // Change bit order
-   if ( bv->bitReverse ) reverseBits(data,bv->bitTotal);
-
    srcBit = 0;
    for (x=0; x < bv->subCount; x++) {
       copyBits(stagedData_, bv->bitOffset[x], data, srcBit, bv->bitSize[x]);
@@ -540,9 +536,6 @@ void rim::Block::getBytes( uint8_t *data, rim::BlockVariablePtr &bv ) {
 
       dstBit += bv->bitSize[x];
    }
-
-   // Change bit order
-   if ( bv->bitReverse ) reverseBits(data,bv->bitTotal);
 
    // Change byte order
    if ( bv->byteReverse ) reverseBytes(data,bv->byteSize);
