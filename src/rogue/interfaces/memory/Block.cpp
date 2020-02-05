@@ -864,8 +864,7 @@ void rim::Block::setCustom ( bp::object &value, rim::BlockVariablePtr &bv ) { }
 
 // Get data using custom
 bp::object rim::Block::getCustom ( rim::BlockVariablePtr &bv ) {
-   PyObject *val = Py_BuildValue("s",NULL);
-   bp::handle<> handle(val);
+   bp::handle<> handle(Py_None);
    return bp::object(handle);
 }
 
