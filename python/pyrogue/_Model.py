@@ -84,6 +84,12 @@ class UInt(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
 
+    def toBytes(self, value):
+        return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
+
+    def fromBytes(self, ba):
+        return int.from_bytes(ba, self.endianness, signed=self.signed)
+
     def fromString(self, string):
         return int(string, 0)
 
