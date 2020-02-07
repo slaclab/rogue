@@ -1,9 +1,5 @@
-#!/usr/bin/env python3
 #-----------------------------------------------------------------------------
 # Title      : Release notes generation
-# ----------------------------------------------------------------------------
-# File       : releaseNotes.py
-# Created    : 2018-03-12
 # ----------------------------------------------------------------------------
 # Description:
 # Generate release notes for pull requests relative to a tag.

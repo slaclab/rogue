@@ -1,9 +1,6 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Widgets Package
 #-----------------------------------------------------------------------------
-# File       : pyrogue/pydm/widgets/__init__.py
-# Created    : 2019-09-18
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 

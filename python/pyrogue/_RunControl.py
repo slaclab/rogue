@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Run Control Device Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_RunControl.py
-# Created    : 2019-08-06
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
