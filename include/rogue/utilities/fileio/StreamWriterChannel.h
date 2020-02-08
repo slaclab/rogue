@@ -1,11 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
  * Title         : Data file writer utility. Channel interface.
- * ----------------------------------------------------------------------------
- * File          : StreamWriterChannel.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
  *-----------------------------------------------------------------------------
  * Description :
  *    Class to act as a slave interface to the StreamWriter. Each

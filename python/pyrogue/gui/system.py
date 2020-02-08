@@ -1,11 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : System display for rogue GUI
-#-----------------------------------------------------------------------------
-# File       : pyrogue/gui/variables.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
-# Created    : 2016-10-03
-# Last update: 2016-10-03
 #-----------------------------------------------------------------------------
 # Description:
 # Module for functions and classes related to variable display in the rogue GUI

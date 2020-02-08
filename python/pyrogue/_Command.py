@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Command Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_Command.py
-# Created    : 2017-05-16
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 

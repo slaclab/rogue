@@ -1,10 +1,6 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue Simple ZMQ Client for Rogue
 #-----------------------------------------------------------------------------
-# File       : pyrogue/interfaces/_SimpleClient.py
-# Created    : 2017-05-16
-#
 # To use in Matlab first you need both the zmq and jsonpickle package in your
 # python installation:
 #

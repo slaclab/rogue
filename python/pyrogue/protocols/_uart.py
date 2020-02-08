@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue protocols / UART register protocol
-#-----------------------------------------------------------------------------
-# File       : pyrogue/protocols/_uart.py
-# Created    : 2017-01-15
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing protocol modules
