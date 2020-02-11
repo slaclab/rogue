@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Virtual Classes
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_Virtual.py
-# Created    : 2017-05-16
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 

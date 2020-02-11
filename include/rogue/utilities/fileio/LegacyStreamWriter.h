@@ -1,11 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
  * Title         : Data file writer utility.
- * ----------------------------------------------------------------------------
- * File          : LegacyStreamWriter.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
  *-----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.

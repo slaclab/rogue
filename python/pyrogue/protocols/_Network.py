@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue protocols / Network wrappers
-#-----------------------------------------------------------------------------
-# File       : pyrogue/protocols/_Network.py
-# Created    : 2017-01-15
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing protocol modules

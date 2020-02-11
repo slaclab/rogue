@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Model Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_Model.py
-# Created    : 2016-09-29
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 

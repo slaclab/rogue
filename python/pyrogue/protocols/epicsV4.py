@@ -1,10 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue epics support
-#-----------------------------------------------------------------------------
-# File       : pyrogue/protocols/epicsV4.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
-# Created    : 2019-08-08
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing epics support classes and routines

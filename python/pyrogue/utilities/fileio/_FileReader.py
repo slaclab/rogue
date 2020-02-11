@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue FileIO - File Reader
-#-----------------------------------------------------------------------------
-# File       : pyrogue/utilities/fileio/_FileReader.py
-# Created    : 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Module for reading file data.

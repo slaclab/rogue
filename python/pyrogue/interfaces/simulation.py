@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue simulation support
-#-----------------------------------------------------------------------------
-# File       : pyrogue/interfaces/simulation.py
-# Created    : 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing simulation support classes and routines

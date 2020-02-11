@@ -2,11 +2,6 @@
  *-----------------------------------------------------------------------------
  * Title      : PGP Card Driver, Shared Header
  * ----------------------------------------------------------------------------
- * File       : PgpDriver.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
- * ----------------------------------------------------------------------------
  * Description:
  * Definitions and inline functions for interacting with PGP driver.
  * ----------------------------------------------------------------------------
