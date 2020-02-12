@@ -54,6 +54,7 @@ def addLibraryPath(path):
 
         # Verify directory or archive exists and is readable
         if '.zip/' in np:
+            # zipimport does not support compression: https://bugs.python.org/issue21751
             tst = np[:np.find('.zip/')+4]
         else:
             tst = np
