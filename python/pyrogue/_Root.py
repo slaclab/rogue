@@ -24,7 +24,6 @@ import queue
 import jsonpickle
 import zipfile
 import traceback
-import gzip
 import datetime
 from contextlib import contextmanager
 
@@ -664,13 +663,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.yml")
 
             if autoCompress:
-                name += '.gz'
+                name += '.zip'
         try:
             yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if name.split('.')[-1] == 'gz':
-                with gzip.open(name,'w') as f: f.write(yml.encode('utf-8'))
-
+            if name.split('.')[-1] == 'zip':
+                with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf: 
+                    with zf.open(os.path.basename(name[:-4]),'w') as f: f.write(yml.encode('utf-8'))
             else:
                 with open(name,'w') as f: f.write(yml)
 
@@ -712,7 +711,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 sub = rl.split('.zip')[1][1:]
 
                 # Open zipfile
-                with zipfile.ZipFile(base, 'r') as myzip:
+                with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
 
                     # Check if passed name is a directory, otherwise generate an error
                     if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):

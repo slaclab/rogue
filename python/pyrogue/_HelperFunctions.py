@@ -54,6 +54,7 @@ def addLibraryPath(path):
 
         # Verify directory or archive exists and is readable
         if '.zip/' in np:
+            # zipimport does not support compression: https://bugs.python.org/issue21751
             tst = np[:np.find('.zip/')+4]
         else:
             tst = np
@@ -210,7 +211,7 @@ def yamlToData(stream='',fName=None):
 
         log.debug("loading {} from zipfile {}".format(sub,base))
 
-        with zipfile.ZipFile(base, 'r') as myzip:
+        with zipfile.ZipFile(base, 'r', compression=zipfile.ZIP_LZMA) as myzip:
             with myzip.open(sub) as myfile:
                 return yaml.load(myfile.read(),Loader=PyrogueLoader)
 
