@@ -669,7 +669,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if name.split('.')[-1] == 'zip':
                 with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf: 
-                    with zf.open(name[:-4],'w') as f: f.write(yml.encode('utf-8'))
+                    with zf.open(os.path.basename(name[:-4]),'w') as f: f.write(yml.encode('utf-8'))
             else:
                 with open(name,'w') as f: f.write(yml)
 
