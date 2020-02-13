@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <vector>
 #include <cstring>
+#include "rogue/GeneralError.h"
+#include "rogue/interfaces/stream/Frame.h"
 
 namespace rogue {
    namespace interfaces {
@@ -105,6 +107,15 @@ namespace rogue {
                 * @return Remaining bytes in the current Buffer.
                 */
                uint32_t remBuffer();
+
+               //! Get payload size
+               /** This method returns the total number of bytes in the payload.
+                * @return Payload size.
+                */
+               uint32_t getPayload() const
+			   {
+			       return frame_->getPayload();
+			   }
 
                //! De-reference
                /** This allows data at the current iterator position to be accessed
@@ -254,6 +265,14 @@ namespace rogue {
                iter += csize;
                size -= csize;
             } while ( size > 0 && csize > 0 );
+#if 1
+			if ( size > 0 ) {
+				if ( iter.getPayload() == 0 ) {
+					throw(rogue::GeneralError("FrameIterator::toFrame", "Payload size not set"));
+				}
+				throw(rogue::GeneralError("FrameIterator::toFrame", "Frame too small to accept all data"));
+			}
+#endif
          }
 
          //! Inline helper function to copy values from a frame iterator
