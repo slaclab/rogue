@@ -61,7 +61,7 @@ def addLibraryPath(path):
 
         if not os.access(tst,os.R_OK):
             raise Exception("Library path {} does not exist or is not readable".format(tst))
-        sys.path.append(np)
+        sys.path.insert(0,np)
 
 def waitCntrlC():
     """Helper Function To Wait For Cntrl-c"""
