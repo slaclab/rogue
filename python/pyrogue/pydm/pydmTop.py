@@ -57,10 +57,7 @@ class DefaultTop(Display):
         sys = SystemWindow(parent=None, init_channel=Channel)
         self.tab.addTab(sys,'System')
 
-    def minimumSizeHint(self):
-        # This is the default recommended size
-        # for this screen
-        return QtCore.QSize(self.sizeX, self.sizeY)
+        self.resize(self.sizeX, self.sizeY)
 
     def ui_filepath(self):
         # No UI file is being used
