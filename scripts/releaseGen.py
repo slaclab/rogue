@@ -66,7 +66,7 @@ for line in loginfo.splitlines():
 
         # Get PR info from github
         #print(f"{entry['Pull']}")
-        req = repo.get_pull(int(entry['PR'][1:]))
+        req = remRepo.get_pull(int(entry['PR'][1:]))
         entry['Title'] = req.title
         entry['body']  = req.body
 
