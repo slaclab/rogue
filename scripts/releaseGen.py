@@ -29,20 +29,24 @@ token  = input("Enter github token: ")
 
 tagRange = tags = F"{newTag}..HEAD"
 
-# Local git clone
-g = git.Git('.')
-g.fetch()
-project = re.compile(r'slaclab/(?P<name>.*?).git').search(g.remote('get-url','origin')).group('name')
+# Local git cone
+locRepo = git.Repo('.')
+
+url = locRepo.remote().url
+if not url.endswith('.git'): url += '.git'
+
+# Get the git repo's name (assumption that exists in the github.com/slaclab organization)
+project = re.compile(r'slaclab/(?P<name>.*?)(?P<ext>\.git?)').search(url).group('name')
 
 # Prevent "dirty" git clone (uncommitted code) from pushing tags
-if g.is_dirty():
+if locRepo.is_dirty():
     raise(Exception("Cannot create tag! Git repo is dirty!"))
 
 # Git server
 gh = Github(token)
 repo = gh.get_repo(f'slaclab/{project}')
 
-loginfo = g.log(tags,'--grep','Merge pull request')
+loginfo = logRepo.log(tags,'--grep','Merge pull request')
 
 records = []
 entry = {}
@@ -109,8 +113,8 @@ for entry in records:
 print(f"\nCreating and pushing tag {newTag} .... ")
 msg = f'Rogue Release {newTag}'
 
-#ghTag = g.create_tag(path=newTag, message=msg)
-#g.remotes.origin.push(ghTag)
+#ghTag = locRepo.create_tag(path=newTag, message=msg)
+#locRepo.remotes.origin.push(ghTag)
 
 #remRel = gh.create_git_release(tag=newTag,name=msg, message=md, draft=False)
 
