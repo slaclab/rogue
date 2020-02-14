@@ -44,7 +44,7 @@ if locRepo.is_dirty():
 
 # Git server
 gh = Github(token)
-repo = gh.get_repo(f'slaclab/{project}')
+remRepo = remRepo.get_repo(f'slaclab/{project}')
 
 loginfo = git.Git('.').log(tags,'--grep','Merge pull request')
 
@@ -116,7 +116,7 @@ msg = f'Rogue Release {newTag}'
 ghTag = locRepo.create_tag(path=newTag, message=msg)
 locRepo.remotes.origin.push(ghTag)
 
-remRel = gh.create_git_release(tag=newTag,name=msg, message=md, draft=False)
+remRel = remRepo.create_git_release(tag=newTag,name=msg, message=md, draft=False)
 
 print(f"\nDone")
 
