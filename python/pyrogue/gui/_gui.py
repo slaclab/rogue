@@ -1,11 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue GUI module
-#-----------------------------------------------------------------------------
-# File       : pyrogue/gui/_gui.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
-# Created    : 2016-09-29
-# Last update: 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Python code for pyrogue GUI

@@ -2,11 +2,6 @@
  *-----------------------------------------------------------------------------
  * Title      : AxiStreamDma Interface Class
  * ----------------------------------------------------------------------------
- * File       : AxiStreamDma.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2017-09-17
- * Last update: 2017-09-17
- * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to 
  * the license terms in the LICENSE.txt file found in the top-level directory 
  * of this distribution and at: 

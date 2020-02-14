@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue FileIO - Stream Writer
-#-----------------------------------------------------------------------------
-# File       : pyrogue/utilities/filio/_StreamWriter.py
-# Created    : 2016-09-29
 #-----------------------------------------------------------------------------
 # Description:
 # Module for writing stream data.
