@@ -46,7 +46,7 @@ if locRepo.is_dirty():
 gh = Github(token)
 repo = gh.get_repo(f'slaclab/{project}')
 
-loginfo = logRepo.log(tags,'--grep','Merge pull request')
+loginfo = locRepo.log(tags,'--grep','Merge pull request')
 
 records = []
 entry = {}
