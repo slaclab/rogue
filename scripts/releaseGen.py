@@ -27,7 +27,7 @@ newTag = input("Enter new tag: ")
 oldTag = input("Enter old tag: ")
 token  = input("Enter github token: ")
 
-tagRange = tags = F"{newTag}..HEAD"
+tagRange = tags = F"{oldTag}..HEAD"
 
 # Local git cone
 locRepo = git.Repo('.')
