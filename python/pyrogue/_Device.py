@@ -75,6 +75,7 @@ class EnableVariable(pr.BaseVariable):
                 self._value = value
             
             if old != value and old != 'parent' and old != 'deps':
+                self.parent._updateBlockEnable()
                 self.parent.enableChanged(value)
 
             with self.parent.root.updateGroup():
@@ -98,6 +99,7 @@ class EnableVariable(pr.BaseVariable):
             newEn = (self.value() == True)
 
             if oldEn != newEn:
+                self.parent._updateBlockEnable()
                 self.parent.enableChanged(newEn)
 
         return super()._doUpdate()
@@ -268,8 +270,7 @@ class Device(pr.Node,rim.Hub):
             value.countReset()
 
     def enableChanged(self,value):
-        for block in self._blocks:
-            block.setEnable(value == True)
+        pass
 
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
@@ -360,6 +361,13 @@ class Device(pr.Node,rim.Hub):
         """Perform a read and check."""
         self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
+
+    def _updateBlockEnable(self):
+        for block in self._blocks:
+            block.setEnable(self.enable.value() == True)
+
+        for key,value in self.devices.items():
+            value._updateBlockEnable()
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         

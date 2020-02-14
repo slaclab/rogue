@@ -136,6 +136,8 @@ bool rim::Block::overlapEn() {
 void rim::Block::setEnable(bool newState) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
+
+   //printf("Block %s enable set to %i\n",path_.c_str(),newState);
    enable_ = newState;
 }
 
