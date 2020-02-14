@@ -83,8 +83,8 @@ for line in loginfo.splitlines():
         records.append(entry)
         entry = {}
 
-if args.nosort is False:
-    records = sorted(records, key=lambda v : v['changes'], reverse=True)
+# Sort the records
+records = sorted(records, key=lambda v : v['changes'], reverse=True)
 
 # Generate text
 md = f'# Pull Requests Since {oldTag}\n'
