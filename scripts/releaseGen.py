@@ -44,7 +44,7 @@ if locRepo.is_dirty():
 
 # Git server
 gh = Github(token)
-remRepo = remRepo.get_repo(f'slaclab/{project}')
+remRepo = gh.get_repo(f'slaclab/{project}')
 
 loginfo = git.Git('.').log(tags,'--grep','Merge pull request')
 
