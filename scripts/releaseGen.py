@@ -113,10 +113,10 @@ for entry in records:
 print(f"\nCreating and pushing tag {newTag} .... ")
 msg = f'Rogue Release {newTag}'
 
-#ghTag = locRepo.create_tag(path=newTag, message=msg)
-#locRepo.remotes.origin.push(ghTag)
+ghTag = locRepo.create_tag(path=newTag, message=msg)
+locRepo.remotes.origin.push(ghTag)
 
-#remRel = gh.create_git_release(tag=newTag,name=msg, message=md, draft=False)
+remRel = gh.create_git_release(tag=newTag,name=msg, message=md, draft=False)
 
 print(f"\nDone")
 
