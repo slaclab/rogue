@@ -89,7 +89,7 @@ class PollQueue(object):
 
             if var._block in self._entries.keys():
                 oldInterval = self._entries[var._block].interval
-                blockVars = [v for v in var._block._variables if v.pollInterval > 0]
+                blockVars = [v for v in var._block.variables if v.pollInterval > 0]
                 if len(blockVars) > 0:
                     minVar = min(blockVars, key=lambda x: x.pollInterval)
                     newInterval = datetime.timedelta(seconds=minVar.pollInterval)
@@ -153,7 +153,7 @@ class PollQueue(object):
                         self._log.debug(f'Polling Block {entry.block.path}')
                         blockEntries.append(entry)
                         try:
-                            entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
+                            entry.block.startTransaction(rogue.interfaces.memory.Read, False, False, 0, -1)
                         except Exception as e:
                             pr.logException(self._log,e)
 
@@ -165,7 +165,7 @@ class PollQueue(object):
 
                     for entry in blockEntries:
                         try:
-                            entry.block._checkTransaction()
+                            entry.block.checkTransaction()
                         except Exception as e:
                             pr.logException(self._log,e)
 

@@ -13,6 +13,8 @@ import pyrogue as pr
 import struct
 import math
 
+import rogue.interfaces.memory as rim
+
 def wordCount(bits, wordSize):
     ret = bits // wordSize
     if (bits % wordSize != 0 or bits == 0):
@@ -41,7 +43,6 @@ class ModelMeta(type):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
  
-
     def __call__(cls, *args, **kwargs):
         key = cls.__name__ + str(args) + str(kwargs)
 
@@ -53,31 +54,31 @@ class ModelMeta(type):
 
 
 class Model(object, metaclass=ModelMeta):
-
-    pytype = None
+    fstring     = None
+    encoding    = None
+    pytype      = None
     defaultdisp = '{}'    
+    signed      = False
+    endianness  = 'little'
+    blockFunc   = rim.PyFunc
 
-    def __init__(self, bitSize):
-        self.bitSize = bitSize
-        self.name = self.__class__.__name__        
-        
-    def check(self, value):
-        return type(value) == self.pytype
+    def __init__(self, bitSize, binPoint=0):
+        self.binPoint = binPoint
+        self.bitSize  = bitSize
+        self.name     = self.__class__.__name__
 
+    @property
+    def isBigEndian(self):
+        return self.endianness == 'big'
 
 class UInt(Model):
-
+    pytype      = int
     defaultdisp = '{:#x}'
-    pytype = int
-    signed = False
-    endianness = 'little'
+    blockFunc   = rim.UInt
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
-
-    def check(self, value):
-        return (type(value) == self.pytype and self.bitSize >= value.bit_length())
 
     def toBytes(self, value):
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
@@ -91,41 +92,22 @@ class UInt(Model):
 
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+    blockFunc = rim.PyFunc # Not yet supported
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
-        return super().toBytes(valueReverse)
+        return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(cls, ba):
-        valueReverse = super().fromBytes(ba)
+        valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
         return reverseBits(valueReverse, self.bitSize)
 
 class Int(UInt):
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
-    signed = True
-
-    def toBytes(self, value):
-        if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
-            newValue = value & (2**(self.bitSize)-1) # Strip upper bits
-            ba = newValue.to_bytes(byteCount(self.bitSize), self.endianness, signed=False)
-        else:
-            ba = value.to_bytes(byteCount(self.bitSize), self.endianness, signed=True)
-
-        return ba
-
-    def fromBytes(self,ba):
-        if (self.bitSize < (byteCount(self.bitSize)*8)):
-            value = int.from_bytes(ba, self.endianness, signed=False)
-
-            if value >= 2**(self.bitSize-1):
-                value -= 2**self.bitSize
-
-        else:
-            value = int.from_bytes(ba, self.endianness, signed=True)
-
-        return value
+    signed      = True
+    blockFunc   = rim.Int
 
     def fromString(self, string):
         i = int(string, 0)
@@ -141,44 +123,26 @@ class IntBE(Int):
     endianness = 'big'
 
 class Bool(Model):
-    
+    pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
-    pytype = bool
+    blockFunc   = rim.Bool
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-
-    def toBytes(self, value):
-        return value.to_bytes(1, 'little', signed=False)
-
-    def fromBytes(self, ba):
-        return bool(int.from_bytes(ba, 'little', signed=False))
 
     def fromString(self, string):
         return str.lower(string) == "true"
 
     
 class String(Model):
-
-    encoding = 'utf-8'
+    encoding    = 'utf-8'
     defaultdisp = '{}'
-    pytype = str
+    pytype      = str
+    blockFunc   = rim.String
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'      
-
-    def check(self, value):
-        return (type(val) == self.pytype and self.bitSize >= (len(value) * 8))
-
-    def toBytes(self, value):
-        ba = bytearray(value, self.encoding)
-        ba.extend(bytearray(1))
-        return ba
-
-    def fromBytes(self, ba):
-        s = ba.rstrip(bytearray(1))
-        return s.decode(self.encoding)
 
     def fromString(self, string):
         return string
@@ -188,66 +152,43 @@ class Float(Model):
     """Converter for 32-bit float"""
 
     defaultdisp = '{:f}'
-    pytype = float
-    fstring = 'f'
-    bitSize = 32
+    pytype      = float
+    fstring     = 'f'
+    blockFunc   = rim.Float
 
     def __init__(self, bitSize):
-        assert bitSize == self.__class__.bitSize, f"The bitSize param of Model {self.__class__.__name__} must be {self.__class__.bitSize}"
+        assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
+        super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
-
-    def toBytes(self, value):
-        return bytearray(struct.pack(self.fstring, value))
-
-    def fromBytes(self, ba):
-        return struct.unpack(self.fstring, ba)
 
     def fromString(self, string):
         return float(string)
 
 
-
 class Double(Float):
     fstring = 'd'
-    bitSize = 64
+    blockFunc = rim.Double
+
+    def __init__(self, bitSize):
+        assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
+        super().__init__(bitSize)
+        self.name = f'{self.__class__.__name__}{self.bitSize}'
 
 class FloatBE(Float):
+    endianness = 'big'
     fstring = '!f'
 
 class DoubleBE(Double):
+    endianness = 'big'
     fstring = '!d'
 
 class Fixed(Model):
-
     pytype = float
+    signed = True
+    blockFunc = rim.Fixed
 
-    def __init__(self, bitSize, binPoint, signed=False, endianness='little'):
-        self.bitSize = bitSize
-        self.binPoint = binPoint
-        self.signed = signed
-        self.endianness = endianness
+    def __init__(self, bitSize, binPoint):
+        super().__init__(bitSize,binPoint)
 
-        # Pre-compute max and min allowable values
-        if signed:
-            self.maxValue = math.pow(2, (bitSize-binPoint))/2-1
-            self.minValue = -1.0 * self.maxValue + 1
-            sign = 'S'
-        else:
-            self.maxValue = math.pow(2,(bitSize-binPoint))-1
-            self.minValue = 0.0
-            sign = 'U'
-            
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
-
-
-    def check(self, value):
-        return value <= self.maxValue and value >= self.minValue
-
-    def toBytes(self, value):
-        i = int(round(value * math.pow(2, self.binPoint)))
-        return i.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
-
-    def fromBytes(self, ba):
-        i = int.from_bytes(ba, self.endianness, signed=self.signed)
-        return i * math.pow(2, -1*self.binPoint)
 

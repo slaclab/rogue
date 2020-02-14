@@ -12,7 +12,8 @@
 import sys
 import os
 import glob
-import rogue.interfaces.memory
+import rogue
+import rogue.interfaces.memory as rim
 import threading
 from collections import OrderedDict as odict
 import logging
@@ -67,6 +68,7 @@ class RootLogHandler(logging.Handler):
 
                     msg += jsonpickle.encode(se) + ']'
                     self._root.SystemLog.set(msg)
+                    #print(f"Error: {msg}")
 
                 # Log to database
                 if self._root._sqlLog is not None:
@@ -162,6 +164,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Variable update worker
         self._updateQueue = queue.Queue()
         self._updateThread = None
+        self._updateLock   = threading.Lock()
+        self._updateCount  = {}
+        self._updateList   = {}
 
         # SQL URL
         self._sqlLog = None
@@ -312,7 +317,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for d in self.deviceList:
             tmpList.append(d)
             for b in d._blocks:
-                if isinstance(b, pr.RemoteBlock):
+                if isinstance(b, rim.Block):
                     tmpList.append(b)
 
         # Sort the list by address/size
@@ -331,10 +336,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
                 # Check for instances when device comes before block and when block comes before device 
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],pr.BaseBlock) and \
-                         (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i]._overlapEn))) and \
-                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],pr.BaseBlock) and \
-                        (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1]._overlapEn))):
+                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and \
+                         (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
+                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and \
+                        (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
                                        tmpList[i].path,tmpList[i].address,
@@ -444,17 +449,28 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @contextmanager
     def updateGroup(self):
+        tid = threading.get_ident()
 
         # At with call
-        self._updateQueue.put(True)
+        with self._updateLock:
+            if not tid in self._updateCount:
+                self._updateList[tid] = {}
+                self._updateCount[tid] = 0
 
-        # Return to block within with call
+            self._updateCount[tid] += 1
+
         try:
             yield
         finally:
 
             # After with is done
-            self._updateQueue.put(False)
+            with self._updateLock:
+                if self._updateCount[tid] == 1:
+                    self._updateCount[tid] = 0
+                    self._updateQueue.put(self._updateList[tid])
+                    self._updateList[tid] = {}
+                else:
+                    self._updateCount[tid] -= 1
 
     @contextmanager
     def pollBlock(self):
@@ -563,8 +579,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _heartbeat(self):
         if self._running and self._doHeartbeat:
-            threading.Timer(1.0,self._heartbeat).start()
-            self.Time.set(time.time())
+            with self.updateGroup():
+                threading.Timer(1.0,self._heartbeat).start()
+                self.Time.set(time.time())
 
     def _exit(self):
         self.stop()
@@ -812,41 +829,34 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.set(SystemLogInit)
 
     def _queueUpdates(self,var):
-        self._updateQueue.put(var)
+        tid = threading.get_ident()
+
+        with self._updateLock:
+            if not tid in self._updateCount:
+                self._updateList[tid] = {}
+                self._updateCount[tid] = 0
+
+            self._updateList[tid][var.path] = var
+
+            if self._updateCount[tid] == 0:
+                self._updateQueue.put(self._updateList[tid])
+                self._updateList[tid] = {}
 
     # Worker thread
     def _updateWorker(self):
         self._log.info("Starting update thread")
 
-        # Init
-        count = 0
-        uvars = {}
-
         while True:
-            ent = self._updateQueue.get()
+            uvars = self._updateQueue.get()
 
             # Done
-            if ent is None:
+            if uvars is None:
                 self._log.info("Stopping update thread")
                 self._updateQueue.task_done()
                 return
 
-            # Increment
-            elif ent is True:
-                count += 1
-
-            # Decrement
-            elif ent is False:
-                if count > 0:
-                    count -= 1
-
-            # Variable
-            else:
-                uvars[ent.path] = ent
-
-            # Process list if count = 0
-            if count == 0 and len(uvars) > 0:
-
+            # Process list
+            elif len(uvars) > 0:
                 self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
                 strm = odict()
                 zmq  = odict()
@@ -894,9 +904,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 # Send over zmq link
                 if self._zmqServer is not None:
                     self._zmqServer._publish(jsonpickle.encode(zmq))
-
-                # Init var list
-                uvars = {}
 
             # Set done
             self._updateQueue.task_done()

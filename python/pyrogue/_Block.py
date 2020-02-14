@@ -34,34 +34,25 @@ class MemoryError(Exception):
         return repr(self._value)
 
 
-class BaseBlock(object):
-
-    def __init__(self, *, path, mode, device):
-
-        self._path      = path
-        self._mode      = mode
-        self._device    = device
+class LocalBlock(object):
+    def __init__(self, *, variable, localSet, localGet, value):
+        self._path      = variable.path
+        self._mode      = variable.mode
+        self._device    = variable.parent
+        self._localSet  = localSet
+        self._localGet  = localGet
+        self._variable  = variable
+        self._variables = [variable] # Used by poller
+        self._value     = value
         self._lock      = threading.RLock()
         self._doUpdate  = False
+        self._enable    = True
 
         # Setup logging
-        self._log = pr.logInit(cls=self,name=path)
-
+        self._log = pr.logInit(cls=self,name=self._path)
 
     def __repr__(self):
-        return repr(self.path)
-
-    def backgroundTransaction(self,type):
-        """
-        Perform a background transaction
-        """
-        self.startTransaction(type, check=False)
-
-    def blockingTransaction(self,type):
-        """
-        Perform a blocking transaction
-        """
-        self.startTransaction(type, check=True)
+        return repr(self._path)
 
     @property
     def path(self):
@@ -72,68 +63,24 @@ class BaseBlock(object):
         return self._mode
 
     @property
-    def timeout(self):
-        return 0
-
-    @timeout.setter
-    def timeout(self,value):
-        pass
-
-    @property
-    def error(self):
-        return 0
-
-    @error.setter
-    def error(self,value):
-        pass
-
-    @property
     def bulkEn(self):
         return True
 
-    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
-        """
-        Start a transaction.
-        """
-        with self._lock:
-            self._doUpdate = True
-
-    def _checkTransaction(self):
-        """
-        Check status of block.
-        If update=True notify variables if read
-        """
-        doUpdate = False
-        with self._lock:
-            doUpdate = self._doUpdate
-            self._doUpdate = False
-
-        # Update variables outside of lock
-        if doUpdate: self.updated()
-
-    def _forceStale(self):
-        pass
-        
-    def updated(self):
+    def forceStale(self):
         pass
 
-class LocalBlock(BaseBlock):
-    def __init__(self, *, variable, localSet, localGet, value):
-        BaseBlock.__init__(self, path=variable.path, mode=variable.mode, device=variable.parent)
+    @property
+    def enable(self):
+        return self._enable
 
-        self._localSet = localSet
-        self._localGet = localGet
-        self._variable = variable
-        self._variables = [variable] # Used by poller
-        self._value = value
+    @enable.setter
+    def enable(self,value):
+        with self._lock:
+            self._enable = value
 
     @property
-    def value(self):
-        return self._value
-        
-    @property
-    def stale(self):
-        return False
+    def variables(self):
+        return self._variables
 
     def set(self, var, value):
         with self._lock:
@@ -145,7 +92,7 @@ class LocalBlock(BaseBlock):
             self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
-            if self._localSet is not None:
+            if self._enable and self._localSet is not None:
 
                 # Possible args
                 pargs = {'dev' : self._device, 'var' : self._variable, 'value' : self._value, 'changed' : changed}
@@ -153,7 +100,7 @@ class LocalBlock(BaseBlock):
                 pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
 
     def get(self, var):
-        if self._localGet is not None:
+        if self._enable and self._localGet is not None:
             with self._lock:
 
                 # Possible args
@@ -163,348 +110,92 @@ class LocalBlock(BaseBlock):
 
         return self._value
 
-    def updated(self):
-        self._variable._queueUpdate()
+    def startTransaction(self, type, forceWr, check, lowByte, highByte):
+        """
+        Start a transaction.
+        """
+        if self._enable:
+            with self._lock:
+                self._doUpdate = True
+
+    def checkTransaction(self):
+        """
+        Check status of block.
+        If update=True notify variables if read
+        """
+        if self._enable:
+            doUpdate = False
+            with self._lock:
+                doUpdate = self._doUpdate
+                self._doUpdate = False
+
+            # Update variables outside of lock
+            if doUpdate: 
+                self._variable._queueUpdate()
 
     def _iadd(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _isub(self, other):
         with self._lock:
             self.set(None, self.get(None) - other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _imul(self, other):
         with self._lock:
             self.set(None, self.get(None) * other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _imatmul(self, other):
         with self._lock:
             self.set(None, self.get(None) @ other)
-            self.updated()
+            self._variable._queueUpdate()
 
     def _itruediv(self, other):
         with self._lock:
             self.set(None, self.get(None) / other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _ifloordiv(self, other):
         with self._lock:
             self.set(None, self.get(None) // other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _imod(self, other):
         with self._lock:
             self.set(None, self.get(None) % other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _ipow(self, other):
         with self._lock:
             self.set(None, self.get(None) ** other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _ilshift(self, other):
         with self._lock:
             self.set(None, self.get(None) << other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _irshift(self, other):
         with self._lock:
             self.set(None, self.get(None) >> other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _iand(self, other):
         with self._lock:
             self.set(None, self.get(None) & other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _ixor(self, other):
         with self._lock:
             self.set(None, self.get(None) ^ other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
     def _ior(self, other):
         with self._lock:
             self.set(None, self.get(None) | other)
-            self.updated()
+            if self._enable: self._variable._queueUpdate()
 
-
-class RemoteBlock(BaseBlock, rim.Master):
-    def __init__(self, *, offset, size, variables):
-     
-        rim.Master.__init__(self)
-        self._setSlave(variables[0].parent)
-        
-        BaseBlock.__init__(self, path=variables[0].path, mode=variables[0].mode, device=variables[0].parent)
-        self._verifyEn    = False
-        self._bulkEn      = False
-        self._verifyRange = None
-        self._verifyWr    = False
-        self._sData       = bytearray(size)  # Set data
-        self._sDataMask   = bytearray(size)  # Set data mask
-        self._bData       = bytearray(size)  # Block data
-        self._vData       = bytearray(size)  # Verify data
-        self._vDataMask   = bytearray(size)  # Verify data mask
-        self._size        = size
-        self._offset      = offset
-        self._minSize     = self._reqMinAccess()
-        self._maxSize     = self._reqMaxAccess()
-        self._variables   = variables
-
-        if self._minSize == 0 or self._maxSize == 0:
-            raise MemoryError(name=self.path, address=self.address, msg="Invalid min/max memory interface size. Device or Variable may be unconnected!")
-
-        # Range check
-        if self._size > self._maxSize:
-            msg = f'Block {self.path} size {self._size} exceeds maxSize {self._maxSize}'
-            raise MemoryError(name=self.path, address=self.address, msg=msg)
-
-        # Temp bit masks
-        excMask = bytearray(size)  # Variable bit mask for exclusive variables
-        oleMask = bytearray(size)  # Variable bit mask for overlap enabled variables
-
-        # Go through variables
-        for var in variables:
-
-            # Link variable to block
-            var._block = self
-
-            if not isinstance(var, pr.BaseCommand):
-                self._bulkEn = True
-
-            self._log.debug(f"Adding variable {var.name} to block {self.path} at offset {self.offset:#02x}")
-
-            # If variable modes mismatch, set block to read/write
-            if var.mode != self._mode:
-                self._mode = 'RW'
-
-            # Update variable masks
-            for x in range(len(var.bitOffset)):
-
-                # Variable allows overlaps, add to overlap enable mask
-                if var._overlapEn:
-                    self._setBits(oleMask,var.bitOffset[x],var.bitSize[x])
-
-                # Otherwise add to exclusive mask and check for existing mapping
-                else:
-                    if self._anyBits(excMask,var.bitOffset[x],var.bitSize[x]):
-                        raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
-                    self._setBits(excMask,var.bitOffset[x],var.bitSize[x])
-
-                # update verify mask
-                if var.mode == 'RW' and var.verify is True:
-                    self._verifyEn = True
-                    self._setBits(self._vDataMask,var.bitOffset[x],var.bitSize[x])
-
-        # Check for overlaps by anding exclusive and overlap bit vectors
-        for b1, b2 in zip(oleMask, excMask):
-            if b1 & b2 != 0:
-                raise MemoryError(name=self.path, address=self.address, msg="Variable bit overlap detected.")
-
-        # Set exclusive flag
-        self._overlapEn = all (excMask[i] == 0 for i in range(size))
-
-        # Force block to be stale at startup
-        self._forceStale()
-
-    def __repr__(self):
-        return repr(self._variables)
-
-    @property
-    def stale(self):
-        return any([b != 0 for b in self._sDataMask])
-
-    @property
-    def offset(self):
-        return self._offset
-
-    @property
-    def address(self):
-        return self._offset | self._reqAddress()
-
-    @property
-    def size(self):
-        return self._size
-
-    @property
-    def memBaseId(self):
-        return self._reqSlaveId()
-
-    @property
-    def timeout(self):
-        return float(self._getTimeout()) / 1000000.0
-
-    @timeout.setter
-    def timeout(self,value):
-        self._setTimeout(int(value*1000000))
-
-    @property
-    def error(self):
-        return self._getError()
-
-    @property
-    def bulkEn(self):
-        return self._bulkEn
-
-    def set(self, var, value):
-        """
-        Update block with bitSize bits from passed byte array.
-        Offset sets the starting point in the block array.
-        """
-        if not var._base.check(value):
-            msg = "Invalid value '{}' for base type {} with bit size {}".format(value,var._base.pytype,sum(var.bitSize))
-            raise MemoryError(name=var.path, address=self.address, msg=msg)
-
-        with self._lock:
-            ba = var._base.toBytes(value)
-
-            srcBit = 0
-            for x in range(len(var.bitOffset)):
-                self._copyBits(self._sData, var.bitOffset[x], ba, srcBit, var.bitSize[x])
-                self._setBits(self._sDataMask, var.bitOffset[x], var.bitSize[x])
-                srcBit += var.bitSize[x]
-
-    def get(self, var):
-        """
-        Get bitSize bytes from block data.
-        Offset sets the starting point in the block array.
-        bytearray is returned
-        """
-        with self._lock:
-            ba = bytearray(int(math.ceil(float(sum(var.bitSize)) / 8.0)))
-
-            dstBit = 0
-            for x in range(len(var.bitOffset)):
-                if self._anyBits(self._sDataMask, var.bitOffset[x], var.bitSize[x]):
-                    self._copyBits(ba, dstBit, self._sData, var.bitOffset[x], var.bitSize[x])
-                else:
-                    self._copyBits(ba, dstBit, self._bData, var.bitOffset[x], var.bitSize[x])
-                dstBit += var.bitSize[x]
-
-            return var._base.fromBytes(ba)
-
-    def startTransaction(self, type, check=False, lowByte=None, highByte=None):
-        """
-        Start a transaction.
-        """
-        with self._lock:
-
-            #print(f'Called {self.name}.startTransaction(check={check})')
-
-            # Check for invalid combinations
-            if (type == rim.Write  and (self.mode == 'RO')) or \
-               (type == rim.Post   and (self.mode == 'RO')) or \
-               (type == rim.Read   and (self.mode == 'WO')) or \
-               (type == rim.Verify and (self.mode == 'WO' or \
-                                        self.mode == 'RO' or \
-                                        self._verifyWr == False)):
-                return
-
-            self._waitTransaction(0)
-            self._clearError()
-
-            # Set default low and high bytes
-            if lowByte is None or highByte is None:
-                lowByte  = 0
-                highByte = self._size - 1
-
-            # Move staged write data to block. Clear stale.
-            if type == rim.Write or type == rim.Post:
-                for x in range(self._size):
-                    self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
-                    self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
-
-                    # Override min and max bytes based upon stale
-                    if self._sDataMask[x] != 0:
-                        if x < lowByte:  lowByte  = x
-                        if x > highByte: highByte = x
-
-                self._sData = bytearray(self._size)
-                self._sDataMask = bytearray(self._size)
-
-            # Do not write to hardware for a disabled device
-            if (self._device.enable.value() is not True):
-                return
-
-            self._log.debug(f'startTransaction type={type}')
-            self._log.debug(f'len bData = {len(self._bData)}, vData = {len(self._vData)}, vDataMask = {len(self._vDataMask)}')
-
-            # Track verify after writes. 
-            # Only verify blocks that have been written since last verify
-            if type == rim.Write:
-                self._verifyWr = self._verifyEn
-
-            # Derive offset and size based upon min transaction size
-            offset = math.floor(lowByte / self._minSize) * self._minSize
-            size   = math.ceil((highByte-lowByte+1) / self._minSize) * self._minSize
-
-            # Setup transaction
-            self._verifyRange = [offset,offset+size] if  (type == rim.Verify) else None
-            self._doUpdate = True
-
-            # Set data pointer
-            tData = self._vData if self._verifyRange is not None else self._bData
-
-            # Start transaction
-            self._reqTransaction(self.offset,tData,size,offset,type)
-
-        if check:
-            #print(f'Checking {self.path}.startTransaction(check={check})')
-            self._checkTransaction()
-
-    def _forceStale(self):
-        for b in self._sDataMask: b = 0xFF
-
-    def _checkTransaction(self):
-        
-        doUpdate = False
-        with self._lock:
-            self._waitTransaction(0)
-
-            #print(f'Checking {self.path}._checkTransaction()')            
-
-            # Error
-            err = self.error
-            self._clearError()
-
-            if err != "":
-                raise MemoryError(name=self.path, address=self.address, msg=err, size=self._size)
-
-            if self._verifyRange is not None:
-                self._verifyWr = False
-
-                for x in range(self._verifyRange[0],self._verifyRange[1]):
-                    if (self._vData[x] & self._vDataMask[x]) != (self._bData[x] & self._vDataMask[x]):
-                        msg  = "Verify Error: "
-                        msg += ('Local='    + ''.join(f'{x:#02x}' for x in self._bData))
-                        msg += ('. Verify=' + ''.join(f'{x:#02x}' for x in self._vData))
-                        msg += ('. Mask='   + ''.join(f'{x:#02x}' for x in self._vDataMask))
-
-                        raise MemoryError(name=self.path, address=self.address, msg=msg, size=self._size)
-
-               # Updated
-            doUpdate = self._doUpdate
-            self._doUpdate = False
-
-        # Update variables outside of lock
-        if doUpdate: self.updated()
-
-    def _setDefault(self, var, value):
-        with self._lock:
-            # Stage the default data        
-            self.set(var, value)
-
-            # Move stage data to block, but keep it staged as well
-            for x in range(self._size):
-                self._bData[x] = self._bData[x] & (self._sDataMask[x] ^ 0xFF)
-                self._bData[x] = self._bData[x] | (self._sDataMask[x] & self._sData[x])
-
-
-    def updated(self):
-        self._log.debug(f'Block {self._path} _update called')
-        for v in self._variables:
-            v._queueUpdate()
 

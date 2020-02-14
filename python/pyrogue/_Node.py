@@ -29,7 +29,7 @@ def logInit(cls=None,name=None,path=None):
 
     # Support base class in order of precedence
     baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
-                         pr.BaseBlock : 'Block', pr.Root : 'Root', pr.Device : 'Device'})
+                         pr.Root : 'Root', pr.Device : 'Device'})
 
     """Init a logging pbject. Set global options."""
     logging.basicConfig(

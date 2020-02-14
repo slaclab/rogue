@@ -199,6 +199,8 @@ namespace rogue {
                 */
                uint32_t reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type);
 
+#endif
+
                //! Helper function to optimize bit copies between byte arrays.
                /** This method will copy bits between two byte arrays.
                 *
@@ -209,7 +211,14 @@ namespace rogue {
                 * @param srcLsb Least significant bit in source byte array for copy
                 * @param size Number of bits to copy
                 */
-               static void copyBits(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size);
+               static void copyBits(uint8_t *dstData, uint32_t dstLsb, uint8_t *srcData, uint32_t srcLsb, uint32_t size);
+
+#ifndef NO_PYTHON
+
+               // Helper function to optimize bit copies between byte arrays.
+               static void copyBitsPy(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size);
+
+#endif
 
                //! Helper function to optimize bit setting in a byte array.
                /** This method will set a range of bits in a byte array
@@ -219,7 +228,14 @@ namespace rogue {
                 * @param lsb Least significant bit in destination byte array for set
                 * @param size Number of bits to set
                 */
-               static void setBits(boost::python::object dst, uint32_t lsb, uint32_t size);
+               static void setBits(uint8_t *dstData, uint32_t lsb, uint32_t size);
+
+#ifndef NO_PYTHON
+
+               // Helper function to optimize bit setting in a byte array.
+               static void setBitsPy(boost::python::object dst, uint32_t lsb, uint32_t size);
+
+#endif
 
                //! Helper function to detect bits being set in a byte array.
                /** This method will return true if any bits in a range are set
@@ -229,7 +245,16 @@ namespace rogue {
                 * @param lsb Least significant bit in source byte array to check
                 * @param size Number of bits to check
                 */
-               static bool anyBits(boost::python::object src, uint32_t lsb, uint32_t size);
+               static bool anyBits(uint8_t *srcData, uint32_t lsb, uint32_t size);
+
+#ifndef NO_PYTHON
+
+               // Helper function to detect bits being set in a byte array.
+               static bool anyBitsPy(boost::python::object src, uint32_t lsb, uint32_t size);
+
+#endif
+
+#ifndef NO_PYTHON
 
                //! Support >> operator in python
                void rshiftPy ( boost::python::object p );

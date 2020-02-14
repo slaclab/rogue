@@ -27,6 +27,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/interfaces/memory/TcpClient.h>
 #include <rogue/interfaces/memory/TcpServer.h>
+#include <rogue/interfaces/memory/Block.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -44,10 +45,22 @@ void rim::setup_module() {
    bp::scope io_scope = module;
 
    // Transaction constants
-   bp::scope().attr("Read")   = Read;
-   bp::scope().attr("Write")  = Write;
-   bp::scope().attr("Post")   = Post;
-   bp::scope().attr("Verify") = Verify;
+   bp::scope().attr("Read")   = rim::Read;
+   bp::scope().attr("Write")  = rim::Write;
+   bp::scope().attr("Post")   = rim::Post;
+   bp::scope().attr("Verify") = rim::Verify;
+
+   // Processing constants
+   bp::scope().attr("PyFunc") = rim::PyFunc;
+   bp::scope().attr("Bytes")  = rim::Bytes;
+   bp::scope().attr("UInt")   = rim::UInt;
+   bp::scope().attr("Int")    = rim::Int;
+   bp::scope().attr("Bool")   = rim::Bool;
+   bp::scope().attr("String") = rim::String;
+   bp::scope().attr("Float")  = rim::Float;
+   bp::scope().attr("Double") = rim::Double;
+   bp::scope().attr("Fixed")  = rim::Fixed;
+   bp::scope().attr("Custom") = rim::Custom;
 
    rim::Master::setup_python(); 
    rim::Slave::setup_python(); 
@@ -56,6 +69,6 @@ void rim::setup_module() {
    rim::TransactionLock::setup_python(); 
    rim::TcpClient::setup_python(); 
    rim::TcpServer::setup_python(); 
-
+   rim::Block::setup_python(); 
 }
 
