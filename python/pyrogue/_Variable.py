@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Variable Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_Variable.py
-# Created    : 2016-09-29
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -123,6 +119,7 @@ class BaseVariable(pr.Node):
                 ):
 
         # Public Attributes
+        self._bulkEn        = True
         self._mode          = mode
         self._units         = units
         self._minimum       = minimum
@@ -133,6 +130,8 @@ class BaseVariable(pr.Node):
         self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
+        self._lowByte       = 0
+        self._highByte      = -1
         self._pollInterval  = pollInterval
         self._nativeType    = None
         self._listeners     = []
@@ -322,19 +321,7 @@ class BaseVariable(pr.Node):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
-        self._log.debug("{}.set({})".format(self, value))
-        try:
-            if self._block is not None:
-                self._block.set(self, value)
-
-                if write:
-                    self._parent.writeBlocks(force=True, recurse=False, variable=self)
-                    self._parent.verifyBlocks(recurse=False, variable=self)
-                    self._parent.checkBlocks(recurse=False, variable=self)
-
-        except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+        pass
 
     @pr.expose
     def post(self,value):
@@ -343,16 +330,7 @@ class BaseVariable(pr.Node):
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
         """
-        self._log.debug("{}.post({})".format(self, value))
-
-        try:
-            if self._block is not None:
-                self._block.set(self, value)
-                self._block.startTransaction(rogue.interfaces.memory.Post, check=True)
-
-        except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+        pass
 
     @pr.expose
     def get(self,read=True):
@@ -361,22 +339,14 @@ class BaseVariable(pr.Node):
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
         """
-        try:
-            if self._block is not None:
-                if read:
-                    self._parent.readBlocks(recurse=False, variable=self)
-                    self._parent.checkBlocks(recurse=False, variable=self)
+        return None
 
-                ret = self._block.get(self)
-            else:
-                ret = None
-
-        except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error reading value from variable '{}'".format(self.path))
-            ret = None
-
-        return ret
+    @pr.expose
+    def write(self):
+        """
+        Force a write of the variable.
+        """
+        pass
 
     @pr.expose
     def getVariableValue(self,read=True):
@@ -458,20 +428,6 @@ class BaseVariable(pr.Node):
             self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
 
     @pr.expose
-    def write(self):
-        """
-        Force a write of the variable.
-        """
-        try:
-            if self._block is not None:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self)
-                self._parent.verifyBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(recurse=False, variable=self)
-
-        except Exception as e:
-            pr.logException(self._log,e)
-
-    @pr.expose
     def nativeType(self):
         if self._nativeType is None:
             self._nativeType = type(self.value())
@@ -508,7 +464,6 @@ class BaseVariable(pr.Node):
             var._queueUpdate()
 
     def _doUpdate(self):
-
         val = VariableValue(self)
 
         for func in self.__functions:
@@ -649,9 +604,78 @@ class RemoteVariable(BaseVariable):
     def base(self):
         return self._base
 
-    def _setDefault(self):
-        if self._default is not None:
-            self._block._setDefault(self, self.parseDisp(self._default))
+    @pr.expose
+    def set(self, value, write=True):
+        """
+        Set the value and write to hardware if applicable
+        Writes to hardware are blocking. An error will result in a logged exception.
+        """
+        self._log.debug("{}.set({})".format(self, value))
+
+        try:
+
+            # Set value to block
+            self._block.set(self, value)
+
+            if write:
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.verifyBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+
+    @pr.expose
+    def post(self,value):
+        """
+        Set the value and write to hardware if applicable using a posted write.
+        This method does not call through parent.writeBlocks(), but rather
+        calls on self._block directly.
+        """
+        self._log.debug("{}.post({})".format(self, value))
+
+        try:
+
+            # Set value to block
+            self._block.set(self, value)
+            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+
+    @pr.expose
+    def get(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        try:
+            if read:
+                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+            return self._block.get(self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error reading value from variable '{}'".format(self.path))
+            return None
+
+    @pr.expose
+    def write(self):
+        """
+        Force a write of the variable.
+        """
+        try:
+            self._parent.writeBlocks(force=True, recurse=False, variable=self)
+            self._parent.verifyBlocks(recurse=False, variable=self)
+            self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
 
     @pr.expose
     def parseDisp(self, sValue):
@@ -664,10 +688,6 @@ class RemoteVariable(BaseVariable):
             else:
                 return self._base.fromString(sValue)
             
-    def _setDefault(self):
-        if self._default is not None:
-            self._block._setDefault(self, self.parseDisp(self._default))
-
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:
 
@@ -681,6 +701,8 @@ class RemoteVariable(BaseVariable):
 
         self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
 
+        self._lowByte  = int(math.floor(self._bitOffset[0] / 8))
+        self._highByte = int(math.floor((self._bitOffset[-1] + self._bitSize[-1] - 1) / 8))
 
 
 class LocalVariable(BaseVariable):
@@ -718,6 +740,66 @@ class LocalVariable(BaseVariable):
                               pollInterval=pollInterval)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
+
+    @pr.expose
+    def set(self, value, write=True):
+        """
+        Set the value and write to hardware if applicable
+        Writes to hardware are blocking. An error will result in a logged exception.
+        """
+        self._log.debug("{}.set({})".format(self, value))
+
+        try:
+
+            # Set value to block
+            self._block.set(self, value)
+
+            if write:
+                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.verifyBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+
+    @pr.expose
+    def post(self,value):
+        """
+        Set the value and write to hardware if applicable using a posted write.
+        This method does not call through parent.writeBlocks(), but rather
+        calls on self._block directly.
+        """
+        self._log.debug("{}.post({})".format(self, value))
+
+        try:
+            self._block.set(self, value)
+            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+
+    @pr.expose
+    def get(self,read=True):
+        """ 
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
+        """
+        try:
+            if read:
+                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.checkBlocks(recurse=False, variable=self)
+
+            ret = self._block.get(self)
+
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error reading value from variable '{}'".format(self.path))
+            ret = None
+
+        return ret
 
     def __get__(self):
         return self.get(read=False)
@@ -861,4 +943,5 @@ def varFuncHelper(func,pargs,log,path):
         args = {}
 
     return func(**args)
+
 

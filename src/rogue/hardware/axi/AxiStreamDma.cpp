@@ -48,7 +48,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    dest_       = dest;
    enSsi_      = ssiEnable;
-   retThold_   = 0;
+   retThold_   = 1;
    zeroCopyEn_ = true;
 
    rogue::defaultTimeout(timeout_);
@@ -78,7 +78,8 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    if ( rawBuff_ == NULL ) {
       throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
    }
-   else if ( bCount_ >= 1000 ) retThold_ = 50;
+   //else if ( bCount_ >= 1000 ) retThold_ = 50;
+   else if ( bCount_ >= 1000 ) retThold_ = 80;
 
    // Start read thread
    threadEn_ = true;
@@ -302,11 +303,14 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
       // Bit 30 indicates buffer has already been returned to hardware
       if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
 
+#if 0
          // Add to queue
-         retQueue_.push(meta & 0x3FFFFFFF);
+         printf("Adding to queue\n");
+         retQueue_.push(meta);
 
          // Bulk return
          if ( (count = retQueue_.size()) >= retThold_ ) {
+            printf("Return count=%i\n",count);
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 
@@ -314,7 +318,16 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
                throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
 
             decCounter(size*count);
+            printf("Return done\n");
          }
+
+#else
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
+            throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
+
+         decCounter(size);
+
+#endif
       }
    }
 

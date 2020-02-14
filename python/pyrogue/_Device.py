@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Device Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_Device.py
-# Created    : 2017-05-16
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -128,7 +124,6 @@ class Device(pr.Node,rim.Hub):
                  size=0,
                  hidden=False,
                  groups=None,
-                 blockSize=None,
                  expand=False,
                  enabled=True,
                  defaults=None,
@@ -145,12 +140,12 @@ class Device(pr.Node,rim.Hub):
         rim.Hub.__init__(self,offset,hubMin,hubMax)
 
         # Blocks
-        self._blocks    = []
-        self._memBase   = memBase
-        self._memLock   = threading.RLock()
-        self._size      = size
-        self._blockSize = blockSize
-        self._defaults  = defaults if defaults is not None else {}
+        self._blocks     = []
+        self._custBlocks = []
+        self._memBase    = memBase
+        self._memLock    = threading.RLock()
+        self._size       = size
+        self._defaults   = defaults if defaults is not None else {}
 
         self.forceCheckEach = False
 
@@ -195,6 +190,10 @@ class Device(pr.Node,rim.Hub):
     @property
     def memBaseId(self):
         return self._reqSlaveId()
+
+    def addCustomBlock(self, block):
+        self._custBlocks.append(block)
+        self._custBlocks.sort(key=lambda x: (x.offset, x.size))
 
     def add(self,node):
         # Call node add
@@ -261,8 +260,6 @@ class Device(pr.Node,rim.Hub):
             value.initialize()
 
     def hardReset(self):
-        for block in self._blocks:
-            block._forceStale()
         for key,value in self.devices.items():
             value.hardReset()
 
@@ -271,7 +268,9 @@ class Device(pr.Node,rim.Hub):
             value.countReset()
 
     def enableChanged(self,value):
-        pass # Do nothing
+        for block in self._blocks:
+            block.setEnable(value == True)
+
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
@@ -279,20 +278,16 @@ class Device(pr.Node,rim.Hub):
         """
         Write all of the blocks held by this Device to memory
         """
-        self._log.debug(f'Calling {self.path}._writeBlocks')
-
+        self._log.debug(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
         checkEach = checkEach or self.forceCheckEach
 
-        # Process local blocks.
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                if (force or b.stale):
-                    b.startTransaction(rim.Write, check=checkEach, lowByte=v[0], highByte=v[1])
+            variable._block.startTransaction(rim.Write, True, checkEach, variable._lowByte, variable._highByte)
 
         else:
             for block in self._blocks:
-                if (force or block.stale) and block.bulkEn:
-                    block.startTransaction(rim.Write, check=checkEach)
+                if block.bulkEn:
+                    block.startTransaction(rim.Write, force, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -302,19 +297,17 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        #print(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
+        self._log.debug(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
 
-        checkEach = checkEach or self.forceCheckEach        
+        checkEach = checkEach or self.forceCheckEach
 
-        # Process local blocks.
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Verify, check=checkEach, lowByte=v[0], highByte=v[1])
+            variable._block.startTransaction(rim.Verify, False, checkEach, 0, -1) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Verify, checkEach)
+                    block.startTransaction(rim.Verify, False, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -324,20 +317,17 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        self._log.debug(f'Calling {self.path}._readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-        #print(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach})')
+        self._log.debug(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
 
-        checkEach = checkEach or self.forceCheckEach        
+        checkEach = checkEach or self.forceCheckEach
 
-        # Process local blocks. 
         if variable is not None:
-            for b,v in self._getBlocks(variable).items():
-                b.startTransaction(rim.Read, check=checkEach, lowByte=v[0], highByte=v[1])
+            variable._block.startTransaction(rim.Read, False, checkEach, variable._lowByte, variable._highByte)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, check=checkEach)
+                    block.startTransaction(rim.Read, False, checkEach, 0, -1)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -345,22 +335,20 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        self._log.debug(f'Calling {self.path}._checkBlocks')
+        self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
 
-        with self.root.updateGroup():
+        #with self.root.updateGroup():
 
-            # Process local blocks
-            if variable is not None:
-                for b,v in self._getBlocks(variable).items():
-                    b._checkTransaction()
+        if variable is not None:
+            variable._block.checkTransaction()
 
-            else:
-                for block in self._blocks:
-                    block._checkTransaction()
+        else:
+            for block in self._blocks:
+                block.checkTransaction()
 
-                if recurse:
-                    for key,value in self.devices.items():
-                            value.checkBlocks(recurse=True)
+            if recurse:
+                for key,value in self.devices.items():
+                        value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Useful for committing any stale variables"""
@@ -452,51 +440,11 @@ class Device(pr.Node,rim.Hub):
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
-
-    def _getBlocks(self, variables):
-        """
-        Get a list of unique blocks from a list of Variables. 
-        The returned dictionary has the block as the key with each block associated
-        with a list. The first list item is the low byte associated with the variable list,
-        the second is the high byte associated with the variable list.
-        Variables must belong to this device!
-        """
-        if isinstance(variables, pr.BaseVariable):
-            variables = [variables]
-
-        blocks = {}
-
-        for v in variables:
-            if v.parent is not self:
-                raise DeviceError(
-                    f'Variable {v.path} passed to {self.path}._getBlocks() is not a member of {self.path}')
-            elif v._block is not None:
-
-                if isinstance(v,pr.RemoteVariable):
-                    lowByte  = math.floor(v.bitOffset[0] / 8)
-                    highByte = math.floor((v.bitOffset[-1] + v.bitSize[-1] - 1) / 8)
-                else:
-                    lowByte  = None
-                    highByte = None
-
-                if v._block not in blocks:
-                    blocks[v._block] = [lowByte, highByte]
-                elif lowByte is not None and highByte is not None:
-                    if lowByte  < blocks[v._block][0]: blocks[v._block][0] = lowByte
-                    if highByte > blocks[v._block][1]: blocks[v._block][1] = highByte
-
-        return blocks
-
     def _buildBlocks(self):
         remVars = []
 
+        # Use min block size, larger blocks can be pre-created
         blkSize = self._blkMinAccess()
-
-        if self._blockSize is not None:
-            if self._blockSize > self._blkMaxAccess():
-                blkSize = self._blkMaxAccess()
-            else:
-                blkSize = self._blockSize
 
         # Process all of the variables
         for k,n in self.nodes.items():
@@ -505,7 +453,7 @@ class Device(pr.Node,rim.Hub):
             if isinstance(n,pr.LocalVariable):
                 self._blocks.append(n._block)
 
-            # Align to min access, create list sorted by offset 
+            # Align to min access, create list of remote variables
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
@@ -524,14 +472,58 @@ class Device(pr.Node,rim.Hub):
 
                 if n.varBytes > blk['size']: blk['size'] = n.varBytes
 
+            # We need a new block for this variable
             else:
-                blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n]}
-                blocks.append(blk)
+                blk = None
 
-        # Create blocks
+                # Look for pre-made block which overlaps
+                for b in self._custBlocks:
+                    if ( (n.offset >= b.offset) and ((b.offset + b.size) > n.offset)):
+
+                        # Just in case a variable extends past the end of pre-made block, user mistake
+                        if n.varBytes > b.size:
+                            msg = 'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
+                            raise MemoryError(name=self.path, address=self.address, msg=msg)
+
+                        blk = {'offset':b.offset, 'size':b.size, 'vars':[n], 'block':b}
+                        break
+
+                # Block not found
+                if blk is None:
+                    blk = {'offset':n.offset, 'size':n.varBytes, 'vars':[n], 'block':None}
+                    blocks.append(blk)
+
+        # Clear pre-made list
+        self._custBlocks = []
+
+        # Create new blocks and add new and pre-made blocks to device
+        # Add variables to the block
         for b in blocks:
-            self._blocks.append(pr.RemoteBlock(offset=b['offset'], size=b['size'], variables=b['vars']))
-            self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
+
+            # Create new block
+            if b['block'] is None:
+                newBlock = rim.Block(b['offset'], b['size'])
+                self._log.debug("Adding new block at offset {:#02x}, size {}".format(b['offset'], b['size']))
+            else:
+                newBlock = b['block']
+
+            # Set memory slave  
+            newBlock._setSlave(self)
+
+            # Verify the block is not too small or large for the memory interface
+            if newBlock.size > self._reqMaxAccess() or newBlock.size < self._reqMinAccess():
+                msg = f'Block size {newBlock.size} is not in the range: {self._reqMinAccess()} - {self._reqMaxAccess()}'
+                raise MemoryError(name=self.path, address=self.address, msg=msg)
+
+            # Add variables to the block
+            newBlock.addVariables(b['vars'])
+        
+            # Set varible block links
+            for v in b['vars']: v._block = newBlock
+
+            # Add to device
+            self._blocks.append(newBlock)
+            newBlock.setEnable(self.enable.value() == True)
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
@@ -563,7 +555,7 @@ class Device(pr.Node,rim.Hub):
         """
 
         for block in self._blocks:
-            block.timeout = timeout
+            block._setTimeout(int(timeout*1000000))
 
         rim.Master._setTimeout(self, int(timeout*1000000))
 

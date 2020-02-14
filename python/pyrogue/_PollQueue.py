@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - PollQueue Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_PollQueue.py
-# Created    : 2017-05-16
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -93,7 +89,7 @@ class PollQueue(object):
 
             if var._block in self._entries.keys():
                 oldInterval = self._entries[var._block].interval
-                blockVars = [v for v in var._block._variables if v.pollInterval > 0]
+                blockVars = [v for v in var._block.variables if v.pollInterval > 0]
                 if len(blockVars) > 0:
                     minVar = min(blockVars, key=lambda x: x.pollInterval)
                     newInterval = datetime.timedelta(seconds=minVar.pollInterval)
@@ -114,15 +110,21 @@ class PollQueue(object):
     def _poll(self):
         """Run by the poll thread"""
         while True:
-            now = datetime.datetime.now()
 
             if self.empty() or self.paused():
                 # Sleep until woken
                 with self._condLock:
                     self._condLock.wait()
+
+                if self._run is False:
+                    self._log.info("PollQueue thread exiting")
+                    return
+                else:
+                    continue
             else:
                 # Sleep until the top entry is ready to be polled
                 # Or a new entry is added by updatePollInterval
+                now = datetime.datetime.now()
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
                 with self._condLock:
@@ -151,7 +153,7 @@ class PollQueue(object):
                         self._log.debug(f'Polling Block {entry.block.path}')
                         blockEntries.append(entry)
                         try:
-                            entry.block.startTransaction(rogue.interfaces.memory.Read, check=False)
+                            entry.block.startTransaction(rogue.interfaces.memory.Read, False, False, 0, -1)
                         except Exception as e:
                             pr.logException(self._log,e)
 
@@ -163,7 +165,7 @@ class PollQueue(object):
 
                     for entry in blockEntries:
                         try:
-                            entry.block._checkTransaction()
+                            entry.block.checkTransaction()
                         except Exception as e:
                             pr.logException(self._log,e)
 

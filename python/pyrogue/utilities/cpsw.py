@@ -1,10 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue CPSW Export Utilities
-#-----------------------------------------------------------------------------
-# File       : pyrogue/utilities/cpsw.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
-# Created    : 2019-08-28
 #-----------------------------------------------------------------------------
 # Description:
 # Tools to export Rogue modules to CPSW

@@ -1,11 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : Command windows for GUI
-#-----------------------------------------------------------------------------
-# File       : pyrogue/gui/commands.py
-# Author     : Ryan Herbst, rherbst@slac.stanford.edu
-# Created    : 2016-10-03
-# Last update: 2016-10-03
 #-----------------------------------------------------------------------------
 # Description:
 # Module for functions and classes related to command display in the rogue GUI

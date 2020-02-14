@@ -1,11 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
  * Title         : PRBS Receive And Transmit Class
- * ----------------------------------------------------------------------------
- * File          : Prbs.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/17/2016
- * Last update   : 09/17/2016
  *-----------------------------------------------------------------------------
  * Description :
  *    Class used to generate and receive PRBS test data.

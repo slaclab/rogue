@@ -1,11 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
  * Title         : Data file reader utility.
- * ----------------------------------------------------------------------------
- * File          : StreamReader.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
  *-----------------------------------------------------------------------------
  * Description :
  *    Class to read data files.

@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue ZMQ Server
-#-----------------------------------------------------------------------------
-# File       : pyrogue/interfaces/_ZmqServer.py
-# Created    : 2017-06-07
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 

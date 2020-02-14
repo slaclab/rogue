@@ -1,9 +1,5 @@
-#!/usr/bin/env python
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Command Class
-#-----------------------------------------------------------------------------
-# File       : pyrogue/_Command.py
-# Created    : 2017-05-16
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
@@ -20,6 +16,7 @@ from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
 import threading
+import math
 
 class CommandError(Exception):
     """ Exception for command errors."""
@@ -56,6 +53,9 @@ class BaseCommand(pr.BaseVariable):
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
+
+        # Disable bulk operations for commands
+        self._bulkEn = False
 
         if self._background:
             self._log.error("Background commands are deprecated. Please use a Process device instead.")
@@ -257,6 +257,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             overlapEn=overlapEn,
             verify=False)
 
+        # Disable bulk operations for commands
+        self._bulkEn = False
 
     def set(self, value, write=True):
         self._log.debug("{}.set({})".format(self, value))
@@ -264,7 +266,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             self._block.set(self, value)
 
             if write:
-                self._block.startTransaction(rogue.interfaces.memory.Write, check=True)
+                self._block.startTransaction(rogue.interfaces.memory.Write, True, True, self._lowByte, self._highByte)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -273,15 +275,13 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def get(self, read=True):
         try:
             if read:
-                self._block.startTransaction(rogue.interfaces.memory.Read, check=True)
-                
-            ret = self._block.get(self)
+                self._block.startTransaction(rogue.interfaces.memory.Read, False, True, self._lowByte, self._highByte)
+
+            return self._block.get(self)
 
         except Exception as e:
             pr.logException(self._log,e)
             return None
-
-        return ret
 
 # Alias
 Command = BaseCommand

@@ -2,9 +2,6 @@
 #-----------------------------------------------------------------------------
 # Title      : Server only test script
 #-----------------------------------------------------------------------------
-# File       : test_server.py
-# Created    : 2018-02-28
-#-----------------------------------------------------------------------------
 # This file is part of the rogue_example software. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
 # of this distribution and at: 
@@ -56,7 +53,11 @@ class DummyTree(pyrogue.Root):
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
 
         # Add Data Writer
-        self.add(pyrogue.utilities.fileio.StreamWriter())
+        self._prbsTx = pyrogue.utilities.prbs.PrbsTx()
+        self.add(self._prbsTx)
+        self._fw = pyrogue.utilities.fileio.StreamWriter()
+        self.add(self._fw)
+        self._prbsTx >> self._fw.getChannel(0)
 
         # Add Run Control
         self.add(pyrogue.RunControl())
@@ -169,10 +170,10 @@ if __name__ == "__main__":
     with DummyTree() as dummyTree:
         dummyTree.saveAddressMap('test.csv')
 
-        pyrogue.waitCntrlC()
+        #pyrogue.waitCntrlC()
 
         #import pyrogue.pydm
-        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeY=2000)
+        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
 
         #import pyrogue.gui
         #pyrogue.gui.runGui(root=dummyTree)

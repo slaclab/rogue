@@ -1,9 +1,6 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : CMakeLists.txt
-# Created    : 2018-02-27
-# ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
 # of this distribution and at: 
@@ -276,34 +273,46 @@ else()
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
 endif()
 
-if(STATIC_LIB) 
-set(LINK_MODE STATIC)
-else()
-set(LINK_MODE SHARED)
-endif()
-
 # Create rogue core library
-add_library(rogue-core ${LINK_MODE} "")
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+add_library(rogue-core OBJECT "")
 
 # Find rogue core sources
 add_subdirectory(src/rogue)
 
+# Always build shared library
+add_library(rogue-core-shared SHARED $<TARGET_OBJECTS:rogue-core> "")
+set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
+set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
+set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
+
 # Link rogue core to boost, python and bzip
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${EPICS_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${BZIP2_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${ZeroMQ_LIBRARY})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${EPICS_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
 if (APPLE)
-   set_target_properties(rogue-core PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+   set_target_properties(rogue-core-shared PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC ${PYTHON_LIBRARIES})
-   TARGET_LINK_LIBRARIES(rogue-core LINK_PUBLIC rt)
+   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
 endif()
 
-# Set output library names
-set_target_properties(rogue-core PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
+if(STATIC_LIB) 
+    add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
+    set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
+    set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
+
+    # Link rogue core to boost, python and bzip
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
+endif()
 
 #####################################
 # Setup build, python library
@@ -325,7 +334,7 @@ if (NOT NO_PYTHON)
    endif()
 
    # Link to rogue core
-   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core)
+   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core-shared)
 
 else()
    add_definitions( -DNO_PYTHON )
@@ -366,8 +375,13 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 
 # Always install core libraries and config files
-install(TARGETS rogue-core LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
-install(FILES   ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
+if (STATIC_LIB)
+   install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+endif()
+
+install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+
+install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
@@ -376,8 +390,7 @@ endif()
 
 # Install header files for non local installs
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
-   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue
-           DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
 
 # Conda activate and deactivate functions
@@ -440,6 +453,7 @@ message("")
 
 if (DO_EPICS_V3)
    message("-- Found EPICS: ${EPICS_BASE_DIR}")
+   message("")
    message("-- Found PCAS:  ${EPICS_PCAS_DIR}")
 else()
    message("-- EPICS V3 not included!")
@@ -449,10 +463,12 @@ message("")
 message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
 message("")
 message("-- Found Bzip2: ${BZIP2_INCLUDE_DIR}")
+message("")
+message("-- Link dynamic rogue library!")
+
 if (STATIC_LIB)
    message("-- Link static rogue library!")
 endif()
-
 
 message("----------------------------------------------------------------------")
 message("")

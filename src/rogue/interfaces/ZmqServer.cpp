@@ -109,6 +109,17 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
    this->zmqPub_ = zmq_socket(this->zmqCtx_,ZMQ_PUB);
    this->zmqRep_ = zmq_socket(this->zmqCtx_,ZMQ_REP);
 
+   opt = 0;
+   if ( zmq_setsockopt (this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
+
+   if ( zmq_setsockopt (this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
+
+   opt = 100;
+   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket receive timeout"));
+
    // Setup publish port
    temp = "tcp://";
    temp.append(this->addr_);
@@ -133,17 +144,6 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
       log_->debug("Failed to bind resp to port %i",this->basePort_+1);
       return false;
    }
-
-   opt = 0;
-   if ( zmq_setsockopt (this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
-
-   if ( zmq_setsockopt (this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
-
-   opt = 100;
-   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
-         throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket receive timeout"));
 
    return true;
 }

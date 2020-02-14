@@ -2,9 +2,6 @@
 #-----------------------------------------------------------------------------
 # Title      : Data over stream bridge test script
 #-----------------------------------------------------------------------------
-# File       : test_streamBridge.py
-# Created    : 2019-01-30
-#-----------------------------------------------------------------------------
 # This file is part of the rogue_example software. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
 # of this distribution and at: 
