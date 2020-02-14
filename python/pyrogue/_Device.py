@@ -73,13 +73,13 @@ class EnableVariable(pr.BaseVariable):
 
             with self._lock:
                 self._value = value
-
-            with self.parent.root.updateGroup():
-                self._queueUpdate()
-
+            
             if old != value and old != 'parent' and old != 'deps':
                 self.parent._updateBlockEnable()
                 self.parent.enableChanged(value)
+
+            with self.parent.root.updateGroup():
+                self._queueUpdate()
 
             # The following concept will trigger enable listeners 
             # directly. This is causing lock contentions in practice
