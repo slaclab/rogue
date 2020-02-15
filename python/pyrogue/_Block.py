@@ -69,12 +69,7 @@ class LocalBlock(object):
     def forceStale(self):
         pass
 
-    @property
-    def enable(self):
-        return self._enable
-
-    @enable.setter
-    def enable(self,value):
+    def setEnable(self,value):
         with self._lock:
             self._enable = value
 
