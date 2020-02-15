@@ -47,6 +47,7 @@ void rim::Master::setup_python() {
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqSlaveId",         &rim::Master::reqSlaveId)
+      .def("_reqSlaveName",       &rim::Master::reqSlaveName)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqAddress",         &rim::Master::reqAddress)
@@ -94,6 +95,11 @@ rim::SlavePtr rim::Master::getSlave () {
 //! Query the slave id
 uint32_t rim::Master::reqSlaveId() {
    return(slave_->doSlaveId());
+}
+
+//! Query the slave name
+std::string rim::Master::reqSlaveName() {
+   return(slave_->doSlaveName());
 }
 
 //! Query the minimum access size in bytes for interface
