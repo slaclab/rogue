@@ -56,7 +56,7 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
    classIdx_++;
    classMtx_.unlock();
 
-   name_ = "Unnamed_" + std::toString(id_);
+   name_ = std::string("Unnamed_") + std::to_string(id_);
 } 
 
 //! Destroy object
@@ -121,7 +121,7 @@ std::string rim::Slave::name() {
 
 //! Set name
 void rim::Slave::setName(std::string name) {
-   return name_ = name;
+   name_ = name;
 }
 
 //! Return id to requesting master
