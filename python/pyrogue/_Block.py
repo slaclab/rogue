@@ -72,6 +72,9 @@ class LocalBlock(object):
     def setEnable(self,value):
         with self._lock:
             self._enable = value
+ 
+    def _setTimeout(self,value):
+        pass
 
     @property
     def variables(self):

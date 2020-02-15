@@ -48,6 +48,7 @@ class DummyTree(pyrogue.Root):
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
+        sim.setName("SimSlave")
         
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
@@ -170,7 +171,7 @@ if __name__ == "__main__":
     with DummyTree() as dummyTree:
         dummyTree.saveAddressMap('test.csv')
 
-        #pyrogue.waitCntrlC()
+        pyrogue.waitCntrlC()
 
         #import pyrogue.pydm
         #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)

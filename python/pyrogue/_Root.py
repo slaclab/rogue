@@ -321,7 +321,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     tmpList.append(b)
 
         # Sort the list by address/size
-        tmpList.sort(key=lambda x: (x._reqSlaveId, x.address, x.size))
+        tmpList.sort(key=lambda x: (x._reqSlaveId(), x.address, x.size))
 
         # Look for overlaps
         for i in range(1,len(tmpList)):
@@ -331,7 +331,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             tmpList[i-1].path,tmpList[i-1].address, tmpList[i-1].size))
 
             # Detect overlaps
-            if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId == tmpList[i-1]._reqSlaveId) and \
+            if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId() == tmpList[i-1]._reqSlaveId()) and \
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
@@ -540,7 +540,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     if v.isinstance(pr.RemoteVariable):
                         f.write("{}\t".format(v.path))
                         f.write("{}\t".format(v.typeStr))
-                        f.write("{}\t".format(v._block._reqSlaveName))
+                        f.write("{}\t".format(v._block._reqSlaveName()))
                         f.write("{:#x}\t".format(v.address))
                         f.write("{:#x}\t".format(v.offset))
                         f.write("{}\t".format(v.mode))
