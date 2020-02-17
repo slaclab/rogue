@@ -133,7 +133,7 @@ class Device(pr.Node,rim.Hub):
                  hubMin=0,
                  hubMax=0):
 
-        
+
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -444,7 +444,7 @@ class Device(pr.Node,rim.Hub):
                     else:
                         return [base.fromBytes(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
                 self._log.warning("Retrying raw read transaction")
-                
+
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 

@@ -60,7 +60,7 @@ class Model(object, metaclass=ModelMeta):
     defaultdisp = '{}'    
     signed      = False
     endianness  = 'little'
-    blockFunc   = rim.PyFunc
+    modelId     = rim.PyFunc
 
     def __init__(self, bitSize, binPoint=0):
         self.binPoint = binPoint
@@ -74,7 +74,7 @@ class Model(object, metaclass=ModelMeta):
 class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
-    blockFunc   = rim.UInt
+    modelId     = rim.UInt
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -92,7 +92,7 @@ class UInt(Model):
 
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
-    blockFunc = rim.PyFunc # Not yet supported
+    modelId   = rim.PyFunc # Not yet supported
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
@@ -107,7 +107,7 @@ class Int(UInt):
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
     signed      = True
-    blockFunc   = rim.Int
+    modelId     = rim.Int
 
     def fromString(self, string):
         i = int(string, 0)
@@ -125,7 +125,7 @@ class IntBE(Int):
 class Bool(Model):
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
-    blockFunc   = rim.Bool
+    modelId     = rim.Bool
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -138,7 +138,7 @@ class String(Model):
     encoding    = 'utf-8'
     defaultdisp = '{}'
     pytype      = str
-    blockFunc   = rim.String
+    modelId     = rim.String
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -154,7 +154,7 @@ class Float(Model):
     defaultdisp = '{:f}'
     pytype      = float
     fstring     = 'f'
-    blockFunc   = rim.Float
+    modelId     = rim.Float
 
     def __init__(self, bitSize):
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
@@ -167,7 +167,7 @@ class Float(Model):
 
 class Double(Float):
     fstring = 'd'
-    blockFunc = rim.Double
+    modelId   = rim.Double
 
     def __init__(self, bitSize):
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
@@ -185,7 +185,7 @@ class DoubleBE(Double):
 class Fixed(Model):
     pytype = float
     signed = True
-    blockFunc = rim.Fixed
+    modelId   = rim.Fixed
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)

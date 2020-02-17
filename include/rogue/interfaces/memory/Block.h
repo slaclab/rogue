@@ -31,12 +31,21 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
-           template<typename T>
-           inline
-           std::vector< T > py_list_to_std_vector( const boost::python::object& iterable ) {
+         template<typename T>
+         inline
+         std::vector< T > py_list_to_std_vector( const boost::python::object& iterable ) {
                return std::vector< T >( boost::python::stl_input_iterator< T >( iterable ),
                                         boost::python::stl_input_iterator< T >( ) );
-           }
+         }
+
+         template<typename T>
+         inline
+         T py_object_convert( const boost::python::object& obj ) {
+            boost::python::extract<T> ret(obj);
+
+            if ( !ret.check() ) return (T)0;
+            else return ret;
+         }
 
          class BlockVariable;
 

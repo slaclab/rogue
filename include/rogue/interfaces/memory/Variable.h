@@ -46,7 +46,7 @@ namespace rogue {
                std::string name_;
 
                // Model
-               uint32_t model_;
+               uint32_t modelId_;
 
                // Byte reverse flag
                bool byteReverse_;
@@ -56,6 +56,12 @@ namespace rogue {
 
                // Total bytes (rounded up) for this value
                uint32_t byteSize_;
+
+               // Variable coverage bytes
+               uint32_t varBytes_;
+
+               // Variable offset
+               uint64_t offset_;
 
                // Array of bit offsets
                std::vector<uint32_t> bitOffset_;
@@ -79,7 +85,13 @@ namespace rogue {
                bool overlapEn_;
 
                // Verify flag
-               bool verify_;
+               bool verifyEn_;
+
+               // Low byte value
+               uint32_t lowByte_;
+
+               // High byte value
+               uint32_t highByte_;
 
                // Poiner to custom data
                void * customData_;
@@ -93,26 +105,27 @@ namespace rogue {
                 * @param mode Variable mode
                 * @param minimum Variable min value, 0 for none
                 * @param maximum Variable max value, 0 for none
-                * @param model Variable model ID
                 * @param bitOffset Bit offset vector
                 * @param bitSize Bit size vector
                 * @param overlapEn Overlap enable flag
                 * @param verify Verify enable flag
-                * @param byteReverse Byte reverse flag
                 * @param bulkEn Bulk read/write flag
+                * @param modelId Variable model ID
+                * @param byteReverse Byte reverse flag
                 */
                static std::shared_ptr<rogue::interfaces::memory::Variable> create (
                      std::string name,
                      std::string mode,
                      double   minimum,
                      double   maximum,
-                     uint32_t model,
+                     uint64_t offset,
                      std::vector<uint32_t> bitOffset,
                      std::vector<uint32_t> bitSize,
                      bool overlapEn,
                      bool verify,
-                     bool byteReverse,
-                     bool bulkEn);
+                     bool bulkEn,
+                     uint32_t modelId,
+                     bool byteReverse);
                      
                // Setup class for use in python
                static void setup_python();
@@ -122,22 +135,49 @@ namespace rogue {
                           std::string mode,
                           double   minimum,
                           double   maximum,
-                          uint32_t model,
+                          uint64_t offset,
                           std::vector<uint32_t> bitOffset,
                           std::vector<uint32_t> bitSize,
                           bool overlapEn,
                           bool verify,
-                          bool byteReverse,
-                          bool bulkEn);
+                          bool bulkEn,
+                          uint32_t modelId,
+                          bool byteReverse);
 
                // Destroy
                virtual ~Variable();
 
+               //! Shift offset down
+               void shiftOffsetDown(uint32_t shift);
+
                //! Return the name of the variable
-               /** Return the name of the 
-                * @return Name of the variable
-                */
                std::string name();
+
+               //! Return the variable mode
+               std::string mode();
+
+               //! Return the minimum value
+               double minimum();
+
+               //! Return the maximum value
+               double maximum();
+
+               //! Return low byte
+               uint32_t lowByte();
+
+               //! Return high byte
+               uint32_t highByte();
+
+               //! Return variable range bytes
+               uint32_t varBytes();
+
+               //! Return variable offset
+               uint64_t offset();
+
+               //! Return verify enable flag
+               bool verifyEn();
+
+
          };
 
          //! Alias for using shared pointer as VaariablePtr
@@ -155,15 +195,16 @@ namespace rogue {
                // Create a Variable
                VariableWrap ( std::string name,
                               std::string mode,
-                              double   minimum,
-                              double   maximum,
-                              uint32_t model,
+                              boost::python::object minimum,
+                              boost::python::object maximum,
+                              uint64_t offset,
                               boost::python::object bitOffset,
                               boost::python::object bitSize,
                               bool overlapEn,
                               bool verify,
-                              bool byteReverse,
-                              bool bulkEn);
+                              bool bulkEn,
+                              uint32_t modelId,
+                              bool byteReverse);
 
                //! Update the bit offsets
                void updateOffset(boost::python::object bitOffset);

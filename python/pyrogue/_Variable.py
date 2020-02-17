@@ -11,7 +11,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue as pr
 import textwrap
-import rogue.interfaces.memory
+import rogue.interfaces.memory as rim
 import parse
 import math
 import inspect
@@ -130,8 +130,6 @@ class BaseVariable(pr.Node):
         self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
-        self._lowByte       = 0
-        self._highByte      = -1
         self._pollInterval  = pollInterval
         self._nativeType    = None
         self._listeners     = []
@@ -532,7 +530,7 @@ class RemoteVariable(BaseVariable):
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
-            
+
         self._block    = None
 
         # Convert the address parameters into lists
@@ -544,7 +542,7 @@ class RemoteVariable(BaseVariable):
 
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
-            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
+            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
 
         # Check for invalid values
         if 0 in bitSize:
@@ -560,24 +558,22 @@ class RemoteVariable(BaseVariable):
         else:
             self._base = base(sum(bitSize))
 
-        self._offset    = offset
-        self._bitSize   = bitSize
-        self._bitOffset = bitOffset
-        self._verify    = verify
         self._typeStr   = self._base.name
-        self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
-        self._overlapEn = overlapEn
 
+        # Setup C++ Base class
+        rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
+                              offset, bitOffset, bitSize, overlapEn, verify, 
+                              self._bulkEn, self._base.modelId, self._base.isBigEndian)
 
     @pr.expose
     @property
     def varBytes(self):
-        return self._bytes
+        return self._varBytes
 
     @pr.expose
     @property
     def offset(self):
-        return self._offset
+        return self._offset()
 
     @pr.expose
     @property
@@ -587,17 +583,17 @@ class RemoteVariable(BaseVariable):
     @pr.expose
     @property
     def bitSize(self):
-        return self._bitSize
+        return self._bitSize()
 
     @pr.expose
     @property
     def bitOffset(self):
-        return self._bitOffset
+        return self._bitOffset()
 
     @pr.expose
     @property
     def verify(self):
-        return self._verify
+        return self._verify()
 
     @pr.expose
     @property
@@ -639,7 +635,7 @@ class RemoteVariable(BaseVariable):
 
             # Set value to block
             self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+            self._block.startTransaction(rim.Post, False, True, 0, -1)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -681,28 +677,12 @@ class RemoteVariable(BaseVariable):
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
-        else:        
+        else:
 
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
                 return self._base.fromString(sValue)
-            
-    def _shiftOffsetDown(self,amount,minSize):
-        if amount != 0:
-
-            self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-            #print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-
-            self._offset -= amount
-
-            for i in range(0,len(self._bitOffset)):
-                self._bitOffset[i] += (amount * 8)
-
-        self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
-
-        self._lowByte  = int(math.floor(self._bitOffset[0] / 8))
-        self._highByte = int(math.floor((self._bitOffset[-1] + self._bitSize[-1] - 1) / 8))
 
 
 class LocalVariable(BaseVariable):
@@ -741,6 +721,9 @@ class LocalVariable(BaseVariable):
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
+        self._lowByte  = 0
+        self._highByte = -1
+
     @pr.expose
     def set(self, value, write=True):
         """
@@ -774,7 +757,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+            self._block.startTransaction(rim.Post, False, True, 0, -1)
 
         except Exception as e:
             pr.logException(self._log,e)
