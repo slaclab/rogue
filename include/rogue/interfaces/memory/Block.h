@@ -31,6 +31,13 @@ namespace rogue {
    namespace interfaces {
       namespace memory {
 
+           template<typename T>
+           inline
+           std::vector< T > py_list_to_std_vector( const boost::python::object& iterable ) {
+               return std::vector< T >( boost::python::stl_input_iterator< T >( iterable ),
+                                        boost::python::stl_input_iterator< T >( ) );
+           }
+
          class BlockVariable;
 
          //! Memory interface Block device
@@ -230,7 +237,6 @@ namespace rogue {
 
                // Set data using Custom Function
                virtual void setCustom ( boost::python::object &value, std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
-
 
                // Get data using Custom Function
                virtual boost::python::object getCustom (std::shared_ptr<rogue::interfaces::memory::BlockVariable> &bv );
