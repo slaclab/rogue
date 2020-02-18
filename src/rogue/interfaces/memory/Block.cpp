@@ -182,15 +182,12 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       waitTransaction(0);
       clearError();
 
-      // Set default high bytes
-      if ( highByte == -1 ) highByte = size_-1;
-
       if ( var == NULL ) {
           lowByte = 0;
           highByte = size_-1;
       } else{
-          lowByte = var->lowByte_;
-          highByte = var->highByte_;
+          lowByte = var_->lowByte;
+          highByte = var_->highByte;
       }
 
       // Write only occurs if stale or if forceWr is set
