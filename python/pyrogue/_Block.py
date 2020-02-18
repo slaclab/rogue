@@ -105,7 +105,7 @@ class LocalBlock(object):
 
         return self._value
 
-    def startTransaction(self, type, forceWr, check, lowByte, highByte):
+    def startTransaction(self, type, forceWr, check, var):
         """
         Start a transaction.
         """
@@ -127,6 +127,9 @@ class LocalBlock(object):
             # Update variables outside of lock
             if doUpdate: 
                 self._variable._queueUpdate()
+
+    def _setTimeout(self,timeout):
+        pass
 
     def _iadd(self, other):
         with self._lock:

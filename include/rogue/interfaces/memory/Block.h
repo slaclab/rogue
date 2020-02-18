@@ -259,7 +259,7 @@ namespace rogue {
                 * @param lowByte  Low byte of block to include in transaction., -1 for default
                 * @param highByte High byte of block to include in transaction., -1 for default
                 */
-               void startTransaction(uint32_t type, bool forceWr, bool check, uint32_t lowByte, int32_t highByte);
+               void startTransaction(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
 
                //! Check transaction result
                /** Check transaction result, an exception is thrown if an error occured.

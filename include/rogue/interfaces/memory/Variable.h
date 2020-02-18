@@ -103,6 +103,9 @@ namespace rogue {
                // Bin Point
                uint32_t binPoint_;
 
+               // Stale flag
+               bool stale_;
+
             public:
 
                //! Class factory which returns a pointer to a Variable (VariablePtr)
@@ -175,12 +178,6 @@ namespace rogue {
                //! Return the maximum value
                double maximum();
 
-               //! Return low byte
-               uint32_t lowByte();
-
-               //! Return high byte
-               uint32_t highByte();
-
                //! Return variable range bytes
                uint32_t varBytes();
 
@@ -218,10 +215,7 @@ namespace rogue {
                               bool overlapEn,
                               bool verify,
                               bool bulkEn,
-                              boost::python::object model,
-                              uint32_t modelId,
-                              bool byteReverse,
-                              uint32_t binPoint);
+                              boost::python::object model);
 
                //! Update the bit offsets
                void updateOffset(boost::python::object &bitOffset);
@@ -250,6 +244,9 @@ namespace rogue {
 
                void defQueueUpdate();
                void queueUpdate();
+
+               boost::python::object bitOffset();
+               boost::python::object bitSize();
                
          };
 

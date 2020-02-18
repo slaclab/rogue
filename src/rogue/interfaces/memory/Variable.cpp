@@ -54,12 +54,15 @@ rim::VariablePtr create ( std::string name,
 void rim::Variable::setup_python() {
 
 #ifndef NO_PYTHON
-   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bp::object,uint32_t,bool,uint32_t>())
-      .def("_lowByte",         &rim::Variable::lowByte)
-      .def("_highByte",        &rim::Variable::highByte)
+   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bp::object>())
       .def("_varBytes",        &rim::Variable::varBytes)
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
+      .def("_updatePath",      &rim::Variable::updatePath)
+      .def("_bitOffset",       &rim::VariableWrap::bitOffset)
+      .def("_bitSize",         &rim::VariableWrap::bitSize)
+      .def("_get",             &rim::VariableWrap::get)
+      .def("_set",             &rim::VariableWrap::set)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
    ;
 #endif
@@ -96,6 +99,7 @@ rim::Variable::Variable ( std::string name,
    minValue_    = minimum;
    maxValue_    = maximum;
    binPoint_    = binPoint;
+   stale_       = false;
 
    // Compute bit total
    bitTotal_ = bitSize_[0];
@@ -116,7 +120,7 @@ rim::Variable::Variable ( std::string name,
    // Custom data is NULL for now
    customData_ = NULL;
 
-   printf("Created new variable %s\n",name_.c_str());
+   printf("Created new variable %s. varBytes=%i, bitTotal=%i, byteSize=%i\n",name_.c_str(),varBytes_,bitTotal_,byteSize_);
 }
 
 // Destroy the Hub
@@ -126,23 +130,22 @@ rim::Variable::~Variable() {}
 void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
    uint32_t x;
 
-   if ( shift != 0 ) {
-
-      //self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-
+   if (shift != 0) {
       offset_ -= shift;
 
       for (x=0; x < bitOffset_.size(); x++) bitOffset_[x] += shift*8;
-
-      // Compute total bit range of accessed bits
-      varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / ((float)minSize*8.0)) * minSize;
-
-      // Compute the lowest byte
-      lowByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
-
-      // Compute the highest byte
-      highByte_ = varBytes_ - 1;
    }
+
+   // Compute total bit range of accessed bits
+   varBytes_ = ((int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / ((float)minSize*8.0))) * minSize;
+
+   // Compute the lowest byte
+   lowByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
+
+   // Compute the highest byte
+   highByte_ = varBytes_ - 1;
+
+   printf("Adjusted variable %s. varBytes=%i, minSize=%i\n",name_.c_str(),varBytes_,minSize);
 }
 
 void rim::Variable::updatePath(std::string path) {
@@ -167,16 +170,6 @@ double rim::Variable::minimum() {
 //! Return the maximum value
 double rim::Variable::maximum() {
    return maxValue_;
-}
-
-//! Return low byte
-uint32_t rim::Variable::lowByte() {
-   return lowByte_;
-}
-
-//! Return high byte
-uint32_t rim::Variable::highByte() {
-   return highByte_;
 }
 
 //! Return variable range bytes
@@ -205,10 +198,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool overlapEn, 
                                   bool verify,
                                   bool bulkEn,
-                                  bp::object model,
-                                  uint32_t modelId, 
-                                  bool byteReverse,
-                                  uint32_t binPoint)
+                                  bp::object model)
                      : rim::Variable ( name, 
                                        mode, 
                                        py_object_convert<double>(minimum),
@@ -219,10 +209,10 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        overlapEn, 
                                        verify,
                                        bulkEn,
-                                       modelId, 
-                                       byteReverse,
-                                       binPoint ) { 
-                     
+                                       bp::extract<uint32_t>(model.attr("modelId")),
+                                       bp::extract<bool>(model.attr("isBigEndian")),
+                                       bp::extract<uint32_t>(model.attr("binPoint")) ) {
+
    model_ = model;                     
 }
 
@@ -245,6 +235,8 @@ void rim::VariableWrap::set(bp::object &value) {
 
 //! Get value from RemoteVariable
 boost::python::object rim::VariableWrap::get() {
+
+   printf("Called get on variable %s with modelId %i, blockSize=%i\n",name_.c_str(),modelId_,block_->size());
 
    switch (modelId_) {
       case rim::PyFunc : return block_->getPyFunc(this);    break;
@@ -288,5 +280,13 @@ void rim::VariableWrap::queueUpdate() {
          PyErr_Print();
       }
    }
+}
+
+bp::object rim::VariableWrap::bitOffset() {
+   return std_vector_to_py_list<uint32_t>(bitOffset_);
+}
+
+bp::object rim::VariableWrap::bitSize() {
+   return std_vector_to_py_list<uint32_t>(bitSize_);
 }
 

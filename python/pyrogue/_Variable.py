@@ -563,7 +563,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify, 
-                              self._bulkEn, self._base.modelId, self._base.isBigEndian)
+                              self._bulkEn, self._base)
 
     @pr.expose
     @property
@@ -611,7 +611,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            self._block.set(self, value)
+            self._set(value)
 
             if write:
                 self._parent.writeBlocks(force=True, recurse=False, variable=self)
@@ -634,8 +634,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            self._block.set(self, value)
-            self._block.startTransaction(rim.Post, False, True, 0, -1)
+            self._set(value)
+            self._block.startTransaction(rim.Post, False, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -653,7 +653,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            return self._block.get(self)
+            return self._get()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -721,9 +721,6 @@ class LocalVariable(BaseVariable):
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
-        self._lowByte  = 0
-        self._highByte = -1
-
     @pr.expose
     def set(self, value, write=True):
         """
@@ -757,7 +754,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value)
-            self._block.startTransaction(rim.Post, False, True, 0, -1)
+            self._block.startTransaction(rim.Post, False, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)

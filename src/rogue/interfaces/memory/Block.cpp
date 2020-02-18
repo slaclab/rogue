@@ -158,13 +158,15 @@ bool rim::Block::blockTrans() {
 }
 
 // Start a transaction for this block
-void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint32_t lowByte, int32_t highByte) {
+void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
    uint32_t  x;
    bool      doTran;
    uint32_t  tOff;
    uint32_t  tSize;
    uint8_t * tData;
    float     minA;
+   uint32_t  highByte;
+   uint32_t  lowByte;
 
    if ( blockTrans_ ) return;
 
@@ -182,6 +184,14 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, uint3
 
       // Set default high bytes
       if ( highByte == -1 ) highByte = size_-1;
+
+      if ( var == NULL ) {
+          lowByte = 0;
+          highByte = size_-1;
+      } else{
+          lowByte = var->lowByte_;
+          highByte = var->highByte_;
+      }
 
       // Write only occurs if stale or if forceWr is set
       doTran = (forceWr || (type != rim::Write));
@@ -428,11 +438,11 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
 
       if ( anyBits(stagedMask_, var->bitOffset_[x], var->bitSize_[x]) ) {
          copyBits(data, dstBit, stagedData_, var->bitOffset_[x], var->bitSize_[x]);
-         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",var->name_.c_str(),x,var->bitOffset_[x],var->bitSize_[0]);
+         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",var->name_.c_str(),x,var->bitOffset_[x],var->bitSize_[x]);
       }
       else {
          copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
-         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",var->name_.c_str(),x,var->bitOffset_[x],var->bitSize_[0]);
+         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",var->name_.c_str(),x,var->bitOffset_[x],var->bitSize_[x]);
       }
 
       dstBit += var->bitSize_[x];
