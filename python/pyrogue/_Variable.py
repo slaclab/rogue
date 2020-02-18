@@ -493,7 +493,7 @@ class BaseVariable(pr.Node):
             return 'Good','Good'
 
 
-class RemoteVariable(BaseVariable):
+class RemoteVariable(BaseVariable,rim.Variable):
 
     def __init__(self, *,
                  name,
@@ -568,7 +568,7 @@ class RemoteVariable(BaseVariable):
     @pr.expose
     @property
     def varBytes(self):
-        return self._varBytes
+        return self._varBytes()
 
     @pr.expose
     @property

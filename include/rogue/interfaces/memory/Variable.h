@@ -20,6 +20,7 @@
 #define __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
 #include <stdint.h>
 #include <vector>
+#include <rogue/EnableSharedFromThis.h>
 
 #include <thread>
 
@@ -40,10 +41,13 @@ namespace rogue {
             protected:
 
                // Associated block
-               std::shared_ptr<rogue::interfaces::memory::Block> block_;
+               rogue::interfaces::memory::Block * block_;
 
                // Name
                std::string name_;
+
+               // Path
+               std::string path_;
 
                // Model
                uint32_t modelId_;
@@ -96,6 +100,9 @@ namespace rogue {
                // Poiner to custom data
                void * customData_;
 
+               // Bin Point
+               uint32_t binPoint_;
+
             public:
 
                //! Class factory which returns a pointer to a Variable (VariablePtr)
@@ -112,6 +119,7 @@ namespace rogue {
                 * @param bulkEn Bulk read/write flag
                 * @param modelId Variable model ID
                 * @param byteReverse Byte reverse flag
+                * @param bitPoint Bit point for fixed point values
                 */
                static std::shared_ptr<rogue::interfaces::memory::Variable> create (
                      std::string name,
@@ -125,7 +133,8 @@ namespace rogue {
                      bool verify,
                      bool bulkEn,
                      uint32_t modelId,
-                     bool byteReverse);
+                     bool byteReverse,
+                     uint32_t binPoint);
                      
                // Setup class for use in python
                static void setup_python();
@@ -142,13 +151,17 @@ namespace rogue {
                           bool verify,
                           bool bulkEn,
                           uint32_t modelId,
-                          bool byteReverse);
+                          bool byteReverse,
+                          uint32_t binPoint);
 
                // Destroy
                virtual ~Variable();
 
                //! Shift offset down
-               void shiftOffsetDown(uint32_t shift);
+               void shiftOffsetDown(uint32_t shift, uint32_t minSize);
+
+               // Update path
+               void updatePath(std::string path);
 
                //! Return the name of the variable
                std::string name();
@@ -177,7 +190,7 @@ namespace rogue {
                //! Return verify enable flag
                bool verifyEn();
 
-
+               void queueUpdate();
          };
 
          //! Alias for using shared pointer as VaariablePtr
@@ -189,6 +202,8 @@ namespace rogue {
          class VariableWrap : 
             public rogue::interfaces::memory::Variable,
             public boost::python::wrapper<rogue::interfaces::memory::Variable> {
+
+               boost::python::object model_;
 
             public:
 
@@ -203,11 +218,13 @@ namespace rogue {
                               bool overlapEn,
                               bool verify,
                               bool bulkEn,
+                              boost::python::object model,
                               uint32_t modelId,
-                              bool byteReverse);
+                              bool byteReverse,
+                              uint32_t binPoint);
 
                //! Update the bit offsets
-               void updateOffset(boost::python::object bitOffset);
+               void updateOffset(boost::python::object &bitOffset);
 
                //! Set value from RemoteVariable
                /** Set the internal shadow memory with the requested variable value
@@ -216,7 +233,7 @@ namespace rogue {
                 *
                 * @param value   Byte array containing variable value
                 */
-               void set(boost::python::object value);
+               void set(boost::python::object &value);
 
                //! Get value from RemoteVariable
                /** Copy the shadow memory value into the passed byte array.
@@ -224,6 +241,16 @@ namespace rogue {
                 * Exposed as get() method to Python
                 */
                boost::python::object get();
+
+               // To Bytes
+               boost::python::object toBytes(boost::python::object &value);
+
+               // From Bytes
+               boost::python::object fromBytes(boost::python::object &value);
+
+               void defQueueUpdate();
+               void queueUpdate();
+               
          };
 
          typedef std::shared_ptr<rogue::interfaces::memory::VariableWrap> VariableWrapPtr;

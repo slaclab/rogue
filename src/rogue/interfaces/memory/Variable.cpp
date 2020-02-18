@@ -18,6 +18,7 @@
 **/
 #include <rogue/interfaces/memory/Variable.h>
 #include <rogue/interfaces/memory/Block.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GeneralError.h>
@@ -41,10 +42,11 @@ rim::VariablePtr create ( std::string name,
                           bool verify,
                           bool bulkEn,
                           uint32_t modelId,
-                          bool byteReverse ) {
+                          bool byteReverse,
+                          uint32_t binPoint ) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, modelId, byteReverse);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, modelId, byteReverse, binPoint);
    return(v);
 }
 
@@ -52,13 +54,13 @@ rim::VariablePtr create ( std::string name,
 void rim::Variable::setup_python() {
 
 #ifndef NO_PYTHON
-   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,uint32_t,bool>())
+   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bp::object,uint32_t,bool,uint32_t>())
       .def("_lowByte",         &rim::Variable::lowByte)
       .def("_highByte",        &rim::Variable::highByte)
       .def("_varBytes",        &rim::Variable::varBytes)
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
-      //.def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
+      .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
    ;
 #endif
 }
@@ -75,11 +77,13 @@ rim::Variable::Variable ( std::string name,
                           bool verifyEn,
                           bool bulkEn,
                           uint32_t modelId,
-                          bool byteReverse) {
+                          bool byteReverse,
+                          uint32_t binPoint) {
 
    uint32_t x;
 
    name_        = name;
+   path_        = name;
    mode_        = mode;
    modelId_     = modelId;
    offset_      = offset;
@@ -91,6 +95,7 @@ rim::Variable::Variable ( std::string name,
    bulkEn_      = bulkEn;
    minValue_    = minimum;
    maxValue_    = maximum;
+   binPoint_    = binPoint;
 
    // Compute bit total
    bitTotal_ = bitSize_[0];
@@ -118,7 +123,7 @@ rim::Variable::Variable ( std::string name,
 rim::Variable::~Variable() {}
 
 // Shift offset down
-void rim::Variable::shiftOffsetDown(uint32_t shift) {
+void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
    uint32_t x;
 
    if ( shift != 0 ) {
@@ -130,7 +135,7 @@ void rim::Variable::shiftOffsetDown(uint32_t shift) {
       for (x=0; x < bitOffset_.size(); x++) bitOffset_[x] += shift*8;
 
       // Compute total bit range of accessed bits
-      varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / 8.0);
+      varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / ((float)minSize*8.0)) * minSize;
 
       // Compute the lowest byte
       lowByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
@@ -138,6 +143,10 @@ void rim::Variable::shiftOffsetDown(uint32_t shift) {
       // Compute the highest byte
       highByte_ = varBytes_ - 1;
    }
+}
+
+void rim::Variable::updatePath(std::string path) {
+   path_ = path;
 }
 
 // Return the name of the variable
@@ -196,8 +205,10 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool overlapEn, 
                                   bool verify,
                                   bool bulkEn,
+                                  bp::object model,
                                   uint32_t modelId, 
-                                  bool byteReverse)
+                                  bool byteReverse,
+                                  uint32_t binPoint)
                      : rim::Variable ( name, 
                                        mode, 
                                        py_object_convert<double>(minimum),
@@ -209,18 +220,73 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        verify,
                                        bulkEn,
                                        modelId, 
-                                       byteReverse ) { }
+                                       byteReverse,
+                                       binPoint ) { 
+                     
+   model_ = model;                     
+}
 
 //! Set value from RemoteVariable
-void rim::VariableWrap::set(bp::object value) {
+void rim::VariableWrap::set(bp::object &value) {
+   if (block_->blockTrans() ) return;
 
-
+   switch (modelId_) {
+      case rim::PyFunc : block_->setPyFunc(value,this);    break;
+      case rim::Bytes  : block_->setByteArray(value,this); break;
+      case rim::UInt   : block_->setUInt(value,this);      break;
+      case rim::Int    : block_->setInt(value,this);       break;
+      case rim::Bool   : block_->setBool(value,this);      break;
+      case rim::String : block_->setString(value,this);    break;
+      case rim::Float  : block_->setFloat(value,this);     break;
+      case rim::Fixed  : block_->setFixed(value,this);     break;
+      default          : block_->setCustom(value,this);    break;
+   }
 }
 
 //! Get value from RemoteVariable
 boost::python::object rim::VariableWrap::get() {
 
+   switch (modelId_) {
+      case rim::PyFunc : return block_->getPyFunc(this);    break;
+      case rim::Bytes  : return block_->getByteArray(this); break;
+      case rim::UInt   : return block_->getUInt(this);      break;
+      case rim::Int    : return block_->getInt(this);       break;
+      case rim::Bool   : return block_->getBool(this);      break;
+      case rim::String : return block_->getString(this);    break;
+      case rim::Float  : return block_->getFloat(this);     break;
+      case rim::Fixed  : return block_->getFixed(this);     break;
+      default          : return block_->getCustom(this);    break;
+   }
+}
 
 
+// Set data using python function
+bp::object rim::VariableWrap::toBytes ( bp::object &value ) {
+   return model_.attr("toBytes")(value);
+}
+
+// Get data using python function
+bp::object rim::VariableWrap::fromBytes ( bp::object &value ) {
+   return model_.attr("fromBytes")(value);
+}
+
+void rim::Variable::queueUpdate() { }
+
+void rim::VariableWrap::defQueueUpdate() {
+   rim::Variable::queueUpdate();
+}
+
+// Queue update
+void rim::VariableWrap::queueUpdate() {
+   rogue::ScopedGil gil;
+
+   if (bp::override pb = this->get_override("_queueUpdate")) {
+      try {
+         pb();
+         return;
+      } catch (...) {
+         PyErr_Print();
+      }
+   }
 }
 
