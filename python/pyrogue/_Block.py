@@ -128,6 +128,9 @@ class LocalBlock(object):
             if doUpdate: 
                 self._variable._queueUpdate()
 
+    def _setTimeout(self,timeout):
+        pass
+
     def _iadd(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
