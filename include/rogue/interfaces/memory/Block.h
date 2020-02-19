@@ -26,11 +26,13 @@
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
       namespace memory {
 
+#ifndef NO_PYTHON
          template<typename T>
          inline
          std::vector< T > py_list_to_std_vector( const boost::python::object& iterable ) {
@@ -57,6 +59,7 @@ namespace rogue {
             if ( !ret.check() ) return (T)0;
             else return ret;
          }
+#endif
 
          class Variable;
          class VariableWrap;
@@ -275,18 +278,30 @@ namespace rogue {
                 *
                 * @param variables Variable list
                 */
-               void addVariables(boost::python::object variables);
+               void addVariables(std::vector< std::shared_ptr<rogue::interfaces::memory::Variable> > variables);
+
+#ifndef NO_PYTHON
+               void addVariablesPy(boost::python::object variables);
+#endif 
+
+#ifndef NO_PYTHON
 
                //! Return a list of variables in the block
                /** Return the list of variables associated with this block
                 *
                 * Exposed as variables property to Python
                 */
-               boost::python::object variables();
+               boost::python::object variablesPy();
+
+               std::vector<std::shared_ptr<rogue::interfaces::memory::Variable>> variables();
+
+#endif
 
                //////////////////////////////////////////
                // Python functions
                //////////////////////////////////////////
+
+#ifndef NO_PYTHON
 
                // Set data using python function
                void setPyFunc ( boost::python::object &value, rogue::interfaces::memory::VariableWrap *var );
@@ -294,103 +309,161 @@ namespace rogue {
                // Get data using python function
                boost::python::object getPyFunc (rogue::interfaces::memory::VariableWrap *var );
 
+#endif
+
                //////////////////////////////////////////
                // Raw Bytes
                //////////////////////////////////////////
 
-               // Set data using byte array
-               void setByteArray ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+#ifndef NO_PYTHON
 
+               // Set data using byte array
+               void setByteArrayPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using byte array
-               boost::python::object getByteArray (rogue::interfaces::memory::Variable *var );
+               boost::python::object getByteArrayPy (rogue::interfaces::memory::Variable *var );
+
+#endif
 
                //////////////////////////////////////////
                // Unsigned int
                //////////////////////////////////////////
 
+#ifndef NO_PYTHON
+
                // Set data using unsigned int
-               void setUInt ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setUIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
 
                // Get data using unsigned int
-               boost::python::object getUInt (rogue::interfaces::memory::Variable *var );
+               boost::python::object getUIntPy (rogue::interfaces::memory::Variable *var );
+
+#endif
+
+               // Set data using unsigned int
+               void setUInt ( uint64_t &value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using unsigned int
+               uint64_t getUInt (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // Int
                //////////////////////////////////////////
 
-               // Set data using int
-               void setInt ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+#ifndef NO_PYTHON
 
+               // Set data using int
+               void setIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using int
-               boost::python::object getInt (rogue::interfaces::memory::Variable *var );
+               boost::python::object getIntPy (rogue::interfaces::memory::Variable *var );
+
+#endif
+
+               // Set data using int
+               void setInt ( int64_t &value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using int
+               int64_t getInt (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // Bool
                //////////////////////////////////////////
 
-               // Set data using bool
-               void setBool ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+#ifndef NO_PYTHON
 
+               // Set data using bool
+               void setBoolPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using bool
-               boost::python::object getBool (rogue::interfaces::memory::Variable *var );
+               boost::python::object getBoolPy (rogue::interfaces::memory::Variable *var );
+
+#endif
+
+               // Set data using bool
+               void setBool ( bool &value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using bool
+               bool getBool (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // String
                //////////////////////////////////////////
 
+#ifndef NO_PYTHON
                // Set data using String
-               void setString ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
-
+               void setStringPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using String
-               boost::python::object getString (rogue::interfaces::memory::Variable *var );
+               boost::python::object getStringPy (rogue::interfaces::memory::Variable *var );
+
+#endif
+
+               // Set data using String
+               void setString ( std::string &value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using String
+               std::string getString (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // Float
                //////////////////////////////////////////
 
-               // Set data using Float
-               void setFloat ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+#ifndef NO_PYTHON
 
+               // Set data using Float
+               void setFloatPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using Float
-               boost::python::object getFloat (rogue::interfaces::memory::Variable *var );
+               boost::python::object getFloatPy (rogue::interfaces::memory::Variable *var );
+
+#endif
+
+               // Set data using Float
+               void setFloat ( float &value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using Float
+               float getFloat (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // Double
                //////////////////////////////////////////
 
-               // Set data using Double
-               void setDouble ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+#ifndef NO_PYTHON
 
+               // Set data using Double
+               void setDoublePy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using Double
-               boost::python::object getDouble (rogue::interfaces::memory::Variable *var );
+               boost::python::object getDoublePy (rogue::interfaces::memory::Variable *var );
+
+#endif
+
+               // Set data using Double
+               void setDouble ( double &value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using Double
+               double getDouble (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // Fixed Point
                //////////////////////////////////////////
 
-               // Set data using Fixed Point
-               void setFixed ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+#ifndef NO_PYTHON
 
+               // Set data using Fixed Point
+               void setFixedPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using Fixed Point
-               boost::python::object getFixed (rogue::interfaces::memory::Variable *var );
+               boost::python::object getFixedPy (rogue::interfaces::memory::Variable *var );
 
-               //////////////////////////////////////////
-               // Custom Type
-               //////////////////////////////////////////
+#endif
 
-               // Set data using Custom Function
-               virtual void setCustom ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               // Set data using Fixed Point
+               void setFixed ( double &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Custom Function
-               virtual boost::python::object getCustom (rogue::interfaces::memory::Variable *var );
+               // Get data using Fixed Point
+               double getFixed (rogue::interfaces::memory::Variable *var );
 
          };
 
@@ -401,6 +474,5 @@ namespace rogue {
    }
 }
 
-#endif
 #endif
 

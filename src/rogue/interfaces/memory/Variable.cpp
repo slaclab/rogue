@@ -120,6 +120,46 @@ rim::Variable::Variable ( std::string name,
    // Custom data is NULL for now
    customData_ = NULL;
 
+#if 0
+   // Define set function
+   switch (modelId_) {
+      case rim::PyFunc : setFuncPy = block_->setPyFuncPy;    break;
+      case rim::Bytes  : setFuncPy = block_->setByteArrayPy; break;
+      case rim::UInt : 
+         if (bitTotal_ > 64) setFuncPy = block_->setPyFuncPy;
+         else setFuncPy = block_->setUIntPy;
+         break;
+      case rim::Int :
+         if (bitTotal_ > 64) setFuncPy = block_->setPyFuncPy;
+         else setFuncPy = block_->setIntPy;
+         break;
+      case rim::Bool   : setFuncPy = block_->setBoolPy;   break;
+      case rim::String : setFuncPy = block_->setStringPy; break;
+      case rim::Float  : setFuncPy = block_->setFloatPy;  break;
+      case rim::Fixed  : setFuncPy = block_->setFixedPy;  break;
+      default          : setFuncPy = block_->setCustomPy; break;
+   }
+
+   // Define get function
+   switch (modelId_) {
+      case rim::PyFunc : getFuncPy = block_->getPyFuncPy;    break;
+      case rim::Bytes  : getFuncPy = block_->getByteArrayPy; break;
+      case rim::UInt : 
+         if (bitTotal_ > 60) getFuncPy = block_->getPyFuncPy;
+         else getFuncPy = block_->getUIntPy;
+         break;
+      case rim::Int :
+         if (bitTotal_ > 60) getFuncPy = block_->getPyFuncPy;
+         else getFuncPy = block_->getIntPy;
+         break;
+      case rim::Bool   : getFuncPy = block_->getBoolPy;   break;
+      case rim::String : getFuncPy = block_->getStringPy; break;
+      case rim::Float  : getFuncPy = block_->getFloatPy;  break;
+      case rim::Fixed  : getFuncPy = block_->getFixedPy;  break;
+      default          : getFuncPy = block_->getCustomPy; break;
+   }
+#endif
+
    printf("Created new variable %s. varBytes=%i, bitTotal=%i, byteSize=%i\n",name_.c_str(),varBytes_,bitTotal_,byteSize_);
 }
 
@@ -220,45 +260,53 @@ rim::VariableWrap::VariableWrap ( std::string name,
 void rim::VariableWrap::set(bp::object &value) {
    if (block_->blockTrans() ) return;
 
+#if 1
    switch (modelId_) {
-      case rim::PyFunc : block_->setPyFunc(value,this);    break;
-      case rim::Bytes  : block_->setByteArray(value,this); break;
+      case rim::PyFunc : block_->setPyFunc(value,this);      break;
+      case rim::Bytes  : block_->setByteArrayPy(value,this); break;
       case rim::UInt : 
          if (bitTotal_ > 64) block_->setPyFunc(value,this);
-         else block_->setUInt(value,this);
+         else block_->setUIntPy(value,this);
          break;
       case rim::Int :
          if (bitTotal_ > 64) block_->setPyFunc(value,this);
-         else block_->setInt(value,this);
+         else block_->setIntPy(value,this);
          break;
-      case rim::Bool   : block_->setBool(value,this);      break;
-      case rim::String : block_->setString(value,this);    break;
-      case rim::Float  : block_->setFloat(value,this);     break;
-      case rim::Fixed  : block_->setFixed(value,this);     break;
-      default          : block_->setCustom(value,this);    break;
+      case rim::Bool   : block_->setBoolPy(value,this);      break;
+      case rim::String : block_->setStringPy(value,this);    break;
+      case rim::Float  : block_->setFloatPy(value,this);     break;
+      case rim::Fixed  : block_->setFixedPy(value,this);     break;
+      default : break;
    }
+#endif
 }
 
 //! Get value from RemoteVariable
 bp::object rim::VariableWrap::get() {
 
+#if 1
    switch (modelId_) {
-      case rim::PyFunc : return block_->getPyFunc(this);    break;
-      case rim::Bytes  : return block_->getByteArray(this); break;
+      case rim::PyFunc : return block_->getPyFunc(this);      break;
+      case rim::Bytes  : return block_->getByteArrayPy(this); break;
       case rim::UInt : 
          if (bitTotal_ > 60) return block_->getPyFunc(this);
-         else return block_->getUInt(this);
+         else return block_->getUIntPy(this);
          break;
       case rim::Int :
          if (bitTotal_ > 60) return block_->getPyFunc(this);
-         else return block_->getInt(this);
+         else return block_->getIntPy(this);
          break;
-      case rim::Bool   : return block_->getBool(this);      break;
-      case rim::String : return block_->getString(this);    break;
-      case rim::Float  : return block_->getFloat(this);     break;
-      case rim::Fixed  : return block_->getFixed(this);     break;
-      default          : return block_->getCustom(this);    break;
+      case rim::Bool   : return block_->getBoolPy(this);      break;
+      case rim::String : return block_->getStringPy(this);    break;
+      case rim::Float  : return block_->getFloatPy(this);     break;
+      case rim::Fixed  : return block_->getFixedPy(this);     break;
+      default :
+         bp::handle<> handle(Py_None);
+         return bp::object(handle);
+         break;
+
    }
+#endif
 }
 
 
