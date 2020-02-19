@@ -92,10 +92,10 @@ namespace rogue {
                bool verifyEn_;
 
                // Low byte value
-               uint32_t lowByte_;
+               uint32_t lowTranByte_;
 
                // High byte value
-               uint32_t highByte_;
+               uint32_t highTranByte_;
 
                // Poiner to custom data
                void * customData_;
@@ -107,10 +107,10 @@ namespace rogue {
                bool stale_;
 
                // Set pointer function
-               void (rogue::interfaces::memory::Block::*setFuncPy)(boost::python::object &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFuncPy_)(boost::python::object &, rogue::interfaces::memory::Variable *);
 
                // Get pointer function
-               boost::python::object (rogue::interfaces::memory::Block::*getFuncPy)(rogue::interfaces::memory::Variable *);
+               boost::python::object (rogue::interfaces::memory::Block::*getFuncPy_)(rogue::interfaces::memory::Variable *);
 
             public:
 

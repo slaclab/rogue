@@ -70,15 +70,10 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    doUpdate_   = false;
    blockTrans_ = false;
    enable_     = false;
+   stale_      = false;
 
    verifyBase_ = 0; // Verify Range
    verifySize_ = 0; // Verify Range
-
-   stagedData_ = (uint8_t *)malloc(size_);
-   memset(stagedData_,0,size_);
-
-   stagedMask_ = (uint8_t *)malloc(size_);
-   memset(stagedMask_,0,size_);
 
    blockData_ = (uint8_t *)malloc(size_);
    memset(blockData_,0,size_);
@@ -96,8 +91,6 @@ rim::Block::~Block() {
    // Custom clean
    customClean();
 
-   free(stagedData_);
-   free(stagedMask_);
    free(blockData_);
    free(verifyData_);
    free(verifyMask_);
@@ -127,8 +120,6 @@ bool rim::Block::overlapEn() {
 void rim::Block::setEnable(bool newState) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
-
-   //printf("Block %s enable set to %i\n",path_.c_str(),newState);
    enable_ = newState;
 }
 
@@ -160,7 +151,6 @@ bool rim::Block::blockTrans() {
 // Start a transaction for this block
 void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
    uint32_t  x;
-   bool      doTran;
    uint32_t  tOff;
    uint32_t  tSize;
    uint8_t * tData;
@@ -168,13 +158,15 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
    uint32_t  highByte;
    uint32_t  lowByte;
 
+   std::vector<rim::VariablePtr>::iterator vit;
+
    if ( blockTrans_ ) return;
 
    // Check for valid combinations
-   if ( (type == rim::Write  and (mode_ == "RO")) ||
-        (type == rim::Post   and (mode_ == "RO")) ||
-        (type == rim::Read   and (mode_ == "WO")) ||
-        (type == rim::Verify and (mode_ == "WO" || mode_ == "RO" || !verifyReq_ ) ) ) return;
+   if ( (type == rim::Write  and ((mode_ == "RO")  || (!stale_ && !forceWr))) ||
+        (type == rim::Post   and  (mode_ == "RO")) ||
+        (type == rim::Read   and ((mode_ == "WO")  || stale_)) ||
+        (type == rim::Verify and ((mode_ == "WO")  || (mode_ == "RO") || stale_ || !verifyReq_ )) ) return;
 
    {
       rogue::GilRelease noGil;
@@ -182,38 +174,32 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       waitTransaction(0);
       clearError();
 
+      // Determine transaction range
       if ( var == NULL ) {
-          lowByte = 0;
-          highByte = size_-1;
+         lowByte = 0;
+         highByte = size_-1;
+         if ( type == rim::Write || type == rim::Post ) {
+            stale_ = false;
+            for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) (*vit)->stale_ = false;
+         }
       } else{
-          lowByte = var->lowByte_;
-          highByte = var->highByte_;
-      }
+          lowByte = var->lowTranByte_;
+          highByte = var->highTranByte_;
 
-      // Write only occurs if stale or if forceWr is set
-      doTran = (forceWr || (type != rim::Write));
-
-      // Move staged write data to block on writes or post
-      if ( type == rim::Write || type == rim::Post ) {
-         for (x=0; x < size_; x++) {
-            blockData_[x] &= (stagedMask_[x] ^ 0xFF);
-            blockData_[x] |= (stagedData_[x] & stagedMask_[x]);
-
-            // Adjust transaction range to stale data
-            if ( stagedMask_[x] != 0 ) {
-               if ( x < lowByte  ) lowByte  = x;
-               if ( x > highByte ) highByte = x;
-               doTran = true;
+         if ( type == rim::Write || type == rim::Post ) {
+            stale_ = false;
+            for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
+               (*vit)->stale_ = false;
+               if ( (*vit)->stale_ ) {
+                  if ( (*vit)->lowTranByte_  < lowByte  ) lowByte  = (*vit)->lowTranByte_;
+                  if ( (*vit)->highTranByte_ > highByte ) highByte = (*vit)->highTranByte_;
+               }
             }
          }
-
-         // Clear the stale state for the range of the transaction
-         memset(stagedData_,0,size_);
-         memset(stagedMask_,0,size_);
       }
 
-      // Device is disabled
-      if ( ! (enable_ && doTran) ) return;
+      // Device is disabled, check after clearing stale states
+      if ( ! enable_ ) return;
 
       // Setup verify data, clear verify write flag if verify transaction
       if ( type == rim::Verify) {
@@ -226,12 +212,9 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       // Not a verify transaction
       else {
 
-         // Get allows access sizes
-         minA = (float)reqMinAccess();
-
          // Derive offset and size based upon min transaction size
-         tOff  = (int)std::floor((float)lowByte / minA) * minA;
-         tSize = (int)std::ceil((float)(highByte-lowByte+1) / minA) * minA;
+         tOff  = lowByte;
+         tSize = (highByte - lowByte) + 1;
 
          // Set transaction pointer
          tData = blockData_ + tOff;
@@ -314,8 +297,6 @@ void rim::Block::varUpdate() {
 
 // Add variables to block
 void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
-   variables_ = variables;
-
    uint32_t x;
    uint32_t y;
 
@@ -324,6 +305,8 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
 
    memset(excMask,0,size_);
    memset(oleMask,0,size_);
+
+   variables_ = variables;
 
    for (x=0; x < variables_.size(); x++) {
       variables_[x]->block_ = this;
@@ -430,13 +413,16 @@ void rim::Block::setBytes ( uint8_t *data, rim::Variable *var ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
 
+   // Set stale flag
+   var->stale_ = true;
+   stale_ = true;
+
    // Change byte order
    if ( var->byteReverse_ ) reverseBytes(data,var->byteSize_);
 
    srcBit = 0;
    for (x=0; x < var->bitOffset_.size(); x++) {
-      copyBits(stagedData_, var->bitOffset_[x], data, srcBit, var->bitSize_[x]);
-      setBits(stagedMask_,  var->bitOffset_[x], var->bitSize_[x]);
+      copyBits(blockData_, var->bitOffset_[x], data, srcBit, var->bitSize_[x]);
       srcBit += var->bitSize_[x];
    }
 }
@@ -451,16 +437,7 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
 
    dstBit = 0;
    for (x=0; x < var->bitOffset_.size(); x++) {
-
-      if ( anyBits(stagedMask_, var->bitOffset_[x], var->bitSize_[x]) ) {
-         copyBits(data, dstBit, stagedData_, var->bitOffset_[x], var->bitSize_[x]);
-         bLog_->debug("Getting staged get data for %s. x=%i, BitOffset=%i, BitSize=%i",var->name_.c_str(),x,var->bitOffset_[x],var->bitSize_[x]);
-      }
-      else {
-         copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
-         bLog_->debug("Getting block get data for %s. x=%i, BitOffset=%i, BitSize=%i",var->name_.c_str(),x,var->bitOffset_[x],var->bitSize_[x]);
-      }
-
+      copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
       dstBit += var->bitSize_[x];
    }
 

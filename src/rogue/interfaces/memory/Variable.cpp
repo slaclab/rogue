@@ -112,50 +112,50 @@ rim::Variable::Variable ( std::string name,
    varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / 8.0);
 
    // Compute the lowest byte
-   lowByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
+   lowTranByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
 
    // Compute the highest byte
-   highByte_ = varBytes_ - 1;
+   highTranByte_ = varBytes_ - 1;
 
    // Custom data is NULL for now
    customData_ = NULL;
 
    // Define set function
    switch (modelId_) {
-      case rim::PyFunc : setFuncPy = &rim::Block::setPyFunc;      break;
-      case rim::Bytes  : setFuncPy = &rim::Block::setByteArrayPy; break;
+      case rim::PyFunc : setFuncPy_ = &rim::Block::setPyFunc;      break;
+      case rim::Bytes  : setFuncPy_ = &rim::Block::setByteArrayPy; break;
       case rim::UInt : 
-         if (bitTotal_ > 64) setFuncPy = &rim::Block::setPyFunc;
-         else setFuncPy = &rim::Block::setUIntPy;
+         if (bitTotal_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
+         else setFuncPy_ = &rim::Block::setUIntPy;
          break;
       case rim::Int :
-         if (bitTotal_ > 64) setFuncPy = &rim::Block::setPyFunc;
-         else setFuncPy = &rim::Block::setIntPy;
+         if (bitTotal_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
+         else setFuncPy_ = &rim::Block::setIntPy;
          break;
-      case rim::Bool   : setFuncPy = &rim::Block::setBoolPy;   break;
-      case rim::String : setFuncPy = &rim::Block::setStringPy; break;
-      case rim::Float  : setFuncPy = &rim::Block::setFloatPy;  break;
-      case rim::Fixed  : setFuncPy = &rim::Block::setFixedPy;  break;
-      default          : getFuncPy = NULL; break;
+      case rim::Bool   : setFuncPy_ = &rim::Block::setBoolPy;   break;
+      case rim::String : setFuncPy_ = &rim::Block::setStringPy; break;
+      case rim::Float  : setFuncPy_ = &rim::Block::setFloatPy;  break;
+      case rim::Fixed  : setFuncPy_ = &rim::Block::setFixedPy;  break;
+      default          : getFuncPy_ = NULL; break;
    }
 
    // Define get function
    switch (modelId_) {
-      case rim::PyFunc : getFuncPy = &rim::Block::getPyFunc;      break;
-      case rim::Bytes  : getFuncPy = &rim::Block::getByteArrayPy; break;
+      case rim::PyFunc : getFuncPy_ = &rim::Block::getPyFunc;      break;
+      case rim::Bytes  : getFuncPy_ = &rim::Block::getByteArrayPy; break;
       case rim::UInt : 
-         if (bitTotal_ > 60) getFuncPy = &rim::Block::getPyFunc;
-         else getFuncPy = &rim::Block::getUIntPy;
+         if (bitTotal_ > 60) getFuncPy_ = &rim::Block::getPyFunc;
+         else getFuncPy_ = &rim::Block::getUIntPy;
          break;
       case rim::Int :
-         if (bitTotal_ > 60) getFuncPy = &rim::Block::getPyFunc;
-         else getFuncPy = &rim::Block::getIntPy;
+         if (bitTotal_ > 60) getFuncPy_ = &rim::Block::getPyFunc;
+         else getFuncPy_ = &rim::Block::getIntPy;
          break;
-      case rim::Bool   : getFuncPy = &rim::Block::getBoolPy;   break;
-      case rim::String : getFuncPy = &rim::Block::getStringPy; break;
-      case rim::Float  : getFuncPy = &rim::Block::getFloatPy;  break;
-      case rim::Fixed  : getFuncPy = &rim::Block::getFixedPy;  break;
-      default          : getFuncPy = NULL; break;
+      case rim::Bool   : getFuncPy_ = &rim::Block::getBoolPy;   break;
+      case rim::String : getFuncPy_ = &rim::Block::getStringPy; break;
+      case rim::Float  : getFuncPy_ = &rim::Block::getFloatPy;  break;
+      case rim::Fixed  : getFuncPy_ = &rim::Block::getFixedPy;  break;
+      default          : getFuncPy_ = NULL; break;
    }
 
    printf("Created new variable %s. varBytes=%i, bitTotal=%i, byteSize=%i\n",name_.c_str(),varBytes_,bitTotal_,byteSize_);
@@ -170,20 +170,19 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
    if (shift != 0) {
       offset_ -= shift;
-
       for (x=0; x < bitOffset_.size(); x++) bitOffset_[x] += shift*8;
    }
 
-   // Compute total bit range of accessed bits
-   varBytes_ = ((int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / ((float)minSize*8.0))) * minSize;
+   // Compute total bit range of accessed bits, aligned to min size
+   varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / ((float)minSize*8.0)) * minSize;
 
-   // Compute the lowest byte
-   lowByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
+   // Compute the lowest byte, aligned to min access
+   lowTranByte_  = (int)std::floor((float)bitOffset_[0] / ((float)minSize*8.0)) * minSize;
 
-   // Compute the highest byte
-   highByte_ = varBytes_ - 1;
+   // Compute the highest byte, aligned to min access
+   highTranByte_ = varBytes_ - 1;
 
-   printf("Adjusted variable %s. varBytes=%i, minSize=%i\n",name_.c_str(),varBytes_,minSize);
+   printf("Adjusted variable %s. varBytes=%i, minSize=%i, lowTranByte=%i, highTranByte=%i\n",name_.c_str(),varBytes_,minSize,lowTranByte_,highTranByte_);
 }
 
 void rim::Variable::updatePath(std::string path) {
@@ -257,56 +256,13 @@ rim::VariableWrap::VariableWrap ( std::string name,
 //! Set value from RemoteVariable
 void rim::VariableWrap::set(bp::object &value) {
    if (block_->blockTrans() ) return;
-
-#if 1
-   switch (modelId_) {
-      case rim::PyFunc : block_->setPyFunc(value,this);      break;
-      case rim::Bytes  : block_->setByteArrayPy(value,this); break;
-      case rim::UInt : 
-         if (bitTotal_ > 64) block_->setPyFunc(value,this);
-         else block_->setUIntPy(value,this);
-         break;
-      case rim::Int :
-         if (bitTotal_ > 64) block_->setPyFunc(value,this);
-         else block_->setIntPy(value,this);
-         break;
-      case rim::Bool   : block_->setBoolPy(value,this);      break;
-      case rim::String : block_->setStringPy(value,this);    break;
-      case rim::Float  : block_->setFloatPy(value,this);     break;
-      case rim::Fixed  : block_->setFixedPy(value,this);     break;
-      default : break;
-   }
-#endif
+   (block_->*setFuncPy_)(value,this);
 }
 
 //! Get value from RemoteVariable
 bp::object rim::VariableWrap::get() {
-
-#if 1
-   switch (modelId_) {
-      case rim::PyFunc : return block_->getPyFunc(this);      break;
-      case rim::Bytes  : return block_->getByteArrayPy(this); break;
-      case rim::UInt : 
-         if (bitTotal_ > 60) return block_->getPyFunc(this);
-         else return block_->getUIntPy(this);
-         break;
-      case rim::Int :
-         if (bitTotal_ > 60) return block_->getPyFunc(this);
-         else return block_->getIntPy(this);
-         break;
-      case rim::Bool   : return block_->getBoolPy(this);      break;
-      case rim::String : return block_->getStringPy(this);    break;
-      case rim::Float  : return block_->getFloatPy(this);     break;
-      case rim::Fixed  : return block_->getFixedPy(this);     break;
-      default :
-         bp::handle<> handle(Py_None);
-         return bp::object(handle);
-         break;
-
-   }
-#endif
+   return (block_->*getFuncPy_)(this);
 }
-
 
 // Set data using python function
 bp::object rim::VariableWrap::toBytes ( bp::object &value ) {

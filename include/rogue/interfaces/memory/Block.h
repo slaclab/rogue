@@ -93,12 +93,6 @@ namespace rogue {
                // verify Size
                uint32_t verifySize_;
 
-               // Staged data
-               uint8_t *stagedData_;
-
-               // Staged Mask
-               uint8_t *stagedMask_;
-
                // Block data
                uint8_t *blockData_;
 
@@ -131,6 +125,9 @@ namespace rogue {
 
                // Enable flag
                bool enable_;
+
+               // Stale flag
+               bool stale_;
 
                // Call variable update for all variables
                void varUpdate();
