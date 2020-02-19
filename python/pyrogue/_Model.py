@@ -77,15 +77,14 @@ class UInt(Model):
     modelId     = rim.UInt
 
     def __init__(self, bitSize):
-        if bitSize > 64:
-            raise Exception("UInt and Int models with bit sizes larger than 64 are not allowed!")
-
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
 
+    # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
+    # Called by raw read/write and when bitsize > 64
     def fromBytes(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
@@ -112,6 +111,7 @@ class Int(UInt):
     signed      = True
     modelId     = rim.Int
 
+    # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
             newValue = value & (2**(self.bitSize)-1) # Strip upper bits
@@ -121,6 +121,7 @@ class Int(UInt):
 
         return ba
 
+    # Called by raw read/write and when bitsize > 64
     def fromBytes(self,ba):
         if (self.bitSize < (byteCount(self.bitSize)*8)):
             value = int.from_bytes(ba, self.endianness, signed=False)

@@ -537,16 +537,12 @@ void rim::Block::setUInt ( bp::object &value, rim::Variable *var ) {
 bp::object rim::Block::getUInt (rim::Variable *var ) {
    uint64_t tmp = 0;
 
-   printf("here 1\n");
-
    getBytes((uint8_t *)&tmp,var);
-   printf("here 2\n");
+
 
    PyObject *val = Py_BuildValue("l",tmp);
-   printf("here 3\n");
-   bp::object ret = bp::object(bp::handle<>(bp::borrowed(val))); // Not sure about handle
-   printf("here 5\n");
-   return ret;
+   bp::handle<> handle(val);
+   return bp::object(handle);
 }
 
 //////////////////////////////////////////

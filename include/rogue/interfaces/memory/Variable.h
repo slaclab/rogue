@@ -187,7 +187,7 @@ namespace rogue {
                //! Return verify enable flag
                bool verifyEn();
 
-               void queueUpdate();
+               virtual void queueUpdate();
          };
 
          //! Alias for using shared pointer as VaariablePtr

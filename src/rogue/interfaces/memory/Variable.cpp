@@ -223,8 +223,14 @@ void rim::VariableWrap::set(bp::object &value) {
    switch (modelId_) {
       case rim::PyFunc : block_->setPyFunc(value,this);    break;
       case rim::Bytes  : block_->setByteArray(value,this); break;
-      case rim::UInt   : block_->setUInt(value,this);      break;
-      case rim::Int    : block_->setInt(value,this);       break;
+      case rim::UInt : 
+         if (bitTotal_ > 64) block_->setPyFunc(value,this);
+         else block_->setUInt(value,this);
+         break;
+      case rim::Int :
+         if (bitTotal_ > 64) block_->setPyFunc(value,this);
+         else block_->setInt(value,this);
+         break;
       case rim::Bool   : block_->setBool(value,this);      break;
       case rim::String : block_->setString(value,this);    break;
       case rim::Float  : block_->setFloat(value,this);     break;
@@ -236,24 +242,23 @@ void rim::VariableWrap::set(bp::object &value) {
 //! Get value from RemoteVariable
 bp::object rim::VariableWrap::get() {
 
-   bp::object ret;
-
-   printf("Called get on variable %s with modelId %i, blockSize=%i\n",name_.c_str(),modelId_,block_->size());
-
    switch (modelId_) {
-      case rim::PyFunc : ret = block_->getPyFunc(this);    break;
-      case rim::Bytes  : ret = block_->getByteArray(this); break;
-      case rim::UInt   : ret = block_->getUInt(this);      break;
-      case rim::Int    : ret = block_->getInt(this);       break;
-      case rim::Bool   : ret = block_->getBool(this);      break;
-      case rim::String : ret = block_->getString(this);    break;
-      case rim::Float  : ret = block_->getFloat(this);     break;
-      case rim::Fixed  : ret = block_->getFixed(this);     break;
-      default          : ret = block_->getCustom(this);    break;
+      case rim::PyFunc : return block_->getPyFunc(this);    break;
+      case rim::Bytes  : return block_->getByteArray(this); break;
+      case rim::UInt : 
+         if (bitTotal_ > 60) return block_->getPyFunc(this);
+         else return block_->getUInt(this);
+         break;
+      case rim::Int :
+         if (bitTotal_ > 60) return block_->getPyFunc(this);
+         else return block_->getInt(this);
+         break;
+      case rim::Bool   : return block_->getBool(this);      break;
+      case rim::String : return block_->getString(this);    break;
+      case rim::Float  : return block_->getFloat(this);     break;
+      case rim::Fixed  : return block_->getFixed(this);     break;
+      default          : return block_->getCustom(this);    break;
    }
-
-   printf("Get done for %s. Returning.\n",name_.c_str());
-   return ret;
 }
 
 
