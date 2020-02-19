@@ -112,6 +112,27 @@ class Int(UInt):
     signed      = True
     modelId     = rim.Int
 
+    def toBytes(self, value):
+        if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
+            newValue = value & (2**(self.bitSize)-1) # Strip upper bits
+            ba = newValue.to_bytes(byteCount(self.bitSize), self.endianness, signed=False)
+        else:
+            ba = value.to_bytes(byteCount(self.bitSize), self.endianness, signed=True)
+
+        return ba
+
+    def fromBytes(self,ba):
+        if (self.bitSize < (byteCount(self.bitSize)*8)):
+            value = int.from_bytes(ba, self.endianness, signed=False)
+
+            if value >= 2**(self.bitSize-1):
+                value -= 2**self.bitSize
+
+        else:
+            value = int.from_bytes(ba, self.endianness, signed=True)
+
+        return 
+
     def fromString(self, string):
         i = int(string, 0)
         # perform twos complement if necessary

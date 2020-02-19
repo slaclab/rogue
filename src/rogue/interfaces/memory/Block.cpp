@@ -366,7 +366,7 @@ void rim::Block::addVariables(bp::object variables) {
       }
 
       bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",variables_[x]->name_.c_str(),path_.c_str(),offset_);
-   }
+      }
 
    // Init overlap enable before check
    overlapEn_ = true;
