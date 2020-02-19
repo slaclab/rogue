@@ -157,8 +157,6 @@ rim::Variable::Variable ( std::string name,
       case rim::Fixed  : getFuncPy_ = &rim::Block::getFixedPy;  break;
       default          : getFuncPy_ = NULL; break;
    }
-
-   printf("Created new variable %s. varBytes=%i, bitTotal=%i, byteSize=%i\n",name_.c_str(),varBytes_,bitTotal_,byteSize_);
 }
 
 // Destroy the Hub
@@ -181,8 +179,6 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
    // Compute the highest byte, aligned to min access
    highTranByte_ = varBytes_ - 1;
-
-   printf("Adjusted variable %s. varBytes=%i, minSize=%i, lowTranByte=%i, highTranByte=%i\n",name_.c_str(),varBytes_,minSize,lowTranByte_,highTranByte_);
 }
 
 void rim::Variable::updatePath(std::string path) {

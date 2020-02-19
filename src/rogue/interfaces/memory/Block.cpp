@@ -297,8 +297,9 @@ void rim::Block::varUpdate() {
 
 // Add variables to block
 void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
+   std::vector<rim::VariablePtr>::iterator vit;
+
    uint32_t x;
-   uint32_t y;
 
    uint8_t excMask[size_];
    uint8_t oleMask[size_];
@@ -308,47 +309,47 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
 
    variables_ = variables;
 
-   for (x=0; x < variables_.size(); x++) {
-      variables_[x]->block_ = this;
+   for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
+      (*vit)->block_ = this;
 
-      if ( x == 0 ) {
-         path_ = variables_[x]->path_;
+      if ( vit == variables_.begin() ) {
+         path_ = (*vit)->path_;
          std::string logName = "memory.block." + path_;
          bLog_ = rogue::Logging::create(logName.c_str());
-         mode_ = variables_[x]->mode_;
+         mode_ = (*vit)->mode_;
       }
 
-      if ( variables_[x]->bulkEn_ ) bulkEn_ = true;
+      if ( (*vit)->bulkEn_ ) bulkEn_ = true;
 
       // If variable modes mismatch, set block to read/write
-      if ( mode_ != variables_[x]->mode_ ) mode_ = "RW";
+      if ( mode_ != (*vit)->mode_ ) mode_ = "RW";
 
       // Update variable masks
-      for (y=0; y < variables_[x]->bitOffset_.size(); y++) {
+      for (x=0; x < (*vit)->bitOffset_.size(); x++) {
 
          // Variable allows overlaps, add to overlap enable mask
-         if ( variables_[x]->overlapEn_ ) 
-            setBits(oleMask,variables_[x]->bitOffset_[y],variables_[x]->bitSize_[y]);
+         if ( (*vit)->overlapEn_ ) 
+            setBits(oleMask,(*vit)->bitOffset_[x],(*vit)->bitSize_[x]);
 
          // Otherwise add to exclusive mask and check for existing mapping
          else {
-            if (anyBits(excMask,variables_[x]->bitOffset_[y],variables_[x]->bitSize_[y])) 
+            if (anyBits(excMask,(*vit)->bitOffset_[x],(*vit)->bitSize_[x])) 
                throw(rogue::GeneralError::create("Block::addVariables",
                      "Variable bit overlap detected for block %s with address 0x%.8x",
                      path_.c_str(), address()));
 
-            setBits(excMask,variables_[x]->bitOffset_[y],variables_[x]->bitSize_[y]);
+            setBits(excMask,(*vit)->bitOffset_[x],(*vit)->bitSize_[x]);
          }
 
          // update verify mask
-         if ( variables_[x]->mode_ == "RW" && variables_[x]->verifyEn_ ) {
+         if ( (*vit)->mode_ == "RW" && (*vit)->verifyEn_ ) {
             verifyEn_ = true;
-            setBits(verifyMask_,variables_[x]->bitOffset_[y],variables_[x]->bitSize_[y]);
+            setBits(verifyMask_,(*vit)->bitOffset_[x],(*vit)->bitSize_[x]);
          }
       }
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",variables_[x]->name_.c_str(),path_.c_str(),offset_);
-      }
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",(*vit)->name_.c_str(),path_.c_str(),offset_);
+   }
 
    // Init overlap enable before check
    overlapEn_ = true;
