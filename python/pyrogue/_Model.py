@@ -77,6 +77,9 @@ class UInt(Model):
     modelId     = rim.UInt
 
     def __init__(self, bitSize):
+        if bitSize > 64:
+            raise Exception("UInt and Int models with bit sizes larger than 64 are not allowed!")
+
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'        
 

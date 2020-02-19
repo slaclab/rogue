@@ -186,8 +186,8 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
           lowByte = 0;
           highByte = size_-1;
       } else{
-          lowByte = var_->lowByte;
-          highByte = var_->highByte;
+          lowByte = var->lowByte_;
+          highByte = var->highByte_;
       }
 
       // Write only occurs if stale or if forceWr is set
@@ -537,11 +537,16 @@ void rim::Block::setUInt ( bp::object &value, rim::Variable *var ) {
 bp::object rim::Block::getUInt (rim::Variable *var ) {
    uint64_t tmp = 0;
 
+   printf("here 1\n");
+
    getBytes((uint8_t *)&tmp,var);
+   printf("here 2\n");
 
    PyObject *val = Py_BuildValue("l",tmp);
-   bp::handle<> handle(val);
-   return bp::object(handle);
+   printf("here 3\n");
+   bp::object ret = bp::object(bp::handle<>(bp::borrowed(val))); // Not sure about handle
+   printf("here 5\n");
+   return ret;
 }
 
 //////////////////////////////////////////
