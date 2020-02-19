@@ -182,7 +182,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
             stale_ = false;
             for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) (*vit)->stale_ = false;
          }
-      } else{
+      } else {
           lowByte = var->lowTranByte_;
           highByte = var->highTranByte_;
 
