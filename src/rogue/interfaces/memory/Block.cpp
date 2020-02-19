@@ -541,8 +541,14 @@ void rim::Block::set(bp::object var, bp::object value) {
    switch (bv->func) {
       case rim::PyFunc : setPyFunc(value,bv);    break;
       case rim::Bytes  : setByteArray(value,bv); break;
-      case rim::UInt   : setUInt(value,bv);      break;
-      case rim::Int    : setInt(value,bv);       break;
+      case rim::UInt   : 
+         if ( bv->bitTotal > 64 ) setPyFunc(value,bv);
+         else setUInt(value,bv);
+         break;
+      case rim::Int    : 
+         if ( bv->bitTotal > 64 ) setPyFunc(value,bv);
+         else setInt(value,bv);
+         break;
       case rim::Bool   : setBool(value,bv);      break;
       case rim::String : setString(value,bv);    break;
       case rim::Float  : setFloat(value,bv);     break;
@@ -560,8 +566,14 @@ bp::object rim::Block::get(bp::object var) {
    switch (bv->func) {
       case rim::PyFunc : return getPyFunc(bv);    break;
       case rim::Bytes  : return getByteArray(bv); break;
-      case rim::UInt   : return getUInt(bv);      break;
-      case rim::Int    : return getInt(bv);       break;
+      case rim::UInt   : 
+         if ( bv->bitTotal > 64 ) return getPyFunc(bv);
+         else return getUInt(bv);
+         break;
+      case rim::Int    : 
+         if ( bv->bitTotal > 64 ) return getPyFunc(bv);
+         else return getInt(bv);
+         break;
       case rim::Bool   : return getBool(bv);      break;
       case rim::String : return getString(bv);    break;
       case rim::Float  : return getFloat(bv);     break;
