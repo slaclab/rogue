@@ -475,10 +475,10 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
 #ifndef NO_PYTHON
 
 // Set data using python function
-void rim::Block::setPyFunc ( bp::object &value, rim::VariableWrap *var ) {
+void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var ) {
    Py_buffer valueBuf;
 
-   bp::object ret = var->toBytes(value);
+   bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
 
    if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
@@ -489,7 +489,7 @@ void rim::Block::setPyFunc ( bp::object &value, rim::VariableWrap *var ) {
 }
 
 // Get data using python function
-bp::object rim::Block::getPyFunc ( rim::VariableWrap *var ) {
+bp::object rim::Block::getPyFunc ( rim::Variable *var ) {
    uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
 
    getBytes(getBuffer, var);
@@ -498,7 +498,7 @@ bp::object rim::Block::getPyFunc ( rim::VariableWrap *var ) {
    bp::handle<> handle(val);
    bp::object pass = bp::object(handle);
 
-   bp::object ret = var->fromBytes(pass);
+   bp::object ret = ((rim::VariableWrap*)var)->fromBytes(pass);
 
    free(getBuffer);
    return ret;

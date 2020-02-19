@@ -304,10 +304,10 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                // Set data using python function
-               void setPyFunc ( boost::python::object &value, rogue::interfaces::memory::VariableWrap *var );
+               void setPyFunc ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
                // Get data using python function
-               boost::python::object getPyFunc (rogue::interfaces::memory::VariableWrap *var );
+               boost::python::object getPyFunc (rogue::interfaces::memory::Variable *var );
 
 #endif
 

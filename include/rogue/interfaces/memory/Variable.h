@@ -107,10 +107,10 @@ namespace rogue {
                bool stale_;
 
                // Set pointer function
-               void(rogue::interfaces::memory::Block::*setFuncPy)(boost::python::object &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFuncPy)(boost::python::object &, rogue::interfaces::memory::Variable *);
 
                // Get pointer function
-               boost::python::object(rogue::interfaces::memory::Block::*getFuncPy)(rogue::interfaces::memory::Variable *);
+               boost::python::object (rogue::interfaces::memory::Block::*getFuncPy)(rogue::interfaces::memory::Variable *);
 
             public:
 

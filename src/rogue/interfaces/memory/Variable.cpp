@@ -120,45 +120,43 @@ rim::Variable::Variable ( std::string name,
    // Custom data is NULL for now
    customData_ = NULL;
 
-#if 0
    // Define set function
    switch (modelId_) {
-      case rim::PyFunc : setFuncPy = block_->setPyFuncPy;    break;
-      case rim::Bytes  : setFuncPy = block_->setByteArrayPy; break;
+      case rim::PyFunc : setFuncPy = &rim::Block::setPyFunc;      break;
+      case rim::Bytes  : setFuncPy = &rim::Block::setByteArrayPy; break;
       case rim::UInt : 
-         if (bitTotal_ > 64) setFuncPy = block_->setPyFuncPy;
-         else setFuncPy = block_->setUIntPy;
+         if (bitTotal_ > 64) setFuncPy = &rim::Block::setPyFunc;
+         else setFuncPy = &rim::Block::setUIntPy;
          break;
       case rim::Int :
-         if (bitTotal_ > 64) setFuncPy = block_->setPyFuncPy;
-         else setFuncPy = block_->setIntPy;
+         if (bitTotal_ > 64) setFuncPy = &rim::Block::setPyFunc;
+         else setFuncPy = &rim::Block::setIntPy;
          break;
-      case rim::Bool   : setFuncPy = block_->setBoolPy;   break;
-      case rim::String : setFuncPy = block_->setStringPy; break;
-      case rim::Float  : setFuncPy = block_->setFloatPy;  break;
-      case rim::Fixed  : setFuncPy = block_->setFixedPy;  break;
-      default          : setFuncPy = block_->setCustomPy; break;
+      case rim::Bool   : setFuncPy = &rim::Block::setBoolPy;   break;
+      case rim::String : setFuncPy = &rim::Block::setStringPy; break;
+      case rim::Float  : setFuncPy = &rim::Block::setFloatPy;  break;
+      case rim::Fixed  : setFuncPy = &rim::Block::setFixedPy;  break;
+      default          : getFuncPy = NULL; break;
    }
 
    // Define get function
    switch (modelId_) {
-      case rim::PyFunc : getFuncPy = block_->getPyFuncPy;    break;
-      case rim::Bytes  : getFuncPy = block_->getByteArrayPy; break;
+      case rim::PyFunc : getFuncPy = &rim::Block::getPyFunc;      break;
+      case rim::Bytes  : getFuncPy = &rim::Block::getByteArrayPy; break;
       case rim::UInt : 
-         if (bitTotal_ > 60) getFuncPy = block_->getPyFuncPy;
-         else getFuncPy = block_->getUIntPy;
+         if (bitTotal_ > 60) getFuncPy = &rim::Block::getPyFunc;
+         else getFuncPy = &rim::Block::getUIntPy;
          break;
       case rim::Int :
-         if (bitTotal_ > 60) getFuncPy = block_->getPyFuncPy;
-         else getFuncPy = block_->getIntPy;
+         if (bitTotal_ > 60) getFuncPy = &rim::Block::getPyFunc;
+         else getFuncPy = &rim::Block::getIntPy;
          break;
-      case rim::Bool   : getFuncPy = block_->getBoolPy;   break;
-      case rim::String : getFuncPy = block_->getStringPy; break;
-      case rim::Float  : getFuncPy = block_->getFloatPy;  break;
-      case rim::Fixed  : getFuncPy = block_->getFixedPy;  break;
-      default          : getFuncPy = block_->getCustomPy; break;
+      case rim::Bool   : getFuncPy = &rim::Block::getBoolPy;   break;
+      case rim::String : getFuncPy = &rim::Block::getStringPy; break;
+      case rim::Float  : getFuncPy = &rim::Block::getFloatPy;  break;
+      case rim::Fixed  : getFuncPy = &rim::Block::getFixedPy;  break;
+      default          : getFuncPy = NULL; break;
    }
-#endif
 
    printf("Created new variable %s. varBytes=%i, bitTotal=%i, byteSize=%i\n",name_.c_str(),varBytes_,bitTotal_,byteSize_);
 }
