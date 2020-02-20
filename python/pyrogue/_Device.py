@@ -279,7 +279,6 @@ class Device(pr.Node,rim.Hub):
         """
         Write all of the blocks held by this Device to memory
         """
-        self._log.debug(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
@@ -298,8 +297,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        self._log.debug(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
@@ -318,8 +315,6 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        self._log.debug(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
@@ -336,10 +331,6 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
-
-        #with self.root.updateGroup():
-
         if variable is not None:
             variable._block.checkTransaction()
 

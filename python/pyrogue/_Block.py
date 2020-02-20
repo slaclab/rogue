@@ -111,7 +111,7 @@ class LocalBlock(object):
         """
         if self._enable:
             with self._lock:
-                self._doUpdate = True
+                self._doUpdate = self._variable._updateEn
 
     def checkTransaction(self):
         """
@@ -119,7 +119,6 @@ class LocalBlock(object):
         If update=True notify variables if read
         """
         if self._enable:
-            doUpdate = False
             with self._lock:
                 doUpdate = self._doUpdate
                 self._doUpdate = False

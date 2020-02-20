@@ -41,12 +41,13 @@ rim::VariablePtr create ( std::string name,
                           bool overlapEn,
                           bool verify,
                           bool bulkEn,
+                          bool updateEn,
                           uint32_t modelId,
                           bool byteReverse,
                           uint32_t binPoint ) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, modelId, byteReverse, binPoint);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, updateEn, modelId, byteReverse, binPoint);
    return(v);
 }
 
@@ -54,7 +55,7 @@ rim::VariablePtr create ( std::string name,
 void rim::Variable::setup_python() {
 
 #ifndef NO_PYTHON
-   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bp::object>())
+   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object>())
       .def("_varBytes",        &rim::Variable::varBytes)
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
@@ -79,6 +80,7 @@ rim::Variable::Variable ( std::string name,
                           bool overlapEn,
                           bool verifyEn,
                           bool bulkEn,
+                          bool updateEn,
                           uint32_t modelId,
                           bool byteReverse,
                           uint32_t binPoint) {
@@ -96,6 +98,7 @@ rim::Variable::Variable ( std::string name,
    verifyEn_    = verifyEn;
    byteReverse_ = byteReverse;
    bulkEn_      = bulkEn;
+   updateEn_    = updateEn;
    minValue_    = minimum;
    maxValue_    = maximum;
    binPoint_    = binPoint;
@@ -319,6 +322,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool overlapEn, 
                                   bool verify,
                                   bool bulkEn,
+                                  bool updateEn,
                                   bp::object model)
                      : rim::Variable ( name, 
                                        mode, 
@@ -330,6 +334,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        overlapEn, 
                                        verify,
                                        bulkEn,
+                                       updateEn,
                                        bp::extract<uint32_t>(model.attr("modelId")),
                                        bp::extract<bool>(model.attr("isBigEndian")),
                                        bp::extract<uint32_t>(model.attr("binPoint")) ) {

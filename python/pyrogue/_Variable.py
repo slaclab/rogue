@@ -114,12 +114,14 @@ class BaseVariable(pr.Node):
                  highWarning=None,
                  highAlarm=None,
                  pollInterval=0,
+                 updateEn=True,
                  typeStr='Unknown',
                  offset=0
                 ):
 
         # Public Attributes
         self._bulkEn        = True
+        self._updateEn      = updateEn
         self._mode          = mode
         self._units         = units
         self._minimum       = minimum
@@ -516,6 +518,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0, 
+                 updateEn=True,
                  overlapEn=False,
                  verify=True, ):
 
@@ -528,7 +531,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,updateEn=updateEn)
 
 
         self._block    = None
@@ -563,7 +566,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify, 
-                              self._bulkEn, self._base)
+                              self._bulkEn, self._updateEn, self._base)
 
     @pr.expose
     @property
@@ -706,7 +709,8 @@ class LocalVariable(BaseVariable):
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
-                 pollInterval=0):
+                 pollInterval=0,
+                 updateEn=True):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -717,7 +721,7 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,updateEn=updateEn)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 

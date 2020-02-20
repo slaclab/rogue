@@ -82,6 +82,9 @@ namespace rogue {
                // Bulk Enable Flag
                bool bulkEn_;
 
+               // Enable update calls
+               bool updateEn_;
+
                // Variable mode
                std::string mode_;
 
@@ -209,6 +212,7 @@ namespace rogue {
                      bool overlapEn,
                      bool verify,
                      bool bulkEn,
+                     bool noUpdate,
                      uint32_t modelId,
                      bool byteReverse,
                      uint32_t binPoint);
@@ -227,6 +231,7 @@ namespace rogue {
                           bool overlapEn,
                           bool verify,
                           bool bulkEn,
+                          bool noUpdate,
                           uint32_t modelId,
                           bool byteReverse,
                           uint32_t binPoint);
@@ -354,6 +359,7 @@ namespace rogue {
                               bool overlapEn,
                               bool verify,
                               bool bulkEn,
+                              bool noUpdate,
                               boost::python::object model);
 
                //! Update the bit offsets

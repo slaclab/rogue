@@ -63,6 +63,7 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    path_         = "Undefined";
    mode_         = "RW";
    bulkEn_       = false;
+   updateEn_     = false;
    offset_       = offset;
    size_         = size;
    verifyEn_     = false;
@@ -292,7 +293,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
             verifyReq_  = verifyEn_;
          }
       }
-      doUpdate_ = true;
+      doUpdate_ = updateEn_;
 
       bLog_->debug("Start transaction type = %i, Offset=0x%x, lByte=%i, hByte=%i, tOff=0x%x, tSize=%i",type,offset_,lowByte,highByte,tOff,tSize);
 
@@ -407,7 +408,9 @@ void rim::Block::varUpdate() {
 
    rogue::ScopedGil gil;
 
-   for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) (*vit)->queueUpdate();
+   for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
+      if ( ! (*vit)->updateEn_ ) (*vit)->queueUpdate();
+   }
 }
 
 // Add variables to block
@@ -434,7 +437,8 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
          mode_ = (*vit)->mode_;
       }
 
-      if ( (*vit)->bulkEn_ ) bulkEn_ = true;
+      if ( (*vit)->bulkEn_   ) bulkEn_   = true;
+      if ( (*vit)->updateEn_ ) updateEn_ = true;
 
       // If variable modes mismatch, set block to read/write
       if ( mode_ != (*vit)->mode_ ) mode_ = "RW";

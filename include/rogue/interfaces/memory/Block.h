@@ -81,6 +81,9 @@ namespace rogue {
                // Bulk Enable
                bool bulkEn_;
 
+               // Block level update enable
+               bool updateEn_;
+
                // Persistant Block Verify Enable
                bool verifyEn_;
 
