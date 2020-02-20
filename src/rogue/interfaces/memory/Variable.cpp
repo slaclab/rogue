@@ -106,13 +106,13 @@ rim::Variable::Variable ( std::string name,
    for (x=1; x < bitSize_.size(); x++) bitTotal_ += bitSize_[x];
 
    // Compute rounded up byte size
-   byteSize_  = (int)std::ceil((float)bitTotal_ / 8.0);
+   byteSize_ = (int)std::ceil((float)bitTotal_ / 8.0);
 
    // Compute total bit range of accessed bits
    varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size()-1] + bitSize_[bitSize_.size()-1]) / 8.0);
 
    // Compute the lowest byte
-   lowTranByte_  = (int)std::floor((float)bitOffset_[0] / 8.0);
+   lowTranByte_ = (int)std::floor((float)bitOffset_[0] / 8.0);
 
    // Compute the highest byte
    highTranByte_ = varBytes_ - 1;
@@ -120,68 +120,131 @@ rim::Variable::Variable ( std::string name,
    // Custom data is NULL for now
    customData_ = NULL;
 
+   // Set default C++ pointers
+   setByteArray_ = NULL;
+   getByteArray_ = NULL;
+   setUInt_      = NULL;
+   getUInt_      = NULL;
+   setInt_       = NULL;
+   getInt_       = NULL;
+   setBool_      = NULL;
+   getBool_      = NULL;
+   setString_    = NULL;
+   getString_    = NULL;
+   setFloat_     = NULL;
+   getFloat_     = NULL;
+   setDouble_    = NULL;
+   getDouble_    = NULL;
+   setFixed_     = NULL;
+   getFixed_     = NULL;
+
    // Define set function
    switch (modelId_) {
-      case rim::PyFunc : setFuncPy_ = &rim::Block::setPyFunc;      break;
-      case rim::Bytes  : setFuncPy_ = &rim::Block::setByteArrayPy; break;
+      case rim::PyFunc : 
+         setFuncPy_    = &rim::Block::setPyFunc;
+         break;
+      case rim::Bytes : 
+         setFuncPy_    = &rim::Block::setByteArrayPy; 
+         setByteArray_ = &rim::Block::setByteArray;
+         break;
       case rim::UInt : 
-         if (bitTotal_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
-         else setFuncPy_ = &rim::Block::setUIntPy;
+         if (bitTotal_ > 64) {
+            setFuncPy_    = &rim::Block::setPyFunc;
+            setByteArray_ = &rim::Block::setByteArray;
+         }
+         else {
+            setFuncPy_ = &rim::Block::setUIntPy;
+            setUInt_   = &rim::Block::setUInt;
+         }
          break;
       case rim::Int :
-         if (bitTotal_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
-         else setFuncPy_ = &rim::Block::setIntPy;
+         if (bitTotal_ > 64) {
+            setFuncPy_    = &rim::Block::setPyFunc;
+            setByteArray_ = &rim::Block::setByteArray;
+         }
+         else {
+            setFuncPy_ = &rim::Block::setIntPy;
+            setInt_    = &rim::Block::setInt;
+         }
          break;
-      case rim::Bool   : setFuncPy_ = &rim::Block::setBoolPy;   break;
-      case rim::String : setFuncPy_ = &rim::Block::setStringPy; break;
-      case rim::Float  : setFuncPy_ = &rim::Block::setFloatPy;  break;
-      case rim::Fixed  : setFuncPy_ = &rim::Block::setFixedPy;  break;
-      default          : getFuncPy_ = NULL; break;
+      case rim::Bool : 
+         setFuncPy_ = &rim::Block::setBoolPy;   
+         setBool_   = &rim::Block::setBool;
+         break;
+      case rim::String : 
+         setFuncPy_ = &rim::Block::setStringPy; 
+         setString_ = &rim::Block::setString;
+         break;
+      case rim::Float : 
+         setFuncPy_ = &rim::Block::setFloatPy;  
+         setFloat_  = &rim::Block::setFloat;
+         break;
+      case rim::Double :
+         setFuncPy_ = &rim::Block::setDoublePy; 
+         setDouble_ = &rim::Block::setDouble;
+         break;
+      case rim::Fixed : 
+         setFuncPy_ = &rim::Block::setFixedPy;  
+         setFixed_  = &rim::Block::setFixed;
+         break;
+      default : 
+         getFuncPy_ = NULL; 
+         break;
    }
 
    // Define get function
    switch (modelId_) {
-      case rim::PyFunc : getFuncPy_ = &rim::Block::getPyFunc;      break;
-      case rim::Bytes  : getFuncPy_ = &rim::Block::getByteArrayPy; break;
+      case rim::PyFunc : 
+         getFuncPy_ = &rim::Block::getPyFunc;      
+         break;
+      case rim::Bytes : 
+         getFuncPy_    = &rim::Block::getByteArrayPy; 
+         getByteArray_ = &rim::Block::getByteArray;
+         break;
       case rim::UInt : 
-         if (bitTotal_ > 60) getFuncPy_ = &rim::Block::getPyFunc;
-         else getFuncPy_ = &rim::Block::getUIntPy;
+         if (bitTotal_ > 64) {
+            getFuncPy_    = &rim::Block::getPyFunc;
+            getByteArray_ = &rim::Block::getByteArray;
+         }
+         else {
+            getFuncPy_ = &rim::Block::getUIntPy;
+            getUInt_   = &rim::Block::getUInt;
+         }
          break;
       case rim::Int :
-         if (bitTotal_ > 60) getFuncPy_ = &rim::Block::getPyFunc;
-         else getFuncPy_ = &rim::Block::getIntPy;
+         if (bitTotal_ > 64) {
+            getFuncPy_    = &rim::Block::getPyFunc;
+            getByteArray_ = &rim::Block::getByteArray;
+         }
+         else {
+            getFuncPy_ = &rim::Block::getIntPy;
+            getInt_    = &rim::Block::getInt;
+         }
          break;
-      case rim::Bool   : getFuncPy_ = &rim::Block::getBoolPy;   break;
-      case rim::String : getFuncPy_ = &rim::Block::getStringPy; break;
-      case rim::Float  : getFuncPy_ = &rim::Block::getFloatPy;  break;
-      case rim::Fixed  : getFuncPy_ = &rim::Block::getFixedPy;  break;
-      default          : getFuncPy_ = NULL; break;
+      case rim::Bool : 
+         getFuncPy_ = &rim::Block::getBoolPy; 
+         getBool_   = &rim::Block::getBool;
+         break;
+      case rim::String : 
+         getFuncPy_ = &rim::Block::getStringPy; 
+         getString_ = &rim::Block::getString;
+         break;
+      case rim::Float : 
+         getFuncPy_ = &rim::Block::getFloatPy; 
+         getFloat_  = &rim::Block::getFloat;
+         break;
+      case rim::Double : 
+         getFuncPy_ = &rim::Block::getFloatPy; 
+         getDouble_ = &rim::Block::getDouble;
+         break;
+      case rim::Fixed : 
+         getFuncPy_ = &rim::Block::getFixedPy; 
+         getFixed_  = &rim::Block::getFixed;
+         break;
+      default : 
+         getFuncPy_ = NULL; 
+         break;
    }
-
-   // Set default C++ pointers
-   setByteArray_ = &rim::Block::setByteArray;
-   getByteArray_ = &rim::Block::getByteArray;
-
-   setUInt_ = &rim::Block::setUInt;
-   getUInt_ = &rim::Block::getUInt;
-
-   setInt_ = &rim::Block::setInt;
-   getInt_ = &rim::Block::getInt;
-
-   setBool_ = &rim::Block::setBool;
-   getBool_ = &rim::Block::getBool;
-
-   setString_ = &rim::Block::setString;
-   getString_ = &rim::Block::getString;
-
-   setFloat_ = &rim::Block::setFloat;
-   getFloat_ = &rim::Block::getFloat;
-
-   setDouble_ = &rim::Block::setDouble;
-   getDouble_ = &rim::Block::getDouble;
-
-   setFixed_ = &rim::Block::setFixed;
-   getFixed_ = &rim::Block::getFixed;
 }
 
 // Destroy the Hub
@@ -276,12 +339,16 @@ rim::VariableWrap::VariableWrap ( std::string name,
 
 //! Set value from RemoteVariable
 void rim::VariableWrap::set(bp::object &value) {
-   if (block_->blockPyTrans() ) return;
+   if ( setFuncPy_ == NULL || block_->blockPyTrans() ) return;
    (block_->*setFuncPy_)(value,this);
 }
 
 //! Get value from RemoteVariable
 bp::object rim::VariableWrap::get() {
+   if ( getFuncPy_ == NULL ) {
+      bp::handle<> handle(Py_None);
+      return bp::object(handle);
+   }
    return (block_->*getFuncPy_)(this);
 }
 
@@ -328,10 +395,12 @@ bp::object rim::VariableWrap::bitSize() {
 /////////////////////////////////
 
 void rim::Variable::setBytArray(uint8_t *data) {
+   if ( setByteArray_ == NULL ) return;
    (block_->*setByteArray_)(data,this);
 }
 
 void rim::Variable::getByteArray(uint8_t *data) {
+   if ( getByteArray_ == NULL ) return;
    (block_->*getByteArray_)(data,this);
 }
 
@@ -340,10 +409,12 @@ void rim::Variable::getByteArray(uint8_t *data) {
 /////////////////////////////////
 
 void rim::Variable::setUInt(uint64_t &value) {
+   if ( setUInt_ == NULL ) return;
    (block_->*setUInt_)(value,this);
 }
 
 uint64_t rim::Variable::getUInt() {
+   if ( getUInt_ == NULL ) return 0;
    return (block_->*getUInt_)(this);
 }
 
@@ -352,10 +423,12 @@ uint64_t rim::Variable::getUInt() {
 /////////////////////////////////
 
 void rim::Variable::setInt(int64_t &value) {
+   if ( setInt_ == NULL ) return;
    (block_->*setInt_)(value,this);
 }
 
 int64_t rim::Variable::getInt() {
+   if ( getInt_ == NULL ) return 0;
    return (block_->*getInt_)(this);
 }
 
@@ -364,10 +437,12 @@ int64_t rim::Variable::getInt() {
 /////////////////////////////////
 
 void rim::Variable::setBool(bool &value) {
+   if ( setBool_ == NULL ) return;
    (block_->*setBool_)(value,this);
 }
 
 bool rim::Variable::getBool() {
+   if ( getBool_ == NULL ) return false;
    return (block_->*getBool_)(this);
 }
 
@@ -376,10 +451,12 @@ bool rim::Variable::getBool() {
 /////////////////////////////////
 
 void rim::Variable::setString(std::string &value) {
+   if ( setString_ == NULL ) return;
    (block_->*setString_)(value,this);
 }
 
 std::string rim::Variable::getString() {
+   if ( getString_ == NULL ) return "";
    return (block_->*getString_)(this);
 }
 
@@ -388,10 +465,12 @@ std::string rim::Variable::getString() {
 /////////////////////////////////
 
 void rim::Variable::setFloat(float &value) {
+   if ( setFloat_ == NULL ) return;
    (block_->*setFloat_)(value,this);
 }
 
 float rim::Variable::getFloat() {
+   if ( getFloat_ == NULL ) return 0.0;
    return (block_->*getFloat_)(this);
 }
 
@@ -400,10 +479,12 @@ float rim::Variable::getFloat() {
 /////////////////////////////////
 
 void rim::Variable::setDouble(double &value) {
+   if ( setDouble_ == NULL ) return;
    (block_->*setDouble_)(value,this);
 }
 
 double rim::Variable::getDouble() {
+   if ( getDouble_ == NULL ) return 0.0;
    return (block_->*getDouble_)(this);
 }
 
@@ -412,10 +493,12 @@ double rim::Variable::getDouble() {
 /////////////////////////////////
 
 void rim::Variable::setFixed(double &value) {
+   if ( setFixed_ == NULL ) return;
    (block_->*setFixed_)(value,this);
 }
 
 double rim::Variable::getFixed() {
+   if ( getFixed_ == NULL ) return 0.0;
    return (block_->*getFixed_)(this);
 }
 
