@@ -393,7 +393,7 @@ void rim::VariableWrap::queueUpdate() {
 }
 
 void rim::Variable::rateTest() {
-   uint32_t x;
+   uint64_t x;
 
    struct timeval stime;
    struct timeval etime;
@@ -458,7 +458,7 @@ void rim::Variable::getByteArray(uint8_t *data) {
 // C++ Uint
 /////////////////////////////////
 
-void rim::Variable::setUInt(uint64_t value) {
+void rim::Variable::setUInt(uint64_t &value) {
    if ( setUInt_ == NULL ) return;
    (block_->*setUInt_)(value,this);
    block_->write(this);

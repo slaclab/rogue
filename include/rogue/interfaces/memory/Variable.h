@@ -126,7 +126,7 @@ namespace rogue {
                // C++ Byte Array
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setByteArray_)(uint8_t *, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setByteArray_)(const uint8_t *, rogue::interfaces::memory::Variable *);
 
                void (rogue::interfaces::memory::Block::*getByteArray_)(uint8_t *, rogue::interfaces::memory::Variable *);
 
@@ -134,7 +134,7 @@ namespace rogue {
                // C++ Uint
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setUInt_)(uint64_t &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setUInt_)(const uint64_t &, rogue::interfaces::memory::Variable *);
 
                uint64_t (rogue::interfaces::memory::Block::*getUInt_)(rogue::interfaces::memory::Variable *);
 
@@ -142,7 +142,7 @@ namespace rogue {
                // C++ int
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setInt_)(int64_t &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setInt_)(const int64_t &, rogue::interfaces::memory::Variable *);
 
                int64_t (rogue::interfaces::memory::Block::*getInt_)(rogue::interfaces::memory::Variable *);
 
@@ -150,7 +150,7 @@ namespace rogue {
                // C++ bool
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setBool_)(bool &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setBool_)(const bool &, rogue::interfaces::memory::Variable *);
 
                bool (rogue::interfaces::memory::Block::*getBool_)(rogue::interfaces::memory::Variable *);
 
@@ -158,7 +158,7 @@ namespace rogue {
                // C++ String
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setString_)(std::string &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setString_)(const std::string &, rogue::interfaces::memory::Variable *);
 
                std::string (rogue::interfaces::memory::Block::*getString_)(rogue::interfaces::memory::Variable *);
 
@@ -166,7 +166,7 @@ namespace rogue {
                // C++ Float
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setFloat_)(float &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFloat_)(const float &, rogue::interfaces::memory::Variable *);
 
                float (rogue::interfaces::memory::Block::*getFloat_)(rogue::interfaces::memory::Variable *);
 
@@ -174,7 +174,7 @@ namespace rogue {
                // C++ double
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setDouble_)(double &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setDouble_)(const double &, rogue::interfaces::memory::Variable *);
 
                double (rogue::interfaces::memory::Block::*getDouble_)(rogue::interfaces::memory::Variable *);
 
@@ -182,7 +182,7 @@ namespace rogue {
                // C++ filed point
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setFixed_)(double &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFixed_)(const double &, rogue::interfaces::memory::Variable *);
 
                double (rogue::interfaces::memory::Block::*getFixed_)(rogue::interfaces::memory::Variable *);
 
@@ -284,7 +284,7 @@ namespace rogue {
                // C++ Uint
                /////////////////////////////////
 
-               void setUInt(uint64_t);
+               void setUInt(uint64_t &);
 
                uint64_t getUInt();
 

@@ -443,10 +443,11 @@ void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
 }
 
 // Set data from pointer to internal staged memory
-void rim::Block::setBytes ( uint8_t *data, rim::Variable *var ) {
+void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
    uint32_t srcBit;
    uint32_t x;
    uint8_t  tmp;
+   uint8_t  *buff;
 
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
@@ -455,20 +456,27 @@ void rim::Block::setBytes ( uint8_t *data, rim::Variable *var ) {
    var->stale_ = true;
    stale_ = true;
 
-   // Change byte order
-   if ( var->byteReverse_ ) reverseBytes(data,var->byteSize_);
+   // Change byte order, need to make a copy
+   if ( var->byteReverse_ ) {
+      buff = (uint8_t*)malloc(var->byteSize_);
+      memcpy(buff,data,var->byteSize_);
+      reverseBytes(buff,var->byteSize_);
+   }
+   else buff = (uint8_t *)data;
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(blockData_,data,var->byteSize_);
+   if ( var->fastCopy_ ) memcpy(blockData_,buff,var->byteSize_);
 
    else{
 
       srcBit = 0;
       for (x=0; x < var->bitOffset_.size(); x++) {
-         copyBits(blockData_, var->bitOffset_[x], data, srcBit, var->bitSize_[x]);
+         copyBits(blockData_, var->bitOffset_[x], buff, srcBit, var->bitSize_[x]);
          srcBit += var->bitSize_[x];
       }
    }
+
+   if ( var->byteReverse_ ) free(buff);
 }
 
 // Get data to pointer from internal block or staged memory
@@ -567,7 +575,7 @@ bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
 #endif
 
 // Set data using byte array
-void rim::Block::setByteArray ( uint8_t *value, rim::Variable *var ) {
+void rim::Block::setByteArray ( const uint8_t *value, rim::Variable *var ) {
    setBytes(value, var);
 }
 
@@ -614,7 +622,7 @@ bp::object rim::Block::getUIntPy (rim::Variable *var ) {
 #endif
 
 // Set data using unsigned int
-void rim::Block::setUInt ( uint64_t &val, rim::Variable *var ) {
+void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
@@ -674,7 +682,7 @@ bp::object rim::Block::getIntPy ( rim::Variable *var ) {
 #endif
 
 // Set data using int
-void rim::Block::setInt ( int64_t &val, rim::Variable *var ) {
+void rim::Block::setInt ( const int64_t &val, rim::Variable *var ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
@@ -727,7 +735,7 @@ bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
 #endif
 
 // Set data using bool
-void rim::Block::setBool ( bool &value, rim::Variable *var ) {
+void rim::Block::setBool ( const bool &value, rim::Variable *var ) {
    uint8_t val = (uint8_t)value;
    setBytes((uint8_t *)&val,var);
 }
@@ -775,7 +783,7 @@ bp::object rim::Block::getStringPy ( rim::Variable *var ) {
 #endif
 
 // Set data using string
-void rim::Block::setString ( std::string &value, rim::Variable *var ) {
+void rim::Block::setString ( const std::string &value, rim::Variable *var ) {
    setBytes((uint8_t *)value.c_str(),var);
 }
 
@@ -829,7 +837,7 @@ bp::object rim::Block::getFloatPy ( rim::Variable *var ) {
 #endif
 
 // Set data using float
-void rim::Block::setFloat ( float &val, rim::Variable *var ) {
+void rim::Block::setFloat ( const float &val, rim::Variable *var ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
@@ -886,7 +894,7 @@ bp::object rim::Block::getDoublePy ( rim::Variable *var ) {
 #endif
 
 // Set data using double
-void rim::Block::setDouble ( double &val, rim::Variable *var ) {
+void rim::Block::setDouble ( const double &val, rim::Variable *var ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
@@ -949,7 +957,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var ) {
 #endif
 
 // Set data using fixed point
-void rim::Block::setFixed ( double &val, rim::Variable *var ) {
+void rim::Block::setFixed ( const double &val, rim::Variable *var ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 

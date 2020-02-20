@@ -152,7 +152,7 @@ namespace rogue {
                //////////////////////////////////////////
 
                // Set data from pointer to internal staged memory
-               void setBytes ( uint8_t *data, rogue::interfaces::memory::Variable *var );
+               void setBytes ( const uint8_t *data, rogue::interfaces::memory::Variable *var );
 
                // Get data to pointer from internal block or staged memory
                void getBytes ( uint8_t *data, rogue::interfaces::memory::Variable *var );
@@ -376,7 +376,7 @@ namespace rogue {
 #endif
 
                //! Set data using byte array, C++ Version
-               void setByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
+               void setByteArray ( const uint8_t *value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using byte array, C++ Version
                void getByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
@@ -397,7 +397,7 @@ namespace rogue {
 #endif
 
                //! Set data using unsigned int, C++ Version
-               void setUInt ( uint64_t &value, rogue::interfaces::memory::Variable *var );
+               void setUInt ( const uint64_t &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using unsigned int, C++ Version
                uint64_t getUInt (rogue::interfaces::memory::Variable *var );
@@ -417,7 +417,7 @@ namespace rogue {
 #endif
 
                //! Set data using int, C++ Version
-               void setInt ( int64_t &value, rogue::interfaces::memory::Variable *var );
+               void setInt ( const int64_t &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using int, C++ Version
                int64_t getInt (rogue::interfaces::memory::Variable *var );
@@ -437,7 +437,7 @@ namespace rogue {
 #endif
 
                //! Set data using bool, C++ Version
-               void setBool ( bool &value, rogue::interfaces::memory::Variable *var );
+               void setBool ( const bool &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using bool, C++ Version
                bool getBool (rogue::interfaces::memory::Variable *var );
@@ -457,7 +457,7 @@ namespace rogue {
 #endif
 
                //! Set data using String, C++ Version
-               void setString ( std::string &value, rogue::interfaces::memory::Variable *var );
+               void setString ( const std::string &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using String, C++ Version
                std::string getString (rogue::interfaces::memory::Variable *var );
@@ -477,7 +477,7 @@ namespace rogue {
 #endif
 
                //! Set data using Float, C++ Version
-               void setFloat ( float &value, rogue::interfaces::memory::Variable *var );
+               void setFloat ( const float &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using Float, C++ Version
                float getFloat (rogue::interfaces::memory::Variable *var );
@@ -497,7 +497,7 @@ namespace rogue {
 #endif
 
                //! Set data using Double, C++ Version
-               void setDouble ( double &value, rogue::interfaces::memory::Variable *var );
+               void setDouble ( const double &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using Double, C++ Version
                double getDouble (rogue::interfaces::memory::Variable *var );
@@ -517,7 +517,7 @@ namespace rogue {
 #endif
 
                //! Set data using Fixed Point, C++ Version
-               void setFixed ( double &value, rogue::interfaces::memory::Variable *var );
+               void setFixed ( const double &value, rogue::interfaces::memory::Variable *var );
 
                //! Get data using Fixed Point, C++ Version
                double getFixed (rogue::interfaces::memory::Variable *var );
