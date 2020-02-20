@@ -632,6 +632,16 @@ bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
 
 #endif
 
+// Set data using byte array
+void rim::Block::setByteArray ( uint8_t *value, rim::Variable *var ) {
+   setBytes(value, var);
+}
+
+// Get data using byte array
+void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var ) {
+   getBytes(value, var);
+}
+
 //////////////////////////////////////////
 // Unsigned Int
 //////////////////////////////////////////
