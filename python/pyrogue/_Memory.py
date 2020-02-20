@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
@@ -28,7 +28,7 @@ class MemoryDevice(pr.Device):
                  wordBitSize=32,
                  stride=4,
                  verify=True):
-        
+
         super().__init__(
             name=name,
             description=description,
@@ -56,7 +56,7 @@ class MemoryDevice(pr.Device):
         self._wrValues = odict() # parsed from yaml
         self._verValues = odict()
         self._wrData = odict() # byte arrays written
-        self._verData = odict() # verify the written data 
+        self._verData = odict() # verify the written data
 
 
     def _buildBlocks(self):
@@ -104,7 +104,7 @@ class MemoryDevice(pr.Device):
 
             # clear out setValues when done
             self._setValues = odict()
-        
+
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
         if not self.enable.get(): return
@@ -113,7 +113,7 @@ class MemoryDevice(pr.Device):
             for offset, ba in self._wrValues.items():
                 # _verValues will not be filled until waitTransaction completes
                 self._verValues[offset] = self._rawTxnChunker(offset, None, self._base, self._stride, self._wordBitSize, txnType=rim.Verify, numWords=len(ba))
-                
+
 
             #self._wrData = odict()
             #self._verValues = self._wrValues
@@ -152,4 +152,3 @@ class MemoryDevice(pr.Device):
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         pass
-

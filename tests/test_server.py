@@ -2,12 +2,12 @@
 #-----------------------------------------------------------------------------
 # Title      : Server only test script
 #-----------------------------------------------------------------------------
-# This file is part of the rogue_example software. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue_example software, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue_example software. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue_example software, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
@@ -49,7 +49,7 @@ class DummyTree(pyrogue.Root):
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
         sim.setName("SimSlave")
-        
+
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
 

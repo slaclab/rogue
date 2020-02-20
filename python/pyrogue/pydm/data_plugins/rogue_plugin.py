@@ -1,18 +1,18 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM data plug-in
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import logging
 import numpy as np
 import os
-import time
+# import time
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSlot, Qt
@@ -139,7 +139,7 @@ class RogueConnection(PyDMConnection):
             else:
                 val = new_value
 
-            st = time.time()
+            # st = time.time()
             if self._cmd:
                 self._node.__call__(val)
             else:
@@ -193,7 +193,7 @@ class RogueConnection(PyDMConnection):
                 self.new_value_signal[str].emit(self._node.path)
             else:
                 self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
-                st = time.time()
+                # st = time.time()
                 self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
         else:
@@ -228,4 +228,3 @@ class RogueConnection(PyDMConnection):
 class RoguePlugin(PyDMPlugin):
     protocol = "rogue"
     connection_class = RogueConnection
-

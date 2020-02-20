@@ -3,12 +3,12 @@
 #-----------------------------------------------------------------------------
 # File       : pyrogue/_Block.py
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory as rim
@@ -72,7 +72,7 @@ class LocalBlock(object):
     def setEnable(self,value):
         with self._lock:
             self._enable = value
- 
+
     def _setTimeout(self,value):
         pass
 
@@ -128,7 +128,7 @@ class LocalBlock(object):
                 self._doUpdate = False
 
             # Update variables outside of lock
-            if doUpdate: 
+            if doUpdate:
                 self._variable._queueUpdate()
 
     def _setTimeout(self,timeout):
@@ -198,5 +198,3 @@ class LocalBlock(object):
         with self._lock:
             self.set(None, self.get(None) | other)
             if self._enable: self._variable._queueUpdate()
-
-

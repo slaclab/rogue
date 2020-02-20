@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Device Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory as rim
@@ -23,10 +23,10 @@ class EnableVariable(pr.BaseVariable):
     def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
-            description='Determines if device is enabled for hardware access',            
+            description='Determines if device is enabled for hardware access',
             name='enable',
             mode='RW',
-            value=enabled, 
+            value=enabled,
             groups='Enable',
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
@@ -65,7 +65,7 @@ class EnableVariable(pr.BaseVariable):
                     ret = True
 
         return ret
-        
+
     @pr.expose
     def set(self, value, write=True):
         if value != 'parent' and value != 'deps':
@@ -73,7 +73,7 @@ class EnableVariable(pr.BaseVariable):
 
             with self._lock:
                 self._value = value
-            
+
             if old != value and old != 'parent' and old != 'deps':
                 self.parent._updateBlockEnable()
                 self.parent.enableChanged(value)
@@ -81,7 +81,7 @@ class EnableVariable(pr.BaseVariable):
             with self.parent.root.updateGroup():
                 self._queueUpdate()
 
-            # The following concept will trigger enable listeners 
+            # The following concept will trigger enable listeners
             # directly. This is causing lock contentions in practice
             # (epics as an example)
 
@@ -133,7 +133,7 @@ class Device(pr.Node,rim.Hub):
                  hubMin=0,
                  hubMax=0):
 
-        
+
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -198,7 +198,7 @@ class Device(pr.Node,rim.Hub):
 
         # Adding device
         if isinstance(node,Device):
-           
+
             # Device does not have a membase
             if node._memBase is None:
                 node._setSlave(self)
@@ -214,7 +214,7 @@ class Device(pr.Node,rim.Hub):
         # If pack specified, create a linked variable to combine everything
         if pack:
             varList = getattr(self, kwargs['name']).values()
-            
+
             def linkedSet(dev, var, val, write):
                 if val == '': return
                 values = reversed(val.split('_'))
@@ -227,7 +227,7 @@ class Device(pr.Node,rim.Hub):
 
             name = kwargs.pop('name')
             kwargs.pop('value', None)
-            
+
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
@@ -245,7 +245,7 @@ class Device(pr.Node,rim.Hub):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
             variables=self.variables.values()
-            
+
         for v in variables:
             if isinstance(v, pr.BaseVariable):
                 v.hidden = hidden
@@ -365,10 +365,10 @@ class Device(pr.Node,rim.Hub):
             value._updateBlockEnable()
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
-        
+
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
-            
+
         if offset + (numWords * stride) > self._size:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Raw transaction outside of device size')
@@ -390,7 +390,7 @@ class Device(pr.Node,rim.Hub):
                 ldata = data
             else:
                 ldata = bytearray(numWords*stride)
-            
+
         with self._memLock:
             for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
                 sliceOffset = i | self.offset
@@ -401,10 +401,10 @@ class Device(pr.Node,rim.Hub):
             return ldata
 
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
-        
+
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
-        
+
         with self._memLock:
 
             if posted: txn = rim.Post
@@ -421,12 +421,12 @@ class Device(pr.Node,rim.Hub):
 
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
-        
+
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
-        
+
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
-        
+
         with self._memLock:
             for _ in range(tryCount):
                 self._clearError()
@@ -439,7 +439,7 @@ class Device(pr.Node,rim.Hub):
                     else:
                         return [base.fromBytes(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
                 self._log.warning("Retrying raw read transaction")
-                
+
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
@@ -510,7 +510,7 @@ class Device(pr.Node,rim.Hub):
             else:
                 newBlock = b['block']
 
-            # Set memory slave  
+            # Set memory slave
             newBlock._setSlave(self)
 
             # Verify the block is not too small or large for the memory interface
@@ -520,7 +520,7 @@ class Device(pr.Node,rim.Hub):
 
             # Add variables to the block
             newBlock.addVariables(b['vars'])
-        
+
             # Set varible block links
             for v in b['vars']: v._block = newBlock
 
@@ -598,7 +598,7 @@ class ArrayDevice(Device):
             arrayArgs = [{} for x in range(number)]
         elif isinstance(arrayArgs, dict):
             arrayArgs = [arrayArgs for x in range(number)]
-            
+
         for i in range(number):
             args = arrayArgs[i]
             if 'name' in args:
@@ -609,4 +609,3 @@ class ArrayDevice(Device):
                 name=name,
                 offset=i*stride,
                 **args))
-                

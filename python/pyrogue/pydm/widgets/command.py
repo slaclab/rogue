@@ -1,23 +1,20 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Command Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMSpinbox, PyDMPushButton
+from pydm.widgets import PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Qt, Property, Slot, Signal
-from qtpy.QtWidgets import QHBoxLayout, QLineEdit, QPushButton, QComboBox, QSizePolicy
-import jsonpickle
-import time
+from qtpy.QtCore import Slot, Signal
+from qtpy.QtWidgets import QHBoxLayout, QLineEdit, QComboBox
 
 class Command(PyDMFrame):
     send_value_signal = Signal([str])
@@ -30,7 +27,8 @@ class Command(PyDMFrame):
         build = (self._node is None) and (self._connected != connected and connected == True)
         super(Command, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node   = nodeFromAddress(self.channel)
         self._path   = self.channel
@@ -80,5 +78,3 @@ class Command(PyDMFrame):
 
     def value_changed(self, new_val):
         pass
-
-

@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Variable Tree Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -15,10 +15,9 @@ import pyrogue.pydm.widgets
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.interfaces import VirtualClient
-from qtpy.QtCore import Qt, Property, Slot, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QLabel
+from qtpy.QtCore import Property, Slot, QEvent
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 import re
 
 class VariableDev(QTreeWidgetItem):
@@ -62,16 +61,16 @@ class VariableDev(QTreeWidgetItem):
 
             # Test for array
             fields = re.split('\]\[|\[|\]',val.name)
-            if len(fields) < 3: 
-                VariableHolder(path=self._path + '.' + val.name, 
-                               top=self._top, 
-                               parent=self, 
+            if len(fields) < 3:
+                VariableHolder(path=self._path + '.' + val.name,
+                               top=self._top,
+                               parent=self,
                                variable=val)
             else:
                 if not fields[0] in self._avars:
                     self._avars[fields[0]] = VariableArray(path=self._path,
-                                                           top=self._top, 
-                                                           parent=self, 
+                                                           top=self._top,
+                                                           parent=self,
                                                            name=fields[0])
                 self._avars[fields[0]].addNode(val)
 
@@ -80,9 +79,9 @@ class VariableDev(QTreeWidgetItem):
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
                                                 excGroups=self._top._excGroups).items():
 
-            VariableDev(path=self._path + '.' + val.name, 
-                        top=self._top, parent=self, 
-                        dev=val, 
+            VariableDev(path=self._path + '.' + val.name,
+                        top=self._top, parent=self,
+                        dev=val,
                         noExpand=noExpand)
 
     def _expand(self):
@@ -115,7 +114,7 @@ class VariableArray(QTreeWidgetItem):
 
         # Create variables
         for val in self._list:
-            VariableHolder(path=self._path + '.' + val.name, 
+            VariableHolder(path=self._path + '.' + val.name,
                            top=self._top,
                            parent=self,
                            variable=val)
@@ -201,7 +200,8 @@ class VariableTree(PyDMFrame):
         build = (self._node is None) and (self._connected != connected and connected == True)
         super(VariableTree, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -279,4 +279,3 @@ class VariableTree(PyDMFrame):
             return True
         else:
             return False
-

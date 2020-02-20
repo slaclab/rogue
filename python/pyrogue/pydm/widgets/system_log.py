@@ -1,20 +1,19 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM System Log Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMSpinbox, PyDMPushButton
+from pydm.widgets import PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Qt, Property
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
 import jsonpickle
 import time
@@ -31,7 +30,8 @@ class SystemLog(PyDMFrame):
         build = (self._node is None) and (self._connected != connected and connected == True)
         super(SystemLog, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel.replace('SystemLog','ClearLog')
@@ -95,4 +95,3 @@ class SystemLog(PyDMFrame):
                         temp.setText(1,v)
 
         self._logCount = len(lst)
-

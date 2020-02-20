@@ -4,12 +4,12 @@
 # Description:
 # Module for functions and classes related to variable display in the rogue GUI
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 try:
@@ -148,7 +148,7 @@ class DataLink(QObject):
     @pyqtSlot()
     def browse(self):
         dlg = QFileDialog()
-        sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat") 
+        sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")
 
         dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, directory=sug, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')
 
@@ -158,7 +158,7 @@ class DataLink(QObject):
 
         if dataFile != '':
             self.writer.DataFile.setDisp(dataFile)
-    
+
     def genName(self):
         self.writer.AutoName()
         pass
@@ -510,7 +510,7 @@ class SystemWidget(QWidget):
     @pyqtSlot()
     def saveSettings(self):
         dlg = QFileDialog()
-        sug = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml") 
+        sug = datetime.datetime.now().strftime("config_%Y%m%d_%H%M%S.yml")
 
         saveFile = dlg.getSaveFileName(caption='Save config file', directory=sug, filter='Config Files(*.yml);;All Files(*.*)')
 
@@ -534,4 +534,3 @@ class SystemWidget(QWidget):
 
         if stateFile != '':
             self.root.SaveState(stateFile)
-

@@ -42,13 +42,13 @@ class UartMemory(rogue.interfaces.memory.Slave):
         self.close()
 
     def readline(self):
-        l = []
+        line = []
         while True:
             ch = self.serialPort.read().decode('ASCII')
-            l.append(ch)
+            line.append(ch)
             if ch == '\n' or ch == '\r':
                 break
-        return ''.join(l)
+        return ''.join(line)
 
     def _doTransaction(self, transaction):
         self._workerQueue.put(transaction)
@@ -58,7 +58,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
             transaction = self._workerQueue.get()
 
             if transaction is None:
-                break;
+                break
 
             with transaction.lock():
                 address = transaction.address()
@@ -75,7 +75,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         # self._log.debug(f'Sending write transaction part {i}: {repr(sendString)}')
                         self.serialPort.write(sendString)
                         response = self.readline() #self.serialPort.readline().decode('ASCII')
-                        
+
                         # If response is empty, a timeout occurred
                         if len(response) == 0:
                             transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
@@ -84,18 +84,15 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         # parse the response string
                         parts = response.split()
                         # Check for correct response
-                        if (len(parts) != 4 or
-                            parts[0].lower() != 'w' or
-                            int(parts[1], 16) != addr):
+                        if (len(parts) != 4 or parts[0].lower() != 'w' or int(parts[1], 16) != addr):
                             transaction.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
                             return
                         # else:
                             # self._log.debug(f'Transaction part {i}: {repr(sendString)} completed successfully')
-                            
-                    transaction.done()                        
 
-                elif (transaction.type() == rogue.interfaces.memory.Read or
-                     transaction.type() == rogue.interfaces.memory.Verify):
+                    transaction.done()
+
+                elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
                     size = transaction.size()
 
                     for i, addr in enumerate(range(address, address+size, 4)):
@@ -108,22 +105,19 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         if len(response) == 0:
                             transaction.error(f'Empty transaction response (likely timeout) for transaction part {i}: {repr(sendString)}')
                             return
-                        
+
                         # parse the response string
                         parts = response.split()
 
-                        if (len(parts) != 4 or
-                            parts[0].lower() != 'r' or
-                            int(parts[1], 16) != addr):
+                        if (len(parts) != 4 or parts[0].lower() != 'r' or int(parts[1], 16) != addr):
                             transaction.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
                         else:
                             dataInt = int(parts[2], 16)
                             rdData = bytearray(dataInt.to_bytes(4, 'little', signed=False))
                             transaction.setData(rdData, i*4)
                             # self._log.debug(f'Transaction part {i}: {repr(sendString)} with response data: {dataInt:#08x} completed successfully')
-                        
+
                     transaction.done()
                 else:
                     # Posted writes not supported (for now)
                     transaction.error(f'Unsupported transaction type: {transaction.type()}')
-

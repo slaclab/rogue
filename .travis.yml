@@ -11,6 +11,7 @@ addons:
       - doxygen
       - doxygen-doc
       - python-dev
+      - flake8
 
 services:
   - docker
@@ -111,6 +112,8 @@ jobs:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
         - python3 -m pytest --cov
+        - python3 -m compileall -f python/
+        - flake8 --count python/
 
       after_success:
         # Upload coverage report

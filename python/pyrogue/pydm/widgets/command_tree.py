@@ -1,24 +1,21 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Command Tree Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
-import pyrogue.pydm.widgets
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+from pydm.widgets import PyDMLabel, PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.interfaces import VirtualClient
-from qtpy.QtCore import Qt, Property, Slot, QPoint, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QSizePolicy, QMenu, QDialog, QPushButton, QComboBox
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QGroupBox
+from qtpy.QtCore import Qt, Property, Slot, QEvent
+from qtpy.QtWidgets import QVBoxLayout, QComboBox
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit
 
 class CommandDev(QTreeWidgetItem):
 
@@ -58,8 +55,8 @@ class CommandDev(QTreeWidgetItem):
                                                  excGroups=self._top._excGroups).items():
 
             CommandHolder(path=self._path + '.' + val.name,
-                          top=self._top, 
-                          parent=self, 
+                          top=self._top,
+                          parent=self,
                           command=val)
 
         # Then create devices
@@ -67,9 +64,9 @@ class CommandDev(QTreeWidgetItem):
                                                 excGroups=self._top._excGroups).items():
 
             CommandDev(path=self._path + '.' + val.name,
-                       top=self._top, 
-                       parent=self, 
-                       dev=val, 
+                       top=self._top,
+                       parent=self,
+                       dev=val,
                        noExpand=noExpand)
 
     def _expand(self):
@@ -91,7 +88,8 @@ class CommandHolder(QTreeWidgetItem):
         self._widget = None
         self._value  = self._cmd.valueDisp()
 
-        if self._value is None: self._value = ''
+        if self._value is None:
+            self._value = ''
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -160,7 +158,8 @@ class CommandTree(PyDMFrame):
         build = (self._node is None) and (self._connected != connected and connected == True)
         super(CommandTree, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -236,4 +235,3 @@ class CommandTree(PyDMFrame):
             return True
         else:
             return False
-

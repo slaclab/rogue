@@ -4,14 +4,15 @@
 # Description:
 # Module for functions and classes related to variable display in the rogue GUI
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
 try:
     from PyQt5.QtWidgets import *
     from PyQt5.QtCore    import *
@@ -103,7 +104,7 @@ class VariableLink(QObject):
         self._item.setText(1,variable.mode)
         self._item.setText(2,variable.typeStr)
 
-        
+
         self._alarm = QLineEdit()
         self._alarm.setReadOnly(True)
         #self._alarm.setText('None')
@@ -194,9 +195,9 @@ class VariableLink(QObject):
 
     def infoDialog(self):
 
-        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 
-                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
-                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
         if self._variable.isinstance(pyrogue.RemoteVariable):
@@ -296,7 +297,7 @@ class VariableLink(QObject):
     def sbChanged(self, value):
         if self._swSet:
             return
-        
+
         self._inEdit = True
         self._variable.setDisp(value)
         self._inEdit = False
@@ -357,4 +358,3 @@ class VariableWidget(QWidget):
     def readPressed(self):
         for root in self.roots:
             root.ReadAll()
-

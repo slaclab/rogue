@@ -1,24 +1,18 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Virtual Classes
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import sys
-from collections import OrderedDict as odict
-import logging
-import inspect
+
 import pyrogue as pr
-import zmq
 import rogue.interfaces
-import functools as ft
 import jsonpickle
-import re
 import time
 import threading
 
@@ -79,9 +73,9 @@ def VirtualFactory(data):
 
 class VirtualNode(pr.Node):
     def __init__(self, attrs):
-        super().__init__(name=attrs['name'], 
-                         description=attrs['description'], 
-                         expand=attrs['expand'], 
+        super().__init__(name=attrs['name'],
+                         description=attrs['description'],
+                         expand=attrs['expand'],
                          groups=attrs['groups'])
 
         self._path  = attrs['path']
@@ -112,16 +106,19 @@ class VirtualNode(pr.Node):
         raise pr.NodeError('callRecursive not supported in VirtualNode')
 
     def __getattr__(self, name):
-        if not self._loaded: self._loadNodes()
+        if not self._loaded:
+            self._loadNodes()
         return pr.Node.__getattr__(self,name)
 
     @property
     def nodes(self):
-        if not self._loaded: self._loadNodes()
+        if not self._loaded:
+            self._loadNodes()
         return self._nodes
 
     def node(self, name, load=True):
-        if (not self._loaded) and load: self._loadNodes()
+        if (not self._loaded) and load:
+            self._loadNodes()
 
         if name in self._nodes:
             return self._nodes[name]
@@ -209,7 +206,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         if hash((addr,port)) in VirtualClient.ClientCache:
-            return 
+            return
 
         VirtualClient.ClientCache[hash((addr, port))] = self
 
@@ -256,7 +253,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         return self._link
 
     def _monWorker(self):
-        if len(self._monitors) == 0: return
+        if len(self._monitors) == 0:
+            return
 
         threading.Timer(1.0,self._monWorker).start()
 
@@ -318,4 +316,3 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __ne__(self, other):
         return not (self == other)
-
