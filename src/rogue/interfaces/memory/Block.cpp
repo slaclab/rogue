@@ -50,7 +50,7 @@ void rim::Block::setup_python() {
        .add_property("memBaseId", &rim::Block::memBaseId)
        .def("setEnable",          &rim::Block::setEnable)
        .def("startTransaction",   &rim::Block::startTransactionPy)
-       .def("checkTransaction",   &rim::Block::checkTransaction)
+       .def("checkTransaction",   &rim::Block::checkTransactionPy)
        .def("addVariables",       &rim::Block::addVariablesPy)
        .add_property("variables", &rim::Block::variablesPy)
    ;
