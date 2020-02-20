@@ -157,6 +157,31 @@ rim::Variable::Variable ( std::string name,
       case rim::Fixed  : getFuncPy_ = &rim::Block::getFixedPy;  break;
       default          : getFuncPy_ = NULL; break;
    }
+
+   // Set default C++ pointers
+   setByteArray_ = &rim::Block::setByteArray;
+   getByteArray_ = &rim::Block::getByteArray;
+
+   setUInt_ = &rim::Block::setUInt;
+   getUInt_ = &rim::Block::getUInt;
+
+   setInt_ = &rim::Block::setInt;
+   getInt_ = &rim::Block::getInt;
+
+   setBool_ = &rim::Block::setBool;
+   getBool_ = &rim::Block::getBool;
+
+   setString_ = &rim::Block::setString;
+   getString_ = &rim::Block::getString;
+
+   setFloat_ = &rim::Block::setFloat;
+   getFloat_ = &rim::Block::getFloat;
+
+   setDouble_ = &rim::Block::setDouble;
+   getDouble_ = &rim::Block::getDouble;
+
+   setFixed_ = &rim::Block::setFixed;
+   getFixed_ = &rim::Block::getFixed;
 }
 
 // Destroy the Hub
@@ -296,5 +321,101 @@ bp::object rim::VariableWrap::bitOffset() {
 
 bp::object rim::VariableWrap::bitSize() {
    return std_vector_to_py_list<uint32_t>(bitSize_);
+}
+
+/////////////////////////////////
+// C++ Byte Array
+/////////////////////////////////
+
+void rim::Variable::setBytArray(uint8_t *data) {
+   (block_->*setByteArray_)(data,this);
+}
+
+void rim::Variable::getByteArray(uint8_t *data) {
+   (block_->*getByteArray_)(data,this);
+}
+
+/////////////////////////////////
+// C++ Uint
+/////////////////////////////////
+
+void rim::Variable::setUInt(uint64_t &value) {
+   (block_->*setUInt_)(value,this);
+}
+
+uint64_t rim::Variable::getUInt(rogue::interfaces::memory::Variable *) {
+   return (block_->*getUInt_)(this);
+}
+
+/////////////////////////////////
+// C++ int
+/////////////////////////////////
+
+void rim::Variable::setInt(int64_t &value, rogue::interfaces::memory::Variable *) {
+   (block_->*setInt_)(value,this);
+}
+
+int64_t rim::Variable::getInt(rogue::interfaces::memory::Variable *) {
+   return (block_->*getInt_)(this);
+}
+
+/////////////////////////////////
+// C++ bool
+/////////////////////////////////
+
+void rim::Variable::setBool(bool &value, rogue::interfaces::memory::Variable *) {
+   (block_->*setBool_)(value,this);
+}
+
+bool rim::Variable::getBool(rogue::interfaces::memory::Variable *) {
+   return (block_->*getBool_)(this);
+}
+
+/////////////////////////////////
+// C++ String
+/////////////////////////////////
+
+void rim::Variable::setString(std::string &value, rogue::interfaces::memory::Variable *) {
+   (block_->*setString_)(value,this);
+}
+
+std::string rim::Variable::getString(rogue::interfaces::memory::Variable *) {
+   return (block_->*getString_)(this);
+}
+
+/////////////////////////////////
+// C++ Float
+/////////////////////////////////
+
+void rim::Variable::setFloat(float &value, rogue::interfaces::memory::Variable *) {
+   (block_->*setFloat_)(value,this);
+}
+
+float rim::Variable::getFloat(rogue::interfaces::memory::Variable *) {
+   return (block_->*getFloat_)(this);
+}
+
+/////////////////////////////////
+// C++ double
+/////////////////////////////////
+
+void rim::Variable::setDouble(double &value, rogue::interfaces::memory::Variable *) {
+   (block_->*setDouble_)(value,this);
+}
+
+double rim::Variable::getDouble(rogue::interfaces::memory::Variable *) {
+   return (block_->*getDouble_)(this);
+}
+
+/////////////////////////////////
+// C++ filed point
+/////////////////////////////////
+
+void rim::Variable::setFixed(double &, rogue::interfaces::memory::Variable *) {
+   (block_->*setFixed_)(value,this);
+}
+
+double rim::Variable::getFixed(rogue::interfaces::memory::Variable *) {
+   return (block_->*getFixed_)(this);
 }
 

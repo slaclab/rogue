@@ -106,11 +106,79 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
+               /////////////////////////////////
+               // Python
+               /////////////////////////////////
+
                // Set pointer function
                void (rogue::interfaces::memory::Block::*setFuncPy_)(boost::python::object &, rogue::interfaces::memory::Variable *);
 
                // Get pointer function
                boost::python::object (rogue::interfaces::memory::Block::*getFuncPy_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ Byte Array
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setByteArray_)(uint8_t *, rogue::interfaces::memory::Variable *);
+
+               void (rogue::interfaces::memory::Block::*getByteArray_)(uint8_t *, rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ Uint
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setUInt_)(uint64_t &, rogue::interfaces::memory::Variable *);
+
+               uint64_t (rogue::interfaces::memory::Block::*getUInt_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ int
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setInt_)(int64_t &, rogue::interfaces::memory::Variable *);
+
+               int64_t (rogue::interfaces::memory::Block::*getInt_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ bool
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setBool_)(bool &, rogue::interfaces::memory::Variable *);
+
+               bool (rogue::interfaces::memory::Block::*getBool_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ String
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setString_)(std::string &, rogue::interfaces::memory::Variable *);
+
+               std::string (rogue::interfaces::memory::Block::*getString_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ Float
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setFloat_)(float &, rogue::interfaces::memory::Variable *);
+
+               float (rogue::interfaces::memory::Block::*getFloat_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ double
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setDouble_)(double &, rogue::interfaces::memory::Variable *);
+
+               double (rogue::interfaces::memory::Block::*getDouble_)(rogue::interfaces::memory::Variable *);
+
+               /////////////////////////////////
+               // C++ filed point
+               /////////////////////////////////
+
+               void (rogue::interfaces::memory::Block::*setFixed_)(double &, rogue::interfaces::memory::Variable *);
+
+               double (rogue::interfaces::memory::Block::*getFixed_)(rogue::interfaces::memory::Variable *);
 
             public:
 
@@ -194,6 +262,71 @@ namespace rogue {
                bool verifyEn();
 
                virtual void queueUpdate();
+
+               /////////////////////////////////
+               // C++ Byte Array
+               /////////////////////////////////
+
+               void setBytArray(uint8_t *);
+
+               void getByteArray(uint8_t *);
+
+               /////////////////////////////////
+               // C++ Uint
+               /////////////////////////////////
+
+               void setUInt(uint64_t &);
+
+               uint64_t getUInt();
+
+               /////////////////////////////////
+               // C++ int
+               /////////////////////////////////
+
+               void setInt(int64_t &);
+
+               int64_t getInt();
+
+               /////////////////////////////////
+               // C++ bool
+               /////////////////////////////////
+
+               void setBool(bool &);
+
+               bool getBool();
+
+               /////////////////////////////////
+               // C++ String
+               /////////////////////////////////
+
+               void setString(std::string &);
+
+               std::string getString();
+
+               /////////////////////////////////
+               // C++ Float
+               /////////////////////////////////
+
+               void setFloat(float &);
+
+               float getFloat();
+
+               /////////////////////////////////
+               // C++ double
+               /////////////////////////////////
+
+               void setDouble(double &);
+
+               double getDouble();
+
+               /////////////////////////////////
+               // C++ filed point
+               /////////////////////////////////
+
+               void setFixed(double &);
+
+               double getFixed();
+
          };
 
          //! Alias for using shared pointer as VaariablePtr

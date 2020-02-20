@@ -259,7 +259,7 @@ namespace rogue {
                 * @param lowByte  Low byte of block to include in transaction., -1 for default
                 * @param highByte High byte of block to include in transaction., -1 for default
                 */
-               void startTransaction(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
+               void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
 
                //! Check transaction result
                /** Check transaction result, an exception is thrown if an error occured.
@@ -321,6 +321,12 @@ namespace rogue {
                boost::python::object getByteArrayPy (rogue::interfaces::memory::Variable *var );
 
 #endif
+
+               // Set data using byte array
+               void setByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
+
+               // Get data using byte array
+               void getByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
                // Unsigned int
