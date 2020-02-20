@@ -188,11 +188,6 @@ class Device(pr.Node,rim.Hub):
     def size(self):
         return self._size
 
-    @pr.expose
-    @property
-    def memBaseId(self):
-        return self._reqSlaveId()
-
     def addCustomBlock(self, block):
         self._custBlocks.append(block)
         self._custBlocks.sort(key=lambda x: (x.offset, x.size))

@@ -248,14 +248,6 @@ namespace rogue {
                 */
                uint32_t size();
 
-               //! Get memory base id of this block
-               /** Return the ID of the memory slave this block is attached to.
-                *
-                * Exposed as memBaseId property to Python
-                * @return 32-bit memory base iD
-                */
-               uint32_t memBaseId();
-
                //! Get block python transactions flag
                bool blockPyTrans();
 

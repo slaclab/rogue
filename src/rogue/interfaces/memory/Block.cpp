@@ -47,7 +47,6 @@ void rim::Block::setup_python() {
        .add_property("offset",    &rim::Block::offset)
        .add_property("address",   &rim::Block::address)
        .add_property("size",      &rim::Block::size)
-       .add_property("memBaseId", &rim::Block::memBaseId)
        .def("setEnable",          &rim::Block::setEnable)
        .def("startTransaction",   &rim::Block::startTransactionPy)
        .def("checkTransaction",   &rim::Block::checkTransactionPy)
@@ -61,17 +60,17 @@ void rim::Block::setup_python() {
 
 // Create a Hub device with a given offset
 rim::Block::Block (uint64_t offset, uint32_t size) {
-   path_         = "Undefined";
-   mode_         = "RW";
-   bulkEn_       = false;
+   path_       = "Undefined";
+   mode_       = "RW";
+   bulkEn_     = false;
    updateEn_     = false;
-   offset_       = offset;
-   size_         = size;
-   verifyEn_     = false;
-   verifyReq_    = false;
-   doUpdate_     = false;
+   offset_     = offset;
+   size_       = size;
+   verifyEn_   = false;
+   verifyReq_  = false;
+   doUpdate_   = false;
    blockPyTrans_ = false;
-   enable_       = false;
+   enable_     = false;
    stale_        = false;
 
    verifyBase_ = 0; // Verify Range
@@ -140,11 +139,6 @@ uint32_t rim::Block::size() {
    return size_;
 }
 
-// Get memory base id of this block
-uint32_t rim::Block::memBaseId() {
-   return(reqSlaveId());
-}
-
 // Block transactions
 bool rim::Block::blockPyTrans() {
     return blockPyTrans_;
@@ -163,7 +157,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
 
    // Check for valid combinations
    if ( (type == rim::Write  and ((mode_ == "RO")  || (!stale_ && !forceWr))) ||
-        (type == rim::Post   and  (mode_ == "RO")) ||
+        (type == rim::Post   and (mode_ == "RO")) ||
         (type == rim::Read   and ((mode_ == "WO")  || stale_)) ||
         (type == rim::Verify and ((mode_ == "WO")  || (mode_ == "RO") || stale_ || !verifyReq_ )) ) return;
 
@@ -185,16 +179,16 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
           lowByte = var->lowTranByte_;
           highByte = var->highTranByte_;
 
-         if ( type == rim::Write || type == rim::Post ) {
+      if ( type == rim::Write || type == rim::Post ) {
             stale_ = false;
             for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
                (*vit)->stale_ = false;
                if ( (*vit)->stale_ ) {
                   if ( (*vit)->lowTranByte_  < lowByte  ) lowByte  = (*vit)->lowTranByte_;
                   if ( (*vit)->highTranByte_ > highByte ) highByte = (*vit)->highTranByte_;
-               }
             }
          }
+      }
       }
 
       // Device is disabled, check after clearing stale states
@@ -326,7 +320,7 @@ void rim::Block::varUpdate() {
 
    for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
       if ( (*vit)->updateEn_ ) (*vit)->queueUpdate();
-   }
+}
 }
 
 #endif
@@ -386,7 +380,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
       }
 
       bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",(*vit)->name_.c_str(),path_.c_str(),offset_);
-   }
+      }
 
    // Init overlap enable before check
    overlapEn_ = true;
@@ -469,7 +463,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
 
    else{
 
-      srcBit = 0;
+   srcBit = 0;
       for (x=0; x < var->bitOffset_.size(); x++) {
          copyBits(blockData_, var->bitOffset_[x], buff, srcBit, var->bitSize_[x]);
          srcBit += var->bitSize_[x];
@@ -490,7 +484,7 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    // Fast copy
    if ( var->fastCopy_ ) memcpy(data,blockData_,var->byteSize_);
 
-   else {
+      else {
 
       dstBit = 0;
       for (x=0; x < var->bitOffset_.size(); x++) {

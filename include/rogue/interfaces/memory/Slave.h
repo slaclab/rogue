@@ -70,6 +70,9 @@ namespace rogue {
                // Max access
                uint32_t max_;
 
+               // Slave Name
+               std::string name_;
+
             public:
 
                //! Class factory which returns a pointer to a Slave (SlavePtr)
@@ -130,6 +133,17 @@ namespace rogue {
                 */
                uint32_t id();
 
+               //! Set slave Name
+               /** Sxposed to Python as setName
+                */
+               void setName(std::string);
+
+               //! Get slave Name
+               /** Not exposed to Python
+                * @return Slave Name
+                */
+               std::string name();
+
                //! Interface to service SlaveId request from Master
                /** Called by memory Master. May be overridden by Slave sub-class.
                 * By default returns the local Slave ID
@@ -138,6 +152,15 @@ namespace rogue {
                 * @return Unique Slave ID
                 */
                virtual uint32_t doSlaveId();
+
+               //! Interface to service SlaveName request from Master
+               /** Called by memory Master. May be overridden by Slave sub-class.
+                * By default returns the local Slave Name
+                *
+                * Not exposed to Python
+                * @return Unique Slave Name
+                */
+               virtual std::string doSlaveName();
 
                //! Interface to service the getMinAccess request from an attached master
                /** By default the local min access value will be returned. A Slave

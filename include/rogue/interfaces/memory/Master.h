@@ -113,6 +113,18 @@ namespace rogue {
                 */
                uint32_t reqSlaveId();
 
+               //! Query the slave Name
+               /* Each Slave in the system has a unique name. This 
+                * request is forward to the lowest level Slave device in
+                * the tree which will service the Transaction for this Master. This
+                * allows the system to determine which memory Masters shared the
+                * same address space.
+                *
+                * Exposed to python as _reqSlaveName()
+                * @return Slave Name
+                */
+               std::string reqSlaveName();
+
                //! Query the minimum access size in bytes for interface
                /** This function will query the lowest level Slave device to
                 * determine the minimum size for a transaction.

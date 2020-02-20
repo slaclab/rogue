@@ -65,6 +65,12 @@ uint32_t rim::Hub::doSlaveId() {
    else return(reqSlaveId());
 }
 
+//! Return name to requesting master
+std::string rim::Hub::doSlaveName() {
+   if ( root_ ) return(rim::Slave::doSlaveName());
+   else return(reqSlaveName());
+}
+
 //! Return min access size to requesting master
 uint32_t rim::Hub::doMinAccess() {
    if ( root_ ) return(rim::Slave::doMinAccess());
