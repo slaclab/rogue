@@ -64,6 +64,7 @@ void rim::Variable::setup_python() {
       .def("_bitSize",         &rim::VariableWrap::bitSize)
       .def("_get",             &rim::VariableWrap::get)
       .def("_set",             &rim::VariableWrap::set)
+      .def("_rateTest",        &rim::VariableWrap::rateTest)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
    ;
 #endif
@@ -119,6 +120,10 @@ rim::Variable::Variable ( std::string name,
 
    // Compute the highest byte
    highTranByte_ = varBytes_ - 1;
+
+   // Variable can use fast copies
+   if ( (bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitOffset_[0] % 8 == 0) ) fastCopy_ = true;
+   else fastCopy_ = false;
 
    // Custom data is NULL for now
    customData_ = NULL;
@@ -387,6 +392,44 @@ void rim::VariableWrap::queueUpdate() {
    }
 }
 
+void rim::Variable::rateTest() {
+   uint32_t x;
+
+   struct timeval stime;
+   struct timeval etime;
+   struct timeval dtime;
+
+   uint64_t count = 1000000;
+   double durr;
+   double rate;
+   uint32_t ret;
+
+   gettimeofday(&stime,NULL);
+   for (x=0; x < count; ++x) {
+      ret = getUInt();
+   }
+   gettimeofday(&etime,NULL);
+
+   timersub(&etime,&stime,&dtime);
+   durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+   rate = count / durr;
+
+   printf("\nVariable c++ get: Read %i times in %f seconds. Rate = %f\n",count,durr,rate);
+
+   gettimeofday(&stime,NULL);
+   for (x=0; x < count; ++x) {
+      setUInt(x);
+   }
+   gettimeofday(&etime,NULL);
+
+   timersub(&etime,&stime,&dtime);
+   durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+   rate = count / durr;
+
+   printf("\nVariable c++ set: Wrote %i times in %f seconds. Rate = %f\n",count,durr,rate);
+}
+
+
 bp::object rim::VariableWrap::bitOffset() {
    return std_vector_to_py_list<uint32_t>(bitOffset_);
 }
@@ -402,10 +445,12 @@ bp::object rim::VariableWrap::bitSize() {
 void rim::Variable::setBytArray(uint8_t *data) {
    if ( setByteArray_ == NULL ) return;
    (block_->*setByteArray_)(data,this);
+   block_->write(this);
 }
 
 void rim::Variable::getByteArray(uint8_t *data) {
    if ( getByteArray_ == NULL ) return;
+   block_->read(this);
    (block_->*getByteArray_)(data,this);
 }
 
@@ -413,13 +458,15 @@ void rim::Variable::getByteArray(uint8_t *data) {
 // C++ Uint
 /////////////////////////////////
 
-void rim::Variable::setUInt(uint64_t &value) {
+void rim::Variable::setUInt(uint64_t value) {
    if ( setUInt_ == NULL ) return;
    (block_->*setUInt_)(value,this);
+   block_->write(this);
 }
 
 uint64_t rim::Variable::getUInt() {
    if ( getUInt_ == NULL ) return 0;
+   block_->read(this);
    return (block_->*getUInt_)(this);
 }
 
@@ -430,10 +477,12 @@ uint64_t rim::Variable::getUInt() {
 void rim::Variable::setInt(int64_t &value) {
    if ( setInt_ == NULL ) return;
    (block_->*setInt_)(value,this);
+   block_->write(this);
 }
 
 int64_t rim::Variable::getInt() {
    if ( getInt_ == NULL ) return 0;
+   block_->read(this);
    return (block_->*getInt_)(this);
 }
 
@@ -444,10 +493,12 @@ int64_t rim::Variable::getInt() {
 void rim::Variable::setBool(bool &value) {
    if ( setBool_ == NULL ) return;
    (block_->*setBool_)(value,this);
+   block_->write(this);
 }
 
 bool rim::Variable::getBool() {
    if ( getBool_ == NULL ) return false;
+   block_->read(this);
    return (block_->*getBool_)(this);
 }
 
@@ -458,10 +509,12 @@ bool rim::Variable::getBool() {
 void rim::Variable::setString(std::string &value) {
    if ( setString_ == NULL ) return;
    (block_->*setString_)(value,this);
+   block_->write(this);
 }
 
 std::string rim::Variable::getString() {
    if ( getString_ == NULL ) return "";
+   block_->read(this);
    return (block_->*getString_)(this);
 }
 
@@ -472,10 +525,12 @@ std::string rim::Variable::getString() {
 void rim::Variable::setFloat(float &value) {
    if ( setFloat_ == NULL ) return;
    (block_->*setFloat_)(value,this);
+   block_->write(this);
 }
 
 float rim::Variable::getFloat() {
    if ( getFloat_ == NULL ) return 0.0;
+   block_->read(this);
    return (block_->*getFloat_)(this);
 }
 
@@ -486,10 +541,12 @@ float rim::Variable::getFloat() {
 void rim::Variable::setDouble(double &value) {
    if ( setDouble_ == NULL ) return;
    (block_->*setDouble_)(value,this);
+   block_->write(this);
 }
 
 double rim::Variable::getDouble() {
    if ( getDouble_ == NULL ) return 0.0;
+   block_->read(this);
    return (block_->*getDouble_)(this);
 }
 
@@ -500,10 +557,12 @@ double rim::Variable::getDouble() {
 void rim::Variable::setFixed(double &value) {
    if ( setFixed_ == NULL ) return;
    (block_->*setFixed_)(value,this);
+   block_->write(this);
 }
 
 double rim::Variable::getFixed() {
    if ( getFixed_ == NULL ) return 0.0;
+   block_->read(this);
    return (block_->*getFixed_)(this);
 }
 

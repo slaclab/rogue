@@ -58,6 +58,9 @@ namespace rogue {
                // Total number of bits for this value
                uint32_t bitTotal_;
 
+               // Flag copy flag
+               bool fastCopy_;
+
                // Total bytes (rounded up) for this value
                uint32_t byteSize_;
 
@@ -267,6 +270,7 @@ namespace rogue {
                bool verifyEn();
 
                virtual void queueUpdate();
+               void rateTest();
 
                /////////////////////////////////
                // C++ Byte Array
@@ -280,7 +284,7 @@ namespace rogue {
                // C++ Uint
                /////////////////////////////////
 
-               void setUInt(uint64_t &);
+               void setUInt(uint64_t);
 
                uint64_t getUInt();
 
@@ -392,7 +396,6 @@ namespace rogue {
 
                boost::python::object bitOffset();
                boost::python::object bitSize();
-               
          };
 
          typedef std::shared_ptr<rogue::interfaces::memory::VariableWrap> VariableWrapPtr;

@@ -154,6 +154,8 @@ namespace rogue {
                // Custom cleanup function called before delete
                virtual void customClean();
 
+               void rateTest();
+
             public:
 
                //! Class factory which returns a pointer to a Block (BlockPtr)

@@ -52,6 +52,7 @@ void rim::Block::setup_python() {
        .def("startTransaction",   &rim::Block::startTransactionPy)
        .def("checkTransaction",   &rim::Block::checkTransactionPy)
        .def("addVariables",       &rim::Block::addVariablesPy)
+       .def("_rateTest",          &rim::Block::rateTest)
        .add_property("variables", &rim::Block::variablesPy)
    ;
 
@@ -409,7 +410,7 @@ void rim::Block::varUpdate() {
    rogue::ScopedGil gil;
 
    for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
-      if ( ! (*vit)->updateEn_ ) (*vit)->queueUpdate();
+      if ( (*vit)->updateEn_ ) (*vit)->queueUpdate();
    }
 }
 
@@ -540,10 +541,16 @@ void rim::Block::setBytes ( uint8_t *data, rim::Variable *var ) {
    // Change byte order
    if ( var->byteReverse_ ) reverseBytes(data,var->byteSize_);
 
-   srcBit = 0;
-   for (x=0; x < var->bitOffset_.size(); x++) {
-      copyBits(blockData_, var->bitOffset_[x], data, srcBit, var->bitSize_[x]);
-      srcBit += var->bitSize_[x];
+   // Fast copy
+   if ( var->fastCopy_ ) memcpy(blockData_,data,var->byteSize_);
+
+   else{
+
+      srcBit = 0;
+      for (x=0; x < var->bitOffset_.size(); x++) {
+         copyBits(blockData_, var->bitOffset_[x], data, srcBit, var->bitSize_[x]);
+         srcBit += var->bitSize_[x];
+      }
    }
 }
 
@@ -555,10 +562,16 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
 
-   dstBit = 0;
-   for (x=0; x < var->bitOffset_.size(); x++) {
-      copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
-      dstBit += var->bitSize_[x];
+   // Fast copy
+   if ( var->fastCopy_ ) memcpy(data,blockData_,var->byteSize_);
+
+   else {
+
+      dstBit = 0;
+      for (x=0; x < var->bitOffset_.size(); x++) {
+         copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
+         dstBit += var->bitSize_[x];
+      }
    }
 
    // Change byte order
@@ -1055,4 +1068,46 @@ void rim::Block::customInit ( ) { }
 
 // Custom Clean function called before delete
 void rim::Block::customClean ( ) { }
+
+
+void rim::Block::rateTest() {
+   uint32_t x;
+
+   struct timeval stime;
+   struct timeval etime;
+   struct timeval dtime;
+
+   uint64_t count = 1000000;
+   double durr;
+   double rate;
+   uint32_t value;
+
+   gettimeofday(&stime,NULL);
+   waitTransaction(0);
+   for (x=0; x < count; ++x) {
+      reqTransaction(0, 4, &value, rim::Read);
+      waitTransaction(0);
+   }
+   gettimeofday(&etime,NULL);
+
+   timersub(&etime,&stime,&dtime);
+   durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+   rate = count / durr;
+
+   printf("\nBlock c++ raw: Read %i times in %f seconds. Rate = %f\n",count,durr,rate);
+
+   gettimeofday(&stime,NULL);
+   waitTransaction(0);
+   for (x=0; x < count; ++x) {
+      reqTransaction(0, 4, (uint8_t *)&count, rim::Write);
+      waitTransaction(0);
+   }
+   gettimeofday(&etime,NULL);
+
+   timersub(&etime,&stime,&dtime);
+   durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+   rate = count / durr;
+
+   printf("\nBlock c++ raw: Wrote %i times in %f seconds. Rate = %f\n",count,durr,rate);
+}
 
