@@ -49,7 +49,7 @@ void rim::Block::setup_python() {
        .add_property("size",      &rim::Block::size)
        .add_property("memBaseId", &rim::Block::memBaseId)
        .def("setEnable",          &rim::Block::setEnable)
-       .def("startTransaction",   &rim::Block::startTransaction)
+       .def("startTransaction",   &rim::Block::startTransactionPy)
        .def("checkTransaction",   &rim::Block::checkTransaction)
        .def("addVariables",       &rim::Block::addVariablesPy)
        .add_property("variables", &rim::Block::variablesPy)
@@ -60,17 +60,17 @@ void rim::Block::setup_python() {
 
 // Create a Hub device with a given offset
 rim::Block::Block (uint64_t offset, uint32_t size) {
-   path_       = "Undefined";
-   mode_       = "RW";
-   bulkEn_     = false;
-   offset_     = offset;
-   size_       = size;
-   verifyEn_   = false;
-   verifyReq_  = false;
-   doUpdate_   = false;
-   blockTrans_ = false;
-   enable_     = false;
-   stale_      = false;
+   path_         = "Undefined";
+   mode_         = "RW";
+   bulkEn_       = false;
+   offset_       = offset;
+   size_         = size;
+   verifyEn_     = false;
+   verifyReq_    = false;
+   doUpdate_     = false;
+   blockPyTrans_ = false;
+   enable_       = false;
+   stale_        = false;
 
    verifyBase_ = 0; // Verify Range
    verifySize_ = 0; // Verify Range
@@ -144,23 +144,88 @@ uint32_t rim::Block::memBaseId() {
 }
 
 // Block transactions
-bool rim::Block::blockTrans() {
-    return blockTrans_;
+bool rim::Block::blockPyTrans() {
+    return blockPyTrans_;
 }
 
 // Start a transaction for this block
-void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
+void rim::Block::startTransaction(uint32_t type, rim::Variable *var) {
    uint32_t  x;
    uint32_t  tOff;
    uint32_t  tSize;
    uint8_t * tData;
-   float     minA;
    uint32_t  highByte;
    uint32_t  lowByte;
 
    std::vector<rim::VariablePtr>::iterator vit;
 
-   if ( blockTrans_ ) return;
+   // Check for valid combinations
+   if ( (type == rim::Write  and  (mode_ == "RO")) ||
+        (type == rim::Post   and  (mode_ == "RO")) ||
+        (type == rim::Read   and  (mode_ == "WO")) ||
+        (type == rim::Verify and ((mode_ == "WO")  || (mode_ == "RO") || !verifyReq_ )) ) return;
+   {
+      std::lock_guard<std::mutex> lock(mtx_);
+      waitTransaction(0);
+      clearError();
+
+      lowByte = var->lowTranByte_;
+      highByte = var->highTranByte_;
+
+      if ( type == rim::Write || type == rim::Post ) {
+         stale_ = false;
+         var->stale_ = false;
+      }
+
+      // Device is disabled, check after clearing stale states
+      if ( ! enable_ ) return;
+
+      // Setup verify data, clear verify write flag if verify transaction
+      if ( type == rim::Verify) {
+         tOff  = verifyBase_;
+         tSize = verifySize_;
+         tData = verifyData_ + verifyBase_;
+         verifyReq_ = false;
+      }
+
+      // Not a verify transaction
+      else {
+
+         // Derive offset and size based upon min transaction size
+         tOff  = lowByte;
+         tSize = (highByte - lowByte) + 1;
+
+         // Set transaction pointer
+         tData = blockData_ + tOff;
+
+         // Track verify after writes. 
+         // Only verify blocks that have been written since last verify
+         if ( type == rim::Write ) {
+            verifyBase_ = tOff;
+            verifySize_ = (verifyEn_)?tSize:0;
+            verifyReq_  = verifyEn_;
+         }
+      }
+
+      bLog_->debug("Start transaction type = %i, Offset=0x%x, lByte=%i, hByte=%i, tOff=0x%x, tSize=%i",type,offset_,lowByte,highByte,tOff,tSize);
+
+      // Start transaction
+      reqTransaction(offset_+tOff, tSize, tData, type);
+   }
+}
+
+// Start a transaction for this block
+void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
+   uint32_t  x;
+   uint32_t  tOff;
+   uint32_t  tSize;
+   uint8_t * tData;
+   uint32_t  highByte;
+   uint32_t  lowByte;
+
+   std::vector<rim::VariablePtr>::iterator vit;
+
+   if ( blockPyTrans_ ) return;
 
    // Check for valid combinations
    if ( (type == rim::Write  and ((mode_ == "RO")  || (!stale_ && !forceWr))) ||
@@ -244,7 +309,46 @@ void rim::Block::checkTransaction() {
    bool locUpdate;
    uint32_t x;
 
-   if ( blockTrans_ ) return;
+   {
+      std::lock_guard<std::mutex> lock(mtx_);
+      waitTransaction(0);
+
+      err = getError();
+      clearError();
+
+      if ( err != "" ) {
+         throw(rogue::GeneralError::create("Block::checkTransaction",
+            "Transaction error for block %s with address 0x%.8x. Error %s",
+            path_.c_str(), address(), err.c_str()));
+      }
+
+      // Device is disabled
+      if ( ! enable_ ) return;
+
+      // Check verify data if verify size is set and verifyReq is not set
+      if ( verifySize_ != 0 && ! verifyReq_ ) {
+         bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
+
+         for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
+            if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
+               throw(rogue::GeneralError::create("Block::checkTransaction",
+                  "Verify error for block %s with address 0x%.8x. Index: %i. Got: 0x%.2x, Exp: 0x%.2x, Mask: 0x%.2x",
+                  path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
+            }
+         }
+         verifySize_ = 0;
+      }
+      bLog_->debug("Transaction complete");
+   }
+}
+
+// Check transaction result
+void rim::Block::checkTransactionPy() {
+   std::string err;
+   bool locUpdate;
+   uint32_t x;
+
+   if ( blockPyTrans_ ) return;
 
    {
       rogue::GilRelease noGil;
@@ -284,6 +388,17 @@ void rim::Block::checkTransaction() {
 
    // Update variables outside of lock, GIL re-acquired
    if ( locUpdate ) varUpdate();
+}
+
+void rim::Block::write(rim::Variable *var) {
+   startTransaction(rim::Write,var);
+   startTransaction(rim::Verify,var);
+   checkTransaction();
+}
+
+void rim::Block::read(rim::Variable *var) {
+   startTransaction(rim::Read,var);
+   checkTransaction();
 }
 
 // Call variable update for all variables

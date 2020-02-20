@@ -112,7 +112,7 @@ namespace rogue {
                bool doUpdate_;
 
                // Block transaction flag
-               bool blockTrans_;
+               bool blockPyTrans_;
 
                // Block logging
                std::shared_ptr<rogue::Logging> bLog_;
@@ -246,7 +246,10 @@ namespace rogue {
                uint32_t memBaseId();
 
                // Block transactions
-               bool blockTrans();
+               bool blockPyTrans();
+
+               // C++ Transactions
+               void startTransaction(uint32_t type, rogue::interfaces::memory::Variable *var);
 
                //! Start a transaction for this block
                /** Start a transaction with the passed type and access range
@@ -261,12 +264,18 @@ namespace rogue {
                 */
                void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
 
+               void checkTransaction();
+
                //! Check transaction result
                /** Check transaction result, an exception is thrown if an error occured.
                 *
                 * Exposed as checkTransaction() method to Python
                 */
-               void checkTransaction();
+               void checkTransactionPy();
+
+               void write(rogue::interfaces::memory::Variable *var);
+
+               void read(rogue::interfaces::memory::Variable *var);
 
                //! Add variables to block
                /** Add the passed list of variables to this block
