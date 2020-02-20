@@ -151,7 +151,7 @@ bool rim::Block::blockPyTrans() {
 }
 
 // Start a transaction for this block
-void rim::Block::startTransaction(uint32_t type, rim::Variable *var) {
+void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var) {
    uint32_t  x;
    uint32_t  tOff;
    uint32_t  tSize;
@@ -160,74 +160,6 @@ void rim::Block::startTransaction(uint32_t type, rim::Variable *var) {
    uint32_t  lowByte;
 
    std::vector<rim::VariablePtr>::iterator vit;
-
-   // Check for valid combinations
-   if ( (type == rim::Write  and  (mode_ == "RO")) ||
-        (type == rim::Post   and  (mode_ == "RO")) ||
-        (type == rim::Read   and  (mode_ == "WO")) ||
-        (type == rim::Verify and ((mode_ == "WO")  || (mode_ == "RO") || !verifyReq_ )) ) return;
-   {
-      std::lock_guard<std::mutex> lock(mtx_);
-      waitTransaction(0);
-      clearError();
-
-      lowByte = var->lowTranByte_;
-      highByte = var->highTranByte_;
-
-      if ( type == rim::Write || type == rim::Post ) {
-         stale_ = false;
-         var->stale_ = false;
-      }
-
-      // Device is disabled, check after clearing stale states
-      if ( ! enable_ ) return;
-
-      // Setup verify data, clear verify write flag if verify transaction
-      if ( type == rim::Verify) {
-         tOff  = verifyBase_;
-         tSize = verifySize_;
-         tData = verifyData_ + verifyBase_;
-         verifyReq_ = false;
-      }
-
-      // Not a verify transaction
-      else {
-
-         // Derive offset and size based upon min transaction size
-         tOff  = lowByte;
-         tSize = (highByte - lowByte) + 1;
-
-         // Set transaction pointer
-         tData = blockData_ + tOff;
-
-         // Track verify after writes. 
-         // Only verify blocks that have been written since last verify
-         if ( type == rim::Write ) {
-            verifyBase_ = tOff;
-            verifySize_ = (verifyEn_)?tSize:0;
-            verifyReq_  = verifyEn_;
-         }
-      }
-
-      bLog_->debug("Start transaction type = %i, Offset=0x%x, lByte=%i, hByte=%i, tOff=0x%x, tSize=%i",type,offset_,lowByte,highByte,tOff,tSize);
-
-      // Start transaction
-      reqTransaction(offset_+tOff, tSize, tData, type);
-   }
-}
-
-// Start a transaction for this block
-void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
-   uint32_t  x;
-   uint32_t  tOff;
-   uint32_t  tSize;
-   uint8_t * tData;
-   uint32_t  highByte;
-   uint32_t  lowByte;
-
-   std::vector<rim::VariablePtr>::iterator vit;
-
-   if ( blockPyTrans_ ) return;
 
    // Check for valid combinations
    if ( (type == rim::Write  and ((mode_ == "RO")  || (!stale_ && !forceWr))) ||
@@ -305,52 +237,22 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
    if ( check ) checkTransaction();
 }
 
-// Check transaction result
-void rim::Block::checkTransaction() {
-   std::string err;
-   bool locUpdate;
-   uint32_t x;
+#ifndef NO_PYTHON
 
-   {
-      std::lock_guard<std::mutex> lock(mtx_);
-      waitTransaction(0);
+// Start a transaction for this block
+void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
+   if ( blockPyTrans_ ) return;
 
-      err = getError();
-      clearError();
-
-      if ( err != "" ) {
-         throw(rogue::GeneralError::create("Block::checkTransaction",
-            "Transaction error for block %s with address 0x%.8x. Error %s",
-            path_.c_str(), address(), err.c_str()));
-      }
-
-      // Device is disabled
-      if ( ! enable_ ) return;
-
-      // Check verify data if verify size is set and verifyReq is not set
-      if ( verifySize_ != 0 && ! verifyReq_ ) {
-         bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
-
-         for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
-            if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
-               throw(rogue::GeneralError::create("Block::checkTransaction",
-                  "Verify error for block %s with address 0x%.8x. Index: %i. Got: 0x%.2x, Exp: 0x%.2x, Mask: 0x%.2x",
-                  path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
-            }
-         }
-         verifySize_ = 0;
-      }
-      bLog_->debug("Transaction complete");
-   }
+   startTransaction(type,forceWr,check,var.get());
 }
 
+#endif
+
 // Check transaction result
-void rim::Block::checkTransactionPy() {
+bool rim::Block::checkTransaction() {
    std::string err;
    bool locUpdate;
    uint32_t x;
-
-   if ( blockPyTrans_ ) return;
 
    {
       rogue::GilRelease noGil;
@@ -367,7 +269,7 @@ void rim::Block::checkTransactionPy() {
       }
 
       // Device is disabled
-      if ( ! enable_ ) return;
+      if ( ! enable_ ) return false;
 
       // Check verify data if verify size is set and verifyReq is not set
       if ( verifySize_ != 0 && ! verifyReq_ ) {
@@ -387,21 +289,34 @@ void rim::Block::checkTransactionPy() {
       locUpdate = doUpdate_;
       doUpdate_ = false;
    }
-
-   // Update variables outside of lock, GIL re-acquired
-   if ( locUpdate ) varUpdate();
+   return locUpdate;
 }
 
+#ifndef NO_PYTHON
+
+// Check transaction result
+void rim::Block::checkTransactionPy() {
+   if ( blockPyTrans_ ) return;
+
+   if ( checkTransaction() ) varUpdate();
+}
+
+#endif
+
+// Write sequence
 void rim::Block::write(rim::Variable *var) {
-   startTransaction(rim::Write,var);
-   startTransaction(rim::Verify,var);
+   startTransaction(rim::Write,true,false,var);
+   startTransaction(rim::Verify,false,false,var);
    checkTransaction();
 }
 
+// Read sequence
 void rim::Block::read(rim::Variable *var) {
-   startTransaction(rim::Read,var);
+   startTransaction(rim::Read,false,false,var);
    checkTransaction();
 }
+
+#ifndef NO_PYTHON
 
 // Call variable update for all variables
 void rim::Block::varUpdate() {
@@ -413,6 +328,8 @@ void rim::Block::varUpdate() {
       if ( (*vit)->updateEn_ ) (*vit)->queueUpdate();
    }
 }
+
+#endif
 
 // Add variables to block
 void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {

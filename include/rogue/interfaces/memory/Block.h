@@ -33,6 +33,8 @@ namespace rogue {
       namespace memory {
 
 #ifndef NO_PYTHON
+
+         // Template function to convert a python list to a C++ std::vector
          template<typename T>
          inline
          std::vector< T > py_list_to_std_vector( const boost::python::object& iterable ) {
@@ -40,6 +42,7 @@ namespace rogue {
                                         boost::python::stl_input_iterator< T >( ) );
          }
 
+         // Template function to convert a c++ std::vector to a python list
          template <class T>
          inline
          boost::python::list std_vector_to_py_list(std::vector<T> vector) {
@@ -51,6 +54,7 @@ namespace rogue {
             return list;
          }
 
+         // Template function to convert a python object to a c++ type with checking
          template<typename T>
          inline
          T py_object_convert( const boost::python::object& obj ) {
@@ -59,10 +63,11 @@ namespace rogue {
             if ( !ret.check() ) return (T)0;
             else return ret;
          }
+
 #endif
 
+         // Forward declaration
          class Variable;
-         class VariableWrap;
 
          //! Memory interface Block device
          class Block : public Master {
@@ -87,13 +92,13 @@ namespace rogue {
                // Persistant Block Verify Enable
                bool verifyEn_;
 
-               // Verify Requred After Write
+               // Verify Requred After Write, transiant
                bool verifyReq_;
 
-               // verifyBase byte
+               // verifyBase byte, transiant
                uint32_t verifyBase_;
 
-               // verify Size
+               // verify Size, transiant
                uint32_t verifySize_;
 
                // Block data
@@ -111,10 +116,10 @@ namespace rogue {
                // Block offset
                uint64_t offset_;
 
-               // Update Flag
+               // Update Flag, transiant
                bool doUpdate_;
 
-               // Block transaction flag
+               // Block python transactions flag
                bool blockPyTrans_;
 
                // Block logging
@@ -132,8 +137,12 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
+#ifndef NO_PYTHON
+
                // Call variable update for all variables
                void varUpdate();
+
+#endif
 
                // byte reverse
                static inline void reverseBytes ( uint8_t *data, uint32_t byteSize );
@@ -154,14 +163,11 @@ namespace rogue {
                // Custom cleanup function called before delete
                virtual void customClean();
 
-               void rateTest();
-
             public:
 
                //! Class factory which returns a pointer to a Block (BlockPtr)
                /** Exposed to Python as rogue.interfaces.memory.Block()
                 *
-                * @param memBase Pointer to Slave memory device or Hub
                 * @param offset  Memory offset of the Block
                 * @param size    Memory size (footprint) of the Block
                 */
@@ -170,10 +176,10 @@ namespace rogue {
                // Setup class for use in python
                static void setup_python();
 
-               // Create a Hub device with a given offset
+               // Create a Block device with a given offset
                Block (uint64_t offset, uint32_t size);
 
-               // Destroy the Hub
+               // Destroy the Block
                virtual ~Block();
 
                //! Return the path of the block
@@ -194,7 +200,7 @@ namespace rogue {
                std::string mode();
 
                //! Return bulk enable flag
-               /** Return the bulk enable flag, indicating if this block should be inclluded
+               /** Return the bulk enable flag, indicating if this block should be included
                 * in bulk read and write operations.
                 *
                 * Exposed as bulkEn property to Python
@@ -213,7 +219,7 @@ namespace rogue {
                //! Set enable state
                /** Set the enable state
                 *
-                * Exposed as setEneable method to Python
+                * Exposed as setEnable method to Python
                 */
                void setEnable(bool);
 
@@ -250,13 +256,22 @@ namespace rogue {
                 */
                uint32_t memBaseId();
 
-               // Block transactions
+               //! Get block python transactions flag
                bool blockPyTrans();
 
-               // C++ Transactions
-               void startTransaction(uint32_t type, rogue::interfaces::memory::Variable *var);
+               //! Start a c++ transaction for this block
+               /** Start a c++ transaction with the passed type and access range
+                *
+                * @param type    Transaction type
+                * @param forceWr Force write of non-stale block
+                * @param check   Flag to indicate if the transaction results should be immediately checked
+                * @param var     Variable associated with transaction
+                */
+               void startTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var);
 
-               //! Start a transaction for this block
+#ifndef NO_PYTHON
+
+               //! Start a transaction for this block, python version
                /** Start a transaction with the passed type and access range
                 *
                 * Exposed as startTransaction() method to Python
@@ -264,25 +279,35 @@ namespace rogue {
                 * @param type    Transaction type
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
-                * @param lowByte  Low byte of block to include in transaction., -1 for default
-                * @param highByte High byte of block to include in transaction., -1 for default
+                * @param var     Variable associated with transaction, None for block level
                 */
                void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
 
-               void checkTransaction();
+#endif
 
-               //! Check transaction result
+               //! Check transaction result, C++ version without python update calls
+               /** Check transaction result, an exception is thrown if an error occured.
+                */
+               bool checkTransaction();
+
+#ifndef NO_PYTHON
+
+               //! Check transaction result, python version with update calls
                /** Check transaction result, an exception is thrown if an error occured.
                 *
                 * Exposed as checkTransaction() method to Python
                 */
                void checkTransactionPy();
 
+#endif
+
+               //! Issue write/verify/check sequence from c++
                void write(rogue::interfaces::memory::Variable *var);
 
+               //! Issue read/check sequence from c++
                void read(rogue::interfaces::memory::Variable *var);
 
-               //! Add variables to block
+               //! Add variables to block, C++ version
                /** Add the passed list of variables to this block
                 *
                 * Exposed as addVariables() method to Python
@@ -292,21 +317,35 @@ namespace rogue {
                void addVariables(std::vector< std::shared_ptr<rogue::interfaces::memory::Variable> > variables);
 
 #ifndef NO_PYTHON
+
+               //! Add variables to block, Python version
+               /** Add the passed list of variables to this block
+                *
+                * @param variables Variable list
+                */
                void addVariablesPy(boost::python::object variables);
-#endif 
+
+#endif
+
+               //! Return a list of variables in this block, C++ version
+               std::vector<std::shared_ptr<rogue::interfaces::memory::Variable>> variables();
 
 #ifndef NO_PYTHON
 
-               //! Return a list of variables in the block
+               //! Return a list of variables in the block, python version
                /** Return the list of variables associated with this block
                 *
                 * Exposed as variables property to Python
                 */
                boost::python::object variablesPy();
 
-               std::vector<std::shared_ptr<rogue::interfaces::memory::Variable>> variables();
-
 #endif
+
+               //! Rate test function for perfmance tests
+               /**
+                * Exposed as rateTest method to Python
+                */
+               void rateTest();
 
                //////////////////////////////////////////
                // Python functions
@@ -328,18 +367,18 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using byte array
+               //! Set data using byte array, python version
                void setByteArrayPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using byte array
+               //! Get data using byte array, python version
                boost::python::object getByteArrayPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using byte array
+               //! Set data using byte array, C++ Version
                void setByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using byte array
+               //! Get data using byte array, C++ Version
                void getByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -348,19 +387,19 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using unsigned int
+               //! Set data using unsigned int, python version
                void setUIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
 
-               // Get data using unsigned int
+               //! Get data using unsigned int, python version
                boost::python::object getUIntPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using unsigned int
+               //! Set data using unsigned int, C++ Version
                void setUInt ( uint64_t &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using unsigned int
+               //! Get data using unsigned int, C++ Version
                uint64_t getUInt (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -369,18 +408,18 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using int
+               //! Set data using int, python version
                void setIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using int
+               //! Get data using int, python version
                boost::python::object getIntPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using int
+               //! Set data using int, C++ Version
                void setInt ( int64_t &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using int
+               //! Get data using int, C++ Version
                int64_t getInt (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -389,18 +428,18 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using bool
+               //! Set data using bool, python version
                void setBoolPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using bool
+               //! Get data using bool, python version
                boost::python::object getBoolPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using bool
+               //! Set data using bool, C++ Version
                void setBool ( bool &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using bool
+               //! Get data using bool, C++ Version
                bool getBool (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -408,18 +447,19 @@ namespace rogue {
                //////////////////////////////////////////
 
 #ifndef NO_PYTHON
-               // Set data using String
+
+               //! Set data using String, python version
                void setStringPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using String
+               //! Get data using String, python version
                boost::python::object getStringPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using String
+               //! Set data using String, C++ Version
                void setString ( std::string &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using String
+               //! Get data using String, C++ Version
                std::string getString (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -428,18 +468,18 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using Float
+               //! Set data using Float, python version
                void setFloatPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Float
+               //! Get data using Float, python version
                boost::python::object getFloatPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using Float
+               //! Set data using Float, C++ Version
                void setFloat ( float &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Float
+               //! Get data using Float, C++ Version
                float getFloat (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -448,18 +488,18 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using Double
+               //! Set data using Double, python version
                void setDoublePy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Double
+               //! Get data using Double, python version
                boost::python::object getDoublePy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using Double
+               //! Set data using Double, C++ Version
                void setDouble ( double &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Double
+               //! Get data using Double, C++ Version
                double getDouble (rogue::interfaces::memory::Variable *var );
 
                //////////////////////////////////////////
@@ -468,18 +508,18 @@ namespace rogue {
 
 #ifndef NO_PYTHON
 
-               // Set data using Fixed Point
+               //! Set data using Fixed Point, Python version
                void setFixedPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Fixed Point
+               //! Get data using Fixed Point, Python version
                boost::python::object getFixedPy (rogue::interfaces::memory::Variable *var );
 
 #endif
 
-               // Set data using Fixed Point
+               //! Set data using Fixed Point, C++ Version
                void setFixed ( double &value, rogue::interfaces::memory::Variable *var );
 
-               // Get data using Fixed Point
+               //! Get data using Fixed Point, C++ Version
                double getFixed (rogue::interfaces::memory::Variable *var );
 
          };
