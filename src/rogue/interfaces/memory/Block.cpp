@@ -46,7 +46,6 @@ void rim::Block::setup_python() {
        .add_property("offset",    &rim::Block::offset)
        .add_property("address",   &rim::Block::address)
        .add_property("size",      &rim::Block::size)
-       .add_property("memBaseId", &rim::Block::memBaseId)
        .def("setEnable",          &rim::Block::setEnable)
        .def("set",                &rim::Block::set)
        .def("get",                &rim::Block::get)
@@ -154,11 +153,6 @@ uint64_t rim::Block::address() {
 // Get size of this block in bytes.
 uint32_t rim::Block::size() {
    return size_;
-}
-
-// Get memory base id of this block
-uint32_t rim::Block::memBaseId() {
-   return(reqSlaveId());
 }
 
 // Start a transaction for this block

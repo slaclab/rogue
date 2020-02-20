@@ -48,6 +48,7 @@ class DummyTree(pyrogue.Root):
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
+        sim.setName("SimSlave")
         
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))

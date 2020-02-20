@@ -55,6 +55,8 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
    id_ = classIdx_;
    classIdx_++;
    classMtx_.unlock();
+
+   name_ = std::string("Unnamed_") + std::to_string(id_);
 } 
 
 //! Destroy object
@@ -112,9 +114,24 @@ uint32_t rim::Slave::id() {
    return id_;
 }
 
+//! Get name from slave
+std::string rim::Slave::name() {
+   return name_;
+}
+
+//! Set name
+void rim::Slave::setName(std::string name) {
+   name_ = name;
+}
+
 //! Return id to requesting master
 uint32_t rim::Slave::doSlaveId() {
    return(id());
+}
+
+//! Return name to requesting master
+std::string rim::Slave::doSlaveName() {
+   return(name());
 }
 
 //! Return min access size to requesting master
@@ -140,6 +157,7 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
    bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
+      .def("setName",         &rim::Slave::setName)
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
       .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
