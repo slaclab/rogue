@@ -200,6 +200,7 @@ namespace rogue {
                 * @param overlapEn Overlap enable flag
                 * @param verify Verify enable flag
                 * @param bulkEn Bulk read/write flag
+                * @param updateEn Enable variable tree updates
                 * @param modelId Variable model ID
                 * @param byteReverse Byte reverse flag
                 * @param bitPoint Bit point for fixed point values
@@ -269,71 +270,90 @@ namespace rogue {
                //! Return verify enable flag
                bool verifyEn();
 
+               //! Execute queue update, unused in C++
                virtual void queueUpdate();
+   
+               //! Rate test for debugging
                void rateTest();
 
                /////////////////////////////////
                // C++ Byte Array
                /////////////////////////////////
 
+               //! Set byte array 
                void setBytArray(uint8_t *);
 
+               //! Get byte array 
                void getByteArray(uint8_t *);
 
                /////////////////////////////////
                // C++ Uint
                /////////////////////////////////
 
+               //! Set unsigned int
                void setUInt(uint64_t &);
 
+               //! Get unsigned int
                uint64_t getUInt();
 
                /////////////////////////////////
                // C++ int
                /////////////////////////////////
 
+               //! Set signed int
                void setInt(int64_t &);
 
+               //! Get signed int
                int64_t getInt();
 
                /////////////////////////////////
                // C++ bool
                /////////////////////////////////
 
+               //! Set bool
                void setBool(bool &);
 
+               //! Get bool
                bool getBool();
 
                /////////////////////////////////
                // C++ String
                /////////////////////////////////
 
+               //! Set string
                void setString(std::string &);
 
+               //! Get string
                std::string getString();
 
                /////////////////////////////////
                // C++ Float
                /////////////////////////////////
 
+               //! Set Float
                void setFloat(float &);
 
+               //! Get Float
                float getFloat();
 
                /////////////////////////////////
                // C++ double
                /////////////////////////////////
 
+               //! Set Double
                void setDouble(double &);
 
+               //! Get Double
                double getDouble();
 
                /////////////////////////////////
                // C++ filed point
                /////////////////////////////////
 
+               //! Set fixed point
                void setFixed(double &);
 
+               //! Get Fixed point
                double getFixed();
 
          };
@@ -385,16 +405,22 @@ namespace rogue {
                 */
                boost::python::object get();
 
-               // To Bytes
+               //! To Bytes
                boost::python::object toBytes(boost::python::object &value);
 
-               // From Bytes
+               //! From Bytes
                boost::python::object fromBytes(boost::python::object &value);
 
+               //! Queue update to python
                void defQueueUpdate();
+
+               //! Queue update to python
                void queueUpdate();
 
+               //! Return bit offset
                boost::python::object bitOffset();
+
+               //! Return bit offset
                boost::python::object bitSize();
          };
 
