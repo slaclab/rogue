@@ -609,8 +609,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
-        self._log.debug("{}.set({})".format(self, value))
-
         try:
 
             # Set value to block
@@ -632,8 +630,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
         """
-        self._log.debug("{}.post({})".format(self, value))
-
         try:
 
             # Set value to block
