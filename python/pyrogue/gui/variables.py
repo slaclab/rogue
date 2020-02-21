@@ -12,14 +12,9 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QSpinBox, QMenu
+from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QDialog, QEvent
+from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt, QPalette
 
 import pyrogue
 import pyrogue.interfaces
@@ -125,9 +120,12 @@ class VariableLink(QObject):
 
             self._widget.installEventFilter(self)
 
-        elif self._variable.minimum is not None and self._variable.maximum is not None and \
-             self._variable.disp == '{}' and self._variable.mode != 'RO':
-            self._widget = QSpinBox();
+        elif self._variable.minimum is not None and \
+            self._variable.maximum is not None and \
+            self._variable.disp == '{}' and \
+                self._variable.mode != 'RO':
+
+            self._widget = QSpinBox()
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
             self._widget.valueChanged.connect(self.sbChanged)
@@ -237,7 +235,8 @@ class VariableLink(QObject):
             if isinstance(self._widget, QComboBox):
                 i = self._widget.findText(varVal.valueDisp)
 
-                if i < 0: i = 0
+                if i < 0:
+                    i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)

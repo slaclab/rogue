@@ -22,7 +22,7 @@ import warnings
 try:
     import p4p.server.thread
     import p4p.nt
-except:
+except Exception:
     warnings.warn("P4P Is not installed")
 
 
@@ -226,7 +226,6 @@ class EpicsPvServer(object):
         self._root      = root
         self._base      = base
         self._log       = pyrogue.logInit(cls=self)
-        self._syncRead  = syncRead
         self._server    = None
         self._incGroups = incGroups
         self._excGroups = excGroups
@@ -278,7 +277,7 @@ class EpicsPvServer(object):
                 with open(fname,'w') as f:
                     for k,v in self._pvMap.items():
                         print("{} -> {}".format(v,k),file=f)
-            except:
+            except Exception:
                 raise Exception("Failed to dump epics map to {}".format(fname))
         else:
             for k,v in self._pvMap.items():

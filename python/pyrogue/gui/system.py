@@ -12,13 +12,9 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QFileDialog
+from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
+from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt, QPalette
 
 import pyrogue
 import datetime
@@ -164,7 +160,8 @@ class DataLink(QObject):
         pass
 
     def varListener(self,path,value):
-        if self.block: return
+        if self.block:
+            return
 
         name = path.split('.')[-1]
 
@@ -313,7 +310,8 @@ class ControlLink(QObject):
         fl.addRow('Run Count:',self.runCount)
 
     def varListener(self,path,value):
-        if self.block: return
+        if self.block:
+            return
 
         name = path.split('.')[-1]
 

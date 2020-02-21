@@ -11,7 +11,6 @@
 #-----------------------------------------------------------------------------
 import sys
 import threading
-import collections
 import datetime
 import itertools
 import heapq
@@ -176,7 +175,7 @@ class PollQueue(object):
         yielded by the iterator
         """
         with self._condLock:
-            if time == None:
+            if time is None:
                 time = datetime.datetime.now()
             while self.empty() is False and self.peek().readTime <= time:
                 entry = heapq.heappop(self._pq)

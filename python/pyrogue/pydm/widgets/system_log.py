@@ -27,7 +27,7 @@ class SystemLog(PyDMFrame):
         self._node = None
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(SystemLog, self).connection_changed(connected)
 
         if not build:

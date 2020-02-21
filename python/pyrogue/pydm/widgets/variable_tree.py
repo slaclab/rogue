@@ -197,7 +197,7 @@ class VariableTree(PyDMFrame):
         self._tree      = None
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(VariableTree, self).connection_changed(connected)
 
         if not build:

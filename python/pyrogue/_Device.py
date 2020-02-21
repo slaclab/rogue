@@ -11,13 +11,9 @@
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory as rim
 import collections
-import datetime
 import functools as ft
 import pyrogue as pr
-import inspect
 import threading
-import math
-import time
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, *, enabled, deps=None):
@@ -91,12 +87,12 @@ class EnableVariable(pr.BaseVariable):
 
     def _doUpdate(self):
         if len(self._deps) != 0:
-            oldEn = (self.value() == True)
+            oldEn = (self.value() is True)
 
             with self._lock:
                 self._depDis = not all(x.value() for x in self._deps)
 
-            newEn = (self.value() == True)
+            newEn = (self.value() is True)
 
             if oldEn != newEn:
                 self.parent._updateBlockEnable()
@@ -152,7 +148,8 @@ class Device(pr.Node,rim.Hub):
         self.forceCheckEach = False
 
         # Connect to memory slave
-        if memBase: self._setSlave(memBase)
+        if memBase:
+            self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
         pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand)
@@ -216,7 +213,8 @@ class Device(pr.Node,rim.Hub):
             varList = getattr(self, kwargs['name']).values()
 
             def linkedSet(dev, var, val, write):
-                if val == '': return
+                if val == '':
+                    return
                 values = reversed(val.split('_'))
                 for variable, value in zip(varList, values):
                     variable.setDisp(value, write=write)
@@ -239,7 +237,7 @@ class Device(pr.Node,rim.Hub):
             variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
         for x in variables:
-            v = self.node(x).pollInterval = interval
+            self.node(x).pollInterval = interval
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
@@ -344,7 +342,7 @@ class Device(pr.Node,rim.Hub):
 
             if recurse:
                 for key,value in self.devices.items():
-                        value.checkBlocks(recurse=True)
+                    value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Useful for committing any stale variables"""
@@ -359,7 +357,7 @@ class Device(pr.Node,rim.Hub):
 
     def _updateBlockEnable(self):
         for block in self._blocks:
-            block.setEnable(self.enable.value() == True)
+            block.setEnable(self.enable.value() is True)
 
         for key,value in self.devices.items():
             value._updateBlockEnable()
@@ -407,16 +405,20 @@ class Device(pr.Node,rim.Hub):
 
         with self._memLock:
 
-            if posted: txn = rim.Post
-            else: txn = rim.Write
+            if posted:
+                txn = rim.Post
+            else:
+                txn = rim.Write
 
             for _ in range(tryCount):
                 self._clearError()
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
                 self._waitTransaction(0)
 
-                if self._getError() == "": return
-                elif posted: break
+                if self._getError() == "":
+                    return
+                elif posted:
+                    break
                 self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occurred
@@ -473,7 +475,8 @@ class Device(pr.Node,rim.Hub):
                 n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
                 blk['vars'].append(n)
 
-                if n.varBytes > blk['size']: blk['size'] = n.varBytes
+                if n.varBytes > blk['size']:
+                    blk['size'] = n.varBytes
 
             # We need a new block for this variable
             else:
@@ -522,11 +525,12 @@ class Device(pr.Node,rim.Hub):
             newBlock.addVariables(b['vars'])
 
             # Set varible block links
-            for v in b['vars']: v._block = newBlock
+            for v in b['vars']:
+                v._block = newBlock
 
             # Add to device
             self._blocks.append(newBlock)
-            newBlock.setEnable(self.enable.value() == True)
+            newBlock.setEnable(self.enable.value() is True)
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)

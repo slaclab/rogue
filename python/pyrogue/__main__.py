@@ -13,7 +13,6 @@ import pyrogue
 import pyrogue.interfaces
 import pyrogue.gui
 import pyrogue.pydm
-import sys
 import time
 
 parser = argparse.ArgumentParser('Pyrogue Client')
@@ -54,7 +53,7 @@ args = parser.parse_args()
 try:
     host = args.server.split(',')[0].split(':')[0]
     port = int(args.server.split(',')[0].split(':')[1])
-except:
+except Exception:
     print("Failed to extract server host & port")
 
 print("Connecting to {}".format(args.server))

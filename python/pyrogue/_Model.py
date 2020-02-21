@@ -9,9 +9,6 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import pyrogue as pr
-import struct
-import math
 
 import rogue.interfaces.memory as rim
 
@@ -99,8 +96,8 @@ class UIntReversed(UInt):
         return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(cls, ba):
-        valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
-        return reverseBits(valueReverse, self.bitSize)
+        valueReverse = int.from_bytes(ba, cls.endianness, signed=cls.signed)
+        return reverseBits(valueReverse, cls.bitSize)
 
 class Int(UInt):
 

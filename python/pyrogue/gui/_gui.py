@@ -12,15 +12,9 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-    from PyQt5.QtNetwork import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
-    from PyQt4.QtNetwork import *
+from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
+from PyQt5.QtCore    import QApplication, QWidget, pyqtSignal, pyqtSlot
+from PyQt5.QtNetwork import QAbstractSocket
 
 import pyrogue
 import pyrogue.interfaces
@@ -28,7 +22,6 @@ import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
 import pyrogue.gui.system
-import threading
 import socket
 import sys
 import os

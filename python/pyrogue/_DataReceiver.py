@@ -9,7 +9,6 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
 import numpy
@@ -19,7 +18,7 @@ class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
     def __init__(self, *, maxRate=30, **kwargs):
-        py.Device.__init__(self, **kwargs)
+        pr.Device.__init__(self, **kwargs)
         self._lastTime = time.time()
 
         self.add(pr.LocalVariable(name='RxEnable',
@@ -96,7 +95,7 @@ class DataReceiver(pr.Device,ris.Slave):
         doWrite = False
 
         # Check for min period
-        if (time.time() - self._lastTime) > (1.0 / float(MaxRxRate.value())):
+        if (time.time() - self._lastTime) > (1.0 / float(self.MaxRxRate.value())):
             doWrite = True
             self._lastTime = time.time()
 

@@ -69,7 +69,7 @@ class EpicsCaServer(object):
                 with open(fname,'w') as f:
                     for k,v in self._pvMap.items():
                         print("{} -> {}".format(v,k),file=f)
-            except:
+            except Exception:
                 raise Exception("Failed to dump epics map to {}".format(fname))
         else:
             for k,v in self._pvMap.items():

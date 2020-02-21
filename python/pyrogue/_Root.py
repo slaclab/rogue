@@ -38,10 +38,11 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
 
-        if not self._root.running: return
+        if not self._root.running:
+            return
 
         with self._root.updateGroup():
-           try:
+            try:
                 se = { 'created'     : record.created,
                        'name'        : record.name,
                        'message'     : str(record.msg),
@@ -74,13 +75,13 @@ class RootLogHandler(logging.Handler):
                 if self._root._sqlLog is not None:
                     self._root._sqlLog.logSyslog(se)
 
-           except Exception as e:
-               print("-----------Error Logging Exception -------------")
-               print(e)
-               print(traceback.print_exc(file=sys.stdout))
-               print("-----------Original Error-----------------------")
-               print(self.format(record))
-               print("------------------------------------------------")
+            except Exception as e:
+                print("-----------Error Logging Exception -------------")
+                print(e)
+                print(traceback.print_exc(file=sys.stdout))
+                print("-----------Original Error-----------------------")
+                print(self.format(record))
+                print("------------------------------------------------")
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -298,16 +299,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             print("==========================================================")
 
             # Override startup parameters if passed in start()
-            if 'streamIncGroups' in kwargs: self._streamIncGroups = kwargs['streamIncGroups']
-            if 'streamExcGroups' in kwargs: self._streamExcGroups = kwargs['streamExcGroups']
-            if 'sqlIncGroups'    in kwargs: self._sqlIncGroups    = kwargs['sqlIncGroups']
-            if 'sqlExcGroups'    in kwargs: self._sqlExcGroups    = kwargs['sqlExcGroups']
-            if 'timeout'         in kwargs: self._timeout         = kwargs['timeout']
-            if 'initRead'        in kwargs: self._initRead        = kwargs['initRead']
-            if 'initWrite'       in kwargs: self._initWrite       = kwargs['initWrite']
-            if 'pollEn'          in kwargs: self._pollEn          = kwargs['pollEn']
-            if 'serverPort'      in kwargs: self._serverPort      = kwargs['serverPort']
-            if 'sqlUrl'          in kwargs: self._sqlUrl          = kwargs['sqlUrl']
+            if 'streamIncGroups' in kwargs:
+                self._streamIncGroups = kwargs['streamIncGroups']
+            if 'streamExcGroups' in kwargs:
+                self._streamExcGroups = kwargs['streamExcGroups']
+            if 'sqlIncGroups'    in kwargs:
+                self._sqlIncGroups    = kwargs['sqlIncGroups']
+            if 'sqlExcGroups'    in kwargs:
+                self._sqlExcGroups    = kwargs['sqlExcGroups']
+            if 'timeout'         in kwargs:
+                self._timeout         = kwargs['timeout']
+            if 'initRead'        in kwargs:
+                self._initRead        = kwargs['initRead']
+            if 'initWrite'       in kwargs:
+                self._initWrite       = kwargs['initWrite']
+            if 'pollEn'          in kwargs:
+                self._pollEn          = kwargs['pollEn']
+            if 'serverPort'      in kwargs:
+                self._serverPort      = kwargs['serverPort']
+            if 'sqlUrl'          in kwargs:
+                self._sqlUrl          = kwargs['sqlUrl']
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -336,9 +347,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
                 # Check for instances when device comes before block and when block comes before device
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and \
+                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and
                          (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
-                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and \
+                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and
                         (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
@@ -453,7 +464,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # At with call
         with self._updateLock:
-            if not tid in self._updateCount:
+            if tid not in self._updateCount:
                 self._updateList[tid] = {}
                 self._updateCount[tid] = 0
 
@@ -629,16 +640,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
 
         # Don't send if there are not any Slaves connected
-        if self._slaveCount == 0: return
+        if self._slaveCount == 0:
+            return
 
         # Inherit include and exclude groups from global if not passed
-        if incGroups is None: incGroups = self._streamIncGroups
-        if excGroups is None: excGroups = self._streamExcGroups
+        if incGroups is None:
+            incGroups = self._streamIncGroups
+        if excGroups is None:
+            excGroups = self._streamExcGroups
 
         self._sendYamlFrame(self.getYaml(readFirst=False,
-                                          modes=modes,
-                                          incGroups=incGroups,
-                                          excGroups=excGroups))
+            modes=modes,
+            incGroups=incGroups,
+            excGroups=excGroups))
 
     def _write(self):
         """Write all blocks"""
@@ -686,9 +700,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if name.split('.')[-1] == 'zip':
                 with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
-                    with zf.open(os.path.basename(name[:-4]),'w') as f: f.write(yml.encode('utf-8'))
+                    with zf.open(os.path.basename(name[:-4]),'w') as f:
+                        f.write(yml.encode('utf-8'))
             else:
-                with open(name,'w') as f: f.write(yml)
+                with open(name,'w') as f:
+                    f.write(yml)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -744,7 +760,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                 spt = zfn.split('%s/' % sub.rstrip('/'))[1]
 
                                 # Entry ends in .yml or *.yml and is in current directory
-                                if not '/' in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
+                                if '/' not in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
                                     lst.append(base + '/' + zfn)
 
             # Entry is a directory
@@ -764,7 +780,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     d = pr.yamlToData(fName=fn)
                     self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-                if not writeEach: self._write()
+                if not writeEach:
+                    self._write()
 
             if self.InitAfterConfig.value():
                 self.initialize()
@@ -782,7 +799,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         If readFirst=True a full read from hardware is performed.
         """
 
-        if readFirst: self._read()
+        if readFirst:
+            self._read()
         try:
             return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
         except Exception as e:
@@ -805,7 +823,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self.pollBlock(), self.updateGroup():
             self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if not writeEach: self._write()
+            if not writeEach:
+                self._write()
 
         if self.InitAfterConfig.value():
             self.initialize()
@@ -832,7 +851,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         tid = threading.get_ident()
 
         with self._updateLock:
-            if not tid in self._updateCount:
+            if tid not in self._updateCount:
                 self._updateList[tid] = {}
                 self._updateCount[tid] = 0
 

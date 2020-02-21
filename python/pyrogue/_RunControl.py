@@ -9,14 +9,8 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory as rim
-import collections
-import datetime
-import functools as ft
 import pyrogue as pr
-import inspect
 import threading
-import math
 import time
 
 class RunControl(pr.Device):

@@ -12,13 +12,9 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QSpinBox
+from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout
+from PyQt5.QtCore    import QObject, pyqtSlot, QCoreApplication, QEvent
 
 import pyrogue
 
@@ -111,7 +107,7 @@ class CommandLink(QObject):
                 self._widget.installEventFilter(self)
 
             elif self._command.minimum is not None and self._command.maximum is not None:
-                self._widget = QSpinBox();
+                self._widget = QSpinBox()
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
                 self._widget.setValue(self._command.value())

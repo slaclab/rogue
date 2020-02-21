@@ -33,10 +33,12 @@ def addLibraryPath(path):
         base = os.path.dirname(sys.argv[0])
 
     # If script was not started with ./	    # If script was not started with ./
-    if base == '': base = '.'
+    if base == '':
+        base = '.'
 
     # If script was not started with ./
-    if base == '': base = '.'
+    if base == '':
+        base = '.'
 
     # Allow either a single string or list to be passed
     if not isinstance(path,list):

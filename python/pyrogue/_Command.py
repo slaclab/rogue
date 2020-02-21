@@ -10,13 +10,9 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory
-import textwrap
-import time
-from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
 import threading
-import math
 
 class CommandError(Exception):
     """ Exception for command errors."""
@@ -72,7 +68,7 @@ class BaseCommand(pr.BaseVariable):
             self._arg = 'arg' in inspect.getfullargspec(self._function).args
 
         # C++ functions
-        except:
+        except Exception:
             self._arg = False
 
     @pr.expose
@@ -142,8 +138,7 @@ class BaseCommand(pr.BaseVariable):
         ret = cmd.get()
         if ret != arg:
             raise CommandError(
-                f'Verification failed for {cmd.path}. \n'+
-                f'Set to {arg} but read back {ret}')
+                f'Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}')
 
 
     @staticmethod

@@ -9,7 +9,6 @@
 #-----------------------------------------------------------------------------
 import pyrogue as pr
 import rogue.interfaces.memory as rim
-import threading
 from collections import OrderedDict as odict
 
 
@@ -92,31 +91,26 @@ class MemoryDevice(pr.Device):
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get(): return
+        if not self.enable.get():
+            return
 
         with self._memLock:
             self._wrValues = self._setValues
             for offset, values in self._setValues.items():
-                wdata = self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
-                #print(f'wdata: {wdata}')
-                #if self._verify:
-                #    self._wrData[offset] = wdata
+                self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
 
             # clear out setValues when done
             self._setValues = odict()
 
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get(): return
+        if not self.enable.get():
+            return
 
         with self._memLock:
             for offset, ba in self._wrValues.items():
                 # _verValues will not be filled until waitTransaction completes
                 self._verValues[offset] = self._rawTxnChunker(offset, None, self._base, self._stride, self._wordBitSize, txnType=rim.Verify, numWords=len(ba))
-
-
-            #self._wrData = odict()
-            #self._verValues = self._wrValues
 
     def checkBlocks(self, recurse=True, variable=None):
         with self._memLock:
@@ -124,7 +118,6 @@ class MemoryDevice(pr.Device):
             self._waitTransaction(0)
 
             # Error check?
-            error = self._getError()
             self._clearError()
 
             # Convert the read verify data back to the native type

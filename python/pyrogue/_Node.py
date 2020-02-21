@@ -15,8 +15,6 @@ import logging
 import re
 import inspect
 import pyrogue as pr
-import functools as ft
-import parse
 import collections
 
 def logException(log,e):
@@ -65,7 +63,7 @@ def expose(item):
 
     # Property
     if inspect.isdatadescriptor(item):
-        func = item.fget._rogueExposed = True
+        item.fget._rogueExposed = True
         return item
 
     # Method
@@ -151,7 +149,7 @@ class Node(object):
 
     def addToGroup(self,group):
         """ Add this node to the passed group, recursive to children """
-        if not group in self._groups:
+        if group not in self._groups:
             self._groups.append(group)
 
         for k,v in self._nodes.items():
@@ -248,23 +246,19 @@ class Node(object):
 
         # Fail if added to a non device node (may change in future)
         if not isinstance(self,pr.Device):
-            raise NodeError('Attempting to add node with name %s to non device node %s.' %
-                             (node.name,self.name))
+            raise NodeError('Attempting to add node with name %s to non device node %s.' % (node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:
-            raise NodeError('Error adding node with name %s to %s. Tree is already started.' %
-                             (node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Tree is already started.' % (node.name,self.name))
 
         # Error if added node already has a parent
         if node._parent is not None:
-            raise NodeError('Error adding node with name %s to %s. Node is already attached.' %
-                             (node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Node is already attached.' % (node.name,self.name))
 
         # Names of all sub-nodes must be unique
         if node.name in self.__dir__() or node.name in self._anodes:
-            raise NodeError('Error adding node with name %s to %s. Name collision.' %
-                             (node.name,self.name))
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
         # Add some checking for characters which will make lookups problematic
         if re.match('^[\w_\[\]]+$',node.name) is None:
@@ -280,7 +274,8 @@ class Node(object):
 
         # Generic test array method
         fields = re.split('\]\[|\[|\]',node.name)
-        if len(fields) < 3: return
+        if len(fields) < 3:
+            return
 
         # Extract name and keys
         aname = fields[0]
@@ -295,7 +290,7 @@ class Node(object):
             raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
         # Create dictionary containers
-        if not aname in self._anodes:
+        if aname not in self._anodes:
             self._anodes[aname] = {}
 
         # Start at primary list
@@ -314,7 +309,7 @@ class Node(object):
                 return
 
             # Next level is empty
-            if not k in sub:
+            if k not in sub:
                 sub[k] = {}
 
             # check for overlaps
@@ -349,9 +344,9 @@ class Node(object):
         incGroups is an optional group or list of groups that this node must be part of
         excGroups is an optional group or list of groups that this node must not be part of
         """
-        return odict([(k,n) for k,n in self.nodes.items() if (n.isinstance(typ) and \
-                ((excTyp is None) or (not n.isinstance(excTyp))) and \
-                n.filterByGroup(incGroups,excGroups))])
+        return odict([(k,n) for k,n in self.nodes.items() if (n.isinstance(typ) and
+                      ((excTyp is None) or (not n.isinstance(excTyp))) and
+                      n.filterByGroup(incGroups,excGroups))])
 
     @property
     def nodes(self):
@@ -601,7 +596,7 @@ def _iterateDict(d, keys):
     elif keys[0].isdigit():
         try:
             subList = [d[int(keys[0])]]
-        except:
+        except Exception:
             subList = []
 
     # Slice
@@ -609,11 +604,12 @@ def _iterateDict(d, keys):
 
         # Form slice-able list
         tmpList = [None] * (max(d.keys())+1)
-        for k,v in d.items(): tmpList[k] = v
+        for k,v in d.items():
+            tmpList[k] = v
 
         try:
             subList = eval(f'tmpList[{keys[0]}]')
-        except:
+        except Exception:
             subList = []
 
     for e in subList:

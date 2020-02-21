@@ -84,14 +84,14 @@ class FileReader(object):
             if self._configChan is not None and self._header.channel == self._configChan:
                 try:
                     pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
-                except:
+                except Exception:
                     self._log.warning(f"Error processing meta data in {self._currFName}")
 
             # This is a data channel
             else:
                 try:
                     self._data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=payload)
-                except:
+                except Exception:
                     raise rogue.GeneralError(f"fileio.FileReader","Failed to read data from {self._currFname}")
 
                 self._currCount += 1

@@ -239,7 +239,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._ltime = self._root.Time.value()
 
     def addLinkMonitor(self, function):
-        if not function in self._monitors:
+        if function not in self._monitors:
             self._monitors.append(function)
         self._monWorker()
 

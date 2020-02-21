@@ -10,6 +10,5 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-print("Loading Rogue Widgets Designer Plugins")
-from os import path
 from pyrogue.pydm.widgets.designer import *
+print("Loading Rogue Widgets Designer Plugins")
