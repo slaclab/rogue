@@ -76,13 +76,13 @@ class RootLogHandler(logging.Handler):
                 if self._root._sqlLog is not None:
                     self._root._sqlLog.logSyslog(se)
 
-           except Exception as e:
-               print("-----------Error Logging Exception -------------")
-               print(e)
-               print(traceback.print_exc(file=sys.stdout))
-               print("-----------Original Error-----------------------")
-               print(self.format(record))
-               print("------------------------------------------------")
+            except Exception as e:
+                print("-----------Error Logging Exception -------------")
+                print(e)
+                print(traceback.print_exc(file=sys.stdout))
+                print("-----------Original Error-----------------------")
+                print(self.format(record))
+                print("------------------------------------------------")
 
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
@@ -654,9 +654,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             excGroups = self._streamExcGroups
 
         self._sendYamlFrame(self.getYaml(readFirst=False,
-                                          modes=modes,
-                                          incGroups=incGroups,
-                                          excGroups=excGroups))
+                                         modes=modes,
+                                         incGroups=incGroups,
+                                         excGroups=excGroups))
 
     def _write(self):
         """Write all blocks"""
