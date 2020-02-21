@@ -1,23 +1,23 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Data Writer Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Qt, Property, Slot
+from qtpy.QtCore import Qt, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
 from qtpy.QtWidgets import QFormLayout, QGroupBox, QFileDialog
 import datetime
+
 
 class DataWriter(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
@@ -25,10 +25,11 @@ class DataWriter(PyDMFrame):
         self._node = None
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(DataWriter, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -123,7 +124,7 @@ class DataWriter(PyDMFrame):
     @Slot()
     def _browse(self):
         dlg = QFileDialog()
-        sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat") 
+        sug = datetime.datetime.now().strftime("data_%Y%m%d_%H%M%S.dat")
 
         dataFile = dlg.getSaveFileName(options=QFileDialog.DontConfirmOverwrite, directory=sug, caption='Select data file', filter='Data Files(*.dat);;All Files(*.*)')
 
@@ -134,4 +135,3 @@ class DataWriter(PyDMFrame):
         if dataFile != '':
             self._dataFile.setText(dataFile)
             self._dataFile.send_value()
-

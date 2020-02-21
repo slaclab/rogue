@@ -10,17 +10,15 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
-import textwrap
 import rogue.interfaces.memory as rim
-import parse
 import math
 import inspect
 import threading
 import re
 import time
-import numpy
 from collections import OrderedDict as odict
 from collections import Iterable
+
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -95,6 +93,7 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
+
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
@@ -116,8 +115,7 @@ class BaseVariable(pr.Node):
                  pollInterval=0,
                  updateNotify=True,
                  typeStr='Unknown',
-                 offset=0
-                ):
+                 offset=0):
 
         # Public Attributes
         self._bulkEn        = True
@@ -203,7 +201,7 @@ class BaseVariable(pr.Node):
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
             try:
                 return int(res[2])
-            except:
+            except Exception:
                 return 3
         else:
             return 0
@@ -231,10 +229,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def hasAlarm(self):
-        return (self._lowWarning is not None or
-                self._lowAlarm is not None or
-                self._highWarning is not None or
-                self._highAlarm is not None)
+        return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
 
     @pr.expose
     @property
@@ -400,7 +395,7 @@ class BaseVariable(pr.Node):
             if sValue is None or isinstance(sValue, self.nativeType()):
                 return sValue
             else:        
-                if sValue is '':
+                if sValue == '':
                     return ''
                 elif self.disp == 'enum':
                     return self.revEnum[sValue]
@@ -416,7 +411,7 @@ class BaseVariable(pr.Node):
                         return eval(sValue)
                     else:
                         return sValue
-        except:
+        except Exception:
             raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
     @pr.expose
@@ -474,7 +469,8 @@ class BaseVariable(pr.Node):
     def _alarmState(self,value):
         """ Return status, severity """
 
-        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
+        if isinstance(value,list) or isinstance(value,dict):
+            return 'None','None'
 
         if (self.hasAlarm is False):
             return "None", "None"
@@ -533,7 +529,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify)
 
-
+            
         self._block    = None
 
         # Convert the address parameters into lists
@@ -545,7 +541,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
-            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
+            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
 
         # Check for invalid values
         if 0 in bitSize:
@@ -678,13 +674,13 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
-        else:
+        else:        
 
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
                 return self._base.fromString(sValue)
-
+            
 
 class LocalVariable(BaseVariable):
 
@@ -840,6 +836,7 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
+
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -916,16 +913,13 @@ def varFuncHelper(func,pargs,log,path):
 
     try:
         # Function args
-        fargs = inspect.getfullargspec(func).args + \
-                inspect.getfullargspec(func).kwonlyargs 
+        fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
 
         # Build overlapping arg list
-        args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
+        args = {k:pargs[k] for k in fargs if k != 'self' and k in pargs}
 
     # handle c++ functions, no args supported for now
-    except:
+    except Exception:
         args = {}
 
     return func(**args)
-
-

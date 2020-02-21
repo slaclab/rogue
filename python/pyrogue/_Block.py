@@ -3,21 +3,16 @@
 #-----------------------------------------------------------------------------
 # File       : pyrogue/_Block.py
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory as rim
 import threading
-import time
-import math
-import textwrap
 import pyrogue as pr
-import inspect
 
 
 class MemoryError(Exception):
@@ -25,7 +20,7 @@ class MemoryError(Exception):
 
     def __init__(self, *, name, address, msg=None, size=0):
 
-        self._value = f"Memory Error for {name} at address {address:#08x}"
+        self._value = f'Memory Error for {name} at address {address:#08x}'
 
         if msg is not None:
             self._value += " " + msg
@@ -72,7 +67,7 @@ class LocalBlock(object):
     def setEnable(self,value):
         with self._lock:
             self._enable = value
- 
+
     def _setTimeout(self,value):
         pass
 
@@ -127,26 +122,26 @@ class LocalBlock(object):
                 self._doUpdate = False
 
             # Update variables outside of lock
-            if doUpdate: 
+            if doUpdate:
                 self._variable._queueUpdate()
-
-    def _setTimeout(self,timeout):
-        pass
 
     def _iadd(self, other):
         with self._lock:
             self.set(None, self.get(None) + other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _isub(self, other):
         with self._lock:
             self.set(None, self.get(None) - other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _imul(self, other):
         with self._lock:
             self.set(None, self.get(None) * other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _imatmul(self, other):
         with self._lock:
@@ -156,46 +151,53 @@ class LocalBlock(object):
     def _itruediv(self, other):
         with self._lock:
             self.set(None, self.get(None) / other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _ifloordiv(self, other):
         with self._lock:
             self.set(None, self.get(None) // other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _imod(self, other):
         with self._lock:
             self.set(None, self.get(None) % other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _ipow(self, other):
         with self._lock:
             self.set(None, self.get(None) ** other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _ilshift(self, other):
         with self._lock:
             self.set(None, self.get(None) << other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _irshift(self, other):
         with self._lock:
             self.set(None, self.get(None) >> other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _iand(self, other):
         with self._lock:
             self.set(None, self.get(None) & other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _ixor(self, other):
         with self._lock:
             self.set(None, self.get(None) ^ other)
-            if self._enable: self._variable._queueUpdate()
+            if self._enable:
+                self._variable._queueUpdate()
 
     def _ior(self, other):
         with self._lock:
             self.set(None, self.get(None) | other)
-            if self._enable: self._variable._queueUpdate()
-
-
+            if self._enable:
+                self._variable._queueUpdate()

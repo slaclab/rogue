@@ -1,22 +1,21 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Process Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMPushButton, PyDMScaleIndicator
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.interfaces import VirtualClient
-from qtpy.QtCore import Qt, Property
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
+
 
 class Process(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
@@ -24,10 +23,11 @@ class Process(PyDMFrame):
         self._node = None
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(Process, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -78,7 +78,7 @@ class Process(PyDMFrame):
         w.showValue             = False
         w.showLimits            = False
         w.showTicks             = False
-        w.barIndicator          = True 
+        w.barIndicator          = True
 
         fl.addRow('Progress:',w)
 
@@ -99,9 +99,8 @@ class Process(PyDMFrame):
             if v.name not in noAdd and not v.hidden:
                 w = PyDMLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
                 w.showUnits             = False
-                w.precisionFromPV       = True 
+                w.precisionFromPV       = True
                 w.alarmSensitiveContent = False
                 w.alarmSensitiveBorder  = False
 
                 fl.addRow(v.name + ':',w)
-

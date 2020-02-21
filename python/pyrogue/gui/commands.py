@@ -4,23 +4,20 @@
 # Description:
 # Module for functions and classes related to command display in the rogue GUI
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QSpinBox
+from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout
+from PyQt5.QtCore    import QObject, pyqtSlot, QCoreApplication, QEvent
 
 import pyrogue
+
 
 class CommandDev(QObject):
     def __init__(self,*,tree,parent,dev,noExpand,top,incGroups,excGroups):
@@ -111,7 +108,7 @@ class CommandLink(QObject):
                 self._widget.installEventFilter(self)
 
             elif self._command.minimum is not None and self._command.maximum is not None:
-                self._widget = QSpinBox();
+                self._widget = QSpinBox()
                 self._widget.setMinimum(self._command.minimum)
                 self._widget.setMaximum(self._command.maximum)
                 self._widget.setValue(self._command.value())
@@ -144,6 +141,7 @@ class CommandLink(QObject):
         else:
             return False
 
+
 class CommandWidget(QWidget):
     def __init__(self, *, parent=None):
         super(CommandWidget, self).__init__(parent)
@@ -175,4 +173,3 @@ class CommandWidget(QWidget):
                                          top=True,
                                          incGroups=incGroups,
                                          excGroups=excGroups))
-

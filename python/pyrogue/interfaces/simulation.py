@@ -4,19 +4,20 @@
 # Description:
 # Module containing simulation support classes and routines
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
 import threading
 import pyrogue
 import rogue.interfaces.stream
-import time
 import zmq
+
 
 class SideBandSim():
 
@@ -27,11 +28,11 @@ class SideBandSim():
         self._ctx = zmq.Context()
         self._sbPush = self._ctx.socket(zmq.PUSH)
         self._sbPush.connect(f"tcp://{host}:{port+1}")
-        self._sbPull = self._ctx.socket(zmq.PULL)        
+        self._sbPull = self._ctx.socket(zmq.PULL)
         self._sbPull.connect(f"tcp://{host}:{port}")
 
         self._log.info("Connected to port {} on host {}".format(port,host))
-        
+
         self._recvCb = self._defaultRecvCb
         self._lock = threading.Lock()
         self._run = True
@@ -55,8 +56,8 @@ class SideBandSim():
         if remData is not None:
             ba[2] = 0x01
             ba[3] = remData
-            
-        sent = self._sbPush.send(ba)
+
+        self._sbPush.send(ba)
         self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
 
     def stop(self):
@@ -77,7 +78,7 @@ class SideBandSim():
                 if self._run is False:
                     self._log.debug('Exiting receive thread')
                     return
-            
+
             # Wait for new data
             socks, x, y = zmq.select([self._sbPull], [], [], 1.0)
             if self._sbPull in socks:
@@ -96,6 +97,7 @@ class SideBandSim():
 
                 self._log.debug(f'Received opCode: {opCode}, remData {remData}')
                 self._recvCb(opCode, remData)
+
 
 class Pgp2bSim():
     def __init__(self, vcCount, host, port):
@@ -121,6 +123,7 @@ def connectPgp2bSim(pgpA, pgpB):
 
     pgpA.sb.setRecvCb(pgpB.sb.send)
     pgpB.sb.setRecvCb(pgpA.sb.send)
+
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
@@ -172,4 +175,3 @@ class MemEmulate(rogue.interfaces.memory.Slave):
 
             transaction.setData(ba,0)
             transaction.done()
-

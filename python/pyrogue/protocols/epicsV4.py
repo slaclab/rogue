@@ -6,37 +6,47 @@
 # TODO:
 #   Not clear on to force a read on get
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
 import pyrogue
 import time
-import threading
 import warnings
 
 try:
     import p4p.server.thread
     import p4p.nt
-except:
+except Exception:
     warnings.warn("P4P Is not installed")
 
 
 def EpicsConvStatus(varValue):
-    if   varValue.status == "AlarmLoLo": return 5 # epicsAlarmLoLo
-    elif varValue.status == "AlarmLow":  return 6 # epicsAlarmLow
-    elif varValue.status == "AlarmHiHi": return 3 # epicsAlarmHiHi
-    elif varValue.status == "AlarmHigh": return 4 # epicsAlarmHigh
-    else: return 0
+    if varValue.status == "AlarmLoLo":
+        return 5 # epicsAlarmLoLo
+    elif varValue.status == "AlarmLow":
+        return 6 # epicsAlarmLow
+    elif varValue.status == "AlarmHiHi":
+        return 3 # epicsAlarmHiHi
+    elif varValue.status == "AlarmHigh":
+        return 4 # epicsAlarmHigh
+    else:
+        return 0
+
 
 def EpicsConvSeverity(varValue):
-    if   varValue.severity == "AlarmMinor": return 1 # epicsSevMinor
-    elif varValue.severity == "AlarmMajor": return 2 # epicsSevMajor
-    else: return 0;
+    if varValue.severity == "AlarmMinor":
+        return 1 # epicsSevMinor
+    elif varValue.severity == "AlarmMajor":
+        return 2 # epicsSevMajor
+    else:
+        return 0
+
 
 class EpicsPvHandler(p4p.server.thread.Handler):
     def __init__(self, valType, var):
@@ -55,7 +65,8 @@ class EpicsPvHandler(p4p.server.thread.Handler):
             # Need enum processing
             op.done()
 
-        else: op.done(error='Put Not Supported On This Variable')
+        else:
+            op.done(error='Put Not Supported On This Variable')
 
     def rpc(self, pv, op):
         if self._var.isCommand:
@@ -66,12 +77,14 @@ class EpicsPvHandler(p4p.server.thread.Handler):
             else:
                 ret = self._var()
 
-            if ret is None: ret = 'None'
+            if ret is None:
+                ret = 'None'
 
             v = p4p.Value(p4p.Type([('value',self._valType)]), {'value':ret})
             op.done(value=(v))
 
-        else: op.done(error='Rpc Not Supported On Variables')
+        else:
+            op.done(error='Rpc Not Supported On Variables')
 
     def onFirstConnect(self, pv): # may be omitted
         #print(f"PV First connect called pv={pv}")
@@ -80,6 +93,7 @@ class EpicsPvHandler(p4p.server.thread.Handler):
     def onLastDisconnect(self, pv): # may be omitted
         #print(f"PV Last Disconnect called pv={pv}")
         pass
+
 
 class EpicsPvHolder(object):
     def __init__(self,provider,name,var,log):
@@ -101,29 +115,40 @@ class EpicsPvHolder(object):
             # Unsigned
             if typeStr is not None and 'UInt' in typeStr:
                 if isinstance(self._var,pyrogue.RemoteVariable):
-                    if   sum(self._var.bitSize) <= 8:  self._valType = 'B'
-                    elif sum(self._var.bitSize) <= 16: self._valType = 'H'
-                    elif sum(self._var.bitSize) <= 32: self._valType = 'I'
-                    else: self._valType = 'L'
+                    if sum(self._var.bitSize) <= 8:
+                        self._valType = 'B'
+                    elif sum(self._var.bitSize) <= 16:
+                        self._valType = 'H'
+                    elif sum(self._var.bitSize) <= 32:
+                        self._valType = 'I'
+                    else:
+                        self._valType = 'L'
                 else:
                     self._valType = 'L'
 
             # Signed
             elif typeStr is not None and ('int' in typeStr or 'Int' in typeStr):
                 if isinstance(self._var,pyrogue.RemoteVariable):
-                    if   sum(self._var.bitSize) <= 8:  self._valType = 'b'
-                    elif sum(self._var.bitSize) <= 16: self._valType = 'h'
-                    elif sum(self._var.bitSize) <= 32: self._valType = 'i'
-                    else: self._valType = 'l'
+                    if sum(self._var.bitSize) <= 8:
+                        self._valType = 'b'
+                    elif sum(self._var.bitSize) <= 16:
+                        self._valType = 'h'
+                    elif sum(self._var.bitSize) <= 32:
+                        self._valType = 'i'
+                    else:
+                        self._valType = 'l'
                 else:
                     self._valType = 'l'
 
             # Float
             elif typeStr is not None and ('float' in typeStr or 'Float' in typeStr):
                 if isinstance(self._var,pyrogue.RemoteVariable):
-                    if sum(self._var.bitSize)   <= 32: self._valType = 'f'
-                    else: self._valType = 'd'
-                else: self._valType = 'd'
+                    if sum(self._var.bitSize)   <= 32:
+                        self._valType = 'f'
+                    else:
+                        self._valType = 'd'
+                else:
+                    self._valType = 'd'
 
             else:
                 self._valType = 's'
@@ -148,7 +173,7 @@ class EpicsPvHolder(object):
             iv = nt.wrap(varVal.value)
 
         # Setup variable
-        self._pv = p4p.server.thread.SharedPV(queue=None, 
+        self._pv = p4p.server.thread.SharedPV(queue=None,
                                               handler=EpicsPvHandler(self._valType,self._var),
                                               initial=iv,
                                               nt=nt,
@@ -165,14 +190,21 @@ class EpicsPvHolder(object):
             curr.raw.alarm.severity = EpicsConvSeverity(varVal)
             curr.raw.display.description = self._var.description
 
-            if self._var.units       is not None: curr.raw.display.units     = self._var.units
-            if self._var.maximum     is not None: curr.raw.display.limitHigh = self._var.maximum
-            if self._var.minimum     is not None: curr.raw.display.limitLow  = self._var.minimum
+            if self._var.units       is not None:
+                curr.raw.display.units     = self._var.units
+            if self._var.maximum     is not None:
+                curr.raw.display.limitHigh = self._var.maximum
+            if self._var.minimum     is not None:
+                curr.raw.display.limitLow  = self._var.minimum
 
-            if self._var.lowWarning  is not None: curr.raw.valueAlarm.lowWarningLimit   = self._var.lowWarning
-            if self._var.lowAlarm    is not None: curr.raw.valueAlarm.lowAlarmLimit     = self._var.lowAlarm
-            if self._var.highWarning is not None: curr.raw.valueAlarm.highWarningLimit  = self._var.highWarning
-            if self._var.highAlarm   is not None: curr.raw.valueAlarm.highAlarmLimit    = self._var.highAlarm
+            if self._var.lowWarning  is not None:
+                curr.raw.valueAlarm.lowWarningLimit   = self._var.lowWarning
+            if self._var.lowAlarm    is not None:
+                curr.raw.valueAlarm.lowAlarmLimit     = self._var.lowAlarm
+            if self._var.highWarning is not None:
+                curr.raw.valueAlarm.highWarningLimit  = self._var.highWarning
+            if self._var.highAlarm   is not None:
+                curr.raw.valueAlarm.highAlarmLimit    = self._var.highAlarm
 
             # Precision ?
             self._pv.post(curr)
@@ -195,9 +227,8 @@ class EpicsPvServer(object):
     """
     def __init__(self,*,base,root,incGroups,excGroups,pvMap=None):
         self._root      = root
-        self._base      = base 
+        self._base      = base
         self._log       = pyrogue.logInit(cls=self)
-        self._syncRead  = syncRead
         self._server    = None
         self._incGroups = incGroups
         self._excGroups = excGroups
@@ -249,9 +280,8 @@ class EpicsPvServer(object):
                 with open(fname,'w') as f:
                     for k,v in self._pvMap.items():
                         print("{} -> {}".format(v,k),file=f)
-            except:
+            except Exception:
                 raise Exception("Failed to dump epics map to {}".format(fname))
         else:
             for k,v in self._pvMap.items():
                 print("{} -> {}".format(v,k))
-
