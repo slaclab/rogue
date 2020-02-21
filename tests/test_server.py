@@ -171,10 +171,10 @@ if __name__ == "__main__":
     with DummyTree() as dummyTree:
         dummyTree.saveAddressMap('test.csv')
 
-        pyrogue.waitCntrlC()
+        #pyrogue.waitCntrlC()
 
-        #import pyrogue.pydm
-        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
+        import pyrogue.pydm
+        pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
 
         #import pyrogue.gui
         #pyrogue.gui.runGui(root=dummyTree)
