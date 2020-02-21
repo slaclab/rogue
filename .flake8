@@ -1,5 +1,5 @@
 [flake8]
-exclude = __init__.py
+exclude = __init__.py, rogue_plugin.py
 #############################################################
 # Note: Command to remove white space at the end of lines
 # $ find . -type f -name "*.py" -print0 | xargs -0 sed -i 's/\s*$//g'
