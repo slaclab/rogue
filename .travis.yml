@@ -11,7 +11,6 @@ addons:
       - doxygen
       - doxygen-doc
       - python-dev
-      - flake8
 
 services:
   - docker
