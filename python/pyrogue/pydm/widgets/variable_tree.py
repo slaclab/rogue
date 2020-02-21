@@ -60,7 +60,7 @@ class VariableDev(QTreeWidgetItem):
                                                   excGroups=self._top._excGroups).items():
 
             # Test for array
-            fields = re.split('\]\[|\[|\]',val.name)
+            fields = re.split('\\]\\[|\\[|\\]',val.name)
             if len(fields) < 3:
                 VariableHolder(path=self._path + '.' + val.name,
                                top=self._top,
