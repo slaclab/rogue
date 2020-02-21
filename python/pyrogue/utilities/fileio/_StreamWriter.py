@@ -4,18 +4,19 @@
 # Description:
 # Module for writing stream data.
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.utilities
 import rogue.utilities.fileio
 import pyrogue
 import rogue
+
 
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
@@ -32,14 +33,15 @@ class StreamWriter(pyrogue.DataWriter):
             pyrogue.logException(self._log,e)
 
         # Dump config/status to file
-        if self._configEn: self.root.streamYaml()
+        if self._configEn:
+            self.root.streamYaml()
         self.FrameCount.set(0)
         self.IsOpen.get()
 
     def _close(self):
-
         # Dump config/status to file
-        if self._configEn: self.root.streamYaml()
+        if self._configEn:
+            self.root.streamYaml()
         self._writer.close()
         self.IsOpen.get()
 
@@ -85,4 +87,3 @@ class LegacyStreamWriter(StreamWriter):
 
     def getYamlChannel(self):
         return self._writer.getYamlChannel()
-

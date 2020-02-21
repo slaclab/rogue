@@ -1,29 +1,29 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Data Receiver Device
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory as rim
 import rogue.interfaces.stream as ris
 import pyrogue as pr
 import numpy
 import time
 
+
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
     def __init__(self, *, maxRate=30, **kwargs):
-        py.Device.__init__(self, **kwargs)
+        pr.Device.__init__(self, **kwargs)
         self._lastTime = time.time()
 
-        self.add(pr.LocalVariable(name='RxEnable', 
-                                  value=True, 
+        self.add(pr.LocalVariable(name='RxEnable',
+                                  value=True,
                                   description='Frame Rx Enable'))
 
         self.add(pr.LocalVariable(name='MaxRxRate',
@@ -31,18 +31,18 @@ class DataReceiver(pr.Device,ris.Slave):
                                   units='Hz',
                                   description='Max allowed Rx Frame Rate'))
 
-        self.add(pr.LocalVariable(name='FrameCount', 
-                                  value=0, 
+        self.add(pr.LocalVariable(name='FrameCount',
+                                  value=0,
                                   pollInterval=1,
                                   description='Frame Rx Counter'))
 
         self.add(pr.LocalVariable(name='ErrorCount',
-                                  value=0, 
+                                  value=0,
                                   pollInterval=1,
                                   description='Frame Error Counter'))
 
-        self.add(pr.LocalVariable(name='ByteCount',  
-                                  value=0, 
+        self.add(pr.LocalVariable(name='ByteCount',
+                                  value=0,
                                   pollInterval=1,
                                   description='Byte Rx Counter'))
 
@@ -50,7 +50,7 @@ class DataReceiver(pr.Device,ris.Slave):
                                   value=False,
                                   description='Data has been updated flag'))
 
-        self.add(pr.LocalVariable(name='Data',       
+        self.add(pr.LocalVariable(name='Data',
                                   hidden=True,
                                   value=numpy.empty(shape=0, dtype=numpy.Int8, order='C'),
                                   description='Data Frame Container'))
@@ -67,7 +67,7 @@ class DataReceiver(pr.Device,ris.Slave):
         with frame.lock():
 
             # Drop errored frames
-            if frame.getError() != 0: 
+            if frame.getError() != 0:
                 with self.ErrorCount.lock:
                     self.ErrorCount.set(self.ErrorCount.value() + 1, write=False)
 
@@ -88,7 +88,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
 
     def process(self,npArray):
-        """ 
+        """
         The user can use this method to restructure the numpy array.
         This may include separating data, header and other payload sub-fields
         The user should track the max refresh rate using the self._lastTime variable.
@@ -96,11 +96,10 @@ class DataReceiver(pr.Device,ris.Slave):
         doWrite = False
 
         # Check for min period
-        if (time.time() - self._lastTime) > (1.0 / float(MaxRxRate.value())):
+        if (time.time() - self._lastTime) > (1.0 / float(self.MaxRxRate.value())):
             doWrite = True
             self._lastTime = time.time()
 
         # Update data
         self.Data.set(npArray,write=doWrite)
         self.Updated.set(True,write=doWrite)
-

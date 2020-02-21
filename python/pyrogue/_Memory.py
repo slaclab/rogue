@@ -1,15 +1,14 @@
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
 import rogue.interfaces.memory as rim
-import threading
 from collections import OrderedDict as odict
 
 
@@ -28,7 +27,7 @@ class MemoryDevice(pr.Device):
                  wordBitSize=32,
                  stride=4,
                  verify=True):
-        
+
         super().__init__(
             name=name,
             description=description,
@@ -56,7 +55,7 @@ class MemoryDevice(pr.Device):
         self._wrValues = odict() # parsed from yaml
         self._verValues = odict()
         self._wrData = odict() # byte arrays written
-        self._verData = odict() # verify the written data 
+        self._verData = odict() # verify the written data
 
 
     def _buildBlocks(self):
@@ -75,7 +74,10 @@ class MemoryDevice(pr.Device):
     def get(self, offset, numWords):
         with self._memLock:
             #print(f'get() self._wordBitSize={self._wordBitSize}')
-            data = self._rawTxnChunker(offset=offset, data=None, base=self._base, stride=self._stride, wordBitSize=self._wordBitSize, txnType=rim.Read, numWords=numWords)
+            data = self._rawTxnChunker(offset=offset, data=None,
+                                       base=self._base, stride=self._stride,
+                                       wordBitSize=self._wordBitSize, txnType=rim.Read,
+                                       numWords=numWords)
             self._waitTransaction(0)
             self._clearError()
             return [self._base.fromBytes(data[i:i+self._stride])
@@ -92,31 +94,26 @@ class MemoryDevice(pr.Device):
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get(): return
+        if not self.enable.get():
+            return
 
         with self._memLock:
             self._wrValues = self._setValues
             for offset, values in self._setValues.items():
-                wdata = self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
-                #print(f'wdata: {wdata}')
-                #if self._verify:
-                #    self._wrData[offset] = wdata
+                self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
 
             # clear out setValues when done
             self._setValues = odict()
-        
+
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get(): return
+        if not self.enable.get():
+            return
 
         with self._memLock:
             for offset, ba in self._wrValues.items():
                 # _verValues will not be filled until waitTransaction completes
                 self._verValues[offset] = self._rawTxnChunker(offset, None, self._base, self._stride, self._wordBitSize, txnType=rim.Verify, numWords=len(ba))
-                
-
-            #self._wrData = odict()
-            #self._verValues = self._wrValues
 
     def checkBlocks(self, recurse=True, variable=None):
         with self._memLock:
@@ -124,7 +121,6 @@ class MemoryDevice(pr.Device):
             self._waitTransaction(0)
 
             # Error check?
-            error = self._getError()
             self._clearError()
 
             # Convert the read verify data back to the native type
@@ -152,4 +148,3 @@ class MemoryDevice(pr.Device):
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         pass
-

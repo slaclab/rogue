@@ -4,17 +4,18 @@
 # Description:
 # Module containing epics support classes and routines
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
 import pyrogue
-import time
 import rogue.protocols.epicsV3
+
 
 class EpicsCaServer(object):
     """
@@ -22,7 +23,7 @@ class EpicsCaServer(object):
     """
     def __init__(self,*,base,root,incGroups=None,excGroups=None,pvMap=None, syncRead=True, threadCount=0):
         self._root      = root
-        self._base      = base 
+        self._base      = base
         self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
         self._srv       = rogue.protocols.epicsV3.Server(threadCount)
@@ -69,7 +70,7 @@ class EpicsCaServer(object):
                 with open(fname,'w') as f:
                     for k,v in self._pvMap.items():
                         print("{} -> {}".format(v,k),file=f)
-            except:
+            except Exception:
                 raise Exception("Failed to dump epics map to {}".format(fname))
         else:
             for k,v in self._pvMap.items():
@@ -97,4 +98,3 @@ class EpicsCaServer(object):
             node.addListener(evar.varUpdated)
             self._srv.addValue(evar)
             self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
-

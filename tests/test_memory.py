@@ -26,12 +26,12 @@ class AxiVersion(pr.Device):
 
     # Last comment added by rherbst for demonstration.
     def __init__(
-            self,       
+            self,
             name             = 'AxiVersion',
             description      = 'AXI-Lite Version Module',
             numUserConstants = 0,
             **kwargs):
-        
+
         super().__init__(
             name        = name,
             description = description,
@@ -41,7 +41,7 @@ class AxiVersion(pr.Device):
         # Variables
         ##############################
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'ScratchPad',
             description  = 'Register to test reads and writes',
             offset       = 0x04,
@@ -49,10 +49,10 @@ class AxiVersion(pr.Device):
             bitOffset    = 0x00,
             base         = pr.UInt,
             mode         = 'RW',
-            disp         = '{:#08x}'            
+            disp         = '{:#08x}'
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'UpTimeCnt',
             description  = 'Number of seconds since last reset',
             hidden       = True,

@@ -1,22 +1,22 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - PollQueue Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
 import threading
-import collections
 import datetime
 import itertools
 import heapq
 import rogue.interfaces.memory
 import pyrogue as pr
+
 
 class PollQueueEntry(object):
     def __init__(self, readTime, count, interval, block):
@@ -30,6 +30,7 @@ class PollQueueEntry(object):
 
     def __gt__(self,other):
         return self.readTime > other.readTime
+
 
 class PollQueue(object):
 
@@ -54,7 +55,7 @@ class PollQueue(object):
     def _addEntry(self, block, interval):
         with self._condLock:
             timedelta = datetime.timedelta(seconds=interval)
-            # new entries are always polled first immediately 
+            # new entries are always polled first immediately
             # (rounded up to the next second)
             readTime = datetime.datetime.now()
             readTime = readTime.replace(microsecond=0)
@@ -171,12 +172,12 @@ class PollQueue(object):
 
 
     def _expiredEntries(self, time=None):
-        """An iterator of all entries that expire by a given time. 
-        Use datetime.now() if no time provided. Each entry is popped from the queue before being 
+        """An iterator of all entries that expire by a given time.
+        Use datetime.now() if no time provided. Each entry is popped from the queue before being
         yielded by the iterator
         """
         with self._condLock:
-            if time == None:
+            if time is None:
                 time = datetime.datetime.now()
             while self.empty() is False and self.peek().readTime <= time:
                 entry = heapq.heappop(self._pq)
@@ -201,7 +202,7 @@ class PollQueue(object):
             self._condLock.notify()
 
     def pause(self, value):
-        if value is True:        
+        if value is True:
             with self._condLock:
                 self._pause = True
         else:
@@ -213,4 +214,3 @@ class PollQueue(object):
     def paused(self):
         with self._condLock:
             return self._pause
-            

@@ -1,20 +1,19 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Node Info Tool
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
 import logging
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
-from pydm.utilities.remove_protocol import remove_protocol
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QLabel, QDialog, QPushButton, QFormLayout, QLineEdit
+from qtpy.QtWidgets import QVBoxLayout, QDialog, QPushButton, QFormLayout, QLineEdit
 from qtpy.QtCore import Qt
 
 import pyrogue
@@ -22,6 +21,7 @@ from pyrogue.interfaces import VirtualClient
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 
 logger = logging.getLogger(__name__)
+
 
 class NodeInformation(ExternalTool):
 
@@ -46,9 +46,9 @@ class NodeInformation(ExternalTool):
             self._command(node,channels[0])
 
     def _variable(self, node, channel):
-        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 
-                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
-                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
         if node.isinstance(pyrogue.RemoteVariable):

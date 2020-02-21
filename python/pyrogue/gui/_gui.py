@@ -4,23 +4,17 @@
 # Description:
 # Python code for pyrogue GUI
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-    from PyQt5.QtNetwork import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
-    from PyQt4.QtNetwork import *
+from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
+from PyQt5.QtCore    import QApplication, QWidget, pyqtSignal, pyqtSlot
+from PyQt5.QtNetwork import QAbstractSocket
 
 import pyrogue
 import pyrogue.interfaces
@@ -28,11 +22,11 @@ import pyrogue.gui
 import pyrogue.gui.variables
 import pyrogue.gui.commands
 import pyrogue.gui.system
-import threading
 import socket
 import sys
 import os
 import signal
+
 
 def runGui(root,incGroups=None,excGroups=None,title=None,sizeX=800,sizeY=1000):
 
@@ -53,12 +47,13 @@ def runGui(root,incGroups=None,excGroups=None,title=None,sizeX=800,sizeY=1000):
     guiTop.addTree(root)
     guiTop.resize(sizeX,sizeY)
 
-    print(f"Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.")
+    print(f'Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.')
     appTop.exec_()
 
 
 def application(argv):
     return QApplication(argv)
+
 
 class GuiTop(QWidget):
 
@@ -176,4 +171,3 @@ class RogueSignalWakeupHandler(QAbstractSocket):
         self.signalReceived.emit(data[0])
 
     signalReceived = pyqtSignal(int)
-

@@ -4,17 +4,17 @@
 # Description:
 # Tools to export Rogue modules to CPSW
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
-import rogue
 import math
+
 
 def exportRemoteVariable(variable,indent):
 
@@ -70,6 +70,7 @@ def exportRemoteVariable(variable,indent):
 
     return dat,size
 
+
 def exportLinkVariable(variable, indent):
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Link Variable\n"
@@ -81,6 +82,7 @@ def exportLinkVariable(variable, indent):
     #print(f"Warning: Found link variable {variable.path}")
     return dat
 
+
 def exportLocalVariable(variable, indent):
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Local Variable\n"
@@ -91,6 +93,7 @@ def exportLocalVariable(variable, indent):
     #print(f"Warning: Found local variable {variable.path}")
     return dat
 
+
 def exportCommand(command, indent):
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Command\n"
@@ -99,6 +102,7 @@ def exportCommand(command, indent):
 
     #print(f"Warning: Found command {command.path}")
     return dat
+
 
 def exportSubDevice(device, indent, deviceList, dataDir):
     index,size = exportDevice(device, deviceList, dataDir)
@@ -116,6 +120,7 @@ def exportSubDevice(device, indent, deviceList, dataDir):
 
     size += device.offset
     return dat,dn,size
+
 
 def exportDevice(device, deviceList, dataDir):
     imp = []
@@ -184,10 +189,10 @@ def exportDevice(device, deviceList, dataDir):
 
     return i,size
 
+
 def exportRoot(root,dataDir):
     dlist = {}
 
     for k,node in root.nodes.items():
         if node.isinstance(pyrogue.Device):
             exportDevice(node,dlist,dataDir)
-

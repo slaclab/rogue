@@ -1,32 +1,29 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Device Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory as rim
 import collections
-import datetime
 import functools as ft
 import pyrogue as pr
-import inspect
 import threading
-import math
-import time
+
 
 class EnableVariable(pr.BaseVariable):
     def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
-            description='Determines if device is enabled for hardware access',            
+            description='Determines if device is enabled for hardware access',
             name='enable',
             mode='RW',
-            value=enabled, 
+            value=enabled,
             groups='Enable',
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
@@ -65,7 +62,7 @@ class EnableVariable(pr.BaseVariable):
                     ret = True
 
         return ret
-        
+
     @pr.expose
     def set(self, value, write=True):
         if value != 'parent' and value != 'deps':
@@ -73,7 +70,7 @@ class EnableVariable(pr.BaseVariable):
 
             with self._lock:
                 self._value = value
-            
+
             if old != value and old != 'parent' and old != 'deps':
                 self.parent._updateBlockEnable()
                 self.parent.enableChanged(value)
@@ -81,7 +78,7 @@ class EnableVariable(pr.BaseVariable):
             with self.parent.root.updateGroup():
                 self._queueUpdate()
 
-            # The following concept will trigger enable listeners 
+            # The following concept will trigger enable listeners
             # directly. This is causing lock contentions in practice
             # (epics as an example)
 
@@ -91,12 +88,12 @@ class EnableVariable(pr.BaseVariable):
 
     def _doUpdate(self):
         if len(self._deps) != 0:
-            oldEn = (self.value() == True)
+            oldEn = (self.value() is True)
 
             with self._lock:
                 self._depDis = not all(x.value() for x in self._deps)
 
-            newEn = (self.value() == True)
+            newEn = (self.value() is True)
 
             if oldEn != newEn:
                 self.parent._updateBlockEnable()
@@ -109,6 +106,7 @@ class EnableVariable(pr.BaseVariable):
 
         if parent is not root:
             parent._parent.enable.addListener(self)
+
 
 class DeviceError(Exception):
     """ Exception for device manipulation errors."""
@@ -133,7 +131,7 @@ class Device(pr.Node,rim.Hub):
                  hubMin=0,
                  hubMax=0):
 
-        
+
         """Initialize device class"""
         if name is None:
             name = self.__class__.__name__
@@ -152,7 +150,8 @@ class Device(pr.Node,rim.Hub):
         self.forceCheckEach = False
 
         # Connect to memory slave
-        if memBase: self._setSlave(memBase)
+        if memBase:
+            self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
         pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand)
@@ -198,7 +197,7 @@ class Device(pr.Node,rim.Hub):
 
         # Adding device
         if isinstance(node,Device):
-           
+
             # Device does not have a membase
             if node._memBase is None:
                 node._setSlave(self)
@@ -214,9 +213,10 @@ class Device(pr.Node,rim.Hub):
         # If pack specified, create a linked variable to combine everything
         if pack:
             varList = getattr(self, kwargs['name']).values()
-            
+
             def linkedSet(dev, var, val, write):
-                if val == '': return
+                if val == '':
+                    return
                 values = reversed(val.split('_'))
                 for variable, value in zip(varList, values):
                     variable.setDisp(value, write=write)
@@ -227,7 +227,7 @@ class Device(pr.Node,rim.Hub):
 
             name = kwargs.pop('name')
             kwargs.pop('value', None)
-            
+
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
@@ -239,13 +239,13 @@ class Device(pr.Node,rim.Hub):
             variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
         for x in variables:
-            v = self.node(x).pollInterval = interval
+            self.node(x).pollInterval = interval
 
     def hideVariables(self, hidden, variables=None):
         """Hide a list of Variables (or Variable names)"""
         if variables is None:
             variables=self.variables.values()
-            
+
         for v in variables:
             if isinstance(v, pr.BaseVariable):
                 v.hidden = hidden
@@ -344,7 +344,7 @@ class Device(pr.Node,rim.Hub):
 
             if recurse:
                 for key,value in self.devices.items():
-                        value.checkBlocks(recurse=True)
+                    value.checkBlocks(recurse=True)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Useful for committing any stale variables"""
@@ -359,16 +359,16 @@ class Device(pr.Node,rim.Hub):
 
     def _updateBlockEnable(self):
         for block in self._blocks:
-            block.setEnable(self.enable.value() == True)
+            block.setEnable(self.enable.value() is True)
 
         for key,value in self.devices.items():
             value._updateBlockEnable()
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
-        
+
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
-            
+
         if offset + (numWords * stride) > self._size:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Raw transaction outside of device size')
@@ -390,7 +390,7 @@ class Device(pr.Node,rim.Hub):
                 ldata = data
             else:
                 ldata = bytearray(numWords*stride)
-            
+
         with self._memLock:
             for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
                 sliceOffset = i | self.offset
@@ -401,32 +401,36 @@ class Device(pr.Node,rim.Hub):
             return ldata
 
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
-        
+
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
-        
+
         with self._memLock:
 
-            if posted: txn = rim.Post
-            else: txn = rim.Write
+            if posted:
+                txn = rim.Post
+            else:
+                txn = rim.Write
 
             for _ in range(tryCount):
                 self._clearError()
                 self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
                 self._waitTransaction(0)
 
-                if self._getError() == "": return
-                elif posted: break
+                if self._getError() == "":
+                    return
+                elif posted:
+                    break
                 self._log.warning("Retrying raw write transaction")
 
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
-        
+
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
-        
+
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
-        
+
         with self._memLock:
             for _ in range(tryCount):
                 self._clearError()
@@ -439,7 +443,7 @@ class Device(pr.Node,rim.Hub):
                     else:
                         return [base.fromBytes(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
                 self._log.warning("Retrying raw read transaction")
-                
+
             # If we get here an error has occurred
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
@@ -473,7 +477,8 @@ class Device(pr.Node,rim.Hub):
                 n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
                 blk['vars'].append(n)
 
-                if n.varBytes > blk['size']: blk['size'] = n.varBytes
+                if n.varBytes > blk['size']:
+                    blk['size'] = n.varBytes
 
             # We need a new block for this variable
             else:
@@ -510,7 +515,7 @@ class Device(pr.Node,rim.Hub):
             else:
                 newBlock = b['block']
 
-            # Set memory slave  
+            # Set memory slave
             newBlock._setSlave(self)
 
             # Verify the block is not too small or large for the memory interface
@@ -520,13 +525,14 @@ class Device(pr.Node,rim.Hub):
 
             # Add variables to the block
             newBlock.addVariables(b['vars'])
-        
+
             # Set varible block links
-            for v in b['vars']: v._block = newBlock
+            for v in b['vars']:
+                v._block = newBlock
 
             # Add to device
             self._blocks.append(newBlock)
-            newBlock.setEnable(self.enable.value() == True)
+            newBlock.setEnable(self.enable.value() is True)
 
     def _rootAttached(self, parent, root):
         pr.Node._rootAttached(self, parent, root)
@@ -588,6 +594,7 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
+
 class ArrayDevice(Device):
     def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
         if 'name' not in kwargs:
@@ -598,7 +605,7 @@ class ArrayDevice(Device):
             arrayArgs = [{} for x in range(number)]
         elif isinstance(arrayArgs, dict):
             arrayArgs = [arrayArgs for x in range(number)]
-            
+
         for i in range(number):
             args = arrayArgs[i]
             if 'name' in args:
@@ -609,4 +616,3 @@ class ArrayDevice(Device):
                 name=name,
                 offset=i*stride,
                 **args))
-                

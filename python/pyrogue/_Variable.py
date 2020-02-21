@@ -1,26 +1,24 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Variable Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
-import textwrap
 import rogue.interfaces.memory
-import parse
 import math
 import inspect
 import threading
 import re
 import time
-import numpy
 from collections import OrderedDict as odict
 from collections import Iterable
+
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -33,7 +31,7 @@ def VariableWait(varList, testFunction, timeout=0):
     Pass a variable or list of variables, and a test function.
     The test function is passed a dictionary containing the current
     variableValue state index by variable path
-    i.e. w = VariableWait([root.device.var1,root.device.var2], 
+    i.e. w = VariableWait([root.device.var1,root.device.var2],
                           lambda varValues: varValues['root.device.var1'].value >= 10 and \
                                             varValues['root.device.var1'].value >= 20)
     """
@@ -95,6 +93,7 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
+
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
@@ -115,8 +114,7 @@ class BaseVariable(pr.Node):
                  highAlarm=None,
                  pollInterval=0,
                  typeStr='Unknown',
-                 offset=0
-                ):
+                 offset=0):
 
         # Public Attributes
         self._bulkEn        = True
@@ -200,10 +198,10 @@ class BaseVariable(pr.Node):
     @property
     def precision(self):
         if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
-            res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+            res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
-            except:
+            except Exception:
                 return 3
         else:
             return 0
@@ -231,10 +229,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def hasAlarm(self):
-        return (self._lowWarning is not None or
-                self._lowAlarm is not None or
-                self._highWarning is not None or
-                self._highAlarm is not None)
+        return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
 
     @pr.expose
     @property
@@ -297,7 +292,7 @@ class BaseVariable(pr.Node):
 
     def addListener(self, listener):
         """
-        Add a listener Variable or function to call when variable changes. 
+        Add a listener Variable or function to call when variable changes.
         This is useful when chaining variables together. (ADC conversions, etc)
         The variable and value class are passed as an arg: func(path,varValue)
         """
@@ -334,7 +329,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def get(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -350,7 +345,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def getVariableValue(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -399,8 +394,8 @@ class BaseVariable(pr.Node):
         try:
             if sValue is None or isinstance(sValue, self.nativeType()):
                 return sValue
-            else:        
-                if sValue is '':
+            else:
+                if sValue == '':
                     return ''
                 elif self.disp == 'enum':
                     return self.revEnum[sValue]
@@ -416,7 +411,7 @@ class BaseVariable(pr.Node):
                         return eval(sValue)
                     else:
                         return sValue
-        except:
+        except Exception:
             raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
 
     @pr.expose
@@ -447,7 +442,7 @@ class BaseVariable(pr.Node):
         self._updatePollInterval()
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
-        #print(f'{self.path}._setDict(d={d})')        
+        #print(f'{self.path}._setDict(d={d})')
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
@@ -474,11 +469,12 @@ class BaseVariable(pr.Node):
     def _alarmState(self,value):
         """ Return status, severity """
 
-        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
+        if isinstance(value,list) or isinstance(value,dict):
+            return 'None','None'
 
         if (self.hasAlarm is False):
             return "None", "None"
-        
+
         elif (self._lowAlarm  is not None and value < self._lowAlarm):
             return 'AlarmLoLo', 'AlarmMajor'
 
@@ -517,34 +513,34 @@ class RemoteVariable(BaseVariable):
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
-                 pollInterval=0, 
+                 pollInterval=0,
                  overlapEn=False,
                  verify=True, ):
 
         if disp is None:
             disp = base.defaultdisp
 
-        BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden, groups=groups, 
+        BaseVariable.__init__(self, name=name, description=description,
+                              mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval)
 
-            
+
         self._block    = None
 
         # Convert the address parameters into lists
         addrParams = [offset, bitOffset, bitSize] # Make a copy
         addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams] # convert to lists
-        length = max((len(x) for x in addrParams)) 
+        length = max((len(x) for x in addrParams))
         addrParams = [x*length if len(x)==1 else x for x in addrParams] # Make single element lists as long as max
         offset, bitOffset, bitSize = addrParams # Assign back
 
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
-            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
+            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
 
         # Check for invalid values
         if 0 in bitSize:
@@ -647,7 +643,7 @@ class RemoteVariable(BaseVariable):
 
     @pr.expose
     def get(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -681,13 +677,13 @@ class RemoteVariable(BaseVariable):
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
-        else:        
+        else:
 
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
                 return self._base.fromString(sValue)
-            
+
     def _shiftOffsetDown(self,amount,minSize):
         if amount != 0:
 
@@ -731,8 +727,8 @@ class LocalVariable(BaseVariable):
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
 
-        BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, 
+        BaseVariable.__init__(self, name=name, description=description,
+                              mode=mode, value=value, disp=disp,
                               enum=enum, units=units, hidden=hidden, groups=groups,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
@@ -782,7 +778,7 @@ class LocalVariable(BaseVariable):
 
     @pr.expose
     def get(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -856,6 +852,7 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
+
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -866,10 +863,10 @@ class LinkVariable(BaseVariable):
                  linkedSet=None,
                  linkedGet=None,
                  **kwargs): # Args passed to BaseVariable
-        
+
         # Set and get functions
         self._linkedGet = linkedGet
-        self._linkedSet = linkedSet        
+        self._linkedSet = linkedSet
 
         if variable is not None:
             # If directly linked to a variable, use it's value and set by defualt
@@ -932,16 +929,13 @@ def varFuncHelper(func,pargs,log,path):
 
     try:
         # Function args
-        fargs = inspect.getfullargspec(func).args + \
-                inspect.getfullargspec(func).kwonlyargs 
+        fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
 
         # Build overlapping arg list
-        args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
+        args = {k:pargs[k] for k in fargs if k != 'self' and k in pargs}
 
     # handle c++ functions, no args supported for now
-    except:
+    except Exception:
         args = {}
 
     return func(**args)
-
-
