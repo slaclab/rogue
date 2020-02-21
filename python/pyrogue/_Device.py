@@ -277,6 +277,8 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
+
+            # Force=True
             variable._block.startTransaction(rim.Write, True, checkEach, variable)
 
         else:
@@ -295,11 +297,15 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
+
+            # Force=False
             variable._block.startTransaction(rim.Verify, False, checkEach, None) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
+
+                    # Force=False
                     block.startTransaction(rim.Verify, False, checkEach, None)
 
             if recurse:
@@ -313,11 +319,15 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
+
+            # Force=False
             variable._block.startTransaction(rim.Read, False, checkEach, variable)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
+
+                    # Force=False
                     block.startTransaction(rim.Read, False, checkEach, None)
 
             if recurse:
