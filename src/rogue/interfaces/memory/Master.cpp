@@ -23,6 +23,7 @@
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Helpers.h>
+#include <cstring>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
