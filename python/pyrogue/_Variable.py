@@ -229,8 +229,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def hasAlarm(self):
-        return (self._lowWarning is not None or self._lowAlarm is not None or
-                self._highWarning is not None or self._highAlarm is not None)
+        return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
 
     @pr.expose
     @property

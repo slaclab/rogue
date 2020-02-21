@@ -347,8 +347,7 @@ class Node(object):
         excGroups is an optional group or list of groups that this node must not be part of
         """
         return odict([(k,n) for k,n in self.nodes.items()
-                      if (n.isinstance(typ) and ((excTyp is None) or (not n.isinstance(excTyp))) and
-                          n.filterByGroup(incGroups,excGroups))])
+                      if (n.isinstance(typ) and ((excTyp is None) or (not n.isinstance(excTyp))) and n.filterByGroup(incGroups,excGroups))])
 
     @property
     def nodes(self):
