@@ -261,7 +261,7 @@ class Node(object):
             raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
         # Add some checking for characters which will make lookups problematic
-        if re.match('^[\w_\[\]]+$',node.name) is None:
+        if re.match('^[\\w_\\[\\]]+$',node.name) is None:
             self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
 
         # Detect and add array nodes
@@ -273,7 +273,7 @@ class Node(object):
     def _addArrayNode(self, node):
 
         # Generic test array method
-        fields = re.split('\]\[|\[|\]',node.name)
+        fields = re.split('\\]\\[|\\[|\\]',node.name)
         if len(fields) < 3:
             return
 
@@ -572,7 +572,7 @@ class Node(object):
         else:
 
             # Generic test array method
-            fields = re.split('\]\[|\[|\]',name)
+            fields = re.split('\\]\\[|\\[|\\]',name)
 
             # Extract name and keys
             aname = fields[0]
