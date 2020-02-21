@@ -18,6 +18,7 @@ import rogue.protocols.rssi
 import rogue.protocols.packetizer
 import time
 
+
 class UdpRssiPack(pr.Device):
 
     def __init__(self,*, port, host='127.0.0.1', jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, server=False, **kwargs):
@@ -60,7 +61,7 @@ class UdpRssiPack(pr.Device):
                         self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
 
                     else:
-                        self._log.warning("host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a" % (host,port))
+                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
 
 
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers())

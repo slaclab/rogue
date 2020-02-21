@@ -74,7 +74,10 @@ class MemoryDevice(pr.Device):
     def get(self, offset, numWords):
         with self._memLock:
             #print(f'get() self._wordBitSize={self._wordBitSize}')
-            data = self._rawTxnChunker(offset=offset, data=None, base=self._base, stride=self._stride, wordBitSize=self._wordBitSize, txnType=rim.Read, numWords=numWords)
+            data = self._rawTxnChunker(offset=offset, data=None,
+                                       base=self._base, stride=self._stride,
+                                       wordBitSize=self._wordBitSize, txnType=rim.Read,
+                                       numWords=numWords)
             self._waitTransaction(0)
             self._clearError()
             return [self._base.fromBytes(data[i:i+self._stride])

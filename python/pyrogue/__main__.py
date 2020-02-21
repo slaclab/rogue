@@ -126,4 +126,4 @@ else:
         ret = client.exec(args.path,args.value)
 
     if ret is not None:
-        print(f"\nRet = {ret}")
+        print(f'\nRet = {ret}')

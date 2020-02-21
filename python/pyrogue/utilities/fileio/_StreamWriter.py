@@ -17,6 +17,7 @@ import rogue.utilities.fileio
 import pyrogue
 import rogue
 
+
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 

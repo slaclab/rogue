@@ -21,6 +21,7 @@ import datetime
 import jsonpickle
 import time
 
+
 class DataLink(QObject):
 
     updateDataFile    = pyqtSignal(str)

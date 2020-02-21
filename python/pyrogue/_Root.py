@@ -30,6 +30,7 @@ from contextlib import contextmanager
 
 SystemLogInit = '[]'
 
+
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
     def __init__(self,*, root):
@@ -43,13 +44,13 @@ class RootLogHandler(logging.Handler):
 
         with self._root.updateGroup():
             try:
-                se = { 'created'     : record.created,
-                       'name'        : record.name,
-                       'message'     : str(record.msg),
-                       'exception'   : None,
-                       'traceBack'   : None,
-                       'levelName'   : record.levelname,
-                       'levelNumber' : record.levelno }
+                se = {'created'     : record.created,
+                      'name'        : record.name,
+                      'message'     : str(record.msg),
+                      'exception'   : None,
+                      'traceBack'   : None,
+                      'levelName'   : record.levelname,
+                      'levelNumber' : record.levelno }
 
                 if record.exc_info is not None:
                     se['exception'] = record.exc_info[0].__name__
@@ -82,6 +83,7 @@ class RootLogHandler(logging.Handler):
                 print("-----------Original Error-----------------------")
                 print(self.format(record))
                 print("------------------------------------------------")
+
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -876,7 +878,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Process list
             elif len(uvars) > 0:
-                self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
                 strm = odict()
                 zmq  = odict()
 

@@ -38,6 +38,7 @@ def EpicsConvStatus(varValue):
     else:
         return 0
 
+
 def EpicsConvSeverity(varValue):
     if varValue.severity == "AlarmMinor":
         return 1 # epicsSevMinor
@@ -45,6 +46,7 @@ def EpicsConvSeverity(varValue):
         return 2 # epicsSevMajor
     else:
         return 0
+
 
 class EpicsPvHandler(p4p.server.thread.Handler):
     def __init__(self, valType, var):
@@ -91,6 +93,7 @@ class EpicsPvHandler(p4p.server.thread.Handler):
     def onLastDisconnect(self, pv): # may be omitted
         #print(f"PV Last Disconnect called pv={pv}")
         pass
+
 
 class EpicsPvHolder(object):
     def __init__(self,provider,name,var,log):

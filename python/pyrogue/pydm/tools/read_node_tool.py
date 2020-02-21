@@ -20,6 +20,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 
 logger = logging.getLogger(__name__)
 
+
 class ReadNode(ExternalTool):
 
     def __init__(self):

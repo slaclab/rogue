@@ -12,14 +12,17 @@
 
 import rogue.interfaces.memory as rim
 
+
 def wordCount(bits, wordSize):
     ret = bits // wordSize
     if (bits % wordSize != 0 or bits == 0):
         ret += 1
     return ret
 
+
 def byteCount(bits):
     return wordCount(bits, 8)
+
 
 def reverseBits(value, bitSize):
     result = 0
@@ -29,11 +32,13 @@ def reverseBits(value, bitSize):
         value >>= 1
     return result
 
+
 def twosComplement(value, bitSize):
     """compute the 2's complement of int value"""
     if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
         value = value - (1 << bitSize)      # compute negative value
     return value                            # return positive value as is
+
 
 class ModelMeta(type):
     def __init__(cls, *args, **kwargs):
@@ -68,6 +73,7 @@ class Model(object, metaclass=ModelMeta):
     def isBigEndian(self):
         return self.endianness == 'big'
 
+
 class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
@@ -98,6 +104,7 @@ class UIntReversed(UInt):
     def fromBytes(cls, ba):
         valueReverse = int.from_bytes(ba, cls.endianness, signed=cls.signed)
         return reverseBits(valueReverse, cls.bitSize)
+
 
 class Int(UInt):
 
@@ -134,11 +141,14 @@ class Int(UInt):
             i = i - (1 << self.bitSize)
         return i
 
+
 class UIntBE(UInt):
     endianness = 'big'
 
+
 class IntBE(Int):
     endianness = 'big'
+
 
 class Bool(Model):
     pytype      = bool
@@ -192,13 +202,16 @@ class Double(Float):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
 
+
 class FloatBE(Float):
     endianness = 'big'
     fstring = '!f'
 
+
 class DoubleBE(Double):
     endianness = 'big'
     fstring = '!d'
+
 
 class Fixed(Model):
     pytype = float

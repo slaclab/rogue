@@ -20,6 +20,7 @@ import rogue.interfaces.memory
 
 from collections import OrderedDict as odict
 
+
 def addLibraryPath(path):
     """
     Append the past string or list of strings to the python library path.
@@ -65,6 +66,7 @@ def addLibraryPath(path):
             raise Exception("Library path {} does not exist or is not readable".format(tst))
         sys.path.insert(0,np)
 
+
 def waitCntrlC():
     """Helper Function To Wait For Cntrl-c"""
 
@@ -86,6 +88,7 @@ def waitCntrlC():
     except KeyboardInterrupt:
         print("Got cntrl-c, exiting")
         return
+
 
 def streamConnect(source, dest):
     """

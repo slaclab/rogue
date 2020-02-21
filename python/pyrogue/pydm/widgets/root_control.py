@@ -17,6 +17,7 @@ from qtpy.QtCore import Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox, QLineEdit
 import datetime
 
+
 class RootControl(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)

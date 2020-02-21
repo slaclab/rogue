@@ -15,6 +15,7 @@
 import pyrogue
 import math
 
+
 def exportRemoteVariable(variable,indent):
 
     if 'List' in variable.typeStr or not('Bool' in variable.typeStr or 'String' in variable.typeStr or 'Int' in variable.typeStr):
@@ -69,6 +70,7 @@ def exportRemoteVariable(variable,indent):
 
     return dat,size
 
+
 def exportLinkVariable(variable, indent):
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Link Variable\n"
@@ -80,6 +82,7 @@ def exportLinkVariable(variable, indent):
     #print(f"Warning: Found link variable {variable.path}")
     return dat
 
+
 def exportLocalVariable(variable, indent):
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Local Variable\n"
@@ -90,6 +93,7 @@ def exportLocalVariable(variable, indent):
     #print(f"Warning: Found local variable {variable.path}")
     return dat
 
+
 def exportCommand(command, indent):
     dat  = " " * indent +  "#########################################################\n"
     dat += " " * indent +  "#Unsupported Command\n"
@@ -98,6 +102,7 @@ def exportCommand(command, indent):
 
     #print(f"Warning: Found command {command.path}")
     return dat
+
 
 def exportSubDevice(device, indent, deviceList, dataDir):
     index,size = exportDevice(device, deviceList, dataDir)
@@ -115,6 +120,7 @@ def exportSubDevice(device, indent, deviceList, dataDir):
 
     size += device.offset
     return dat,dn,size
+
 
 def exportDevice(device, deviceList, dataDir):
     imp = []
@@ -182,6 +188,7 @@ def exportDevice(device, deviceList, dataDir):
         f.write(ddat)
 
     return i,size
+
 
 def exportRoot(root,dataDir):
     dlist = {}

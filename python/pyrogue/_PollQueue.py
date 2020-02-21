@@ -17,6 +17,7 @@ import heapq
 import rogue.interfaces.memory
 import pyrogue as pr
 
+
 class PollQueueEntry(object):
     def __init__(self, readTime, count, interval, block):
         self.readTime = readTime
@@ -29,6 +30,7 @@ class PollQueueEntry(object):
 
     def __gt__(self,other):
         return self.readTime > other.readTime
+
 
 class PollQueue(object):
 

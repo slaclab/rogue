@@ -15,6 +15,7 @@
 import rogue.utilities
 import pyrogue
 
+
 class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
@@ -79,6 +80,7 @@ class PrbsRx(pyrogue.Device):
 
     def setTaps(self,taps):
         self._prbs.setTaps(taps)
+
 
 class PrbsTx(pyrogue.Device):
     """PRBS TX Wrapper"""

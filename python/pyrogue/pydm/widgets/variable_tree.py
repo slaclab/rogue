@@ -20,6 +20,7 @@ from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 import re
 
+
 class VariableDev(QTreeWidgetItem):
 
     def __init__(self,*, path, top, parent, dev, noExpand):

@@ -27,6 +27,7 @@ import sys
 import os
 import signal
 
+
 def runGui(root,incGroups=None,excGroups=None,title=None,sizeX=800,sizeY=1000):
 
     appTop = QApplication(sys.argv)
@@ -46,12 +47,13 @@ def runGui(root,incGroups=None,excGroups=None,title=None,sizeX=800,sizeY=1000):
     guiTop.addTree(root)
     guiTop.resize(sizeX,sizeY)
 
-    print(f"Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.")
+    print(f'Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.')
     appTop.exec_()
 
 
 def application(argv):
     return QApplication(argv)
+
 
 class GuiTop(QWidget):
 

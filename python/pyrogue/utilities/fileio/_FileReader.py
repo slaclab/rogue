@@ -66,7 +66,7 @@ class FileReader(object):
 
             # Not enough data left in the file
             if (self._fileSize - self._currFile.tell()) < RogueHeaderSize:
-                self._log.warning(f"File under run reading {self._currFName}")
+                self._log.warning(f'File under run reading {self._currFName}')
                 return False
 
             self._header = RogueHeader._make(struct.Struct(RogueHeaderPack).unpack(self._currFile.read(RogueHeaderSize)))

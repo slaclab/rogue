@@ -13,6 +13,7 @@ import pyrogue as pr
 import threading
 import time
 
+
 class RunControl(pr.Device):
     """Special base class to control runs. """
 

@@ -16,6 +16,7 @@
 import pyrogue
 import rogue.protocols.epicsV3
 
+
 class EpicsCaServer(object):
     """
     Class to contain an epics ca server

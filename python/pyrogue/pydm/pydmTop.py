@@ -20,6 +20,7 @@ from pyrogue.pydm.widgets import SystemWindow
 
 Channel = 'rogue://0/root'
 
+
 class DefaultTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
         super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)

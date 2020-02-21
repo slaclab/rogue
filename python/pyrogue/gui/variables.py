@@ -20,6 +20,7 @@ import pyrogue
 import pyrogue.interfaces
 import threading
 
+
 class VariableDev(QObject):
 
     def __init__(self,*,tree,parent,dev,noExpand,top,incGroups,excGroups):
@@ -78,6 +79,7 @@ class VariableDev(QObject):
 
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
+
 
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""

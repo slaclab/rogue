@@ -13,6 +13,7 @@
 import rogue.interfaces
 import jsonpickle
 
+
 class ZmqServer(rogue.interfaces.ZmqServer):
 
     def __init__(self,*,root,addr,port):

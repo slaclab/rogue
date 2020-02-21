@@ -15,6 +15,7 @@ import sqlalchemy
 import threading
 import queue
 
+
 class SqlLogger(object):
 
     def __init__(self, url):

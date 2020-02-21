@@ -16,6 +16,7 @@ import jsonpickle
 import time
 import threading
 
+
 class VirtualProperty(object):
     def __init__(self, node, attr):
         self._attr = attr
@@ -260,7 +261,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         if self._link and (time.time() - self._ltime) > 10.0:
             self._link = False
-            print(f"Link to {self._root.name} lost!")
+            print(f'Link to {self._root.name} lost!')
             for mon in self._monitors:
                 mon(self._link)
 

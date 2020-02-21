@@ -594,6 +594,7 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
+
 class ArrayDevice(Device):
     def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
         if 'name' not in kwargs:

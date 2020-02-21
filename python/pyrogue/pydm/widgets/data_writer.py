@@ -18,6 +18,7 @@ from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
 from qtpy.QtWidgets import QFormLayout, QGroupBox, QFileDialog
 import datetime
 
+
 class DataWriter(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)

@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 
 AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
+
 def parseAddress(address):
     # "rogue://index/<path>/<mode>"
     # or
@@ -224,6 +225,7 @@ class RogueConnection(PyDMConnection):
 
     def close(self):
         pass
+
 
 class RoguePlugin(PyDMPlugin):
     protocol = "rogue"

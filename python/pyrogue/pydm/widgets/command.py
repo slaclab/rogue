@@ -16,6 +16,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Slot, Signal
 from qtpy.QtWidgets import QHBoxLayout, QLineEdit, QComboBox
 
+
 class Command(PyDMFrame):
     send_value_signal = Signal([str])
 

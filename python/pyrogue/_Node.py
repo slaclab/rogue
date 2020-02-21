@@ -17,11 +17,13 @@ import inspect
 import pyrogue as pr
 import collections
 
+
 def logException(log,e):
     if isinstance(e,pr.MemoryError):
         log.error(e)
     else:
         log.exception(e)
+
 
 def logInit(cls=None,name=None,path=None):
 

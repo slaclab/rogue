@@ -19,6 +19,7 @@ import time
 from collections import OrderedDict as odict
 from collections import Iterable
 
+
 class VariableError(Exception):
     """ Exception for variable access errors."""
     pass
@@ -91,6 +92,7 @@ class VariableValue(object):
         self.enum      = var.enum
 
         self.status, self.severity = var._alarmState(self.value)
+
 
 class BaseVariable(pr.Node):
 
@@ -850,6 +852,7 @@ class LocalVariable(BaseVariable):
     def __ior__(self, other):
         self._block._ior(other)
         return self
+
 
 class LinkVariable(BaseVariable):
 

@@ -19,6 +19,7 @@ from pyrogue.pydm.widgets import DataWriter
 from pyrogue.pydm.widgets import RunControl
 from pyrogue.pydm.widgets import SystemLog
 
+
 class SystemWindow(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)

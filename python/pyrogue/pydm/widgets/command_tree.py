@@ -17,6 +17,7 @@ from qtpy.QtCore import Qt, Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QComboBox
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit
 
+
 class CommandDev(QTreeWidgetItem):
 
     def __init__(self,*, path, top, parent, dev, noExpand):
@@ -76,6 +77,7 @@ class CommandDev(QTreeWidgetItem):
         self.removeChild(self._dummy)
         self._dummy = None
         self._setup(True)
+
 
 class CommandHolder(QTreeWidgetItem):
 

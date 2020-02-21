@@ -18,6 +18,7 @@ from PyQt5.QtCore    import QObject, pyqtSlot, QCoreApplication, QEvent
 
 import pyrogue
 
+
 class CommandDev(QObject):
     def __init__(self,*,tree,parent,dev,noExpand,top,incGroups,excGroups):
         QObject.__init__(self)
@@ -139,6 +140,7 @@ class CommandLink(QObject):
             return True
         else:
             return False
+
 
 class CommandWidget(QWidget):
     def __init__(self, *, parent=None):

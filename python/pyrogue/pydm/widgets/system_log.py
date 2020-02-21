@@ -18,6 +18,7 @@ from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
 import jsonpickle
 import time
 
+
 class SystemLog(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
         PyDMFrame.__init__(self, parent, init_channel)

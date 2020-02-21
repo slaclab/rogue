@@ -27,6 +27,7 @@ import zmq
 import jsonpickle
 import threading
 
+
 class SimpleClient(object):
 
     def __init__(self, addr="localhost", port=9099, cb=None):

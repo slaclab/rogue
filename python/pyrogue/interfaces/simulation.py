@@ -18,6 +18,7 @@ import pyrogue
 import rogue.interfaces.stream
 import zmq
 
+
 class SideBandSim():
 
     def __init__(self,host,port):
@@ -97,6 +98,7 @@ class SideBandSim():
                 self._log.debug(f'Received opCode: {opCode}, remData {remData}')
                 self._recvCb(opCode, remData)
 
+
 class Pgp2bSim():
     def __init__(self, vcCount, host, port):
         # virtual channels
@@ -121,6 +123,7 @@ def connectPgp2bSim(pgpA, pgpB):
 
     pgpA.sb.setRecvCb(pgpB.sb.send)
     pgpB.sb.setRecvCb(pgpA.sb.send)
+
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
