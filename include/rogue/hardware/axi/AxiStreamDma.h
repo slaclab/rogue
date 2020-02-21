@@ -80,7 +80,7 @@ namespace rogue {
 
             public:
 
-               //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiMemMap object
+               //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiStreamDma object
                /** Exposed to Python as rogue.hardware.axi.AxiStreamDma()
                 *
                 * The destination field is a sideband signal provided in the AxiStream
