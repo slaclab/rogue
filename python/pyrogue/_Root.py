@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Root Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
@@ -110,9 +110,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, 
-                 name=None, 
-                 description='', 
+    def __init__(self, *,
+                 name=None,
+                 description='',
                  expand=True,
                  timeout=1.0,
                  initRead=False,
@@ -171,7 +171,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # SQL URL
         self._sqlLog = None
 
-        # Init 
+        # Init
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
@@ -208,7 +208,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=True,
                                  description='Read all values from the hardware'))
 
-        self.add(pr.LocalCommand(name='SaveState', value='', 
+        self.add(pr.LocalCommand(name='SaveState', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
                                                                     readFirst=True,
                                                                     modes=['RW','RO','WO'],
@@ -219,7 +219,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SaveConfig', value='', 
+        self.add(pr.LocalCommand(name='SaveConfig', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
                                                                     readFirst=True,
                                                                     modes=['RW','WO'],
@@ -230,7 +230,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='LoadConfig', value='', 
+        self.add(pr.LocalCommand(name='LoadConfig', value='',
                                  function=lambda arg: self.loadYaml(name=arg,
                                                                     writeEach=False,
                                                                     modes=['RW','WO'],
@@ -251,12 +251,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
                                  description='Clear the message log contained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', value='', 
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='',
                                  function=lambda arg: self.setYaml(yml=arg,
                                                                    writeEach=False,
                                                                    modes=['RW','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoConfig'), 
+                                                                   excGroups='NoConfig'),
                                  hidden=True,
                                  description='Set configuration from passed YAML string'))
 
@@ -264,7 +264,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  function=lambda arg: self.getYaml(readFirst=arg,
                                                                    modes=['RW','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoConfig'), 
+                                                                   excGroups='NoConfig'),
                                  hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
@@ -272,7 +272,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  function=lambda arg: self.getYaml(readFirst=arg,
                                                                    modes=['RW','RO','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoState'), 
+                                                                   excGroups='NoState'),
                                  hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
@@ -335,7 +335,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
-                # Check for instances when device comes before block and when block comes before device 
+                # Check for instances when device comes before block and when block comes before device
                 if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and \
                          (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
                    (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and \
@@ -529,10 +529,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 f.write("TypeStr\t")
                 f.write("MemBaseName\t")
                 f.write("Full Address\t")
-                f.write("Device Offset\t")
+                f.write("Offset\t")
                 f.write("Mode\t")
                 f.write("Bit Offset\t")
                 f.write("Bit Size\t")
+                f.write("Minimum\t")
+                f.write("Maximum\t")
                 f.write("Enum\t")
                 f.write("Description\n")
 
@@ -546,6 +548,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         f.write("{}\t".format(v.mode))
                         f.write("{}\t".format(v.bitOffset))
                         f.write("{}\t".format(v.bitSize))
+                        f.write("{}\t".format(v.minimum))
+                        f.write("{}\t".format(v.maximum))
                         f.write("{}\t".format(v.enum))
                         f.write("{}\n".format(v.description))
 
@@ -619,11 +623,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
-        incGroups is a list of groups that the variable must be a member 
-        of in order to be included in the stream. excGroups is a list of 
-        groups that the variable must not be a member of to include. 
-        excGroups takes precedence over incGroups. If excGroups or 
-        incGroups are None, the default set of stream include and 
+        incGroups is a list of groups that the variable must be a member
+        of in order to be included in the stream. excGroups is a list of
+        groups that the variable must not be a member of to include.
+        excGroups takes precedence over incGroups. If excGroups or
+        incGroups are None, the default set of stream include and
         exclude groups will be used as specified when the Root class was created.
         By default all variables are included, except for members of the NoStream group.
         """
@@ -685,7 +689,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
             if name.split('.')[-1] == 'zip':
-                with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf: 
+                with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
                     with zf.open(os.path.basename(name[:-4]),'w') as f: f.write(yml.encode('utf-8'))
             else:
                 with open(name,'w') as f: f.write(yml)
@@ -719,7 +723,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for rl in rawlst:
 
             # Name ends with .yml or .yaml
-            if rl[-4:] == '.yml' or rl[-5:] == '.yaml': 
+            if rl[-4:] == '.yml' or rl[-5:] == '.yaml':
                 lst.append(rl)
 
             # Entry is a zip file directory
@@ -743,8 +747,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             if zfn.find(sub) == 0:
                                 spt = zfn.split('%s/' % sub.rstrip('/'))[1]
 
-                                # Entry ends in .yml or *.yml and is in current directory 
-                                if not '/' in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'): 
+                                # Entry ends in .yml or *.yml and is in current directory
+                                if not '/' in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
                                     lst.append(base + '/' + zfn)
 
             # Entry is a directory
@@ -754,7 +758,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 lst.extend(sorted(dlst))
 
             # Not a zipfile, not a directory and does not end in .yml
-            else: 
+            else:
                 self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
         # Read each file
@@ -795,7 +799,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Set variable values from a yaml file
         modes is a list of variable modes to act on.
         writeEach is set to true if accessing a single variable at a time.
-        Writes will be performed as each variable is updated. If set to 
+        Writes will be performed as each variable is updated. If set to
         false a bulk write will be performed after all of the variable updates
         are completed. Bulk writes provide better performance when updating a large
         quantity of variables.
@@ -889,7 +893,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             print("------------------------------------------------")
                         else:
                             pr.logException(self._log,e)
-                        
+
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
 
