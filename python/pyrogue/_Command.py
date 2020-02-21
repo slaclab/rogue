@@ -14,9 +14,11 @@ import pyrogue as pr
 import inspect
 import threading
 
+
 class CommandError(Exception):
     """ Exception for command errors."""
     pass
+
 
 class BaseCommand(pr.BaseVariable):
 
@@ -54,7 +56,7 @@ class BaseCommand(pr.BaseVariable):
         self._bulkEn = False
 
         if self._background:
-            self._log.error("Background commands are deprecated. Please use a Process device instead.")
+            self._log.error('Background commands are deprecated. Please use a Process device instead.')
 
         if retValue is None:
             self._retTypeStr = None

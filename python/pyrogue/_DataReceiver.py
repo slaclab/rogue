@@ -14,6 +14,7 @@ import pyrogue as pr
 import numpy
 import time
 
+
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 

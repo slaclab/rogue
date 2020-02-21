@@ -15,6 +15,7 @@ import functools as ft
 import pyrogue as pr
 import threading
 
+
 class EnableVariable(pr.BaseVariable):
     def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
@@ -105,6 +106,7 @@ class EnableVariable(pr.BaseVariable):
 
         if parent is not root:
             parent._parent.enable.addListener(self)
+
 
 class DeviceError(Exception):
     """ Exception for device manipulation errors."""
