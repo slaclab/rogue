@@ -14,7 +14,8 @@
 #-----------------------------------------------------------------------------
 from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QFileDialog
 from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
-from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt, QPalette
+from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt
+from PyQt5.QtGui     import QPalette
 
 import pyrogue
 import datetime

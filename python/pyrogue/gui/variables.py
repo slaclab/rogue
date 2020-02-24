@@ -13,8 +13,9 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QSpinBox, QMenu
-from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QDialog, QEvent
-from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt, QPalette
+from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QDialog
+from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt, QEvent
+from PyQt5.QtGui     import QPalette
 
 import pyrogue
 import pyrogue.interfaces

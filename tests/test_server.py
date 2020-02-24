@@ -22,7 +22,30 @@ import pyrogue.protocols
 import logging
 import math
 import numpy as np
+import argparse
 
+
+# Set the argument parser
+parser = argparse.ArgumentParser('Test Server')
+
+parser.add_argument(
+    "--oldGui",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Use old gui",
+)
+
+parser.add_argument(
+    "--gui",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Use gui",
+)
+
+# Get the arguments
+args = parser.parse_args()
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -171,12 +194,17 @@ if __name__ == "__main__":
     with DummyTree() as dummyTree:
         dummyTree.saveAddressMap('test.csv')
 
-        #pyrogue.waitCntrlC()
+        if args.oldGui:
+            import pyrogue.gui
+            pyrogue.gui.runGui(root=dummyTree)
 
-        import pyrogue.pydm
-        pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
+        elif args.gui:
+            import pyrogue.pydm
+            pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
 
-        #import pyrogue.gui
-        #pyrogue.gui.runGui(root=dummyTree)
+        else:
+            pyrogue.waitCntrlC()
+
+
 
 
