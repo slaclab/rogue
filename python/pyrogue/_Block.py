@@ -103,13 +103,13 @@ class LocalBlock(object):
 
         return self._value
 
-    def startTransaction(self, type, forceWr, check, lowByte, highByte):
+    def startTransaction(self, type, forceWr, check, var):
         """
         Start a transaction.
         """
         if self._enable:
             with self._lock:
-                self._doUpdate = True
+                self._doUpdate = self._variable._updateNotify
 
     def checkTransaction(self):
         """
@@ -117,7 +117,6 @@ class LocalBlock(object):
         If update=True notify variables if read
         """
         if self._enable:
-            doUpdate = False
             with self._lock:
                 doUpdate = self._doUpdate
                 self._doUpdate = False

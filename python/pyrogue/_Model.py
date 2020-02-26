@@ -62,12 +62,12 @@ class Model(object, metaclass=ModelMeta):
     defaultdisp = '{}'
     signed      = False
     endianness  = 'little'
-    blockFunc   = rim.PyFunc
+    modelId     = rim.PyFunc
 
     def __init__(self, bitSize, binPoint=0):
         self.binPoint = binPoint
-        self.bitSize = bitSize
-        self.name = self.__class__.__name__
+        self.bitSize  = bitSize
+        self.name     = self.__class__.__name__
 
     @property
     def isBigEndian(self):
@@ -77,15 +77,17 @@ class Model(object, metaclass=ModelMeta):
 class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
-    blockFunc   = rim.UInt
+    modelId     = rim.UInt
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
 
+    # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
+    # Called by raw read/write and when bitsize > 64
     def fromBytes(self, ba):
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
@@ -95,7 +97,7 @@ class UInt(Model):
 
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
-    blockFunc = rim.PyFunc # Not yet supported
+    modelId   = rim.PyFunc # Not yet supported
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
@@ -110,9 +112,10 @@ class Int(UInt):
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
-    signed = True
-    blockFunc   = rim.Int
+    signed      = True
+    modelId     = rim.Int
 
+    # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
             newValue = value & (2**(self.bitSize)-1) # Strip upper bits
@@ -122,6 +125,7 @@ class Int(UInt):
 
         return ba
 
+    # Called by raw read/write and when bitsize > 64
     def fromBytes(self,ba):
         if (self.bitSize < (byteCount(self.bitSize)*8)):
             value = int.from_bytes(ba, self.endianness, signed=False)
@@ -153,7 +157,7 @@ class IntBE(Int):
 class Bool(Model):
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
-    blockFunc   = rim.Bool
+    modelId     = rim.Bool
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -163,10 +167,10 @@ class Bool(Model):
 
 
 class String(Model):
-    encoding = 'utf-8'
+    encoding    = 'utf-8'
     defaultdisp = '{}'
-    pytype = str
-    blockFunc   = rim.String
+    pytype      = str
+    modelId     = rim.String
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -180,9 +184,9 @@ class Float(Model):
     """Converter for 32-bit float"""
 
     defaultdisp = '{:f}'
-    pytype = float
-    fstring = 'f'
-    blockFunc   = rim.Float
+    pytype      = float
+    fstring     = 'f'
+    modelId     = rim.Float
 
     def __init__(self, bitSize):
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
@@ -195,7 +199,7 @@ class Float(Model):
 
 class Double(Float):
     fstring = 'd'
-    blockFunc = rim.Double
+    modelId   = rim.Double
 
     def __init__(self, bitSize):
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
@@ -216,7 +220,7 @@ class DoubleBE(Double):
 class Fixed(Model):
     pytype = float
     signed = True
-    blockFunc = rim.Fixed
+    modelId   = rim.Fixed
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)

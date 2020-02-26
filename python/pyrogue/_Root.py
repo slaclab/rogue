@@ -44,13 +44,13 @@ class RootLogHandler(logging.Handler):
 
         with self._root.updateGroup():
             try:
-                se = {'created'     : record.created,
-                      'name'        : record.name,
-                      'message'     : str(record.msg),
-                      'exception'   : None,
-                      'traceBack'   : None,
-                      'levelName'   : record.levelname,
-                      'levelNumber' : record.levelno }
+                se = { 'created'     : record.created,
+                       'name'        : record.name,
+                       'message'     : str(record.msg),
+                       'exception'   : None,
+                       'traceBack'   : None,
+                       'levelName'   : record.levelname,
+                       'levelNumber' : record.levelno }
 
                 if record.exc_info is not None:
                     se['exception'] = record.exc_info[0].__name__
@@ -69,8 +69,8 @@ class RootLogHandler(logging.Handler):
                         msg += ',\n'
 
                     msg += jsonpickle.encode(se) + ']'
-                    self._root.SystemLog.set(msg)
-                    #print(f"Error: {msg}")
+                    #self._root.SystemLog.set(msg)
+                    print(f"Error: {msg}")
 
                 # Log to database
                 if self._root._sqlLog is not None:
@@ -540,10 +540,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 f.write("TypeStr\t")
                 f.write("MemBaseName\t")
                 f.write("Full Address\t")
-                f.write("Device Offset\t")
+                f.write("Offset\t")
                 f.write("Mode\t")
                 f.write("Bit Offset\t")
                 f.write("Bit Size\t")
+                f.write("Minimum\t")
+                f.write("Maximum\t")
                 f.write("Enum\t")
                 f.write("Description\n")
 
@@ -557,6 +559,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                         f.write("{}\t".format(v.mode))
                         f.write("{}\t".format(v.bitOffset))
                         f.write("{}\t".format(v.bitSize))
+                        f.write("{}\t".format(v.minimum))
+                        f.write("{}\t".format(v.maximum))
                         f.write("{}\t".format(v.enum))
                         f.write("{}\n".format(v.description))
 
@@ -650,9 +654,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             excGroups = self._streamExcGroups
 
         self._sendYamlFrame(self.getYaml(readFirst=False,
-            modes=modes,
-            incGroups=incGroups,
-            excGroups=excGroups))
+                                         modes=modes,
+                                         incGroups=incGroups,
+                                         excGroups=excGroups))
 
     def _write(self):
         """Write all blocks"""

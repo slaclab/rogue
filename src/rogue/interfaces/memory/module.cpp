@@ -28,6 +28,7 @@
 #include <rogue/interfaces/memory/TcpClient.h>
 #include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Block.h>
+#include <rogue/interfaces/memory/Variable.h>
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;
@@ -70,5 +71,6 @@ void rim::setup_module() {
    rim::TcpClient::setup_python(); 
    rim::TcpServer::setup_python(); 
    rim::Block::setup_python(); 
+   rim::Variable::setup_python(); 
 }
 

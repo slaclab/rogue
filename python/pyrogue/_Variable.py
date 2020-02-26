@@ -10,8 +10,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
-import rogue.interfaces.memory
-import math
+import rogue.interfaces.memory as rim
 import inspect
 import threading
 import re
@@ -113,11 +112,13 @@ class BaseVariable(pr.Node):
                  highWarning=None,
                  highAlarm=None,
                  pollInterval=0,
+                 updateNotify=True,
                  typeStr='Unknown',
                  offset=0):
 
         # Public Attributes
         self._bulkEn        = True
+        self._updateNotify  = updateNotify
         self._mode          = mode
         self._units         = units
         self._minimum       = minimum
@@ -128,8 +129,6 @@ class BaseVariable(pr.Node):
         self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
-        self._lowByte       = 0
-        self._highByte      = -1
         self._pollInterval  = pollInterval
         self._nativeType    = None
         self._listeners     = []
@@ -491,7 +490,7 @@ class BaseVariable(pr.Node):
             return 'Good','Good'
 
 
-class RemoteVariable(BaseVariable):
+class RemoteVariable(BaseVariable,rim.Variable):
 
     def __init__(self, *,
                  name,
@@ -514,6 +513,7 @@ class RemoteVariable(BaseVariable):
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0,
+                 updateNotify=True,
                  overlapEn=False,
                  verify=True, ):
 
@@ -526,7 +526,7 @@ class RemoteVariable(BaseVariable):
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,updateNotify=updateNotify)
 
 
         self._block    = None
@@ -556,24 +556,22 @@ class RemoteVariable(BaseVariable):
         else:
             self._base = base(sum(bitSize))
 
-        self._offset    = offset
-        self._bitSize   = bitSize
-        self._bitOffset = bitOffset
-        self._verify    = verify
         self._typeStr   = self._base.name
-        self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
-        self._overlapEn = overlapEn
 
+        # Setup C++ Base class
+        rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
+                              offset, bitOffset, bitSize, overlapEn, verify,
+                              self._bulkEn, self._updateNotify, self._base)
 
     @pr.expose
     @property
     def varBytes(self):
-        return self._bytes
+        return self._varBytes()
 
     @pr.expose
     @property
     def offset(self):
-        return self._offset
+        return self._offset()
 
     @pr.expose
     @property
@@ -583,17 +581,17 @@ class RemoteVariable(BaseVariable):
     @pr.expose
     @property
     def bitSize(self):
-        return self._bitSize
+        return self._bitSize()
 
     @pr.expose
     @property
     def bitOffset(self):
-        return self._bitOffset
+        return self._bitOffset()
 
     @pr.expose
     @property
     def verify(self):
-        return self._verify
+        return self._verify()
 
     @pr.expose
     @property
@@ -606,12 +604,10 @@ class RemoteVariable(BaseVariable):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
-        self._log.debug("{}.set({})".format(self, value))
-
         try:
 
             # Set value to block
-            self._block.set(self, value)
+            self._set(value)
 
             if write:
                 self._parent.writeBlocks(force=True, recurse=False, variable=self)
@@ -629,13 +625,13 @@ class RemoteVariable(BaseVariable):
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
         """
-        self._log.debug("{}.post({})".format(self, value))
-
         try:
 
             # Set value to block
-            self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+            self._set(value)
+
+            # Force=False, Check=True
+            self._block.startTransaction(rim.Post, False, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -653,7 +649,7 @@ class RemoteVariable(BaseVariable):
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            return self._block.get(self)
+            return self._get()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -684,22 +680,6 @@ class RemoteVariable(BaseVariable):
             else:
                 return self._base.fromString(sValue)
 
-    def _shiftOffsetDown(self,amount,minSize):
-        if amount != 0:
-
-            self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-            #print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-
-            self._offset -= amount
-
-            for i in range(0,len(self._bitOffset)):
-                self._bitOffset[i] += (amount * 8)
-
-        self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
-
-        self._lowByte  = int(math.floor(self._bitOffset[0] / 8))
-        self._highByte = int(math.floor((self._bitOffset[-1] + self._bitSize[-1] - 1) / 8))
-
 
 class LocalVariable(BaseVariable):
 
@@ -722,7 +702,8 @@ class LocalVariable(BaseVariable):
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
-                 pollInterval=0):
+                 pollInterval=0,
+                 updateNotify=True):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -733,7 +714,7 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,updateNotify=updateNotify)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
@@ -770,7 +751,9 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+
+            # Force=False, Check=True
+            self._block.startTransaction(rim.Post, False, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)

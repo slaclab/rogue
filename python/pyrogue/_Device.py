@@ -274,16 +274,17 @@ class Device(pr.Node,rim.Hub):
         """
         Write all of the blocks held by this Device to memory
         """
-        self._log.debug(f'Calling {self.path}.writeBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            variable._block.startTransaction(rim.Write, True, checkEach, variable._lowByte, variable._highByte)
+
+            # Force=True
+            variable._block.startTransaction(rim.Write, True, checkEach, variable)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Write, force, checkEach, 0, -1)
+                    block.startTransaction(rim.Write, force, checkEach, None)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -293,17 +294,19 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
         """
-        self._log.debug(f'Calling {self.path}.verifyBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            variable._block.startTransaction(rim.Verify, False, checkEach, 0, -1) # Verify range is set by previous write
+
+            # Force=False
+            variable._block.startTransaction(rim.Verify, False, checkEach, None) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Verify, False, checkEach, 0, -1)
+
+                    # Force=False
+                    block.startTransaction(rim.Verify, False, checkEach, None)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -313,17 +316,19 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
         """
-        self._log.debug(f'Calling {self.path}.readBlocks(recurse={recurse}, variable={variable}, checkEach={checkEach}')
-
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            variable._block.startTransaction(rim.Read, False, checkEach, variable._lowByte, variable._highByte)
+
+            # Force=False
+            variable._block.startTransaction(rim.Read, False, checkEach, variable)
 
         else:
             for block in self._blocks:
                 if block.bulkEn:
-                    block.startTransaction(rim.Read, False, checkEach, 0, -1)
+
+                    # Force=False
+                    block.startTransaction(rim.Read, False, checkEach, None)
 
             if recurse:
                 for key,value in self.devices.items():
@@ -331,10 +336,6 @@ class Device(pr.Node,rim.Hub):
 
     def checkBlocks(self, recurse=True, variable=None):
         """Check errors in all blocks and generate variable update notifications"""
-        self._log.debug(f'Calling {self.path}.checkBlocks(recurse={recurse}, variable={variable}')
-
-        #with self.root.updateGroup():
-
         if variable is not None:
             variable._block.checkTransaction()
 
@@ -462,6 +463,7 @@ class Device(pr.Node,rim.Hub):
 
             # Align to min access, create list of remote variables
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
+                n._updatePath(n.path)
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
 
@@ -472,6 +474,7 @@ class Device(pr.Node,rim.Hub):
 
         # Go through sorted variable list, look for overlaps, group into blocks
         for n in remVars:
+
             if blk is not None and ( (blk['offset'] + blk['size']) > n.offset):
                 self._log.info("Overlap detected var offset={} block offset={} block bytes={}".format(n.offset,blk['offset'],blk['size']))
                 n._shiftOffsetDown(n.offset - blk['offset'], blkSize)
@@ -491,7 +494,7 @@ class Device(pr.Node,rim.Hub):
                         # Just in case a variable extends past the end of pre-made block, user mistake
                         if n.varBytes > b.size:
                             msg = 'Failed to add variable {n.name} to pre-made block with offset {b.offset} and size {b.size}'
-                            raise MemoryError(name=self.path, address=self.address, msg=msg)
+                            raise pr.MemoryError(name=self.path, address=self.address, msg=msg)
 
                         blk = {'offset':b.offset, 'size':b.size, 'vars':[n], 'block':b}
                         break
@@ -521,7 +524,7 @@ class Device(pr.Node,rim.Hub):
             # Verify the block is not too small or large for the memory interface
             if newBlock.size > self._reqMaxAccess() or newBlock.size < self._reqMinAccess():
                 msg = f'Block size {newBlock.size} is not in the range: {self._reqMinAccess()} - {self._reqMaxAccess()}'
-                raise MemoryError(name=self.path, address=self.address, msg=msg)
+                raise pr.MemoryError(name=self.path, address=self.address, msg=msg)
 
             # Add variables to the block
             newBlock.addVariables(b['vars'])
