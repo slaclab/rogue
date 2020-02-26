@@ -66,8 +66,8 @@ class Model(object, metaclass=ModelMeta):
 
     def __init__(self, bitSize, binPoint=0):
         self.binPoint = binPoint
-        self.bitSize  = bitSize
-        self.name     = self.__class__.__name__
+        self.bitSize = bitSize
+        self.name = self.__class__.__name__
 
     @property
     def isBigEndian(self):
@@ -101,16 +101,16 @@ class UIntReversed(UInt):
         valueReverse = reverseBits(value, self.bitSize)
         return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
-    def fromBytes(cls, ba):
-        valueReverse = int.from_bytes(ba, cls.endianness, signed=cls.signed)
-        return reverseBits(valueReverse, cls.bitSize)
+    def fromBytes(self, ba):
+        valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
+        return reverseBits(valueReverse, self.bitSize)
 
 
 class Int(UInt):
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
-    signed      = True
+    signed = True
     blockFunc   = rim.Int
 
     def toBytes(self, value):
@@ -163,9 +163,9 @@ class Bool(Model):
 
 
 class String(Model):
-    encoding    = 'utf-8'
+    encoding = 'utf-8'
     defaultdisp = '{}'
-    pytype      = str
+    pytype = str
     blockFunc   = rim.String
 
     def __init__(self, bitSize):
@@ -180,8 +180,8 @@ class Float(Model):
     """Converter for 32-bit float"""
 
     defaultdisp = '{:f}'
-    pytype      = float
-    fstring     = 'f'
+    pytype = float
+    fstring = 'f'
     blockFunc   = rim.Float
 
     def __init__(self, bitSize):
@@ -222,3 +222,4 @@ class Fixed(Model):
         super().__init__(bitSize,binPoint)
 
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
+
