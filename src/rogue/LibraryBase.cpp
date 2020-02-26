@@ -31,13 +31,9 @@ rogue::LibraryBasePtr rogue::LibraryBase::create() {
    return(ret);
 }
 
-rogue::LibraryBase::LibraryBase () {
+rogue::LibraryBase::LibraryBase () { }
 
-
-}
-
-rogue::LibraryBase::~LibraryBase() {
-}
+rogue::LibraryBase::~LibraryBase() { }
 
 //! Add master stream
 void rogue::LibraryBase::addMasterStream (std::string name, ris::MasterPtr mast) {
