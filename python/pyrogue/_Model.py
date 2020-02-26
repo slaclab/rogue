@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Model Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -37,14 +37,14 @@ def twosComplement(value, bitSize):
     """compute the 2's complement of int value"""
     if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
         value = value - (1 << bitSize)      # compute negative value
-    return value                            # return positive value as is   
+    return value                            # return positive value as is
 
 
 class ModelMeta(type):
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
- 
+
     def __call__(cls, *args, **kwargs):
         key = cls.__name__ + str(args) + str(kwargs)
 
@@ -58,8 +58,8 @@ class ModelMeta(type):
 class Model(object, metaclass=ModelMeta):
     fstring     = None
     encoding    = None
-    pytype = None
-    defaultdisp = '{}'    
+    pytype      = None
+    defaultdisp = '{}'
     signed      = False
     endianness  = 'little'
     blockFunc   = rim.PyFunc
@@ -67,8 +67,8 @@ class Model(object, metaclass=ModelMeta):
     def __init__(self, bitSize, binPoint=0):
         self.binPoint = binPoint
         self.bitSize = bitSize
-        self.name = self.__class__.__name__        
-        
+        self.name = self.__class__.__name__
+
     @property
     def isBigEndian(self):
         return self.endianness == 'big'
@@ -81,7 +81,7 @@ class UInt(Model):
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-        self.name = f'{self.__class__.__name__}{self.bitSize}'        
+        self.name = f'{self.__class__.__name__}{self.bitSize}'
 
     def toBytes(self, value):
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
@@ -161,7 +161,7 @@ class Bool(Model):
     def fromString(self, string):
         return str.lower(string) == "true"
 
-    
+
 class String(Model):
     encoding = 'utf-8'
     defaultdisp = '{}'
@@ -170,7 +170,7 @@ class String(Model):
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-        self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'      
+        self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'
 
     def fromString(self, string):
         return string
@@ -220,6 +220,6 @@ class Fixed(Model):
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
-            
+
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
 
