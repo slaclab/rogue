@@ -44,8 +44,30 @@ parser.add_argument(
     help     = "Use gui",
 )
 
+parser.add_argument(
+    "--epics3",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Enable EPICS 3",
+)
+
+parser.add_argument(
+    "--epics4",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Enable EPICS 4",
+)
+
 # Get the arguments
 args = parser.parse_args()
+
+if args.epics3:
+    import pyrogue.protocols.epics
+
+if args.epics4:
+    import pyrogue.protocols.epicsV4
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -65,9 +87,7 @@ class DummyTree(pyrogue.Root):
                               description="Dummy tree for example",
                               timeout=2.0,
                               pollEn=True,
-                              serverPort=0,
-                              #sqlUrl='sqlite:///test.db')
-                            )
+                              serverPort=0)
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
@@ -164,17 +184,31 @@ class DummyTree(pyrogue.Root):
 
         #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
-        #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-        #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
+        if args.epics3:
+            self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+
+        if args.epics4:
+            self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
 
     def start(self):
         pyrogue.Root.start(self)
-        #self.epics.start()
-        #self.epics4.start()
+
+        if args.epics3:
+            self._epics.start()
+            self._epics.dump()
+
+        if args.epics4:
+            self._epics4.start()
+            self._epics4.dump()
 
     def stop(self):
-        #self.epics.stop()
-        #self.epics4.stop()
+
+        if args.epics3:
+            self._epics.stop()
+
+        if args.epics4:
+            self._epics4.stop()
+
         pyrogue.Root.stop(self)
 
     def _mySin(self):
@@ -204,7 +238,3 @@ if __name__ == "__main__":
 
         else:
             pyrogue.waitCntrlC()
-
-
-
-
