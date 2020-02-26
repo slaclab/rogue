@@ -226,4 +226,3 @@ class Fixed(Model):
         super().__init__(bitSize,binPoint)
 
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
-
