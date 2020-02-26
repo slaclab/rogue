@@ -10,12 +10,12 @@
  * Description:
  * Memory master interface.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -72,8 +72,10 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
 
    endTime_.tv_sec    = 0;
    endTime_.tv_usec   = 0;
+   warnTime_.tv_sec   = 0;
+   warnTime_.tv_usec  = 0;
 
-   pyValid_ = false;
+   pyValid_  = false;
 
    iter_    = NULL;
    address_ = 0;
@@ -82,12 +84,15 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    error_   = "";
    done_    = false;
 
+   log_ = rogue::Logging::create("memory.Transaction");
+   log_->setLevel(rogue::Logging::Warning);
+
    classMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
    id_ = classIdx_;
    classIdx_++;
    classMtx_.unlock();
-} 
+}
 
 //! Destroy object
 rim::Transaction::~Transaction() { }
@@ -98,8 +103,8 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 }
 
 //! Get expired state
-bool rim::Transaction::expired() { 
-   return (iter_ == NULL || done_); 
+bool rim::Transaction::expired() {
+   return (iter_ == NULL || done_);
 }
 
 //! Get id
@@ -116,6 +121,10 @@ uint32_t rim::Transaction::type() { return type_; }
 
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
+
+   log_->debug("Transaction done. type=%i id=%i, address=0x%.8x, size=0x%x",
+         type_,id_,address_,size_);
+
    error_ = "";
    done_  = true;
    cond_.notify_all();
@@ -125,6 +134,10 @@ void rim::Transaction::done() {
 void rim::Transaction::errorPy(std::string error) {
    error_ = error;
    done_  = true;
+
+   log_->debug("Transaction error. type=%i id=%i, address=0x%.8x, size=0x%x, error=%s",
+         type_,id_,address_,size_,error_.c_str());
+
    cond_.notify_all();
 }
 
@@ -139,6 +152,10 @@ void rim::Transaction::error(const char * fmt, ...) {
 
    error_ = buffer;
    done_  = true;
+
+   log_->debug("Transaction error. type=%i id=%i, address=0x%.8x, size=0x%x, error=%s",
+         type_,id_,address_,size_,error_.c_str());
+
    cond_.notify_all();
 }
 
@@ -152,11 +169,14 @@ std::string rim::Transaction::wait() {
 
       // Timeout?
       gettimeofday(&currTime,NULL);
-      if ( endTime_.tv_sec  != 0 && endTime_.tv_usec != 0 && 
+      if ( endTime_.tv_sec != 0 && endTime_.tv_usec != 0 &&
            timercmp(&currTime,&(endTime_),>) ) {
 
          done_  = true;
          error_ = "Timeout waiting for register transaction message response";
+
+         log_->debug("Transaction timeout. type=%i id=%i, address=0x%.8x, size=0x%x",
+               type_,id_,address_,size_);
       }
       else cond_.wait_for(lock,std::chrono::microseconds(1000));
    }
@@ -177,12 +197,22 @@ std::string rim::Transaction::wait() {
 //! Refresh the timer
 void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
    struct timeval currTime;
+   struct timeval nextTime;
+
    gettimeofday(&currTime,NULL);
    std::lock_guard<std::mutex> lock(lock_);
 
    // Refresh if start time is later then the reference
-   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>=) )
+   if ( ref == NULL || timercmp(&startTime_,&(ref->startTime_),>=) ) {
       timeradd(&currTime,&timeout_,&endTime_);
+
+      if ( warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0 ) warnTime_ = endTime_;
+      else if ( timercmp(&warnTime_,&currTime,>=) ) {
+            log_->warning("Transaction timer refresh! Possible slow link! type=%i id=%i, address=0x%.8x, size=0x%x",
+                  type_,id_,address_,size_);
+         warnTime_ = endTime_;
+      }
+   }
 }
 
 //! start iterator, caller must lock around access
@@ -223,7 +253,7 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));
 
    uint32_t count = pyBuf.len;
