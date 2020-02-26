@@ -8,12 +8,12 @@
  * Description:
  * Memory master interface.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -76,7 +76,7 @@ rim::Master::Master() {
    rogue::defaultTimeout(sumTime_);
 
    log_ = rogue::Logging::create("memory.Master");
-} 
+}
 
 //! Destroy object
 rim::Master::~Master() { }
@@ -138,7 +138,7 @@ void rim::Master::setTimeout(uint64_t timeout) {
    if (timeout != 0 ) {
       div_t divResult = div(timeout,1000000);
       sumTime_.tv_sec  = divResult.quot;
-      sumTime_.tv_usec = divResult.rem;       
+      sumTime_.tv_usec = divResult.rem;
    }
 }
 
@@ -195,8 +195,9 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
       tranMap_[tran->id_] = tran;
    }
 
-   
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
+   tran->log_->debug("Created transaction type=%i id=%i, address=0x%.8x, size=0x%x",
+         tran->type_,tran->id_,tran->address_,tran->size_);
    slave->doTransaction(tran);
    tran->refreshTimer(tran);
    return(tran->id_);
