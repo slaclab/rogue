@@ -66,7 +66,7 @@ namespace rogue {
          std::shared_ptr<rogue::interfaces::memory::Variable> getVariable(std::string name);
 
          //! Get a map of variables
-         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > getVariableList();
+         const std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > getVariableList();
    };
 
    typedef std::shared_ptr<rogue::LibraryBase> LibraryBasePtr;
