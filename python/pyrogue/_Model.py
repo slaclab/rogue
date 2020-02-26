@@ -103,9 +103,9 @@ class UIntReversed(UInt):
         valueReverse = reverseBits(value, self.bitSize)
         return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
-    def fromBytes(cls, ba):
-        valueReverse = int.from_bytes(ba, cls.endianness, signed=cls.signed)
-        return reverseBits(valueReverse, cls.bitSize)
+    def fromBytes(self, ba):
+        valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
+        return reverseBits(valueReverse, self.bitSize)
 
 
 class Int(UInt):
@@ -226,3 +226,4 @@ class Fixed(Model):
         super().__init__(bitSize,binPoint)
 
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
+

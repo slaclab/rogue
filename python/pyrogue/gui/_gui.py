@@ -12,8 +12,8 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from PyQt5.QtWidgets import QVBoxLayout, QTabWidget
-from PyQt5.QtCore    import QApplication, QWidget, pyqtSignal, pyqtSlot
+from PyQt5.QtWidgets import QVBoxLayout, QTabWidget, QApplication, QWidget
+from PyQt5.QtCore    import pyqtSignal, pyqtSlot
 from PyQt5.QtNetwork import QAbstractSocket
 
 import pyrogue
