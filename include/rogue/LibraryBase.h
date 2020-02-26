@@ -53,7 +53,7 @@ namespace rogue {
 
          static std::shared_ptr<rogue::LibraryBase> create();
 
-         LibraryBase ();
+         LibraryBase();
          ~LibraryBase();
 
          //! Get master stream by name
