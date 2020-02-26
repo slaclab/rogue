@@ -68,8 +68,8 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", 
-            "Failed to open device file %s with dest 0x%x",path.c_str(),dest));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
+            "Failed to open device file %s with dest 0x%x! Another process may already have it open!",path.c_str(),dest));
 
    }
 
@@ -394,12 +394,12 @@ void rha::AxiStreamDma::runThread() {
             rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 
             // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-            for (x=0; x < rxCount; x++) 
+            for (x=0; x < rxCount; x++)
                buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
          }
 
          // Return of -1 is bad
-         if ( rxCount < 0 ) 
+         if ( rxCount < 0 )
             throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
 
          // Read was successful
