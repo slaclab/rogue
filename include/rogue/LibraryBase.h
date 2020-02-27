@@ -27,14 +27,21 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
 #include <rogue/interfaces/memory/Slave.h>
+#include <rogue/Logging.h>
 
 namespace rogue {
 
    //! LibraryBase
    class LibraryBase {
 
+         // Logger
+         std::shared_ptr<rogue::Logging> log_;
+
          //! Map of variables
          std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > _variables;
+
+         //! Map of blocks by block name
+         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Block> > _blocks;
 
          //! Map of master streams
          std::map< std::string, std::shared_ptr<rogue::interfaces::stream::Master> > _mastStreams;
@@ -44,6 +51,27 @@ namespace rogue {
 
          //! Map of memory interfaces
          std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Slave> > _memSlaves;
+
+         //! Create a variable
+         void createVariable(std::map<std::string, std::string> &data);
+
+         //! Helper function to get string from fields
+         std::string getFieldString(std::map<std::string, std::string> fields, std::string name);
+
+         //! Helper function to get uint64_t from fields
+         uint64_t getFieldUInt64(std::map<std::string, std::string> fields, std::string name);
+
+         //! Helper function to get uint32_t from fields
+         uint32_t getFieldUInt32(std::map<std::string, std::string> fields, std::string name);
+
+         //! Helper function to get bool from fields
+         bool getFieldBool(std::map<std::string, std::string> fields, std::string name);
+
+         //! Helper function to get double from fields
+         double getFieldDouble(std::map<std::string, std::string> fields, std::string name);
+
+         //! Helper function to get uint32_t vector from fields
+         std::vector<uint32_t> getFieldVectorUInt32(std::map<std::string, std::string> fields, std::string name);
 
       protected:
 
@@ -56,8 +84,10 @@ namespace rogue {
          //! Add slave memory interface
          void addMemory (std::string name, std::shared_ptr<rogue::interfaces::memory::Slave> slave);
 
+      public:
+
          // Parse memory map
-         void parseMemMap (std::string);
+         void parseMemMap (std::string map);
 
       public:
 

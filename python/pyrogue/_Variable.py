@@ -596,7 +596,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def verify(self):
-        return self._verify()
+        return self._verifyEn()
 
     @pr.expose
     @property
@@ -611,7 +611,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def bulkEn(self):
-        return self._bulkEn()
+        return self._bulkEn
 
     @pr.expose
     def set(self, value, write=True):
