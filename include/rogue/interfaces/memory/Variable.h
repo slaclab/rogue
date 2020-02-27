@@ -89,7 +89,7 @@ namespace rogue {
                bool bulkEn_;
 
                // Enable update calls
-               bool updateEn_;
+               bool updateNotify_;
 
                // Variable mode
                std::string mode_;
