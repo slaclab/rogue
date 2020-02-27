@@ -7,12 +7,12 @@
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -41,13 +41,14 @@ rim::VariablePtr create ( std::string name,
                           bool overlapEn,
                           bool verify,
                           bool bulkEn,
-                          bool updateEn,
+                          bool updateNotify,
                           uint32_t modelId,
                           bool byteReverse,
+                          bool bitReverse,
                           uint32_t binPoint ) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, updateEn, modelId, byteReverse, binPoint);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, updateNotify, modelId, byteReverse, bitReverse, binPoint);
    return(v);
 }
 
@@ -60,6 +61,8 @@ void rim::Variable::setup_python() {
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
       .def("_updatePath",      &rim::Variable::updatePath)
+      .def("_overlapEn",       &rim::Variable::overlapEn)
+      .def("_bulkEn",          &rim::Variable::bulkEn)
       .def("_bitOffset",       &rim::VariableWrap::bitOffset)
       .def("_bitSize",         &rim::VariableWrap::bitSize)
       .def("_get",             &rim::VariableWrap::get)
@@ -81,29 +84,31 @@ rim::Variable::Variable ( std::string name,
                           bool overlapEn,
                           bool verifyEn,
                           bool bulkEn,
-                          bool updateEn,
+                          bool updateNotify,
                           uint32_t modelId,
                           bool byteReverse,
+                          bool bitReverse,
                           uint32_t binPoint) {
 
    uint32_t x;
 
-   name_        = name;
-   path_        = name;
-   mode_        = mode;
-   modelId_     = modelId;
-   offset_      = offset;
-   bitOffset_   = bitOffset;
-   bitSize_     = bitSize;
-   overlapEn_   = overlapEn;
-   verifyEn_    = verifyEn;
-   byteReverse_ = byteReverse;
-   bulkEn_      = bulkEn;
-   updateEn_    = updateEn;
-   minValue_    = minimum;
-   maxValue_    = maximum;
-   binPoint_    = binPoint;
-   stale_       = false;
+   name_         = name;
+   path_         = name;
+   mode_         = mode;
+   modelId_      = modelId;
+   offset_       = offset;
+   bitOffset_    = bitOffset;
+   bitSize_      = bitSize;
+   overlapEn_    = overlapEn;
+   verifyEn_     = verifyEn;
+   byteReverse_  = byteReverse;
+   bitReverse_   = bitReverse;
+   bulkEn_       = bulkEn;
+   updateNotify_ = updateNotify;
+   minValue_     = minimum;
+   maxValue_     = maximum;
+   binPoint_     = binPoint;
+   stale_        = false;
 
    // Compute bit total
    bitTotal_ = bitSize_[0];
@@ -148,14 +153,14 @@ rim::Variable::Variable ( std::string name,
 
    // Define set function
    switch (modelId_) {
-      case rim::PyFunc : 
+      case rim::PyFunc :
          setFuncPy_    = &rim::Block::setPyFunc;
          break;
-      case rim::Bytes : 
-         setFuncPy_    = &rim::Block::setByteArrayPy; 
+      case rim::Bytes :
+         setFuncPy_    = &rim::Block::setByteArrayPy;
          setByteArray_ = &rim::Block::setByteArray;
          break;
-      case rim::UInt : 
+      case rim::UInt :
          if (bitTotal_ > 64) {
             setFuncPy_    = &rim::Block::setPyFunc;
             setByteArray_ = &rim::Block::setByteArray;
@@ -175,41 +180,41 @@ rim::Variable::Variable ( std::string name,
             setInt_    = &rim::Block::setInt;
          }
          break;
-      case rim::Bool : 
-         setFuncPy_ = &rim::Block::setBoolPy;   
+      case rim::Bool :
+         setFuncPy_ = &rim::Block::setBoolPy;
          setBool_   = &rim::Block::setBool;
          break;
-      case rim::String : 
-         setFuncPy_ = &rim::Block::setStringPy; 
+      case rim::String :
+         setFuncPy_ = &rim::Block::setStringPy;
          setString_ = &rim::Block::setString;
          break;
-      case rim::Float : 
-         setFuncPy_ = &rim::Block::setFloatPy;  
+      case rim::Float :
+         setFuncPy_ = &rim::Block::setFloatPy;
          setFloat_  = &rim::Block::setFloat;
          break;
       case rim::Double :
-         setFuncPy_ = &rim::Block::setDoublePy; 
+         setFuncPy_ = &rim::Block::setDoublePy;
          setDouble_ = &rim::Block::setDouble;
          break;
-      case rim::Fixed : 
-         setFuncPy_ = &rim::Block::setFixedPy;  
+      case rim::Fixed :
+         setFuncPy_ = &rim::Block::setFixedPy;
          setFixed_  = &rim::Block::setFixed;
          break;
-      default : 
-         getFuncPy_ = NULL; 
+      default :
+         getFuncPy_ = NULL;
          break;
    }
 
    // Define get function
    switch (modelId_) {
-      case rim::PyFunc : 
-         getFuncPy_ = &rim::Block::getPyFunc;      
+      case rim::PyFunc :
+         getFuncPy_ = &rim::Block::getPyFunc;
          break;
-      case rim::Bytes : 
-         getFuncPy_    = &rim::Block::getByteArrayPy; 
+      case rim::Bytes :
+         getFuncPy_    = &rim::Block::getByteArrayPy;
          getByteArray_ = &rim::Block::getByteArray;
          break;
-      case rim::UInt : 
+      case rim::UInt :
          if (bitTotal_ > 64) {
             getFuncPy_    = &rim::Block::getPyFunc;
             getByteArray_ = &rim::Block::getByteArray;
@@ -229,28 +234,28 @@ rim::Variable::Variable ( std::string name,
             getInt_    = &rim::Block::getInt;
          }
          break;
-      case rim::Bool : 
-         getFuncPy_ = &rim::Block::getBoolPy; 
+      case rim::Bool :
+         getFuncPy_ = &rim::Block::getBoolPy;
          getBool_   = &rim::Block::getBool;
          break;
-      case rim::String : 
-         getFuncPy_ = &rim::Block::getStringPy; 
+      case rim::String :
+         getFuncPy_ = &rim::Block::getStringPy;
          getString_ = &rim::Block::getString;
          break;
-      case rim::Float : 
-         getFuncPy_ = &rim::Block::getFloatPy; 
+      case rim::Float :
+         getFuncPy_ = &rim::Block::getFloatPy;
          getFloat_  = &rim::Block::getFloat;
          break;
-      case rim::Double : 
-         getFuncPy_ = &rim::Block::getFloatPy; 
+      case rim::Double :
+         getFuncPy_ = &rim::Block::getFloatPy;
          getDouble_ = &rim::Block::getDouble;
          break;
-      case rim::Fixed : 
-         getFuncPy_ = &rim::Block::getFixedPy; 
+      case rim::Fixed :
+         getFuncPy_ = &rim::Block::getFixedPy;
          getFixed_  = &rim::Block::getFixed;
          break;
-      default : 
-         getFuncPy_ = NULL; 
+      default :
+         getFuncPy_ = NULL;
          break;
    }
 }
@@ -306,7 +311,7 @@ uint32_t rim::Variable::varBytes() {
    return varBytes_;
 }
 
-//! Get offset 
+//! Get offset
 uint64_t rim::Variable::offset() {
    return offset_;
 }
@@ -316,35 +321,46 @@ bool rim::Variable::verifyEn() {
    return verifyEn_;
 }
 
+//! Return overlap enable flag
+bool rim::Variable::overlapEn() {
+    return overlapEn_;
+}
+
+//! Return bulk enable flag
+bool rim::Variable::bulkEn() {
+    return bulkEn_;
+}
+
 // Create a Variable
-rim::VariableWrap::VariableWrap ( std::string name, 
-                                  std::string mode, 
+rim::VariableWrap::VariableWrap ( std::string name,
+                                  std::string mode,
                                   bp::object minimum,
-                                  bp::object maximum, 
+                                  bp::object maximum,
                                   uint64_t offset,
                                   bp::object bitOffset,
-                                  bp::object bitSize, 
-                                  bool overlapEn, 
+                                  bp::object bitSize,
+                                  bool overlapEn,
                                   bool verify,
                                   bool bulkEn,
-                                  bool updateEn,
+                                  bool updateNotify,
                                   bp::object model)
-                     : rim::Variable ( name, 
-                                       mode, 
+                     : rim::Variable ( name,
+                                       mode,
                                        py_object_convert<double>(minimum),
                                        py_object_convert<double>(maximum),
                                        offset,
                                        py_list_to_std_vector<uint32_t>(bitOffset),
                                        py_list_to_std_vector<uint32_t>(bitSize),
-                                       overlapEn, 
+                                       overlapEn,
                                        verify,
                                        bulkEn,
-                                       updateEn,
+                                       updateNotify,
                                        bp::extract<uint32_t>(model.attr("modelId")),
                                        bp::extract<bool>(model.attr("isBigEndian")),
+                                       bp::extract<bool>(model.attr("bitReverse")),
                                        bp::extract<uint32_t>(model.attr("binPoint")) ) {
 
-   model_ = model;                     
+   model_ = model;
 }
 
 //! Set value from RemoteVariable

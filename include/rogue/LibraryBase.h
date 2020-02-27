@@ -26,6 +26,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
+#include <rogue/interfaces/memory/Slave.h>
 
 namespace rogue {
 
@@ -41,6 +42,9 @@ namespace rogue {
          //! Map of slave streams
          std::map< std::string, std::shared_ptr<rogue::interfaces::stream::Slave> > _slaveStreams;
 
+         //! Map of memory interfaces
+         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Slave> > _memSlaves;
+
       protected:
 
          //! Add master stream
@@ -48,6 +52,12 @@ namespace rogue {
 
          //! Add slave stream
          void addSlaveStream (std::string name, std::shared_ptr<rogue::interfaces::stream::Slave> slave);
+
+         //! Add slave memory interface
+         void addMemory (std::string name, std::shared_ptr<rogue::interfaces::memory::Slave> slave);
+
+         // Parse memory map
+         void parseMemMap (std::string);
 
       public:
 

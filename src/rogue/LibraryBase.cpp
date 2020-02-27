@@ -45,6 +45,11 @@ void rogue::LibraryBase::addSlaveStream (std::string name, ris::SlavePtr slave) 
    _slaveStreams[name] = slave;
 }
 
+//! Add slave memory interface
+void rogue::LibraryBase::addMemory (std::string name, rim::SlavePtr slave) {
+   _memSlaves[name] = slave;
+}
+
 //! Get master stream by name
 ris::MasterPtr rogue::LibraryBase::getMasterStream(std::string name) {
    return _mastStreams[name];
@@ -63,5 +68,13 @@ rim::VariablePtr rogue::LibraryBase::getVariable(std::string name) {
 //! Get a map of variables
 const std::map< std::string, rim::VariablePtr> rogue::LibraryBase::getVariableList() {
    return _variables;
+}
+
+// Parse memory map
+void rogue::LibraryBase::parseMemMap (std::string) {
+
+
+
+
 }
 
