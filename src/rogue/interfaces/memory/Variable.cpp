@@ -40,14 +40,14 @@ rim::VariablePtr create ( std::string name,
                           std::vector<uint32_t> bitSize,
                           bool overlapEn,
                           bool verify,
-                          bool bulkEn,
+                          bool bulkOpEn,
                           bool updateEn,
                           uint32_t modelId,
                           bool byteReverse,
                           uint32_t binPoint ) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkEn, updateEn, modelId, byteReverse, binPoint);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateEn, modelId, byteReverse, binPoint);
    return(v);
 }
 
@@ -80,7 +80,7 @@ rim::Variable::Variable ( std::string name,
                           std::vector<uint32_t> bitSize,
                           bool overlapEn,
                           bool verifyEn,
-                          bool bulkEn,
+                          bool bulkOpEn,
                           bool updateEn,
                           uint32_t modelId,
                           bool byteReverse,
@@ -98,7 +98,7 @@ rim::Variable::Variable ( std::string name,
    overlapEn_   = overlapEn;
    verifyEn_    = verifyEn;
    byteReverse_ = byteReverse;
-   bulkEn_      = bulkEn;
+   bulkOpEn_    = bulkOpEn;
    updateEn_    = updateEn;
    minValue_    = minimum;
    maxValue_    = maximum;
@@ -326,7 +326,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bp::object bitSize,
                                   bool overlapEn,
                                   bool verify,
-                                  bool bulkEn,
+                                  bool bulkOpEn,
                                   bool updateEn,
                                   bp::object model)
                      : rim::Variable ( name,
@@ -338,7 +338,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        py_list_to_std_vector<uint32_t>(bitSize),
                                        overlapEn,
                                        verify,
-                                       bulkEn,
+                                       bulkOpEn,
                                        updateEn,
                                        bp::extract<uint32_t>(model.attr("modelId")),
                                        bp::extract<bool>(model.attr("isBigEndian")),

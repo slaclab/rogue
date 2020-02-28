@@ -7,12 +7,12 @@
  * Description:
  * Base class for RemoteVariable as well as direct C++ access
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -54,7 +54,7 @@ namespace rogue {
 
                // Byte reverse flag
                bool byteReverse_;
-   
+
                // Total number of bits for this value
                uint32_t bitTotal_;
 
@@ -83,7 +83,7 @@ namespace rogue {
                double maxValue_;
 
                // Bulk Enable Flag
-               bool bulkEn_;
+               bool bulkOpEn_;
 
                // Enable update calls
                bool updateEn_;
@@ -199,7 +199,7 @@ namespace rogue {
                 * @param bitSize Bit size vector
                 * @param overlapEn Overlap enable flag
                 * @param verify Verify enable flag
-                * @param bulkEn Bulk read/write flag
+                * @param bulkOpEn Bulk read/write flag
                 * @param updateEn Enable variable tree updates
                 * @param modelId Variable model ID
                 * @param byteReverse Byte reverse flag
@@ -215,12 +215,12 @@ namespace rogue {
                      std::vector<uint32_t> bitSize,
                      bool overlapEn,
                      bool verify,
-                     bool bulkEn,
+                     bool bulkOpEn,
                      bool noUpdate,
                      uint32_t modelId,
                      bool byteReverse,
                      uint32_t binPoint);
-                     
+
                // Setup class for use in python
                static void setup_python();
 
@@ -234,7 +234,7 @@ namespace rogue {
                           std::vector<uint32_t> bitSize,
                           bool overlapEn,
                           bool verify,
-                          bool bulkEn,
+                          bool bulkOpEn,
                           bool noUpdate,
                           uint32_t modelId,
                           bool byteReverse,
@@ -272,7 +272,7 @@ namespace rogue {
 
                //! Execute queue update, unused in C++
                virtual void queueUpdate();
-   
+
                //! Rate test for debugging
                void rateTest();
 
@@ -280,10 +280,10 @@ namespace rogue {
                // C++ Byte Array
                /////////////////////////////////
 
-               //! Set byte array 
+               //! Set byte array
                void setBytArray(uint8_t *);
 
-               //! Get byte array 
+               //! Get byte array
                void getByteArray(uint8_t *);
 
                /////////////////////////////////
@@ -364,7 +364,7 @@ namespace rogue {
 #ifndef NO_PYTHON
 
          // Stream slave class, wrapper to enable python overload of virtual methods
-         class VariableWrap : 
+         class VariableWrap :
             public rogue::interfaces::memory::Variable,
             public boost::python::wrapper<rogue::interfaces::memory::Variable> {
 
@@ -382,7 +382,7 @@ namespace rogue {
                               boost::python::object bitSize,
                               bool overlapEn,
                               bool verify,
-                              bool bulkEn,
+                              bool bulkOpEn,
                               bool noUpdate,
                               boost::python::object model);
 
