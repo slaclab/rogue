@@ -8,12 +8,12 @@
  * Description:
  * RSSI Controller
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -90,7 +90,7 @@ namespace rogue {
 
                // Application queue
                rogue::Queue<std::shared_ptr<rogue::protocols::rssi::Header>> appQueue_;
-               
+
                // Sequence Out of Order ("OOO") queue
                std::map<uint8_t, std::shared_ptr<rogue::protocols::rssi::Header>> oooQueue_;
 
@@ -125,9 +125,9 @@ namespace rogue {
                struct timeval retranToutD1_;  // retranTout_ / 1
                struct timeval tryPeriodD1_;   // TryPeriod   / 1
                struct timeval tryPeriodD4_;   // TryPeriod   / 4
-               struct timeval cumAckToutD1_;  // cumAckTout_ / 1 
-               struct timeval cumAckToutD2_;  // cumAckTout_ / 2 
-               struct timeval nullToutD3_;    // nullTout_   / 3 
+               struct timeval cumAckToutD1_;  // cumAckTout_ / 1
+               struct timeval cumAckToutD2_;  // cumAckTout_ / 2
+               struct timeval nullToutD3_;    // nullTout_   / 3
                struct timeval zeroTme_;       // 0
 
                // State thread
@@ -140,7 +140,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static std::shared_ptr<rogue::protocols::rssi::Controller> 
+               static std::shared_ptr<rogue::protocols::rssi::Controller>
                   create ( uint32_t segSize,
                            std::shared_ptr<rogue::protocols::rssi::Transport> tran,
                            std::shared_ptr<rogue::protocols::rssi::Application> app, bool server );
@@ -179,7 +179,7 @@ namespace rogue {
 
                //! Get Retransmit Count
                uint32_t getRetranCount();
-               
+
                //! Get locBusy
                bool getLocBusy();
 

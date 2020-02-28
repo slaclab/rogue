@@ -11,12 +11,12 @@
  * them to a downstream slave. Address is updated along the way. Includes support
  * for modification callbacks.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -41,11 +41,11 @@ namespace rogue {
          /** The memory bus Hub serves as both a Slave and a Master for memory transactions. It
           * will accept a Transaction from an attached Master and pass it down to the next
           * level Slave or Hub device. It will apply its local offset address to the transaction
-          * as it is passed down to the next level. 
+          * as it is passed down to the next level.
           *
-          * A Hub can be sub-classed in either Python or C++ is order to further manipulate the 
-          * transaction data on the way down or convert the initial Transaction into multiple 
-          * transactions to the next level. This can be useful to hide complex windows memory 
+          * A Hub can be sub-classed in either Python or C++ is order to further manipulate the
+          * transaction data on the way down or convert the initial Transaction into multiple
+          * transactions to the next level. This can be useful to hide complex windows memory
           * spaces or transactions that require multiplied steps be performed in hardware.
           *
           * If a non zero min and max transaction size are passed at creation this Hub will
@@ -147,7 +147,7 @@ namespace rogue {
 
                //! Interface to service the transaction request from an attached master
                /** This Hub will forward this request to the next level device and apply
-                * the local address offset. 
+                * the local address offset.
                 *
                 * It is possible for this method to be overridden in either a Python or C++
                 * subclass. Examples of sub-classing a Hub are included elsewhere in this
@@ -161,12 +161,12 @@ namespace rogue {
 
          //! Alias for using shared pointer as HubPtr
          typedef std::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
-       
+
 #ifndef NO_PYTHON
 
          // Memory Hub class, wrapper to enable python overload of virtual methods
-         class HubWrap : 
-            public rogue::interfaces::memory::Hub, 
+         class HubWrap :
+            public rogue::interfaces::memory::Hub,
             public boost::python::wrapper<rogue::interfaces::memory::Hub> {
 
             public:
@@ -180,7 +180,7 @@ namespace rogue {
                // Post a transaction. Master will call this method with the access attributes.
                void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
          };
-         
+
          // Convienence
          typedef std::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
 #endif

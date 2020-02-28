@@ -9,12 +9,12 @@
  * Description:
  * Stream interface slave
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -44,7 +44,7 @@ namespace rogue {
           * can accept frame allocation requests through its Pool base class.
           * A Slave object can be attached to multiple Master objects.
           */
-         class Slave : public rogue::interfaces::stream::Pool, 
+         class Slave : public rogue::interfaces::stream::Pool,
                        public rogue::EnableSharedFromThis<rogue::interfaces::stream::Slave> {
 
                // Mutex
@@ -123,7 +123,7 @@ namespace rogue {
 #endif
 
                //! Support << operator in C++
-               std::shared_ptr<rogue::interfaces::stream::Master> & 
+               std::shared_ptr<rogue::interfaces::stream::Master> &
                   operator <<(std::shared_ptr<rogue::interfaces::stream::Master> & other);
 
          };
@@ -134,8 +134,8 @@ namespace rogue {
 #ifndef NO_PYTHON
 
          // Stream slave class, wrapper to enable python overload of virtual methods
-         class SlaveWrap : 
-            public rogue::interfaces::stream::Slave, 
+         class SlaveWrap :
+            public rogue::interfaces::stream::Slave,
             public boost::python::wrapper<rogue::interfaces::stream::Slave> {
 
 

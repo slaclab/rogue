@@ -52,7 +52,7 @@
                                                           multiplication in the bit-by-bit calculation instead of a small conditional. The branchless implementation
                                                           may be faster on processor architectures which support single-instruction integer multiplication.
         #define CRCPP_USE_CPP11                         - Define to enables C++11 features (move semantics, constexpr, static_assert, etc.).
-        #define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS  - Define to include definitions for little-used CRCs. 
+        #define CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS  - Define to include definitions for little-used CRCs.
 */
 
 #ifndef CRCPP_CRC_H_
