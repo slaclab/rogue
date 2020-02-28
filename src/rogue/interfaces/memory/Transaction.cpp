@@ -85,7 +85,6 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    done_    = false;
 
    log_ = rogue::Logging::create("memory.Transaction");
-   log_->setLevel(rogue::Logging::Warning);
 
    classMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
