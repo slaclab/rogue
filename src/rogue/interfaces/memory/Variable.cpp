@@ -127,7 +127,7 @@ rim::Variable::Variable ( std::string name,
    highTranByte_ = varBytes_ - 1;
 
    // Variable can use fast copies
-   if ( (bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitOffset_[0] % 8 == 0) ) fastCopy_ = true;
+   if ( (bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0) ) fastCopy_ = true;
    else fastCopy_ = false;
 
    // Custom data is NULL for now
