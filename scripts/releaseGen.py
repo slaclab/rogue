@@ -25,9 +25,19 @@ from getpass import getpass
 
 newTag = input("Enter new tag: ")
 oldTag = input("Enter old tag: ")
-token  = input("Enter github token: ")
+
+# Attempt to find github token in environment
+token = os.environ.get('GITHUB_TOKEN')
+
+if token is None:
+    print("\nGITHUB_TOKEN not found in user's environment....")
+    token  = input("Enter github token: ")
+else:
+    print("Using github token from user's environment.")
 
 tagRange = tags = F"{oldTag}..HEAD"
+
+exit(0)
 
 # Local git cone
 locRepo = git.Repo('.')
