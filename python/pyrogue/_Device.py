@@ -283,7 +283,7 @@ class Device(pr.Node,rim.Hub):
 
         else:
             for block in self._blocks:
-                if block.bulkEn:
+                if block.bulkOpEn:
                     block.startTransaction(rim.Write, force, checkEach, None)
 
             if recurse:
@@ -303,7 +303,7 @@ class Device(pr.Node,rim.Hub):
 
         else:
             for block in self._blocks:
-                if block.bulkEn:
+                if block.bulkOpEn:
 
                     # Force=False
                     block.startTransaction(rim.Verify, False, checkEach, None)
@@ -325,7 +325,7 @@ class Device(pr.Node,rim.Hub):
 
         else:
             for block in self._blocks:
-                if block.bulkEn:
+                if block.bulkOpEn:
 
                     # Force=False
                     block.startTransaction(rim.Read, False, checkEach, None)

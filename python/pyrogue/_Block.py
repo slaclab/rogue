@@ -58,7 +58,7 @@ class LocalBlock(object):
         return self._mode
 
     @property
-    def bulkEn(self):
+    def bulkOpEn(self):
         return True
 
     def forceStale(self):
