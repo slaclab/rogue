@@ -32,6 +32,7 @@ stages:
 
 env:
   global:
+    - MAKEFLAGS="-j 2"
     - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
