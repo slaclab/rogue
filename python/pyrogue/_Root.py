@@ -146,7 +146,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
-        handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
         self._logger.addHandler(handler)
