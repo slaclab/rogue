@@ -114,10 +114,11 @@ class BaseVariable(pr.Node):
                  pollInterval=0,
                  updateNotify=True,
                  typeStr='Unknown',
+                 bulkOpEn=True,
                  offset=0):
 
         # Public Attributes
-        self._bulkEn        = True
+        self._bulkOpEn      = bulkOpEn
         self._updateNotify  = updateNotify
         self._mode          = mode
         self._units         = units
@@ -520,6 +521,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  pollInterval=0,
                  updateNotify=True,
                  overlapEn=False,
+                 bulkOpEn=True,
                  verify=True, ):
 
         if disp is None:
@@ -528,7 +530,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         BaseVariable.__init__(self, name=name, description=description,
                               mode=mode, value=value, disp=disp,
                               enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum,
+                              minimum=minimum, maximum=maximum, bulkOpEn=bulkOpEn,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify)
@@ -566,7 +568,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkEn, self._updateNotify, self._base)
+                              self._bulkOpEn, self._updateNotify, self._base)
 
     @pr.expose
     @property
@@ -718,7 +720,8 @@ class LocalVariable(BaseVariable):
                  localGet=None,
                  typeStr='Unknown',
                  pollInterval=0,
-                 updateNotify=True):
+                 updateNotify=True,
+                 bulkOpEn=True):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -729,7 +732,7 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify)
+                              pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
