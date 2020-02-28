@@ -81,6 +81,8 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
    std::istringstream fStream(map);
    std::vector<std::string> key;
 
+   std::map< std::string, std::vector<rim::VariablePtr> > blockVars;
+
    uint32_t x;
    bool doKey=true;
 
@@ -95,16 +97,20 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
          ++x;
       }
 
-      if (!doKey) createVariable(fields);
+      if (!doKey) createVariable(fields,blockVars);
       doKey = false;
    }
+
+   // Add variables to the blocks
+
+
+
 }
 
 //! Create a variable
 // The fields used here are defined in saveAddressMap in _Root.py
-void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data) {
-
-   std::map< std::string, std::vector<rim::BlockPtr> > blockVars;
+void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data,
+                                        std::map<std::string, std::vector<rim::VariablePtr> > &blockVars ) {
 
    // Extract fields
    std::string name    = getFieldString(data,"Path");
@@ -130,21 +136,27 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    std::vector<uint32_t> bitOffset = getFieldVectorUInt32(data,"BitOffset");
    std::vector<uint32_t> bitSize   = getFieldVectorUInt32(data,"BitSize");
 
-   // First determine if the block already exists
+   // Create the holding block if it does not already exist
    if ( _blocks.find(blkName) == _blocks.end() ) {
       rim::BlockPtr block = rim::Block::create(offset,blockSize);
-      _blocks.insert(std::pair<std::string,rim::BlockPtr>(blkName,block);
-      blockVars.insert(std::pair<std::string,std::vector<rim::BlockPtr>(blkname,std::vector<rim::BlockPtr>()));
+      _blocks.insert(std::pair<std::string,rim::BlockPtr>(blkName,block));
+      std::vector<rim::VariablePtr> vp;
+      blockVars.insert(std::pair<std::string,std::vector<rim::VariablePtr>>(blkName,vp));
+
+      // Verify memory slave exists
+      if ( _memSlaves.find(mbName) == _memSlaves.end() )
+         throw(rogue::GeneralError::create("LibraryBase::createVariable","Memory slave '%s' does not exist!",mbName.c_str()));
+
+      // Connect to memory slave
+      *block >> _memSlaves[mbName];
    }
 
    // Create variable
-   rim::VariablePtr = rim::Variable::create(name,mode,minimum,maximum,offset,bitOffset,bitSize,
+   rim::VariablePtr var = rim::Variable::create(name,mode,minimum,maximum,offset,bitOffset,bitSize,
       overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint);
 
-
-
-
-
+   // Add to block list
+   blockVars[blkName].push_back(var);
 }
 
 //! Helper function to get string from fields

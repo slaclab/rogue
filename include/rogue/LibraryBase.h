@@ -27,6 +27,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
 #include <rogue/interfaces/memory/Slave.h>
+#include <rogue/interfaces/memory/Block.h>
 #include <rogue/Logging.h>
 
 namespace rogue {
@@ -53,7 +54,8 @@ namespace rogue {
          std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Slave> > _memSlaves;
 
          //! Create a variable
-         void createVariable(std::map<std::string, std::string> &data);
+         void createVariable(std::map<std::string, std::string> &data,
+                             std::map<std::string, std::vector< std::shared_ptr<rogue::interfaces::memory::Variable> > > &blockVars );
 
          //! Helper function to get string from fields
          std::string getFieldString(std::map<std::string, std::string> fields, std::string name);
