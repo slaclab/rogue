@@ -67,8 +67,14 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
 
    uint32_t x;
    bool doKey=true;
+   char delim;
 
-   while(std::getline(fStream,line,'|')) {
+   // Determine which delimiter we are using
+   std::size_t found = map.find("|");
+   if (found!=std::string::npos) delim = '|';
+   else delim = '\n';
+
+   while(std::getline(fStream,line,delim)) {
       std::istringstream lStream(line);
       std::map<std::string, std::string> fields;
       x = 0;
