@@ -364,7 +364,7 @@ class BaseVariable(pr.Node):
                 if value in self.enum:
                     ret = self.enum[value]
                 else:
-                    self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
                     ret = 'INVALID: {:#x}'.format(value)
             else:
                 if self.typeStr == 'ndarray':
