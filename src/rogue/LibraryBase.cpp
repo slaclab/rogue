@@ -55,6 +55,16 @@ const std::map< std::string, rim::VariablePtr> rogue::LibraryBase::getVariableLi
    return variables_;
 }
 
+//! Get block by name
+rim::BlockPtr rogue::LibraryBase::getBlock(std::string name) {
+   return blocks_[name];
+}
+
+//! Get a map of blocks
+const std::map< std::string, rim::BlockPtr> rogue::LibraryBase::getBlockList() {
+   return blocks_;
+}
+
 // Parse memory map
 void rogue::LibraryBase::parseMemMap (std::string map) {
    std::string line;
