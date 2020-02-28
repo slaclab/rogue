@@ -8,12 +8,12 @@
  * Description:
  * Packetizer Controller V1
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -61,7 +61,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    uint32_t  flags;
    uint8_t * data;
 
-   if ( frame->isEmpty() ) 
+   if ( frame->isEmpty() )
       log_->warning("Empty frame received At Transport");
 
    rogue::GilRelease noGil;
@@ -122,7 +122,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
    // First frame
    if ( tmpCount == 0 ) {
 
-      if ( tranCount_[0] != 0 ) 
+      if ( tranCount_[0] != 0 )
          log_->warning("Dropping frame due to new incoming frame: expIdx=%i, expCount=%i",tranIndex_,tranCount_[0]);
 
       tranFrame_[0] = ris::Frame::create();
@@ -166,7 +166,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
    gettimeofday(&startTime,NULL);
    timeradd(&startTime,&timeout_,&endTime);
 
-   if ( frame->isEmpty() ) 
+   if ( frame->isEmpty() )
       log_->warning("Empty frame received at application");
 
    if ( frame->getError() ) return;
@@ -200,7 +200,7 @@ void rpp::ControllerV1::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       // Adjust header and tail, before setting new size
       (*it)->adjustHeader(-8);
       (*it)->adjustTail(-1);
-      
+
       // Make payload one byte longer
       (*it)->adjustPayload(1);
 

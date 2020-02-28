@@ -8,12 +8,12 @@
  * Description:
  * Stream frame iterator
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -90,10 +90,10 @@ namespace rogue {
 
                //! Get iterator marking the end of the current Buffer
                /** The returned iterator is an end marker for the current buffer, and
-                * possibly the end of the frame. If the current Buffer is followed by 
+                * possibly the end of the frame. If the current Buffer is followed by
                 * another buffer containing valid data for a Read or available space for a write,
                 * the returned iterator will mark the start of the next Buffer. Having this
-                * iterator is useful when iterating through contiguous memory blocks for more 
+                * iterator is useful when iterating through contiguous memory blocks for more
                 * efficient data copying when using std::copy().
                 * @return Iterator marking the end of the current Buffer
                 */
@@ -101,7 +101,7 @@ namespace rogue {
 
                //! Get remaining bytes in current buffer
                /** Similar to the endBuffer() call, this method returns the remaining bytes
-                * in the current Buffer. 
+                * in the current Buffer.
                 * @return Remaining bytes in the current Buffer.
                 */
                uint32_t remBuffer();
@@ -165,7 +165,7 @@ namespace rogue {
                bool operator !=(const rogue::interfaces::stream::FrameIterator & other) const;
 
                //! Equal
-               /** Compare this iterator to another iterator and return True if they are 
+               /** Compare this iterator to another iterator and return True if they are
                 * reference the same position within the Frame.
                 * @return True if the two iterators are equal
                 */
@@ -237,7 +237,7 @@ namespace rogue {
          };
 
          //! Inline helper function to copy values to a frame iterator
-         /** This helper function copies from the passed data pointer into the 
+         /** This helper function copies from the passed data pointer into the
           * Frame at the iterator position. The iterator is incremented by the copy size.
           * @param iter FrameIterator at position to copy the data to
           * @param size The number of bytes to copy
@@ -277,14 +277,14 @@ namespace rogue {
          }
 
          //! Inline helper function to copy frame data between frames
-         /** This helper function copies data from the source Frame at the iterator 
-          * location into the dest frame at the iterator location. Both iterators are 
+         /** This helper function copies data from the source Frame at the iterator
+          * location into the dest frame at the iterator location. Both iterators are
           * updated by byte copy size.
           * @param srcIter FrameIterator at position to copy the data from
           * @param size The number of bytes to copy
           * @param dstIter FrameIterator at position to copy the data to
           */
-         static inline void copyFrame ( rogue::interfaces::stream::FrameIterator & srcIter, uint32_t size, 
+         static inline void copyFrame ( rogue::interfaces::stream::FrameIterator & srcIter, uint32_t size,
                                         rogue::interfaces::stream::FrameIterator & dstIter ) {
             uint32_t  csize;
 

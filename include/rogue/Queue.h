@@ -8,12 +8,12 @@
  * Description:
  * General queue for Rogue
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -25,7 +25,7 @@
 #include <mutex>
 
 namespace rogue {
-   template<typename T> 
+   template<typename T>
    class Queue {
       private:
           std::queue<T> queue_;
@@ -38,14 +38,14 @@ namespace rogue {
           bool     run_;
       public:
 
-          Queue() { 
-             max_   = 0; 
+          Queue() {
+             max_   = 0;
              thold_ = 0;
              busy_  = false;
              run_   = true;
           }
 
-          void stop() { 
+          void stop() {
              std::unique_lock<std::mutex> lock(mtx_);
              run_ = false;
              pushCond_.notify_all();
@@ -58,8 +58,8 @@ namespace rogue {
 
           void push(T const &data) {
              std::unique_lock<std::mutex> lock(mtx_);
-   
-             while(run_ && max_ > 0 && queue_.size() >= max_) 
+
+             while(run_ && max_ > 0 && queue_.size() >= max_)
                 pushCond_.wait(lock);
 
              if ( run_ ) queue_.push(data);
@@ -99,7 +99,7 @@ namespace rogue {
              pushCond_.notify_all();
              return(ret);
           }
-   }; 
+   };
 }
 
 #endif

@@ -300,7 +300,7 @@ void rim::Master::copyBitsPy(boost::python::object dst, uint32_t dstLsb, boost::
                size, srcLsb, srcBuf.len*8));
    }
 
-   copyBits((uint8_t *)dstBuf.buf, dstLsb, (uint8_t *)srcBuf.buf, srcLsb, size); 
+   copyBits((uint8_t *)dstBuf.buf, dstLsb, (uint8_t *)srcBuf.buf, srcLsb, size);
 
    PyBuffer_Release(&srcBuf);
    PyBuffer_Release(&dstBuf);

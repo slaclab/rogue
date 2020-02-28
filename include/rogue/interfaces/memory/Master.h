@@ -9,12 +9,12 @@
  * Description:
  * Memory master interface.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -38,7 +38,7 @@ namespace rogue {
          class Transaction;
 
          //! Master for a memory transaction interface
-         /** The Master class is the initiator for any Memory transactions on a bus. Each 
+         /** The Master class is the initiator for any Memory transactions on a bus. Each
           * master is connected to a single next level Slave or Hub class. Multiple Hub levels
           * are allowed in a memory tree. Each Hub has an offset which will be applied to
           * the memory transaction address as it flows down to the lowest level Slave device.
@@ -102,7 +102,7 @@ namespace rogue {
                std::shared_ptr<rogue::interfaces::memory::Slave> getSlave();
 
                //! Query the slave ID
-               /* Each Slave in the system has a unique 32-bit ID. This 
+               /* Each Slave in the system has a unique 32-bit ID. This
                 * request is forward to the lowest level Slave device in
                 * the tree which will service the Transaction for this Master. This
                 * allows the system to determine which memory Masters shared the
@@ -114,7 +114,7 @@ namespace rogue {
                uint32_t reqSlaveId();
 
                //! Query the slave Name
-               /* Each Slave in the system has a unique name. This 
+               /* Each Slave in the system has a unique name. This
                 * request is forward to the lowest level Slave device in
                 * the tree which will service the Transaction for this Master. This
                 * allows the system to determine which memory Masters shared the
@@ -155,7 +155,7 @@ namespace rogue {
 
                //! Get error of last Transaction
                /** This method returns the error value of the last set of transactions initiated
-                * by this master. 
+                * by this master.
                 *
                 * Exposed to python as _getError()
                 * @return Error value
@@ -274,7 +274,7 @@ namespace rogue {
 #endif
 
                //! Support >> operator in C++
-               std::shared_ptr<rogue::interfaces::memory::Slave> & 
+               std::shared_ptr<rogue::interfaces::memory::Slave> &
                   operator >>(std::shared_ptr<rogue::interfaces::memory::Slave> & other);
 
             protected:

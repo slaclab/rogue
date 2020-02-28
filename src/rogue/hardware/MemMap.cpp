@@ -5,12 +5,12 @@
  * File       : MemMap.cpp
  * Created    : 2019-11-18
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -52,7 +52,7 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4,0xFFFFFFFF) {
 
    fd_ = ::open(MAP_DEVICE, O_RDWR);
 
-   if ( fd_ < 0 ) 
+   if ( fd_ < 0 )
       throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to open device file: %s",MAP_DEVICE));
 
    if ( (map_ = (uint8_t *)mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, base)) == (void *) -1)

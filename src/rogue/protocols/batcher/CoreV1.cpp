@@ -33,12 +33,12 @@
  *       bits 31:24 = Valid bytes in last field
  *
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -109,7 +109,7 @@ uint32_t rpb::CoreV1::tailSize() {
 
 //! Get beginning of tail iterator
 ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
-   if ( index >= tails_.size() ) 
+   if ( index >= tails_.size() )
       throw(rogue::GeneralError::create("bather::CoreV1::beginTail",
                "Attempt to get tail index %i in message with %i tails",index,tails_.size()));
 
@@ -119,8 +119,8 @@ ris::FrameIterator rpb::CoreV1::beginTail(uint32_t index) {
 
 //! Get end of tail iterator
 ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
-   if ( index >= tails_.size() ) 
-      throw rogue::GeneralError::create("batcher::CoreV1::tail", 
+   if ( index >= tails_.size() )
+      throw rogue::GeneralError::create("batcher::CoreV1::tail",
             "Attempt to access tail %i in frame with %i tails", index, tails_.size());
 
    // Invert order on return
@@ -129,8 +129,8 @@ ris::FrameIterator rpb::CoreV1::endTail(uint32_t index) {
 
 //! Get data
 rpb::DataPtr & rpb::CoreV1::record(uint32_t index) {
-   if ( index >= list_.size() ) 
-      throw rogue::GeneralError::create("batcher::CoreV1::record", 
+   if ( index >= list_.size() )
+      throw rogue::GeneralError::create("batcher::CoreV1::record",
             "Attempt to access record %i in frame with %i records", index, tails_.size());
 
    // Invert order on return
@@ -174,7 +174,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    // Get version & size
    beg = frame->begin();
    ris::fromFrame(beg, 1, &temp);
-   
+
    /////////////////////////////////////////////////////////////////////////
    // Super-Frame Header in firmware
    /////////////////////////////////////////////////////////////////////////
@@ -183,7 +183,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    // v.txMaster.tData(7 downto 4)    := toSlv(log2(AXIS_WORD_SIZE_C/2), 4);
    // v.txMaster.tData(15 downto 8)   := r.seqCnt;
    // v.txMaster.tData(511 downto 16) := (others => '0');
-   // ssiSetUserSof(AXIS_CONFIG_G, v.txMaster, '1');   
+   // ssiSetUserSof(AXIS_CONFIG_G, v.txMaster, '1');
    /////////////////////////////////////////////////////////////////////////
 
    // Check version, convert width
@@ -191,7 +191,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
       log_->warning("Version mismatch. Got %i",(temp&0xF));
       return false;
    }
-   
+
    /////////////////////////////////////////////////////////////////////////
    // headerSize = (uint32_t)pow(2,float( ( (temp >> 4) & 0xF) + 1) );
    /////////////////////////////////////////////////////////////////////////
@@ -199,10 +199,10 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
    switch ((temp >> 4) & 0xF) {
      case 0: headerSize_ = 2; break; // If WIDTH=0x0 (TYPE = 16-bit AXI stream),  then appended header is 2 bytes.
      case 1: headerSize_ = 4; break; // If WIDTH=0x1 (TYPE = 32-bit AXI stream),  then appended header is 4 bytes.
-     case 2: headerSize_ = 8; break; // If WIDTH=0x2 (TYPE = 64-bit AXI stream),  then appended header is 8 bytes. 
-     case 3: headerSize_ = 16; break;// If WIDTH=0x3 (TYPE = 128-bit AXI stream), then appended header is 16 bytes. 
+     case 2: headerSize_ = 8; break; // If WIDTH=0x2 (TYPE = 64-bit AXI stream),  then appended header is 8 bytes.
+     case 3: headerSize_ = 16; break;// If WIDTH=0x3 (TYPE = 128-bit AXI stream), then appended header is 16 bytes.
      case 4: headerSize_ = 32; break;// If WIDTH=0x4 (TYPE = 256-bit AXI stream), then appended header is 32 bytes.
-     case 5: headerSize_ = 64; break;// If WIDTH=0x5 (TYPE = 512-bit AXI stream), then appended header is 64 bytes.       
+     case 5: headerSize_ = 64; break;// If WIDTH=0x5 (TYPE = 512-bit AXI stream), then appended header is 64 bytes.
      default: log_->warning("Invalid AXIS Type Detected. Got %i",((temp >> 4) & 0xF)); return false;
    }
 
@@ -242,7 +242,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
       // Add tail iterator to end of list
       tails_.push_back(mark);
-      
+
       // Get tail data, use a new iterator
       tail = mark;
       ris::fromFrame(tail, 4, &fSize);
@@ -261,7 +261,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
          return false;
       }
 
-      // Set marker to start of data 
+      // Set marker to start of data
       mark -= fJump;
       rem  -= fJump;
 

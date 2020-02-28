@@ -51,9 +51,9 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    logstr.append(addr);
    logstr.append(".");
    logstr.append(std::to_string(port));
-       
+
    this->bridgeLog_ = rogue::Logging::create(logstr);
-   
+
    // Format address
    this->respAddr_ = "tcp://";
    this->respAddr_.append(addr);
@@ -70,14 +70,14 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    opt = 0;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
 
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket linger"));
 
    opt = 100;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpServer::TcpServer","Failed to set socket receive timeout"));
 
    if ( zmq_bind(this->zmqResp_,this->respAddr_.c_str()) < 0 )

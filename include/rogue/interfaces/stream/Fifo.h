@@ -9,12 +9,12 @@
  * Description :
  *    AXI Stream FIFO
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -33,10 +33,10 @@ namespace rogue {
          //! Stream Frame FIFO
          /** The stream Fifo object buffers Frame data as it is received from a
           * Master. It is then passed to the attached Slave objects in an independent
-          * thread. 
+          * thread.
           *
           * The Fifo can either store the original data or create a copy of the
-          * data in a new Frame. 
+          * data in a new Frame.
           *
           * The copied data can be configured to be a fixed size to limit the amount of
           * data copied.
@@ -73,7 +73,7 @@ namespace rogue {
                 * @param noCopy Set to true to disable Frame copy
                 * @return Fifo object as a FifoPtr
                 */
-               static std::shared_ptr<rogue::interfaces::stream::Fifo> 
+               static std::shared_ptr<rogue::interfaces::stream::Fifo>
                   create(uint32_t maxDepth, uint32_t trimSize, bool noCopy);
 
                // Setup class for use in python

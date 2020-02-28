@@ -10,12 +10,12 @@
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -42,7 +42,7 @@ namespace rogue {
 
          //! Frame container
          /** In the stream interface the Frame class is a container for moving streaming data
-          * through the system. A single Frame instance exists for each frame of data 
+          * through the system. A single Frame instance exists for each frame of data
           * being transferred. The frame object itself does not contain any data, instead
           * it is a container for one or more blocks of data contained within the Buffer class.
           *
@@ -186,7 +186,7 @@ namespace rogue {
                 */
                uint32_t getPayload();
 
-               //! Set payload size 
+               //! Set payload size
                /** Not exposed to Python
                 * @param size New payload size
                 */
@@ -194,7 +194,7 @@ namespace rogue {
 
                //! Set payload size to at least the passed value
                /** If current payload size is larger then passed value,
-                * the payload size is unchanged. 
+                * the payload size is unchanged.
                 *
                 * Not exposed to Python
                 * @param size New minimum size
@@ -209,7 +209,7 @@ namespace rogue {
                 */
                void adjustPayload(int32_t value);
 
-               //! Set the Frame payload to full 
+               //! Set the Frame payload to full
                /** Set the current payload size to equal the total
                 * available size of the buffers.
                 *
@@ -284,7 +284,7 @@ namespace rogue {
                //! Get error state
                /** The error value is application specific, depending on the stream Master
                 * implementation. A non-zero value is considered an error.
-                * 
+                *
                 * Exposed as getError() to Python
                 */
                uint8_t getError();
@@ -298,19 +298,19 @@ namespace rogue {
                //! Get begin FrameIterator
                /** Return an iterator for accessing data within the Frame.
                 * This iterator assumes the payload size of the frame has
-                * already been set. This means the frame has either been 
-                * received already containing data, or the setPayload() method 
+                * already been set. This means the frame has either been
+                * received already containing data, or the setPayload() method
                 * has been called.
-                * 
+                *
                 * Not exposed to Python
                 * @return FrameIterator pointing to beginning of payload
                 */
                rogue::interfaces::stream::FrameIterator begin();
 
                //! Get end FrameIterator
-                /** This iterator is used to detect when the end of the 
-                * Frame payload is reached when iterating through the Frame. 
-                * 
+                /** This iterator is used to detect when the end of the
+                * Frame payload is reached when iterating through the Frame.
+                *
                 * Not exposed to Python
                 * @return FrameIterator read end position
                 */
@@ -363,7 +363,7 @@ namespace rogue {
                                                uint32_t   size);
 
                //! Python Frame data write using a numpy array as the source
-               /*   
+               /*
                 *
                 *  @param[in]     np The numpy array data to be written
                 *  @param[in] offset The byte offset into the frame to write to

@@ -8,12 +8,12 @@
  * Description:
  * Stream Network Core
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -42,7 +42,7 @@ namespace rogue {
           * When the remote server is not present a local buffer is not utilized, where it is
           * utilized when a connection has been established.
           */
-         class TcpCore : public rogue::interfaces::stream::Master, 
+         class TcpCore : public rogue::interfaces::stream::Master,
                          public rogue::interfaces::stream::Slave {
 
             protected:
@@ -82,7 +82,7 @@ namespace rogue {
                 * address can either be an IP address or hostname. When running in server
                 * mode the address string defines which network interface the socket server
                 * will listen on. A string of "*" results in all network interfaces being
-                * listened on. The stream bridge requires two TCP ports. The passed port is the 
+                * listened on. The stream bridge requires two TCP ports. The passed port is the
                 * base number of these two ports. A passed value of 8000 will result in both
                 * 8000 and 8001 being used by this bridge.
                 *
@@ -92,7 +92,7 @@ namespace rogue {
                 * @param server Server flag. Set to True to run in server mode.
                 * @return TcpCore object as a TcpCorePtr
                 */
-               static std::shared_ptr<rogue::interfaces::stream::TcpCore> 
+               static std::shared_ptr<rogue::interfaces::stream::TcpCore>
                   create (std::string addr, uint16_t port, bool server);
 
                // Setup class for use in python
