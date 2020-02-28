@@ -8,20 +8,18 @@
 # Must be run within an up to date git clone with the proper branch checked out.
 #
 # ----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 import os,sys
-import git   # GitPython
+import git                # GitPython
 from github import Github # PyGithub
 import re
-import pyperclip
-from getpass import getpass
 
 newTag = input("Enter new tag: ")
 oldTag = input("Enter old tag: ")
@@ -107,7 +105,7 @@ for entry in records:
     md += '\n**Notes:**\n'
     for line in entry['body'].splitlines():
         md += '> ' + line + '\n'
-    md += '\n-------\n'         
+    md += '\n-------\n'
     md += '\n\n'
 
 print(f"\nCreating and pushing tag {newTag} .... ")
