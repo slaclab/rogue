@@ -82,6 +82,7 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
    std::vector<std::string> key;
 
    std::map< std::string, std::vector<rim::VariablePtr> > blockVars;
+   std::map< std::string, std::vector<rim::VariablePtr> >::iterator it;
 
    uint32_t x;
    bool doKey=true;
@@ -102,9 +103,12 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
    }
 
    // Add variables to the blocks
+   for (it=blockVars.begin(); it != blockVars.end(); ++it) {
+      rim::BlockPtr blk = _blocks[it->first];
+      blk->addVariables(it->second);
 
-
-
+      printf("Added %i variables to %s. Offset=0x%x, size=%i\n",it->second.size(),blk->path().c_str(),blk->address(), blk->size());
+   }
 }
 
 //! Create a variable

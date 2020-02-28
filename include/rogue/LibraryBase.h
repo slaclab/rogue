@@ -75,7 +75,7 @@ namespace rogue {
          //! Helper function to get uint32_t vector from fields
          std::vector<uint32_t> getFieldVectorUInt32(std::map<std::string, std::string> fields, std::string name);
 
-      protected:
+      public:
 
          //! Add master stream
          void addMasterStream (std::string name, std::shared_ptr<rogue::interfaces::stream::Master> mast);
@@ -86,12 +86,8 @@ namespace rogue {
          //! Add slave memory interface
          void addMemory (std::string name, std::shared_ptr<rogue::interfaces::memory::Slave> slave);
 
-      public:
-
          // Parse memory map
          void parseMemMap (std::string map);
-
-      public:
 
          static std::shared_ptr<rogue::LibraryBase> create();
 

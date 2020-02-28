@@ -31,21 +31,21 @@ namespace bp  = boost::python;
 
 
 //! Class factory which returns a pointer to a Variable (VariablePtr)
-rim::VariablePtr create ( std::string name,
-                          std::string mode,
-                          double   minimum,
-                          double   maximum,
-                          uint64_t offset,
-                          std::vector<uint32_t> bitOffset,
-                          std::vector<uint32_t> bitSize,
-                          bool overlapEn,
-                          bool verify,
-                          bool bulkEn,
-                          bool updateNotify,
-                          uint32_t modelId,
-                          bool byteReverse,
-                          bool bitReverse,
-                          uint32_t binPoint ) {
+rim::VariablePtr rim::Variable::create ( std::string name,
+                                         std::string mode,
+                                         double   minimum,
+                                         double   maximum,
+                                         uint64_t offset,
+                                         std::vector<uint32_t> bitOffset,
+                                         std::vector<uint32_t> bitSize,
+                                         bool overlapEn,
+                                         bool verify,
+                                         bool bulkEn,
+                                         bool updateNotify,
+                                         uint32_t modelId,
+                                         bool byteReverse,
+                                         bool bitReverse,
+                                         uint32_t binPoint ) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
          offset, bitOffset, bitSize, overlapEn, verify, bulkEn, updateNotify, modelId, byteReverse, bitReverse, binPoint);
