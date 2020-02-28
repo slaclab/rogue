@@ -19,6 +19,7 @@
 
 #include <rogue/LibraryBase.h>
 #include <rogue/GeneralError.h>
+#include <rogue/interfaces/memory/Constants.h>
 #include <stdint.h>
 #include <vector>
 #include <map>
@@ -106,8 +107,6 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
    for (it=blockVars.begin(); it != blockVars.end(); ++it) {
       rim::BlockPtr blk = _blocks[it->first];
       blk->addVariables(it->second);
-
-      printf("Added %i variables to %s. Offset=0x%x, size=%i\n",it->second.size(),blk->path().c_str(),blk->address(), blk->size());
    }
 }
 
