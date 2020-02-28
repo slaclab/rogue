@@ -5,12 +5,12 @@
  * File       : ZmqServer.cpp
  * Created    : 2019-05-02
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -67,7 +67,7 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    }
 
    if ( ! res ) {
-      if (port == 0) 
+      if (port == 0)
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
             "Failed to auto bind server on interface %s.",addr.c_str()));
       else
@@ -93,10 +93,15 @@ void rogue::interfaces::ZmqServer::close() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
+      log_->info("Waiting for server thread to exit");
       thread_->join();
+      log_->info("Closing pub socket");
       zmq_close(this->zmqPub_);
+      log_->info("Closing request socket");
       zmq_close(this->zmqRep_);
+      log_->info("Destroying Context");
       zmq_ctx_destroy(this->zmqCtx_);
+      log_->info("Zmq server done. Exiting");
    }
 }
 
@@ -110,14 +115,14 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
    this->zmqRep_ = zmq_socket(this->zmqCtx_,ZMQ_REP);
 
    opt = 0;
-   if ( zmq_setsockopt (this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqPub_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
 
-   if ( zmq_setsockopt (this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqRep_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket linger"));
 
    opt = 100;
-   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqRep_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqServer::tryConnect","Failed to set socket receive timeout"));
 
    // Setup publish port
@@ -192,6 +197,7 @@ void rogue::interfaces::ZmqServer::runThread() {
    zmq_msg_t msg;
 
    log_->logThreadId();
+   log_->info("Started Rogue server thread");
 
    while(threadEn_) {
       zmq_msg_init(&msg);
@@ -204,5 +210,6 @@ void rogue::interfaces::ZmqServer::runThread() {
          zmq_msg_close(&msg);
       }
    }
+   log_->info("Stopped Rogue server thread");
 }
 
