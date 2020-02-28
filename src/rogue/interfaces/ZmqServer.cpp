@@ -93,10 +93,15 @@ void rogue::interfaces::ZmqServer::close() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
+      log_->info("Waiting for server thread to exit");
       thread_->join();
+      log_->info("Closing pub socket");
       zmq_close(this->zmqPub_);
+      log_->info("Closing request socket");
       zmq_close(this->zmqRep_);
+      log_->info("Destroying Context");
       zmq_ctx_destroy(this->zmqCtx_);
+      log_->info("Zmq server done. Exiting");
    }
 }
 
@@ -128,6 +133,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
 
    if ( zmq_bind(this->zmqPub_,temp.c_str()) < 0 ) {
       zmq_close(this->zmqPub_);
+      zmq_close(this->zmqRep_);
       log_->debug("Failed to bind publish to port %i",this->basePort_);
       return false;
    }
@@ -192,6 +198,7 @@ void rogue::interfaces::ZmqServer::runThread() {
    zmq_msg_t msg;
 
    log_->logThreadId();
+   log_->info("Started Rogue server thread");
 
    while(threadEn_) {
       zmq_msg_init(&msg);
@@ -204,5 +211,6 @@ void rogue::interfaces::ZmqServer::runThread() {
          zmq_msg_close(&msg);
       }
    }
+   log_->info("Stopped Rogue server thread");
 }
 

@@ -17,11 +17,9 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 import os,sys
-import git   # GitPython
+import git                # GitPython
 from github import Github # PyGithub
 import re
-import pyperclip
-from getpass import getpass
 
 newTag = input("Enter new tag: ")
 oldTag = input("Enter old tag: ")
