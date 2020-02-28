@@ -39,19 +39,34 @@ namespace rogue {
          std::shared_ptr<rogue::Logging> log_;
 
          //! Map of variables
-         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > _variables;
+         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > variables_;
 
          //! Map of blocks by block name
-         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Block> > _blocks;
-
-         //! Map of master streams
-         std::map< std::string, std::shared_ptr<rogue::interfaces::stream::Master> > _mastStreams;
-
-         //! Map of slave streams
-         std::map< std::string, std::shared_ptr<rogue::interfaces::stream::Slave> > _slaveStreams;
+         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Block> > blocks_;
 
          //! Map of memory interfaces
-         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Slave> > _memSlaves;
+         std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Slave> > memSlaves_;
+
+      public:
+
+         LibraryBase();
+         ~LibraryBase();
+
+         //! Add slave memory interface
+         void addMemory (std::string name, std::shared_ptr<rogue::interfaces::memory::Slave> slave);
+
+         // Parse memory map
+         void parseMemMap (std::string map);
+
+         static std::shared_ptr<rogue::LibraryBase> create();
+
+         //! Get variable by name
+         std::shared_ptr<rogue::interfaces::memory::Variable> getVariable(std::string name);
+
+         //! Get a map of variables
+         const std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > getVariableList();
+
+      private:
 
          //! Create a variable
          void createVariable(std::map<std::string, std::string> &data,
@@ -75,36 +90,6 @@ namespace rogue {
          //! Helper function to get uint32_t vector from fields
          std::vector<uint32_t> getFieldVectorUInt32(std::map<std::string, std::string> fields, std::string name);
 
-      public:
-
-         //! Add master stream
-         void addMasterStream (std::string name, std::shared_ptr<rogue::interfaces::stream::Master> mast);
-
-         //! Add slave stream
-         void addSlaveStream (std::string name, std::shared_ptr<rogue::interfaces::stream::Slave> slave);
-
-         //! Add slave memory interface
-         void addMemory (std::string name, std::shared_ptr<rogue::interfaces::memory::Slave> slave);
-
-         // Parse memory map
-         void parseMemMap (std::string map);
-
-         static std::shared_ptr<rogue::LibraryBase> create();
-
-         LibraryBase();
-         ~LibraryBase();
-
-         //! Get master stream by name
-         std::shared_ptr<rogue::interfaces::stream::Master> getMasterStream(std::string name);
-
-         //! Get slave stream by name
-         std::shared_ptr<rogue::interfaces::stream::Slave> getSlaveStream(std::string name);
-
-         //! Get variable by name
-         std::shared_ptr<rogue::interfaces::memory::Variable> getVariable(std::string name);
-
-         //! Get a map of variables
-         const std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > getVariableList();
    };
 
    typedef std::shared_ptr<rogue::LibraryBase> LibraryBasePtr;

@@ -40,39 +40,19 @@ rogue::LibraryBase::LibraryBase () {
 
 rogue::LibraryBase::~LibraryBase() { }
 
-//! Add master stream
-void rogue::LibraryBase::addMasterStream (std::string name, ris::MasterPtr mast) {
-   _mastStreams[name] = mast;
-}
-
-//! Add slave stream
-void rogue::LibraryBase::addSlaveStream (std::string name, ris::SlavePtr slave) {
-   _slaveStreams[name] = slave;
-}
-
 //! Add slave memory interface
 void rogue::LibraryBase::addMemory (std::string name, rim::SlavePtr slave) {
-   _memSlaves[name] = slave;
-}
-
-//! Get master stream by name
-ris::MasterPtr rogue::LibraryBase::getMasterStream(std::string name) {
-   return _mastStreams[name];
-}
-
-//! Get slave stream by name
-ris::SlavePtr rogue::LibraryBase::getSlaveStream(std::string name) {
-   return _slaveStreams[name];
+   memSlaves_[name] = slave;
 }
 
 //! Get variable by name
 rim::VariablePtr rogue::LibraryBase::getVariable(std::string name) {
-   return _variables[name];
+   return variables_[name];
 }
 
 //! Get a map of variables
 const std::map< std::string, rim::VariablePtr> rogue::LibraryBase::getVariableList() {
-   return _variables;
+   return variables_;
 }
 
 // Parse memory map
@@ -105,7 +85,7 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
 
    // Add variables to the blocks
    for (it=blockVars.begin(); it != blockVars.end(); ++it) {
-      rim::BlockPtr blk = _blocks[it->first];
+      rim::BlockPtr blk = blocks_[it->first];
       blk->addVariables(it->second);
    }
 }
@@ -140,18 +120,18 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    std::vector<uint32_t> bitSize   = getFieldVectorUInt32(data,"BitSize");
 
    // Create the holding block if it does not already exist
-   if ( _blocks.find(blkName) == _blocks.end() ) {
+   if ( blocks_.find(blkName) == blocks_.end() ) {
       rim::BlockPtr block = rim::Block::create(offset,blockSize);
-      _blocks.insert(std::pair<std::string,rim::BlockPtr>(blkName,block));
+      blocks_.insert(std::pair<std::string,rim::BlockPtr>(blkName,block));
       std::vector<rim::VariablePtr> vp;
       blockVars.insert(std::pair<std::string,std::vector<rim::VariablePtr>>(blkName,vp));
 
       // Verify memory slave exists
-      if ( _memSlaves.find(mbName) == _memSlaves.end() )
+      if ( memSlaves_.find(mbName) == memSlaves_.end() )
          throw(rogue::GeneralError::create("LibraryBase::createVariable","Memory slave '%s' does not exist!",mbName.c_str()));
 
       // Connect to memory slave
-      *block >> _memSlaves[mbName];
+      *block >> memSlaves_[mbName];
    }
 
    // Create variable
