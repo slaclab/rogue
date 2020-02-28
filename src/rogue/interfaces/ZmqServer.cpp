@@ -133,6 +133,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
 
    if ( zmq_bind(this->zmqPub_,temp.c_str()) < 0 ) {
       zmq_close(this->zmqPub_);
+      zmq_close(this->zmqRep_);
       log_->debug("Failed to bind publish to port %i",this->basePort_);
       return false;
    }
