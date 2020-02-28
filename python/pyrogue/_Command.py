@@ -45,15 +45,13 @@ class BaseCommand(pr.BaseVariable):
             hidden=hidden,
             groups=groups,
             minimum=minimum,
-            maximum=maximum)
+            maximum=maximum,
+            bulkOpEn=False)
 
         self._function = function if function is not None else BaseCommand.nothing
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
-
-        # Disable bulk operations for commands
-        self._bulkEn = False
 
         if self._background:
             self._log.error('Background commands are deprecated. Please use a Process device instead.')
@@ -252,10 +250,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             bitSize=bitSize,
             bitOffset=bitOffset,
             overlapEn=overlapEn,
+            bulkOpEn=False,
             verify=False)
-
-        # Disable bulk operations for commands
-        self._bulkEn = False
 
     def set(self, value, write=True):
         self._log.debug("{}.set({})".format(self, value))

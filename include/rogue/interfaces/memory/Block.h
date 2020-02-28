@@ -7,12 +7,12 @@
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -84,7 +84,7 @@ namespace rogue {
                std::string mode_;
 
                // Bulk Enable
-               bool bulkEn_;
+               bool bulkOpEn_;
 
                // Block level update enable
                bool updateEn_;
@@ -203,10 +203,10 @@ namespace rogue {
                /** Return the bulk enable flag, indicating if this block should be included
                 * in bulk read and write operations.
                 *
-                * Exposed as bulkEn property to Python
+                * Exposed as bulkOpEn property to Python
                 * @return bulk enable flag
                 */
-               bool bulkEn();
+               bool bulkOpEn();
 
                //! Return overlap enable flag
                /** Return the overlap enable flag
