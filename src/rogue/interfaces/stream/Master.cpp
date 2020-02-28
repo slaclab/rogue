@@ -8,12 +8,12 @@
  * Description:
  * Stream interface master
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -40,7 +40,7 @@ ris::MasterPtr ris::Master::create () {
 }
 
 //! Creator
-ris::Master::Master() { 
+ris::Master::Master() {
    defSlave_ = ris::Slave::create();
 }
 
@@ -79,7 +79,7 @@ void ris::Master::sendFrame ( FramePtr frame) {
       slaves = slaves_;
    }
 
-   for (rit = slaves.rbegin(); rit != slaves.rend(); ++rit) 
+   for (rit = slaves.rbegin(); rit != slaves.rend(); ++rit)
       (*rit)->acceptFrame(frame);
 }
 
@@ -102,7 +102,7 @@ bool ris::Master::ensureSingleBuffer ( ris::FramePtr &frame, bool reqEn ) {
 
          ris::FrameIterator srcIter = frame->begin();
          ris::FrameIterator dstIter = nFrame->begin();
-         
+
          ris::copyFrame(srcIter, size, dstIter);
          frame = nFrame;
          return true;
@@ -167,7 +167,7 @@ void ris::Master::equalsPy ( boost::python::object p ) {
       if ( get_slave.check() ) rSlv = get_slave();
    }
 
-   if ( rMst == NULL || rSlv == NULL || lSlv == NULL ) 
+   if ( rMst == NULL || rSlv == NULL || lSlv == NULL )
       throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatible stream slave"));
 
    // Make connections
@@ -214,7 +214,7 @@ void ris::Master::operator ==(ris::SlavePtr & other) {
    // Attempt to cast other pointer to master
    rMst = std::dynamic_pointer_cast<ris::Master>(other);
 
-   if ( rMst == NULL || lSlv == NULL ) 
+   if ( rMst == NULL || lSlv == NULL )
       throw(rogue::GeneralError::create("stream::Master::equalsPy","Attempt to use == with an incompatible stream slave"));
 
    rMst->addSlave(lSlv);

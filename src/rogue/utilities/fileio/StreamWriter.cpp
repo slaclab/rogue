@@ -24,12 +24,12 @@
  *          15:0   = Frame flags
  *
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -98,7 +98,7 @@ ruf::StreamWriter::StreamWriter() {
 }
 
 //! Deconstructor
-ruf::StreamWriter::~StreamWriter() { 
+ruf::StreamWriter::~StreamWriter() {
    this->close();
 }
 
@@ -228,11 +228,11 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
 
       div_t divResult = div(timeout,1000000);
       sumTime.tv_sec  = divResult.quot;
-      sumTime.tv_usec = divResult.rem;       
+      sumTime.tv_usec = divResult.rem;
 
       timeradd(&curTime,&sumTime,&endTime);
    }
-  
+
    while (frameCount_ < count) {
       cond_.wait_for(lock, std::chrono::microseconds(1000));
 
@@ -274,7 +274,7 @@ void ruf::StreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue::inte
       intWrite(&value,4);
 
       // Write buffers
-      for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) 
+      for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it)
          intWrite((*it)->begin(),(*it)->getPayload());
 
       // Update counters
@@ -319,7 +319,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
    if ( sizeLimit_ == 0 ) return;
 
    // Bad configuration
-   if ( size > sizeLimit_ ) 
+   if ( size > sizeLimit_ )
       throw(rogue::GeneralError("StreamWriter::checkSize","Frame size is larger than file size limit"));
 
    // File size (including buffer) is larger than max size

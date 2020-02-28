@@ -7,12 +7,12 @@
  * Description :
  *    Stream modules to compress a data stream
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -68,7 +68,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    strm.bzfree  = NULL;
    strm.opaque  = NULL;
 
-   if ( (ret = BZ2_bzCompressInit(&strm,1,0,30)) != BZ_OK ) 
+   if ( (ret = BZ2_bzCompressInit(&strm,1,0,30)) != BZ_OK )
       throw(rogue::GeneralError::create("StreamZip::acceptFrame","Error initializing compressor. ret=%i",ret));
 
    // Setup decompression pointers

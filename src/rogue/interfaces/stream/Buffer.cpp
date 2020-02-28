@@ -11,12 +11,12 @@
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -66,12 +66,12 @@ void ris::Buffer::setFrame(ris::FramePtr frame) {
    frame_ = frame;
 }
 
-//! Get meta data, used by pool 
+//! Get meta data, used by pool
 uint32_t ris::Buffer::getMeta() {
    return(meta_);
 }
 
-//! Set meta data, used by pool 
+//! Set meta data, used by pool
 void ris::Buffer::setMeta(uint32_t meta) {
    meta_ = meta;
 }
@@ -80,12 +80,12 @@ void ris::Buffer::setMeta(uint32_t meta) {
 void ris::Buffer::adjustHeader(int32_t value) {
 
    // Decreasing header size
-   if ( value < 0 && (uint32_t)abs(value) > headRoom_ ) 
+   if ( value < 0 && (uint32_t)abs(value) > headRoom_ )
          throw(rogue::GeneralError::create("Buffer::adjustHeader",
                   "Attempt to reduce header with size %i by %i",headRoom_,value));
 
    // Increasing header size
-   if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
+   if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) )
          throw(rogue::GeneralError::create("Buffer::adjustHeader",
                   "Attempt to increase header by %i in buffer with size %i",
                   value, (rawSize_ - (headRoom_ + tailRoom_))));
@@ -97,7 +97,7 @@ void ris::Buffer::adjustHeader(int32_t value) {
    if ( payload_ < headRoom_ ) payload_ = headRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
 //! Clear the header reservation
@@ -105,19 +105,19 @@ void ris::Buffer::zeroHeader() {
    headRoom_ = 0;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
 //! Adjust tail by passed value
 void ris::Buffer::adjustTail(int32_t value) {
 
    // Decreasing tail size
-   if ( value < 0 && (uint32_t)abs(value) > tailRoom_ ) 
+   if ( value < 0 && (uint32_t)abs(value) > tailRoom_ )
          throw(rogue::GeneralError::create("Buffer::adjustTail",
                   "Attempt to reduce tail with size %i by %i",tailRoom_,value));
 
    // Increasing tail size
-   if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) ) 
+   if ( value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)) )
          throw(rogue::GeneralError::create("Buffer::adjustTail",
                   "Attempt to increase header by %i in buffer with size %i",
                   value, (rawSize_ - (headRoom_ + tailRoom_))));
@@ -126,7 +126,7 @@ void ris::Buffer::adjustTail(int32_t value) {
    tailRoom_ += value;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
 //! Clear the tail reservation
@@ -134,10 +134,10 @@ void ris::Buffer::zeroTail() {
    tailRoom_ = 0;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
-/* 
+/*
  * Get data pointer (begin iterator)
  * Returns base + header size
  */
@@ -163,7 +163,7 @@ uint8_t * ris::Buffer::endPayload() {
 
 /*
  * Get size of buffer that can hold
- * payload data. This function 
+ * payload data. This function
  * returns the full buffer size minus
  * the head and tail reservation.
  */
@@ -190,7 +190,7 @@ uint32_t ris::Buffer::getAvailable() {
 
 /*
  * Get real payload size without header
- * This is the count of real data in the 
+ * This is the count of real data in the
  * packet, minus the portion reserved for
  * the head.
  */
@@ -200,7 +200,7 @@ uint32_t ris::Buffer::getPayload() {
 
 //! Set payload size (not including header)
 void ris::Buffer::setPayload(uint32_t size) {
-   if ( size > (rawSize_ - (headRoom_ + tailRoom_) ) ) 
+   if ( size > (rawSize_ - (headRoom_ + tailRoom_) ) )
       throw(rogue::GeneralError::create("Buffer::setPayload",
                "Attempt to set payload to size %i in buffer with size %i",
                size, (rawSize_ - (headRoom_ + tailRoom_))));
@@ -208,10 +208,10 @@ void ris::Buffer::setPayload(uint32_t size) {
    payload_ = size + headRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
-/* 
+/*
  * Set min payload size (not including header)
  * Payload size is updated only if size > current size
 */
@@ -234,7 +234,7 @@ void ris::Buffer::setPayloadFull() {
    payload_ = rawSize_ - tailRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
 //! Set the buffer as empty (minus header reservation)
@@ -242,7 +242,7 @@ void ris::Buffer::setPayloadEmpty() {
    payload_ = headRoom_;
 
    ris::FramePtr tmpPtr;
-   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty(); 
+   if ( (tmpPtr = frame_.lock()) ) tmpPtr->setSizeDirty();
 }
 
 //! Debug buffer

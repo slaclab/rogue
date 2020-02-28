@@ -271,7 +271,7 @@ void rpe::Variable::updateAlarm(bp::object status, bp::object severity) {
       else if ( sevrStr == "AlarmMajor" ) sevrVal = epicsSevMajor;
       else sevrVal = 0;
    }
-   
+
    pValue_->setStatSevr(statVal,sevrVal);
 }
 

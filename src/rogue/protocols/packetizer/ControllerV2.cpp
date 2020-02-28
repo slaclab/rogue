@@ -8,12 +8,12 @@
  * Description:
  * Packetizer Controller V1
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -91,7 +91,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    // Drop invalid data
    if ( frame->getError() ||           // Check for frame ERROR
       ( frame->bufferCount() != 1 ) || // Incoming frame can only have one buffer
-      (size < 24)         ||           // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail) 
+      (size < 24)         ||           // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail)
       ((size&0x7) > 0)    ||           // Check for non 64-bit alignment
       ((data[0]&0xF) != 0x2) ) {       // Check for invalid version only (ignore the CRC mode flag)
       log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, buffers=%i, Version=0x%x",frame->getError(),size,frame->bufferCount(),data[0]&0xF);
@@ -108,7 +108,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    tmpCount  = uint32_t(data[4]) << 0;
    tmpCount |= uint32_t(data[5]) << 8;
    tmpSof    = ((data[7] & 0x80) ? true : false); // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
-   
+
    // Tail word 0
    tmpLuser = data[size-8];
    tmpEof   = ((data[size-7] & 0x1) ? true : false);
@@ -127,9 +127,9 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       else crc_[tmpDest] = CRC::Calculate(data, size-4, crcTable_, crc_[tmpDest]);
 
       crcErr = (tmpCrc != crc_[tmpDest]);
-   } 
+   }
    else crcErr = false;
-   
+
    log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
          data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
    log_->debug("transportRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
@@ -157,13 +157,13 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // First frame
    if ( transSof_[tmpDest] ) {
-      transSof_[tmpDest]  = false;   
+      transSof_[tmpDest]  = false;
       if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr ) {
          log_->warning("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
          dropCount_++;
          transSof_[tmpDest]  = true;
          tranCount_[tmpDest] = 0;
-         tranFrame_[tmpDest].reset();         
+         tranFrame_[tmpDest].reset();
          return;
       }
 
@@ -192,7 +192,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    else {
       tranCount_[tmpDest] = (tranCount_[tmpDest] + 1) & 0xFFFF;
    }
-   
+
 }
 
 //! Frame received at application interface
@@ -248,7 +248,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       last = (*it)->getPayload() % 8;
       if ( last == 0 ) last = 8;
       (*it)->adjustPayload(8-last);
-         
+
       // Rem 8 bytes head and tail reservation before setting new size
       (*it)->adjustHeader(-8);
       (*it)->adjustTail(-8);
@@ -278,7 +278,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       data[size-7] = (it == (frame->endBuffer()-1)) ? 0x1 : 0x0; // EOF
       data[size-6] = last;
       data[size-5] = 0;
-      
+
       if(enObCrc_){
 
          // Compute CRC
@@ -297,7 +297,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          data[size-3] = 0;
          data[size-4] = 0;
       }
-      
+
       log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
             (*it)->getPayload(), fUser, tDest, segment, data[7], lUser, data[size-7], last);
       log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",

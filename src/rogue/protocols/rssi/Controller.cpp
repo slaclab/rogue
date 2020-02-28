@@ -426,7 +426,7 @@ uint32_t rpr::Controller::getRemBusyCnt() {
 }
 
 void rpr::Controller::setLocTryPeriod(uint32_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocTryPeriod",
                                             "Invalid LocTryPeriod Value = %i",val);
    locTryPeriod_ = val;
@@ -439,7 +439,7 @@ uint32_t rpr::Controller::getLocTryPeriod() {
 }
 
 void rpr::Controller::setLocMaxBuffers(uint8_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocMaxBuffers",
                                             "Invalid LocMaxBuffers Value = %i",val);
 
@@ -451,7 +451,7 @@ uint8_t rpr::Controller::getLocMaxBuffers() {
 }
 
 void rpr::Controller::setLocMaxSegment(uint16_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocMaxSegment",
                                             "Invalid LocMaxSegment Value = %i",val);
    locMaxSegment_ = val;
@@ -462,7 +462,7 @@ uint16_t rpr::Controller::getLocMaxSegment() {
 }
 
 void rpr::Controller::setLocCumAckTout(uint16_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocCumAckTout",
                                             "Invalid LocCumAckTout Value = %i",val);
    locCumAckTout_ = val;
@@ -473,7 +473,7 @@ uint16_t rpr::Controller::getLocCumAckTout() {
 }
 
 void rpr::Controller::setLocRetranTout(uint16_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocRetranTout",
                                             "Invalid LocRetranTout Value = %i",val);
    locRetranTout_ = val;
@@ -484,7 +484,7 @@ uint16_t rpr::Controller::getLocRetranTout() {
 }
 
 void rpr::Controller::setLocNullTout(uint16_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocNullTout",
                                             "Invalid LocNullTout Value = %i",val);
    locNullTout_ = val;
@@ -495,7 +495,7 @@ uint16_t rpr::Controller::getLocNullTout() {
 }
 
 void rpr::Controller::setLocMaxRetran(uint8_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocMaxRetran",
                                             "Invalid LocMaxRetran Value = %i",val);
    locMaxRetran_ = val;
@@ -506,7 +506,7 @@ uint8_t rpr::Controller::getLocMaxRetran() {
 }
 
 void rpr::Controller::setLocMaxCumAck(uint8_t val) {
-   if ( val == 0 ) 
+   if ( val == 0 )
       throw rogue::GeneralError::create("Rssi::Controller::setLocMaxAck",
                                             "Invalid LocMaxAck Value = %i",val);
    locMaxCumAck_ = val;
@@ -699,7 +699,7 @@ void rpr::Controller::runThread() {
             break;
          default :
             break;
-      }    
+      }
    }
 
    // Send reset on exit
