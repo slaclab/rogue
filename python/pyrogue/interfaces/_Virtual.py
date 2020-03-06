@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Virtual Classes
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -74,9 +74,9 @@ def VirtualFactory(data):
 
 class VirtualNode(pr.Node):
     def __init__(self, attrs):
-        super().__init__(name=attrs['name'], 
-                         description=attrs['description'], 
-                         expand=attrs['expand'], 
+        super().__init__(name=attrs['name'],
+                         description=attrs['description'],
+                         expand=attrs['expand'],
                          groups=attrs['groups'])
 
         self._path  = attrs['path']
@@ -207,7 +207,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         if hash((addr,port)) in VirtualClient.ClientCache:
-            return 
+            return
 
         VirtualClient.ClientCache[hash((addr, port))] = self
 
