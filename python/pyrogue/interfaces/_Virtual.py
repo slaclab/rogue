@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Virtual Classes
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
@@ -79,9 +79,9 @@ def VirtualFactory(data):
 
 class VirtualNode(pr.Node):
     def __init__(self, attrs):
-        super().__init__(name=attrs['name'], 
-                         description=attrs['description'], 
-                         expand=attrs['expand'], 
+        super().__init__(name=attrs['name'],
+                         description=attrs['description'],
+                         expand=attrs['expand'],
                          groups=attrs['groups'])
 
         self._path  = attrs['path']
@@ -209,7 +209,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         if hash((addr,port)) in VirtualClient.ClientCache:
-            return 
+            return
 
         VirtualClient.ClientCache[hash((addr, port))] = self
 
@@ -224,7 +224,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
-        self.setTimeout(1000)
+        self.setTimeout(1000,True)
         self._root = None
         while self._root is None:
             self._root = self._remoteAttr('__ROOT__',None)
@@ -262,13 +262,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         if self._link and (time.time() - self._ltime) > 10.0:
             self._link = False
-            print(f"Link to {self._root.name} lost!")
+            self._log.warning(f"I have not heard from {self._root.name} in 10 seconds. It may be busy, continuing to wait...")
             for mon in self._monitors:
                 mon(self._link)
 
         elif (not self._link) and (time.time() - self._ltime) < 10.0:
             self._link = True
-            print(f"Link to {self._root.name} restored!")
+            self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
             for mon in self._monitors:
                 mon(self._link)
 

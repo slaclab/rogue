@@ -128,6 +128,9 @@ void rogue::interfaces::ZmqClient::close() {
 void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
    waitRetry_ = waitRetry;
    timeout_ = msecs;
+
+   printf("Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
+
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));
 }
@@ -135,21 +138,26 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
 std::string rogue::interfaces::ZmqClient::send(std::string value) {
    zmq_msg_t msg;
    std::string data;
+   double seconds = 0;
 
    rogue::GilRelease noGil;
    zmq_send(this->zmqReq_,value.c_str(),value.size(),0);
 
-   zmq_msg_init(&msg);
-
    while (1) {
+      zmq_msg_init(&msg);
       if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
-         double seconds = (float)timeout_ / 1000.0;
-         if ( waitRetry_ )
-            log_->error("Timeout wating for response after %d Seconds, server may be busy! Waiting...",seconds);
+         seconds += (float)timeout_ / 1000.0;
+         if ( waitRetry_ ) {
+            log_->error("Timeout wating for response after %f Seconds, server may be busy! Waiting...",seconds);
+            zmq_msg_close(&msg);
+         }
          else
-            throw rogue::GeneralError::create("ZmqClient::send","Timeout wating for response after %d Seconds, server may be busy!",seconds);
+            throw rogue::GeneralError::create("ZmqClient::send","Timeout wating for response after %f Seconds, server may be busy!",seconds);
       }
+      else break;
    }
+
+   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
 
    data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
    zmq_msg_close(&msg);

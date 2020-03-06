@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM data plug-in
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import logging
@@ -81,7 +81,7 @@ class RogueConnection(PyDMConnection):
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
-            self._node   = self._client.root.getNode(self._path)
+            self._node = self._client.root.getNode(self._path)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
             self._node.addListener(self._updateVariable)
