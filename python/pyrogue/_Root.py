@@ -532,36 +532,79 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(self,fname):
+    def saveAddressMap(self,fname,headerEn=False):
+
+        # First form header
+        # Changing these names here requires changing the createVariable() method in LibraryBase.cpp
+        header  = "Path\t"
+        header += "TypeStr\t"
+        header += "Address\t"
+        header += "Offset\t"
+        header += "Mode\t"
+        header += "BitOffset\t"
+        header += "BitSize\t"
+        header += "Minimum\t"
+        header += "Maximum\t"
+        header += "Enum\t"
+        header += "OverlapEn\t"
+        header += "Verify\t"
+        header += "ModelId\t"
+        header += "ByteReverse\t"
+        header += "BitReverse\t"
+        header += "BinPoint\t"
+        header += "BulkEn\t"
+        header += "UpdateNotify\t"
+        header += "MemBaseName\t"
+        header += "BlockName\t"
+        header += "BlockSize\t"
+        header += "Description"
+
+        lines = []
+        for v in self.variableList:
+            if v.isinstance(pr.RemoteVariable):
+                data  = "{}\t".format(v.path)
+                data += "{}\t".format(v.typeStr)
+                data += "{:#x}\t".format(v.address)
+                data += "{:#x}\t".format(v.offset)
+                data += "{}\t".format(v.mode)
+                data += "{}\t".format(v.bitOffset)
+                data += "{}\t".format(v.bitSize)
+                data += "{}\t".format(v.minimum)
+                data += "{}\t".format(v.maximum)
+                data += "{}\t".format(v.enum)
+                data += "{}\t".format(v.overlapEn)
+                data += "{}\t".format(v.verify)
+                data += "{}\t".format(v._base.modelId)
+                data += "{}\t".format(v._base.isBigEndian)
+                data += "{}\t".format(v._base.bitReverse)
+                data += "{}\t".format(v._base.binPoint)
+                data += "{}\t".format(v.bulkEn)
+                data += "{}\t".format(v.updateNotify)
+                data += "{}\t".format(v._block._reqSlaveName())
+                data += "{}\t".format(v._block.path)
+                data += "{:#x}\t".format(v._block.size)
+                data += "{}".format(v.description)
+                lines.append(data)
+
         try:
             with open(fname,'w') as f:
-                f.write("Path\t")
-                f.write("TypeStr\t")
-                f.write("MemBaseName\t")
-                f.write("Full Address\t")
-                f.write("Offset\t")
-                f.write("Mode\t")
-                f.write("Bit Offset\t")
-                f.write("Bit Size\t")
-                f.write("Minimum\t")
-                f.write("Maximum\t")
-                f.write("Enum\t")
-                f.write("Description\n")
 
-                for v in self.variableList:
-                    if v.isinstance(pr.RemoteVariable):
-                        f.write("{}\t".format(v.path))
-                        f.write("{}\t".format(v.typeStr))
-                        f.write("{}\t".format(v._block._reqSlaveName()))
-                        f.write("{:#x}\t".format(v.address))
-                        f.write("{:#x}\t".format(v.offset))
-                        f.write("{}\t".format(v.mode))
-                        f.write("{}\t".format(v.bitOffset))
-                        f.write("{}\t".format(v.bitSize))
-                        f.write("{}\t".format(v.minimum))
-                        f.write("{}\t".format(v.maximum))
-                        f.write("{}\t".format(v.enum))
-                        f.write("{}\n".format(v.description))
+                if headerEn:
+                    f.write('// #############################################\n')
+                    f.write('// Auto Generated Header File From Rogue\n')
+                    f.write('// #############################################\n')
+                    f.write('#ifndef __ROGUE_ADDR_MAP_H__\n')
+                    f.write('#define __ROGUE_ADDR_MAP_H__\n\n')
+                    f.write(f'#define ROGUE_ADDR_MAP "{header}|"\\\n')
+
+                    for line in lines:
+                        f.write(f'     "{line}|"\\\n')
+
+                    f.write('\n#endif\n')
+                else:
+                    f.write(header + '\n')
+                    for line in lines:
+                        f.write(line + '\n')
 
         except Exception as e:
             pr.logException(self._log,e)

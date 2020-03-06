@@ -55,6 +55,9 @@ namespace rogue {
                // Byte reverse flag
                bool byteReverse_;
 
+               // Bit reverse flag
+               bool bitReverse_;
+
                // Total number of bits for this value
                uint32_t bitTotal_;
 
@@ -86,7 +89,7 @@ namespace rogue {
                bool bulkOpEn_;
 
                // Enable update calls
-               bool updateEn_;
+               bool updateNotify_;
 
                // Variable mode
                std::string mode_;
@@ -200,9 +203,10 @@ namespace rogue {
                 * @param overlapEn Overlap enable flag
                 * @param verify Verify enable flag
                 * @param bulkOpEn Bulk read/write flag
-                * @param updateEn Enable variable tree updates
+                * @param updateNotify Enable variable tree updates
                 * @param modelId Variable model ID
                 * @param byteReverse Byte reverse flag
+                * @param bitReverse Bit reverse flag
                 * @param bitPoint Bit point for fixed point values
                 */
                static std::shared_ptr<rogue::interfaces::memory::Variable> create (
@@ -216,9 +220,10 @@ namespace rogue {
                      bool overlapEn,
                      bool verify,
                      bool bulkOpEn,
-                     bool noUpdate,
+                     bool updateNotify,
                      uint32_t modelId,
                      bool byteReverse,
+                     bool bitReverse,
                      uint32_t binPoint);
 
                // Setup class for use in python
@@ -235,9 +240,10 @@ namespace rogue {
                           bool overlapEn,
                           bool verify,
                           bool bulkOpEn,
-                          bool noUpdate,
+                          bool updateNotify,
                           uint32_t modelId,
                           bool byteReverse,
+                          bool bitReverse,
                           uint32_t binPoint);
 
                // Destroy
@@ -269,6 +275,12 @@ namespace rogue {
 
                //! Return verify enable flag
                bool verifyEn();
+
+               //! Return overlap enable flag
+               bool overlapEn();
+
+               //! Return bulk enable flag
+               bool bulkOpEn();
 
                //! Execute queue update, unused in C++
                virtual void queueUpdate();
@@ -383,7 +395,7 @@ namespace rogue {
                               bool overlapEn,
                               bool verify,
                               bool bulkOpEn,
-                              bool noUpdate,
+                              bool updateNotify,
                               boost::python::object model);
 
                //! Update the bit offsets

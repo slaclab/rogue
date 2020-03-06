@@ -62,6 +62,7 @@ class Model(object, metaclass=ModelMeta):
     defaultdisp = '{}'
     signed      = False
     endianness  = 'little'
+    bitReverse  = False
     modelId     = rim.PyFunc
 
     def __init__(self, bitSize, binPoint=0):
@@ -98,6 +99,7 @@ class UInt(Model):
 class UIntReversed(UInt):
     """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
     modelId   = rim.PyFunc # Not yet supported
+    bitReverse = True
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)

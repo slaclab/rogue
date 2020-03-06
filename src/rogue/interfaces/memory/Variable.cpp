@@ -31,7 +31,7 @@ namespace bp  = boost::python;
 
 
 //! Class factory which returns a pointer to a Variable (VariablePtr)
-rim::VariablePtr create ( std::string name,
+rim::VariablePtr rim::Variable::create ( std::string name,
                           std::string mode,
                           double   minimum,
                           double   maximum,
@@ -41,13 +41,14 @@ rim::VariablePtr create ( std::string name,
                           bool overlapEn,
                           bool verify,
                           bool bulkOpEn,
-                          bool updateEn,
+                          bool updateNotify,
                           uint32_t modelId,
                           bool byteReverse,
+                          bool bitReverse,
                           uint32_t binPoint ) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateEn, modelId, byteReverse, binPoint);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateNotify, modelId, byteReverse, bitReverse, binPoint);
    return(v);
 }
 
@@ -60,6 +61,8 @@ void rim::Variable::setup_python() {
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
       .def("_updatePath",      &rim::Variable::updatePath)
+      .def("_overlapEn",       &rim::Variable::overlapEn)
+      .def("_verifyEn",        &rim::Variable::verifyEn)
       .def("_bitOffset",       &rim::VariableWrap::bitOffset)
       .def("_bitSize",         &rim::VariableWrap::bitSize)
       .def("_get",             &rim::VariableWrap::get)
@@ -81,9 +84,10 @@ rim::Variable::Variable ( std::string name,
                           bool overlapEn,
                           bool verifyEn,
                           bool bulkOpEn,
-                          bool updateEn,
+                          bool updateNotify,
                           uint32_t modelId,
                           bool byteReverse,
+                          bool bitReverse,
                           uint32_t binPoint) {
 
    uint32_t x;
@@ -98,8 +102,9 @@ rim::Variable::Variable ( std::string name,
    overlapEn_   = overlapEn;
    verifyEn_    = verifyEn;
    byteReverse_ = byteReverse;
+   bitReverse_   = bitReverse;
    bulkOpEn_    = bulkOpEn;
-   updateEn_    = updateEn;
+   updateNotify_ = updateNotify;
    minValue_    = minimum;
    maxValue_    = maximum;
    binPoint_    = binPoint;
@@ -316,6 +321,16 @@ bool rim::Variable::verifyEn() {
    return verifyEn_;
 }
 
+//! Return overlap enable flag
+bool rim::Variable::overlapEn() {
+    return overlapEn_;
+}
+
+//! Return bulk enable flag
+bool rim::Variable::bulkOpEn() {
+    return bulkOpEn_;
+}
+
 // Create a Variable
 rim::VariableWrap::VariableWrap ( std::string name,
                                   std::string mode,
@@ -327,7 +342,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool overlapEn,
                                   bool verify,
                                   bool bulkOpEn,
-                                  bool updateEn,
+                                  bool updateNotify,
                                   bp::object model)
                      : rim::Variable ( name,
                                        mode,
@@ -339,9 +354,10 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        overlapEn,
                                        verify,
                                        bulkOpEn,
-                                       updateEn,
+                                       updateNotify,
                                        bp::extract<uint32_t>(model.attr("modelId")),
                                        bp::extract<bool>(model.attr("isBigEndian")),
+                                       bp::extract<bool>(model.attr("bitReverse")),
                                        bp::extract<uint32_t>(model.attr("binPoint")) ) {
 
    model_ = model;

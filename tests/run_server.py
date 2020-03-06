@@ -226,7 +226,8 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        dummyTree.saveAddressMap('test.csv')
+        dummyTree.saveAddressMap('addr_map.csv')
+        dummyTree.saveAddressMap('addr_map.h',headerEn=True)
 
         if args.oldGui:
             import pyrogue.gui

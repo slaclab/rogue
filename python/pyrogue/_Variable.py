@@ -286,6 +286,11 @@ class BaseVariable(pr.Node):
         else:
             return None
 
+    @pr.expose
+    @property
+    def updateNotify(self):
+        return self._updateNotify
+
     @property
     def dependencies(self):
         return self.__dependencies
@@ -593,12 +598,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def verify(self):
-        return self._verify()
+        return self._verifyEn()
 
     @pr.expose
     @property
     def base(self):
         return self._base
+
+    @pr.expose
+    @property
+    def overlapEn(self):
+        return self._overlapEn()
+
+    @pr.expose
+    @property
+    def bulkEn(self):
+        return self._bulkEn
 
     @pr.expose
     def set(self, value, write=True):
