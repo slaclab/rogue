@@ -9,12 +9,12 @@
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -36,7 +36,7 @@ namespace rogue {
           * with a contiguous block of memory allocated by an instance of the Pool class.
           * Each buffer within the frame has a reserved header and tail area to pre-reserve
           * space which may be required by protocol layers. Direct interaction with the Buffer
-          * class is an advanced topic, most users will simply use a FrameIterator to access 
+          * class is an advanced topic, most users will simply use a FrameIterator to access
           * Frame and Buffer data. The Buffer class is not available in Python.
          */
          class Buffer {
@@ -89,11 +89,11 @@ namespace rogue {
                 * alloc Total memory allocated, may be greater than size
                 */
                static std::shared_ptr<rogue::interfaces::stream::Buffer> create (
-                     std::shared_ptr<rogue::interfaces::stream::Pool> source, 
+                     std::shared_ptr<rogue::interfaces::stream::Pool> source,
                         void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                // Create a buffer.
-               Buffer(std::shared_ptr<rogue::interfaces::stream::Pool> source, 
+               Buffer(std::shared_ptr<rogue::interfaces::stream::Pool> source,
                       void * data, uint32_t meta, uint32_t size, uint32_t alloc);
 
                // Destroy a buffer
@@ -103,17 +103,17 @@ namespace rogue {
                void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
                //! Get meta data
-               /** The meta data field is used by the Pool class or sub-class to 
+               /** The meta data field is used by the Pool class or sub-class to
                 * track the allocated data.
                 * @return Meta data value
-                */ 
+                */
                uint32_t getMeta();
 
                //! Set meta data
-               /** The meta data field is used by the Pool class or sub-class to 
+               /** The meta data field is used by the Pool class or sub-class to
                 * track the allocated data.
                 * @param meta Meta data value
-                */ 
+                */
                void setMeta(uint32_t meta);
 
                //! Adjust header by passed value
@@ -147,20 +147,20 @@ namespace rogue {
                uint8_t * end();
 
                //! Get end payload iterator
-               /** Get an iterator which indicates the end of the the payload space. 
+               /** Get an iterator which indicates the end of the the payload space.
                 * @return End payload iterator
                 */
                uint8_t * endPayload();
 
                //! Get Buffer size
-               /** Get size of buffer that can hold payload data. This function 
+               /** Get size of buffer that can hold payload data. This function
                 * returns the full buffer size minus the head and tail reservation.
                 * @return Buffer size in bytes
                 */
                uint32_t getSize();
 
                //! Get the available space for payload
-               /** Get the remaining data available for payload. 
+               /** Get the remaining data available for payload.
                 * @return The amount of available space for payload in bytes.
                 */
                uint32_t getAvailable();

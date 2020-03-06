@@ -1,4 +1,4 @@
-package: 
+package:
   name: rogue
   version: {{ GIT_DESCRIBE_TAG }}
 

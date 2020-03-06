@@ -53,7 +53,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    logstr.append(addr);
    logstr.append(".");
    logstr.append(std::to_string(port));
-       
+
    this->bridgeLog_ = rogue::Logging::create(logstr);
 
    // Format address
@@ -68,7 +68,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    // Don't buffer when no connection
    opt = 1;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket immediate"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
@@ -77,14 +77,14 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    opt = 0;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
    opt = 100;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket receive timeout"));
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
@@ -121,7 +121,7 @@ void rim::TcpClient::close() {
       zmq_close(this->zmqReq_);
       zmq_ctx_destroy(this->zmqCtx_);
    }
-}  
+}
 
 //! Post a transaction
 void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {

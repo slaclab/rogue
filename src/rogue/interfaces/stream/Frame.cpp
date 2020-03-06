@@ -9,12 +9,12 @@
  * Stream frame container
  * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -130,7 +130,7 @@ void ris::Frame::setSizeDirty() {
 
 /*
  * Get size of buffers that can hold
- * payload data. This function 
+ * payload data. This function
  * returns the full buffer size minus
  * the head and tail reservation.
  */
@@ -151,7 +151,7 @@ uint32_t ris::Frame::getAvailable() {
 
 /*
  * Get real payload size without header
- * This is the count of real data in the 
+ * This is the count of real data in the
  * packet, minus the portion reserved for
  * the head.
  */
@@ -162,7 +162,7 @@ uint32_t ris::Frame::getPayload() {
 
 /*
  * Set payload size (not including header)
- * If passed size is less then current, 
+ * If passed size is less then current,
  * the frame payload size will be decreased.
  */
 void ris::Frame::setPayload(uint32_t pSize) {
@@ -193,7 +193,7 @@ void ris::Frame::setPayload(uint32_t pSize) {
       }
    }
 
-   if ( lSize != 0 ) 
+   if ( lSize != 0 )
       throw(rogue::GeneralError::create("Frame::setPayload",
                "Attempt to set payload to size %i in frame with size %i",
                pSize,size_));
@@ -345,7 +345,7 @@ ris::FrameIterator ris::Frame::endWrite() {
 void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 ) 
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Frame::readPy","Python Buffer Error In Frame"));
 
    uint32_t size = getPayload();
@@ -382,7 +382,7 @@ void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
 
    minPayload(offset+count);
    ris::FrameIterator beg = this->begin() + offset;
-   ris::toFrame(beg, count, (uint8_t *)pyBuf.buf); 
+   ris::toFrame(beg, count, (uint8_t *)pyBuf.buf);
    PyBuffer_Release(&pyBuf);
 }
 
@@ -428,10 +428,10 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    }
 
 
-   // Cast to an array object and check that the numpy array 
+   // Cast to an array object and check that the numpy array
    // data buffer is write-able and contiguous
    // The write routine can only deal with contiguous buffers.
-   PyArrayObject *arr = reinterpret_cast<decltype(arr)>(obj);   
+   PyArrayObject *arr = reinterpret_cast<decltype(arr)>(obj);
    int          flags = PyArray_FLAGS (arr);
    bool           ctg = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
    if ( !ctg ) {
@@ -456,7 +456,7 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
 
    // Write the numpy data to the array
    ris::FrameIterator beg = this->begin() + offset;
-   ris::toFrame (beg, count, src); 
+   ris::toFrame (beg, count, src);
 
    // If were forced to make a temporary copy, release it
    if (!ctg) {
@@ -502,7 +502,7 @@ void ris::Frame::debug() {
    ris::Frame::BufferIterator it;
    uint32_t idx = 0;
 
-   printf("Frame Info. BufferCount: %i, Size: %i, Available: %i, Payload: %i, Channel: %i, Error: 0x%x, Flags: 0x%x\n", 
+   printf("Frame Info. BufferCount: %i, Size: %i, Available: %i, Payload: %i, Channel: %i, Error: 0x%x, Flags: 0x%x\n",
          bufferCount(), getSize(), getAvailable(), getPayload(), getChannel(), getError(), getFlags());
 
    for (it = buffers_.begin(); it != buffers_.end(); ++it) {

@@ -6,12 +6,12 @@
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 02/08/2019
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -37,8 +37,8 @@ void rpb::Data::setup_python() { }
 //! Creator with version constant
 rpb::Data::Data(ris::FrameIterator it, uint32_t size, uint8_t dest, uint8_t fUser, uint8_t lUser) {
    it_    = it; // Copy
-   size_  = size;   
-   dest_  = dest;   
+   size_  = size;
+   dest_  = dest;
    fUser_ = fUser;
    lUser_ = lUser;
 }

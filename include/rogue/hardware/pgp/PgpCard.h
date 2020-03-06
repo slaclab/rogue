@@ -5,12 +5,12 @@
  * Description:
  * PGP Card Class
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -35,14 +35,14 @@ namespace rogue {
          class EvrControl;
 
          //! PgpCard Class
-         /** This class provides a bridge between the Rogue stream interface and 
-          * the pgpcard target of the AES Stream Drivers device drivers. This bridge 
+         /** This class provides a bridge between the Rogue stream interface and
+          * the pgpcard target of the AES Stream Drivers device drivers. This bridge
           * allows Rogue Frames to be sent and received to PGPCard boards. This interface
           * will allocate Frame and Buffer objects using memory mapped DMA buffers
           * or from a local memory pool when zero copy mode is disabled or a Frame
           * with is requested with the zero copy flag set to false.
           */
-         class PgpCard : public rogue::interfaces::stream::Master, 
+         class PgpCard : public rogue::interfaces::stream::Master,
                          public rogue::interfaces::stream::Slave {
 
                //! PgpCard file descriptor
@@ -69,7 +69,7 @@ namespace rogue {
                std::thread* thread_;
                bool threadEn_;
 
-               //! Log 
+               //! Log
                std::shared_ptr<rogue::Logging> log_;
 
                //! Thread background
@@ -91,7 +91,7 @@ namespace rogue {
                 * @param vc   Lane virtual channel to attach to
                 * @return PgpCard pointer (PgpCardPtr)
                 */
-               static std::shared_ptr<rogue::hardware::pgp::PgpCard> 
+               static std::shared_ptr<rogue::hardware::pgp::PgpCard>
                   create (std::string path, uint32_t lane, uint32_t vc);
 
                // Setup class in python
@@ -105,7 +105,7 @@ namespace rogue {
 
                //! Set timeout for frame transmits in microseconds
                /** This setting defines how long to wait for the lower level
-                * driver to be ready to send data. 
+                * driver to be ready to send data.
                 *
                 * Exposed to python as SetTimeout()
                 * @param timeout Timeout value in microseconds
@@ -120,7 +120,7 @@ namespace rogue {
                 * access to the memory which the lower level DMA engines uses.
                 * When zero copy mode is disabled a memory buffer will be allocated
                 * using the Pool class and the DMA data will be coped to or from this
-                * buffer. 
+                * buffer.
                 *
                 * Exposed to python as setZeroCopyEn()
                 * @param state Boolean indicating zero copy mode

@@ -53,7 +53,7 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
    if (server) logstr.append("Server.");
    else logstr.append("Client.");
    logstr.append(std::to_string(port));
-       
+
    this->bridgeLog_ = rogue::Logging::create(logstr);
 
    // Format address
@@ -68,18 +68,18 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
    // Don't buffer when no connection
    opt = 1;
-   if ( zmq_setsockopt (this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqPush_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket immediate"));
 
    opt = 0;
-   if ( zmq_setsockopt (this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqPush_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
 
-   if ( zmq_setsockopt (this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqPull_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket linger"));
 
    opt = 100;
-   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqPull_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("stream::TcpCore::TcpCore","Failed to set socket receive timeout"));
 
    // Server mode

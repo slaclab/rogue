@@ -69,8 +69,8 @@ class RootLogHandler(logging.Handler):
                         msg += ',\n'
 
                     msg += jsonpickle.encode(se) + ']'
-                    #self._root.SystemLog.set(msg)
-                    print(f"Error: {msg}")
+                    self._root.SystemLog.set(msg)
+                    #print(f"Error: {msg}")
 
                 # Log to database
                 if self._root._sqlLog is not None:
@@ -146,7 +146,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
-        handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
         self._logger.addHandler(handler)

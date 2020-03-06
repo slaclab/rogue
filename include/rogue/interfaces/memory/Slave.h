@@ -8,12 +8,12 @@
  * Description:
  * Memory slave interface.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -37,9 +37,9 @@ namespace rogue {
          class Transaction;
 
          //! Memory Slave device
-         /** The memory Slave device accepts and services transactions from one or more Master devices. 
+         /** The memory Slave device accepts and services transactions from one or more Master devices.
           * The Slave device is normally sub-classed in either C++ or Python to provide an interfaces
-          * to hardware or the next level memory transaction protocol, such as SrpV0 or SrpV3. 
+          * to hardware or the next level memory transaction protocol, such as SrpV0 or SrpV3.
           * Examples of Slave sub-class implementations are included elsewhere in this document.
           *
           * The Slave object provides mechanisms for tracking current transactions.
@@ -181,7 +181,7 @@ namespace rogue {
                virtual uint32_t doMaxAccess();
 
                //! Interface to service the getAddress request from an attached master
-               /** This Slave will return 0 byte default. A Slave sub-class is allowed 
+               /** This Slave will return 0 byte default. A Slave sub-class is allowed
                 * to override this method.
                 *
                 * Exposed as _doAddress() to Python
@@ -209,7 +209,7 @@ namespace rogue {
 #endif
 
                //! Support << operator in C++
-               std::shared_ptr<rogue::interfaces::memory::Master> & 
+               std::shared_ptr<rogue::interfaces::memory::Master> &
                   operator <<(std::shared_ptr<rogue::interfaces::memory::Master> & other);
 
          };
@@ -220,8 +220,8 @@ namespace rogue {
 #ifndef NO_PYTHON
 
          // Memory slave class, wrapper to enable python overload of virtual methods
-         class SlaveWrap : 
-            public rogue::interfaces::memory::Slave, 
+         class SlaveWrap :
+            public rogue::interfaces::memory::Slave,
             public boost::python::wrapper<rogue::interfaces::memory::Slave> {
 
             public:
