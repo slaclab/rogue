@@ -43,6 +43,8 @@ namespace rogue {
 
             uint32_t timeout_;
 
+            bool waitRetry_;
+
             std::thread   * thread_;
             bool threadEn_;
 
@@ -58,7 +60,7 @@ namespace rogue {
             ZmqClient (std::string addr, uint16_t port);
             virtual ~ZmqClient();
 
-            void setTimeout(uint32_t msecs);
+            void setTimeout(uint32_t msecs, bool waitRetry);
 
             std::string send(std::string value);
 

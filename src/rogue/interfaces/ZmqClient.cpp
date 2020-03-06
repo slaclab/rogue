@@ -5,12 +5,12 @@
  * File       : ZmqClient.cpp
  * Created    : 2019-05-02
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to
- * the license terms in the LICENSE.txt file found in the top-level directory
- * of this distribution and at:
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
- * No part of the rogue software platform, including this file, may be
- * copied, modified, propagated, or distributed except according to the terms
+ * This file is part of the rogue software platform. It is subject to 
+ * the license terms in the LICENSE.txt file found in the top-level directory 
+ * of this distribution and at: 
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+ * No part of the rogue software platform, including this file, may be 
+ * copied, modified, propagated, or distributed except according to the terms 
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -69,10 +69,10 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket subscribe"));
 
    val = 0;
-   if ( zmq_setsockopt (this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 )
+   if ( zmq_setsockopt (this->zmqSub_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket linger"));
 
-   if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 )
+   if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
                "Failed to connect to port %i at address %s",port,addr.c_str()));
 
@@ -82,22 +82,23 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(port+1)));
 
+   waitRetry_ = false; // Don't keep waiting after timeout
    timeout_ = 1000; // 1 second
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
       throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket timeout"));
 
    val = 1;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0 )
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_CORRELATE, &val, sizeof(int32_t)) != 0 ) 
       throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket correlate"));
 
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0 )
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_REQ_RELAXED, &val, sizeof(int32_t)) != 0 ) 
       throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket relaxed"));
 
    val = 0;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 )
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &val, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqClient::ZmqClient","Failed to set socket linger"));
 
-   if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 )
+   if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 ) 
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
                "Failed to connect to port %i at address %s",port+1,addr.c_str()));
 
@@ -114,6 +115,7 @@ rogue::interfaces::ZmqClient::~ZmqClient() {
 void rogue::interfaces::ZmqClient::close() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
+      waitRetry_ = false;
       threadEn_ = false;
       thread_->join();
       zmq_close(this->zmqSub_);
@@ -123,23 +125,39 @@ void rogue::interfaces::ZmqClient::close() {
 }
 
 
-void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs) {
+void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
+   waitRetry_ = waitRetry;
    timeout_ = msecs;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
+
+   printf("Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
+
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 ) 
          throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));
 }
 
 std::string rogue::interfaces::ZmqClient::send(std::string value) {
    zmq_msg_t msg;
    std::string data;
+   double seconds = 0;
 
    rogue::GilRelease noGil;
    zmq_send(this->zmqReq_,value.c_str(),value.size(),0);
 
+   while (1) {
    zmq_msg_init(&msg);
+      if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
+         seconds += (float)timeout_ / 1000.0;
+         if ( waitRetry_ ) {
+            log_->error("Timeout wating for response after %f Seconds, server may be busy! Waiting...",seconds);
+            zmq_msg_close(&msg);
+         }
+         else
+            throw rogue::GeneralError::create("ZmqClient::send","Timeout wating for response after %f Seconds, server may be busy!",seconds);
+      }
+      else break;
+   }
 
-   if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 )
-      throw rogue::GeneralError::create("ZmqClient::send","Timeout sending message after %i uS",timeout_*1000);
+   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
 
    data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
    zmq_msg_close(&msg);
@@ -167,7 +185,7 @@ void rogue::interfaces::ZmqClientWrap::doUpdate ( std::string data ) {
    rogue::interfaces::ZmqClient::doUpdate(data);
 }
 
-void rogue::interfaces::ZmqClientWrap::defDoUpdate ( std::string data ) {
+void rogue::interfaces::ZmqClientWrap::defDoUpdate ( std::string data ) { 
    rogue::interfaces::ZmqClient::doUpdate(data);
 }
 
@@ -199,7 +217,7 @@ std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::str
    snd  = "{\"attr\": \"" + attr + "\",";
    snd += "\"path\": \"" + path + "\",";
 
-   if (arg != "")
+   if (arg != "") 
       snd += "\"args\": {\"py/tuple\": [\"" + arg + "\"]},";
 
    if ( rawStr ) snd += "\"rawStr\": true}";

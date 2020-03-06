@@ -82,7 +82,7 @@ class RogueConnection(PyDMConnection):
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
-            self._node   = self._client.root.getNode(self._path)
+            self._node = self._client.root.getNode(self._path)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
             self._node.addListener(self._updateVariable)
