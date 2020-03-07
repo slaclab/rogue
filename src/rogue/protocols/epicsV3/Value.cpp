@@ -262,6 +262,15 @@ caStatus rpe::Value::write(const gdd &value) {
       size_ = newSize;
    }
 
+   // Single element array put
+   else if ( array_ && value.isScalar() ) {
+      newSize = 1;
+      pValue_->unreference();
+      pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1, newSize);
+      pValue_->put(&value);
+      size_ = newSize;
+   }
+
    // Scalar
    else if ( (!array_) && value.isScalar() ) {
       pValue_->put(&value);
