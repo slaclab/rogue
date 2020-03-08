@@ -35,8 +35,6 @@ else:
 
 tagRange = tags = F"{oldTag}..HEAD"
 
-exit(0)
-
 # Local git cone
 locRepo = git.Repo('.')
 
