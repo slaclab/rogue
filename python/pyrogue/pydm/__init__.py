@@ -27,7 +27,7 @@ def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=80
     if title is None:
         title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
 
-    args = sys.argv
+    args = []
     args.append(f"sizeX={sizeX}")
     args.append(f"sizeY={sizeY}")
     args.append(f"title='{title}'")
