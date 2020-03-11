@@ -96,11 +96,17 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
 //! Destructor
 rpu::Client::~Client() {
+  if (threadEn_)  {
+    stop();
+  }
+}
+
+rpu::Client::stop() {
    threadEn_ = false;
    thread_->join();
 
    ::close(fd_);
-}
+}  
 
 //! Accept a frame from master
 void rpu::Client::acceptFrame ( ris::FramePtr frame ) {

@@ -93,12 +93,17 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
 //! Destructor
 rpu::Server::~Server() {
+  if (threadEn_)  {
+    stop();
+  }
+}
+
+rpu::Client::stop() {
    threadEn_ = false;
    thread_->join();
 
    ::close(fd_);
-}
-
+}  
 
 //! Get port number
 uint32_t rpu::Server::getPort() {
