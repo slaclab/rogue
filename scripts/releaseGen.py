@@ -86,6 +86,13 @@ for line in loginfo.splitlines():
         else:
             entry['Jira'] = None
 
+        entry['Labels'] = None
+        for lbl in req.get_labels():
+            if entry['Labels'] is None:
+                entry['Labels'] = lbl.name
+            else:
+                entry['Labels'] += ', ' + lbl.name
+
         records.append(entry)
         entry = {}
 
@@ -106,7 +113,7 @@ for entry in records:
 
     md += '\n|||\n|---:|:---|\n'
 
-    for i in ['Author','Date','Pull','Branch','Jira']:
+    for i in ['Author','Date','Pull','Branch','Jira','Labels']:
         if entry[i] is not None:
             md += f'|**{i}:**|{entry[i]}|\n'
 
