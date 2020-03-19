@@ -23,6 +23,8 @@ python:
 
 stages:
   - test
+  - name: gen_release
+    if: tag IS present
   - name: deploy_doc
     if: tag IS present
   - name: deploy_dev
@@ -39,6 +41,7 @@ env:
     - EPICS_PCAS_DIR=$PACKAGE_DIR/pcas/pcas-4.13.2
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
+    - GITHUB_REPO=slaclab/rogue
     - secure: "mAihaScn+WBYUb+SPZUO3g6qbsFXOaiLHWtcO3uY3KBYO1FLWQ9y9PHGDNfh+ZUp874Gws+q923PrJikRR+43zy4hmC/hSt6zgCd2GqgysqB/Mhpdenz1tUwknA1JLVfGYc4K/AUncNoA5/V6ZdEQZxnetduGyuJkL0ysswQcu4Vlaels2gWC8uKS1kkYerCbwVhRu5j3cPTj2/kk244/NdlejK2u+XMOyybJ+Q4eKqWPxCIoo36ofJvD1g3ZI/fLats1t6F+cK2pXGkDUh38KHE36+cg90jNVo35BN4NlNZHbPJN77ibSQaL2bV4RHmooTlwkXr9F8dlNyy83xQ2LgNZHfo/XeQFIWjQg3MfJ3YzBHBL8hYRhmiHePjKxLa7JTqcTvtxIdAcihnfOzpvfV0thC16RUvURX/a7k9BD7/75lD9zyDc/LXhNB0ZmkZpf1N4JPOJCZNj/UC1KHjAb9NrfYRFHYf8o/YrEWqNjXi81RrBRCmcUNHucJ07MeTXQ9hOZfL7KSpVUAzhVKU3xB/BCDY4bTcZcLsMZQY+cVh4DS9xWQYCNBGscp0ipgeJ7Wh/VRi2zvsZ3F9N7W0ntOPkqSouPIy9O2W0ASWzYpt3kG073xNhDDUsNSGLh4vqkOxKHqQ1WgfpVw9WT0kWq0hNX3mln71V4uVAWdJb0o="
 
 jobs:
@@ -120,6 +123,11 @@ jobs:
         - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
            doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation;
          fi
+
+    - stage: gen_release
+      name: "Generate Release"
+      install:
+         - python scripts/releaseGen.py
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker

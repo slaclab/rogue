@@ -17,3 +17,5 @@ p4p
 sqlalchemy
 pyserial
 numpy
+gitpython
+pygithub
