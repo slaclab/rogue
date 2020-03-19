@@ -104,7 +104,8 @@ class EpicsPvHolder(object):
                     if   sum(self._var.bitSize) <= 8:  self._valType = 'B'
                     elif sum(self._var.bitSize) <= 16: self._valType = 'H'
                     elif sum(self._var.bitSize) <= 32: self._valType = 'I'
-                    else: self._valType = 'L'
+                    elif sum(self._var.bitSize) <= 64: self._valType = 'L'
+                    else: self._valType = 's'
                 else:
                     self._valType = 'L'
 
