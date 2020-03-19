@@ -127,6 +127,7 @@ jobs:
     - stage: gen_release
       name: "Generate Release"
       install:
+         - pip install -r pip_requirements.txt
          - python scripts/releaseGen.py
 
     # Deploy development version stage (deploy_dev)
