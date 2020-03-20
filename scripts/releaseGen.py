@@ -16,14 +16,14 @@ from collections import OrderedDict as odict
 import re
 
 ghRepo = os.environ.get('GITHUB_REPO')
-token  = os.environ.get('GITHUB_TOKEN')
+token  = os.environ.get('GH_REPO_TOKEN')
 newTag = os.environ.get('TRAVIS_TAG')
 
 if ghRepo is None:
     exit("GITHUB_REPO not in environment.")
 
 if token is None:
-    exit("GITHUB_TOKEN not in environment.")
+    exit("GH_REPO_TOKEN not in environment.")
 
 if newTag is None:
     exit("TRAVIS_TAG not in environment.")
