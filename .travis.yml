@@ -130,6 +130,7 @@ jobs:
          - pip install -r pip_requirements.txt
          - python scripts/releaseGen.py
 
+
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
      stage: deploy_dev
