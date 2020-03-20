@@ -45,9 +45,7 @@ oldTag = git.Git('.').describe('--abbrev=0','--tags',newTag + '^')
 loginfo = git.Git('.').log(f"{oldTag}...{newTag}",'--grep','Merge pull request')
 
 # Grouping of recors
-records= odict({'Core':      odict({'Bug' : [], 'Enhancement':[]}),
-                'Client':    odict({'Bug' : [], 'Enhancement':[]}),
-                'Unlabled':  [] })
+records= odict({'Bug' : [], 'Enhancement': [], 'Unlabled': [] })
 
 details = []
 entry = {}
@@ -90,12 +88,11 @@ for line in loginfo.splitlines():
         # Add both to details list and sectioned summary list
         found = False
         if entry['Labels'] is not None:
-            for section in ['Client','Core']:
-                for label in ['Bug','Enhancement']:
+            for label in ['Bug','Enhancement']:
 
-                    if section.lower() in entry['Labels'] and label.lower() in entry['Labels']:
-                        records[section][label].append(entry)
-                        found = True
+                if label.lower() in entry['Labels']:
+                    records[label].append(entry)
+                    found = True
 
         if not found:
             records['Unlabled'].append(entry)
@@ -106,28 +103,14 @@ for line in loginfo.splitlines():
 # Generate summary text
 md = f'# Pull Requests Since {oldTag}\n'
 
-# Summary list is sectioned
-for section in ['Client','Core']:
-    subSec = ""
+for label in ['Bug', 'Enhancement', 'Unlabled']:
+    subLab = ""
+    entries = sorted(records[label], key=lambda v : v['changes'], reverse=True)
+    for entry in entries:
+        subLab += f" 1. {entry['PR']} - {entry['Title']}\n"
 
-    for label in ['Bug','Enhancement']:
-        subLab = ""
-        entries = sorted(records[section][label], key=lambda v : v['changes'], reverse=True)
-        for entry in entries:
-            subLab  += f" 1. {entry['PR']} - {entry['Title']}\n"
-
-        if len(subLab) > 0:
-            subSec += f"### {label}\n" + subLab
-
-    if len(subSec) > 0:
-        md += f"## {section}\n"
-        md += subSec
-
-if len(records['Unlabled']) > 0:
-    md += f"### Unlabled\n"
-
-    for entry in records['Unlabled']:
-        md += f" 1. {entry['PR']} - {entry['Title']}\n"
+    if len(subLab) > 0:
+        md += f"### {label}\n" + subLab
 
 # Detailed list
 det = '# Pull Request Details\n'
@@ -157,3 +140,4 @@ md += det
 msg = f'Release {newTag}'
 remRel = remRepo.create_git_release(tag=newTag,name=msg, message=md, draft=False)
 
+exit(0)
