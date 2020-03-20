@@ -127,8 +127,8 @@ jobs:
       name: "Generate Release"
       install:
          - pip install -r pip_requirements.txt
+      script:
          - python scripts/releaseGen.py
-
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
