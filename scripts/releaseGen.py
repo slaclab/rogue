@@ -116,7 +116,7 @@ for label in ['Bug', 'Enhancement', 'Unlabled']:
 det = '# Pull Request Details\n'
 
 # Sort records
-details = sorted(details, key=lambda v : v['changes'], reverse=True)
+#details = sorted(details, key=lambda v : v['changes'], reverse=True)
 
 # Generate detailed PR notes
 for entry in details:
@@ -140,4 +140,6 @@ md += det
 msg = f'Release {newTag}'
 remRel = remRepo.create_git_release(tag=newTag,name=msg, message=md, draft=False)
 
+print("Success!")
 exit(0)
+
