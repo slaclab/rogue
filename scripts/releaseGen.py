@@ -66,7 +66,6 @@ for line in loginfo.splitlines():
         entry['Branch'] = line.split()[5].lstrip()
 
         # Get PR info from github
-        print(f"{entry['PR']}")
         req = remRepo.get_pull(int(entry['PR'][1:]))
         entry['Title'] = req.title
         entry['body']  = req.body
@@ -157,6 +156,4 @@ md += det
 # Create release using tag
 msg = f'Release {newTag}'
 remRel = remRepo.create_git_release(tag=newTag,name=msg, message=md, draft=False)
-
-print(f"\nDone")
 
