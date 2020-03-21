@@ -11,8 +11,7 @@ build:
 requirements:
    build:
      - python
-     - boost=1.69
-     - boost-cpp=1.69
+     - boost
      - gcc_linux-64   [linux]
      - gxx_linux-64   [linux]
      - clang_osx-64   [osx]
@@ -28,8 +27,7 @@ requirements:
 
    run:
      - python
-     - boost=1.69
-     - boost-cpp=1.69
+     - boost
      - gcc_linux-64   [linux]
      - gxx_linux-64   [linux]
      - clang_osx-64   [osx]
