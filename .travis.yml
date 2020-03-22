@@ -19,7 +19,7 @@ language:
   - python
 
 python:
-  - 3.6
+  - 3.7
 
 stages:
   - test
@@ -190,7 +190,7 @@ jobs:
 
       script:
         # Build conda package
-        - travis_wait 120 conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c pydm-tag -c conda-forge
+        - travis_wait 120 conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge
 
       after_success:
         # Upload conda package
