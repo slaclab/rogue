@@ -11,6 +11,7 @@ addons:
       - doxygen
       - doxygen-doc
       - python-dev
+      - libboost-python-dev
 
 services:
   - docker
