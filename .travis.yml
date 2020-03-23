@@ -11,8 +11,6 @@ addons:
       - doxygen
       - doxygen-doc
       - python-dev
-      - libboost-dev
-      - libboost-python-dev
 
 services:
   - docker
@@ -37,7 +35,7 @@ stages:
 env:
   global:
     - MAKEFLAGS="-j 2"
-    #- PY_PATH=$HOME/virtualenv/python3.6.7
+    - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
     - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
     - EPICS_DIR=$PACKAGE_DIR/epics/base-7.0.3
@@ -68,9 +66,6 @@ jobs:
         # Bring all the tags
         - git pull --unshallow
         - git pull
-
-        - dpkg -L libboost-python1.65-dev
-        - dpkg -L libboost-python1.65.1
 
       install:
         # Tools
