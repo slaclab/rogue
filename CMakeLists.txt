@@ -90,6 +90,12 @@ if ( NOT NO_PYTHON )
       find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
    endif()
 
+   # Next try boost/python3-py36
+   if (NOT Boost_FOUND)
+      message("Looking for boost/python3-py36")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python3-py36)
+   endif()
+
    # Next try boost/python36
    if (NOT Boost_FOUND)
       message("Looking for boost/python36")
