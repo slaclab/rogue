@@ -18,3 +18,5 @@ sqlalchemy
 pyserial
 numpy
 flake8
+gitpython
+pygithub

@@ -6,12 +6,12 @@
 # TODO:
 #   Not clear on to force a read on get
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to
-# the license terms in the LICENSE.txt file found in the top-level directory
-# of this distribution and at:
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-# No part of the rogue software platform, including this file, may be
-# copied, modified, propagated, or distributed except according to the terms
+# This file is part of the rogue software platform. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software platform, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -121,8 +121,10 @@ class EpicsPvHolder(object):
                         self._valType = 'H'
                     elif sum(self._var.bitSize) <= 32:
                         self._valType = 'I'
-                    else:
+                    elif sum(self._var.bitSize) <= 64:
                         self._valType = 'L'
+                    else:
+                        self._valType = 's'
                 else:
                     self._valType = 'L'
 
@@ -173,7 +175,7 @@ class EpicsPvHolder(object):
             iv = nt.wrap(varVal.value)
 
         # Setup variable
-        self._pv = p4p.server.thread.SharedPV(queue=None,
+        self._pv = p4p.server.thread.SharedPV(queue=None, 
                                               handler=EpicsPvHandler(self._valType,self._var),
                                               initial=iv,
                                               nt=nt,
@@ -227,7 +229,7 @@ class EpicsPvServer(object):
     """
     def __init__(self,*,base,root,incGroups,excGroups,pvMap=None):
         self._root      = root
-        self._base      = base
+        self._base      = base 
         self._log       = pyrogue.logInit(cls=self)
         self._server    = None
         self._incGroups = incGroups
