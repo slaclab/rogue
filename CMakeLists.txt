@@ -1,12 +1,12 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# This file is part of the rogue software package. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software package, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 # See notes for compiling on macros under anaconda:
@@ -40,7 +40,7 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 #####################################
 # Boost + Python
 #####################################
-if ( NOT NO_PYTHON ) 
+if ( NOT NO_PYTHON )
    find_package(PythonInterp 3.6 QUIET REQUIRED)
    find_package(PythonLibs 3.6 QUIET REQUIRED)
 
@@ -78,6 +78,12 @@ if ( NOT NO_PYTHON )
       find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
    endif()
 
+   # Next try boost/python-py37
+   if (NOT Boost_FOUND)
+      message("Looking for boost/python-py37")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py37)
+   endif()
+
    # Next try boost/python-py36
    if (NOT Boost_FOUND)
       message("Looking for boost/python-py36")
@@ -112,7 +118,7 @@ find_package(ZeroMQ QUIET)
 
 # ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
-   
+
    # Convert LD_LIBRARY PATH for search
    if(DEFINED ENV{LD_LIBRARY_PATH})
       string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
@@ -121,12 +127,12 @@ if (NOT ZeroMQ_FOUND)
    endif()
 
    # See if zmq library is in LD_LIBRARY_PATH
-   find_library(ZeroMQ_LIBRARY 
-                NAMES zmq 
+   find_library(ZeroMQ_LIBRARY
+                NAMES zmq
                 PATHS ${HINT_PATHS})
 
    # Found it
-   if (ZeroMQ_LIBRARY) 
+   if (ZeroMQ_LIBRARY)
 
       # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
@@ -156,7 +162,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
        set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch 
+       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch
                        OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
    endif()
@@ -178,23 +184,23 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/compiler/gcc
                             ${EPICS_BASE_DIR}/include/os/Darwin)
 
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib 
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib
                             ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
    else()
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/compiler/gcc
                             ${EPICS_BASE_DIR}/include/os/Linux)
 
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so 
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so
                             ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
 else()
@@ -204,7 +210,7 @@ endif()
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION
 ##########################################################
-if ( NOT ROGUE_VERSION ) 
+if ( NOT ROGUE_VERSION )
 
    # Set version from git tag
    find_package(Git QUIET)
@@ -226,7 +232,7 @@ endif()
 #####################################
 
 # Default install type
-if ( NOT ROGUE_INSTALL ) 
+if ( NOT ROGUE_INSTALL )
    if (DEFINED ENV{CONDA_PREFIX})
       set (ROGUE_INSTALL "conda")
    else()
@@ -237,7 +243,7 @@ endif()
 # Default Install directory
 if (${ROGUE_INSTALL} STREQUAL "local")
    set (ROGUE_DIR ${PROJECT_SOURCE_DIR})
-elseif (NOT ROGUE_DIR) 
+elseif (NOT ROGUE_DIR)
    if (${ROGUE_INSTALL} STREQUAL "custom")
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}/rogue")
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
@@ -300,7 +306,7 @@ else()
    TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
 endif()
 
-if(STATIC_LIB) 
+if(STATIC_LIB)
     add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
     set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
     set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
@@ -357,7 +363,7 @@ else()
 endif()
 
 # Create the config file
-configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
+configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in
                ${PROJECT_BINARY_DIR}/RogueConfig.cmake @ONLY)
 
 # Create the setup files
@@ -412,17 +418,17 @@ if (NOT NO_PYTHON)
    # Use setuptools with python3 for system
    elseif (${ROGUE_INSTALL} STREQUAL "system")
       install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
-   
+
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
-      install(CODE "execute_process(COMMAND python 
+      install(CODE "execute_process(COMMAND python
               ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR})")
    endif()
 
    # Do byte compile for custom or local
    if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
       install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
-   endif()   
+   endif()
 
 endif()
 
