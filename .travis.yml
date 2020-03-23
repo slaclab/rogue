@@ -67,8 +67,8 @@ jobs:
         - git pull --unshallow
         - git pull
 
-        - dpkg-deb -c libboost-python1.65-dev
-        - dpkg-deb -c libboost-python1.65.1
+        - dpkg -L libboost-python1.65-dev
+        - dpkg -L libboost-python1.65.1
 
       install:
         # Tools
