@@ -23,12 +23,17 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GeneralError.h>
-#include <boost/python.hpp>
+#include <sys/time.h>
+#include <string.h>
 #include <memory>
 #include <cmath>
 
 namespace rim = rogue::interfaces::memory;
+
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
 namespace bp  = boost::python;
+#endif
 
 // Class factory which returns a pointer to a Block (BlockPtr)
 rim::BlockPtr rim::Block::create (uint64_t offset, uint32_t size) {
@@ -36,6 +41,7 @@ rim::BlockPtr rim::Block::create (uint64_t offset, uint32_t size) {
    return(b);
 }
 
+#ifndef NO_PYTHON
 // Setup class for use in python
 void rim::Block::setup_python() {
 
@@ -57,6 +63,7 @@ void rim::Block::setup_python() {
 
    bp::implicitly_convertible<rim::BlockPtr, rim::MasterPtr>();
 }
+#endif
 
 // Create a Hub device with a given offset
 rim::Block::Block (uint64_t offset, uint32_t size) {
