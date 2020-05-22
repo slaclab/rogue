@@ -52,7 +52,7 @@ rim::VariablePtr rogue::LibraryBase::getVariable(const std::string & name) {
 }
 
 //! Get a map of variables
-const std::map< std::string, rim::VariablePtr> rogue::LibraryBase::getVariableList() {
+const std::map<std::string, rim::VariablePtr> & rogue::LibraryBase::getVariableList() {
    return variables_;
 }
 
