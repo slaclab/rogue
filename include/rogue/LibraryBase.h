@@ -65,13 +65,13 @@ namespace rogue {
          static std::shared_ptr<rogue::LibraryBase> create();
 
          //! Get variable by name
-         std::shared_ptr<rogue::interfaces::memory::Variable> getVariable(std::string name);
+         std::shared_ptr<rogue::interfaces::memory::Variable> getVariable(const std::string & name);
 
          //! Get a map of variables
          const std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Variable> > getVariableList();
 
          //! Get block by name
-         std::shared_ptr<rogue::interfaces::memory::Block> getBlock(std::string name);
+         std::shared_ptr<rogue::interfaces::memory::Block> getBlock(const std::string & name);
 
          //! Get a map of blocks
          const std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Block> > getBlockList();

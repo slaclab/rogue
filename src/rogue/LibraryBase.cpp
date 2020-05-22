@@ -47,7 +47,7 @@ void rogue::LibraryBase::addMemory (std::string name, rim::SlavePtr slave) {
 }
 
 //! Get variable by name
-rim::VariablePtr rogue::LibraryBase::getVariable(std::string name) {
+rim::VariablePtr rogue::LibraryBase::getVariable(const std::string & name) {
    return variables_[name];
 }
 
@@ -57,7 +57,7 @@ const std::map< std::string, rim::VariablePtr> rogue::LibraryBase::getVariableLi
 }
 
 //! Get block by name
-rim::BlockPtr rogue::LibraryBase::getBlock(std::string name) {
+rim::BlockPtr rogue::LibraryBase::getBlock(const std::string & name) {
    return blocks_[name];
 }
 
