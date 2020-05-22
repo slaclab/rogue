@@ -801,6 +801,16 @@ std::string rim::Block::getString ( rim::Variable *var ) {
    return ret;
 }
 
+// Get data into string
+void rim::Block::getString ( rim::Variable *var, std::string & retString ) {
+   char getBuffer[var->byteSize_+1];
+
+   getBytes((uint8_t *)getBuffer, var);
+   getBuffer[var->byteSize_] = 0;
+
+   retString = getBuffer;
+}
+
 
 //////////////////////////////////////////
 // Float
