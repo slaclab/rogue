@@ -34,6 +34,10 @@ namespace rogue {
       namespace memory {
 
          class Block;
+         class Variable;
+
+         //! Alias for using shared pointer as VariablePtr
+         typedef std::shared_ptr<rogue::interfaces::memory::Variable> VariablePtr;
 
          //! Memory interface Variable
          class Variable {
@@ -216,7 +220,7 @@ namespace rogue {
                 * @param bitReverse Bit reverse flag
                 * @param bitPoint Bit point for fixed point values
                 */
-               static std::shared_ptr<rogue::interfaces::memory::Variable> create (
+               static rogue::interfaces::memory::VariablePtr create (
                      std::string name,
                      std::string mode,
                      double   minimum,
@@ -458,9 +462,6 @@ namespace rogue {
                double getFixed();
 
          };
-
-         //! Alias for using shared pointer as VaariablePtr
-         typedef std::shared_ptr<rogue::interfaces::memory::Variable> VariablePtr;
 
 #ifndef NO_PYTHON
 
