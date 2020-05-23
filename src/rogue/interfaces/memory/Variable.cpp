@@ -512,7 +512,7 @@ bool rim::Variable::getBool() {
 // C++ String
 /////////////////////////////////
 
-void rim::Variable::setString(std::string &value) {
+void rim::Variable::setString(const std::string &value) {
    if ( setString_ == NULL ) return;
    (block_->*setString_)(value,this);
    block_->write(this);
