@@ -256,10 +256,14 @@ namespace rogue {
                void updatePath(std::string path);
 
                //! Return the name of the variable
-               std::string name();
+               const std::string & name() const {
+                  return name_;
+               }
 
                //! Return the variable mode
-               std::string mode();
+               const std::string & mode() const {
+                  return mode_;
+               }
 
                //! Return the minimum value
                double minimum();
