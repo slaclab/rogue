@@ -1,60 +1,53 @@
 #-----------------------------------------------------------------------------
 # Title      : Release notes generation
 # ----------------------------------------------------------------------------
-# Description:
-# Generate release notes for pull requests relative to a tag.
-# Usage: releaseNotes.py tag (i.e. releaseNotes.py v2.5.0
-#
-# Must be run within an up to date git clone with the proper branch checked out.
-#
-# ----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to
+# This file is part of the SMURF software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
 #    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-# No part of the rogue software platform, including this file, may be
+# No part of the SMURF software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-import os,sys
+import os
 import git                # GitPython
 from github import Github # PyGithub
+from collections import OrderedDict as odict
 import re
 
-newTag = input("Enter new tag: ")
-oldTag = input("Enter old tag: ")
+ghRepo = os.environ.get('GITHUB_REPO')
+token  = os.environ.get('GH_REPO_TOKEN')
+newTag = os.environ.get('TRAVIS_TAG')
 
-# Attempt to find github token in environment
-token = os.environ.get('GITHUB_TOKEN')
+if ghRepo is None:
+    exit("GITHUB_REPO not in environment.")
 
 if token is None:
-    print("\nGITHUB_TOKEN not found in user's environment....")
-    token  = input("Enter github token: ")
-else:
-    print("Using github token from user's environment.")
+    exit("GH_REPO_TOKEN not in environment.")
 
-tagRange = tags = F"{oldTag}..HEAD"
+if newTag is None:
+    exit("TRAVIS_TAG not in environment.")
 
-# Local git cone
-locRepo = git.Repo('.')
+# Check tag to make sure it is a proper release: va.b.c
+vpat = re.compile('v\d+\.\d+\.\d+')
 
-url = locRepo.remote().url
-if not url.endswith('.git'): url += '.git'
-
-# Get the git repo's name (assumption that exists in the github.com/slaclab organization)
-project = re.compile(r'slaclab/(?P<name>.*?)(?P<ext>\.git?)').search(url).group('name')
-
-# Prevent "dirty" git clone (uncommitted code) from pushing tags
-if locRepo.is_dirty():
-    raise(Exception("Cannot create tag! Git repo is dirty!"))
+if vpat.match(newTag) is None:
+    exit("Not a release version")
 
 # Git server
 gh = Github(token)
-remRepo = gh.get_repo(f'slaclab/{project}')
+remRepo = gh.get_repo(ghRepo)
 
-loginfo = git.Git('.').log(tags,'--grep','Merge pull request')
+# Find previous tag
+oldTag = git.Git('.').describe('--abbrev=0','--tags',newTag + '^')
 
-records = []
+# Get logs
+loginfo = git.Git('.').log(f"{oldTag}...{newTag}",'--grep','Merge pull request')
+
+# Grouping of recors
+records= odict({'Bug' : [], 'Enhancement': [], 'Unlabled': [] })
+
+details = []
 entry = {}
 
 # Parse the log entries
@@ -71,7 +64,6 @@ for line in loginfo.splitlines():
         entry['Branch'] = line.split()[5].lstrip()
 
         # Get PR info from github
-        #print(f"{entry['Pull']}")
         req = remRepo.get_pull(int(entry['PR'][1:]))
         entry['Title'] = req.title
         entry['body']  = req.body
@@ -86,43 +78,68 @@ for line in loginfo.splitlines():
         else:
             entry['Jira'] = None
 
-        records.append(entry)
+        entry['Labels'] = None
+        for lbl in req.get_labels():
+            if entry['Labels'] is None:
+                entry['Labels'] = lbl.name
+            else:
+                entry['Labels'] += ', ' + lbl.name
+
+        # Add both to details list and sectioned summary list
+        found = False
+        if entry['Labels'] is not None:
+            for label in ['Bug','Enhancement']:
+
+                if label.lower() in entry['Labels']:
+                    records[label].append(entry)
+                    found = True
+
+        if not found:
+            records['Unlabled'].append(entry)
+
+        details.append(entry)
         entry = {}
 
-# Sort the records
-records = sorted(records, key=lambda v : v['changes'], reverse=True)
-
-# Generate text
+# Generate summary text
 md = f'# Pull Requests Since {oldTag}\n'
 
-for i, entry in enumerate(records):
-    md += f" 1. {entry['PR']} - {entry['Title']}\n"
+for label in ['Bug', 'Enhancement', 'Unlabled']:
+    subLab = ""
+    entries = sorted(records[label], key=lambda v : v['changes'], reverse=True)
+    for entry in entries:
+        subLab += f" 1. {entry['PR']} - {entry['Title']}\n"
 
-md += '## Pull Request Details\n'
+    if len(subLab) > 0:
+        md += f"### {label}\n" + subLab
 
-for entry in records:
+# Detailed list
+det = '# Pull Request Details\n'
 
-    md += f"### {entry['Title']}"
+# Sort records
+#details = sorted(details, key=lambda v : v['changes'], reverse=True)
 
-    md += '\n|||\n|---:|:---|\n'
+# Generate detailed PR notes
+for entry in details:
+    det += f"### {entry['Title']}"
+    det += '\n|||\n|---:|:---|\n'
 
-    for i in ['Author','Date','Pull','Branch','Jira']:
+    for i in ['Author','Date','Pull','Branch','Jira','Labels']:
         if entry[i] is not None:
-            md += f'|**{i}:**|{entry[i]}|\n'
+            det += f'|**{i}:**|{entry[i]}|\n'
 
-    md += '\n**Notes:**\n'
+    det += '\n**Notes:**\n'
     for line in entry['body'].splitlines():
-        md += '> ' + line + '\n'
-    md += '\n-------\n'
-    md += '\n\n'
+        det += '> ' + line + '\n'
+    det += '\n-------\n'
+    det += '\n\n'
 
-print(f"\nCreating and pushing tag {newTag} .... ")
-msg = f'Rogue Release {newTag}'
+# Include details
+md += det
 
-ghTag = locRepo.create_tag(path=newTag, message=msg)
-locRepo.remotes.origin.push(ghTag)
-
+# Create release using tag
+msg = f'Release {newTag}'
 remRel = remRepo.create_git_release(tag=newTag,name=msg, message=md, draft=False)
 
-print(f"\nDone")
+print("Success!")
+exit(0)
 

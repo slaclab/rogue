@@ -613,7 +613,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def bulkEn(self):
-        return self._bulkEn
+        return self._bulkOpEn
 
     @pr.expose
     def set(self, value, write=True):

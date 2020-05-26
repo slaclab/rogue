@@ -11,7 +11,7 @@ See the section :ref:`installing_windows` for additional steps required for Wind
 Getting Anaconda
 ================
 
-Download and install anaconda (or miniconda) if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Anaconda appears to only work reliably in the bash shell. 
+Download and install anaconda (or miniconda) if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Anaconda appears to only work reliably in the bash shell.
 
 Go to https://www.anaconda.com/download to get the latest version of anaconda. Example steps for installing anaconda are included below:
 
@@ -35,7 +35,7 @@ The next step is to create ana anaconda environment which includes the Rogue pac
 
 .. code::
 
-   $ conda create -n rogue_tag -c tidair-packages -c pydm-tag -c conda-forge -c tidair-tag rogue
+   $ conda create -n rogue_tag -c tidair-tag -c tidair-packages -c conda-forge rogue
 
 The order of the args is important. tidair-tag is the channel from which the Rogue package is downloaded.
 
@@ -43,19 +43,19 @@ If you already have an anaconda environment that you would like to install Rogue
 
 .. code::
 
-   $ conda install -c tidair-packages -c pydm-tag -c conda-forge -c tidair-tag rogue
+   $ conda install -c tidair-tag -c tidair-packages -c conda-forge rogue
 
 The above commands will install the latest version of Rogue from the master branch. If you want to install the pre-release version of Rogue, run the following:
 
 .. code::
 
-   $ conda create -n rogue_dev -c tidair-packages -c pydm-tag -c conda-forge -c tidair-dev rogue
+   $ conda create -n rogue_dev -c tidair-dev -c tidair-packages -c conda-forge rogue
 
 Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_4.2.1 -c tidair-packages -c pydm-tag -c conda-forge -c tidair-tag rogue=v4.2.1
+   $ conda create -n rogue_4.2.1 -c tidair-tag -c tidair-packages -c conda-forge rogue=v4.2.1
 
 Using Rogue In Anaconda
 =======================
