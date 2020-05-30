@@ -584,8 +584,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v._block.path)
                 data += "{:#x}\t".format(v._block.size)
                 # Escape " characters
-                description = v.description.split('"')
-                description = '\\"'.join(description)
+                description = v.description.replace('"',r'\"')
                 # Escape \n characters and strip each line in the description field
                 description = description.split('\n')
                 description = '\\\n'.join([x.strip() for x in description])
