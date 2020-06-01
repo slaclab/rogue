@@ -26,6 +26,7 @@
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
+#endif
 
 namespace rogue {
    namespace interfaces {
@@ -115,6 +116,7 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
+#ifndef NO_PYTHON
                /////////////////////////////////
                // Python
                /////////////////////////////////
@@ -124,6 +126,7 @@ namespace rogue {
 
                // Get pointer function
                boost::python::object (rogue::interfaces::memory::Block::*getFuncPy_)(rogue::interfaces::memory::Variable *);
+#endif
 
                /////////////////////////////////
                // C++ Byte Array
@@ -444,6 +447,5 @@ namespace rogue {
    }
 }
 
-#endif
 #endif
 

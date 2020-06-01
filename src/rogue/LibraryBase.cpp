@@ -21,6 +21,7 @@
 #include <rogue/GeneralError.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <stdint.h>
+#include <algorithm>
 #include <vector>
 #include <map>
 #include <string>
