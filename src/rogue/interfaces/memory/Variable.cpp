@@ -337,16 +337,6 @@ void rim::Variable::updatePath(std::string path) {
    path_ = path;
 }
 
-// Return the name of the variable
-std::string rim::Variable::name() {
-   return name_;
-}
-
-// Return the mode of the variable
-std::string rim::Variable::mode() {
-   return mode_;
-}
-
 //! Return the minimum value
 double rim::Variable::minimum() {
    return minValue_;
@@ -575,7 +565,7 @@ bool rim::Variable::getBool() {
 // C++ String
 /////////////////////////////////
 
-void rim::Variable::setString(std::string &value) {
+void rim::Variable::setString(const std::string &value) {
    if ( setString_ == NULL ) return;
    (block_->*setString_)(value,this);
    block_->write(this);

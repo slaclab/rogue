@@ -258,11 +258,30 @@ namespace rogue {
                // Update path
                void updatePath(std::string path);
 
+               //! Return the modelId of the variable
+               uint32_t modelId() const {
+                  return modelId_;
+               }
+
+               //! Return the total number of bits for this value
+               uint32_t bitTotal() const {
+                  return bitTotal_;
+               }
+
                //! Return the name of the variable
-               std::string name();
+               const std::string & name() const {
+                  return name_;
+               }
 
                //! Return the variable mode
-               std::string mode();
+               const std::string & mode() const {
+                  return mode_;
+               }
+
+               //! Return the variable path
+               const std::string & path() const {
+                  return path_;
+               }
 
                //! Return the minimum value
                double minimum();
@@ -336,7 +355,7 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set string
-               void setString(std::string &);
+               void setString(const std::string &);
 
                //! Get string
                std::string getString();
@@ -435,7 +454,7 @@ namespace rogue {
                //! Return bit offset
                boost::python::object bitOffset();
 
-               //! Return bit offset
+               //! Return bit size array
                boost::python::object bitSize();
          };
 
