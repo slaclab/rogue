@@ -117,6 +117,17 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    std::string mbName  = getFieldString(data,"MemBaseName");
    std::string blkName = getFieldString(data,"BlockName");
 
+   // Verify memory slave exists
+   if ( memSlaves_.find(mbName) == memSlaves_.end() ) {
+      if ( memSlavesMissing_.find(mbName) != memSlavesMissing_.end() ) {
+         // Just return as we've already reported this.
+         return;
+      }
+      memSlavesMissing_.insert(mbName);
+      log_->info("LibraryBase::createVariable: '%s' memory interface '%s' not found!",name.c_str(),mbName.c_str());
+      return;
+   }
+
    bool overlapEn    = getFieldBool(data,"OverlapEn");
    bool verify       = getFieldBool(data,"Verify");
    bool bulkEn       = getFieldBool(data,"BulkEn");
@@ -142,10 +153,6 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
       std::vector<rim::VariablePtr> vp;
       blockVars.insert(std::pair<std::string,std::vector<rim::VariablePtr>>(blkName,vp));
 
-      // Verify memory slave exists
-      if ( memSlaves_.find(mbName) == memSlaves_.end() )
-         throw(rogue::GeneralError::create("LibraryBase::createVariable","Memory slave '%s' does not exist!",mbName.c_str()));
-
       // Connect to memory slave
       *block >> memSlaves_[mbName];
    }
@@ -156,6 +163,7 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
 
    // Add to block list
    blockVars[blkName].push_back(var);
+   variables_[name]=var;
 }
 
 //! Helper function to get string from fields
