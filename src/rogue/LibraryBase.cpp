@@ -156,6 +156,9 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
 
       // Connect to memory slave
       *block >> memSlaves_[mbName];
+
+      // Enable the block
+      block->setEnable(true);
    }
 
    // Create variable
