@@ -22,7 +22,7 @@ language:
   - python
 
 python:
-  - 3.6
+  - 3.8
 
 stages:
   - test
@@ -105,6 +105,7 @@ jobs:
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
+        - cat setup_rogue.sh
 
       after_success:
         # Upload coverage report
