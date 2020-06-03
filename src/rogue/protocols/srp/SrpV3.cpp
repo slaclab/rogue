@@ -221,7 +221,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Transaction expired
    if ( tran->expired() ) {
-      log_->warning("Transaction expired. Id=%i",id);
+      tran->error("Transaction expired: Id=%i (increase root->timeout value if this ID matches a previous timeout message)",id);
       return;
    }
    tIter = tran->begin();
