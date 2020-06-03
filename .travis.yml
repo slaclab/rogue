@@ -38,11 +38,12 @@ stages:
 
 env:
   global:
+    - PY_PATH=$HOME/virtualenv/python3.8.2
     - MAKEFLAGS="-j 2"
     - PACKAGE_DIR=$HOME/packages
     - EPICS_DIR=$PACKAGE_DIR/epics/base-7.0.3
     - EPICS_PCAS_DIR=$PACKAGE_DIR/pcas/pcas-4.13.2
-    - LD_LIBRARY_PATH=$EPICS_DIR/lib/linux-x86_64:$EPICS_PCAS_DIR/lib/linux-x86_64:/usr/lib/x86_64-linux-gnu
+    - LD_LIBRARY_PATH=$PY_PATH/lib:$EPICS_DIR/lib/linux-x86_64:$EPICS_PCAS_DIR/lib/linux-x86_64:/usr/lib/x86_64-linux-gnu
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
     - GITHUB_REPO=slaclab/rogue
@@ -54,6 +55,7 @@ jobs:
       name: "Unit Tests"
       before_install:
         # Prepare environment
+        - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.8m
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
         - export EPICS_PCAS_ROOT=$EPICS_PCAS_DIR
@@ -83,9 +85,8 @@ jobs:
 
         # Rogue
         - cd $TRAVIS_BUILD_DIR
-        - readelf -s -W /usr/lib/x86_64-linux-gnu/libboost_python38.so | grep _ZTIN5boost6python15instance_holderE
         - mkdir build; cd build
-        - cmake .. -DROGUE_INSTALL=local
+        - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.8 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
         - make -j4 install
 
         # Build Docs
@@ -104,10 +105,12 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
-        - readelf -s -W /usr/lib/x86_64-linux-gnu/libboost_python38.so | grep _ZTIN5boost6python15instance_holderE
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
+        - python3 --version
+        - ls -lath $PY_PATH/include/
+        - ls -lath $PY_PATH/lib/
 
       after_success:
         # Upload coverage report
