@@ -63,6 +63,9 @@ jobs:
         # Bring all the tags
         - git pull --unshallow
         - git pull
+        # Update/Upgrade
+        - sudo apt-get update
+        - sudo apt-get upgrade -y
 
       install:
         # Tools
@@ -106,8 +109,9 @@ jobs:
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
-        - dpkg -s libboost-dev | grep 'Version'
-        - cat /usr/include/boost/version.hpp | grep "BOOST_LIB_VERSION"
+        - which python
+        - ldd /home/travis/build/slaclab/rogue/lib/librogue-core.so.v4.10
+        - ldd /home/travis/build/slaclab/rogue/lib/librogue-core.so
 
       after_success:
         # Upload coverage report
