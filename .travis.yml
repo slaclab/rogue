@@ -83,6 +83,7 @@ jobs:
 
         # Rogue
         - cd $TRAVIS_BUILD_DIR
+        - readelf -s -W /usr/lib/x86_64-linux-gnu/libboost_python38.so | grep _ZTIN5boost6python15instance_holderE
         - mkdir build; cd build
         - cmake .. -DROGUE_INSTALL=local
         - make -j4 install
@@ -103,7 +104,7 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
-        - readelf -d /usr/lib64/python3.8/site-packages/pyopenvdb.so
+        - readelf -s -W /usr/lib/x86_64-linux-gnu/libboost_python38.so | grep _ZTIN5boost6python15instance_holderE
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
