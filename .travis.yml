@@ -11,9 +11,11 @@ addons:
       - doxygen
       - doxygen-doc
       - python-dev
+      - python-pip
       - python3-dev
       - python3-pip
       - libzmq3-dev
+      - libboost-all-dev
 
 services:
   - docker
@@ -22,7 +24,7 @@ language:
   - python
 
 python:
-  - 3.7
+  - 3.8
 
 stages:
   - test
@@ -38,12 +40,10 @@ stages:
 env:
   global:
     - MAKEFLAGS="-j 2"
-    - PY_PATH=$HOME/virtualenv/python3.6.7
     - PACKAGE_DIR=$HOME/packages
-    - BOOST_DIR=$PACKAGE_DIR/boost_1_64_0
     - EPICS_DIR=$PACKAGE_DIR/epics/base-7.0.3
     - EPICS_PCAS_DIR=$PACKAGE_DIR/pcas/pcas-4.13.2
-    - LD_LIBRARY_PATH=$EPICS_DIR/lib/linux-x86_64:$EPICS_PCAS_DIR/lib/linux-x86_64:/usr/lib
+    - LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$EPICS_DIR/lib/linux-x86_64:$EPICS_PCAS_DIR/lib/linux-x86_64
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
     - GITHUB_REPO=slaclab/rogue
@@ -54,15 +54,11 @@ jobs:
     - stage: test
       name: "Unit Tests"
       before_install:
-        # Prepare enviroment
-        - export CPLUS_INCLUDE_PATH=$PY_PATH/include/python3.6m
-        - export LD_LIBRARY_PATH=$BOOST_DIR/stage/lib:$PY_PATH/lib:$LD_LIBRARY_PATH
-        - export BOOST_ROOT=$BOOST_DIR
+        # Prepare environment
         - export EPICS_BASE=$EPICS_DIR
         - export EPICS_CA_ADDR_LIST=127.0.0.1
         - export EPICS_PCAS_ROOT=$EPICS_PCAS_DIR
         # Prepare folders
-        - mkdir -p $BOOST_DIR
         - mkdir -p $EPICS_DIR
         - mkdir -p $EPICS_PCAS_DIR
         # Bring all the tags
@@ -71,14 +67,7 @@ jobs:
 
       install:
         # Tools
-        - pip install -r pip_requirements.txt
-
-        # Boost
-        - cd $BOOST_DIR
-        - wget -O boost_1_64_0.tar.gz http://sourceforge.net/projects/boost/files/boost/1.64.0/boost_1_64_0.tar.gz/download
-        - tar xzf boost_1_64_0.tar.gz --strip 1
-        - ./bootstrap.sh --with-libraries=system,thread,python
-        - travis_wait ./b2 link=shared threading=multi variant=release -d0
+        - pip3 install -r pip_requirements.txt
 
         # EPICS base
         - cd $EPICS_DIR
@@ -96,7 +85,7 @@ jobs:
         # Rogue
         - cd $TRAVIS_BUILD_DIR
         - mkdir build; cd build
-        - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH/lib/python3.6 -DPYTHON_INCLUDE_DIR=$PY_PATH/include
+        - cmake .. -DROGUE_INSTALL=local
         - make -j4 install
 
         # Build Docs
@@ -225,4 +214,3 @@ jobs:
       #os: osx
       #language: ruby  # osx does not support language=python
       #env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
-
