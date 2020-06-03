@@ -102,10 +102,10 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
+        - export LD_LIBRARY_PATH=/usr/lib:/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
-        - cat setup_rogue.sh
 
       after_success:
         # Upload coverage report
