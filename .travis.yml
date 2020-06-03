@@ -38,7 +38,7 @@ stages:
 
 env:
   global:
-    - PY_PATH=$HOME/virtualenv/python3.8.2
+    - PY_PATH=$HOME/virtualenv/python3.8
     - MAKEFLAGS="-j 2"
     - PACKAGE_DIR=$HOME/packages
     - EPICS_DIR=$PACKAGE_DIR/epics/base-7.0.3
