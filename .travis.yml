@@ -85,6 +85,8 @@ jobs:
 
         # Rogue
         - cd $TRAVIS_BUILD_DIR
+        - ls -lath $HOME/
+        - ls -lath $HOME/virtualenv/
         - ls -lath $PY_PATH/include/
         - ls -lath $PY_PATH/lib/
         - mkdir build; cd build
