@@ -62,45 +62,27 @@ if ( NOT NO_PYTHON )
    # Boost may need help on SLAC machines
    set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
-   # First try standard suffix for boost
-   message("Looking for boost/python3")
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
-
-   # Next try boost/python38
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python38")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python38)
-   endif()
-
-   # Next try boost/python37
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python37")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
-   endif()
-
-   # Next try boost/python-py37
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python-py37")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py37)
-   endif()
-
-   # Next try boost/python-py36
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python-py36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
-   endif()
-
-   # Next try boost/python3-py36
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python3-py36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python3-py36)
-   endif()
-
-   # Next try boost/python36
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
-   endif()
+  if (UNIX AND NOT APPLE)
+    if (PYTHON_VERSION_MAJOR EQUAL 3)
+        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_SUFFIX})
+        FIND_PACKAGE(PythonInterp 3)
+        FIND_PACKAGE(PythonLibs 3 REQUIRED)
+    else()
+        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
+        FIND_PACKAGE(PythonInterp)
+        FIND_PACKAGE(PythonLibs REQUIRED)
+    endif()
+  else()
+    if (PYTHON_VERSION_MAJOR EQUAL 3)
+        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+        FIND_PACKAGE(PythonInterp 3)
+        FIND_PACKAGE(PythonLibs 3 REQUIRED)
+    else()
+        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+        FIND_PACKAGE(PythonInterp)
+        FIND_PACKAGE(PythonLibs REQUIRED)
+    endif()
+  endif()
 
    # Nothing worked
    if (NOT Boost_FOUND)
@@ -485,4 +467,3 @@ endif()
 
 message("----------------------------------------------------------------------")
 message("")
-
