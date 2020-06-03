@@ -12,7 +12,6 @@ addons:
       - doxygen-doc
       - python3-dev
       - python3-pip
-      - python3-openvdb
       - libboost-all-dev
       - libzmq3-dev
 
@@ -23,7 +22,7 @@ language:
   - python
 
 python:
-  - 3.8
+  - 3.6
 
 stages:
   - test
@@ -38,7 +37,6 @@ stages:
 
 env:
   global:
-    - PY_PATH=$HOME/virtualenv/python3.8
     - MAKEFLAGS="-j 2"
     - PACKAGE_DIR=$HOME/packages
     - EPICS_DIR=$PACKAGE_DIR/epics/base-7.0.3
@@ -85,7 +83,7 @@ jobs:
         # Rogue
         - cd $TRAVIS_BUILD_DIR
         - mkdir build; cd build
-        - cmake .. -DROGUE_INSTALL=local -DPYTHON_LIBRARY=$PY_PATH
+        - cmake .. -DROGUE_INSTALL=local
         - make -j4 install
 
         # Build Docs
@@ -107,8 +105,6 @@ jobs:
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
-        - python3 --version
-        - which python3
 
       after_success:
         # Upload coverage report
@@ -216,4 +212,3 @@ jobs:
       #os: osx
       #language: ruby  # osx does not support language=python
       #env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
-
