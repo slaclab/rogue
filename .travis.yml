@@ -63,9 +63,6 @@ jobs:
         # Bring all the tags
         - git pull --unshallow
         - git pull
-        # Update/Upgrade
-        - sudo apt-get update
-        - sudo apt-get upgrade -y
 
       install:
         # Tools
@@ -106,12 +103,10 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
+        - readelf -d /usr/lib64/python3.8/site-packages/pyopenvdb.so
         - python3 -m pytest --cov
         - python3 -m compileall -f python/
         - flake8 --count python/
-        - which python
-        - ldd /home/travis/build/slaclab/rogue/lib/librogue-core.so.v4.10
-        - ldd /home/travis/build/slaclab/rogue/lib/librogue-core.so
 
       after_success:
         # Upload coverage report
