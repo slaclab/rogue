@@ -103,16 +103,11 @@ jobs:
       script:
         # Run tests with coverage
         - cd $TRAVIS_BUILD_DIR
-        # - python3 -m pytest --cov
+        - python3 -m pytest --cov
         - python3 -m compileall -f python/
-        # - echo $LD_LIBRARY_PATH
-        # - ls -lath /home/travis/build/slaclab/rogue/lib
-        # - ls -lath $EPICS_DIR/lib
-        # - ls -lath $EPICS_DIR/lib/linux-x86_64
-        # - ls -lath $EPICS_PCAS_DIR/lib
-        # - ls -lath $EPICS_PCAS_DIR/lib/linux-x86_64
-        # - ls -lath /usr/lib/x86_64-linux-gnu/
         - flake8 --count python/
+        - dpkg -s libboost-dev | grep 'Version'
+        - cat /usr/include/boost/version.hpp | grep "BOOST_LIB_VERSION"
 
       after_success:
         # Upload coverage report
