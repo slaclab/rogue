@@ -6,12 +6,12 @@
 # Description:
 # Rogue export file to be overridden by Cmake.
 # ----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
@@ -26,9 +26,9 @@ set(NO_EPICS    @NO_EPICS@)
 #####################################
 # Boost + Python
 #####################################
-if ( NOT NO_PYTHON ) 
-   find_package(PythonInterp 3.6 QUIET REQUIRED)
-   find_package(PythonLibs 3.6 QUIET REQUIRED)
+if ( NOT NO_PYTHON )
+   find_package(PythonInterp 3 QUIET REQUIRED)
+   find_package(PythonLibs 3 QUIET REQUIRED)
 
    # Find Numpy
    execute_process(
@@ -45,35 +45,41 @@ if ( NOT NO_PYTHON )
 
    set(Boost_USE_MULTITHREADED ON)
 
-   # Boost may need help on SLAC machines
-   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
+   # Hint for boost on anaconda
+   if (DEFINED ENV{CONDA_PREFIX})
+      set(BOOST_ROOT $ENV{CONDA_PREFIX})
 
-   # First try standard suffix for boost
-   message("Looking for boost/python3")
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
-
-   # Next try boost/python38
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python38")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python38)
+   # SLAC AFS custom path
+   elseif (DEFINED ENV{BOOST_PATH})
+      set(BOOST_ROOT $ENV{BOOST_PATH})
    endif()
 
-   # Next try boost/python37
+   # libboost_python3.7 style libraries
+   message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+
+   # libboost_python3 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python37")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+      message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
    endif()
 
-   # Next try boost/python-py36
+   # libboost_python style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python-py36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
+      message("Looking for libboost_python")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
    endif()
 
-   # Next try boost/python36
+   # libboost_python-py37 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
+      message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+   endif()
+
+   # libboost_python3-py37 style libraries
+   if (NOT Boost_FOUND)
+      message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
    # Nothing worked
@@ -93,12 +99,12 @@ find_package(BZip2 QUIET REQUIRED)
 #####################################
 # ZeroMQ
 #####################################
-# First try with Cmake packages
+# First try with cmake packages
 find_package(ZeroMQ QUIET)
 
 # ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
-   
+
    # Convert LD_LIBRARY PATH for search
    if(DEFINED ENV{LD_LIBRARY_PATH})
       string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
@@ -107,12 +113,12 @@ if (NOT ZeroMQ_FOUND)
    endif()
 
    # See if zmq library is in LD_LIBRARY_PATH
-   find_library(ZeroMQ_LIBRARY 
-                NAMES zmq 
+   find_library(ZeroMQ_LIBRARY
+                NAMES zmq
                 PATHS ${HINT_PATHS})
 
    # Found it
-   if (ZeroMQ_LIBRARY) 
+   if (ZeroMQ_LIBRARY)
 
       # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
@@ -142,7 +148,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
        set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch 
+       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch
                        OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
    endif()
@@ -164,23 +170,23 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/compiler/gcc
                             ${EPICS_BASE_DIR}/include/os/Darwin)
 
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib 
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib
                             ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
    else()
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc 
+                            ${EPICS_BASE_DIR}/include/compiler/gcc
                             ${EPICS_BASE_DIR}/include/os/Linux)
 
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so 
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so
                             ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so 
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
 else()
@@ -246,6 +252,7 @@ if (NO_PYTHON)
    message("-- Compiling without boost & python!")
 else()
    message("-- Found boost: ${Boost_INCLUDE_DIRS}")
+   message("-- Found boost: ${Boost_LIBRARIES}")
    message("")
    message("-- Found python: ${PYTHON_LIBRARIES}")
    message("")
@@ -256,6 +263,7 @@ message("")
 
 if (DO_EPICS_V3)
    message("-- Found EPICS: ${EPICS_BASE_DIR}")
+   message("")
    message("-- Found PCAS:  ${EPICS_PCAS_DIR}")
 else()
    message("-- EPICS V3 not included!")
