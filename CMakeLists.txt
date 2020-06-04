@@ -41,8 +41,8 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON )
-   find_package(PythonInterp 3.6 QUIET REQUIRED)
-   find_package(PythonLibs 3.6 QUIET REQUIRED)
+   find_package(PythonInterp 3 QUIET REQUIRED)
+   find_package(PythonLibs 3 QUIET REQUIRED)
 
    # Find Numpy
    execute_process(
@@ -59,30 +59,42 @@ if ( NOT NO_PYTHON )
 
    set(Boost_USE_MULTITHREADED ON)
 
-   # Boost may need help on SLAC machines
-   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
+   # Hint for boost on anaconda
+   if (DEFINED ENV{CONDA_PREFIX})
+      set(BOOST_ROOT $ENV{CONDA_PREFIX})
 
-  if (UNIX AND NOT APPLE)
-    if (PYTHON_VERSION_MAJOR EQUAL 3)
-        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_SUFFIX})
-        FIND_PACKAGE(PythonInterp 3)
-        FIND_PACKAGE(PythonLibs 3 REQUIRED)
-    else()
-        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
-        FIND_PACKAGE(PythonInterp)
-        FIND_PACKAGE(PythonLibs REQUIRED)
-    endif()
-  else()
-    if (PYTHON_VERSION_MAJOR EQUAL 3)
-        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-        FIND_PACKAGE(PythonInterp 3)
-        FIND_PACKAGE(PythonLibs 3 REQUIRED)
-    else()
-        FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-        FIND_PACKAGE(PythonInterp)
-        FIND_PACKAGE(PythonLibs REQUIRED)
-    endif()
-  endif()
+   # SLAC AFS custom path
+   elseif (DEFINED ENV{BOOST_PATH})
+      set(BOOST_ROOT $ENV{BOOST_PATH})
+   endif()
+
+   # libboost_python3.7 style libraries
+   message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+
+   # libboost_python3 style libraries
+   if (NOT Boost_FOUND)
+      message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
+   endif()
+
+   # libboost_python style libraries
+   if (NOT Boost_FOUND)
+      message("Looking for libboost_python")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
+   endif()
+
+   # libboost_python-py37 style libraries
+   if (NOT Boost_FOUND)
+      message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+   endif()
+
+   # libboost_python3-py37 style libraries
+   if (NOT Boost_FOUND)
+      message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+   endif()
 
    # Nothing worked
    if (NOT Boost_FOUND)
