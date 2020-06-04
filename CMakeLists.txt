@@ -70,30 +70,30 @@ if ( NOT NO_PYTHON )
 
    # libboost_python3.7 style libraries
    message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
 
    # libboost_python3 style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python${PYTHON_VERSION_MAJOR})
    endif()
 
    # libboost_python style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python)
    endif()
 
    # libboost_python-py37 style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
    # libboost_python3-py37 style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
    # Nothing worked
