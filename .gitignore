@@ -7,6 +7,7 @@ setup_env.sh
 *.swp
 *.orig
 *.rstx
+*.save
 setup.csh
 setup.sh
 .__afs*

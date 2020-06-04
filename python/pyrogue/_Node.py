@@ -629,8 +629,8 @@ def _iterateDict(d, keys):
 def genBaseList(cls):
     ret = [str(cls)]
 
-    for l in cls.__bases__:
-        if l is not object:
-            ret += genBaseList(l)
+    for x in cls.__bases__:
+        if x is not object:
+            ret += genBaseList(x)
 
     return ret

@@ -226,7 +226,7 @@ caStatus rpe::Value::readValue(gdd &value) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    // Make sure access types match
-   if ( (array_ && value.isAtomic()) || ((!array_) && value.isScalar()) ) {
+   if ( (array_ && value.isAtomic()) || (array_ && value.isScalar()) || ((!array_) && value.isScalar()) ) {
 
       // Call value get within lock
       valueGet();
