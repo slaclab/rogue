@@ -19,7 +19,8 @@ dependencies:
   - numpy
   - pyqt
   - pyepics
-  - boost=1.69
+  - boost
+  - boost-cpp
   - bzip2
   - zeromq
   - epics-base
