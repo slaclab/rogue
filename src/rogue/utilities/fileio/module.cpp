@@ -26,6 +26,8 @@
 #include <rogue/utilities/fileio/LegacyStreamWriter.h>
 #include <rogue/utilities/fileio/LegacyStreamReader.h>
 #include <rogue/utilities/fileio/module.h>
+
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;

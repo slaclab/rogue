@@ -25,6 +25,8 @@
 #include <rogue/protocols/rssi/Client.h>
 #include <rogue/protocols/rssi/Server.h>
 #include <rogue/protocols/rssi/Transport.h>
+
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace rpr = rogue::protocols::rssi;

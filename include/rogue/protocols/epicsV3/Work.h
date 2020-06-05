@@ -21,6 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_WORK_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_WORK_H__
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <casdef.h>
 #include <gdd.h>

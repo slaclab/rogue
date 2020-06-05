@@ -35,6 +35,7 @@
 namespace ris = rogue::interfaces::stream;
 namespace rpe = rogue::protocols::epicsV3;
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 
