@@ -29,6 +29,8 @@
 #include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Variable.h>
+
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;

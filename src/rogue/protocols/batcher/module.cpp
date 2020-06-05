@@ -21,7 +21,10 @@
 **/
 
 #include <RogueConfig.h>
+
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/protocols/batcher/module.h>
 #include <rogue/protocols/batcher/CoreV1.h>
 #include <rogue/protocols/batcher/Data.h>

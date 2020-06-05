@@ -30,6 +30,8 @@
 #include <rogue/hardware/pgp/EvrStatus.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
+
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;

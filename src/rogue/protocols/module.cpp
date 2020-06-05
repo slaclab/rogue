@@ -21,7 +21,10 @@
 **/
 
 #include <RogueConfig.h>
+
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/protocols/module.h>
 #include <rogue/protocols/packetizer/module.h>
 #include <rogue/protocols/rssi/module.h>

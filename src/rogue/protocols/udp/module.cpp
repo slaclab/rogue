@@ -20,7 +20,9 @@
  * ----------------------------------------------------------------------------
 **/
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/protocols/udp/module.h>
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/protocols/udp/Client.h>
