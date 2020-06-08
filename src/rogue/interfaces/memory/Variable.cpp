@@ -22,13 +22,16 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <rogue/GeneralError.h>
-#include <boost/python.hpp>
 #include <memory>
 #include <cmath>
+#include <sys/time.h>
 
 namespace rim = rogue::interfaces::memory;
-namespace bp  = boost::python;
 
+#ifndef NO_PYTHON
+#include <boost/python.hpp>
+namespace bp  = boost::python;
+#endif
 
 //! Class factory which returns a pointer to a Variable (VariablePtr)
 rim::VariablePtr rim::Variable::create ( std::string name,
@@ -153,109 +156,157 @@ rim::Variable::Variable ( std::string name,
 
    // Define set function
    switch (modelId_) {
+#ifndef NO_PYTHON
       case rim::PyFunc :
          setFuncPy_    = &rim::Block::setPyFunc;
          break;
+#endif
       case rim::Bytes :
+#ifndef NO_PYTHON
          setFuncPy_    = &rim::Block::setByteArrayPy;
+#endif
          setByteArray_ = &rim::Block::setByteArray;
          break;
       case rim::UInt :
          if (bitTotal_ > 64) {
+#ifndef NO_PYTHON
             setFuncPy_    = &rim::Block::setPyFunc;
+#endif
             setByteArray_ = &rim::Block::setByteArray;
          }
          else {
+#ifndef NO_PYTHON
             setFuncPy_ = &rim::Block::setUIntPy;
+#endif
             setUInt_   = &rim::Block::setUInt;
          }
          break;
       case rim::Int :
          if (bitTotal_ > 64) {
+#ifndef NO_PYTHON
             setFuncPy_    = &rim::Block::setPyFunc;
+#endif
             setByteArray_ = &rim::Block::setByteArray;
          }
          else {
+#ifndef NO_PYTHON
             setFuncPy_ = &rim::Block::setIntPy;
+#endif
             setInt_    = &rim::Block::setInt;
          }
          break;
       case rim::Bool :
+#ifndef NO_PYTHON
          setFuncPy_ = &rim::Block::setBoolPy;
+#endif
          setBool_   = &rim::Block::setBool;
          break;
       case rim::String :
+#ifndef NO_PYTHON
          setFuncPy_ = &rim::Block::setStringPy;
+#endif
          setString_ = &rim::Block::setString;
          break;
       case rim::Float :
+#ifndef NO_PYTHON
          setFuncPy_ = &rim::Block::setFloatPy;
+#endif
          setFloat_  = &rim::Block::setFloat;
          break;
       case rim::Double :
+#ifndef NO_PYTHON
          setFuncPy_ = &rim::Block::setDoublePy;
+#endif
          setDouble_ = &rim::Block::setDouble;
          break;
       case rim::Fixed :
+#ifndef NO_PYTHON
          setFuncPy_ = &rim::Block::setFixedPy;
+#endif
          setFixed_  = &rim::Block::setFixed;
          break;
       default :
+#ifndef NO_PYTHON
          getFuncPy_ = NULL;
+#endif
          break;
    }
 
    // Define get function
    switch (modelId_) {
+#ifndef NO_PYTHON
       case rim::PyFunc :
          getFuncPy_ = &rim::Block::getPyFunc;
          break;
+#endif
       case rim::Bytes :
+#ifndef NO_PYTHON
          getFuncPy_    = &rim::Block::getByteArrayPy;
+#endif
          getByteArray_ = &rim::Block::getByteArray;
          break;
       case rim::UInt :
          if (bitTotal_ > 64) {
+#ifndef NO_PYTHON
             getFuncPy_    = &rim::Block::getPyFunc;
+#endif
             getByteArray_ = &rim::Block::getByteArray;
          }
          else {
+#ifndef NO_PYTHON
             getFuncPy_ = &rim::Block::getUIntPy;
+#endif
             getUInt_   = &rim::Block::getUInt;
          }
          break;
       case rim::Int :
          if (bitTotal_ > 64) {
+#ifndef NO_PYTHON
             getFuncPy_    = &rim::Block::getPyFunc;
+#endif
             getByteArray_ = &rim::Block::getByteArray;
          }
          else {
+#ifndef NO_PYTHON
             getFuncPy_ = &rim::Block::getIntPy;
+#endif
             getInt_    = &rim::Block::getInt;
          }
          break;
       case rim::Bool :
+#ifndef NO_PYTHON
          getFuncPy_ = &rim::Block::getBoolPy;
+#endif
          getBool_   = &rim::Block::getBool;
          break;
       case rim::String :
+#ifndef NO_PYTHON
          getFuncPy_ = &rim::Block::getStringPy;
+#endif
          getString_ = &rim::Block::getString;
          break;
       case rim::Float :
+#ifndef NO_PYTHON
          getFuncPy_ = &rim::Block::getFloatPy;
+#endif
          getFloat_  = &rim::Block::getFloat;
          break;
       case rim::Double :
+#ifndef NO_PYTHON
          getFuncPy_ = &rim::Block::getFloatPy;
+#endif
          getDouble_ = &rim::Block::getDouble;
          break;
       case rim::Fixed :
+#ifndef NO_PYTHON
          getFuncPy_ = &rim::Block::getFixedPy;
+#endif
          getFixed_  = &rim::Block::getFixed;
          break;
       default :
+#ifndef NO_PYTHON
          getFuncPy_ = NULL;
+#endif
          break;
    }
 }
@@ -284,16 +335,6 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
 void rim::Variable::updatePath(std::string path) {
    path_ = path;
-}
-
-// Return the name of the variable
-std::string rim::Variable::name() {
-   return name_;
-}
-
-// Return the mode of the variable
-std::string rim::Variable::mode() {
-   return mode_;
 }
 
 //! Return the minimum value
@@ -331,6 +372,7 @@ bool rim::Variable::bulkOpEn() {
     return bulkOpEn_;
 }
 
+#ifndef NO_PYTHON
 // Create a Variable
 rim::VariableWrap::VariableWrap ( std::string name,
                                   std::string mode,
@@ -388,8 +430,6 @@ bp::object rim::VariableWrap::fromBytes ( bp::object &value ) {
    return model_.attr("fromBytes")(value);
 }
 
-void rim::Variable::queueUpdate() { }
-
 void rim::VariableWrap::defQueueUpdate() {
    rim::Variable::queueUpdate();
 }
@@ -407,6 +447,18 @@ void rim::VariableWrap::queueUpdate() {
       }
    }
 }
+
+bp::object rim::VariableWrap::bitOffset() {
+   return std_vector_to_py_list<uint32_t>(bitOffset_);
+}
+
+bp::object rim::VariableWrap::bitSize() {
+   return std_vector_to_py_list<uint32_t>(bitSize_);
+}
+
+#endif	// ! NO_PYTHON
+
+void rim::Variable::queueUpdate() { }
 
 void rim::Variable::rateTest() {
    uint64_t x;
@@ -443,15 +495,6 @@ void rim::Variable::rateTest() {
    rate = count / durr;
 
    printf("\nVariable c++ set: Wrote %i times in %f seconds. Rate = %f\n",count,durr,rate);
-}
-
-
-bp::object rim::VariableWrap::bitOffset() {
-   return std_vector_to_py_list<uint32_t>(bitOffset_);
-}
-
-bp::object rim::VariableWrap::bitSize() {
-   return std_vector_to_py_list<uint32_t>(bitSize_);
 }
 
 /////////////////////////////////
@@ -522,7 +565,7 @@ bool rim::Variable::getBool() {
 // C++ String
 /////////////////////////////////
 
-void rim::Variable::setString(std::string &value) {
+void rim::Variable::setString(const std::string &value) {
    if ( setString_ == NULL ) return;
    (block_->*setString_)(value,this);
    block_->write(this);

@@ -41,8 +41,8 @@ add_definitions(-D__STDC_FORMAT_MACROS)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON )
-   find_package(PythonInterp 3.6 QUIET REQUIRED)
-   find_package(PythonLibs 3.6 QUIET REQUIRED)
+   find_package(PythonInterp 3 QUIET REQUIRED)
+   find_package(PythonLibs 3 QUIET REQUIRED)
 
    # Find Numpy
    execute_process(
@@ -59,47 +59,41 @@ if ( NOT NO_PYTHON )
 
    set(Boost_USE_MULTITHREADED ON)
 
-   # Boost may need help on SLAC machines
-   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
+   # Hint for boost on anaconda
+   if (DEFINED ENV{CONDA_PREFIX})
+      set(BOOST_ROOT $ENV{CONDA_PREFIX})
 
-   # First try standard suffix for boost
-   message("Looking for boost/python3")
-   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
-
-   # Next try boost/python38
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python38")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python38)
+   # SLAC AFS custom path
+   elseif (DEFINED ENV{BOOST_PATH})
+      set(BOOST_ROOT $ENV{BOOST_PATH})
    endif()
 
-   # Next try boost/python37
+   # libboost_python3.7 style libraries
+   message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+
+   # libboost_python3 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python37")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
+      message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
    endif()
 
-   # Next try boost/python-py37
+   # libboost_python style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python-py37")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py37)
+      message("Looking for libboost_python")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
    endif()
 
-   # Next try boost/python-py36
+   # libboost_python-py37 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python-py36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
+      message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
-   # Next try boost/python3-py36
+   # libboost_python3-py37 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for boost/python3-py36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python3-py36)
-   endif()
-
-   # Next try boost/python36
-   if (NOT Boost_FOUND)
-      message("Looking for boost/python36")
-      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
+      message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
    # Nothing worked
@@ -485,4 +479,3 @@ endif()
 
 message("----------------------------------------------------------------------")
 message("")
-

@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <vector>
 #include <map>
+#include <set>
 #include <string>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
@@ -46,6 +47,9 @@ namespace rogue {
 
          //! Map of memory interfaces
          std::map< std::string, std::shared_ptr<rogue::interfaces::memory::Slave> > memSlaves_;
+
+         //! Map of missing memory interfaces
+         std::set< std::string  > memSlavesMissing_;
 
       public:
 
