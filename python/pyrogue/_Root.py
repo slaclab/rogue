@@ -405,6 +405,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._sqlLog is not None:
             self._sqlLog.stop()
 
+        for d in self.deviceList:
+            d.stop()
+
     @property
     def serverPort(self):
         return self._serverPort
