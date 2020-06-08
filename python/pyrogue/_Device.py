@@ -212,7 +212,7 @@ class Device(pr.Node,rim.Hub):
         """ Called recursively from Root.stop when exiting """
         for intf in self._interfaces:
             intf.stop()
-        for d in self.devices:
+        for d in self.deviceList:
             d.stop()
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
