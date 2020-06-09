@@ -256,6 +256,13 @@ endif()
 #####################################
 # Setup build, core library
 #####################################
+message("-- Library Path Debug -- ")
+message("-- Boost:  ${Boost_LIBRARIES}")
+message("-- ZMQ:    ${ZeroMQ_LIBRARY}")
+message("-- EPICS:  ${EPICS_LIBRARIES}")
+message("-- BZIP:   ${BZIP2_LIBRARIES}")
+message("-- Python: ${PYTHON_LIBRARIES}")
+message("")
 
 # Configuration File
 configure_file (
@@ -293,17 +300,17 @@ set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
 set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
 # Link rogue core to boost, python and bzip
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${EPICS_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${BZIP2_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${ZeroMQ_LIBRARY})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${EPICS_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
 if (APPLE)
    set_target_properties(rogue-core-shared PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${PYTHON_LIBRARIES})
-   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
+   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC rt)
 endif()
 
 if(STATIC_LIB)
@@ -312,12 +319,12 @@ if(STATIC_LIB)
     set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
 
     # Link rogue core to boost, python and bzip
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Boost_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${EPICS_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
 endif()
 
 #####################################
@@ -340,7 +347,7 @@ if (NOT NO_PYTHON)
    endif()
 
    # Link to rogue core
-   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core-shared)
+   TARGET_LINK_LIBRARIES(rogue PUBLIC rogue-core-shared)
 
 else()
    add_definitions( -DNO_PYTHON )
@@ -353,7 +360,7 @@ set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
+   set(CONF_LIBRARIES PUBLIC rogue-core)
 else()
    if (APPLE)
       set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
