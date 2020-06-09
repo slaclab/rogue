@@ -165,6 +165,9 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    rim::VariablePtr var = rim::Variable::create(name,mode,minimum,maximum,offset,bitOffset,bitSize,
       overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint);
 
+   // Adjust min transaction size to match blocksize field
+   var->shiftOffsetDown(0, blockSize);
+
    // Add to block list
    blockVars[blkName].push_back(var);
    variables_[name]=var;
