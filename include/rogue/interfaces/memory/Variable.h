@@ -314,6 +314,9 @@ namespace rogue {
                //! Rate test for debugging
                void rateTest();
 
+               //! Set logging level for Variable's block
+               void setLogLevel(uint32_t level);
+
                /////////////////////////////////
                // C++ Byte Array
                /////////////////////////////////

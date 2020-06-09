@@ -632,3 +632,7 @@ double rim::Variable::getFixed() {
    return (block_->*getFixed_)(this);
 }
 
+void rim::Variable::setLogLevel(uint32_t level) {
+   if ( block_ )
+      block_->setLogLevel( level );
+}
