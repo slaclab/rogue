@@ -224,6 +224,11 @@ namespace rogue {
                 */
                void setEnable(bool);
 
+               //! Set logging level for block
+               void setLogLevel(uint32_t level) {
+			      bLog_->setLevel( level );
+			   }
+
                //! Get offset of this Block
                /** Return the offset of this Block
                 *
