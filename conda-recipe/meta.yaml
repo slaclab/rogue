@@ -32,6 +32,7 @@ requirements:
      - numpy
    run:
      - python
+     - {{ pin_compatible('boost') min_pin='x.x", max_pin='x.x'}}
      - boost
      - bzip2
      - zeromq
