@@ -334,6 +334,11 @@ namespace rogue {
                //! Get unsigned int
                uint64_t getUInt();
 
+               //! Get unsigned int
+               void getValue(uint64_t & valueRet) {
+                  valueRet = getUInt();
+               }
+
                /////////////////////////////////
                // C++ int
                /////////////////////////////////
@@ -344,6 +349,11 @@ namespace rogue {
                //! Get signed int
                int64_t getInt();
 
+               //! Get signed int
+               void getValue(int64_t & valueRet) {
+                  valueRet = getInt();
+               }
+
                /////////////////////////////////
                // C++ bool
                /////////////////////////////////
@@ -353,6 +363,11 @@ namespace rogue {
 
                //! Get bool
                bool getBool();
+
+               //! Get bool
+               void getValue(bool & valueRet) {
+                  valueRet = getBool();
+               }
 
                /////////////////////////////////
                // C++ String
@@ -365,7 +380,12 @@ namespace rogue {
                std::string getString();
 
                //! Get string
-               void getString(std::string &);
+               void getString(std::string & retString) {
+                  getValue( retString );
+               }
+
+               //! Get string
+               void getValue(std::string &);
 
                /////////////////////////////////
                // C++ Float
@@ -377,6 +397,11 @@ namespace rogue {
                //! Get Float
                float getFloat();
 
+               //! Get Float
+               void getValue(float & valueRet) {
+                  valueRet = getFloat();
+               }
+
                /////////////////////////////////
                // C++ double
                /////////////////////////////////
@@ -387,8 +412,13 @@ namespace rogue {
                //! Get Double
                double getDouble();
 
+               //! Get Double
+               void getValue(double & valueRet) {
+                  valueRet = getDouble();
+               }
+
                /////////////////////////////////
-               // C++ filed point
+               // C++ fixed point
                /////////////////////////////////
 
                //! Set fixed point

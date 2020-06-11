@@ -463,7 +463,7 @@ bp::object rim::VariableWrap::bitSize() {
    return std_vector_to_py_list<uint32_t>(bitSize_);
 }
 
-#endif	// ! NO_PYTHON
+#endif  // ! NO_PYTHON
 
 void rim::Variable::queueUpdate() { }
 
@@ -536,6 +536,7 @@ uint64_t rim::Variable::getUInt() {
    return (block_->*getUInt_)(this);
 }
 
+
 /////////////////////////////////
 // C++ int
 /////////////////////////////////
@@ -584,12 +585,12 @@ std::string rim::Variable::getString() {
    return (block_->*getString_)(this);
 }
 
-void rim::Variable::getString( std::string & retString ) {
+void rim::Variable::getValue( std::string & retString ) {
    if ( getString_ == NULL ) {
       retString = "";
    } else {
       block_->read(this);
-      retString = (block_->*getString_)(this);
+      block_->getValue(this, retString);
    }
 }
 

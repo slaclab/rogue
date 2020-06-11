@@ -458,6 +458,11 @@ namespace rogue {
                //! Get data into String, C++ Version
                void getString (rogue::interfaces::memory::Variable *var, std::string & );
 
+               //! Get data into String, C++ Version
+               void getValue (rogue::interfaces::memory::Variable *var, std::string & valueRet ) {
+                getString( var, valueRet );
+               }
+
                //////////////////////////////////////////
                // Float
                //////////////////////////////////////////
