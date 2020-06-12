@@ -66,6 +66,16 @@ class AxiVersion(pr.Device):
             pollInterval = 1
         ))
 
+        for i in range(4):
+            self.add(pr.RemoteVariable(
+                name         = f'TestBlock[{i}]',
+                offset       = 0x10,
+                bitSize      = 8,
+                bitOffset    = 8*i,
+                mode         = 'RO',
+                value        = i,
+            ))
+
 
 class DummyTree(pr.Root):
 
@@ -111,6 +121,11 @@ def test_memory():
 
         if ret != 0x50:
             raise AssertionError('Scratchpad Mismatch')
+
+        for i in range(4):
+            ret = root.AxiVersion.TestBlock[i].get()
+            if ret != i:
+                raise AssertionError(f'TestBlock[i] Mismatch: Should be {i} but got {ret}')
 
 if __name__ == "__main__":
     test_memory()
