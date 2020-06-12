@@ -115,7 +115,12 @@ class DummyTree(pr.Root):
         self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
 
         # Add Device
-        self.add(AxiVersion(memBase=self.mc,offset=0x0))
+        for i in range(2):
+            self.add(AxiVersion(
+                name   = f'AxiVersion[{i}]',
+                offset = i*0x10000,
+                memBase= self.mc,
+            ))
 
     def stop(self):
         self.ms.close()
@@ -127,26 +132,40 @@ def test_memory():
     with DummyTree() as root:
         time.sleep(5)
 
-        print("Writing 0x50 to scratchpad")
-        root.AxiVersion.ScratchPad.set(0x50)
+        for dev in range(2):
+            # Get a pointer to the device
+            remoteDev = root.AxiVersion[dev]
 
-        ret = root.AxiVersion.ScratchPad.get()
-        print("Read {:#x} from scratchpad".format(ret))
+            # Test the scratch pad
+            remoteDev.ScratchPad.set(0x50)
 
-        time.sleep(5)
+            # DEV=0 Test Individual Reads
+            if dev==0:
+                ret = remoteDev.ScratchPad.get()
 
-        if ret != 0x50:
-            raise AssertionError('Scratchpad Mismatch')
+            # DEV=1 Test Block Read
+            else:
+                remoteDev.ReadDevice()
+                ret = remoteDev.ScratchPad.value()
 
-        for i in range(256):
-            ret = root.AxiVersion.TestBlockBytes[i].get()
-            if ret != i:
-                raise AssertionError(f'TestBlockBytes[i] Mismatch: Should be {i} but got {ret}')
+            if ret != 0x50:
+                raise AssertionError('Scratchpad Mismatch')
 
-        for i in range(128):
-            ret = root.AxiVersion.TestBlockBits[i].get()
-            if ret != i:
-                raise AssertionError(f'TestBlockBits[i] Mismatch: Should be {i} but got {ret}')
+            for i in range(256):
+                if dev==0:
+                    ret = remoteDev.TestBlockBytes[i].get()
+                else:
+                    ret = remoteDev.TestBlockBytes[i].value()
+                if ret != i:
+                    raise AssertionError(f'TestBlockBytes[i] Mismatch: Should be {i} but got {ret}')
+
+            for i in range(128):
+                if dev==0:
+                    ret = remoteDev.TestBlockBits[i].get()
+                else:
+                    ret = remoteDev.TestBlockBits[i].value()
+                if ret != i:
+                    raise AssertionError(f'TestBlockBits[i] Mismatch: Should be {i} but got {ret}')
 
 if __name__ == "__main__":
     test_memory()
