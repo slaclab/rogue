@@ -130,7 +130,7 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
    waitRetry_ = waitRetry;
    timeout_ = msecs;
 
-   printf("Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
+   printf("ZmqClient::setTimeout: Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
 
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));
