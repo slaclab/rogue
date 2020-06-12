@@ -467,7 +467,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
    else buff = (uint8_t *)data;
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(blockData_,buff,var->byteSize_);
+   if ( var->fastCopy_ ) memcpy(blockData_+var->fastByte_,buff,var->byteSize_);
 
    else{
 
@@ -490,9 +490,9 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(data,blockData_,var->byteSize_);
+   if ( var->fastCopy_ ) memcpy(data,blockData_+var->fastByte_,var->byteSize_);
 
-      else {
+   else {
 
       dstBit = 0;
       for (x=0; x < var->bitOffset_.size(); x++) {
