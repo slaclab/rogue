@@ -66,23 +66,25 @@ class AxiVersion(pr.Device):
             pollInterval = 1
         ))
 
-        for i in range(4):
-            # 4 bytes all in the same 32-bit address alignment
-            self.add(pr.RemoteVariable(
-                name         = f'TestBlockBytes[{i}]',
-                offset       = 0x10,
-                bitSize      = 8,
-                bitOffset    = 8*i,
-                mode         = 'RO',
-                value        = i,
-            ))
+        for i in range(int(256/4)):
+            for j in range(4):
+                # 4 bytes all in the same 32-bit address alignment across multiple 32-bit word boundaries
+                value = 4*i+j
+                self.add(pr.RemoteVariable(
+                    name         = f'TestBlockBytes[{value}]',
+                    offset       = 0x100+4*i,
+                    bitSize      = 8,
+                    bitOffset    = 8*j,
+                    mode         = 'RO',
+                    value        = value,
+                ))
 
         for i in range(128):
             # Sweeping across a non-byte remote variable with overlapping 32-bit address alignments
             # with same offsets for all variables (sometimes ASIC designers do this registers definition)
             self.add(pr.RemoteVariable(
                 name         = f'TestBlockBits[{i}]',
-                offset       = 0x100,
+                offset       = 0x200,
                 bitSize      = 7,
                 bitOffset    = 7*i,
                 mode         = 'RO',
@@ -136,7 +138,7 @@ def test_memory():
         if ret != 0x50:
             raise AssertionError('Scratchpad Mismatch')
 
-        for i in range(4):
+        for i in range(256):
             ret = root.AxiVersion.TestBlockBytes[i].get()
             if ret != i:
                 raise AssertionError(f'TestBlockBytes[i] Mismatch: Should be {i} but got {ret}')
