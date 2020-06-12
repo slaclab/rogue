@@ -63,8 +63,11 @@ namespace rogue {
                // Total number of bits for this value
                uint32_t bitTotal_;
 
-               // Flag copy flag
+               // Fast copy flag
                bool fastCopy_;
+
+               // Fast copy base
+               uint32_t fastByte_;
 
                // Total bytes (rounded up) for this value
                uint32_t byteSize_;
