@@ -123,8 +123,9 @@ def test_memory():
             raise AssertionError('Scratchpad Mismatch')
 
         for i in range(4):
-            if root.AxiVersion.TestBlock[i].get() != i:
-                raise AssertionError(f'TestBlock[i] Mismatch')
+            ret = root.AxiVersion.TestBlock[i].get()
+            if ret != i:
+                raise AssertionError(f'TestBlock[i] Mismatch: Should be {i} but got {ret}')
 
 if __name__ == "__main__":
     test_memory()
