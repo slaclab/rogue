@@ -94,6 +94,7 @@ class DummyTree(pr.Root):
 def test_memory():
 
     with DummyTree() as root:
+        # SW settling Time
         time.sleep(5)
 
         # Load the R/W variables
@@ -108,7 +109,10 @@ def test_memory():
 
         # Bulk Read Device
         root.MemDev[3].ReadDevice()
-
+        
+        # SW settling Time
+        time.sleep(5)
+        
         # Verify all the RW and RO variables
         for dev in range(4):
             for i in range(256):
