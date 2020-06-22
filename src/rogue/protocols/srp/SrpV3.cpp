@@ -168,6 +168,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
                tran->id(),tran->address(),tran->size(),tran->type());
    log_->debug("Send frame for id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
                tran->id(), header[0],header[1],header[2],header[3],header[4]);
+
    sendFrame(frame);
 }
 
