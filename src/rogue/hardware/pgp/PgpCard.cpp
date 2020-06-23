@@ -96,7 +96,7 @@ rhp::PgpCard::~PgpCard() {
 }
 
 //! Stop
-rhp::PgpCard::stop() {
+void rhp::PgpCard::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

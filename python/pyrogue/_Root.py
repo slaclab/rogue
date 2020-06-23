@@ -400,7 +400,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._pollQueue.stop()
 
         if self._zmqServer is not None:
-            self._zmqServer.close()
+            self._zmqServer.stop()
 
         if self._sqlLog is not None:
             self._sqlLog.stop()

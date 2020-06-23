@@ -97,13 +97,8 @@ rha::AxiStreamDma::~AxiStreamDma() {
    this->stop();
 }
 
-// deprecated
-void rha::AxiStreamDma::close() {
-   this->stop();
-}
-
 void rha::AxiStreamDma::stop() {
-  if (threadEn) {
+  if (threadEn_) {
     rogue::GilRelease noGil;
 
     // Stop read thread
