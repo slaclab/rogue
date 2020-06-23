@@ -69,7 +69,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    count = 0;
 
    // Detect list type
-   if ( sscanf(type.c_str(),"List[%49[^]]]",&tmpType) == 1 ) {
+   if ( sscanf(type.c_str(),"List[%49[^]]]",(char *)(&tmpType)) == 1 ) {
       type = std::string(tmpType);
 
       // Get initial element count
