@@ -86,7 +86,7 @@ class DummyTree(pr.Root):
                 name       = f'MemDev[{i}]',
                 offset     = i*0x10000,
                 modeConfig = modeConfig[i],
-                memBase    = self.mc,
+                memBase    = mc,
             ))
 
 def test_memory():
