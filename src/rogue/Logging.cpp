@@ -54,12 +54,12 @@ std::mutex rogue::Logging::levelMtx_;
 std::vector <rogue::LogFilter *> rogue::Logging::filters_;
 
 // Crate logger
-rogue::LoggingPtr rogue::Logging::create(std::string name) {
-   rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name);
+rogue::LoggingPtr rogue::Logging::create(std::string name,bool quiet) {
+   rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name,quiet);
    return log;
 }
 
-rogue::Logging::Logging(std::string name) {
+rogue::Logging::Logging(std::string name, bool quiet) {
    std::vector<rogue::LogFilter *>::iterator it;
 
    name_ = "pyrogue." + name;
@@ -75,7 +75,7 @@ rogue::Logging::Logging(std::string name) {
    }
    levelMtx_.unlock();
 
-   warning("Starting logger with level = %i",level_);
+   if ( ! quiet ) warning("Starting logger with level = %i",level_);
 }
 
 rogue::Logging::~Logging() { }

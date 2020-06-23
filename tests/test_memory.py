@@ -17,7 +17,7 @@ import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+#rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
@@ -94,8 +94,6 @@ class DummyTree(pr.Root):
 def test_memory():
 
     with DummyTree() as root:
-        # SW settling Time
-        time.sleep(5)
 
         # Load the R/W variables
         for dev in range(2):
@@ -109,10 +107,7 @@ def test_memory():
 
         # Bulk Read Device
         root.MemDev[3].ReadDevice()
-        
-        # SW settling Time
-        time.sleep(5)
-        
+
         # Verify all the RW and RO variables
         for dev in range(4):
             for i in range(256):

@@ -85,7 +85,7 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    error_   = "";
    done_    = false;
 
-   log_ = rogue::Logging::create("memory.Transaction");
+   log_ = rogue::Logging::create("memory.Transaction",true);
 
    classMtx_.lock();
    if ( classIdx_ == 0 ) classIdx_ = 1;
@@ -173,7 +173,7 @@ std::string rim::Transaction::wait() {
            timercmp(&currTime,&(endTime_),>) ) {
 
          done_  = true;
-         error_ = "Timeout waiting for register transaction message response";
+         error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
          log_->debug("Transaction timeout. type=%i id=%i, address=0x%.8x, size=0x%x",
                type_,id_,address_,size_);
