@@ -19,7 +19,9 @@
  * ----------------------------------------------------------------------------
 **/
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/protocols/epicsV3/module.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Variable.h>

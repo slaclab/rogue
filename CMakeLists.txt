@@ -37,6 +37,7 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
+
 #####################################
 # Boost + Python
 #####################################
@@ -58,6 +59,7 @@ if ( NOT NO_PYTHON )
    endif()
 
    set(Boost_USE_MULTITHREADED ON)
+   set(Boost_NO_BOOST_CMAKE ON)
 
    # Hint for boost on anaconda
    if (DEFINED ENV{CONDA_PREFIX})
@@ -81,7 +83,7 @@ if ( NOT NO_PYTHON )
    # libboost_python style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python)
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python)
    endif()
 
    # libboost_python-py37 style libraries
@@ -101,14 +103,17 @@ if ( NOT NO_PYTHON )
       message("")
       message(FATAL_ERROR "Failed to find boost libraries!")
    endif()
+
 else()
    add_definitions( -DNO_PYTHON )
 endif()
+
 
 #####################################
 # BZIP2
 #####################################
 find_package(BZip2 QUIET REQUIRED)
+
 
 #####################################
 # ZeroMQ
@@ -151,7 +156,9 @@ if (NOT ZeroMQ_FOUND)
       message("")
       message(FATAL_ERROR "Failed to find zeroMQ!")
    endif()
+
 endif()
+
 
 #####################################
 # EPICS V3
@@ -203,9 +210,11 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
+
 else()
    set(DO_EPICS_V3 0)
 endif()
+
 
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION
@@ -226,6 +235,7 @@ if ( NOT ROGUE_VERSION )
       message(FATAL_ERROR "Git is required to build rogue!")
    endif()
 endif()
+
 
 #####################################
 # Setup Type and Directories
@@ -252,6 +262,7 @@ elseif (NOT ROGUE_DIR)
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
    endif()
 endif()
+
 
 #####################################
 # Setup build, core library
@@ -292,18 +303,17 @@ set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
 set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
 set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
-# Link rogue core to boost, python and bzip
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${EPICS_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${BZIP2_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${ZeroMQ_LIBRARY})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${EPICS_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
 if (APPLE)
    set_target_properties(rogue-core-shared PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${PYTHON_LIBRARIES})
-   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
+   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC rt)
 endif()
 
 if(STATIC_LIB)
@@ -312,13 +322,14 @@ if(STATIC_LIB)
     set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
 
     # Link rogue core to boost, python and bzip
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Boost_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${EPICS_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
 endif()
+
 
 #####################################
 # Setup build, python library
@@ -340,11 +351,12 @@ if (NOT NO_PYTHON)
    endif()
 
    # Link to rogue core
-   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core-shared)
+   TARGET_LINK_LIBRARIES(rogue PUBLIC rogue-core-shared)
 
 else()
    add_definitions( -DNO_PYTHON )
 endif()
+
 
 #########################################
 # Configuration & Setup Script Generation
@@ -353,7 +365,7 @@ set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
+   set(CONF_LIBRARIES PUBLIC rogue-core)
 else()
    if (APPLE)
       set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
@@ -375,6 +387,7 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
 # Create the python install script
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
                ${PROJECT_BINARY_DIR}/setup.py)
+
 
 #####################################
 # Install Setup
@@ -432,6 +445,7 @@ if (NOT NO_PYTHON)
 
 endif()
 
+
 #####################################
 # Print status
 #####################################
@@ -479,3 +493,4 @@ endif()
 
 message("----------------------------------------------------------------------")
 message("")
+

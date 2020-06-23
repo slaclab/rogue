@@ -26,6 +26,7 @@
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

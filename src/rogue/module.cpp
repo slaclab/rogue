@@ -20,7 +20,9 @@
  * ----------------------------------------------------------------------------
 **/
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/module.h>
 #include <rogue/interfaces/module.h>
 #include <rogue/hardware/module.h>

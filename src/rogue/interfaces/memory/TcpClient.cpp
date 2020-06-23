@@ -34,6 +34,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -171,16 +172,16 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
                      ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
                      ", port: %s" ,id,addr,size,type,msgCnt,this->reqAddr_.c_str());
 
+   // Add transaction
+   if ( type == rim::Post ) tran->done();
+   else addTransaction(tran);
+
    // Send message
    for (x=0; x < msgCnt; x++) {
       if ( zmq_sendmsg(this->zmqReq_,&(msg[x]),((x==(msgCnt-1)?0:ZMQ_SNDMORE))|ZMQ_DONTWAIT) < 0 ) {
          bridgeLog_->warning("Failed to send transaction %" PRIu32", msg %" PRIu32, id, x);
       }
    }
-
-   // Add transaction
-   if ( type == rim::Post ) tran->done();
-   else addTransaction(tran);
 }
 
 //! Run thread

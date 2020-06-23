@@ -20,7 +20,9 @@
  * ----------------------------------------------------------------------------
 **/
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/protocols/packetizer/module.h>
 #include <rogue/protocols/packetizer/Application.h>
 #include <rogue/protocols/packetizer/Transport.h>

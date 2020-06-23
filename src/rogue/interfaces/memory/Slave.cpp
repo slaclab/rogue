@@ -27,6 +27,7 @@
 #include <rogue/ScopedGil.h>
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -73,6 +74,7 @@ void rim::Slave::addTransaction(rim::TransactionPtr tran) {
 rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    rim::TransactionPtr ret;
    TransactionMap::iterator it;
+   TransactionMap::iterator exp;
 
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
@@ -83,18 +85,20 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
       // Remove from list
       tranMap_.erase(it);
 
-      // Cleanup the list, update timers
-      it = tranMap_.begin();
-      while ( it != tranMap_.end() ) {
-         if ( it->second->expired() ) {
-            tranMap_.erase(it); // Iterator no longer valid
-            it = tranMap_.begin();
-         }
-         else {
-            it->second->refreshTimer(ret);
-            ++it;
-         }
+      // Update any timers for transactions started after received transaction
+      exp = tranMap_.end();
+      for ( it = tranMap_.begin(); it != tranMap_.end(); ++it ) {
+         if ( it->second->expired() ) exp = it;
+         else it->second->refreshTimer(ret);
       }
+
+      // Clean up if we found an expired transaction, overtime this will clean up
+      // the list, even if it deletes one expired transaction per call
+      if ( exp != tranMap_.end() ) {
+          printf("Removing expired transaction with id = %i\n",it->second->id());
+          tranMap_.erase(exp);
+      }
+
    }
    return ret;
 }

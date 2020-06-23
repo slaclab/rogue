@@ -7,12 +7,12 @@
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -31,6 +31,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -219,7 +220,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
          // Set transaction pointer
          tData = blockData_ + tOff;
 
-         // Track verify after writes. 
+         // Track verify after writes.
          // Only verify blocks that have been written since last verify
          if ( type == rim::Write ) {
             verifyBase_ = tOff;
@@ -234,7 +235,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
    }
-            
+
    if ( check ) checkTransaction();
 }
 
@@ -366,12 +367,12 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
       for (x=0; x < (*vit)->bitOffset_.size(); x++) {
 
          // Variable allows overlaps, add to overlap enable mask
-         if ( (*vit)->overlapEn_ ) 
+         if ( (*vit)->overlapEn_ )
             setBits(oleMask,(*vit)->bitOffset_[x],(*vit)->bitSize_[x]);
 
          // Otherwise add to exclusive mask and check for existing mapping
          else {
-            if (anyBits(excMask,(*vit)->bitOffset_[x],(*vit)->bitSize_[x])) 
+            if (anyBits(excMask,(*vit)->bitOffset_[x],(*vit)->bitSize_[x]))
                throw(rogue::GeneralError::create("Block::addVariables",
                      "Variable bit overlap detected for block %s with address 0x%.8x",
                      path_.c_str(), address()));
@@ -394,7 +395,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
 
    // Check for overlaps by anding exclusive and overlap bit vectors
    for (x=0; x < size_; x++) {
-      if ( oleMask[x] & excMask[x] ) 
+      if ( oleMask[x] & excMask[x] )
          throw(rogue::GeneralError::create("Block::addVariables",
                "Variable bit overlap detected for block %s with address 0x%.8x",
                path_.c_str(), address()));
@@ -466,7 +467,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
    else buff = (uint8_t *)data;
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(blockData_,buff,var->byteSize_);
+   if ( var->fastCopy_ ) memcpy(blockData_+var->fastByte_,buff,var->byteSize_);
 
    else{
 
@@ -489,9 +490,9 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(data,blockData_,var->byteSize_);
+   if ( var->fastCopy_ ) memcpy(data,blockData_+var->fastByte_,var->byteSize_);
 
-      else {
+   else {
 
       dstBit = 0;
       for (x=0; x < var->bitOffset_.size(); x++) {
@@ -595,13 +596,13 @@ void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var ) {
 void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var ) {
    bp::extract<uint64_t> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",var->name_.c_str()));
 
    uint64_t val = tmp;
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -626,7 +627,7 @@ bp::object rim::Block::getUIntPy (rim::Variable *var ) {
 void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -652,13 +653,13 @@ uint64_t rim::Block::getUInt (rim::Variable *var ) {
 void rim::Block::setIntPy ( bp::object &value, rim::Variable *var ) {
    bp::extract<uint64_t> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
 
    uint64_t val = tmp;
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -686,7 +687,7 @@ bp::object rim::Block::getIntPy ( rim::Variable *var ) {
 void rim::Block::setInt ( const int64_t &val, rim::Variable *var ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -716,7 +717,7 @@ int64_t rim::Block::getInt ( rim::Variable *var ) {
 void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var ) {
    bp::extract<bool> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
 
    uint8_t val = (uint8_t)tmp;
@@ -761,7 +762,7 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var ) {
    uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
    bp::extract<char *> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
    memcpy(getBuffer,tmp,var->byteSize_);
@@ -811,13 +812,13 @@ std::string rim::Block::getString ( rim::Variable *var ) {
 void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var ) {
    bp::extract<float> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",var->name_.c_str()));
 
    float val = tmp;
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -841,7 +842,7 @@ bp::object rim::Block::getFloatPy ( rim::Variable *var ) {
 void rim::Block::setFloat ( const float &val, rim::Variable *var ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -868,13 +869,13 @@ float rim::Block::getFloat ( rim::Variable *var ) {
 void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var ) {
    bp::extract<double> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",var->name_.c_str()));
 
    double val = tmp;
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -898,7 +899,7 @@ bp::object rim::Block::getDoublePy ( rim::Variable *var ) {
 void rim::Block::setDouble ( const double &val, rim::Variable *var ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -924,13 +925,13 @@ double rim::Block::getDouble ( rim::Variable *var ) {
 void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var ) {
    bp::extract<double> tmp(value);
 
-   if ( !tmp.check() ) 
+   if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",var->name_.c_str()));
 
    double tmp2 = tmp;
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (tmp2 > var->maxValue_ || tmp2 < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (tmp2 > var->maxValue_ || tmp2 < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFIxed",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),tmp2,var->minValue_,var->maxValue_));
 
@@ -961,7 +962,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var ) {
 void rim::Block::setFixed ( const double &val, rim::Variable *var ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) ) 
+   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFIxed",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
