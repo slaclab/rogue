@@ -86,6 +86,9 @@ namespace rogue {
                // Destroy the Master
                virtual ~Master();
 
+               //! Stop the interface
+               virtual void stop();
+
                //! Set slave or Hub device
                /** The Master will pass the transaction data to this Slave or Hub device. This
                 * slave may be the lowest level Slave or a Hub which forwards transactions

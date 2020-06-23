@@ -63,6 +63,10 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
 //! Destroy object
 rim::Slave::~Slave() { }
 
+
+//! Stop the interface
+void rim::Slave::stop() {}
+
 //! Register a master.
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;

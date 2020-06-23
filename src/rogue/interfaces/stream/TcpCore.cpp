@@ -135,6 +135,10 @@ ris::TcpCore::~TcpCore() {
 }
 
 void ris::TcpCore::close() {
+   stop();
+}
+
+void ris::TcpCore::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

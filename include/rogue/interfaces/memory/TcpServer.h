@@ -89,8 +89,11 @@ namespace rogue {
                // Destroy the TcpServer
                ~TcpServer();
 
-               // Close the connections
+               // Close the connections, deprecated
                void close();
+
+               // Stop the interface
+               void stop();
 
          };
 

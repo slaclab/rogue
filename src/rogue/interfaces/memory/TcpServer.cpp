@@ -107,6 +107,10 @@ rim::TcpServer::~TcpServer() {
 }
 
 void rim::TcpServer::close() {
+    stop();
+}
+
+void rim::TcpServer::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

@@ -58,6 +58,9 @@ ris::Slave::Slave() {
 //! Destructor
 ris::Slave::~Slave() { }
 
+void ris::Slave::stop () {
+}
+
 //! Set debug message size
 void ris::Slave::setDebug(uint32_t debug, std::string name) {
    debug_ = debug;

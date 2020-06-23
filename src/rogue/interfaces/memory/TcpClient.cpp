@@ -114,6 +114,10 @@ rim::TcpClient::~TcpClient() {
 }
 
 void rim::TcpClient::close() {
+   stop();
+}
+
+void rim::TcpClient::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

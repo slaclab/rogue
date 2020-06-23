@@ -82,6 +82,9 @@ rim::Master::Master() {
 //! Destroy object
 rim::Master::~Master() { }
 
+//! Stop the interface
+void rim::Master::stop() {}
+
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
    rogue::GilRelease noGil;

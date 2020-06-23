@@ -147,7 +147,7 @@ class Device(pr.Node,rim.Hub):
         self._size       = size
         self._defaults   = defaults if defaults is not None else {}
 
-        self._interfaces = []
+        self._ifAndProto = []
 
         self.forceCheckEach = False
 
@@ -206,12 +206,17 @@ class Device(pr.Node,rim.Hub):
 
     def addInterface(self, interface):
         """Add a rogue.interfaces.stream.Master or rogue.interfaces.memory.Master"""
-        self._interfaces.append(interface)
+        self._ifAndProto.append(interface)
+
+    def addProtocol(self, protocol):
+        """Add a protocol entity"""
+        self._ifAndProto.append(protocol)
 
     def stop(self):
         """ Called recursively from Root.stop when exiting """
-        for intf in self._interfaces:
-            intf.stop()
+        for intf in self._ifAndProto:
+            if hasattr(intf,"stop"):
+                intf.stop()
         for d in self.deviceList:
             d.stop()
 
