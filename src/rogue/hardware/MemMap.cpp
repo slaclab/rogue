@@ -71,7 +71,7 @@ rh::MemMap::~MemMap() {
    this->stop();
 }
 
-rh::MemMap::stop() {
+void rh::MemMap::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
