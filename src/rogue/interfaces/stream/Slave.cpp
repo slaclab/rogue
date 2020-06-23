@@ -146,6 +146,7 @@ void ris::Slave::setup_python() {
       .def("_acceptFrame",   &ris::Slave::acceptFrame, &ris::SlaveWrap::defAcceptFrame)
       .def("getFrameCount",  &ris::Slave::getFrameCount)
       .def("getByteCount",   &ris::Slave::getByteCount)
+      .def("stop",           &ris::Slave::stop)
       .def("getAllocCount",  &ris::Pool::getAllocCount)
       .def("getAllocBytes",  &ris::Pool::getAllocBytes)
       .def("setFixedSize",   &ris::Pool::setFixedSize)

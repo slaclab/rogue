@@ -110,11 +110,12 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
-  this->close();
+  this->stop();
 }
 
+// deprecated
 void rim::TcpClient::close() {
-   stop();
+   this->stop();
 }
 
 void rim::TcpClient::stop() {

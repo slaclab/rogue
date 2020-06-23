@@ -58,6 +58,9 @@ namespace rogue {
                //! Destructor
                ~Client();
 
+               //! Stop the interface
+               void stop();
+
                //! Accept a frame from master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
          };

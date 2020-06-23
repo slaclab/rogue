@@ -103,11 +103,11 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
 
 //! Destructor
 rim::TcpServer::~TcpServer() {
-  this->close();
+  this->stop();
 }
 
 void rim::TcpServer::close() {
-    stop();
+    this->stop();
 }
 
 void rim::TcpServer::stop() {

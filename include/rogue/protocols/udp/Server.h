@@ -59,6 +59,9 @@ namespace rogue {
                //! Destructor
                ~Server();
 
+               //! Stop the interface
+               void stop();
+
                //! Get port number
                uint32_t getPort();
 

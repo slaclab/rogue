@@ -69,6 +69,9 @@ namespace rogue {
                //! Destructor
                ~Core();
 
+               //! Stop the interface
+               void stop();
+
                //! Return max payload
                uint32_t maxPayload();
 

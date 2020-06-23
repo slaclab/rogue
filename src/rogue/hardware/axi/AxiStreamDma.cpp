@@ -94,16 +94,22 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
 //! Close the device
 rha::AxiStreamDma::~AxiStreamDma() {
-   this->close();
+   this->stop();
+}
 
+// deprecated
 void rha::AxiStreamDma::close() {
+   this->stop();
+}
+
+void rha::AxiStreamDma::stop() {
   if (threadEn) {
     rogue::GilRelease noGil;
 
     // Stop read thread
     threadEn_ = false;
     thread_->join();
-  
+
     if ( rawBuff_ != NULL ) {
       dmaUnMapDma(fd_, rawBuff_);
     }

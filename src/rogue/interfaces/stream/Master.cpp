@@ -122,7 +122,7 @@ void ris::Master::setup_python() {
       .def("_slaveCount",    &ris::Master::slaveCount)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)
-      .def("_stop",          &ris::Master::stop)
+      .def("stop",           &ris::Master::stop)
       .def("__eq__",         &ris::Master::equalsPy)
       .def("__rshift__",     &ris::Master::rshiftPy)
    ;

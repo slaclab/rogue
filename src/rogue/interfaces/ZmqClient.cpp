@@ -46,6 +46,7 @@ void rogue::interfaces::ZmqClient::setup_python() {
       .def("setDisp",      &rogue::interfaces::ZmqClient::setDisp)
       .def("exec",         &rogue::interfaces::ZmqClient::exec)
       .def("valueDisp",    &rogue::interfaces::ZmqClient::valueDisp)
+      .def("stop",         &rogue::interfaces::ZmqClient::stop)
    ;
 #endif
 }
@@ -110,10 +111,10 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port) {
 }
 
 rogue::interfaces::ZmqClient::~ZmqClient() {
-   this->close();
+   this->stop();
 }
 
-void rogue::interfaces::ZmqClient::close() {
+void rogue::interfaces::ZmqClient::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       waitRetry_ = false;

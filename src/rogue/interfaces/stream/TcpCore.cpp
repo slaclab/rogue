@@ -131,11 +131,12 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
 //! Destructor
 ris::TcpCore::~TcpCore() {
-  this->close();
+  this->stop();
 }
 
+// deprecated
 void ris::TcpCore::close() {
-   stop();
+   this->stop();
 }
 
 void ris::TcpCore::stop() {
