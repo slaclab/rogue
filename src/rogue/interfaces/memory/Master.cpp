@@ -65,6 +65,7 @@ void rim::Master::setup_python() {
       .def("_anyBits",            &rim::Master::anyBits)
       .staticmethod("_anyBits")
       .def("__rshift__",          &rim::Master::rshiftPy)
+      .def("stop",                &rim::Master::stop)
    ;
 #endif
 }

@@ -68,12 +68,18 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4,0xFFFFFFFF) {
 
 //! Destructor
 rh::MemMap::~MemMap() {
-   rogue::GilRelease noGil;
-   threadEn_ = false;
-   queue_.stop();
-   thread_->join();
-   munmap((void *)map_,size_);
-   ::close(fd_);
+   this->stop();
+}
+
+rh::MemMap::stop() {
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      queue_.stop();
+      thread_->join();
+      munmap((void *)map_,size_);
+      ::close(fd_);
+   }
 }
 
 //! Post a transaction
