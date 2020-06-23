@@ -1021,7 +1021,7 @@ void rim::Block::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nBlock c++ raw: Read %i times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nBlock c++ raw: Read %li times in %f seconds. Rate = %f\n",count,durr,rate);
 
    gettimeofday(&stime,NULL);
    waitTransaction(0);
@@ -1035,6 +1035,6 @@ void rim::Block::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nBlock c++ raw: Wrote %i times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nBlock c++ raw: Wrote %li times in %f seconds. Rate = %f\n",count,durr,rate);
 }
 
