@@ -69,7 +69,6 @@ class DummyTree(pr.Root):
 
         # Create a memory gateway
         self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
-        time.sleep(1)
 
         # Connect the memory gateways together
         self.sim << self.ms
@@ -95,8 +94,6 @@ class DummyTree(pr.Root):
 def test_memory():
 
     with DummyTree() as root:
-        # SW settling Time
-        time.sleep(5)
 
         # Load the R/W variables
         for dev in range(2):
