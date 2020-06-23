@@ -186,9 +186,11 @@ class DummyTree(pyrogue.Root):
 
         if args.epics3:
             self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+            self.addProtocol(self._epics)
 
         if args.epics4:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
+            self.addProtocol(self._epics4)
 
     def start(self):
         pyrogue.Root.start(self)
@@ -200,16 +202,6 @@ class DummyTree(pyrogue.Root):
         if args.epics4:
             self._epics4.start()
             self._epics4.dump()
-
-    def stop(self):
-
-        if args.epics3:
-            self._epics.stop()
-
-        if args.epics4:
-            self._epics4.stop()
-
-        pyrogue.Root.stop(self)
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)

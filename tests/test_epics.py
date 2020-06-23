@@ -49,15 +49,12 @@ class LocalRootWithEpics(LocalRoot):
             pv_map=None
 
         self.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=self, pvMap=pv_map)
+        self.addProtocol(self.epics)
 
     def start(self):
         pyrogue.Root.start(self)
         self.epics.start()
 
-    def stop(self):
-        self.epics.stop()
-        self.epics=None
-        pyrogue.Root.stop(self)
 
 def test_local_root():
     """
