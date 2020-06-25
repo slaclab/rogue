@@ -2,12 +2,12 @@
 #-----------------------------------------------------------------------------
 # Title      : Server only test script
 #-----------------------------------------------------------------------------
-# This file is part of the rogue_example software. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue_example software, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue_example software. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue_example software, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
@@ -30,6 +30,8 @@ import numpy as np
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
+import pyrogue.protocols.epics
+
 
 class DummyTree(pyrogue.Root):
 
@@ -48,7 +50,7 @@ class DummyTree(pyrogue.Root):
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
-        
+
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
 
@@ -140,16 +142,16 @@ class DummyTree(pyrogue.Root):
 
         #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
-        #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+        self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
         #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
 
     def start(self):
         pyrogue.Root.start(self)
-        #self.epics.start()
+        self.epics.start()
         #self.epics4.start()
 
     def stop(self):
-        #self.epics.stop()
+        self.epics.stop()
         #self.epics4.stop()
         pyrogue.Root.stop(self)
 
@@ -170,10 +172,10 @@ if __name__ == "__main__":
     with DummyTree() as dummyTree:
         dummyTree.saveAddressMap('test.csv')
 
-        pyrogue.waitCntrlC()
+        #pyrogue.waitCntrlC()
 
-        #import pyrogue.pydm
-        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
+        import pyrogue.pydm
+        pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
 
         #import pyrogue.gui
         #pyrogue.gui.runGui(root=dummyTree)

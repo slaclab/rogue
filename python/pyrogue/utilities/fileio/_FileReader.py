@@ -4,12 +4,12 @@
 # Description:
 # Module for reading file data.
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
@@ -82,13 +82,10 @@ class FileReader(object):
 
             # Process meta data
             if self._configChan is not None and self._header.channel == self._configChan:
-                try:
-                    pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
-                except:
-                    self._log.warning(f"Error processing meta data in {self._currFName}")
+                pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
 
             # This is a data channel
-            else: 
+            else:
                 try:
                     self._data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=payload)
                 except:

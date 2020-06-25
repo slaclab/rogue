@@ -26,11 +26,7 @@ class StreamWriter(pyrogue.DataWriter):
         self._configEn = configEn
 
     def _open(self):
-        try:
-            self._writer.open(self.DataFile.value())
-        except Exception as e:
-            pyrogue.logException(self._log,e)
-            raise e
+        self._writer.open(self.DataFile.value())
 
         # Dump config/status to file
         if self._configEn: self.root.streamYaml()
