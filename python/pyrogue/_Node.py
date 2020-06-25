@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Node Classes
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
@@ -80,11 +80,11 @@ class NodeError(Exception):
 
 class Node(object):
     """
-    Class which serves as a managed object within the pyrogue package. 
+    Class which serves as a managed object within the pyrogue package.
     Each node has the following public fields:
         name: Global name of object
         description: Description of the object.
-        groups: Group or groups this node belongs to. 
+        groups: Group or groups this node belongs to.
            Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
@@ -136,7 +136,7 @@ class Node(object):
         return self._groups
 
     def inGroup(self, group):
-        """ 
+        """
         Return true if this node is part of the passed group or one of the groups in a list
         """
         if isinstance(group,list):
@@ -187,7 +187,7 @@ class Node(object):
         return self.path
 
     def __getattr__(self, name):
-        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a 
+        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found. """
@@ -248,22 +248,22 @@ class Node(object):
 
         # Fail if added to a non device node (may change in future)
         if not isinstance(self,pr.Device):
-            raise NodeError('Attempting to add node with name %s to non device node %s.' % 
+            raise NodeError('Attempting to add node with name %s to non device node %s.' %
                              (node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:
-            raise NodeError('Error adding node with name %s to %s. Tree is already started.' % 
+            raise NodeError('Error adding node with name %s to %s. Tree is already started.' %
                              (node.name,self.name))
 
         # Error if added node already has a parent
         if node._parent is not None:
-            raise NodeError('Error adding node with name %s to %s. Node is already attached.' % 
+            raise NodeError('Error adding node with name %s to %s. Node is already attached.' %
                              (node.name,self.name))
 
         # Names of all sub-nodes must be unique
         if node.name in self.__dir__() or node.name in self._anodes:
-            raise NodeError('Error adding node with name %s to %s. Name collision.' % 
+            raise NodeError('Error adding node with name %s to %s. Name collision.' %
                              (node.name,self.name))
 
         # Add some checking for characters which will make lookups problematic
@@ -274,7 +274,7 @@ class Node(object):
         self._addArrayNode(node)
 
         # Add to primary list
-        self._nodes[node.name] = node 
+        self._nodes[node.name] = node
 
     def _addArrayNode(self, node):
 
@@ -306,7 +306,7 @@ class Node(object):
             k = int(keys[i])
 
             # Last key, set node, check for overlaps
-            if i == (len(keys)-1): 
+            if i == (len(keys)-1):
                 if k in sub:
                     raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
@@ -320,7 +320,7 @@ class Node(object):
             # check for overlaps
             elif isinstance(sub[k],Node):
                 raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
-            
+
             sub = sub[k]
 
 
@@ -332,7 +332,7 @@ class Node(object):
         offset = kwargs.pop('offset')
         for i in range(number):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
-    
+
     @property
     def nodeList(self):
         """
@@ -345,7 +345,7 @@ class Node(object):
         Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node
         class type may be a string when called over Pyro4
-        exc is a class type to exclude, 
+        exc is a class type to exclude,
         incGroups is an optional group or list of groups that this node must be part of
         excGroups is an optional group or list of groups that this node must not be part of
         """
@@ -460,12 +460,12 @@ class Node(object):
         return self.isinstance(pr.BaseCommand)
 
     def find(self, *, recurse=True, typ=None, **kwargs):
-        """ 
+        """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
         For string properties, accepts regexes.
         """
-    
+
         if typ is None:
             typ = pr.Node
 

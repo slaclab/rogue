@@ -4,12 +4,12 @@
 # Description:
 # Module for functions and classes related to command display in the rogue GUI
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 try:
@@ -130,13 +130,13 @@ class CommandLink(QObject):
         else:
             value=None
 
-        if self._command.arg:
-            try:
+        try:
+            if self._command.arg:
                 self._command(self._command.parseDisp(value))
-            except Exception:
-                pass
-        else:
-            self._command()
+            else:
+                self._command()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Wheel:

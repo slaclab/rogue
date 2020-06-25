@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Command Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory
@@ -29,7 +29,7 @@ class BaseCommand(pr.BaseVariable):
                  value=0,
                  retValue=None,
                  enum=None,
-                 hidden=False,                 
+                 hidden=False,
                  groups=None,
                  minimum=None,
                  maximum=None,
@@ -47,7 +47,7 @@ class BaseCommand(pr.BaseVariable):
             groups=groups,
             minimum=minimum,
             maximum=maximum)
-        
+
         self._function = function if function is not None else BaseCommand.nothing
         self._thread = None
         self._lock = threading.Lock()
@@ -115,6 +115,7 @@ class BaseCommand(pr.BaseVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
     @pr.expose
     def call(self,arg=None):
@@ -140,7 +141,7 @@ class BaseCommand(pr.BaseVariable):
             raise CommandError(
                 f'Verification failed for {cmd.path}. \n'+
                 f'Set to {arg} but read back {ret}')
-        
+
 
     @staticmethod
     def createToggle(sets):
@@ -195,7 +196,7 @@ class BaseCommand(pr.BaseVariable):
 
     def replaceFunction(self, function):
         self._function = function
-        
+
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass
 
@@ -264,20 +265,20 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
- 
+
     def get(self, read=True):
         try:
             if read:
                 self._block.startTransaction(rogue.interfaces.memory.Read, check=True)
-                
-            ret = self._block.get(self)
+
+            return self._block.get(self)
 
         except Exception as e:
             pr.logException(self._log,e)
-            return None
+            raise e
 
-        return ret
 
 # Alias
 Command = BaseCommand

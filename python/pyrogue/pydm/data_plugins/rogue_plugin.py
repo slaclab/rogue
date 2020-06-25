@@ -145,7 +145,7 @@ class RogueConnection(PyDMConnection):
             else:
                 self._node.setDisp(val)
         except Exception as e:
-            logger.error("Unable to put %s to %s.  Exception: %s", new_value, self.address, str(e))
+            logger.error("Remote Exception: %s", str(e))
 
 
     def add_listener(self, channel):
