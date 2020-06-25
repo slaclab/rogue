@@ -718,7 +718,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Not a zipfile, not a directory and does not end in .yml
             else:
-                self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+                raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
         # Read each file
         with self.pollBlock(), self.updateGroup():

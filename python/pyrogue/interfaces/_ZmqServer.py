@@ -55,5 +55,5 @@ class ZmqServer(rogue.interfaces.ZmqServer):
                 return self.encode(nAttr,rawStr=rawStr)
 
         except Exception as msg:
-            return self.encode(msg)
+            return self.encode(msg,rawStr=False)
 

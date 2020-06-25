@@ -128,26 +128,25 @@ class RogueConnection(PyDMConnection):
     def put_value(self, new_value):
         if self._node is None or not self._notDev:
             return
-        #try:
+        try:
 
-        if new_value is None:
-            val = None
-        elif self._enum is not None and not isinstance(new_value,str):
-            val = self._enum[new_value]
-        elif self._int:
-            val = int(new_value)
-        else:
-            val = new_value
+            if new_value is None:
+                val = None
+            elif self._enum is not None and not isinstance(new_value,str):
+                val = self._enum[new_value]
+            elif self._int:
+                val = int(new_value)
+            else:
+                val = new_value
 
-        st = time.time()
-        if self._cmd:
-            self._node.__call__(val)
-        else:
-            self._node.setDisp(val)
-        #except Exception as e:
-        #    logger.error("Remote Exception: %s", str(e))
-            # Waiting for information from Hugo on the standard way
-            # of creating error dialogs in pydm
+            st = time.time()
+            if self._cmd:
+                self._node.__call__(val)
+            else:
+                self._node.setDisp(val)
+        except Exception as e:
+            logger.error("Remote Exception: %s", str(e))
+            raise(e)
 
 
     def add_listener(self, channel):
