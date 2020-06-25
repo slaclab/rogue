@@ -146,6 +146,8 @@ class RogueConnection(PyDMConnection):
                 self._node.setDisp(val)
         except Exception as e:
             logger.error("Remote Exception: %s", str(e))
+            # Waiting for information from Hugo on the standard way
+            # of creating error dialogs in pydm
 
 
     def add_listener(self, channel):
