@@ -45,15 +45,19 @@ class EpicsPvHandler(p4p.server.thread.Handler):
 
     def put(self, pv, op):
         if self._var.isVariable and (self._var.mode == 'RW' or self._var.mode == 'WO'):
-            if self._valType == 'enum':
-                self._var.setDisp(str(op.value()))
-            elif self._valType == 's':
-                self._var.setDisp(op.value().raw.value)
-            else:
-                self._var.set(op.value().raw.value)
+            try:
+                if self._valType == 'enum':
+                    self._var.setDisp(str(op.value()))
+                elif self._valType == 's':
+                    self._var.setDisp(op.value().raw.value)
+                else:
+                    self._var.set(op.value().raw.value)
 
-            # Need enum processing
-            op.done()
+                # Need enum processing
+                op.done()
+
+            except Exception as msg:
+                op.done(error=msg)
 
         else: op.done(error='Put Not Supported On This Variable')
 
@@ -61,15 +65,18 @@ class EpicsPvHandler(p4p.server.thread.Handler):
         if self._var.isCommand:
             val = op.value().query
 
-            if 'arg' in val:
-                ret = self._var(val.arg)
-            else:
-                ret = self._var()
+            try:
+                if 'arg' in val:
+                    ret = self._var(val.arg)
+                else:
+                    ret = self._var()
 
-            if ret is None: ret = 'None'
+                if ret is None: ret = 'None'
 
-            v = p4p.Value(p4p.Type([('value',self._valType)]), {'value':ret})
-            op.done(value=(v))
+                v = p4p.Value(p4p.Type([('value',self._valType)]), {'value':ret})
+                op.done(value=(v))
+            except Exception as msg:
+                op.done(error=msg)
 
         else: op.done(error='Rpc Not Supported On Variables')
 
