@@ -155,7 +155,6 @@ class VariableHolder(QTreeWidgetItem):
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        w.adjustSize()
 
         fm = QFontMetrics(w.font())
         width = int(fm.width(self._path.split('.')[-1]) * 1.1)
