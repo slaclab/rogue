@@ -731,6 +731,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if autoCompress:
                 name += '.zip'
+
         yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
         if name.split('.')[-1] == 'zip':

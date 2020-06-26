@@ -138,7 +138,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(arg)
         ret = cmd.get()
         if ret != arg:
-            raise CommandError(
+            raise CommandError(f'Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}')
 
     @staticmethod
     def createToggle(sets):
