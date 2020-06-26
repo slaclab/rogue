@@ -367,24 +367,23 @@ class BaseVariable(pr.Node):
             #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
             if self.disp == 'enum':
                 if value in self.enum:
-                    ret = self.enum[value]
+                    return self.enum[value]
                 else:
                     self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
                     ret = 'INVALID: {:#x}'.format(value)
             else:
                 if self.typeStr == 'ndarray':
-                    ret = str(value)
+                    return str(value)
                 elif (value == '' or value is None):
-                    ret = value
+                    return value
                 else:
-                    ret = self.disp.format(value)
+                    return self.disp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
-            ret = None
+            raise e
 
-        return ret
 
     @pr.expose
     def getDisp(self, read=True):
@@ -416,16 +415,15 @@ class BaseVariable(pr.Node):
                         return eval(sValue)
                     else:
                         return sValue
+
         except Exception:
-            raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
+            msg = "Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType())
+            self._log.error(msg)
+            raise VariableError(msg)
 
     @pr.expose
     def setDisp(self, sValue, write=True):
-        try:
-            self.set(self.parseDisp(sValue), write)
-        except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
+        self.set(self.parseDisp(sValue), write)
 
     @pr.expose
     def nativeType(self):
@@ -534,7 +532,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify)
-
 
         self._block    = None
 

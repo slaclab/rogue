@@ -66,12 +66,15 @@ class SimpleClient(object):
                'attr':attr,
                'args':args,
                'kwargs':kwargs}
+
         try:
             self._req.send_string(jsonpickle.encode(msg))
             resp = jsonpickle.decode(self._req.recv_string())
-        except Exception as msg:
-            print("got remote exception: {}".format(msg))
-            resp = None
+        except Exception as e:
+            raise Exception(f"ZMQ Interface Exception: {e}")
+
+        if isinstance(resp,Exception):
+            raise resp
 
         return resp
 

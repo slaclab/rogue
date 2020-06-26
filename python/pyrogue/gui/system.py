@@ -155,11 +155,16 @@ class DataLink(QObject):
             dataFile = dataFile[0]
 
         if dataFile != '':
-            self.writer.DataFile.setDisp(dataFile)
+            try:
+                self.writer.DataFile.setDisp(dataFile)
+            except Exception as msg:
+                print(f"Got Exception: {msg}")
 
     def genName(self):
-        self.writer.AutoName()
-        pass
+        try:
+            self.writer.AutoName()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     def varListener(self,path,value):
         if self.block:
@@ -201,16 +206,26 @@ class DataLink(QObject):
         self.dataFile.setPalette(p)
 
         self.block = True
-        self.writer.DataFile.setDisp(self.dataFile.text())
+        try:
+            self.writer.DataFile.setDisp(self.dataFile.text())
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
+
         self.block = False
 
     @pyqtSlot()
     def open(self):
-        self.writer.Open()
+        try:
+            self.writer.Open()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def close(self):
-        self.writer.Close()
+        try:
+            self.writer.Close()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def bufferSizeEdited(self):
@@ -225,7 +240,10 @@ class DataLink(QObject):
         self.bufferSize.setPalette(p)
 
         self.block = True
-        self.writer.BufferSize.setDisp(self.bufferSize.text())
+        try:
+            self.writer.BufferSize.setDisp(self.bufferSize.text())
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
         self.block = False
 
     @pyqtSlot()
@@ -241,7 +259,10 @@ class DataLink(QObject):
         self.maxSize.setPalette(p)
 
         self.block = True
-        self.writer.MaxFileSize.setDisp(self.maxSize.text())
+        try:
+            self.writer.MaxFileSize.setDisp(self.maxSize.text())
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
         self.block = False
 
 
@@ -329,13 +350,19 @@ class ControlLink(QObject):
     @pyqtSlot(int)
     def runStateChanged(self,value):
         self.block = True
-        self.control.runState.setDisp(self.runState.itemText(value))
+        try:
+            self.control.runState.setDisp(self.runState.itemText(value))
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
         self.block = False
 
     @pyqtSlot(int)
     def runRateChanged(self,value):
         self.block = True
-        self.control.runRate.setDisp(self.runRate.itemText(value))
+        try:
+            self.control.runRate.setDisp(self.runRate.itemText(value))
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
         self.block = False
 
 
@@ -474,7 +501,10 @@ class SystemWidget(QWidget):
 
     @pyqtSlot()
     def resetLog(self):
-        self.root.ClearLog()
+        try:
+            self.root.ClearLog()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     def varListener(self,path,value):
         name = path.split('.')[-1]
@@ -484,15 +514,24 @@ class SystemWidget(QWidget):
 
     @pyqtSlot()
     def hardReset(self):
-        self.root.HardReset()
+        try:
+            self.root.HardReset()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def initialize(self):
-        self.root.Initialize()
+        try:
+            self.root.Initialize()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def countReset(self):
-        self.root.CountReset()
+        try:
+            self.root.CountReset()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def loadSettings(self):
@@ -505,7 +544,10 @@ class SystemWidget(QWidget):
             loadFile = loadFile[0]
 
         if loadFile != '':
-            self.root.LoadConfig(loadFile)
+            try:
+                self.root.LoadConfig(loadFile)
+            except Exception as msg:
+                print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def saveSettings(self):
@@ -519,7 +561,10 @@ class SystemWidget(QWidget):
             saveFile = saveFile[0]
 
         if saveFile != '':
-            self.root.SaveConfig(saveFile)
+            try:
+                self.root.SaveConfig(saveFile)
+            except Exception as msg:
+                print(f"Got Exception: {msg}")
 
     @pyqtSlot()
     def saveState(self):
@@ -533,4 +578,8 @@ class SystemWidget(QWidget):
             stateFile = stateFile[0]
 
         if stateFile != '':
-            self.root.SaveState(stateFile)
+            try:
+                self.root.SaveState(stateFile)
+            except Exception as msg:
+                print(f"Got Exception: {msg}")
+

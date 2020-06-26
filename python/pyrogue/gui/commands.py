@@ -127,13 +127,13 @@ class CommandLink(QObject):
         else:
             value=None
 
-        if self._command.arg:
-            try:
+        try:
+            if self._command.arg:
                 self._command(self._command.parseDisp(value))
-            except Exception:
-                pass
-        else:
-            self._command()
+            else:
+                self._command()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.Wheel:

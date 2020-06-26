@@ -66,10 +66,10 @@ namespace rogue {
                void updateAlarm(boost::python::object status, boost::python::object severity);
 
                // Lock held when called
-               void valueGet();
+               bool valueGet();
 
                // Lock held when called
-               void valueSet();
+               bool valueSet();
 
          };
 

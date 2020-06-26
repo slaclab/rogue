@@ -591,53 +591,46 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}".format(description)
                 lines.append(data)
 
-        try:
-            with open(fname,'w') as f:
+        with open(fname,'w') as f:
 
-                if headerEn:
-                    f.write('// #############################################\n')
-                    f.write('// Auto Generated Header File From Rogue\n')
-                    f.write('// #############################################\n')
-                    f.write('#ifndef __ROGUE_ADDR_MAP_H__\n')
-                    f.write('#define __ROGUE_ADDR_MAP_H__\n\n')
-                    f.write(f'#define ROGUE_ADDR_MAP "{header}|"\\\n')
+            if headerEn:
+                f.write('// #############################################\n')
+                f.write('// Auto Generated Header File From Rogue\n')
+                f.write('// #############################################\n')
+                f.write('#ifndef __ROGUE_ADDR_MAP_H__\n')
+                f.write('#define __ROGUE_ADDR_MAP_H__\n\n')
+                f.write(f'#define ROGUE_ADDR_MAP "{header}|"\\\n')
 
-                    for line in lines:
-                        f.write(f'     "{line}|"\\\n')
+                for line in lines:
+                    f.write(f'     "{line}|"\\\n')
 
-                    f.write('\n#endif\n')
-                else:
-                    f.write(header + '\n')
-                    for line in lines:
-                        f.write(line + '\n')
-
-        except Exception as e:
-            pr.logException(self._log,e)
+                f.write('\n#endif\n')
+            else:
+                f.write(header + '\n')
+                for line in lines:
+                    f.write(line + '\n')
 
     @pr.expose
     def saveVariableList(self,fname,polledOnly=False,incGroups=None):
-        try:
-            with open(fname,'w') as f:
-                f.write("Path\t")
-                f.write("TypeStr\t")
-                f.write("Mode\t")
-                f.write("Enum\t")
-                f.write("PollInterval\t")
-                f.write("Groups\t")
-                f.write("Description\n")
+        with open(fname,'w') as f:
+            f.write("Path\t")
+            f.write("TypeStr\t")
+            f.write("Mode\t")
+            f.write("Enum\t")
+            f.write("PollInterval\t")
+            f.write("Groups\t")
+            f.write("Description\n")
 
-                for v in self.variableList:
-                    if ((not polledOnly) or (v.pollInterval > 0)) and v.filterByGroup(incGroups=incGroups,excGroups=None):
-                        f.write("{}\t".format(v.path))
-                        f.write("{}\t".format(v.typeStr))
-                        f.write("{}\t".format(v.mode))
-                        f.write("{}\t".format(v.enum))
-                        f.write("{}\t".format(v.pollInterval))
-                        f.write("{}\t".format(v.groups))
-                        f.write("{}\n".format(v.description))
+            for v in self.variableList:
+                if ((not polledOnly) or (v.pollInterval > 0)) and v.filterByGroup(incGroups=incGroups,excGroups=None):
+                    f.write("{}\t".format(v.path))
+                    f.write("{}\t".format(v.typeStr))
+                    f.write("{}\t".format(v.mode))
+                    f.write("{}\t".format(v.enum))
+                    f.write("{}\t".format(v.pollInterval))
+                    f.write("{}\t".format(v.groups))
+                    f.write("{}\n".format(v.description))
 
-        except Exception as e:
-            pr.logException(self._log,e)
 
     def _heartbeat(self):
         if self._running and self._doHeartbeat:
@@ -709,15 +702,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Write all blocks"""
         self._log.info("Start root write")
         with self.pollBlock(), self.updateGroup():
-            try:
-                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-                self._log.info("Verify root read")
-                self.verifyBlocks(recurse=True)
-                self._log.info("Check root read")
-                self.checkBlocks(recurse=True)
-            except Exception as e:
-                pr.logException(self._log,e)
-                return False
+            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+            self._log.info("Verify root read")
+            self.verifyBlocks(recurse=True)
+            self._log.info("Check root read")
+            self.checkBlocks(recurse=True)
 
         self._log.info("Done root write")
         return True
@@ -726,13 +715,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read all blocks"""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
-            try:
-                self.readBlocks(recurse=True)
-                self._log.info("Check root read")
-                self.checkBlocks(recurse=True)
-            except Exception as e:
-                pr.logException(self._log,e)
-                return False
+            self.readBlocks(recurse=True)
+            self._log.info("Check root read")
+            self.checkBlocks(recurse=True)
 
         self._log.info("Done root read")
         return True
@@ -746,20 +731,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if autoCompress:
                 name += '.zip'
-        try:
-            yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
+        yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if name.split('.')[-1] == 'zip':
-                with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
-                    with zf.open(os.path.basename(name[:-4]),'w') as f:
-                        f.write(yml.encode('utf-8'))
-            else:
-                with open(name,'w') as f:
-                    f.write(yml)
-
-        except Exception as e:
-            pr.logException(self._log,e)
-            return False
+        if name.split('.')[-1] == 'zip':
+            with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
+                with zf.open(os.path.basename(name[:-4]),'w') as f:
+                    f.write(yml.encode('utf-8'))
+        else:
+            with open(name,'w') as f:
+                f.write(yml)
 
         return True
 
@@ -799,7 +779,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                     # Check if passed name is a directory, otherwise generate an error
                     if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):
-                        self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+                        raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
                     else:
 
@@ -822,24 +802,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Not a zipfile, not a directory and does not end in .yml
             else:
-                self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+                raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
         # Read each file
-        try:
-            with self.pollBlock(), self.updateGroup():
-                for fn in lst:
-                    d = pr.yamlToData(fName=fn)
-                    self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+        with self.pollBlock(), self.updateGroup():
+            for fn in lst:
+                d = pr.yamlToData(fName=fn)
+                self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-                if not writeEach:
-                    self._write()
+            if not writeEach: self._write()
 
-            if self.InitAfterConfig.value():
-                self.initialize()
-
-        except Exception as e:
-            pr.logException(self._log,e)
-            return False
+        if self.InitAfterConfig.value():
+            self.initialize()
 
         return True
 
@@ -849,15 +823,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
-
         if readFirst:
             self._read()
-        try:
-            return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
-        except Exception as e:
-            pr.logException(self._log,e)
-            return ""
-
+        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
 
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """

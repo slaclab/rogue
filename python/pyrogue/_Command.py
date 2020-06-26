@@ -115,6 +115,7 @@ class BaseCommand(pr.BaseVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
     @pr.expose
     def call(self,arg=None):
@@ -138,8 +139,6 @@ class BaseCommand(pr.BaseVariable):
         ret = cmd.get()
         if ret != arg:
             raise CommandError(
-                f'Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}')
-
 
     @staticmethod
     def createToggle(sets):
@@ -263,6 +262,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
 
     def get(self, read=True):
@@ -274,7 +274,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
-            return None
+            raise e
 
 # Alias
 Command = BaseCommand

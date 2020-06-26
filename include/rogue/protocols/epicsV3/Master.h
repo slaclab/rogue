@@ -46,9 +46,9 @@ namespace rogue {
 
                ~Master ();
 
-               void valueGet();
+               bool valueGet();
 
-               void valueSet();
+               bool valueSet();
          };
 
          // Convienence
