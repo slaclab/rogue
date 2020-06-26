@@ -381,4 +381,3 @@ class VariableWidget(QWidget):
                 root.ReadAll()
         except Exception as msg:
             print(f"Got Exception: {msg}")
-

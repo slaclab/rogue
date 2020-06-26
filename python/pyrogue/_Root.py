@@ -811,7 +811,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 d = pr.yamlToData(fName=fn)
                 self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if not writeEach: self._write()
+            if not writeEach:
+                self._write()
 
         if self.InitAfterConfig.value():
             self.initialize()

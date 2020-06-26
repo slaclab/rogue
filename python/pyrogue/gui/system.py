@@ -582,4 +582,3 @@ class SystemWidget(QWidget):
                 self.root.SaveState(stateFile)
             except Exception as msg:
                 print(f"Got Exception: {msg}")
-

@@ -88,7 +88,7 @@ class FileReader(object):
             else:
                 try:
                     self._data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=payload)
-                except:
+                except Exception:
                     raise rogue.GeneralError('fileio.FileReader',f'Failed to read data from {self._currFname}')
 
                 self._currCount += 1

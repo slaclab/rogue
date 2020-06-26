@@ -370,7 +370,7 @@ class BaseVariable(pr.Node):
                     return self.enum[value]
                 else:
                     self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
-                    ret = 'INVALID: {:#x}'.format(value)
+                    return 'INVALID: {:#x}'.format(value)
             else:
                 if self.typeStr == 'ndarray':
                     return str(value)

@@ -82,11 +82,12 @@ class EpicsPvHandler(p4p.server.thread.Handler):
                 else:
                     ret = self._var()
 
-            if ret is None:
-                ret = 'None'
+                if ret is None:
+                    ret = 'None'
 
                 v = p4p.Value(p4p.Type([('value',self._valType)]), {'value':ret})
                 op.done(value=(v))
+
             except Exception as msg:
                 op.done(error=msg)
 
