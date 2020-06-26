@@ -118,9 +118,10 @@ jobs:
     - stage: gen_release
       name: "Generate Release"
       install:
-         - pip install -r pip_requirements.txt
+         - git clone https://github.com/slaclab/ruckus.git -b new_release
+         - pip install -r ruckus/scripts/pip_requirements.txt
       script:
-         - python scripts/releaseGen.py
+         - python ruckus/scripts/releaseGen.py
 
     # Deploy development version stage (deploy_dev)
     - &deploy-docker-stage      # Docker
