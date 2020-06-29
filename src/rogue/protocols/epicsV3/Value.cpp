@@ -233,6 +233,9 @@ caStatus rpe::Value::readValue(gdd &value) {
       ret = valueGet();
       gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
+
+      if (!ret ) pValue_->setStatSevr(epicsAlarmRead,epicsSevMajor);
+
       if (gdds || !ret) return S_cas_noConvert;
       else return S_casApp_success;
    }
@@ -296,7 +299,10 @@ caStatus rpe::Value::write(const gdd &value) {
 
    // Cal value set and update within lock
    if ( this->valueSet() ) return S_casApp_success;
-   else return S_cas_noConvert;
+   else {
+       pValue_->setStatSevr(epicsAlarmWrite,epicsSevMajor);
+       return S_cas_noConvert;
+   }
 }
 
 aitEnum rpe::Value::bestExternalType() {
