@@ -278,9 +278,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         try:
             resp = self._send(y)
             ret = jsonpickle.decode(resp)
-        except Exception as msg:
-            print("got remote exception: {}".format(msg))
-            ret = None
+        except Exception as e:
+            raise Exception(f"ZMQ Interface Exception: {e}")
+
+        if isinstance(ret,Exception):
+            raise(ret)
 
         return ret
 

@@ -54,7 +54,7 @@ try:
     host = args.server.split(',')[0].split(':')[0]
     port = int(args.server.split(',')[0].split(':')[1])
 except Exception:
-    print("Failed to extract server host & port")
+    raise Exception("Failed to extract server host & port")
 
 print("Connecting to {}".format(args.server))
 

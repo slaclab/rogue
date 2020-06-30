@@ -108,9 +108,9 @@ rpe::Slave::Slave (std::string epicsName, uint32_t max, std::string type) : Valu
 
 rpe::Slave::~Slave() { }
 
-void rpe::Slave::valueGet() { }
+bool rpe::Slave::valueGet() { return true; }
 
-void rpe::Slave::valueSet() { }
+bool rpe::Slave::valueSet() { return true; }
 
 void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameIterator iter;

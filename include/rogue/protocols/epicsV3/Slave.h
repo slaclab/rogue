@@ -48,10 +48,10 @@ namespace rogue {
                ~Slave ();
 
                // Lock held when called
-               void valueGet();
+               bool valueGet();
 
                // Lock held when called
-               void valueSet();
+               bool valueSet();
 
                //! Accept a frame from master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );

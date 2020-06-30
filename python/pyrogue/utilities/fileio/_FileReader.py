@@ -82,10 +82,7 @@ class FileReader(object):
 
             # Process meta data
             if self._configChan is not None and self._header.channel == self._configChan:
-                try:
-                    pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
-                except Exception:
-                    self._log.warning(f"Error processing meta data in {self._currFName}")
+                pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
 
             # This is a data channel
             else:

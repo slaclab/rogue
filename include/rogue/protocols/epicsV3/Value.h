@@ -85,9 +85,9 @@ namespace rogue {
 
                std::string epicsName();
 
-               virtual void valueSet();
+               virtual bool valueSet();
 
-               virtual void valueGet();
+               virtual bool valueGet();
 
                void setPv(rogue::protocols::epicsV3::Pv * pv);
 

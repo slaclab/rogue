@@ -101,9 +101,9 @@ rpe::Master::Master (std::string epicsName, uint32_t max, std::string type) : Va
 
 rpe::Master::~Master() { }
 
-void rpe::Master::valueGet() { }
+bool rpe::Master::valueGet() { return true;}
 
-void rpe::Master::valueSet() {
+bool rpe::Master::valueSet() {
    ris::FramePtr frame;
    ris::FrameIterator iter;
    uint32_t txSize;
@@ -166,5 +166,6 @@ void rpe::Master::valueSet() {
 
    // Should this be pushed to a queue for a worker thread to call slaves?
    sendFrame(frame);
+   return true;
 }
 

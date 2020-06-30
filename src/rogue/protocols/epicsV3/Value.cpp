@@ -199,10 +199,10 @@ std::string rpe::Value::epicsName() {
 }
 
 // Value lock held when this is called
-void rpe::Value::valueSet() { }
+bool rpe::Value::valueSet() { return true; }
 
 // Value lock held when this is called
-void rpe::Value::valueGet() { }
+bool rpe::Value::valueGet() { return true; }
 
 void rpe::Value::setPv(rpe::Pv * pv) {
    pv_ = pv;
@@ -223,6 +223,7 @@ caStatus rpe::Value::read(gdd &prototype) {
 
 caStatus rpe::Value::readValue(gdd &value) {
    gddStatus gdds;
+   bool ret;
 
    std::lock_guard<std::mutex> lock(mtx_);
 
@@ -230,10 +231,13 @@ caStatus rpe::Value::readValue(gdd &value) {
    if ( (array_ && value.isAtomic()) || (array_ && value.isScalar()) || ((!array_) && value.isScalar()) ) {
 
       // Call value get within lock
-      valueGet();
+      ret = valueGet();
       gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
-      if (gdds) return S_cas_noConvert;
+
+      if (!ret ) pValue_->setStatSevr(epicsAlarmRead,epicsSevMajor);
+
+      if (gdds || !ret) return S_cas_noConvert;
       else return S_casApp_success;
    }
    else return S_cas_noConvert;
@@ -295,8 +299,11 @@ caStatus rpe::Value::write(const gdd &value) {
    pValue_->setTimeStamp(&t);
 
    // Cal value set and update within lock
-   this->valueSet();
-   return S_casApp_success;
+   if ( this->valueSet() ) return S_casApp_success;
+   else {
+       pValue_->setStatSevr(epicsAlarmWrite,epicsSevMajor);
+       return S_cas_noConvert;
+   }
 }
 
 aitEnum rpe::Value::bestExternalType() {
