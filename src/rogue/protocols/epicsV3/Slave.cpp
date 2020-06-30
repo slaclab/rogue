@@ -8,12 +8,12 @@
  * Description:
  * Stream slave to epics variables
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -107,9 +107,9 @@ rpe::Slave::Slave (std::string epicsName, uint32_t max, std::string type) : Valu
 
 rpe::Slave::~Slave() { }
 
-void rpe::Slave::valueGet() { }
+bool rpe::Slave::valueGet() { return true; }
 
-void rpe::Slave::valueSet() { }
+bool rpe::Slave::valueSet() { return true; }
 
 void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameIterator iter;
@@ -157,7 +157,7 @@ void rpe::Slave::acceptFrame ( ris::FramePtr frame ) {
       mach_port_deallocate(mach_task_self(), cclock);
       t.tv_sec = mts.tv_sec;
       t.tv_nsec = mts.tv_nsec;
-#else      
+#else
       clock_gettime(CLOCK_REALTIME,&t);
 #endif
       pValue_->setTimeStamp(&t);

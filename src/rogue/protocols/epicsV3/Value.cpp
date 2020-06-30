@@ -8,12 +8,12 @@
  * Description:
  * Class to store an EPICs PV attributes along with its current value
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -103,10 +103,10 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    // Unsigned Int types, > 32-bits treated as string
    else if ( sscanf(typeStr.c_str(),"UInt%i",&bitSize) == 1 ) {
-      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8; } 
-      else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; } 
-      else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; } 
-      else { epicsType_ = aitEnumString; } 
+      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8; }
+      else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
+      else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; }
+      else { epicsType_ = aitEnumString; }
 
       log_->info("Detected Rogue Uint with size %i for %s typeStr=%s",
             bitSize, epicsName_.c_str(),typeStr.c_str());
@@ -114,9 +114,9 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    // Signed Int types, > 32-bits treated as string
    else if ( sscanf(typeStr.c_str(),"Int%i",&bitSize) == 1 ) {
-      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; } 
-      else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; } 
-      else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; } 
+      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; }
+      else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; }
+      else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; }
       else { epicsType_ = aitEnumString; }
 
       log_->info("Detected Rogue Int with size %i for %s typeStr=%s",
@@ -125,12 +125,12 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    // Python int
    else if ( typeStr == "int" ) {
-      fSize_ = 4; 
+      fSize_ = 4;
       epicsType_ = aitEnumInt32;
       log_->info("Detected python int with size %i for %s typeStr=%s",
             bitSize, epicsName_.c_str(),typeStr.c_str());
    }
- 
+
    // 32-bit Float
    else if ( typeStr == "float" or typeStr == "Float32" ) {
       log_->info("Detected 32-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
@@ -198,10 +198,10 @@ std::string rpe::Value::epicsName() {
 }
 
 // Value lock held when this is called
-void rpe::Value::valueSet() { }
+bool rpe::Value::valueSet() { return true; }
 
 // Value lock held when this is called
-void rpe::Value::valueGet() { }
+bool rpe::Value::valueGet() { return true; }
 
 void rpe::Value::setPv(rpe::Pv * pv) {
    pv_ = pv;
@@ -222,6 +222,7 @@ caStatus rpe::Value::read(gdd &prototype) {
 
 caStatus rpe::Value::readValue(gdd &value) {
    gddStatus gdds;
+   bool ret;
 
    std::lock_guard<std::mutex> lock(mtx_);
 
@@ -229,13 +230,16 @@ caStatus rpe::Value::readValue(gdd &value) {
    if ( (array_ && value.isAtomic()) || ((!array_) && value.isScalar()) ) {
 
       // Call value get within lock
-      valueGet();
+      ret = valueGet();
       gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
-      if (gdds) return S_cas_noConvert;   
+
+      if (!ret ) pValue_->setStatSevr(epicsAlarmRead,epicsSevMajor);
+
+      if (gdds || !ret) return S_cas_noConvert;
       else return S_casApp_success;
    }
-   else return S_cas_noConvert;   
+   else return S_cas_noConvert;
 }
 
 caStatus rpe::Value::write(const gdd &value) {
@@ -251,8 +255,8 @@ caStatus rpe::Value::write(const gdd &value) {
       if ( value.dimension() != 1 ) return S_casApp_badDimension;
       const gddBounds* pb = value.getBounds ();
       if ( pb[0].first() != 0 ) return S_casApp_outOfBounds;
-                      
-      // Get size      
+
+      // Get size
       newSize = pb[0].size();
       if ( newSize > max_ ) return S_casApp_outOfBounds;
 
@@ -277,7 +281,7 @@ caStatus rpe::Value::write(const gdd &value) {
    }
 
    // Unsupported type
-   else return S_cas_noConvert;   
+   else return S_cas_noConvert;
 
    // Set the timespec structure to the current time stamp the gdd.
 #ifdef __MACH__ // OSX does not have clock_gettime
@@ -288,14 +292,17 @@ caStatus rpe::Value::write(const gdd &value) {
    mach_port_deallocate(mach_task_self(), cclock);
    t.tv_sec = mts.tv_sec;
    t.tv_nsec = mts.tv_nsec;
-#else      
+#else
    clock_gettime(CLOCK_REALTIME,&t);
 #endif
    pValue_->setTimeStamp(&t);
 
-   // Cal value set and update within lock 
-   this->valueSet();
-   return S_casApp_success;
+   // Cal value set and update within lock
+   if ( this->valueSet() ) return S_casApp_success;
+   else {
+       pValue_->setStatSevr(epicsAlarmWrite,epicsSevMajor);
+       return S_cas_noConvert;
+   }
 }
 
 aitEnum rpe::Value::bestExternalType() {
@@ -384,13 +391,13 @@ gddAppFuncTableStatus rpe::Value::readEnums(gdd &value) {
 
       str = new aitFixedString[nstr];
 
-      for (i=0; i < nstr; i++) 
+      for (i=0; i < nstr; i++)
          strncpy(str[i].fixed_string, enums_[i].c_str(), sizeof(str[i].fixed_string));
 
       value.setDimension(1);
       value.setBound (0,0,nstr);
       value.putRef (str, new rpe::Destructor<aitFixedString *>);
- 
+
       return S_cas_success;
    }
 

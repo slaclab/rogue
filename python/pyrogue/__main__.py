@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -19,12 +19,12 @@ import time
 parser = argparse.ArgumentParser('Pyrogue Client')
 
 parser.add_argument('--server',
-                    type=str, 
+                    type=str,
                     help="Server address: 'host:port' or list of addresses: 'host1:port1,host2:port2'",
                     default='localhost:9099')
 
 parser.add_argument('--ui',
-                    type=str, 
+                    type=str,
                     help='UI File for gui (cmd=gui)',
                     default=None)
 
@@ -32,9 +32,9 @@ parser.add_argument('--details',
                     help='Show log details with stacktrace (cmd=syslog)',
                     action='store_true')
 
-parser.add_argument('cmd',    
-                    type=str, 
-                    choices=['gui','syslog','monitor','get','value','set','exec'], 
+parser.add_argument('cmd',
+                    type=str,
+                    choices=['gui','syslog','monitor','get','value','set','exec'],
                     help='Client command to issue')
 
 parser.add_argument('path',
@@ -43,7 +43,7 @@ parser.add_argument('path',
                     help='Path to access')
 
 parser.add_argument('value',
-                    type=str, 
+                    type=str,
                     nargs='?',
                     help='Value to set')
 
@@ -55,7 +55,7 @@ try:
     host = args.server.split(',')[0].split(':')[0]
     port = int(args.server.split(',')[0].split(':')[1])
 except:
-    print("Failed to extract server host & port")
+    raise Exception("Failed to extract server host & port")
 
 print("Connecting to {}".format(args.server))
 

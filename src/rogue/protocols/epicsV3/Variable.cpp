@@ -271,12 +271,12 @@ void rpe::Variable::updateAlarm(bp::object status, bp::object severity) {
       else if ( sevrStr == "AlarmMajor" ) sevrVal = epicsSevMajor;
       else sevrVal = 0;
    }
-   
+
    pValue_->setStatSevr(statVal,sevrVal);
 }
 
 // Lock held when called
-void rpe::Variable::valueGet() {
+bool rpe::Variable::valueGet() {
 
    if ( syncRead_ ) {
       { // GIL Scope
@@ -292,9 +292,11 @@ void rpe::Variable::valueGet() {
             }
          } catch (...) {
             log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
+            return false;
          }
       }
    }
+   return true;
 }
 
 // Lock held when called
@@ -438,7 +440,7 @@ void rpe::Variable::fromPython(bp::object value) {
 }
 
 // Lock already held
-void rpe::Variable::valueSet() {
+bool rpe::Variable::valueSet() {
    rogue::ScopedGil gil;
    bp::list pl;
    uint32_t i;
@@ -536,7 +538,9 @@ void rpe::Variable::valueSet() {
       }
    } catch (...) {
       log_->error("Error setting value from epics: %s\n",epicsName_.c_str());
+      return false;
    }
+   return true;
 }
 
 template<typename T>
