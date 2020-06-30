@@ -42,6 +42,7 @@ class EpicsCaServer(object):
         return mast
 
     def stop(self):
+        # Add deprecration warning in the future
         self._srv._stop()
 
     def _stop(self):

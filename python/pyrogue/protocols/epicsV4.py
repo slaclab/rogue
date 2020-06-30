@@ -238,6 +238,10 @@ class EpicsPvServer(object):
 
         self._provider = p4p.server.StaticProvider(__name__)
 
+    def stop(self):
+        # Add deprecration warning in the future
+        self._stop()
+
     def _stop(self):
         if self._server is not None:
             self._server.stop()
