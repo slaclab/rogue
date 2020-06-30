@@ -18,6 +18,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
+from qtpy.QtGui import QFontMetrics
 import re
 
 
@@ -31,6 +32,11 @@ class VariableDev(QTreeWidgetItem):
         self._dummy    = None
         self._path     = path
         self._avars    = {}
+
+        if isinstance(parent,VariableDev):
+            self._depth = parent._depth+1
+        else:
+            self._depth = 1
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -104,6 +110,7 @@ class VariableArray(QTreeWidgetItem):
         self._dummy    = None
         self._path     = path
         self._list     = []
+        self._depth     = parent._depth+1
 
         self._lab = QLabel(parent=None, text=self._name + ' (0)')
 
@@ -141,12 +148,21 @@ class VariableHolder(QTreeWidgetItem):
         self._parent = parent
         self._var    = variable
         self._path   = path
+        self._depth  = parent._depth+1
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
+
+        fm = QFontMetrics(w.font())
+        width = int(fm.width(self._path.split('.')[-1]) * 1.1)
+
+        rightEdge = width + (self._top._tree.indentation() * self._depth)
+
+        if rightEdge > self._top._colWidths[0]:
+            self._top._colWidths[0] = rightEdge
 
         self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._var.description)
@@ -182,6 +198,11 @@ class VariableHolder(QTreeWidgetItem):
 
         self._top._tree.setItemWidget(self,3,w)
 
+        width = fm.width('0xAAAAAAAA    ')
+
+        if width > self._top._colWidths[3]:
+            self._top._colWidths[3] = width
+
         if self._var.units:
             self.setText(4,str(self._var.units))
 
@@ -196,6 +217,8 @@ class VariableTree(PyDMFrame):
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._tree      = None
+
+        self._colWidths = [250,50,75,200,50]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -240,11 +263,12 @@ class VariableTree(PyDMFrame):
         self.setUpdatesEnabled(False)
         item._expand()
 
-        self._tree.setColumnWidth(0,250)
-        self._tree.setColumnWidth(1,50)
-        self._tree.setColumnWidth(2,75)
-        self._tree.setColumnWidth(3,200)
-        self._tree.setColumnWidth(4,50)
+        self._tree.setColumnWidth(0,self._colWidths[0])
+        self._tree.resizeColumnToContents(1)
+        self._tree.resizeColumnToContents(2)
+        self._tree.setColumnWidth(3,self._colWidths[3])
+        self._tree.resizeColumnToContents(4)
+
         self.setUpdatesEnabled(True)
 
     @Property(str)

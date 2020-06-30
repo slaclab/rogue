@@ -16,7 +16,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QComboBox
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit
-
+from qtpy.QtGui import QFontMetrics
 
 class CommandDev(QTreeWidgetItem):
 
@@ -27,6 +27,11 @@ class CommandDev(QTreeWidgetItem):
         self._dev      = dev
         self._dummy    = None
         self._path     = path
+
+        if isinstance(parent,CommandDev):
+            self._depth = parent._depth+1
+        else:
+            self._depth = 1
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -89,6 +94,7 @@ class CommandHolder(QTreeWidgetItem):
         self._path   = path
         self._widget = None
         self._value  = self._cmd.valueDisp()
+        self._depth  = parent._depth+1
 
         if self._value is None:
             self._value = ''
@@ -98,6 +104,14 @@ class CommandHolder(QTreeWidgetItem):
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
+
+        fm = QFontMetrics(w.font())
+        width = int(fm.width(self._path.split('.')[-1]) * 1.1)
+
+        rightEdge = width + (self._top._tree.indentation() * self._depth)
+
+        if rightEdge > self._top._colWidths[0]:
+            self._top._colWidths[0] = rightEdge
 
         self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._cmd.description)
@@ -139,6 +153,12 @@ class CommandHolder(QTreeWidgetItem):
 
             self._top._tree.setItemWidget(self,3,self._widget)
 
+            width = fm.width('0xAAAAAAAA    ')
+
+            if width > self._top._colWidths[3]:
+                self._top._colWidths[3] = width
+
+
     #@Slot(str)
     def _argChanged(self,value):
         self._btn.pressValue = value
@@ -155,6 +175,8 @@ class CommandTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
         self._children  = []
+
+        self._colWidths = [250,50,50,200]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -193,10 +215,10 @@ class CommandTree(PyDMFrame):
         self.setUpdatesEnabled(False)
         item._expand()
 
-        self._tree.setColumnWidth(0,250)
-        self._tree.setColumnWidth(1,50)
-        self._tree.setColumnWidth(2,50)
-        self._tree.setColumnWidth(3,200)
+        self._tree.setColumnWidth(0,self._colWidths[0])
+        self._tree.resizeColumnToContents(1)
+        self._tree.resizeColumnToContents(2)
+        self._tree.setColumnWidth(3,self._colWidths[3])
 
         self.setUpdatesEnabled(True)
 
