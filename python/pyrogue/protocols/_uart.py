@@ -84,6 +84,8 @@ class UartMemory(rogue.interfaces.memory.Slave):
                         # parse the response string
                         parts = response.split()
                         # Check for correct response
+
+#_uart.py (line#89 and line#115) should include int(parts[2], 16) != data) (same data echo'd back on a write) and int(parts[3], 16) != 0) (non-zero reponse) checking
                         if (len(parts) != 4 or parts[0].lower() != 'w' or int(parts[1], 16) != addr):
                             transaction.error(f'Malformed response for part {i}: {repr(response)} to transaction: {repr(sendString)}')
                             return
@@ -108,6 +110,8 @@ class UartMemory(rogue.interfaces.memory.Slave):
 
                         # parse the response string
                         parts = response.split()
+
+#_uart.py (line#89 and line#115) should include int(parts[2], 16) != data) (same data echo'd back on a write) and int(parts[3], 16) != 0) (non-zero reponse) checking
 
                         if (len(parts) != 4 or parts[0].lower() != 'r' or int(parts[1], 16) != addr):
                             transaction.error(f'Malformed response part {i}: {repr(response)} to transaction: {repr(sendString)}')
