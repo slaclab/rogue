@@ -110,8 +110,8 @@ def data_path(ver,jumbo):
     sPack.application(0) >> prbsRx
 
     # Start RSSI with out of order disabled
-    sRssi.start()
-    cRssi.start()
+    sRssi._start()
+    cRssi._start()
 
     # Wait for connection
     cnt = 0
@@ -121,8 +121,8 @@ def data_path(ver,jumbo):
         cnt += 1
 
         if cnt == 10:
-            cRssi.stop()
-            sRssi.stop()
+            cRssi._stop()
+            sRssi._stop()
             raise AssertionError('RSSI timeout error. Ver={} Jumbo={}'.format(ver,jumbo))
 
     # Enable out of order with a period of 10
@@ -138,8 +138,8 @@ def data_path(ver,jumbo):
 
     # Stop connection
     print("Closing Link")
-    cRssi.stop()
-    sRssi.stop()
+    cRssi._stop()
+    sRssi._stop()
 
     if prbsRx.getRxCount() != FrameCount:
         raise AssertionError('Frame count error. Ver={} Jumbo={} Got = {} expected = {}'.format(ver,jumbo,prbsRx.getRxCount(),FrameCount))
