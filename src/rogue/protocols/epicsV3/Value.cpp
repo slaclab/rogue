@@ -233,7 +233,6 @@ caStatus rpe::Value::readValue(gdd &value) {
       ret = valueGet();
       gdds = gddApplicationTypeTable::app_table.smartCopy(&value, pValue_);
 
-
       if (!ret ) pValue_->setStatSevr(epicsAlarmRead,epicsSevMajor);
 
       if (gdds || !ret) return S_cas_noConvert;
@@ -301,6 +300,7 @@ caStatus rpe::Value::write(const gdd &value) {
    if ( this->valueSet() ) return S_casApp_success;
    else {
        pValue_->setStatSevr(epicsAlarmWrite,epicsSevMajor);
+       pv_->updated(*pValue_);
        return S_cas_noConvert;
    }
 }
