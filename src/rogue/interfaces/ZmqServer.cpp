@@ -41,7 +41,7 @@ void rogue::interfaces::ZmqServer::setup_python() {
       .def("_doRequest", &rogue::interfaces::ZmqServer::doRequest, &rogue::interfaces::ZmqServerWrap::defDoRequest)
       .def("_publish",   &rogue::interfaces::ZmqServer::publish)
       .def("port",       &rogue::interfaces::ZmqServer::port)
-      .def("stop",       &rogue::interfaces::ZmqServer::stop)
+      .def("_stop",      &rogue::interfaces::ZmqServer::stop)
    ;
 #endif
 }

@@ -60,7 +60,7 @@ class SideBandSim():
         self._sbPush.send(ba)
         self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
 
-    def stop(self):
+    def _stop(self):
         with self._lock:
             self._log.debug('Stopping receive thread')
             self._run = False
@@ -69,7 +69,7 @@ class SideBandSim():
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.stop()
+        self._stop()
 
     def _recvWorker(self):
         while True:
@@ -107,14 +107,14 @@ class Pgp2bSim():
         # sideband
         self.sb = SideBandSim(host, port+8)
 
-    def stop(self):
-        self.sb.stop()
+    def _stop(self):
+        self.sb._stop()
 
     def __enter__(self):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.stop()
+        self._stop()
 
 
 def connectPgp2bSim(pgpA, pgpB):

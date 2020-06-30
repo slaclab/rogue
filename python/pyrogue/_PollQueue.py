@@ -196,7 +196,7 @@ class PollQueue(object):
         with self._condLock:
             return len(self._pq)==0
 
-    def stop(self):
+    def _stop(self):
         with self._condLock:
             self._run = False
             self._condLock.notify()

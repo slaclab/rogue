@@ -238,12 +238,12 @@ class EpicsPvServer(object):
 
         self._provider = p4p.server.StaticProvider(__name__)
 
-    def stop(self):
+    def _stop(self):
         if self._server is not None:
             self._server.stop()
 
     def start(self):
-        self.stop()
+        self._stop()
         self._list = []
 
         if not self._root.running:

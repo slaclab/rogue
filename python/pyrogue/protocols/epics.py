@@ -33,16 +33,19 @@ class EpicsCaServer(object):
 
     def createSlave(self, name, maxSize, type):
         slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
-        self._srv.addValue(slave)
+        self._srv._addValue(slave)
         return slave
 
     def createMaster(self, name, maxSize, type):
         mast = rogue.protocols.epicsV3.Master(self._base + ':' + name,maxSize,type)
-        self._srv.addValue(mast)
+        self._srv._addValue(mast)
         return mast
 
     def stop(self):
-        self._srv.stop()
+        self._srv._stop()
+
+    def _stop(self):
+        self._srv._stop()
 
     def start(self):
 
@@ -59,7 +62,7 @@ class EpicsCaServer(object):
         for v in self._root.variableList:
             self._addPv(v,doAll,self._incGroups,self._excGroups)
 
-        self._srv.start()
+        self._srv._start()
 
     def list(self):
         return self._pvMap
@@ -89,12 +92,12 @@ class EpicsCaServer(object):
             return
 
         if isinstance(node, pyrogue.BaseCommand):
-            self._srv.addValue(rogue.protocols.epicsV3.Command(eName,node))
+            self._srv._addValue(rogue.protocols.epicsV3.Command(eName,node))
             self._log.info("Adding command {} mapped to {}".format(node.path,eName))
         else:
 
             # Add standard variable
             evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
             node.addListener(evar.varUpdated)
-            self._srv.addValue(evar)
+            self._srv._addValue(evar)
             self._log.info("Adding variable {} mapped to {}".format(node.path,eName))

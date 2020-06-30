@@ -46,7 +46,7 @@ class SimpleClient(object):
             self._subThread = threading.Thread(target=self._listen)
             self._subThread.start()
 
-    def stop(self):
+    def _stop(self):
         self._runEn = False
 
     def _listen(self):

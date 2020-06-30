@@ -76,7 +76,7 @@ elif args.cmd == 'syslog':
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        client.stop()
+        client._stop()
         exit()
 
 # Variable Monitor
@@ -96,7 +96,7 @@ elif args.cmd == 'monitor':
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        client.stop()
+        client._stop()
         exit()
 
 # All Other Commands

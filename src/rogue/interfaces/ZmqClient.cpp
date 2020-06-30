@@ -46,7 +46,7 @@ void rogue::interfaces::ZmqClient::setup_python() {
       .def("setDisp",      &rogue::interfaces::ZmqClient::setDisp)
       .def("exec",         &rogue::interfaces::ZmqClient::exec)
       .def("valueDisp",    &rogue::interfaces::ZmqClient::valueDisp)
-      .def("stop",         &rogue::interfaces::ZmqClient::stop)
+      .def("_stop",        &rogue::interfaces::ZmqClient::stop)
    ;
 #endif
 }

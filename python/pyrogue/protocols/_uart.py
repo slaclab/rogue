@@ -34,7 +34,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
     def close(self):
         self.stop()
 
-    def stop(self):
+    def _stop(self):
         self._workerQueue.put(None)
         self._workerQueue.join()
         self.serialPort.close()
@@ -43,7 +43,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        self.stop()
+        self._stop()
 
     def readline(self):
         line = []

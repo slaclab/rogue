@@ -212,13 +212,13 @@ class Device(pr.Node,rim.Hub):
         """Add a protocol entity"""
         self._ifAndProto.append(protocol)
 
-    def stop(self):
+    def _stop(self):
         """ Called recursively from Root.stop when exiting """
         for intf in self._ifAndProto:
-            if hasattr(intf,"stop"):
-                intf.stop()
+            if hasattr(intf,"_stop"):
+                intf._stop()
         for d in self.deviceList:
-            d.stop()
+            d._stop()
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         if pack:

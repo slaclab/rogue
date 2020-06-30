@@ -173,7 +173,7 @@ void rim::Slave::setup_python() {
       .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
       .def("_doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
       .def("__lshift__",      &rim::Slave::lshiftPy)
-      .def("stop",            &rim::Slave::stop)
+      .def("_stop",           &rim::Slave::stop)
    ;
 #endif
 }
