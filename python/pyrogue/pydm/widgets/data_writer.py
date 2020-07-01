@@ -11,7 +11,8 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMPushButton
+from pydm.widgets import PyDMPushButton
+from pyrogue.pydm.widgets import PyRogueLineEdit
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
@@ -49,7 +50,7 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vb.addLayout(fl)
 
-        self._dataFile = PyDMLineEdit(parent=None, init_channel=self._path + '.DataFile')
+        self._dataFile = PyRogueLineEdit(parent=None, init_channel=self._path + '.DataFile')
         self._dataFile.alarmSensitiveContent = False
         self._dataFile.alarmSensitiveBorder  = True
         fl.addRow('Data File:',self._dataFile)
@@ -82,17 +83,17 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vbl.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.BufferSize')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.BufferSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Buffer Size:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.IsOpen/disp')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.IsOpen/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('File Open:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.CurrentSize')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.CurrentSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Current File Size:',w)
@@ -106,17 +107,17 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vbr.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.MaxFileSize')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.MaxFileSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Max Size:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.FrameCount')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.FrameCount')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.TotalSize')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.TotalSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)

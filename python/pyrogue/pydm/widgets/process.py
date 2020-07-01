@@ -11,8 +11,9 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMPushButton, PyDMScaleIndicator
+from pydm.widgets import PyDMPushButton, PyDMScaleIndicator
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
+from pyrogue.pydm.widgets import PyRogueLineEdit
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 
@@ -56,7 +57,7 @@ class Process(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.Running/disp')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.Running/disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -82,7 +83,7 @@ class Process(PyDMFrame):
 
         fl.addRow('Progress:',w)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.Message/disp')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.Message/disp')
         w.showUnits             = False
         w.precisionFromPV       = False
         w.alarmSensitiveContent = False
@@ -97,7 +98,7 @@ class Process(PyDMFrame):
 
         for k,v in prc.nodes.items():
             if v.name not in noAdd and not v.hidden:
-                w = PyDMLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
+                w = PyRogueLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
                 w.showUnits             = False
                 w.precisionFromPV       = True
                 w.alarmSensitiveContent = False

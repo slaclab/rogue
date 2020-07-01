@@ -139,7 +139,6 @@ class RogueConnection(PyDMConnection):
         else:
             val = new_value
 
-        st = time.time()
         if self._cmd:
             self._node.__call__(val)
         else:
@@ -191,7 +190,6 @@ class RogueConnection(PyDMConnection):
                 self.new_value_signal[str].emit(self._node.path)
             else:
                 self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
-                # st = time.time()
                 self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
         else:

@@ -11,6 +11,7 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+from pyrogue.pydm.widgets.line_edit     import PyRogueLineEdit
 from pyrogue.pydm.widgets.command_tree  import CommandTree
 from pyrogue.pydm.widgets.data_writer   import DataWriter
 from pyrogue.pydm.widgets.root_control  import RootControl
