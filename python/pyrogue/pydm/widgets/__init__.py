@@ -20,3 +20,4 @@ from pyrogue.pydm.widgets.system_window import SystemWindow
 from pyrogue.pydm.widgets.variable_tree import VariableTree
 from pyrogue.pydm.widgets.process       import Process
 from pyrogue.pydm.widgets.command       import Command
+from pyrogue.pydm.widgets.line_edit     import PyRogueLineEdit
