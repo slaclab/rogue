@@ -71,6 +71,9 @@ namespace rogue {
                // Destructor
                ~AxiMemMap();
 
+               // Stop the interface
+               void stop();
+
                // Accept as transaction from the memory Master as defined in the Slave class.
                void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
          };

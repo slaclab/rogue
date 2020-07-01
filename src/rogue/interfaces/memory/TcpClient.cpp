@@ -110,10 +110,15 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
-  this->close();
+  this->stop();
 }
 
+// deprecated
 void rim::TcpClient::close() {
+   this->stop();
+}
+
+void rim::TcpClient::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

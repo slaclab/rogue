@@ -36,9 +36,9 @@ namespace bp  = boost::python;
 void rpe::Server::setup_python() {
 
    bp::class_<rpe::Server, rpe::ServerPtr, boost::noncopyable >("Server",bp::init<uint32_t>())
-      .def("addValue", &rpe::Server::addValue)
-      .def("start",    &rpe::Server::start)
-      .def("stop",     &rpe::Server::stop)
+      .def("_addValue", &rpe::Server::addValue)
+      .def("_start",    &rpe::Server::start)
+      .def("_stop",     &rpe::Server::stop)
    ;
 }
 

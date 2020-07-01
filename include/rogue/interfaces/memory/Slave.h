@@ -93,6 +93,9 @@ namespace rogue {
                // Destroy the Slave
                virtual ~Slave();
 
+               //! Stop the interface
+               virtual void stop();
+
                //! Add a transaction to the internal tracking map
                /** This method is called by the sub-class to add a transaction into the local
                 * tracking map for later retrieval. This is used when the transaction will be

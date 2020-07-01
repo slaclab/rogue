@@ -60,11 +60,18 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
 
 //! Destructor
 rha::AxiMemMap::~AxiMemMap() {
-   rogue::GilRelease noGil;
-   threadEn_ = false;
-   queue_.stop();
-   thread_->join();
-   ::close(fd_);
+   this->stop();
+}
+
+// Stop
+void rha::AxiMemMap::stop() {
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      queue_.stop();
+      thread_->join();
+      ::close(fd_);
+   }
 }
 
 //! Post a transaction

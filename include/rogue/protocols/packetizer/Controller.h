@@ -82,6 +82,9 @@ namespace rogue {
                //! Stop transmit queue
                void stopQueue();
 
+               //! Stop
+               void stop();
+
                //! Interface for transport transmitter thread
                std::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
 

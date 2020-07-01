@@ -280,14 +280,14 @@ class UdpRssiPack(pr.Device):
 
         self.add(pr.LocalCommand(
             name        = 'start',
-            function    = lambda: self._rssi.start()
+            function    = lambda: self._rssi._start()
         ))
 
     def application(self,dest):
         return(self._pack.application(dest))
 
     def _stop(self):
-        self._rssi.stop()
+        self._rssi._stop()
 
         # This Device may not necessarily be added to a tree
         # So check if it has a parent first

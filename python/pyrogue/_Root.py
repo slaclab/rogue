@@ -397,13 +397,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread.join()
 
         if self._pollQueue:
-            self._pollQueue.stop()
+            self._pollQueue._stop()
 
         if self._zmqServer is not None:
-            self._zmqServer.close()
+            self._zmqServer._stop()
 
         if self._sqlLog is not None:
-            self._sqlLog.stop()
+            self._sqlLog._stop()
+
+        for d in self.deviceList:
+            d._stop()
 
     @property
     def serverPort(self):

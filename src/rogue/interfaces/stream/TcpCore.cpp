@@ -131,10 +131,15 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
 //! Destructor
 ris::TcpCore::~TcpCore() {
-  this->close();
+  this->stop();
 }
 
+// deprecated
 void ris::TcpCore::close() {
+   this->stop();
+}
+
+void ris::TcpCore::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

@@ -41,7 +41,7 @@ void rogue::interfaces::ZmqServer::setup_python() {
       .def("_doRequest", &rogue::interfaces::ZmqServer::doRequest, &rogue::interfaces::ZmqServerWrap::defDoRequest)
       .def("_publish",   &rogue::interfaces::ZmqServer::publish)
       .def("port",       &rogue::interfaces::ZmqServer::port)
-      .def("close",      &rogue::interfaces::ZmqServer::close)
+      .def("_stop",      &rogue::interfaces::ZmqServer::stop)
    ;
 #endif
 }
@@ -87,10 +87,10 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
 }
 
 rogue::interfaces::ZmqServer::~ZmqServer() {
-   close();
+   stop();
 }
 
-void rogue::interfaces::ZmqServer::close() {
+void rogue::interfaces::ZmqServer::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

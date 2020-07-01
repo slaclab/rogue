@@ -111,6 +111,9 @@ bool ris::Master::ensureSingleBuffer ( ris::FramePtr &frame, bool reqEn ) {
    }
 }
 
+void ris::Master::stop () {
+}
+
 void ris::Master::setup_python() {
 #ifndef NO_PYTHON
 
@@ -119,6 +122,7 @@ void ris::Master::setup_python() {
       .def("_slaveCount",    &ris::Master::slaveCount)
       .def("_reqFrame",      &ris::Master::reqFrame)
       .def("_sendFrame",     &ris::Master::sendFrame)
+      .def("_stop",          &ris::Master::stop)
       .def("__eq__",         &ris::Master::equalsPy)
       .def("__rshift__",     &ris::Master::rshiftPy)
    ;

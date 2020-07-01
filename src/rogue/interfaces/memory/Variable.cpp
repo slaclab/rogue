@@ -489,7 +489,7 @@ void rim::Variable::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nVariable c++ get: Read %i times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nVariable c++ get: Read %li times in %f seconds. Rate = %f\n",count,durr,rate);
 
    gettimeofday(&stime,NULL);
    for (x=0; x < count; ++x) {
@@ -501,7 +501,7 @@ void rim::Variable::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nVariable c++ set: Wrote %i times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nVariable c++ set: Wrote %li times in %f seconds. Rate = %f\n",count,durr,rate);
 }
 
 /////////////////////////////////

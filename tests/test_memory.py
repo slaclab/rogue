@@ -65,16 +65,19 @@ class DummyTree(pr.Root):
                          serverPort=None)
 
         # Use a memory space emulator
-        self.sim = pr.interfaces.simulation.MemEmulate()
+        sim = pr.interfaces.simulation.MemEmulate()
+        self.addInterface(sim)
 
         # Create a memory gateway
-        self.ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
+        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
+        self.addInterface(ms)
 
         # Connect the memory gateways together
-        self.sim << self.ms
+        sim << ms
 
         # Create a memory gateway
-        self.mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
+        self.addInterface(mc)
 
         # Add Device
         modeConfig = ['RW','RW','RO','RO']
@@ -83,13 +86,8 @@ class DummyTree(pr.Root):
                 name       = f'MemDev[{i}]',
                 offset     = i*0x10000,
                 modeConfig = modeConfig[i],
-                memBase    = self.mc,
+                memBase    = mc,
             ))
-
-    def stop(self):
-        self.ms.close()
-        self.mc.close()
-        pr.Root.stop(self)
 
 def test_memory():
 

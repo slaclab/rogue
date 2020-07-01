@@ -147,6 +147,8 @@ class Device(pr.Node,rim.Hub):
         self._size       = size
         self._defaults   = defaults if defaults is not None else {}
 
+        self._ifAndProto = []
+
         self.forceCheckEach = False
 
         # Connect to memory slave
@@ -201,6 +203,22 @@ class Device(pr.Node,rim.Hub):
             # Device does not have a membase
             if node._memBase is None:
                 node._setSlave(self)
+
+    def addInterface(self, interface):
+        """Add a rogue.interfaces.stream.Master or rogue.interfaces.memory.Master"""
+        self._ifAndProto.append(interface)
+
+    def addProtocol(self, protocol):
+        """Add a protocol entity"""
+        self._ifAndProto.append(protocol)
+
+    def _stop(self):
+        """ Called recursively from Root.stop when exiting """
+        for intf in self._ifAndProto:
+            if hasattr(intf,"_stop"):
+                intf._stop()
+        for d in self.deviceList:
+            d._stop()
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         if pack:

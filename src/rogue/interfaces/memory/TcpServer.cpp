@@ -103,10 +103,14 @@ rim::TcpServer::TcpServer (std::string addr, uint16_t port) {
 
 //! Destructor
 rim::TcpServer::~TcpServer() {
-  this->close();
+  this->stop();
 }
 
 void rim::TcpServer::close() {
+    this->stop();
+}
+
+void rim::TcpServer::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;

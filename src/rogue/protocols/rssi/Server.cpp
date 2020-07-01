@@ -75,8 +75,8 @@ void rpr::Server::setup_python() {
       .def("curMaxRetran",     &rpr::Server::curMaxRetran)
       .def("curMaxCumAck",     &rpr::Server::curMaxCumAck)
       .def("setTimeout",       &rpr::Server::setTimeout)
-      .def("stop",             &rpr::Server::stop)
-      .def("start",            &rpr::Server::start)
+      .def("_stop",            &rpr::Server::stop)
+      .def("_start",           &rpr::Server::start)
    ;
 #endif
 }

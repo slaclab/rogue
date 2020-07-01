@@ -66,7 +66,7 @@ class SqlLogger(object):
         if self._conn is not None:
             self._queue.put((None,syslogData))
 
-    def stop(self):
+    def _stop(self):
         if not self._queue.empty():
             print("Waiting for sql logger to finish...")
         self._queue.put(None)

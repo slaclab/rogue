@@ -94,14 +94,22 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
 //! Close the device
 rha::AxiStreamDma::~AxiStreamDma() {
-   rogue::GilRelease noGil;
+   this->stop();
+}
 
-   // Stop read thread
-   threadEn_ = false;
-   thread_->join();
+void rha::AxiStreamDma::stop() {
+  if (threadEn_) {
+    rogue::GilRelease noGil;
 
-   if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
-   ::close(fd_);
+    // Stop read thread
+    threadEn_ = false;
+    thread_->join();
+
+    if ( rawBuff_ != NULL ) {
+      dmaUnMapDma(fd_, rawBuff_);
+    }
+    ::close(fd_);
+  }
 }
 
 //! Set timeout for frame transmits in microseconds

@@ -63,6 +63,10 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
 //! Destroy object
 rim::Slave::~Slave() { }
 
+
+//! Stop the interface
+void rim::Slave::stop() {}
+
 //! Register a master.
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
@@ -169,6 +173,7 @@ void rim::Slave::setup_python() {
       .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
       .def("_doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
       .def("__lshift__",      &rim::Slave::lshiftPy)
+      .def("_stop",           &rim::Slave::stop)
    ;
 #endif
 }

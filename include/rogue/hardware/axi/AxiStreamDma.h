@@ -110,6 +110,9 @@ namespace rogue {
                // Destructor
                ~AxiStreamDma();
 
+               //! Stop the interface
+               void stop();
+
                //! Set timeout for frame transmits in microseconds
                /** This setting defines how long to wait for the lower level
                 * driver to be ready to send data. The current implementation

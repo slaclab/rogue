@@ -62,7 +62,9 @@ rpp::Controller::Controller ( rpp::TransportPtr tran, rpp::ApplicationPtr * app,
 }
 
 //! Destructor
-rpp::Controller::~Controller() { }
+rpp::Controller::~Controller() {
+   this->stopQueue();
+}
 
 //! Stop TX
 void rpp::Controller::stopQueue() {

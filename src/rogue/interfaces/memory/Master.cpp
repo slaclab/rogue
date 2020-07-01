@@ -65,6 +65,7 @@ void rim::Master::setup_python() {
       .def("_anyBits",            &rim::Master::anyBits)
       .staticmethod("_anyBits")
       .def("__rshift__",          &rim::Master::rshiftPy)
+      .def("_stop",               &rim::Master::stop)
    ;
 #endif
 }
@@ -81,6 +82,9 @@ rim::Master::Master() {
 
 //! Destroy object
 rim::Master::~Master() { }
+
+//! Stop the interface
+void rim::Master::stop() {}
 
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
