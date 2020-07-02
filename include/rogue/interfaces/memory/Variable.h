@@ -331,6 +331,11 @@ namespace rogue {
                //! Set unsigned int
                void setUInt(uint64_t &);
 
+               //! Set unsigned int
+               void setValue(uint64_t value) {
+                  setUInt(value);
+               }
+
                //! Get unsigned int
                uint64_t getUInt();
 
@@ -345,6 +350,11 @@ namespace rogue {
 
                //! Set signed int
                void setInt(int64_t &);
+
+               //! Set int
+               void setValue(int64_t value) {
+                  setInt(value);
+               }
 
                //! Get signed int
                int64_t getInt();
@@ -361,6 +371,11 @@ namespace rogue {
                //! Set bool
                void setBool(bool &);
 
+               //! Set bool
+               void setValue(bool value) {
+                  setBool(value);
+               }
+
                //! Get bool
                bool getBool();
 
@@ -375,6 +390,11 @@ namespace rogue {
 
                //! Set string
                void setString(const std::string &);
+
+               //! Set string
+               void setValue(const std::string & value) {
+                  setString(value);
+               }
 
                //! Get string
                std::string getString();
@@ -394,6 +414,11 @@ namespace rogue {
                //! Set Float
                void setFloat(float &);
 
+               //! Set Float
+               void setValue(float value) {
+                  setFloat(value);
+               }
+
                //! Get Float
                float getFloat();
 
@@ -408,6 +433,11 @@ namespace rogue {
 
                //! Set Double
                void setDouble(double &);
+
+               //! Set Double
+               void setValue(double value) {
+                  setDouble(value);
+               }
 
                //! Get Double
                double getDouble();
