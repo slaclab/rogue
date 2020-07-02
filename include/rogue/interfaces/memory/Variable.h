@@ -34,6 +34,10 @@ namespace rogue {
       namespace memory {
 
          class Block;
+         class Variable;
+
+         //! Alias for using shared pointer as VariablePtr
+         typedef std::shared_ptr<rogue::interfaces::memory::Variable> VariablePtr;
 
          //! Memory interface Variable
          class Variable {
@@ -216,7 +220,7 @@ namespace rogue {
                 * @param bitReverse Bit reverse flag
                 * @param bitPoint Bit point for fixed point values
                 */
-               static std::shared_ptr<rogue::interfaces::memory::Variable> create (
+               static rogue::interfaces::memory::VariablePtr create (
                      std::string name,
                      std::string mode,
                      double   minimum,
@@ -331,8 +335,18 @@ namespace rogue {
                //! Set unsigned int
                void setUInt(uint64_t &);
 
+               //! Set unsigned int
+               void setValue(uint64_t value) {
+                  setUInt(value);
+               }
+
                //! Get unsigned int
                uint64_t getUInt();
+
+               //! Get unsigned int
+               void getValue(uint64_t & valueRet) {
+                  valueRet = getUInt();
+               }
 
                /////////////////////////////////
                // C++ int
@@ -341,8 +355,18 @@ namespace rogue {
                //! Set signed int
                void setInt(int64_t &);
 
+               //! Set int
+               void setValue(int64_t value) {
+                  setInt(value);
+               }
+
                //! Get signed int
                int64_t getInt();
+
+               //! Get signed int
+               void getValue(int64_t & valueRet) {
+                  valueRet = getInt();
+               }
 
                /////////////////////////////////
                // C++ bool
@@ -351,8 +375,18 @@ namespace rogue {
                //! Set bool
                void setBool(bool &);
 
+               //! Set bool
+               void setValue(bool value) {
+                  setBool(value);
+               }
+
                //! Get bool
                bool getBool();
+
+               //! Get bool
+               void getValue(bool & valueRet) {
+                  valueRet = getBool();
+               }
 
                /////////////////////////////////
                // C++ String
@@ -361,11 +395,21 @@ namespace rogue {
                //! Set string
                void setString(const std::string &);
 
+               //! Set string
+               void setValue(const std::string & value) {
+                  setString(value);
+               }
+
                //! Get string
                std::string getString();
 
                //! Get string
-               void getString(std::string &);
+               void getString(std::string & retString) {
+                  getValue( retString );
+               }
+
+               //! Get string
+               void getValue(std::string &);
 
                /////////////////////////////////
                // C++ Float
@@ -374,8 +418,18 @@ namespace rogue {
                //! Set Float
                void setFloat(float &);
 
+               //! Set Float
+               void setValue(float value) {
+                  setFloat(value);
+               }
+
                //! Get Float
                float getFloat();
+
+               //! Get Float
+               void getValue(float & valueRet) {
+                  valueRet = getFloat();
+               }
 
                /////////////////////////////////
                // C++ double
@@ -384,11 +438,21 @@ namespace rogue {
                //! Set Double
                void setDouble(double &);
 
+               //! Set Double
+               void setValue(double value) {
+                  setDouble(value);
+               }
+
                //! Get Double
                double getDouble();
 
+               //! Get Double
+               void getValue(double & valueRet) {
+                  valueRet = getDouble();
+               }
+
                /////////////////////////////////
-               // C++ filed point
+               // C++ fixed point
                /////////////////////////////////
 
                //! Set fixed point
@@ -398,9 +462,6 @@ namespace rogue {
                double getFixed();
 
          };
-
-         //! Alias for using shared pointer as VaariablePtr
-         typedef std::shared_ptr<rogue::interfaces::memory::Variable> VariablePtr;
 
 #ifndef NO_PYTHON
 
