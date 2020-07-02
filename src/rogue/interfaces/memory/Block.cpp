@@ -769,7 +769,7 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var ) {
    setBytes((uint8_t *)getBuffer,var);
 }
 
-// Get data using int
+// Get data using string
 bp::object rim::Block::getStringPy ( rim::Variable *var ) {
    uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
 
@@ -789,7 +789,7 @@ void rim::Block::setString ( const std::string &value, rim::Variable *var ) {
    setBytes((uint8_t *)value.c_str(),var);
 }
 
-// Get data using int
+// Get data using string
 std::string rim::Block::getString ( rim::Variable *var ) {
    char getBuffer[var->byteSize_+1];
 
