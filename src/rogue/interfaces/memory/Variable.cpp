@@ -73,6 +73,7 @@ void rim::Variable::setup_python() {
       .def("_set",             &rim::VariableWrap::set)
       .def("_rateTest",        &rim::VariableWrap::rateTest)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
+	  .def("_setLogLevel",     &rim::Variable::setLogLevel)
    ;
 #endif
 }
