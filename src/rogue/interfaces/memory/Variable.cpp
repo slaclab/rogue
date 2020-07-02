@@ -73,6 +73,7 @@ void rim::Variable::setup_python() {
       .def("_set",             &rim::VariableWrap::set)
       .def("_rateTest",        &rim::VariableWrap::rateTest)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
+	  .def("_setLogLevel",     &rim::Variable::setLogLevel)
    ;
 #endif
 }
@@ -642,3 +643,7 @@ double rim::Variable::getFixed() {
    return (block_->*getFixed_)(this);
 }
 
+void rim::Variable::setLogLevel(uint32_t level) {
+   if ( block_ )
+      block_->setLogLevel( level );
+}

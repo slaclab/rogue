@@ -276,6 +276,16 @@ namespace rogue {
                   return bitTotal_;
                }
 
+               //! Return the fastCopy flag of the variable
+               bool fastCopy() const {
+                  return fastCopy_;
+               }
+
+               //! Return the total bytes (rounded up) for this value
+               uint32_t byteSize() const {
+                  return byteSize_;
+               }
+
                //! Return the name of the variable
                const std::string & name() const {
                   return name_;
@@ -317,6 +327,9 @@ namespace rogue {
 
                //! Rate test for debugging
                void rateTest();
+
+               //! Set logging level for Variable's block
+               void setLogLevel(uint32_t level);
 
                /////////////////////////////////
                // C++ Byte Array
