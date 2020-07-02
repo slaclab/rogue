@@ -584,6 +584,15 @@ std::string rim::Variable::getString() {
    return (block_->*getString_)(this);
 }
 
+void rim::Variable::getString( std::string & retString ) {
+   if ( getString_ == NULL ) {
+      retString = "";
+   } else {
+      block_->read(this);
+      retString = (block_->*getString_)(this);
+   }
+}
+
 /////////////////////////////////
 // C++ Float
 /////////////////////////////////

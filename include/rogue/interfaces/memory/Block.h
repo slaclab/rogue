@@ -455,6 +455,9 @@ namespace rogue {
                //! Get data using String, C++ Version
                std::string getString (rogue::interfaces::memory::Variable *var );
 
+               //! Get data into String, C++ Version
+               void getString (rogue::interfaces::memory::Variable *var, std::string & );
+
                //////////////////////////////////////////
                // Float
                //////////////////////////////////////////

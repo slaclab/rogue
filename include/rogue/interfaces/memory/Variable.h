@@ -364,6 +364,9 @@ namespace rogue {
                //! Get string
                std::string getString();
 
+               //! Get string
+               void getString(std::string &);
+
                /////////////////////////////////
                // C++ Float
                /////////////////////////////////
