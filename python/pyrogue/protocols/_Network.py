@@ -41,7 +41,7 @@ class UdpRssiPack(pr.Device):
         self._udp == self._rssi.transport()
         self._rssi.application() == self._pack.transport()
 
-        self._rssi.start()
+        self._rssi._start()
 
         if wait and not server:
             curr = int(time.time())
