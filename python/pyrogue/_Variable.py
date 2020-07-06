@@ -16,7 +16,7 @@ import threading
 import re
 import time
 from collections import OrderedDict as odict
-from collections import Iterable
+from collections.abc import Iterable
 
 
 class VariableError(Exception):
