@@ -30,6 +30,7 @@ class EpicsCaServer(object):
         self._pvMap     = pvMap
         self._incGroups = incGroups
         self._excGroups = excGroups
+        self._started   = False
 
     def createSlave(self, name, maxSize, type):
         slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
@@ -43,12 +44,21 @@ class EpicsCaServer(object):
 
     def stop(self):
         # Add deprecration warning in the future
-        self._srv._stop()
+        self._stop()
+
+    def start(self):
+        # Add deprecration warning in the future
+        self._start()
 
     def _stop(self):
         self._srv._stop()
 
-    def start(self):
+    def _start(self):
+
+        if self._started:
+            return
+
+        self._started = True
 
         if not self._root.running:
             raise Exception("Epics can not be setup on a tree which is not started")

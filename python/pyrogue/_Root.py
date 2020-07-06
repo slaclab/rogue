@@ -375,6 +375,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = threading.Thread(target=self._updateWorker)
         self._updateThread.start()
 
+        # Start interfaces and protocols
+        pr.Device._start(self)
+
         # Read current state
         if self._initRead:
             self._read()
@@ -390,8 +393,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self._heartbeat()
 
+
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
+
         self._running = False
         self._updateQueue.put(None)
         self._updateThread.join()
@@ -405,8 +410,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._sqlLog is not None:
             self._sqlLog._stop()
 
-        for d in self.deviceList:
-            d._stop()
+        pr.Device._stop(self)
 
     @property
     def serverPort(self):

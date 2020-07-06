@@ -192,17 +192,6 @@ class DummyTree(pyrogue.Root):
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
             self.addProtocol(self._epics4)
 
-    def start(self):
-        pyrogue.Root.start(self)
-
-        if args.epics3:
-            self._epics.start()
-            self._epics.dump()
-
-        if args.epics4:
-            self._epics4.start()
-            self._epics4.dump()
-
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)
         self._sdata = np.append(self._sdata,val)
