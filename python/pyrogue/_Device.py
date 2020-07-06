@@ -212,6 +212,14 @@ class Device(pr.Node,rim.Hub):
         """Add a protocol entity"""
         self._ifAndProto.append(protocol)
 
+    def _start(self):
+        """ Called recursively from Root.stop when starting """
+        for intf in self._ifAndProto:
+            if hasattr(intf,"_start"):
+                intf._start()
+        for d in self.deviceList:
+            d._start()
+
     def _stop(self):
         """ Called recursively from Root.stop when exiting """
         for intf in self._ifAndProto:

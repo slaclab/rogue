@@ -243,8 +243,13 @@ class EpicsPvServer(object):
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._pvMap     = pvMap
+        self._started   = False
 
         self._provider = p4p.server.StaticProvider(__name__)
+
+    def start(self):
+        # Add deprecration warning in the future
+        self._start()
 
     def stop(self):
         # Add deprecration warning in the future
@@ -254,7 +259,13 @@ class EpicsPvServer(object):
         if self._server is not None:
             self._server.stop()
 
-    def start(self):
+    def _start(self):
+
+        if self._started:
+            return
+
+        self._started = True
+
         self._stop()
         self._list = []
 
