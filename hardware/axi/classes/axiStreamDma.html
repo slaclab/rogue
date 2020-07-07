@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>AxiStreamDma &mdash; Rogue v4.10.0-65-g93de794c documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v5.0.0-6-g78669afa documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="AxiMemMap" href="axiMemMap.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Rogue
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                v4.10.0
+                v5.0.0
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -110,6 +112,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -148,7 +151,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Hardware</a> &raquo;</li>
         
@@ -179,21 +182,27 @@
 <span id="hardware-axi-axi-stream-dma"></span><h1>AxiStreamDma<a class="headerlink" href="#axistreamdma" title="Permalink to this headline">¶</a></h1>
 <p>Examples of using the AxiStreamDma class are included in <a class="reference internal" href="../stream.html#hardware-axi-stream"><span class="std std-ref">Using The AxiStreamDma Class</span></a>.</p>
 <p>AxiStreamDma objects in C++ are referenced by the following shared pointer typedef:</p>
-<dl class="type">
+<dl class="cpp type">
 <dt id="_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE">
 <span id="_CPPv3N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="_CPPv2N5rogue8hardware3axi15AxiStreamDmaPtrE"></span><span id="rogue::hardware::axi::AxiStreamDmaPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1axi_1a160427ca07aad6dbd387ce985b7678a6"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="sig-prename descclassname">rogue::hardware::axi<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">AxiStreamDmaPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi15AxiStreamDmaPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as AxiStreamDmaPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
-<dl class="class">
+<dl class="cpp class">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDmaE">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="rogue::hardware::axi::AxiStreamDma"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"></span><em class="property">class </em><code class="sig-name descname">AxiStreamDma</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDmaE"></span><span id="rogue::hardware::axi::AxiStreamDma"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"></span><em class="property">class </em><code class="sig-prename descclassname">rogue::hardware::axi<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">AxiStreamDma</code> : <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master">Master</a>, <em class="property">public</em> rogue::interfaces::stream::<a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave">Slave</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>AXI Stream DMA Class. </p>
 <p>This class provides a bridge between the Rogue stream interface and one of the AES Stream Drivers device drivers. This bridge allows Rogue Frames to be sent and received to PCIE Express boards (using the data_dev driver) or Zynq ZXI4 FPGA fabrics (using the rce_stream driver). This interface will allocate Frame and Buffer objects using memory mapped DMA buffers or from a local memory pool when zero copy mode is disabled or a Frame with is requested with the zero copy flag set to false. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma4stopEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma4stopEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma4stopEv"></span><span id="rogue::hardware::axi::AxiStreamDma::stop"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a91de9045eecd13ce9a50ca77d37eb89d"></span>void <code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma4stopEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stop the interface. </p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c"></span>void <code class="sig-name descname">setTimeout</code><span class="sig-paren">(</span>uint32_t <em>timeout</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma10setTimeoutE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set timeout for frame transmits in microseconds. </p>
@@ -207,7 +216,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t"></span><span id="rogue::hardware::axi::AxiStreamDma::setDriverDebug__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301"></span>void <code class="sig-name descname">setDriverDebug</code><span class="sig-paren">(</span>uint32_t <em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma14setDriverDebugE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set driver debug level. </p>
@@ -221,7 +230,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb"></span><span id="rogue::hardware::axi::AxiStreamDma::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83"></span>void <code class="sig-name descname">setZeroCopyEn</code><span class="sig-paren">(</span>bool <em>state</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma13setZeroCopyEnEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Enable / disable zero copy. </p>
@@ -235,7 +244,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma6dmaAckEv">
 <span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6dmaAckEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6dmaAckEv"></span><span id="rogue::hardware::axi::AxiStreamDma::dmaAck"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c"></span>void <code class="sig-name descname">dmaAck</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6dmaAckEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Strobe ack line (hardware specific) </p>
@@ -246,10 +255,10 @@
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb">
-<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689"></span><em class="property">static</em> std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="sig-name descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Class factory which returns a AxiStreamDmaPtr to a newly created <a class="reference internal" href="axiMemMap.html#classrogue_1_1hardware_1_1axi_1_1AxiMemMap"><span class="std std-ref">AxiMemMap</span></a> object. </p>
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb"></span><span id="rogue::hardware::axi::AxiStreamDma::create__ss.uint32_t.b"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689"></span>std::shared_ptr&lt;rogue::hardware::axi::<a class="reference internal" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDmaE" title="rogue::hardware::axi::AxiStreamDma">AxiStreamDma</a>&gt; <code class="sig-name descname">create</code><span class="sig-paren">(</span>std::string <em>path</em>, uint32_t <em>dest</em>, bool <em>ssiEnable</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma6createENSt6stringE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class factory which returns a AxiStreamDmaPtr to a newly created <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">AxiStreamDma</span></a> object. </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue.hardware.axi.AxiStreamDma()</span></a></p>
 <p>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</p>
 <p>The SSI Enable flag determines if the hardware frame follows the SLAC Streaming interface standard. This standard defines a SOF flag in the first user field at bit 1 and and EOFE flag in the last user field bit 0. <dl class="simple">
@@ -290,11 +299,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, SLAC National Accelerator Laboratory
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -305,7 +322,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>EvrStatus &mdash; Rogue v4.10.0-65-g93de794c documentation</title>
+  <title>EvrStatus &mdash; Rogue v5.0.0-6-g78669afa documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="EvrControl" href="evrControl.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Rogue
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                v4.10.0
+                v5.0.0
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -111,6 +113,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -149,7 +152,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Hardware</a> &raquo;</li>
         
@@ -179,14 +182,14 @@
   <div class="section" id="evrstatus">
 <span id="hardware-pgp-evr-status"></span><h1>EvrStatus<a class="headerlink" href="#evrstatus" title="Permalink to this headline">¶</a></h1>
 <p>EvrStatus objects in C++ are referenced by the following shared pointer typedef:</p>
-<dl class="type">
+<dl class="cpp type">
 <dt id="_CPPv4N5rogue8hardware3pgp12EvrStatusPtrE">
 <span id="_CPPv3N5rogue8hardware3pgp12EvrStatusPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp12EvrStatusPtrE"></span><span id="rogue::hardware::pgp::EvrStatusPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1a0a6e46ed0dd88a62d1bd2d24352bb04d"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp9EvrStatusE" title="rogue::hardware::pgp::EvrStatus">EvrStatus</a>&gt; <code class="sig-prename descclassname">rogue::hardware::pgp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">EvrStatusPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp12EvrStatusPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as EvrStatusPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
-<dl class="class">
+<dl class="cpp class">
 <dt id="_CPPv4N5rogue8hardware3pgp9EvrStatusE">
 <span id="_CPPv3N5rogue8hardware3pgp9EvrStatusE"></span><span id="_CPPv2N5rogue8hardware3pgp9EvrStatusE"></span><span id="rogue::hardware::pgp::EvrStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1EvrStatus"></span><em class="property">class </em><code class="sig-name descname">EvrStatus</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv412PgpEvrStatus" title="PgpEvrStatus">PgpEvrStatus</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp9EvrStatusE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR <a class="reference internal" href="status.html#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">Status</span></a> Class. </p>
@@ -195,50 +198,50 @@
 
 <p>The structure which the above class wraps is shown below. All of these
 members are exposed in the above class.</p>
-<dl class="class">
+<dl class="cpp struct">
 <dt id="_CPPv412PgpEvrStatus">
 <span id="_CPPv312PgpEvrStatus"></span><span id="_CPPv212PgpEvrStatus"></span><span id="PgpEvrStatus"></span><span class="target" id="structPgpEvrStatus"></span><em class="property">struct </em><code class="sig-name descname">PgpEvrStatus</code><a class="headerlink" href="#_CPPv412PgpEvrStatus" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR Status, one per lane. </p>
 <p>Subclassed by <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1EvrStatus"><span class="std std-ref">rogue::hardware::pgp::EvrStatus</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus4laneE">
 <span id="_CPPv3N12PgpEvrStatus4laneE"></span><span id="_CPPv2N12PgpEvrStatus4laneE"></span><span id="PgpEvrStatus::lane__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a5e697c01f40dcd30b96bbf8e5ff8d312"></span>uint32_t <code class="sig-name descname">lane</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus4laneE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane number associated with this record. </p>
 </dd></dl>
 
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus10linkErrorsE">
 <span id="_CPPv3N12PgpEvrStatus10linkErrorsE"></span><span id="_CPPv2N12PgpEvrStatus10linkErrorsE"></span><span id="PgpEvrStatus::linkErrors__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a5d1be321e43d223d1f52acbf0d949b5a"></span>uint32_t <code class="sig-name descname">linkErrors</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus10linkErrorsE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR link error counter. </p>
 </dd></dl>
 
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus6linkUpE">
 <span id="_CPPv3N12PgpEvrStatus6linkUpE"></span><span id="_CPPv2N12PgpEvrStatus6linkUpE"></span><span id="PgpEvrStatus::linkUp__uint32_t"></span><span class="target" id="structPgpEvrStatus_1ac03aaa471794d209a3382e04412cda72"></span>uint32_t <code class="sig-name descname">linkUp</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus6linkUpE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR link up state, 0 = down, 1 = up. </p>
 </dd></dl>
 
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus9runStatusE">
 <span id="_CPPv3N12PgpEvrStatus9runStatusE"></span><span id="_CPPv2N12PgpEvrStatus9runStatusE"></span><span id="PgpEvrStatus::runStatus__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a1d9e303a2e82589f5b2ab040169f636e"></span>uint32_t <code class="sig-name descname">runStatus</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus9runStatusE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR running status, 0 = stopped, 1 = running. </p>
 </dd></dl>
 
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus10evrSecondsE">
 <span id="_CPPv3N12PgpEvrStatus10evrSecondsE"></span><span id="_CPPv2N12PgpEvrStatus10evrSecondsE"></span><span id="PgpEvrStatus::evrSeconds__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a37012a78f86b477aab0cb2eb8fdc7dda"></span>uint32_t <code class="sig-name descname">evrSeconds</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus10evrSecondsE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Current distributed timing seconds value. </p>
 </dd></dl>
 
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus10runCounterE">
 <span id="_CPPv3N12PgpEvrStatus10runCounterE"></span><span id="_CPPv2N12PgpEvrStatus10runCounterE"></span><span id="PgpEvrStatus::runCounter__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a31fee3c7ee0dc27de3cf3a3c479416b1"></span>uint32_t <code class="sig-name descname">runCounter</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus10runCounterE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Number of run triggers received. </p>
 </dd></dl>
 
-<dl class="member">
+<dl class="cpp var">
 <dt id="_CPPv4N12PgpEvrStatus13acceptCounterE">
 <span id="_CPPv3N12PgpEvrStatus13acceptCounterE"></span><span id="_CPPv2N12PgpEvrStatus13acceptCounterE"></span><span id="PgpEvrStatus::acceptCounter__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a26479ad6f9ee1f9ea7a68e832773c28e"></span>uint32_t <code class="sig-name descname">acceptCounter</code><a class="headerlink" href="#_CPPv4N12PgpEvrStatus13acceptCounterE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Number of accepts triggers received. </p>
@@ -269,11 +272,19 @@ members are exposed in the above class.</p>
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, SLAC National Accelerator Laboratory
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -284,7 +295,6 @@ members are exposed in the above class.</p>
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {

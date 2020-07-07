@@ -1,15 +1,18 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Frame Iterator &mdash; Rogue v4.10.0-65-g93de794c documentation</title>
+  <title>Frame Iterator &mdash; Rogue v5.0.0-6-g78669afa documentation</title>
   
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
 
   
   
@@ -17,7 +20,9 @@
   
 
   
-  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
@@ -29,10 +34,6 @@
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
     
-
-  
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
     <link rel="next" title="Frame Helpers" href="helpers.html" />
@@ -50,7 +51,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Rogue
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                v4.10.0
+                v5.0.0
               </div>
             
           
@@ -77,6 +78,7 @@
           
         </div>
 
+        
         <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
             
@@ -125,6 +127,7 @@
             
           
         </div>
+        
       </div>
     </nav>
 
@@ -163,7 +166,7 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
           <li><a href="../../index.html">Interfaces</a> &raquo;</li>
         
@@ -197,28 +200,28 @@
 <div><p>rogue::interfaces::stream::Frame::iterator</p>
 </div></blockquote>
 <p>The class description is shown below:</p>
-<dl class="class">
+<dl class="cpp class">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3N5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator"></span><em class="property">class </em><code class="sig-name descname">FrameIterator</code> : <em class="property">public</em> std::iterator&lt;std::random_access_iterator_tag, uint8_t&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator"></span><em class="property">class </em><code class="sig-prename descclassname">rogue::interfaces::stream<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">FrameIterator</code> : <em class="property">public</em> std::iterator&lt;std::random_access_iterator_tag, uint8_t&gt;<a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> iterator. </p>
 <p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> class implements a C++ standard random access iterator with a base type of uint8_t.</p>
 <p>This class is not available in Python. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIterator13FrameIteratorEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIterator13FrameIteratorEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIterator13FrameIteratorEv"></span><span id="rogue::interfaces::stream::FrameIterator::FrameIterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1adb66585acb4e4a5855a3931049af5637"></span><code class="sig-name descname">FrameIterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIterator13FrameIteratorEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create an empty iterator for later assignment. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratoraSERKN5rogue10interfaces6stream13FrameIteratorE">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratoraSERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratoraSERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::assign-operator__rogue::interfaces::stream::FrameIteratorCR"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1aa94c607c1d052c98cad21c978dba1f06"></span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>rhs</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratoraSERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Copy assignment. </p>
 <p>Copy the state of another iterator into the current iterator. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIterator9endBufferEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIterator9endBufferEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIterator9endBufferEv"></span><span id="rogue::interfaces::stream::FrameIterator::endBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a8435804b76ed87d9f06bff5efe055cc4"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">endBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIterator9endBufferEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get iterator marking the end of the current <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a>. </p>
@@ -229,7 +232,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIterator9remBufferEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIterator9remBufferEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIterator9remBufferEv"></span><span id="rogue::interfaces::stream::FrameIterator::remBuffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1aecdc5899fb0eae2c08bd349698ed493c"></span>uint32_t <code class="sig-name descname">remBuffer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIterator9remBufferEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get remaining bytes in current buffer. </p>
@@ -240,16 +243,16 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratormlEv">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratormlEv"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratormlEv"></span><span id="rogue::interfaces::stream::FrameIterator::mul-operatorC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1aab25653f7f8538076ec8bf1fc0cd43e7"></span>uint8_t &amp;<code class="sig-name descname">operator*</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratormlEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratormlEv"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratormlEv"></span><span id="rogue::interfaces::stream::FrameIterator::mul-operatorC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1aa67ac3b5624eede19d4f074da5b77867"></span>uint8_t &amp;<code class="sig-name descname">operator*</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratormlEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>De-reference. </p>
 <p>This allows data at the current iterator position to be accessed using a *it de-reference </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIterator3ptrEv">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIterator3ptrEv"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIterator3ptrEv"></span><span id="rogue::interfaces::stream::FrameIterator::ptrC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1aa1fe2f4737dfb848615b82e340d5f306"></span>uint8_t *<code class="sig-name descname">ptr</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIterator3ptrEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIterator3ptrEv"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIterator3ptrEv"></span><span id="rogue::interfaces::stream::FrameIterator::ptrC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a7b7eec2f5a4cc5ca6217192cf9adee78"></span>uint8_t *<code class="sig-name descname">ptr</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIterator3ptrEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Return uint8_t pointer to current position. </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>uint8_t pointer to current position </p>
@@ -258,9 +261,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t"></span><span id="rogue::interfaces::stream::FrameIterator::subscript-operator__uint32_tCC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a86c789adab351f0d9f6f19758c2ca7f9"></span>uint8_t <code class="sig-name descname">operator[]</code><span class="sig-paren">(</span><em class="property">const</em> uint32_t<span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t"></span><span id="rogue::interfaces::stream::FrameIterator::subscript-operator__uint32_tCC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1ae2b3cd5cffe9b31e516bef0d281c42ac"></span>uint8_t <code class="sig-name descname">operator[]</code><span class="sig-paren">(</span><em class="property">const</em> uint32_t<span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorixEK8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>De-reference by index. </p>
 <p>Returns the data value at the passed relative offset <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Data value at passed offset </p>
@@ -273,7 +276,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratorppEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratorppEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratorppEv"></span><span id="rogue::interfaces::stream::FrameIterator::inc-operator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1acc9194bbe4f01b381d5dd748f0f0d5a3"></span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<code class="sig-name descname">operator++</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorppEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Pre-increment the iterator position. </p>
@@ -284,7 +287,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratorppEi">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratorppEi"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratorppEi"></span><span id="rogue::interfaces::stream::FrameIterator::inc-operator__i"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a3ea2048f9e413d11cf9e940626b2c3bd"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator++</code><span class="sig-paren">(</span>int<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorppEi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Post-increment the iterator position. </p>
@@ -295,7 +298,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratormmEv">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratormmEv"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratormmEv"></span><span id="rogue::interfaces::stream::FrameIterator::dec-operator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1af5d99371c0f5c2ef573e97bbc736dbc4"></span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<code class="sig-name descname">operator--</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratormmEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Pre-decrement the iterator position. </p>
@@ -306,7 +309,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratormmEi">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratormmEi"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratormmEi"></span><span id="rogue::interfaces::stream::FrameIterator::dec-operator__i"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a988b7ae226846c6ed7f2e12ee698b21c"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator--</code><span class="sig-paren">(</span>int<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratormmEi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Post-decrement the iterator position. </p>
@@ -317,9 +320,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::neq-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a25fcaaf66dfe547b838b84751cd26951"></span>bool <code class="sig-name descname">operator!=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::neq-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a6bce12c6587be858005c48a914b3c345"></span>bool <code class="sig-name descname">operator!=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorneERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Not Equal. </p>
 <p>Compare this iterator to another iterator and return True if they are at different positions. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if the two iterators are not equal </p>
@@ -328,9 +331,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::eq-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1af73da1212d80231430f0d9fa576f1202"></span>bool <code class="sig-name descname">operator==</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::eq-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1ab3acc9567fc339c2327bdd767e928c6e"></span>bool <code class="sig-name descname">operator==</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratoreqERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Equal. </p>
 <p>Compare this iterator to another iterator and return True if they are reference the same position within the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if the two iterators are equal </p>
@@ -339,9 +342,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::lt-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1acd32f4bf5fe56c42b47de14ee3c37c41"></span>bool <code class="sig-name descname">operator&lt;</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::lt-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a54500b39b060ddb99a4c265638471677"></span>bool <code class="sig-name descname">operator&lt;</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorltERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Less than. </p>
 <p>Compare this iterator to another iterator and return True if the local iterator (left of &lt;) is less than the iterator being compare against. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if the left iterator is less than the right. </p>
@@ -350,9 +353,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::gt-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a91d6c9ddaee8a6c5f0c7f2ef39251aa2"></span>bool <code class="sig-name descname">operator&gt;</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::gt-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a74496c0c484f980f67326723458718b2"></span>bool <code class="sig-name descname">operator&gt;</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorgtERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Greater than. </p>
 <p>Compare this iterator to another iterator and return True if the local iterator (left of &gt;) is greater than the iterator being compare against. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if the left iterator is greater than the right. </p>
@@ -361,9 +364,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::lte-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a39f54686f09ad18075ca902c454b098e"></span>bool <code class="sig-name descname">operator&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::lte-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1aaf79a42b4bc74b0e6e980fcb506256a9"></span>bool <code class="sig-name descname">operator&lt;=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorleERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Less than or equal to. </p>
 <p>Compare this iterator to another iterator and return True if the local iterator (left of &lt;=) is less than or equal to the iterator being compare against. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if the left iterator is less than or equal to the right. </p>
@@ -372,9 +375,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::gte-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a1f00d97a8aff8290da1a3b41f8f9e199"></span>bool <code class="sig-name descname">operator&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::gte-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1ab8637647aa51d0993c612b7811f43872"></span>bool <code class="sig-name descname">operator&gt;=</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorgeERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Greater than or equal to. </p>
 <p>Compare this iterator to another iterator and return True if the local iterator (left of &gt;=) is greater than or equal to the iterator being compare against. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>True if the left iterator is greater than or equal to the right. </p>
@@ -383,9 +386,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t"></span><span id="rogue::interfaces::stream::FrameIterator::add-operator__int32_tCC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a000d08dd23e97cb38b4e8efd61dee8e5"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator+</code><span class="sig-paren">(</span><em class="property">const</em> int32_t <em>add</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t"></span><span id="rogue::interfaces::stream::FrameIterator::add-operator__int32_tCC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a07cedb61cf512cd99d306be640da58e8"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator+</code><span class="sig-paren">(</span><em class="property">const</em> int32_t <em>add</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratorplEK7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Increment by value. </p>
 <p>Create a new iterator and increment its position by the passed value. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>New iterator at the new position </p>
@@ -398,9 +401,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t"></span><span id="rogue::interfaces::stream::FrameIterator::sub-operator__int32_tCC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1ad6ccde63ab97c56adb4e4486caefaddf"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator-</code><span class="sig-paren">(</span><em class="property">const</em> int32_t <em>sub</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t"></span><span id="rogue::interfaces::stream::FrameIterator::sub-operator__int32_tCC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1ae965ce315a0bad4c745ec417fa0e2a46"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> <code class="sig-name descname">operator-</code><span class="sig-paren">(</span><em class="property">const</em> int32_t <em>sub</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratormiEK7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Decrement by value. </p>
 <p>Create a new iterator and decrement its position by the passed value. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>New iterator at the new position </p>
@@ -413,9 +416,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE">
-<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::sub-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1ac3c2180c9dde16b7d1ab62d3acaa8a6d"></span>int32_t <code class="sig-name descname">operator-</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::FrameIterator::sub-operator__rogue::interfaces::stream::FrameIteratorCRC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a1765e4a5065f8029dd230c37e78a79b2"></span>int32_t <code class="sig-name descname">operator-</code><span class="sig-paren">(</span><em class="property">const</em> rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<em>other</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK5rogue10interfaces6stream13FrameIteratormiERKN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Subtract incrementers. </p>
 <p>Return the difference between the current incrementer position (left of -) and the compared incrementer position. <dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>Different of the two positions as a int32_t </p>
@@ -424,7 +427,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratorpLEK7int32_t">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratorpLEK7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratorpLEK7int32_t"></span><span id="rogue::interfaces::stream::FrameIterator::add-assign-operator__int32_tC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a8a3339584412ad1dc74a390d7b9baa0a"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<code class="sig-name descname">operator+=</code><span class="sig-paren">(</span><em class="property">const</em> int32_t <em>add</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorpLEK7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Increment by value. </p>
@@ -439,7 +442,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N5rogue10interfaces6stream13FrameIteratormIEK7int32_t">
 <span id="_CPPv3N5rogue10interfaces6stream13FrameIteratormIEK7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream13FrameIteratormIEK7int32_t"></span><span id="rogue::interfaces::stream::FrameIterator::sub-assign-operator__int32_tC"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameIterator_1a7aa15e05d7f702cd1b1c8ddffed2ed5e"></span>rogue::interfaces::stream::<a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator">FrameIterator</a> &amp;<code class="sig-name descname">operator-=</code><span class="sig-paren">(</span><em class="property">const</em> int32_t <em>sub</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream13FrameIteratormIEK7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Decrement by value. </p>
@@ -479,11 +482,19 @@
 
   <div role="contentinfo">
     <p>
+        
         &copy; Copyright 2019, SLAC National Accelerator Laboratory
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -494,7 +505,6 @@
 
   </div>
   
-
 
   <script type="text/javascript">
       jQuery(function () {
