@@ -45,6 +45,8 @@ env:
     - MINICONDA_DIR=$PACKAGE_DIR/miniconda
     - DOCKER_ORG_NAME=tidair
     - GITHUB_REPO=slaclab/rogue
+    # Doctr deploy key for slaclab/rogue
+    - secure: "VgtQXXVoQJNYZ/jYeL17Hrk1xJSVnPPtSuavtXHupPYijs9yb4qcXnAU1zNBth68u0Jz8kSbH8yChTq4BhpRhxevvc0r0SSCXOX+BMgTK7kECSTqbZZ4czaVGlP/frzMkwx4BatuHl/+gftgiAfVg1/K3EGfN4K7FAQnzumICPnQExz8q6iQOciP74yyvQ9X+WWxQY4xRzyzH2w0T0PQwkLAWoW+8XfM1/lliYXUBPRIWeGL+piwEiLVV0xn3FjIIykw3AqexxhzSF6Kode5UACmIg6mpKVmz2aPorF8o46aXz0jtUKlvQUFsGZJd4EGWwsRVYKV98ppO9YgE+HsA/kt73eGStsEfhUpAiQ/tuphtfsxV07fNXLN1uIFhMumUWiDrfpbUUKITKqC9FHSBJTEeovSgQsfusxn3yM+KBXeKeO8XzmafrDTGL6or6TUaDhFe4Kad+yVmzWnmiKlcl7O3S7/NfI6M276El92oDlXOh4D4Yp8RfyijLfx+3IU+zrpv6RfJT4BNopP35Am5F4wV37FP0apdpR59BTbXMoY+54EKEy92Hu1xQzuFJASRcCFSIvPiB76DB+Y24tT+WhM/NbslIMrhIwsIZfj6u5tONW2IPtJojJxUx1WArjmyrUWl+QGJnlzBTa9Xb1D1lyMvW6AtouaiWvl7lTYgxI="
 
 jobs:
   include:
