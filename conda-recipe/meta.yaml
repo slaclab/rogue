@@ -29,8 +29,6 @@ requirements:
      - zeromq
      - epics-base [linux]
      - pcas       [linux]
-     - libiconv   [osx]
-     - libarchive [osx]
      - numpy
    run:
      - python

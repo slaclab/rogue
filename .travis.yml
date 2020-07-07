@@ -183,6 +183,9 @@ jobs:
         - hash -r
         - conda config --set always_yes yes
         - conda install conda-build anaconda-client conda-verify
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+            conda install libiconv libarchive -c conda-forge
+          fi
         - conda update -q conda conda-build
         - conda update --all
 
