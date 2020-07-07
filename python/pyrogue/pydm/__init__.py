@@ -17,6 +17,10 @@ import pyrogue.pydm.data_plugins.rogue_plugin
 def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=800,sizeY=1000):
 
     if root is not None:
+
+        if not root.running:
+            raise Exception("Attempt to use pydm with root that has not started")
+
         os.environ['ROGUE_SERVERS'] = 'localhost:{}'.format(root.serverPort)
     else:
         os.environ['ROGUE_SERVERS'] = serverList
