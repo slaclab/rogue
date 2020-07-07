@@ -8,12 +8,12 @@
  * Description:
  * Version helpers for Rogue
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -26,6 +26,7 @@
 #include <sstream>
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
@@ -43,7 +44,7 @@ void rogue::Version::init() {
 
    ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&_devel,dump);
 
-   if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V')) 
+   if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V'))
       throw(rogue::GeneralError("Version:init","Invalid compiled version string"));
 }
 
@@ -98,17 +99,17 @@ bool rogue::Version::lessThan(std::string compare) {
 }
 
 void rogue::Version::minVersion(std::string compare) {
-   if ( lessThan(compare) ) 
+   if ( lessThan(compare) )
       throw(rogue::GeneralError("Version:minVersion","Installed rogue is less than minimum version"));
 }
 
 void rogue::Version::maxVersion(std::string compare) {
-   if ( greaterThan(compare) ) 
+   if ( greaterThan(compare) )
       throw(rogue::GeneralError("Version:maxVersion","Installed rogue is greater than maximum version"));
 }
 
 void rogue::Version::exactVersion(std::string compare) {
-   if ( lessThan(compare) || greaterThan(compare) ) 
+   if ( lessThan(compare) || greaterThan(compare) )
       throw(rogue::GeneralError("Version:exactVersion","Installed rogue is not exact version"));
 }
 
@@ -164,15 +165,15 @@ void rogue::Version::setup_python() {
       .def("greaterThan", &rogue::Version::greaterThan)
       .staticmethod("greaterThan")
       .def("lessThanEqual", &rogue::Version::lessThanEqual)
-      .staticmethod("lessThanEqual")      
+      .staticmethod("lessThanEqual")
       .def("lessThan", &rogue::Version::lessThan)
       .staticmethod("lessThan")
       .def("minVersion", &rogue::Version::minVersion)
       .staticmethod("minVersion")
       .def("maxVersion", &rogue::Version::maxVersion)
-      .staticmethod("maxVersion")    
+      .staticmethod("maxVersion")
       .def("exactVersion", &rogue::Version::exactVersion)
-      .staticmethod("exactVersion")          
+      .staticmethod("exactVersion")
       .def("major", &rogue::Version::getMajor)
       .staticmethod("major")
       .def("minor", &rogue::Version::getMinor)

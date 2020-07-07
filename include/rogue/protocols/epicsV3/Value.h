@@ -8,12 +8,12 @@
  * Description:
  * Class to store an EPICs PV attributes along with its current value
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -21,6 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <thread>
 #include <casdef.h>
@@ -84,9 +85,9 @@ namespace rogue {
 
                std::string epicsName();
 
-               virtual void valueSet();
+               virtual bool valueSet();
 
-               virtual void valueGet();
+               virtual bool valueGet();
 
                void setPv(rogue::protocols::epicsV3::Pv * pv);
 
@@ -139,7 +140,7 @@ namespace rogue {
          typedef std::shared_ptr<rogue::protocols::epicsV3::Value> ValuePtr;
 
          // Destructor
-         template<typename T> 
+         template<typename T>
          class Destructor : public gddDestructor {
             virtual void run (void * pUntyped) {
                T ps = reinterpret_cast <T>(pUntyped);

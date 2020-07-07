@@ -10,12 +10,12 @@
  * Description :
  *    SRP protocol bridge, Version 3
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -41,6 +41,7 @@ namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -64,7 +65,7 @@ void rps::SrpV3::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) { 
+rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) {
    log_ = rogue::Logging::create("SrpV3");
 }
 
@@ -84,7 +85,7 @@ bool rps::SrpV3::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_
       case rim::Post  : header[0] |= 0x200; break;
       default: doWrite = false; break; // Read or verify
    }
-   
+
    // Bits 13:10 not used in gen frame
    // Bit 14 = ignore mem resp
    // Bit 23:15 = Unused
@@ -167,6 +168,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
                tran->id(),tran->address(),tran->size(),tran->type());
    log_->debug("Send frame for id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
                tran->id(), header[0],header[1],header[2],header[3],header[4]);
+
    sendFrame(frame);
 }
 
@@ -221,7 +223,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Transaction expired
    if ( tran->expired() ) {
-      log_->warning("Transaction expired. Id=%i",id);
+      tran->error("Transaction expired: Id=%i (increase root->timeout value if this ID matches a previous timeout message)",id);
       return;
    }
    tIter = tran->begin();

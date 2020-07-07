@@ -6,12 +6,12 @@
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
  * Created       : 10/26/2018
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -34,6 +34,7 @@ namespace rpb = rogue::protocols::batcher;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -76,7 +77,7 @@ void rpb::InverterV1::acceptFrame ( ris::FramePtr frame ) {
    std::memcpy(core.beginHeader().ptr(), core.beginTail(0).ptr(), core.headerSize());
 
    // Copy remaining tails
-   for (x=1; x < core.count(); x++) 
+   for (x=1; x < core.count(); x++)
       std::memcpy(core.beginTail(x-1).ptr(), core.beginTail(x).ptr(), core.headerSize());
 
    // Remove last tail from frame

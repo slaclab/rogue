@@ -32,6 +32,7 @@ namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -68,8 +69,8 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", 
-            "Failed to open device file %s with dest 0x%x",path.c_str(),dest));
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
+            "Failed to open device file %s with dest 0x%x! Another process may already have it open!",path.c_str(),dest));
 
    }
 
@@ -93,14 +94,22 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
 //! Close the device
 rha::AxiStreamDma::~AxiStreamDma() {
-   rogue::GilRelease noGil;
+   this->stop();
+}
 
-   // Stop read thread
-   threadEn_ = false;
-   thread_->join();
+void rha::AxiStreamDma::stop() {
+  if (threadEn_) {
+    rogue::GilRelease noGil;
 
-   if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
-   ::close(fd_);
+    // Stop read thread
+    threadEn_ = false;
+    thread_->join();
+
+    if ( rawBuff_ != NULL ) {
+      dmaUnMapDma(fd_, rawBuff_);
+    }
+    ::close(fd_);
+  }
 }
 
 //! Set timeout for frame transmits in microseconds
@@ -325,10 +334,9 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
          if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
             throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
 
-         decCounter(size);
-
 #endif
       }
+      decCounter(size);
    }
 
    // Buffer is allocated from Pool class
@@ -394,12 +402,12 @@ void rha::AxiStreamDma::runThread() {
             rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 
             // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
-            for (x=0; x < rxCount; x++) 
+            for (x=0; x < rxCount; x++)
                buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
          }
 
          // Return of -1 is bad
-         if ( rxCount < 0 ) 
+         if ( rxCount < 0 )
             throw(rogue::GeneralError("AxiStreamDma::runThread","DMA Interface Failure!"));
 
          // Read was successful

@@ -5,12 +5,12 @@
  * File       : ZmqClient.h
  * Created    : 2019-05-02
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -20,6 +20,7 @@
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 
@@ -38,10 +39,12 @@ namespace rogue {
             // Zeromq response port
             void * zmqReq_;
 
-            //! Log 
+            //! Log
             std::shared_ptr<rogue::Logging> log_;
 
             uint32_t timeout_;
+
+            bool waitRetry_;
 
             std::thread   * thread_;
             bool threadEn_;
@@ -58,11 +61,11 @@ namespace rogue {
             ZmqClient (std::string addr, uint16_t port);
             virtual ~ZmqClient();
 
-            void setTimeout(uint32_t msecs);
+            void setTimeout(uint32_t msecs, bool waitRetry);
 
             std::string send(std::string value);
 
-            void close();
+            void stop();
 
             virtual void doUpdate (std::string data);
 
@@ -83,8 +86,8 @@ namespace rogue {
 #ifndef NO_PYTHON
 
       //! Stream slave class, wrapper to enable python overload of virtual methods
-      class ZmqClientWrap : 
-         public rogue::interfaces::ZmqClient, 
+      class ZmqClientWrap :
+         public rogue::interfaces::ZmqClient,
          public boost::python::wrapper<rogue::interfaces::ZmqClient> {
 
          public:

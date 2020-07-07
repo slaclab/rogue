@@ -21,6 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <thread>
 #include <casdef.h>
@@ -65,10 +66,10 @@ namespace rogue {
                void updateAlarm(boost::python::object status, boost::python::object severity);
 
                // Lock held when called
-               void valueGet();
+               bool valueGet();
 
                // Lock held when called
-               void valueSet();
+               bool valueSet();
 
          };
 

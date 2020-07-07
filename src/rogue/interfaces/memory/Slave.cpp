@@ -8,12 +8,12 @@
  * Description:
  * Memory slave interface.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -27,6 +27,7 @@
 #include <rogue/ScopedGil.h>
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -46,7 +47,7 @@ rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
 }
 
 //! Create object
-rim::Slave::Slave(uint32_t min, uint32_t max) { 
+rim::Slave::Slave(uint32_t min, uint32_t max) {
    min_ = min;
    max_ = max;
 
@@ -55,10 +56,16 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
    id_ = classIdx_;
    classIdx_++;
    classMtx_.unlock();
-} 
+
+   name_ = std::string("Unnamed_") + std::to_string(id_);
+}
 
 //! Destroy object
 rim::Slave::~Slave() { }
+
+
+//! Stop the interface
+void rim::Slave::stop() {}
 
 //! Register a master.
 void rim::Slave::addTransaction(rim::TransactionPtr tran) {
@@ -71,6 +78,7 @@ void rim::Slave::addTransaction(rim::TransactionPtr tran) {
 rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
    rim::TransactionPtr ret;
    TransactionMap::iterator it;
+   TransactionMap::iterator exp;
 
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(slaveMtx_);
@@ -81,18 +89,20 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
       // Remove from list
       tranMap_.erase(it);
 
-      // Cleanup the list, update timers
-      it = tranMap_.begin();
-      while ( it != tranMap_.end() ) {
-         if ( it->second->expired() ) {
-            tranMap_.erase(it); // Iterator no longer valid
-            it = tranMap_.begin();
-         }
-         else {
-            it->second->refreshTimer(ret);
-            ++it;
-         }
+      // Update any timers for transactions started after received transaction
+      exp = tranMap_.end();
+      for ( it = tranMap_.begin(); it != tranMap_.end(); ++it ) {
+         if ( it->second->expired() ) exp = it;
+         else it->second->refreshTimer(ret);
       }
+
+      // Clean up if we found an expired transaction, overtime this will clean up
+      // the list, even if it deletes one expired transaction per call
+      if ( exp != tranMap_.end() ) {
+          printf("Removing expired transaction with id = %i\n",it->second->id());
+          tranMap_.erase(exp);
+      }
+
    }
    return ret;
 }
@@ -112,9 +122,24 @@ uint32_t rim::Slave::id() {
    return id_;
 }
 
+//! Get name from slave
+std::string rim::Slave::name() {
+   return name_;
+}
+
+//! Set name
+void rim::Slave::setName(std::string name) {
+   name_ = name;
+}
+
 //! Return id to requesting master
 uint32_t rim::Slave::doSlaveId() {
    return(id());
+}
+
+//! Return name to requesting master
+std::string rim::Slave::doSlaveName() {
+   return(name());
 }
 
 //! Return min access size to requesting master
@@ -140,6 +165,7 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
    bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
+      .def("setName",         &rim::Slave::setName)
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
       .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
@@ -147,6 +173,7 @@ void rim::Slave::setup_python() {
       .def("_doAddress",      &rim::Slave::doAddress,     &rim::SlaveWrap::defDoAddress)
       .def("_doTransaction",  &rim::Slave::doTransaction, &rim::SlaveWrap::defDoTransaction)
       .def("__lshift__",      &rim::Slave::lshiftPy)
+      .def("_stop",           &rim::Slave::stop)
    ;
 #endif
 }

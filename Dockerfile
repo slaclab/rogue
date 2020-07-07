@@ -1,4 +1,4 @@
-FROM tidair/rogue-base:v1.0.0
+FROM tidair/rogue-base:v2.0.1
 
 # Install Rogue
 ARG branch

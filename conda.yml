@@ -1,6 +1,5 @@
 channels:
   - tidair-packages
-  - pydm-tag
   - conda-forge
 dependencies:
   - python
@@ -19,7 +18,7 @@ dependencies:
   - numpy
   - pyqt
   - pyepics
-  - boost=1.69
+  - boost
   - bzip2
   - zeromq
   - epics-base

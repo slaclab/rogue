@@ -38,6 +38,7 @@ namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -91,12 +92,19 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
 //! Destructor
 rhp::PgpCard::~PgpCard() {
-   rogue::GilRelease noGil;
-   threadEn_ = false;
-   thread_->join();
+   this->stop();
+}
 
-   if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
-   ::close(fd_);
+//! Stop
+void rhp::PgpCard::stop() {
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      thread_->join();
+
+      if ( rawBuff_ != NULL ) dmaUnMapDma(fd_, rawBuff_);
+      ::close(fd_);
+   }
 }
 
 //! Set timeout for frame transmits in microseconds

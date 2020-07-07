@@ -2,15 +2,15 @@
 #-----------------------------------------------------------------------------
 # Title      : Data over udp/packetizer/rssi test script
 #-----------------------------------------------------------------------------
-# This file is part of the rogue_example software. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue_example software, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue_example software. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue_example software, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.utilities 
+import rogue.utilities
 import rogue.protocols.udp
 import rogue.interfaces.stream
 import rogue
@@ -110,8 +110,8 @@ def data_path(ver,jumbo):
     sPack.application(0) >> prbsRx
 
     # Start RSSI with out of order disabled
-    sRssi.start()
-    cRssi.start()
+    sRssi._start()
+    cRssi._start()
 
     # Wait for connection
     cnt = 0
@@ -121,8 +121,8 @@ def data_path(ver,jumbo):
         cnt += 1
 
         if cnt == 10:
-            cRssi.stop()
-            sRssi.stop()
+            cRssi._stop()
+            sRssi._stop()
             raise AssertionError('RSSI timeout error. Ver={} Jumbo={}'.format(ver,jumbo))
 
     # Enable out of order with a period of 10
@@ -138,8 +138,8 @@ def data_path(ver,jumbo):
 
     # Stop connection
     print("Closing Link")
-    cRssi.stop()
-    sRssi.stop()
+    cRssi._stop()
+    sRssi._stop()
 
     if prbsRx.getRxCount() != FrameCount:
         raise AssertionError('Frame count error. Ver={} Jumbo={} Got = {} expected = {}'.format(ver,jumbo,prbsRx.getRxCount(),FrameCount))

@@ -8,12 +8,12 @@
  * Description:
  * Memory Transaction
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -26,8 +26,10 @@
 #include <mutex>
 #include <condition_variable>
 #include <rogue/EnableSharedFromThis.h>
+#include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 
@@ -40,19 +42,19 @@ namespace rogue {
          class Hub;
 
          //! Transaction Container
-         /** The Transaction is passed between the Master and Slave to initiate a transaction. 
-          * The Transaction class contains information about the transaction as well as the 
-          * transaction data pointer. Each created transaction object has a unique 32-bit 
+         /** The Transaction is passed between the Master and Slave to initiate a transaction.
+          * The Transaction class contains information about the transaction as well as the
+          * transaction data pointer. Each created transaction object has a unique 32-bit
           * transaction ID which is used to track the transaction. Transactions are never
           * created directly, instead they are created in the Master() class.
-          */ 
+          */
          class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Transaction> {
             friend class TransactionLock;
             friend class Master;
             friend class Hub;
 
-            public: 
-               
+            public:
+
                //! Alias for using uint8_t * as Transaction::iterator
                typedef uint8_t * iterator;
 
@@ -69,7 +71,7 @@ namespace rogue {
 
             protected:
 
-               // Transaction timeout 
+               // Transaction timeout
                struct timeval timeout_;
 
                // Transaction end time
@@ -77,6 +79,9 @@ namespace rogue {
 
                // Transaction start time
                struct timeval startTime_;
+
+               // Transaction warn time
+               struct timeval warnTime_;
 
 #ifndef NO_PYTHON
                // Transaction python buffer
@@ -109,6 +114,9 @@ namespace rogue {
 
                // Transaction lock
                std::mutex lock_;
+
+               //! Log
+               std::shared_ptr<rogue::Logging> log_;
 
                // Create a transaction container and return a TransactionPtr, called by Master
                static std::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
@@ -170,7 +178,7 @@ namespace rogue {
 
                //! Refresh transaction timer
                /** Called to refresh the Transaction timer. If the passed reference
-                * Transaction is NULL or the Transaction start time is later than the 
+                * Transaction is NULL or the Transaction start time is later than the
                 * reference transaction, the Transaction timer will be refreshed.
                 *
                 * Not exposed to Python

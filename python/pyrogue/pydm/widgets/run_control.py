@@ -1,21 +1,22 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Run Control Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import pyrogue
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLineEdit, PyDMEnumComboBox
+from pydm.widgets import PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Qt, Property
+from pyrogue.pydm.widgets import PyRogueLineEdit
+from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
+
 
 class RunControl(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
@@ -23,10 +24,11 @@ class RunControl(PyDMFrame):
         self._node = None
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(RunControl, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -71,11 +73,10 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyDMLineEdit(parent=None, init_channel=self._path + '.runCount')
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.runCount')
         w.showUnits             = False
         w.precisionFromPV       = True
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
 
         fl.addRow('Run Count:',w)
-

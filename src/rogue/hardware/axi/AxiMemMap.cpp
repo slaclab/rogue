@@ -5,12 +5,12 @@
  * File       : AxiMemMap.cpp
  * Created    : 2017-03-21
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -35,6 +35,7 @@ namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -49,7 +50,7 @@ rha::AxiMemMapPtr rha::AxiMemMap::create (std::string path) {
 rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    fd_ = ::open(path.c_str(), O_RDWR);
    log_ = rogue::Logging::create("axi.AxiMemMap");
-   if ( fd_ < 0 ) 
+   if ( fd_ < 0 )
       throw(rogue::GeneralError::create("AxiMemMap::AxiMemMap", "Failed to open device file: %s",path.c_str()));
 
    // Start read thread
@@ -59,11 +60,18 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
 
 //! Destructor
 rha::AxiMemMap::~AxiMemMap() {
-   rogue::GilRelease noGil;
-   threadEn_ = false;
-   queue_.stop();
-   thread_->join();
-   ::close(fd_);
+   this->stop();
+}
+
+// Stop
+void rha::AxiMemMap::stop() {
+   if ( threadEn_ ) {
+      rogue::GilRelease noGil;
+      threadEn_ = false;
+      queue_.stop();
+      thread_->join();
+      ::close(fd_);
+   }
 }
 
 //! Post a transaction

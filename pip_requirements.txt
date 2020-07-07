@@ -17,3 +17,6 @@ p4p
 sqlalchemy
 pyserial
 numpy
+flake8
+gitpython
+pygithub

@@ -1,26 +1,21 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Virtual Classes
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import sys
-from collections import OrderedDict as odict
-import logging
-import inspect
+
 import pyrogue as pr
-import zmq
 import rogue.interfaces
-import functools as ft
 import jsonpickle
-import re
 import time
 import threading
+
 
 class VirtualProperty(object):
     def __init__(self, node, attr):
@@ -79,9 +74,9 @@ def VirtualFactory(data):
 
 class VirtualNode(pr.Node):
     def __init__(self, attrs):
-        super().__init__(name=attrs['name'], 
-                         description=attrs['description'], 
-                         expand=attrs['expand'], 
+        super().__init__(name=attrs['name'],
+                         description=attrs['description'],
+                         expand=attrs['expand'],
                          groups=attrs['groups'])
 
         self._path  = attrs['path']
@@ -112,16 +107,19 @@ class VirtualNode(pr.Node):
         raise pr.NodeError('callRecursive not supported in VirtualNode')
 
     def __getattr__(self, name):
-        if not self._loaded: self._loadNodes()
+        if not self._loaded:
+            self._loadNodes()
         return pr.Node.__getattr__(self,name)
 
     @property
     def nodes(self):
-        if not self._loaded: self._loadNodes()
+        if not self._loaded:
+            self._loadNodes()
         return self._nodes
 
     def node(self, name, load=True):
-        if (not self._loaded) and load: self._loadNodes()
+        if (not self._loaded) and load:
+            self._loadNodes()
 
         if name in self._nodes:
             return self._nodes[name]
@@ -209,7 +207,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __init__(self, addr="localhost", port=9099):
         if hash((addr,port)) in VirtualClient.ClientCache:
-            return 
+            return
 
         VirtualClient.ClientCache[hash((addr, port))] = self
 
@@ -224,7 +222,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
-        self.setTimeout(1000)
+        self.setTimeout(1000,True)
         self._root = None
         while self._root is None:
             self._root = self._remoteAttr('__ROOT__',None)
@@ -242,7 +240,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._ltime = self._root.Time.value()
 
     def addLinkMonitor(self, function):
-        if not function in self._monitors:
+        if function not in self._monitors:
             self._monitors.append(function)
         self._monWorker()
 
@@ -256,19 +254,20 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         return self._link
 
     def _monWorker(self):
-        if len(self._monitors) == 0: return
+        if len(self._monitors) == 0:
+            return
 
         threading.Timer(1.0,self._monWorker).start()
 
         if self._link and (time.time() - self._ltime) > 10.0:
             self._link = False
-            print(f"Link to {self._root.name} lost!")
+            self._log.warning(f"I have not heard from {self._root.name} in 10 seconds. It may be busy, continuing to wait...")
             for mon in self._monitors:
                 mon(self._link)
 
         elif (not self._link) and (time.time() - self._ltime) < 10.0:
             self._link = True
-            print(f"Link to {self._root.name} restored!")
+            self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
             for mon in self._monitors:
                 mon(self._link)
 
@@ -279,9 +278,11 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         try:
             resp = self._send(y)
             ret = jsonpickle.decode(resp)
-        except Exception as msg:
-            print("got remote exception: {}".format(msg))
-            ret = None
+        except Exception as e:
+            raise Exception(f"ZMQ Interface Exception: {e}")
+
+        if isinstance(ret,Exception):
+            raise(ret)
 
         return ret
 
@@ -318,4 +319,3 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __ne__(self, other):
         return not (self == other)
-

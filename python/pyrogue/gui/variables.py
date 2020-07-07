@@ -4,25 +4,23 @@
 # Description:
 # Module for functions and classes related to variable display in the rogue GUI
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-try:
-    from PyQt5.QtWidgets import *
-    from PyQt5.QtCore    import *
-    from PyQt5.QtGui     import *
-except ImportError:
-    from PyQt4.QtCore    import *
-    from PyQt4.QtGui     import *
+from PyQt5.QtWidgets import QTreeWidget, QTreeWidgetItem, QPushButton, QComboBox, QSpinBox, QMenu
+from PyQt5.QtWidgets import QLineEdit, QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QDialog
+from PyQt5.QtCore    import QObject, pyqtSlot, pyqtSignal, QCoreApplication, Qt, QEvent
+from PyQt5.QtGui     import QPalette
 
 import pyrogue
 import pyrogue.interfaces
 import threading
+
 
 class VariableDev(QObject):
 
@@ -83,6 +81,7 @@ class VariableDev(QObject):
         for i in range(0,4):
             self._tree.resizeColumnToContents(i)
 
+
 class VariableLink(QObject):
     """Bridge between the pyrogue tree and the display element"""
 
@@ -103,7 +102,7 @@ class VariableLink(QObject):
         self._item.setText(1,variable.mode)
         self._item.setText(2,variable.typeStr)
 
-        
+
         self._alarm = QLineEdit()
         self._alarm.setReadOnly(True)
         #self._alarm.setText('None')
@@ -124,9 +123,12 @@ class VariableLink(QObject):
 
             self._widget.installEventFilter(self)
 
-        elif self._variable.minimum is not None and self._variable.maximum is not None and \
-             self._variable.disp == '{}' and self._variable.mode != 'RO':
-            self._widget = QSpinBox();
+        elif self._variable.minimum is not None and \
+            self._variable.maximum is not None and \
+            self._variable.disp == '{}' and \
+                self._variable.mode != 'RO':
+
+            self._widget = QSpinBox()
             self._widget.setMinimum(self._variable.minimum)
             self._widget.setMaximum(self._variable.maximum)
             self._widget.valueChanged.connect(self.sbChanged)
@@ -172,31 +174,35 @@ class VariableLink(QObject):
 
         action = menu.exec_(self._widget.mapToGlobal(event))
 
-        if action == var_info:
-            self.infoDialog()
-        elif action == read_recurse:
-            self._variable.parent.ReadDevice(True)
-        elif action == write_recurse:
-            self._variable.parent.WriteDevice(True)
-        elif action == read_device:
-            self._variable.parent.ReadDevice(False)
-        elif action == write_device:
-            self._variable.parent.WriteDevice(False)
-        elif action == read_variable:
-            self._variable.get()
-        elif action == write_variable:
-            if isinstance(self._widget, QComboBox):
-                self._variable.setDisp(self._widget.currentText())
-            elif isinstance(self._widget, QSpinBox):
-                self._variable.set(self._widget.value())
-            else:
-                self._variable.setDisp(self._widget.text())
+        try:
+            if action == var_info:
+                self.infoDialog()
+            elif action == read_recurse:
+                self._variable.parent.ReadDevice(True)
+            elif action == write_recurse:
+                self._variable.parent.WriteDevice(True)
+            elif action == read_device:
+                self._variable.parent.ReadDevice(False)
+            elif action == write_device:
+                self._variable.parent.WriteDevice(False)
+            elif action == read_variable:
+                self._variable.get()
+            elif action == write_variable:
+                if isinstance(self._widget, QComboBox):
+                    self._variable.setDisp(self._widget.currentText())
+                elif isinstance(self._widget, QSpinBox):
+                    self._variable.set(self._widget.value())
+                else:
+                    self._variable.setDisp(self._widget.text())
+
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
 
     def infoDialog(self):
 
-        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum', 
-                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum', 
-                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning', 
+        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
         if self._variable.isinstance(pyrogue.RemoteVariable):
@@ -236,7 +242,8 @@ class VariableLink(QObject):
             if isinstance(self._widget, QComboBox):
                 i = self._widget.findText(varVal.valueDisp)
 
-                if i < 0: i = 0
+                if i < 0:
+                    i = 0
 
                 if self._widget.currentIndex() != i:
                     self.updateGui.emit(i)
@@ -288,7 +295,11 @@ class VariableLink(QObject):
         p = QPalette()
         self._widget.setPalette(p)
 
-        self._variable.setDisp(self._widget.text())
+        try:
+            self._variable.setDisp(self._widget.text())
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
+
         self._inEdit = False
         self.updateGui.emit(self._variable.valueDisp())
 
@@ -296,9 +307,14 @@ class VariableLink(QObject):
     def sbChanged(self, value):
         if self._swSet:
             return
-        
+
         self._inEdit = True
-        self._variable.setDisp(value)
+
+        try:
+            self._variable.setDisp(value)
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
+
         self._inEdit = False
 
     @pyqtSlot(int)
@@ -307,7 +323,12 @@ class VariableLink(QObject):
             return
 
         self._inEdit = True
-        self._variable.setDisp(self._widget.itemText(value))
+
+        try:
+            self._variable.setDisp(self._widget.itemText(value))
+        except Exception as msg:
+            print(f"Got Exception: {msg}")
+
         self._inEdit = False
 
     def eventFilter(self, obj, event):
@@ -355,6 +376,8 @@ class VariableWidget(QWidget):
 
     @pyqtSlot()
     def readPressed(self):
-        for root in self.roots:
-            root.ReadAll()
-
+        try:
+            for root in self.roots:
+                root.ReadAll()
+        except Exception as msg:
+            print(f"Got Exception: {msg}")

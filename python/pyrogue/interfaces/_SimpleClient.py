@@ -15,17 +15,18 @@
 # c.get("dummyTree.Time")
 #
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import zmq
 import jsonpickle
 import threading
+
 
 class SimpleClient(object):
 
@@ -45,7 +46,7 @@ class SimpleClient(object):
             self._subThread = threading.Thread(target=self._listen)
             self._subThread.start()
 
-    def stop(self):
+    def _stop(self):
         self._runEn = False
 
     def _listen(self):
@@ -61,16 +62,19 @@ class SimpleClient(object):
 
 
     def _remoteAttr(self,path,attr,*args,**kwargs):
-        msg = {'path':path, 
+        msg = {'path':path,
                'attr':attr,
                'args':args,
                'kwargs':kwargs}
+
         try:
             self._req.send_string(jsonpickle.encode(msg))
             resp = jsonpickle.decode(self._req.recv_string())
-        except Exception as msg:
-            print("got remote exception: {}".format(msg))
-            resp = None
+        except Exception as e:
+            raise Exception(f"ZMQ Interface Exception: {e}")
+
+        if isinstance(resp,Exception):
+            raise resp
 
         return resp
 
@@ -94,4 +98,3 @@ class SimpleClient(object):
 
     def exec(self,path,arg):
         return self._remoteAttr(path, '__call__', arg)
-

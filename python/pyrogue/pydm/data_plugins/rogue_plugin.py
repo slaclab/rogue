@@ -1,18 +1,18 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM data plug-in
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import logging
 import numpy as np
 import os
-import time
+# import time
 
 from pydm.data_plugins.plugin import PyDMPlugin, PyDMConnection
 from PyQt5.QtCore import pyqtSlot, Qt
@@ -26,6 +26,7 @@ from pyrogue.interfaces import VirtualClient
 logger = logging.getLogger(__name__)
 
 AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
+
 
 def parseAddress(address):
     # "rogue://index/<path>/<mode>"
@@ -81,7 +82,7 @@ class RogueConnection(PyDMConnection):
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
-            self._node   = self._client.root.getNode(self._path)
+            self._node = self._client.root.getNode(self._path)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
             self._node.addListener(self._updateVariable)
@@ -128,24 +129,20 @@ class RogueConnection(PyDMConnection):
     def put_value(self, new_value):
         if self._node is None or not self._notDev:
             return
-        try:
 
-            if new_value is None:
-                val = None
-            elif self._enum is not None and not isinstance(new_value,str):
-                val = self._enum[new_value]
-            elif self._int:
-                val = int(new_value)
-            else:
-                val = new_value
+        if new_value is None:
+            val = None
+        elif self._enum is not None and not isinstance(new_value,str):
+            val = self._enum[new_value]
+        elif self._int:
+            val = int(new_value)
+        else:
+            val = new_value
 
-            st = time.time()
-            if self._cmd:
-                self._node.__call__(val)
-            else:
-                self._node.setDisp(val)
-        except Exception as e:
-            logger.error("Unable to put %s to %s.  Exception: %s", new_value, self.address, str(e))
+        if self._cmd:
+            self._node.__call__(val)
+        else:
+            self._node.setDisp(val)
 
 
     def add_listener(self, channel):
@@ -193,7 +190,6 @@ class RogueConnection(PyDMConnection):
                 self.new_value_signal[str].emit(self._node.path)
             else:
                 self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
-                st = time.time()
                 self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
         else:
@@ -225,7 +221,7 @@ class RogueConnection(PyDMConnection):
     def close(self):
         pass
 
+
 class RoguePlugin(PyDMPlugin):
     protocol = "rogue"
     connection_class = RogueConnection
-

@@ -1,25 +1,25 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM Read Recursive Tool
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
 import logging
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
-from pydm.utilities.remove_protocol import remove_protocol
 
 import pyrogue
 from pyrogue.interfaces import VirtualClient
 from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 
 logger = logging.getLogger(__name__)
+
 
 class ReadRecursive(ExternalTool):
 
@@ -52,4 +52,3 @@ class ReadRecursive(ExternalTool):
         ret = ExternalTool.get_info(self)
         ret.update({'file': __file__})
         return ret
-

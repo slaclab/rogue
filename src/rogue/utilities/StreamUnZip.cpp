@@ -7,12 +7,12 @@
  * Description :
  *    Stream modules to decompress a data stream
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -33,6 +33,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
@@ -67,7 +68,7 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
    strm.bzfree  = NULL;
    strm.opaque  = NULL;
 
-   if ( (ret = BZ2_bzDecompressInit(&strm,0,0)) != BZ_OK ) 
+   if ( (ret = BZ2_bzDecompressInit(&strm,0,0)) != BZ_OK )
       throw(rogue::GeneralError::create("StreamUnZip::acceptFrame","Error initializing decompressor. ret=%i",ret));
 
    // Setup decompression pointers
@@ -84,7 +85,7 @@ void ru::StreamUnZip::acceptFrame ( ris::FramePtr frame ) {
 
       ret = BZ2_bzDecompress(&strm);
 
-      if ( (ret != BZ_STREAM_END) && (ret != BZ_OK) ) 
+      if ( (ret != BZ_STREAM_END) && (ret != BZ_OK) )
          throw(rogue::GeneralError::create("StreamUnZip::acceptFrame","Decompression runtime error %i",ret));
 
       if ( ret == BZ_STREAM_END ) break;

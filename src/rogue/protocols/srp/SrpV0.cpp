@@ -10,12 +10,12 @@
  * Description :
  *    SRP protocol bridge, Version 0
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -41,6 +41,7 @@ namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -60,7 +61,7 @@ void rps::SrpV0::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) { 
+rps::SrpV0::SrpV0() : ris::Master(), ris::Slave(), rim::Slave(4,2048) {
    log_ = rogue::Logging::create("SrpV0");
 }
 
@@ -136,14 +137,14 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    tIter = tran->begin();
 
    // Write header
-   ris::toFrame(fIter,headerLen,header); 
+   ris::toFrame(fIter,headerLen,header);
 
    // Write data
    if ( doWrite ) ris::toFrame(fIter, tran->size(), tIter);
 
    // Last field is zero
    tail[0] = 0;
-   ris::toFrame(fIter,TailLen,tail); 
+   ris::toFrame(fIter,TailLen,tail);
 
    if ( tran->type() == rim::Post ) tran->done();
    else addTransaction(tran);
@@ -193,7 +194,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract id from frame
    id = header[0];
-   log_->debug("Got frame id=%i header: 0x%0.8x 0x%0.8x 0x%0.8x", 
+   log_->debug("Got frame id=%i header: 0x%0.8x 0x%0.8x 0x%0.8x",
                id, header[0],header[1],header[2]);
 
    // Find Transaction

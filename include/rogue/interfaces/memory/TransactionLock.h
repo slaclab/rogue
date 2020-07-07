@@ -8,12 +8,12 @@
  * Description:
  * Memory Transaction lock
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -30,7 +30,7 @@ namespace rogue {
 
          //! Transaction Lock
          /**
-          * The TransactionLock is a container for holding a lock on Transaction data while accessing 
+          * The TransactionLock is a container for holding a lock on Transaction data while accessing
           * that data. This lock ensures that Transaction is not destroyed when the Slave is updating
           * its data and result. This object is created by calling Transaction::lock().
           */
@@ -65,7 +65,7 @@ namespace rogue {
                void unlock();
 
                //! Enter method for python, does nothing
-               /** This exists only to support the 
+               /** This exists only to support the
                 * with call in python.
                 *
                 * Exposed as __enter__() to Python
@@ -73,7 +73,7 @@ namespace rogue {
                void enter();
 
                //! Exit method for python, does nothing
-               /** This exists only to support the 
+               /** This exists only to support the
                 * with call in python.
                 *
                 * Exposed as __exit__() to Python

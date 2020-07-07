@@ -8,12 +8,12 @@
  * Description:
  * Logging interface for pyrogue
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -43,9 +43,9 @@ namespace rogue {
 
    //! Logging
    class Logging {
-      
-         //! Global Logging level 
-         static uint32_t gblLevel_; 
+
+         //! Global Logging level
+         static uint32_t gblLevel_;
 
          //! Logging level lock
          static std::mutex levelMtx_;
@@ -70,9 +70,9 @@ namespace rogue {
          static const uint32_t Info     = 20;
          static const uint32_t Debug    = 10;
 
-         static std::shared_ptr<rogue::Logging> create(std::string name);
+         static std::shared_ptr<rogue::Logging> create(std::string name, bool quiet=false);
 
-         Logging (std::string name);
+         Logging (std::string name, bool quiet=false);
          ~Logging();
 
          static void setLevel(uint32_t level);

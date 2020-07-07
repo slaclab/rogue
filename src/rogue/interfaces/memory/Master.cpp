@@ -8,12 +8,12 @@
  * Description:
  * Memory master interface.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -23,6 +23,7 @@
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Helpers.h>
+#include <cstring>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
@@ -31,6 +32,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -47,6 +49,7 @@ void rim::Master::setup_python() {
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqSlaveId",         &rim::Master::reqSlaveId)
+      .def("_reqSlaveName",       &rim::Master::reqSlaveName)
       .def("_reqMinAccess",       &rim::Master::reqMinAccess)
       .def("_reqMaxAccess",       &rim::Master::reqMaxAccess)
       .def("_reqAddress",         &rim::Master::reqAddress)
@@ -62,6 +65,7 @@ void rim::Master::setup_python() {
       .def("_anyBits",            &rim::Master::anyBits)
       .staticmethod("_anyBits")
       .def("__rshift__",          &rim::Master::rshiftPy)
+      .def("_stop",               &rim::Master::stop)
    ;
 #endif
 }
@@ -74,10 +78,13 @@ rim::Master::Master() {
    rogue::defaultTimeout(sumTime_);
 
    log_ = rogue::Logging::create("memory.Master");
-} 
+}
 
 //! Destroy object
 rim::Master::~Master() { }
+
+//! Stop the interface
+void rim::Master::stop() {}
 
 //! Set slave
 void rim::Master::setSlave ( rim::SlavePtr slave ) {
@@ -94,6 +101,11 @@ rim::SlavePtr rim::Master::getSlave () {
 //! Query the slave id
 uint32_t rim::Master::reqSlaveId() {
    return(slave_->doSlaveId());
+}
+
+//! Query the slave name
+std::string rim::Master::reqSlaveName() {
+   return(slave_->doSlaveName());
 }
 
 //! Query the minimum access size in bytes for interface
@@ -131,7 +143,7 @@ void rim::Master::setTimeout(uint64_t timeout) {
    if (timeout != 0 ) {
       div_t divResult = div(timeout,1000000);
       sumTime_.tv_sec  = divResult.quot;
-      sumTime_.tv_usec = divResult.rem;       
+      sumTime_.tv_usec = divResult.rem;
    }
 }
 
@@ -188,8 +200,9 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
       tranMap_[tran->id_] = tran;
    }
 
-   
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
+   tran->log_->debug("Created transaction type=%i id=%i, address=0x%.8x, size=0x%x",
+         tran->type_,tran->id_,tran->address_,tran->size_);
    slave->doTransaction(tran);
    tran->refreshTimer(tran);
    return(tran->id_);
@@ -292,7 +305,7 @@ void rim::Master::copyBitsPy(boost::python::object dst, uint32_t dstLsb, boost::
                size, srcLsb, srcBuf.len*8));
    }
 
-   copyBits((uint8_t *)dstBuf.buf, dstLsb, (uint8_t *)srcBuf.buf, srcLsb, size); 
+   copyBits((uint8_t *)dstBuf.buf, dstLsb, (uint8_t *)srcBuf.buf, srcLsb, size);
 
    PyBuffer_Release(&srcBuf);
    PyBuffer_Release(&dstBuf);

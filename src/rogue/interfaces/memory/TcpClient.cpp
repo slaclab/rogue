@@ -34,6 +34,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -53,7 +54,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    logstr.append(addr);
    logstr.append(".");
    logstr.append(std::to_string(port));
-       
+
    this->bridgeLog_ = rogue::Logging::create(logstr);
 
    // Format address
@@ -68,7 +69,7 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    // Don't buffer when no connection
    opt = 1;
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket immediate"));
 
    this->respAddr_.append(std::to_string(static_cast<long long>(port+1)));
@@ -77,14 +78,14 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
    this->bridgeLog_->debug("Creating response client port: %s",this->respAddr_.c_str());
 
    opt = 0;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
-   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqReq_, ZMQ_LINGER, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket linger"));
 
    opt = 100;
-   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 ) 
+   if ( zmq_setsockopt (this->zmqResp_, ZMQ_RCVTIMEO, &opt, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("memory::TcpClient::TcpClient","Failed to set socket receive timeout"));
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
@@ -109,10 +110,15 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
 //! Destructor
 rim::TcpClient::~TcpClient() {
-  this->close();
+  this->stop();
 }
 
+// deprecated
 void rim::TcpClient::close() {
+   this->stop();
+}
+
+void rim::TcpClient::stop() {
    if ( threadEn_ ) {
       rogue::GilRelease noGil;
       threadEn_ = false;
@@ -121,7 +127,7 @@ void rim::TcpClient::close() {
       zmq_close(this->zmqReq_);
       zmq_ctx_destroy(this->zmqCtx_);
    }
-}  
+}
 
 //! Post a transaction
 void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
@@ -171,16 +177,16 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
                      ", size=%" PRIu32 ", type=%" PRIu32 ", cnt=%" PRIu32
                      ", port: %s" ,id,addr,size,type,msgCnt,this->reqAddr_.c_str());
 
+   // Add transaction
+   if ( type == rim::Post ) tran->done();
+   else addTransaction(tran);
+
    // Send message
    for (x=0; x < msgCnt; x++) {
       if ( zmq_sendmsg(this->zmqReq_,&(msg[x]),((x==(msgCnt-1)?0:ZMQ_SNDMORE))|ZMQ_DONTWAIT) < 0 ) {
          bridgeLog_->warning("Failed to send transaction %" PRIu32", msg %" PRIu32, id, x);
       }
    }
-
-   // Add transaction
-   if ( type == rim::Post ) tran->done();
-   else addTransaction(tran);
 }
 
 //! Run thread

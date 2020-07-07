@@ -10,12 +10,12 @@
  *    The function calls in this are a mess! create buffer, allocate buffer, etc
  *    need to be reworked.
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -31,12 +31,13 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
 
 //! Creator
-ris::Pool::Pool() { 
+ris::Pool::Pool() {
    allocMeta_  = 0;
    allocBytes_ = 0;
    allocCount_ = 0;
@@ -151,10 +152,10 @@ ris::BufferPtr ris::Pool::allocBuffer ( uint32_t size, uint32_t *total ) {
       data = dataQ_.front();
       dataQ_.pop();
    }
-   else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL ) 
+   else if ( (data = (uint8_t *)malloc(bAlloc)) == NULL )
       throw(rogue::GeneralError::create("Pool::allocBuffer","Failed to allocate buffer with size = %i",bAlloc));
 
-   // Only use lower 24 bits of meta. 
+   // Only use lower 24 bits of meta.
    // Upper 8 bits may have special meaning to sub-class
    meta = allocMeta_;
    allocMeta_++;

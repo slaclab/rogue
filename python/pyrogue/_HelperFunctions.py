@@ -1,10 +1,10 @@
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
@@ -20,6 +20,7 @@ import rogue.interfaces.memory
 
 from collections import OrderedDict as odict
 
+
 def addLibraryPath(path):
     """
     Append the past string or list of strings to the python library path.
@@ -33,10 +34,12 @@ def addLibraryPath(path):
         base = os.path.dirname(sys.argv[0])
 
     # If script was not started with ./	    # If script was not started with ./
-    if base == '': base = '.'
+    if base == '':
+        base = '.'
 
     # If script was not started with ./
-    if base == '': base = '.'
+    if base == '':
+        base = '.'
 
     # Allow either a single string or list to be passed
     if not isinstance(path,list):
@@ -63,6 +66,7 @@ def addLibraryPath(path):
             raise Exception("Library path {} does not exist or is not readable".format(tst))
         sys.path.insert(0,np)
 
+
 def waitCntrlC():
     """Helper Function To Wait For Cntrl-c"""
 
@@ -84,6 +88,7 @@ def waitCntrlC():
     except KeyboardInterrupt:
         print("Got cntrl-c, exiting")
         return
+
 
 def streamConnect(source, dest):
     """
@@ -131,7 +136,7 @@ def streamConnectBiDir(deviceA, deviceB):
     """
     Connect deviceA and deviceB as end points to a
     bi-directional stream. This method calls the
-    streamConnect method to perform the actual connection. 
+    streamConnect method to perform the actual connection.
     See streamConnect description for object requirements.
     """
 
@@ -141,8 +146,8 @@ def streamConnectBiDir(deviceA, deviceB):
 
 def busConnect(source,dest):
     """
-    Connect the source object to the dest object for 
-    memory accesses. 
+    Connect the source object to the dest object for
+    memory accesses.
     source is either a memory master sub class or implements
     the _getMemoryMaster call to return a contained master.
     Similarly dest is either a memory slave sub class or implements
@@ -280,5 +285,3 @@ def yamlUpdate(old, new):
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
-
-

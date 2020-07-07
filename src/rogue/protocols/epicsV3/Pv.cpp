@@ -8,12 +8,12 @@
  * Description:
  * EPICS Pv For Rogue System, dynamically created and deleted as clients attach
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -26,6 +26,7 @@
 
 namespace rpe = rogue::protocols::epicsV3;
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 
@@ -49,7 +50,7 @@ caStatus rpe::Pv::interestRegister() {
    return S_casApp_success;
 }
 
-void rpe::Pv::interestDelete() { 
+void rpe::Pv::interestDelete() {
    std::lock_guard<std::mutex> lock(mtx_);
    interest_ = aitFalse;
 }

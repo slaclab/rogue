@@ -1,21 +1,19 @@
-package: 
+package:
   name: rogue
-  version: {{ GIT_DESCRIBE_TAG }}
+  version: {{ environ.get('GIT_DESCRIBE_TAG') }}
 
 source:
    path: ..
 
 build:
-   number: {{ GIT_DESCRIBE_NUMBER|int }}
+   number: {{ environ.get('GIT_DESCRIBE_NUMBER',0) }}
 
 requirements:
    build:
      - python
-     - boost=1.69
-     - gcc_linux-64   [linux]
-     - gxx_linux-64   [linux]
-     - clang_osx-64   [osx]
-     - clangxx_osx-64 [osx]
+     - boost
+     - {{ compiler('c') }}
+     - {{ compiler('cxx') }}
      - git
      - cmake
      - make
@@ -24,16 +22,18 @@ requirements:
      - epics-base [linux]
      - pcas       [linux]
      - numpy
-
+   host:
+     - python
+     - boost
+     - bzip2
+     - zeromq
+     - epics-base [linux]
+     - pcas       [linux]
+     - numpy
    run:
      - python
-     - boost=1.69
-     - gcc_linux-64   [linux]
-     - gxx_linux-64   [linux]
-     - clang_osx-64   [osx]
-     - clangxx_osx-64 [osx]
-     - cmake
-     - make
+     - {{ pin_compatible('boost', min_pin='x.x', max_pin='x.x')}}
+     - boost
      - bzip2
      - zeromq
      - epics-base [linux]

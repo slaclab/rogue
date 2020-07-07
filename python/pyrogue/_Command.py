@@ -1,26 +1,24 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Command Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import rogue.interfaces.memory
-import textwrap
-import time
-from collections import OrderedDict as odict
 import pyrogue as pr
 import inspect
 import threading
-import math
+
 
 class CommandError(Exception):
     """ Exception for command errors."""
     pass
+
 
 class BaseCommand(pr.BaseVariable):
 
@@ -30,7 +28,7 @@ class BaseCommand(pr.BaseVariable):
                  value=0,
                  retValue=None,
                  enum=None,
-                 hidden=False,                 
+                 hidden=False,
                  groups=None,
                  minimum=None,
                  maximum=None,
@@ -47,18 +45,16 @@ class BaseCommand(pr.BaseVariable):
             hidden=hidden,
             groups=groups,
             minimum=minimum,
-            maximum=maximum)
-        
+            maximum=maximum,
+            bulkOpEn=False)
+
         self._function = function if function is not None else BaseCommand.nothing
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
 
-        # Disable bulk operations for commands
-        self._bulkEn = False
-
         if self._background:
-            self._log.error("Background commands are deprecated. Please use a Process device instead.")
+            self._log.error('Background commands are deprecated. Please use a Process device instead.')
 
         if retValue is None:
             self._retTypeStr = None
@@ -72,7 +68,7 @@ class BaseCommand(pr.BaseVariable):
             self._arg = 'arg' in inspect.getfullargspec(self._function).args
 
         # C++ functions
-        except:
+        except Exception:
             self._arg = False
 
     @pr.expose
@@ -119,6 +115,7 @@ class BaseCommand(pr.BaseVariable):
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
     @pr.expose
     def call(self,arg=None):
@@ -141,10 +138,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(arg)
         ret = cmd.get()
         if ret != arg:
-            raise CommandError(
-                f'Verification failed for {cmd.path}. \n'+
-                f'Set to {arg} but read back {ret}')
-        
+            raise CommandError(f'Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}')
 
     @staticmethod
     def createToggle(sets):
@@ -199,7 +193,7 @@ class BaseCommand(pr.BaseVariable):
 
     def replaceFunction(self, function):
         self._function = function
-        
+
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
         pass
 
@@ -255,34 +249,32 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             bitSize=bitSize,
             bitOffset=bitOffset,
             overlapEn=overlapEn,
+            bulkOpEn=False,
             verify=False)
-
-        # Disable bulk operations for commands
-        self._bulkEn = False
 
     def set(self, value, write=True):
         self._log.debug("{}.set({})".format(self, value))
         try:
-            self._block.set(self, value)
+            self._set(value)
 
             if write:
-                self._block.startTransaction(rogue.interfaces.memory.Write, True, True, self._lowByte, self._highByte)
+                self._block.startTransaction(rogue.interfaces.memory.Write, True, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
- 
+
     def get(self, read=True):
         try:
             if read:
-                self._block.startTransaction(rogue.interfaces.memory.Read, False, True, self._lowByte, self._highByte)
+                self._block.startTransaction(rogue.interfaces.memory.Read, False, True, self)
 
-            return self._block.get(self)
+            return self._get()
 
         except Exception as e:
             pr.logException(self._log,e)
-            return None
+            raise e
 
 # Alias
 Command = BaseCommand
-

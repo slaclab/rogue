@@ -4,17 +4,18 @@
 # Description:
 # Module containing epics support classes and routines
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
 import pyrogue
-import time
 import rogue.protocols.epicsV3
+
 
 class EpicsCaServer(object):
     """
@@ -22,28 +23,42 @@ class EpicsCaServer(object):
     """
     def __init__(self,*,base,root,incGroups=None,excGroups=None,pvMap=None, syncRead=True, threadCount=0):
         self._root      = root
-        self._base      = base 
+        self._base      = base
         self._log       = pyrogue.logInit(cls=self)
         self._syncRead  = syncRead
         self._srv       = rogue.protocols.epicsV3.Server(threadCount)
         self._pvMap     = pvMap
         self._incGroups = incGroups
         self._excGroups = excGroups
+        self._started   = False
 
     def createSlave(self, name, maxSize, type):
         slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
-        self._srv.addValue(slave)
+        self._srv._addValue(slave)
         return slave
 
     def createMaster(self, name, maxSize, type):
         mast = rogue.protocols.epicsV3.Master(self._base + ':' + name,maxSize,type)
-        self._srv.addValue(mast)
+        self._srv._addValue(mast)
         return mast
 
     def stop(self):
-        self._srv.stop()
+        # Add deprecration warning in the future
+        self._stop()
 
     def start(self):
+        # Add deprecration warning in the future
+        self._start()
+
+    def _stop(self):
+        self._srv._stop()
+
+    def _start(self):
+
+        if self._started:
+            return
+
+        self._started = True
 
         if not self._root.running:
             raise Exception("Epics can not be setup on a tree which is not started")
@@ -58,7 +73,7 @@ class EpicsCaServer(object):
         for v in self._root.variableList:
             self._addPv(v,doAll,self._incGroups,self._excGroups)
 
-        self._srv.start()
+        self._srv._start()
 
     def list(self):
         return self._pvMap
@@ -69,7 +84,7 @@ class EpicsCaServer(object):
                 with open(fname,'w') as f:
                     for k,v in self._pvMap.items():
                         print("{} -> {}".format(v,k),file=f)
-            except:
+            except Exception:
                 raise Exception("Failed to dump epics map to {}".format(fname))
         else:
             for k,v in self._pvMap.items():
@@ -88,13 +103,12 @@ class EpicsCaServer(object):
             return
 
         if isinstance(node, pyrogue.BaseCommand):
-            self._srv.addValue(rogue.protocols.epicsV3.Command(eName,node))
+            self._srv._addValue(rogue.protocols.epicsV3.Command(eName,node))
             self._log.info("Adding command {} mapped to {}".format(node.path,eName))
         else:
 
             # Add standard variable
             evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
             node.addListener(evar.varUpdated)
-            self._srv.addValue(evar)
+            self._srv._addValue(evar)
             self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
-

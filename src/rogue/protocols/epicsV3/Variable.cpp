@@ -34,6 +34,7 @@
 
 namespace rpe = rogue::protocols::epicsV3;
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 
@@ -68,7 +69,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    count = 0;
 
    // Detect list type
-   if ( sscanf(type.c_str(),"List[%49[^]]]",&tmpType) == 1 ) {
+   if ( sscanf(type.c_str(),"List[%49[^]]]",(char *)(&tmpType)) == 1 ) {
       type = std::string(tmpType);
 
       // Get initial element count
@@ -271,12 +272,12 @@ void rpe::Variable::updateAlarm(bp::object status, bp::object severity) {
       else if ( sevrStr == "AlarmMajor" ) sevrVal = epicsSevMajor;
       else sevrVal = 0;
    }
-   
+
    pValue_->setStatSevr(statVal,sevrVal);
 }
 
 // Lock held when called
-void rpe::Variable::valueGet() {
+bool rpe::Variable::valueGet() {
 
    if ( syncRead_ ) {
       { // GIL Scope
@@ -292,9 +293,11 @@ void rpe::Variable::valueGet() {
             }
          } catch (...) {
             log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
+            return false;
          }
       }
    }
+   return true;
 }
 
 // Lock held when called
@@ -438,7 +441,7 @@ void rpe::Variable::fromPython(bp::object value) {
 }
 
 // Lock already held
-void rpe::Variable::valueSet() {
+bool rpe::Variable::valueSet() {
    rogue::ScopedGil gil;
    bp::list pl;
    uint32_t i;
@@ -536,7 +539,9 @@ void rpe::Variable::valueSet() {
       }
    } catch (...) {
       log_->error("Error setting value from epics: %s\n",epicsName_.c_str());
+      return false;
    }
+   return true;
 }
 
 template<typename T>

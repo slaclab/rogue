@@ -2,12 +2,12 @@
 #-----------------------------------------------------------------------------
 # Title      : Server only test script
 #-----------------------------------------------------------------------------
-# This file is part of the rogue_example software. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue_example software, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue_example software. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue_example software, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
@@ -22,7 +22,52 @@ import pyrogue.protocols
 import logging
 import math
 import numpy as np
+import argparse
 
+
+# Set the argument parser
+parser = argparse.ArgumentParser('Test Server')
+
+parser.add_argument(
+    "--oldGui",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Use old gui",
+)
+
+parser.add_argument(
+    "--gui",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Use gui",
+)
+
+parser.add_argument(
+    "--epics3",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Enable EPICS 3",
+)
+
+parser.add_argument(
+    "--epics4",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Enable EPICS 4",
+)
+
+# Get the arguments
+args = parser.parse_args()
+
+if args.epics3:
+    import pyrogue.protocols.epics
+
+if args.epics4:
+    import pyrogue.protocols.epicsV4
 
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -42,13 +87,12 @@ class DummyTree(pyrogue.Root):
                               description="Dummy tree for example",
                               timeout=2.0,
                               pollEn=True,
-                              serverPort=0,
-                              #sqlUrl='sqlite:///test.db')
-                            )
+                              serverPort=0)
 
         # Use a memory space emulator
         sim = pyrogue.interfaces.simulation.MemEmulate()
-        
+        sim.setName("SimSlave")
+
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
 
@@ -140,18 +184,13 @@ class DummyTree(pyrogue.Root):
 
         #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
-        #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-        #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
+        if args.epics3:
+            self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+            self.addProtocol(self._epics)
 
-    def start(self):
-        pyrogue.Root.start(self)
-        #self.epics.start()
-        #self.epics4.start()
-
-    def stop(self):
-        #self.epics.stop()
-        #self.epics4.stop()
-        pyrogue.Root.stop(self)
+        if args.epics4:
+            self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
+            self.addProtocol(self._epics4)
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)
@@ -168,14 +207,16 @@ class DummyTree(pyrogue.Root):
 if __name__ == "__main__":
 
     with DummyTree() as dummyTree:
-        dummyTree.saveAddressMap('test.csv')
+        dummyTree.saveAddressMap('addr_map.csv')
+        dummyTree.saveAddressMap('addr_map.h',headerEn=True)
 
-        #pyrogue.waitCntrlC()
+        if args.oldGui:
+            import pyrogue.gui
+            pyrogue.gui.runGui(root=dummyTree)
 
-        #import pyrogue.pydm
-        #pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
+        elif args.gui:
+            import pyrogue.pydm
+            pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
 
-        #import pyrogue.gui
-        #pyrogue.gui.runGui(root=dummyTree)
-
-
+        else:
+            pyrogue.waitCntrlC()

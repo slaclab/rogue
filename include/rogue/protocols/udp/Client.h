@@ -5,12 +5,12 @@
  * Description:
  * UDP Client
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -31,7 +31,7 @@ namespace rogue {
       namespace udp {
 
          class Client : public rogue::protocols::udp::Core,
-                        public rogue::interfaces::stream::Master, 
+                        public rogue::interfaces::stream::Master,
                         public rogue::interfaces::stream::Slave {
 
                //! Address, hostname or ip address
@@ -46,7 +46,7 @@ namespace rogue {
             public:
 
                //! Class creation
-               static std::shared_ptr<rogue::protocols::udp::Client> 
+               static std::shared_ptr<rogue::protocols::udp::Client>
                   create (std::string host, uint16_t port, bool jumbo);
 
                //! Setup class in python
@@ -57,6 +57,9 @@ namespace rogue {
 
                //! Destructor
                ~Client();
+
+               //! Stop the interface
+               void stop();
 
                //! Accept a frame from master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );

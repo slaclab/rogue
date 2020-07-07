@@ -23,12 +23,12 @@
  *          23:o   = Frame flags
  *
  *-----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
@@ -49,6 +49,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
@@ -65,7 +66,7 @@ void ruf::LegacyStreamWriter::setup_python() {
 #ifndef NO_PYTHON
   bp::class_<ruf::LegacyStreamWriter, ruf::LegacyStreamWriterPtr, bp::bases<ruf::StreamWriter>, boost::noncopyable >("LegacyStreamWriter",bp::init<>())
       .def("getDataChannel",     &ruf::LegacyStreamWriter::getDataChannel)
-      .def("getYamlChannel",     &ruf::LegacyStreamWriter::getYamlChannel)      
+      .def("getYamlChannel",     &ruf::LegacyStreamWriter::getYamlChannel)
    ;
   bp::implicitly_convertible<ruf::LegacyStreamWriterPtr, ruf::StreamWriterPtr>();
 #endif
@@ -76,7 +77,7 @@ ruf::LegacyStreamWriter::LegacyStreamWriter() : StreamWriter() {
 }
 
 //! Deconstructor
-ruf::LegacyStreamWriter::~LegacyStreamWriter() { 
+ruf::LegacyStreamWriter::~LegacyStreamWriter() {
    this->close();
 }
 
@@ -114,11 +115,11 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue
 
      // Data count is number of 32-bit words
      if ( channel == RawData ) {
-        if ( (size % 4) != 0 ) 
+        if ( (size % 4) != 0 )
            throw(rogue::GeneralError::create("LegacyStreamWriter::writeFile", "FrameSize %i is not 32-bit aligned.",size));
-        size = size/4; 
+        size = size/4;
      }
-     
+
      if (size & 0xF0000000) {
        // Frame size too large for this stream type
        throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "FrameSize is too large. Cannot exceede 2^28"));
@@ -133,7 +134,7 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue
      for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
        intWrite((*it)->begin(),(*it)->getPayload());
      }
-     
+
      // Update counters
      frameCount_ ++;
      cond_.notify_all();

@@ -1,26 +1,23 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Variable Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue as pr
-import textwrap
-import rogue.interfaces.memory
-import parse
-import math
+import rogue.interfaces.memory as rim
 import inspect
 import threading
 import re
 import time
-import numpy
 from collections import OrderedDict as odict
-from collections import Iterable
+from collections.abc import Iterable
+
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
@@ -33,7 +30,7 @@ def VariableWait(varList, testFunction, timeout=0):
     Pass a variable or list of variables, and a test function.
     The test function is passed a dictionary containing the current
     variableValue state index by variable path
-    i.e. w = VariableWait([root.device.var1,root.device.var2], 
+    i.e. w = VariableWait([root.device.var1,root.device.var2],
                           lambda varValues: varValues['root.device.var1'].value >= 10 and \
                                             varValues['root.device.var1'].value >= 20)
     """
@@ -95,6 +92,7 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
+
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
@@ -114,12 +112,14 @@ class BaseVariable(pr.Node):
                  highWarning=None,
                  highAlarm=None,
                  pollInterval=0,
+                 updateNotify=True,
                  typeStr='Unknown',
-                 offset=0
-                ):
+                 bulkOpEn=True,
+                 offset=0):
 
         # Public Attributes
-        self._bulkEn        = True
+        self._bulkOpEn      = bulkOpEn
+        self._updateNotify  = updateNotify
         self._mode          = mode
         self._units         = units
         self._minimum       = minimum
@@ -130,8 +130,6 @@ class BaseVariable(pr.Node):
         self._highAlarm     = highAlarm
         self._default       = value
         self._block         = None
-        self._lowByte       = 0
-        self._highByte      = -1
         self._pollInterval  = pollInterval
         self._nativeType    = None
         self._listeners     = []
@@ -200,10 +198,10 @@ class BaseVariable(pr.Node):
     @property
     def precision(self):
         if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
-            res = re.search(r':([0-9])\.([0-9]*)f',self._disp) 
+            res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
-            except:
+            except Exception:
                 return 3
         else:
             return 0
@@ -231,10 +229,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def hasAlarm(self):
-        return (self._lowWarning is not None or
-                self._lowAlarm is not None or
-                self._highWarning is not None or
-                self._highAlarm is not None)
+        return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
 
     @pr.expose
     @property
@@ -291,13 +286,18 @@ class BaseVariable(pr.Node):
         else:
             return None
 
+    @pr.expose
+    @property
+    def updateNotify(self):
+        return self._updateNotify
+
     @property
     def dependencies(self):
         return self.__dependencies
 
     def addListener(self, listener):
         """
-        Add a listener Variable or function to call when variable changes. 
+        Add a listener Variable or function to call when variable changes.
         This is useful when chaining variables together. (ADC conversions, etc)
         The variable and value class are passed as an arg: func(path,varValue)
         """
@@ -334,7 +334,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def get(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -350,7 +350,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def getVariableValue(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -367,24 +367,23 @@ class BaseVariable(pr.Node):
             #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
             if self.disp == 'enum':
                 if value in self.enum:
-                    ret = self.enum[value]
+                    return self.enum[value]
                 else:
-                    self._log.error("Invalid enum value {} in variable '{}'".format(value,self.path))
-                    ret = 'INVALID: {:#x}'.format(value)
+                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    return 'INVALID: {:#x}'.format(value)
             else:
                 if self.typeStr == 'ndarray':
-                    ret = str(value)
+                    return str(value)
                 elif (value == '' or value is None):
-                    ret = value
+                    return value
                 else:
-                    ret = self.disp.format(value)
+                    return self.disp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
-            ret = None
+            raise e
 
-        return ret
 
     @pr.expose
     def getDisp(self, read=True):
@@ -399,8 +398,8 @@ class BaseVariable(pr.Node):
         try:
             if sValue is None or isinstance(sValue, self.nativeType()):
                 return sValue
-            else:        
-                if sValue is '':
+            else:
+                if sValue == '':
                     return ''
                 elif self.disp == 'enum':
                     return self.revEnum[sValue]
@@ -416,16 +415,15 @@ class BaseVariable(pr.Node):
                         return eval(sValue)
                     else:
                         return sValue
-        except:
-            raise VariableError("Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType()))
+
+        except Exception:
+            msg = "Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType())
+            self._log.error(msg)
+            raise VariableError(msg)
 
     @pr.expose
     def setDisp(self, sValue, write=True):
-        try:
-            self.set(self.parseDisp(sValue), write)
-        except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}".format(sValue,self.path,self.typeStr))
+        self.set(self.parseDisp(sValue), write)
 
     @pr.expose
     def nativeType(self):
@@ -447,7 +445,7 @@ class BaseVariable(pr.Node):
         self._updatePollInterval()
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups):
-        #print(f'{self.path}._setDict(d={d})')        
+        #print(f'{self.path}._setDict(d={d})')
         if self._mode in modes:
             self.setDisp(d,writeEach)
 
@@ -474,11 +472,12 @@ class BaseVariable(pr.Node):
     def _alarmState(self,value):
         """ Return status, severity """
 
-        if isinstance(value,list) or isinstance(value,dict): return 'None','None'
+        if isinstance(value,list) or isinstance(value,dict):
+            return 'None','None'
 
         if (self.hasAlarm is False):
             return "None", "None"
-        
+
         elif (self._lowAlarm  is not None and value < self._lowAlarm):
             return 'AlarmLoLo', 'AlarmMajor'
 
@@ -495,7 +494,7 @@ class BaseVariable(pr.Node):
             return 'Good','Good'
 
 
-class RemoteVariable(BaseVariable):
+class RemoteVariable(BaseVariable,rim.Variable):
 
     def __init__(self, *,
                  name,
@@ -517,34 +516,35 @@ class RemoteVariable(BaseVariable):
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
-                 pollInterval=0, 
+                 pollInterval=0,
+                 updateNotify=True,
                  overlapEn=False,
+                 bulkOpEn=True,
                  verify=True, ):
 
         if disp is None:
             disp = base.defaultdisp
 
-        BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, 
-                              enum=enum, units=units, hidden=hidden, groups=groups, 
-                              minimum=minimum, maximum=maximum,
+        BaseVariable.__init__(self, name=name, description=description,
+                              mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
+                              minimum=minimum, maximum=maximum, bulkOpEn=bulkOpEn,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,updateNotify=updateNotify)
 
-            
         self._block    = None
 
         # Convert the address parameters into lists
         addrParams = [offset, bitOffset, bitSize] # Make a copy
         addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams] # convert to lists
-        length = max((len(x) for x in addrParams)) 
+        length = max((len(x) for x in addrParams))
         addrParams = [x*length if len(x)==1 else x for x in addrParams] # Make single element lists as long as max
         offset, bitOffset, bitSize = addrParams # Assign back
 
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
-            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))        
+            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
 
         # Check for invalid values
         if 0 in bitSize:
@@ -560,24 +560,22 @@ class RemoteVariable(BaseVariable):
         else:
             self._base = base(sum(bitSize))
 
-        self._offset    = offset
-        self._bitSize   = bitSize
-        self._bitOffset = bitOffset
-        self._verify    = verify
         self._typeStr   = self._base.name
-        self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
-        self._overlapEn = overlapEn
 
+        # Setup C++ Base class
+        rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
+                              offset, bitOffset, bitSize, overlapEn, verify,
+                              self._bulkOpEn, self._updateNotify, self._base)
 
     @pr.expose
     @property
     def varBytes(self):
-        return self._bytes
+        return self._varBytes()
 
     @pr.expose
     @property
     def offset(self):
-        return self._offset
+        return self._offset()
 
     @pr.expose
     @property
@@ -587,17 +585,17 @@ class RemoteVariable(BaseVariable):
     @pr.expose
     @property
     def bitSize(self):
-        return self._bitSize
+        return self._bitSize()
 
     @pr.expose
     @property
     def bitOffset(self):
-        return self._bitOffset
+        return self._bitOffset()
 
     @pr.expose
     @property
     def verify(self):
-        return self._verify
+        return self._verifyEn()
 
     @pr.expose
     @property
@@ -605,17 +603,25 @@ class RemoteVariable(BaseVariable):
         return self._base
 
     @pr.expose
+    @property
+    def overlapEn(self):
+        return self._overlapEn()
+
+    @pr.expose
+    @property
+    def bulkEn(self):
+        return self._bulkOpEn
+
+    @pr.expose
     def set(self, value, write=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
         """
-        self._log.debug("{}.set({})".format(self, value))
-
         try:
 
             # Set value to block
-            self._block.set(self, value)
+            self._set(value)
 
             if write:
                 self._parent.writeBlocks(force=True, recurse=False, variable=self)
@@ -633,13 +639,13 @@ class RemoteVariable(BaseVariable):
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
         """
-        self._log.debug("{}.post({})".format(self, value))
-
         try:
 
             # Set value to block
-            self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+            self._set(value)
+
+            # Force=False, Check=True
+            self._block.startTransaction(rim.Post, False, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -647,7 +653,7 @@ class RemoteVariable(BaseVariable):
 
     @pr.expose
     def get(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -657,7 +663,7 @@ class RemoteVariable(BaseVariable):
                 self._parent.readBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            return self._block.get(self)
+            return self._get()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -681,28 +687,12 @@ class RemoteVariable(BaseVariable):
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
-        else:        
+        else:
 
             if self.disp == 'enum':
                 return self.revEnum[sValue]
             else:
                 return self._base.fromString(sValue)
-            
-    def _shiftOffsetDown(self,amount,minSize):
-        if amount != 0:
-
-            self._log.debug("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-            #print("Adjusting variable {} offset from 0x{:02x} to 0x{:02x}".format(self.name,self._offset,self._offset-amount))
-
-            self._offset -= amount
-
-            for i in range(0,len(self._bitOffset)):
-                self._bitOffset[i] += (amount * 8)
-
-        self._bytes = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / float(minSize*8))) * minSize
-
-        self._lowByte  = int(math.floor(self._bitOffset[0] / 8))
-        self._highByte = int(math.floor((self._bitOffset[-1] + self._bitSize[-1] - 1) / 8))
 
 
 class LocalVariable(BaseVariable):
@@ -726,18 +716,20 @@ class LocalVariable(BaseVariable):
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
-                 pollInterval=0):
+                 pollInterval=0,
+                 updateNotify=True,
+                 bulkOpEn=True):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
 
-        BaseVariable.__init__(self, name=name, description=description, 
-                              mode=mode, value=value, disp=disp, 
+        BaseVariable.__init__(self, name=name, description=description,
+                              mode=mode, value=value, disp=disp,
                               enum=enum, units=units, hidden=hidden, groups=groups,
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
@@ -774,7 +766,9 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value)
-            self._block.startTransaction(rogue.interfaces.memory.Post, False, True, 0, -1)
+
+            # Force=False, Check=True
+            self._block.startTransaction(rim.Post, False, True, self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -782,7 +776,7 @@ class LocalVariable(BaseVariable):
 
     @pr.expose
     def get(self,read=True):
-        """ 
+        """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
@@ -856,6 +850,7 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
+
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -866,10 +861,10 @@ class LinkVariable(BaseVariable):
                  linkedSet=None,
                  linkedGet=None,
                  **kwargs): # Args passed to BaseVariable
-        
+
         # Set and get functions
         self._linkedGet = linkedGet
-        self._linkedSet = linkedSet        
+        self._linkedSet = linkedSet
 
         if variable is not None:
             # If directly linked to a variable, use it's value and set by defualt
@@ -932,16 +927,13 @@ def varFuncHelper(func,pargs,log,path):
 
     try:
         # Function args
-        fargs = inspect.getfullargspec(func).args + \
-                inspect.getfullargspec(func).kwonlyargs 
+        fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
 
         # Build overlapping arg list
-        args = {k:pargs[k] for k in fargs if k is not 'self' and k in pargs}
+        args = {k:pargs[k] for k in fargs if k != 'self' and k in pargs}
 
     # handle c++ functions, no args supported for now
-    except:
+    except Exception:
         args = {}
 
     return func(**args)
-
-

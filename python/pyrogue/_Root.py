@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue base module - Root Class
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import sys
@@ -30,6 +30,7 @@ from contextlib import contextmanager
 
 SystemLogInit = '[]'
 
+
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
     def __init__(self,*, root):
@@ -38,10 +39,11 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
 
-        if not self._root.running: return
+        if not self._root.running:
+            return
 
         with self._root.updateGroup():
-           try:
+            try:
                 se = { 'created'     : record.created,
                        'name'        : record.name,
                        'message'     : str(record.msg),
@@ -74,13 +76,14 @@ class RootLogHandler(logging.Handler):
                 if self._root._sqlLog is not None:
                     self._root._sqlLog.logSyslog(se)
 
-           except Exception as e:
-               print("-----------Error Logging Exception -------------")
-               print(e)
-               print(traceback.print_exc(file=sys.stdout))
-               print("-----------Original Error-----------------------")
-               print(self.format(record))
-               print("------------------------------------------------")
+            except Exception as e:
+                print("-----------Error Logging Exception -------------")
+                print(e)
+                print(traceback.print_exc(file=sys.stdout))
+                print("-----------Original Error-----------------------")
+                print(self.format(record))
+                print("------------------------------------------------")
+
 
 class Root(rogue.interfaces.stream.Master,pr.Device):
     """
@@ -110,9 +113,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Root exit."""
         self.stop()
 
-    def __init__(self, *, 
-                 name=None, 
-                 description='', 
+    def __init__(self, *,
+                 name=None,
+                 description='',
                  expand=True,
                  timeout=1.0,
                  initRead=False,
@@ -143,7 +146,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
-        handler.setLevel(logging.ERROR)
         handler.setFormatter(formatter)
         self._logger = logging.getLogger('pyrogue')
         self._logger.addHandler(handler)
@@ -171,7 +173,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # SQL URL
         self._sqlLog = None
 
-        # Init 
+        # Init
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
         # Variables
@@ -208,7 +210,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=True,
                                  description='Read all values from the hardware'))
 
-        self.add(pr.LocalCommand(name='SaveState', value='', 
+        self.add(pr.LocalCommand(name='SaveState', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
                                                                     readFirst=True,
                                                                     modes=['RW','RO','WO'],
@@ -219,7 +221,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='SaveConfig', value='', 
+        self.add(pr.LocalCommand(name='SaveConfig', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
                                                                     readFirst=True,
                                                                     modes=['RW','WO'],
@@ -230,7 +232,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Save configuration to passed filename in YAML format'))
 
-        self.add(pr.LocalCommand(name='LoadConfig', value='', 
+        self.add(pr.LocalCommand(name='LoadConfig', value='',
                                  function=lambda arg: self.loadYaml(name=arg,
                                                                     writeEach=False,
                                                                     modes=['RW','WO'],
@@ -251,12 +253,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='ClearLog', function=self._clearLog, hidden=True,
                                  description='Clear the message log contained in the SystemLog variable'))
 
-        self.add(pr.LocalCommand(name='SetYamlConfig', value='', 
+        self.add(pr.LocalCommand(name='SetYamlConfig', value='',
                                  function=lambda arg: self.setYaml(yml=arg,
                                                                    writeEach=False,
                                                                    modes=['RW','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoConfig'), 
+                                                                   excGroups='NoConfig'),
                                  hidden=True,
                                  description='Set configuration from passed YAML string'))
 
@@ -264,7 +266,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  function=lambda arg: self.getYaml(readFirst=arg,
                                                                    modes=['RW','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoConfig'), 
+                                                                   excGroups='NoConfig'),
                                  hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
@@ -272,7 +274,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  function=lambda arg: self.getYaml(readFirst=arg,
                                                                    modes=['RW','RO','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoState'), 
+                                                                   excGroups='NoState'),
                                  hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
@@ -298,16 +300,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             print("==========================================================")
 
             # Override startup parameters if passed in start()
-            if 'streamIncGroups' in kwargs: self._streamIncGroups = kwargs['streamIncGroups']
-            if 'streamExcGroups' in kwargs: self._streamExcGroups = kwargs['streamExcGroups']
-            if 'sqlIncGroups'    in kwargs: self._sqlIncGroups    = kwargs['sqlIncGroups']
-            if 'sqlExcGroups'    in kwargs: self._sqlExcGroups    = kwargs['sqlExcGroups']
-            if 'timeout'         in kwargs: self._timeout         = kwargs['timeout']
-            if 'initRead'        in kwargs: self._initRead        = kwargs['initRead']
-            if 'initWrite'       in kwargs: self._initWrite       = kwargs['initWrite']
-            if 'pollEn'          in kwargs: self._pollEn          = kwargs['pollEn']
-            if 'serverPort'      in kwargs: self._serverPort      = kwargs['serverPort']
-            if 'sqlUrl'          in kwargs: self._sqlUrl          = kwargs['sqlUrl']
+            if 'streamIncGroups' in kwargs:
+                self._streamIncGroups = kwargs['streamIncGroups']
+            if 'streamExcGroups' in kwargs:
+                self._streamExcGroups = kwargs['streamExcGroups']
+            if 'sqlIncGroups'    in kwargs:
+                self._sqlIncGroups    = kwargs['sqlIncGroups']
+            if 'sqlExcGroups'    in kwargs:
+                self._sqlExcGroups    = kwargs['sqlExcGroups']
+            if 'timeout'         in kwargs:
+                self._timeout         = kwargs['timeout']
+            if 'initRead'        in kwargs:
+                self._initRead        = kwargs['initRead']
+            if 'initWrite'       in kwargs:
+                self._initWrite       = kwargs['initWrite']
+            if 'pollEn'          in kwargs:
+                self._pollEn          = kwargs['pollEn']
+            if 'serverPort'      in kwargs:
+                self._serverPort      = kwargs['serverPort']
+            if 'sqlUrl'          in kwargs:
+                self._sqlUrl          = kwargs['sqlUrl']
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -321,7 +333,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     tmpList.append(b)
 
         # Sort the list by address/size
-        tmpList.sort(key=lambda x: (x.memBaseId, x.address, x.size))
+        tmpList.sort(key=lambda x: (x._reqSlaveId(), x.address, x.size))
 
         # Look for overlaps
         for i in range(1,len(tmpList)):
@@ -331,15 +343,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             tmpList[i-1].path,tmpList[i-1].address, tmpList[i-1].size))
 
             # Detect overlaps
-            if (tmpList[i].size != 0) and (tmpList[i].memBaseId == tmpList[i-1].memBaseId) and \
+            if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId() == tmpList[i-1]._reqSlaveId()) and \
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
-                # Check for instances when device comes before block and when block comes before device 
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and \
-                         (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
-                   (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and \
-                        (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
+                # Check for instances when device comes before block and when block comes before device
+                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
+                        (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
                                        tmpList[i].path,tmpList[i].address,
@@ -365,6 +375,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = threading.Thread(target=self._updateWorker)
         self._updateThread.start()
 
+        # Start interfaces and protocols
+        pr.Device._start(self)
+
         # Read current state
         if self._initRead:
             self._read()
@@ -380,20 +393,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self._heartbeat()
 
+
     def stop(self):
         """Stop the polling thread. Must be called for clean exit."""
+
         self._running = False
         self._updateQueue.put(None)
         self._updateThread.join()
 
         if self._pollQueue:
-            self._pollQueue.stop()
+            self._pollQueue._stop()
 
         if self._zmqServer is not None:
-            self._zmqServer.close()
+            self._zmqServer._stop()
 
         if self._sqlLog is not None:
-            self._sqlLog.stop()
+            self._sqlLog._stop()
+
+        pr.Device._stop(self)
 
     @property
     def serverPort(self):
@@ -453,7 +470,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # At with call
         with self._updateLock:
-            if not tid in self._updateCount:
+            if tid not in self._updateCount:
                 self._updateList[tid] = {}
                 self._updateCount[tid] = 0
 
@@ -522,60 +539,105 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(self,fname):
-        try:
-            with open(fname,'w') as f:
-                f.write("Path\t")
-                f.write("TypeStr\t")
-                f.write("MemBaseId\t")
-                f.write("Full Address\t")
-                f.write("Device Offset\t")
-                f.write("Mode\t")
-                f.write("Bit Offset\t")
-                f.write("Bit Size\t")
-                f.write("Enum\t")
-                f.write("Description\n")
+    def saveAddressMap(self,fname,headerEn=False):
 
-                for v in self.variableList:
-                    if v.isinstance(pr.RemoteVariable):
-                        f.write("{}\t".format(v.path))
-                        f.write("{}\t".format(v.typeStr))
-                        f.write("{}\t".format(v._block.memBaseId))
-                        f.write("{:#x}\t".format(v.address))
-                        f.write("{:#x}\t".format(v.offset))
-                        f.write("{}\t".format(v.mode))
-                        f.write("{}\t".format(v.bitOffset))
-                        f.write("{}\t".format(v.bitSize))
-                        f.write("{}\t".format(v.enum))
-                        f.write("{}\n".format(v.description))
+        # First form header
+        # Changing these names here requires changing the createVariable() method in LibraryBase.cpp
+        header  = "Path\t"
+        header += "TypeStr\t"
+        header += "Address\t"
+        header += "Offset\t"
+        header += "Mode\t"
+        header += "BitOffset\t"
+        header += "BitSize\t"
+        header += "Minimum\t"
+        header += "Maximum\t"
+        header += "Enum\t"
+        header += "OverlapEn\t"
+        header += "Verify\t"
+        header += "ModelId\t"
+        header += "ByteReverse\t"
+        header += "BitReverse\t"
+        header += "BinPoint\t"
+        header += "BulkEn\t"
+        header += "UpdateNotify\t"
+        header += "MemBaseName\t"
+        header += "BlockName\t"
+        header += "BlockSize\t"
+        header += "Description"
 
-        except Exception as e:
-            pr.logException(self._log,e)
+        lines = []
+        for v in self.variableList:
+            if v.isinstance(pr.RemoteVariable):
+                data  = "{}\t".format(v.path)
+                data += "{}\t".format(v.typeStr)
+                data += "{:#x}\t".format(v.address)
+                data += "{:#x}\t".format(v.offset)
+                data += "{}\t".format(v.mode)
+                data += "{}\t".format(v.bitOffset)
+                data += "{}\t".format(v.bitSize)
+                data += "{}\t".format(v.minimum)
+                data += "{}\t".format(v.maximum)
+                data += "{}\t".format(v.enum)
+                data += "{}\t".format(v.overlapEn)
+                data += "{}\t".format(v.verify)
+                data += "{}\t".format(v._base.modelId)
+                data += "{}\t".format(v._base.isBigEndian)
+                data += "{}\t".format(v._base.bitReverse)
+                data += "{}\t".format(v._base.binPoint)
+                data += "{}\t".format(v.bulkEn)
+                data += "{}\t".format(v.updateNotify)
+                data += "{}\t".format(v._block._reqSlaveName())
+                data += "{}\t".format(v._block.path)
+                data += "{:#x}\t".format(v._block.size)
+                # Escape " characters
+                description = v.description.replace('"',r'\"')
+                # Escape \n characters and strip each line in the description field
+                description = description.split('\n')
+                description = '\\\n'.join([x.strip() for x in description])
+                data += "{}".format(description)
+                lines.append(data)
+
+        with open(fname,'w') as f:
+
+            if headerEn:
+                f.write('// #############################################\n')
+                f.write('// Auto Generated Header File From Rogue\n')
+                f.write('// #############################################\n')
+                f.write('#ifndef __ROGUE_ADDR_MAP_H__\n')
+                f.write('#define __ROGUE_ADDR_MAP_H__\n\n')
+                f.write(f'#define ROGUE_ADDR_MAP "{header}|"\\\n')
+
+                for line in lines:
+                    f.write(f'     "{line}|"\\\n')
+
+                f.write('\n#endif\n')
+            else:
+                f.write(header + '\n')
+                for line in lines:
+                    f.write(line + '\n')
 
     @pr.expose
     def saveVariableList(self,fname,polledOnly=False,incGroups=None):
-        try:
-            with open(fname,'w') as f:
-                f.write("Path\t")
-                f.write("TypeStr\t")
-                f.write("Mode\t")
-                f.write("Enum\t")
-                f.write("PollInterval\t")
-                f.write("Groups\t")
-                f.write("Description\n")
+        with open(fname,'w') as f:
+            f.write("Path\t")
+            f.write("TypeStr\t")
+            f.write("Mode\t")
+            f.write("Enum\t")
+            f.write("PollInterval\t")
+            f.write("Groups\t")
+            f.write("Description\n")
 
-                for v in self.variableList:
-                    if ((not polledOnly) or (v.pollInterval > 0)) and v.filterByGroup(incGroups=incGroups,excGroups=None):
-                        f.write("{}\t".format(v.path))
-                        f.write("{}\t".format(v.typeStr))
-                        f.write("{}\t".format(v.mode))
-                        f.write("{}\t".format(v.enum))
-                        f.write("{}\t".format(v.pollInterval))
-                        f.write("{}\t".format(v.groups))
-                        f.write("{}\n".format(v.description))
+            for v in self.variableList:
+                if ((not polledOnly) or (v.pollInterval > 0)) and v.filterByGroup(incGroups=incGroups,excGroups=None):
+                    f.write("{}\t".format(v.path))
+                    f.write("{}\t".format(v.typeStr))
+                    f.write("{}\t".format(v.mode))
+                    f.write("{}\t".format(v.enum))
+                    f.write("{}\t".format(v.pollInterval))
+                    f.write("{}\t".format(v.groups))
+                    f.write("{}\n".format(v.description))
 
-        except Exception as e:
-            pr.logException(self._log,e)
 
     def _heartbeat(self):
         if self._running and self._doHeartbeat:
@@ -619,40 +681,39 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """
         Generate a frame containing all variables values in yaml format.
         A hardware read is not generated before the frame is generated.
-        incGroups is a list of groups that the variable must be a member 
-        of in order to be included in the stream. excGroups is a list of 
-        groups that the variable must not be a member of to include. 
-        excGroups takes precedence over incGroups. If excGroups or 
-        incGroups are None, the default set of stream include and 
+        incGroups is a list of groups that the variable must be a member
+        of in order to be included in the stream. excGroups is a list of
+        groups that the variable must not be a member of to include.
+        excGroups takes precedence over incGroups. If excGroups or
+        incGroups are None, the default set of stream include and
         exclude groups will be used as specified when the Root class was created.
         By default all variables are included, except for members of the NoStream group.
         """
 
         # Don't send if there are not any Slaves connected
-        if self._slaveCount == 0: return
+        if self._slaveCount == 0:
+            return
 
         # Inherit include and exclude groups from global if not passed
-        if incGroups is None: incGroups = self._streamIncGroups
-        if excGroups is None: excGroups = self._streamExcGroups
+        if incGroups is None:
+            incGroups = self._streamIncGroups
+        if excGroups is None:
+            excGroups = self._streamExcGroups
 
         self._sendYamlFrame(self.getYaml(readFirst=False,
-                                          modes=modes,
-                                          incGroups=incGroups,
-                                          excGroups=excGroups))
+                                         modes=modes,
+                                         incGroups=incGroups,
+                                         excGroups=excGroups))
 
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
         with self.pollBlock(), self.updateGroup():
-            try:
-                self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
-                self._log.info("Verify root read")
-                self.verifyBlocks(recurse=True)
-                self._log.info("Check root read")
-                self.checkBlocks(recurse=True)
-            except Exception as e:
-                pr.logException(self._log,e)
-                return False
+            self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
+            self._log.info("Verify root read")
+            self.verifyBlocks(recurse=True)
+            self._log.info("Check root read")
+            self.checkBlocks(recurse=True)
 
         self._log.info("Done root write")
         return True
@@ -661,13 +722,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """Read all blocks"""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
-            try:
-                self.readBlocks(recurse=True)
-                self._log.info("Check root read")
-                self.checkBlocks(recurse=True)
-            except Exception as e:
-                pr.logException(self._log,e)
-                return False
+            self.readBlocks(recurse=True)
+            self._log.info("Check root read")
+            self.checkBlocks(recurse=True)
 
         self._log.info("Done root read")
         return True
@@ -681,18 +738,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             if autoCompress:
                 name += '.zip'
-        try:
-            yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if name.split('.')[-1] == 'zip':
-                with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf: 
-                    with zf.open(os.path.basename(name[:-4]),'w') as f: f.write(yml.encode('utf-8'))
-            else:
-                with open(name,'w') as f: f.write(yml)
+        yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-        except Exception as e:
-            pr.logException(self._log,e)
-            return False
+        if name.split('.')[-1] == 'zip':
+            with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
+                with zf.open(os.path.basename(name[:-4]),'w') as f:
+                    f.write(yml.encode('utf-8'))
+        else:
+            with open(name,'w') as f:
+                f.write(yml)
 
         return True
 
@@ -719,7 +774,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for rl in rawlst:
 
             # Name ends with .yml or .yaml
-            if rl[-4:] == '.yml' or rl[-5:] == '.yaml': 
+            if rl[-4:] == '.yml' or rl[-5:] == '.yaml':
                 lst.append(rl)
 
             # Entry is a zip file directory
@@ -732,7 +787,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                     # Check if passed name is a directory, otherwise generate an error
                     if not any(x.startswith("%s/" % sub.rstrip("/")) for x in myzip.namelist()):
-                        self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+                        raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
                     else:
 
@@ -743,8 +798,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             if zfn.find(sub) == 0:
                                 spt = zfn.split('%s/' % sub.rstrip('/'))[1]
 
-                                # Entry ends in .yml or *.yml and is in current directory 
-                                if not '/' in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'): 
+                                # Entry ends in .yml or *.yml and is in current directory
+                                if '/' not in spt and (spt[-4:] == '.yml' or spt[-5:] == '.yaml'):
                                     lst.append(base + '/' + zfn)
 
             # Entry is a directory
@@ -754,24 +809,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 lst.extend(sorted(dlst))
 
             # Not a zipfile, not a directory and does not end in .yml
-            else: 
-                self._log.error("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
+            else:
+                raise Exception("loadYaml: Invalid load file: {}, must be a directory or end in .yml or .yaml".format(rl))
 
         # Read each file
-        try:
-            with self.pollBlock(), self.updateGroup():
-                for fn in lst:
-                    d = pr.yamlToData(fName=fn)
-                    self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+        with self.pollBlock(), self.updateGroup():
+            for fn in lst:
+                d = pr.yamlToData(fName=fn)
+                self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-                if not writeEach: self._write()
+            if not writeEach:
+                self._write()
 
-            if self.InitAfterConfig.value():
-                self.initialize()
-
-        except Exception as e:
-            pr.logException(self._log,e)
-            return False
+        if self.InitAfterConfig.value():
+            self.initialize()
 
         return True
 
@@ -781,21 +832,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
         """
-
-        if readFirst: self._read()
-        try:
-            return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
-        except Exception as e:
-            pr.logException(self._log,e)
-            return ""
-
+        if readFirst:
+            self._read()
+        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
 
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
         Set variable values from a yaml file
         modes is a list of variable modes to act on.
         writeEach is set to true if accessing a single variable at a time.
-        Writes will be performed as each variable is updated. If set to 
+        Writes will be performed as each variable is updated. If set to
         false a bulk write will be performed after all of the variable updates
         are completed. Bulk writes provide better performance when updating a large
         quantity of variables.
@@ -805,7 +851,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self.pollBlock(), self.updateGroup():
             self._setDictRoot(d=d,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
 
-            if not writeEach: self._write()
+            if not writeEach:
+                self._write()
 
         if self.InitAfterConfig.value():
             self.initialize()
@@ -832,7 +879,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         tid = threading.get_ident()
 
         with self._updateLock:
-            if not tid in self._updateCount:
+            if tid not in self._updateCount:
                 self._updateList[tid] = {}
                 self._updateCount[tid] = 0
 
@@ -857,7 +904,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Process list
             elif len(uvars) > 0:
-                self._log.debug(F"Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
+                self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
                 strm = odict()
                 zmq  = odict()
 
@@ -889,7 +936,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                             print("------------------------------------------------")
                         else:
                             pr.logException(self._log,e)
-                        
+
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
 
@@ -907,4 +954,3 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Set done
             self._updateQueue.task_done()
-
