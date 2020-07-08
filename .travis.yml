@@ -182,6 +182,9 @@ jobs:
         - source "$HOME"/miniconda/etc/profile.d/conda.sh
         - conda config --set always_yes yes
         - conda install conda-build anaconda-client conda-verify
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+            conda install libiconv libarchive -c conda-forge;
+          fi
         - conda update -q conda conda-build
         - conda update --all
 
@@ -197,9 +200,9 @@ jobs:
         # Upload conda package
         - anaconda -t $CONDA_TOKEN upload bld-dir/`echo $TRAVIS_OS_NAME`-64/*.tar.bz2
 
-    #- <<: *deploy-conda-stage   # Conda for MacOS
-      #os: osx
-      #language: ruby  # osx does not support language=python
+    - <<: *deploy-conda-stage   # Conda for MacOS
+      os: osx
+      language: ruby  # osx does not support language=python
 
     # Deploy tagged version stage (deploy_tag)
     - <<: *deploy-docker-stage  # Docker
@@ -210,8 +213,8 @@ jobs:
       stage: deploy_tag
       env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
 
-    # - <<: *deploy-conda-stage   # Conda for macOS
-      #stage: deploy_tag
-      #os: osx
-      #language: ruby  # osx does not support language=python
-      #env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
+    - <<: *deploy-conda-stage   # Conda for macOS
+      stage: deploy_tag
+      os: osx
+      language: ruby  # osx does not support language=python
+      env: CONDA_TOKEN=$CONDA_UPLOAD_TOKEN_TAG
