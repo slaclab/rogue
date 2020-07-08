@@ -179,8 +179,7 @@ jobs:
             wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh;
           fi
         - bash miniconda.sh -b -p $HOME/miniconda
-        - export PATH="$HOME/miniconda/bin:$PATH"
-        - hash -r
+        - source "$HOME"/miniconda/etc/profile.d/conda.sh
         - conda config --set always_yes yes
         - conda install conda-build anaconda-client conda-verify
         - conda update -q conda conda-build
