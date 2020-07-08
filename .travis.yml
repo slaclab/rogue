@@ -165,8 +165,8 @@ jobs:
         # on OSX rogue needs an older version of the MacOS SDK
         - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
             git clone https://github.com/phracker/MacOSX-SDKs;
-            sudo mv MacOSX-SDKs/MacOSX10.9.sdk /opt/;
-            export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk;
+            sudo mv MacOSX-SDKs/MacOSX10.13.sdk /opt/;
+            export CONDA_BUILD_SYSROOT=/opt/MacOSX10.13.sdk;
             export CONDA_BUILD=1;
           fi
 
