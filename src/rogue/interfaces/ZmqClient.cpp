@@ -150,11 +150,11 @@ std::string rogue::interfaces::ZmqClient::send(std::string value) {
       if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
          seconds += (float)timeout_ / 1000.0;
          if ( waitRetry_ ) {
-            log_->error("Timeout wating for response after %f Seconds, server may be busy! Waiting...",seconds);
+            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",seconds);
             zmq_msg_close(&msg);
          }
          else
-            throw rogue::GeneralError::create("ZmqClient::send","Timeout wating for response after %f Seconds, server may be busy!",seconds);
+            throw rogue::GeneralError::create("ZmqClient::send","Timeout waiting for response after %f Seconds, server may be busy!",seconds);
       }
       else break;
    }
