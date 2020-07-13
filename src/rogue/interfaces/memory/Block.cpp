@@ -490,10 +490,10 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(data,blockData_+var->fastByte_,var->byteSize_);
-
+   if ( var->fastCopy_ ) {
+     memcpy(data,blockData_+var->fastByte_,var->byteSize_);
+   }
    else {
-
       dstBit = 0;
       for (x=0; x < var->bitOffset_.size(); x++) {
          copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
@@ -502,7 +502,9 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    }
 
    // Change byte order
-   if ( var->byteReverse_ ) reverseBytes(data,var->byteSize_);
+   if ( var->byteReverse_ ) {
+     reverseBytes(data,var->byteSize_);
+   }
 }
 
 //////////////////////////////////////////
@@ -604,7 +606,7 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var ) {
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setUInt",
-         "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+         "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
    setBytes((uint8_t *)&val,var);
 }
@@ -614,9 +616,8 @@ bp::object rim::Block::getUIntPy (rim::Variable *var ) {
    uint64_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
-
-
-   PyObject *val = Py_BuildValue("l",tmp);
+   
+   PyObject *val = Py_BuildValue("K",tmp);
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -629,7 +630,7 @@ void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var ) {
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setUInt",
-         "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+         "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
    setBytes((uint8_t *)&val,var);
 }
@@ -661,7 +662,7 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var ) {
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setInt",
-         "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+         "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
    setBytes((uint8_t *)&val,var);
 }
@@ -676,7 +677,7 @@ bp::object rim::Block::getIntPy ( rim::Variable *var ) {
       if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
    }
 
-   PyObject *val = Py_BuildValue("l",tmp);
+   PyObject *val = Py_BuildValue("L",tmp);
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -689,7 +690,7 @@ void rim::Block::setInt ( const int64_t &val, rim::Variable *var ) {
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setInt",
-         "Value range error for %s. Value=%li, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+         "Value range error for %s. Value=%" PRId64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
    setBytes((uint8_t *)&val,var);
 }
@@ -1031,7 +1032,7 @@ void rim::Block::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nBlock c++ raw: Read %li times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nBlock c++ raw: Read %" PRIu64 " times in %f seconds. Rate = %f\n",count,durr,rate);
 
    gettimeofday(&stime,NULL);
    waitTransaction(0);
@@ -1045,6 +1046,6 @@ void rim::Block::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nBlock c++ raw: Wrote %li times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nBlock c++ raw: Wrote %" PRIu64 " times in %f seconds. Rate = %f\n",count,durr,rate);
 }
 
