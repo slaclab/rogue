@@ -100,6 +100,9 @@ namespace rogue {
          //! Helper function to get uint32_t vector from fields
          std::vector<uint32_t> getFieldVectorUInt32(std::map<std::string, std::string> fields, std::string name);
 
+         //! Dump the current state of the registers in the system
+         void dumpRegisterStatus(std::string filename, bool read);
+
    };
 
    typedef std::shared_ptr<rogue::LibraryBase> LibraryBasePtr;
