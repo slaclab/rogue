@@ -243,7 +243,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self.add(pr.LocalCommand(name='RemoteVariableDump', value='',
                                  function=lambda arg: self.remoteVariableDump(name=arg, readFirst=True),
-                                 hidden=True,
+                                 hidden=False,
                                  description='Save a dump of the remote variable state'))
 
         self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
@@ -869,7 +869,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Auto generate name if no arg
         if name is None or name == '':
-            name = datetime.datetime.now().strftime(autoPrefix + "_%Y%m%d_%H%M%S.txt")
+            name = datetime.datetime.now().strftime("regdump_%Y%m%d_%H%M%S.txt")
 
         if readFirst:
             self._read()

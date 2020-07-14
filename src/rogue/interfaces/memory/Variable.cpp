@@ -524,14 +524,14 @@ std::string rim::Variable::getDumpValue(bool read) {
       case rim::Bytes :
          (block_->*getByteArray_)(byteData,this);
          ret << "0x";
-         for (x=0; x < byteSize_; x++) ret << std::setw(2) << std::setfill('0') << std::hex << byteData[x];
+         for (x=0; x < byteSize_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
          break;
 
       case rim::UInt :
          if (bitTotal_ > 64) {
             (block_->*getByteArray_)(byteData,this);
             ret << "0x";
-            for (x=0; x < byteSize_; x++) ret << std::setw(2) << std::setfill('0') << std::hex << byteData[x];
+            for (x=0; x < byteSize_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
          }
          else ret << (block_->*getUInt_)(this);
          break;
@@ -540,7 +540,7 @@ std::string rim::Variable::getDumpValue(bool read) {
          if (bitTotal_ > 64) {
             (block_->*getByteArray_)(byteData,this);
             ret << "0x";
-            for (x=0; x < byteSize_; x++) ret << std::setw(2) << std::setfill('0') << std::hex << byteData[x];
+            for (x=0; x < byteSize_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
          }
          else ret << (block_->*getInt_)(this);
          break;
