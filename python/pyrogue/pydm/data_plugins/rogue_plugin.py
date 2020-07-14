@@ -189,7 +189,7 @@ class RogueConnection(PyDMConnection):
                 self.write_access_signal.emit(False)
                 self.new_value_signal[str].emit(self._node.path)
             else:
-                self.write_access_signal.emit(self._cmd or self._node.mode=='RW')
+                self.write_access_signal.emit(self._cmd or self._node.mode!='RO')
                 self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
 
         else:
