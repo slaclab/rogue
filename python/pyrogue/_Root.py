@@ -375,6 +375,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = threading.Thread(target=self._updateWorker)
         self._updateThread.start()
 
+        # Start heartbeat
+        if self._doHeartbeat:
+            self._hbeatThread = threading.Thread(target=self._hbeatWorker)
+            self._hbeatThread.start()
+
         # Start interfaces and protocols
         pr.Device._start(self)
 
@@ -390,8 +395,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Start poller if enabled
         self._pollQueue._start()
         self.PollEn.set(self._pollEn)
-
-        self._heartbeat()
 
 
     def stop(self):
@@ -639,10 +642,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     f.write("{}\n".format(v.description))
 
 
-    def _heartbeat(self):
-        if self._running and self._doHeartbeat:
+    def _hbeatWorker(self):
+        while self._running:
+            time.sleep(1)
+
             with self.updateGroup():
-                threading.Timer(1.0,self._heartbeat).start()
                 self.Time.set(time.time())
 
     def _exit(self):

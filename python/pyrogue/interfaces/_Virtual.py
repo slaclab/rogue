@@ -239,37 +239,38 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._link  = True
         self._ltime = self._root.Time.value()
 
+        # Create monitoring thread
+        self._monEnable = True
+        self._monThread = threading.Thread(target=self._monWorker)
+        self._monThread.start()
+
     def addLinkMonitor(self, function):
         if function not in self._monitors:
             self._monitors.append(function)
-        self._monWorker()
 
     def remLinkMonitor(self, function):
         if function in self._monitors:
             self._monitors.remove(function)
-        self._monWorker()
 
     @property
     def linked(self):
         return self._link
 
     def _monWorker(self):
-        if len(self._monitors) == 0:
-            return
+        while self._monEnable:
+            time.sleep(1)
 
-        threading.Timer(1.0,self._monWorker).start()
+            if self._link and (time.time() - self._ltime) > 10.0:
+                self._link = False
+                self._log.warning(f"I have not heard from {self._root.name} in 10 seconds. It may be busy, continuing to wait...")
+                for mon in self._monitors:
+                    mon(self._link)
 
-        if self._link and (time.time() - self._ltime) > 10.0:
-            self._link = False
-            self._log.warning(f"I have not heard from {self._root.name} in 10 seconds. It may be busy, continuing to wait...")
-            for mon in self._monitors:
-                mon(self._link)
-
-        elif (not self._link) and (time.time() - self._ltime) < 10.0:
-            self._link = True
-            self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
-            for mon in self._monitors:
-                mon(self._link)
+            elif (not self._link) and (time.time() - self._ltime) < 10.0:
+                self._link = True
+                self._log.warning(f"I have finally heard from {self._root.name}. All is good!")
+                for mon in self._monitors:
+                    mon(self._link)
 
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
@@ -306,6 +307,9 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             # Call listener functions,
             for func in self._varListeners:
                 func(k,val)
+
+    def stop(self):
+        self._monEnable = False
 
     @property
     def root(self):

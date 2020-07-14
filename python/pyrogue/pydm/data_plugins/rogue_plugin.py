@@ -197,6 +197,7 @@ class RogueConnection(PyDMConnection):
 
     def remove_listener(self, channel, destroying):
         self._client.remLinkMonitor(self.linkState)
+        self._client.stop()
         #if channel.value_signal is not None:
         #    #try:
         #    #    channel.value_signal[str].disconnect(self.put_value)
