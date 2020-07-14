@@ -241,6 +241,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Read configuration from passed filename in YAML format'))
 
+        self.add(pr.LocalCommand(name='RemoteVariableDump', value='',
+                                 function=lambda arg: self.remoteVariableDump(name=arg, readFirst=True),
+                                 hidden=True,
+                                 description='Save a dump of the remote variable state'))
+
         self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
                                  description='Generate a soft reset to each device in the tree'))
 
@@ -283,6 +288,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self.add(pr.LocalCommand(name='Exit', function=self._exit,
                                  description='Exit the server application'))
+
 
     def start(self, **kwargs):
         """Setup the tree. Start the polling thread."""
@@ -860,6 +866,24 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if self.InitAfterConfig.value():
             self.initialize()
+
+
+    def remoteVariableDump(self,name,readFirst):
+        """Dump remote variable values to a file."""
+
+        # Auto generate name if no arg
+        if name is None or name == '':
+            name = datetime.datetime.now().strftime("regdump_%Y%m%d_%H%M%S.txt")
+
+        if readFirst:
+            self._read()
+
+        with open(name,'w') as f:
+            for v in self.variableList:
+                if hasattr(v,'_getDumpValue'):
+                    f.write(v._getDumpValue(False))
+
+        return True
 
 
     def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):

@@ -25,6 +25,8 @@
 #include <memory>
 #include <cmath>
 #include <sys/time.h>
+#include <iostream>
+#include <iomanip>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -73,7 +75,8 @@ void rim::Variable::setup_python() {
       .def("_set",             &rim::VariableWrap::set)
       .def("_rateTest",        &rim::VariableWrap::rateTest)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
-	  .def("_setLogLevel",     &rim::Variable::setLogLevel)
+	   .def("_setLogLevel",     &rim::Variable::setLogLevel)
+	   .def("_getDumpValue",    &rim::Variable::getDumpValue)
    ;
 #endif
 }
@@ -503,6 +506,72 @@ void rim::Variable::rateTest() {
    rate = count / durr;
 
    printf("\nVariable c++ set: Wrote %li times in %f seconds. Rate = %f\n",count,durr,rate);
+}
+
+
+//! Return string representation of value using default converters
+std::string rim::Variable::getDumpValue(bool read) {
+   std::stringstream ret;
+   uint32_t x;
+   uint8_t byteData[byteSize_];
+
+   if (read) block_->read(this);
+
+   ret << path_ << " = ";
+
+   switch (modelId_) {
+
+      case rim::Bytes :
+         (block_->*getByteArray_)(byteData,this);
+         ret << "0x";
+         for (x=0; x < byteSize_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+         break;
+
+      case rim::UInt :
+         if (bitTotal_ > 64) {
+            (block_->*getByteArray_)(byteData,this);
+            ret << "0x";
+            for (x=0; x < byteSize_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+         }
+         else ret << (block_->*getUInt_)(this);
+         break;
+
+      case rim::Int :
+         if (bitTotal_ > 64) {
+            (block_->*getByteArray_)(byteData,this);
+            ret << "0x";
+            for (x=0; x < byteSize_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+         }
+         else ret << (block_->*getInt_)(this);
+         break;
+
+      case rim::Bool :
+         ret << (block_->*getBool_)(this);
+         break;
+
+      case rim::String :
+         ret << (block_->*getString_)(this);
+         break;
+
+      case rim::Float :
+         ret << (block_->*getFloat_)(this);
+         break;
+
+      case rim::Double :
+         ret << (block_->*getDouble_)(this);
+         break;
+
+      case rim::Fixed :
+         ret << (block_->*getFixed_)(this);
+         break;
+
+      default :
+         ret << "UNDEFINED";
+         break;
+   }
+
+   ret << "\n";
+   return ret.str();
 }
 
 /////////////////////////////////

@@ -26,6 +26,8 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <iostream>
+#include <fstream>
 
 namespace ris  = rogue::interfaces::stream;
 namespace rim  = rogue::interfaces::memory;
@@ -267,5 +269,20 @@ std::vector<uint32_t> rogue::LibraryBase::getFieldVectorUInt32(std::map<std::str
       ret.push_back(val);
    }
    return ret;
+}
+
+
+//! Dump the current state of the registers in the system
+void rogue::LibraryBase::dumpRegisterStatus(std::string filename, bool read) {
+   std::map< std::string, rim::VariablePtr>::iterator it;
+
+   std::ofstream myfile;
+
+   myfile.open(filename);
+
+   for (it=variables_.begin(); it != variables_.end(); ++it) myfile << it->second->getDumpValue(read);
+
+   myfile.close();
+
 }
 

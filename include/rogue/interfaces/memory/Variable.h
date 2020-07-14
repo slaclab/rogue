@@ -331,6 +331,9 @@ namespace rogue {
                //! Set logging level for Variable's block
                void setLogLevel(uint32_t level);
 
+               //! Return string representation of value using default converters
+               std::string getDumpValue(bool read);
+
                /////////////////////////////////
                // C++ Byte Array
                /////////////////////////////////
