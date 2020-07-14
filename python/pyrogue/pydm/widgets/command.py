@@ -73,7 +73,7 @@ class Command(PyDMFrame):
 
         hb.addWidget(self._btn)
 
-    @Slot(str)
+    #@Slot(str)
     def _argChanged(self,value):
         self._btn.pressValue = value
 
