@@ -5,7 +5,6 @@ click
 coverage
 codecov
 pytest>=3.6
-pytest-cov
 pyepics
 doctr
 sphinx

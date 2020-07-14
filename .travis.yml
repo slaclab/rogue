@@ -108,14 +108,11 @@ jobs:
         - source setup_rogue.sh
 
       script:
-        # Run tests with coverage
+        # Run tests
         - cd $TRAVIS_BUILD_DIR
-        - python3 -m pytest --cov
+        - python3 -m pytest
 
       after_success:
-        # Upload coverage report
-        - codecov
-        - coverage report -m
         # Publish docs.
         - if [ "$TRAVIS_BRANCH" = "documentation" ]; then
            doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation;
