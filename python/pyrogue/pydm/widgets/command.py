@@ -13,7 +13,8 @@
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Slot, Signal
+from qtpy.QtCore import Signal
+#from qtpy.QtCore import Slot
 from qtpy.QtWidgets import QHBoxLayout, QLineEdit, QComboBox
 
 
@@ -73,7 +74,6 @@ class Command(PyDMFrame):
 
         hb.addWidget(self._btn)
 
-    #@Slot(str)
     def _argChanged(self,value):
         self._btn.pressValue = value
 

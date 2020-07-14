@@ -159,7 +159,6 @@ class CommandHolder(QTreeWidgetItem):
                 self._top._colWidths[3] = width
 
 
-    #@Slot(str)
     def _argChanged(self,value):
         self._btn.pressValue = value
 
