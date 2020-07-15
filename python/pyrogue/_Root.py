@@ -920,6 +920,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     # Worker thread
     def _updateWorker(self):
         self._log.info("Starting update thread")
+        strm = {}
+        zmq  = {}
 
         while True:
             uvars = self._updateQueue.get()
@@ -933,8 +935,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Process list
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
-                strm = odict()
-                zmq  = odict()
 
                 for p,v in uvars.items():
                     try:
@@ -972,6 +972,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 try:
                     if len(strm) > 0:
                         self._sendYamlFrame(pr.dataToYaml(strm))
+                        strm = {}
 
                 except Exception as e:
                     pr.logException(self._log,e)
@@ -979,6 +980,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 # Send over zmq link
                 if self._zmqServer is not None:
                     self._zmqServer._publish(jsonpickle.encode(zmq))
+                zmq = {}
 
             # Set done
             self._updateQueue.task_done()
