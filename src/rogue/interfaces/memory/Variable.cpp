@@ -27,6 +27,7 @@
 #include <sys/time.h>
 #include <iostream>
 #include <iomanip>
+#include <sstream>
 
 namespace rim = rogue::interfaces::memory;
 
