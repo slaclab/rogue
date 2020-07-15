@@ -15,7 +15,6 @@ import glob
 import rogue
 import rogue.interfaces.memory as rim
 import threading
-from collections import OrderedDict as odict
 import logging
 import pyrogue as pr
 import pyrogue.interfaces
