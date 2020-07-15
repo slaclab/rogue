@@ -728,7 +728,7 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var ) {
 
 // Get data using bool
 bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
-   uint8_t tmp;
+   uint8_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -746,7 +746,7 @@ void rim::Block::setBool ( const bool &value, rim::Variable *var ) {
 
 // Get data using bool
 bool rim::Block::getBool ( rim::Variable *var ) {
-   uint8_t tmp;
+   uint8_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
