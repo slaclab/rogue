@@ -617,7 +617,7 @@ bp::object rim::Block::getUIntPy (rim::Variable *var ) {
    uint64_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
-   
+
    PyObject *val = Py_BuildValue("K",tmp);
    bp::handle<> handle(val);
    return bp::object(handle);
@@ -732,7 +732,7 @@ bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
 
    getBytes((uint8_t *)&tmp,var);
 
-   bp::handle<> handle(tmp?Py_True:Py_False);
+   bp::handle<> handle(bp::borrowed(tmp?Py_True:Py_False));
    return bp::object(handle);
 }
 

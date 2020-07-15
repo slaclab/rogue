@@ -426,7 +426,7 @@ void rim::VariableWrap::set(bp::object &value) {
 //! Get value from RemoteVariable
 bp::object rim::VariableWrap::get() {
    if ( getFuncPy_ == NULL ) {
-      bp::handle<> handle(Py_None);
+      bp::handle<> handle(bp::borrowed(Py_None));
       return bp::object(handle);
    }
    return (block_->*getFuncPy_)(this);
