@@ -27,6 +27,7 @@
 #include <string.h>
 #include <memory>
 #include <cmath>
+#include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
