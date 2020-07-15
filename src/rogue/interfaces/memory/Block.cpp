@@ -532,6 +532,8 @@ void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var ) {
 bp::object rim::Block::getPyFunc ( rim::Variable *var ) {
    uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
 
+   memset(getBuffer,0,var->byteSize_);
+
    getBytes(getBuffer, var);
    PyObject *val = Py_BuildValue("y#",getBuffer,var->byteSize_);
 
@@ -567,6 +569,8 @@ void rim::Block::setByteArrayPy ( bp::object &value, rim::Variable *var ) {
 // Get data using byte array
 bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
    uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
+
+   memset(getBuffer,0,var->byteSize_);
 
    getBytes(getBuffer, var);
    PyObject *val = Py_BuildValue("y#",getBuffer,var->byteSize_);
@@ -728,7 +732,7 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var ) {
 
 // Get data using bool
 bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
-   uint8_t tmp;
+   uint8_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -746,7 +750,7 @@ void rim::Block::setBool ( const bool &value, rim::Variable *var ) {
 
 // Get data using bool
 bool rim::Block::getBool ( rim::Variable *var ) {
-   uint8_t tmp;
+   uint8_t tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -775,6 +779,8 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var ) {
 bp::object rim::Block::getStringPy ( rim::Variable *var ) {
    uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
 
+   memset(getBuffer,0,var->byteSize_);
+
    getBytes(getBuffer, var);
 
    PyObject *val = Py_BuildValue("s#",getBuffer,var->byteSize_);
@@ -795,8 +801,9 @@ void rim::Block::setString ( const std::string &value, rim::Variable *var ) {
 std::string rim::Block::getString ( rim::Variable *var ) {
    char getBuffer[var->byteSize_+1];
 
+   memset(getBuffer,0,var->byteSize_+1);
+
    getBytes((uint8_t *)getBuffer, var);
-   getBuffer[var->byteSize_] = 0;
 
    std::string ret(getBuffer);
 
@@ -807,8 +814,9 @@ std::string rim::Block::getString ( rim::Variable *var ) {
 void rim::Block::getString ( rim::Variable *var, std::string & retString ) {
    char getBuffer[var->byteSize_+1];
 
+   memset(getBuffer,0,var->byteSize_+1);
+
    getBytes((uint8_t *)getBuffer, var);
-   getBuffer[var->byteSize_] = 0;
 
    retString = getBuffer;
 }
@@ -839,7 +847,7 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var ) {
 
 // Get data using float
 bp::object rim::Block::getFloatPy ( rim::Variable *var ) {
-   float tmp;
+   float tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -863,7 +871,7 @@ void rim::Block::setFloat ( const float &val, rim::Variable *var ) {
 
 // Get data using float
 float rim::Block::getFloat ( rim::Variable *var ) {
-   float tmp;
+   float tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -896,7 +904,7 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var ) {
 
 // Get data using double
 bp::object rim::Block::getDoublePy ( rim::Variable *var ) {
-   double tmp;
+   double tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -920,7 +928,7 @@ void rim::Block::setDouble ( const double &val, rim::Variable *var ) {
 
 // Get data using double
 double rim::Block::getDouble ( rim::Variable *var ) {
-   double tmp;
+   double tmp = 0;
 
    getBytes((uint8_t *)&tmp,var);
 
@@ -955,7 +963,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var ) {
 
 // Get data using fixed point
 bp::object rim::Block::getFixedPy ( rim::Variable *var ) {
-   uint64_t fPoint;
+   uint64_t fPoint = 0;
    double tmp;
 
    getBytes((uint8_t *)&fPoint,var);
@@ -986,7 +994,7 @@ void rim::Block::setFixed ( const double &val, rim::Variable *var ) {
 
 // Get data using fixed point
 double rim::Block::getFixed ( rim::Variable *var ) {
-   uint64_t fPoint;
+   uint64_t fPoint = 0;
    double tmp;
 
    getBytes((uint8_t *)&fPoint,var);
