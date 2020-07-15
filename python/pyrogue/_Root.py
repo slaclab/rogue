@@ -221,6 +221,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
+        self.add(pr.LocalCommand(name='DumpVars', value='',
+                                 function=lambda arg: self.remoteVariableDump(name=arg,
+                                                                    readFirst=True),
+                                 hidden=True,
+                                 description='Dump remote variables to passed filename in YAML format'))
+
         self.add(pr.LocalCommand(name='SaveConfig', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
                                                                     readFirst=True,
