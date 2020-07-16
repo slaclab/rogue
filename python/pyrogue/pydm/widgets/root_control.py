@@ -114,6 +114,25 @@ class RootControl(PyDMFrame):
         pb.clicked.connect(self._saveStateBrowse)
         hb.addWidget(pb)
 
+        # Dump Remote Variables
+        # This needs to be changed to the new pydm command interface with the push
+        # button committing the line edit value
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        self._dumpCfgVarsCmd = PyDMPushButton(label='DumpCfgVars',
+                                            pressValue='',
+                                            init_channel=self._path + '.DumpCfgVars')
+
+        hb.addWidget(self._dumpCfgVarsCmd)
+
+        self._dumpCfgVarsValue = QLineEdit()
+        self._dumpCfgVarsValue.textChanged.connect(self._dumpCfgVarsChanged)
+        hb.addWidget(self._dumpCfgVarsValue)
+
+        pb = QPushButton('Browse')
+        pb.clicked.connect(self._dumpCfgVarsBrowse)
+        hb.addWidget(pb)
 
     @Slot(str)
     def _loadConfigChanged(self,value):
@@ -167,3 +186,21 @@ class RootControl(PyDMFrame):
 
         if stateFile != '':
             self._saveStateValue.setText(stateFile)
+
+    @Slot(str)
+    def _dumpCfgVarsChanged(self,value):
+        self._dumpCfgVarsCmd.pressValue = value
+
+    @Slot()
+    def _dumpCfgVarsBrowse(self):
+        dlg = QFileDialog()
+        sug = datetime.datetime.now().strftime("cfgdump_%Y%m%d_%H%M%S.txt")
+
+        stateFile = dlg.getSaveFileName(caption='DumpCfgVars file', directory=sug, filter='Dump Files(*.yml);;All Files(*.*)')
+
+        # Detect QT5 return
+        if isinstance(stateFile,tuple):
+            stateFile = stateFile[0]
+
+        if stateFile != '':
+            self._dumpCfgVarsValue.setText(stateFile)
