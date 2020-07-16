@@ -223,7 +223,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalCommand(name='DumpCfgVars', value='',
                                  function=lambda arg: self.remoteVariableDump(name=arg,
                                                                     writableOnly=True, readFirst=True),
-                                 hidden=True,
+                                 hidden=False,
                                  description='Save a dump of the writable remote variable state'))
 
         self.add(pr.LocalCommand(name='SaveConfig', value='',
@@ -248,7 +248,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self.add(pr.LocalCommand(name='RemoteVariableDump', value='',
                                  function=lambda arg: self.remoteVariableDump(name=arg, writableOnly=False, readFirst=True ),
-                                 hidden=True,
+                                 hidden=False,
                                  description='Save a dump of the remote variable state'))
 
         self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
