@@ -220,6 +220,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Save state to passed filename in YAML format'))
 
+        self.add(pr.LocalCommand(name='DumpCfgVars', value='',
+                                 function=lambda arg: self.remoteVariableDump(name=arg,
+                                                                    writableOnly=True, readFirst=True),
+                                 hidden=True,
+                                 description='Save a dump of the writable remote variable state'))
+
         self.add(pr.LocalCommand(name='SaveConfig', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
                                                                     readFirst=True,
@@ -241,7 +247,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Read configuration from passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='RemoteVariableDump', value='',
-                                 function=lambda arg: self.remoteVariableDump(name=arg, readFirst=True),
+                                 function=lambda arg: self.remoteVariableDump(name=arg, writableOnly=False, readFirst=True ),
                                  hidden=True,
                                  description='Save a dump of the remote variable state'))
 
@@ -867,18 +873,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.initialize()
 
 
-    def remoteVariableDump(self,name,readFirst):
+    def remoteVariableDump(self,name,writableOnly=False,readFirst=True):
         """Dump remote variable values to a file."""
 
         # Auto generate name if no arg
         if name is None or name == '':
-            name = datetime.datetime.now().strftime("regdump_%Y%m%d_%H%M%S.txt")
+            name = datetime.datetime.now().strftime(("cfgdump_" if writableOnly else "regdump_")+"%Y%m%d_%H%M%S.txt")
 
         if readFirst:
             self._read()
 
         with open(name,'w') as f:
             for v in self.variableList:
+                if writableOnly and not v._mode in [ 'RW', 'WO' ]:
+                    continue
                 if hasattr(v,'_getDumpValue'):
                     f.write(v._getDumpValue(False))
 
