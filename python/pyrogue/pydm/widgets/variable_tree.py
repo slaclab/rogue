@@ -189,6 +189,12 @@ class VariableHolder(QTreeWidgetItem):
             w.showStepExponent      = False
             w.installEventFilter(self._top)
 
+        elif self._var.mode == 'RO':
+            w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
         else:
             w = PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
