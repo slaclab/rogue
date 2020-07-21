@@ -257,6 +257,20 @@ namespace rogue {
                //! Get block python transactions flag
                bool blockPyTrans();
 
+            private:
+
+               //! Start a c++ transaction for this block, internal version
+               /** Start a c++ transaction with the passed type and access range
+                *
+                * @param type    Transaction type
+                * @param forceWr Force write of non-stale block
+                * @param check   Flag to indicate if the transaction results should be immediately checked
+                * @param var     Variable associated with transaction
+                */
+               void intStartTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var);
+
+            public:
+
                //! Start a c++ transaction for this block
                /** Start a c++ transaction with the passed type and access range
                 *
