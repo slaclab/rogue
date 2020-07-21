@@ -13,7 +13,6 @@
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMEnumComboBox, PyDMLabel
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.pydm.widgets import PyRogueLineEdit
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 
