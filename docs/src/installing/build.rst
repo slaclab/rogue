@@ -21,19 +21,20 @@ The following packages are required to build the rogue library:
 Package Manager Install
 -----------------------
 
-Ubuntu 17.04 (or later)
+Ubuntu 18.04 (or later)
 ########################
 
 .. code::
 
-   $ apt-get install cmake (or cmake3)
+   $ apt-get install cmake
    $ apt-get install python3
    $ apt-get install libboost-all-dev
    $ apt-get install libbz2-dev
    $ apt-get install python3-pip
    $ apt-get install git
    $ apt-get install libzmq3-dev
-   $ apt-get install python3-pyqt5 (or python3-pyqt4)
+   $ apt-get install python3-pyqt5
+   $ apt-get install python3-pyqt5.qtsvg
 
 archlinux:
 ##########
@@ -47,7 +48,7 @@ archlinux:
    $ pacman -S python-pip
    $ pacman -S git
    $ pacman -S zeromq
-   $ pacman -S python-pyqt5 (or python-pyqt4)
+   $ pacman -S python-pyqt5
    
 MacOs:
 #######
@@ -67,23 +68,6 @@ Information on the homebrew package manager can be found at: `<https://brew.sh/>
 
 Epics V3 support is and optional module that will be included in the rogue build
 if the EPICS_BASE directory is set in the user's environment.
-
-Python Packages Required
-------------------------
-
-The following python packages are required to use rogue in the python3
-environment. Currently I am using PIP to install these, but you are free 
-to use your favorite python tool.
-
-.. code::
-
-   $ pip3 install PyYAML
-   $ pip3 install jsonpickle
-   $ pip3 install parse
-   $ pip3 install click
-   $ pip3 install pyzmq
-   $ pip3 install numpy
-   $ pip3 install sqlalchemy
 
 Building & Installing Rogue
 ===========================
@@ -106,6 +90,7 @@ Local Install
 
    $ git clone https://github.com/slaclab/rogue.git
    $ cd rogue
+   $ pip3 install -r pip_requirements.txt
    $ mkdir build
    $ cd build
    $ cmake .. -DROGUE_INSTALL=local
@@ -122,6 +107,7 @@ Make sure you have permission to install into the passed install directory, if n
 
    $ git clone https://github.com/slaclab/rogue.git
    $ cd rogue
+   $ pip3 install -r pip_requirements.txt
    $ mkdir build
    $ cd build
    $ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
@@ -139,6 +125,7 @@ Make sure you have permission to install into the /usr/local/ directory, if not 
 
    $ git clone https://github.com/slaclab/rogue.git
    $ cd rogue
+   $ pip3 install -r pip_requirements.txt
    $ mkdir build
    $ cd build
    $ cmake .. -DROGUE_INSTALL=system
@@ -157,5 +144,3 @@ to update from git and rebuild:
    $ make rebuild_cache
    $ make clean
    $ make install
-
-
