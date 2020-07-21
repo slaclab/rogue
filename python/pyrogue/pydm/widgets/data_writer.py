@@ -11,7 +11,7 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMPushButton
+from pydm.widgets import PyDMPushButton, PyDMLabel
 from pyrogue.pydm.widgets import PyRogueLineEdit
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Slot
@@ -88,12 +88,12 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Buffer Size:',w)
 
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.IsOpen/disp')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.IsOpen/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('File Open:',w)
 
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.CurrentSize')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.CurrentSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Current File Size:',w)
@@ -112,12 +112,12 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Max Size:',w)
 
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.FrameCount')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.FrameCount')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.TotalSize')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)
