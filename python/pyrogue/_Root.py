@@ -887,6 +887,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             for v in self.variableList:
                 if writableOnly and not v._mode in [ 'RW', 'WO' ]:
                     continue
+                if readFirst and v._mode != 'WO':
+                    v.get()
                 if hasattr(v,'_getDumpValue'):
                     f.write(v._getDumpValue(False))
 
