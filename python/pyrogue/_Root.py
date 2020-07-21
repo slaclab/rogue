@@ -203,10 +203,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                   localGet=lambda: not self._pollQueue.paused()))
 
         # Commands
-        self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=True,
+        self.add(pr.LocalCommand(name='WriteAll', function=self._write, hidden=False,
                                  description='Write all values to the hardware'))
 
-        self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=True,
+        self.add(pr.LocalCommand(name="ReadAll", function=self._read, hidden=False,
                                  description='Read all values from the hardware'))
 
         self.add(pr.LocalCommand(name='SaveState', value='',
