@@ -83,6 +83,8 @@ namespace rogue {
                //! Class creation
                Value ( std::string epicsName );
 
+               ~Value ();
+
                std::string epicsName();
 
                virtual bool valueSet();
