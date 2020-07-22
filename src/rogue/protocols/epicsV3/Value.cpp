@@ -86,6 +86,22 @@ rpe::Value::Value (std::string epicsName) {
    funcTable_.installReadFunc("enums",            &rpe::Value::readEnums);
 }
 
+rpe::Value::~Value () {
+   pValue_->unreference();
+   units_->unreference();
+
+   if ( precision_     != NULL ) precision_->unreference();
+   if ( hopr_          != NULL ) hopr_->unreference();
+   if ( lopr_          != NULL ) lopr_->unreference();
+   if ( highAlarm_     != NULL ) highAlarm_->unreference();
+   if ( highWarning_   != NULL ) highWarning_->unreference();
+   if ( lowWarning_    != NULL ) lowWarning_->unreference();
+   if ( lowAlarm_      != NULL ) lowAlarm_->unreference();
+   if ( highCtrlLimit_ != NULL ) highCtrlLimit_->unreference();
+   if ( lowCtrlLimit_  != NULL ) lowCtrlLimit_->unreference();
+}
+
+
 void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    uint32_t bitSize;
 
