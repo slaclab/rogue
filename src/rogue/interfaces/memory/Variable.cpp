@@ -509,6 +509,10 @@ void rim::Variable::rateTest() {
    printf("\nVariable c++ set: Wrote %" PRIu64 " times in %f seconds. Rate = %f\n",count,durr,rate);
 }
 
+void rim::Variable::setLogLevel(uint32_t level) {
+   if ( block_ )
+      block_->setLogLevel( level );
+}
 
 //! Return string representation of value using default converters
 std::string rim::Variable::getDumpValue(bool read) {
@@ -649,7 +653,7 @@ void rim::Variable::setBool(bool &value) {
 }
 
 bool rim::Variable::getBool() {
-   if ( getBool_ == NULL ) return false;
+   if ( getBool_ == NULL )
       throw(rogue::GeneralError::create("Variable::getBool", "Wrong get type for variable %s",path_));
 
    block_->read(this);
@@ -669,7 +673,7 @@ void rim::Variable::setString(const std::string &value) {
 }
 
 std::string rim::Variable::getString() {
-   if ( getString_ == NULL ) return "";
+   if ( getString_ == NULL )
       throw(rogue::GeneralError::create("Variable::getString", "Wrong get type for variable %s",path_));
 
    block_->read(this);
@@ -690,7 +694,7 @@ void rim::Variable::getValue( std::string & retString ) {
 /////////////////////////////////
 
 void rim::Variable::setFloat(float &value) {
-   if ( setFloat_ == NULL ) return;
+   if ( setFloat_ == NULL )
       throw(rogue::GeneralError::create("Variable::setFloat", "Wrong set type for variable %s",path_));
 
    (block_->*setFloat_)(value,this);
@@ -698,7 +702,7 @@ void rim::Variable::setFloat(float &value) {
 }
 
 float rim::Variable::getFloat() {
-   if ( getFloat_ == NULL ) return 0.0;
+   if ( getFloat_ == NULL )
       throw(rogue::GeneralError::create("Variable::getFloat", "Wrong get type for variable %s",path_));
 
    block_->read(this);
@@ -718,7 +722,7 @@ void rim::Variable::setDouble(double &value) {
 }
 
 double rim::Variable::getDouble() {
-   if ( getDouble_ == NULL ) return 0.0;
+   if ( getDouble_ == NULL )
       throw(rogue::GeneralError::create("Variable::getDouble", "Wrong get type for variable %s",path_));
 
    block_->read(this);
@@ -745,7 +749,3 @@ double rim::Variable::getFixed() {
    return (block_->*getFixed_)(this);
 }
 
-void rim::Variable::setLogLevel(uint32_t level) {
-   if ( block_ )
-      block_->setLogLevel( level );
-}
