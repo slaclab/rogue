@@ -2,8 +2,6 @@ PyYAML
 jsonpickle
 parse
 click
-coverage
-codecov
 pytest
 pyepics
 doctr

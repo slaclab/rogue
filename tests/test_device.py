@@ -24,12 +24,12 @@ class AxiVersion(pr.Device):
 
     # Last comment added by rherbst for demonstration.
     def __init__(
-            self,       
+            self,
             name             = 'AxiVersion',
             description      = 'AXI-Lite Version Module',
             numUserConstants = 0,
             **kwargs):
-        
+
         super().__init__(
             name        = name,
             description = description,
@@ -50,7 +50,7 @@ class AxiVersion(pr.Device):
             disp         = '{:#08x}',
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'ScratchPad',
             description  = 'Register to test reads and writes',
             offset       = 0x04,
@@ -59,10 +59,10 @@ class AxiVersion(pr.Device):
             base         = pr.UInt,
             mode         = 'RW',
             units        = 'Test',
-            disp         = '{:#08x}'            
+            disp         = '{:#08x}'
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'UpTimeCnt',
             description  = 'Number of seconds since last reset',
             hidden       = True,
@@ -83,7 +83,7 @@ class AxiVersion(pr.Device):
             linkedGet = lambda: str(datetime.timedelta(seconds=self.UpTimeCnt.value()))
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'FpgaReloadHalt',
             description  = 'Used to halt automatic reloads via AxiVersion',
             offset       = 0x100,
@@ -93,8 +93,8 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
         ))
 
-        
-        self.add(pr.RemoteCommand(   
+
+        self.add(pr.RemoteCommand(
             name         = 'FpgaReload',
             description  = 'Optional Reload the FPGA from the attached PROM',
             offset       = 0x104,
@@ -104,7 +104,7 @@ class AxiVersion(pr.Device):
             function     = lambda cmd: cmd.post(1)
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'FpgaReloadAddress',
             description  = 'Reload start address',
             offset       = 0x108,
@@ -119,7 +119,7 @@ class AxiVersion(pr.Device):
             self.FpgaReloadAddress.set(arg)
             self.FpgaReload()
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'UserReset',
             description  = 'Optional User Reset',
             offset       = 0x10C,
@@ -129,7 +129,7 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'FdSerial',
             description  = 'Board ID value read from DS2411 chip',
             offset       = 0x300,
@@ -139,7 +139,7 @@ class AxiVersion(pr.Device):
             mode         = 'RO',
         ))
 
-        self.addRemoteVariables(   
+        self.addRemoteVariables(
             name         = 'UserConstants',
             description  = 'Optional user input values',
             offset       = 0x400,
@@ -153,7 +153,7 @@ class AxiVersion(pr.Device):
         )
 
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'DeviceId',
             description  = 'Device Identification  (configured by generic)',
             offset       = 0x500,
@@ -163,7 +163,7 @@ class AxiVersion(pr.Device):
             mode         = 'RO',
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'GitHash',
             description  = 'GIT SHA-1 Hash',
             offset       = 0x600,
@@ -182,7 +182,7 @@ class AxiVersion(pr.Device):
         ))
 
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'DeviceDna',
             description  = 'Xilinx Device DNA value burned into FPGA',
             offset       = 0x700,
@@ -192,7 +192,7 @@ class AxiVersion(pr.Device):
             mode         = 'RO',
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'BuildStamp',
             description  = 'Firmware Build String',
             offset       = 0x800,
@@ -203,7 +203,7 @@ class AxiVersion(pr.Device):
             hidden       = True,
         ))
 
-        self.add(pr.RemoteVariable(   
+        self.add(pr.RemoteVariable(
             name         = 'TestEnum',
             description  = 'ENUM Test Field',
             offset       = 0x900,
@@ -219,18 +219,18 @@ class AxiVersion(pr.Device):
             hidden       = True,
         ))
 
-        
+
         def parseBuildStamp(var, val):
             p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", val.value.strip())
             if p is not None:
                 for k,v in p.named.items():
                     self.node(k).set(v)
-        
+
         self.add(pr.LocalVariable(
             name = 'ImageName',
             mode = 'RO',
             value = ''))
- 
+
         self.add(pr.LocalVariable(
             name = 'BuildEnv',
             mode = 'RO',
@@ -240,25 +240,25 @@ class AxiVersion(pr.Device):
             name = 'BuildServer',
             mode = 'RO',
             value = ''))
-       
+
         self.add(pr.LocalVariable(
             name = 'BuildDate',
             mode = 'RO',
             value = ''))
-       
+
         self.add(pr.LocalVariable(
             name = 'Builder',
             mode = 'RO',
             value = ''))
 
-        self.BuildStamp.addListener(parseBuildStamp)        
+        self.BuildStamp.addListener(parseBuildStamp)
 
         #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
 
         for i in range(4):
             for j in range(4):
                 for k in range(4):
-                    self.add(pr.LocalVariable(name = f'TestArray[{i}][{j}][{k}]',value=0)) 
+                    self.add(pr.LocalVariable(name = f'TestArray[{i}][{j}][{k}]',value=0))
 
         self.add(pr.LocalVariable(name = 'TestArray[4][5]',value=0))
         self.add(pr.LocalVariable(name = 'TestArray[6]',value=0))
@@ -266,7 +266,7 @@ class AxiVersion(pr.Device):
         #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
 
         for i in range(2):
-            self.add(pr.LocalVariable(name = f'TestArray2[{i}]',value=0)) 
+            self.add(pr.LocalVariable(name = f'TestArray2[{i}]',value=0))
 
         self.add(pr.RemoteVariable(
             name         = 'TestSpareArray[5][5]',
@@ -312,6 +312,21 @@ class AxiVersion(pr.Device):
             name = 'TestRealArray',
             mode = 'RW',
             value = np.array([1,2,3,4])))
+
+        self.add(pr.LocalVariable(
+            name = 'TestListA',
+            mode = 'RW',
+            value = [1,2,3,4,5,6,7,8,9,10]))
+
+        self.add(pr.LocalVariable(
+            name = 'TestListB',
+            mode = 'RW',
+            value = [11,12,13,14,15,16,17,18,19,20]))
+
+        self.add(pr.LocalVariable(
+            name = 'TestString',
+            mode = 'RW',
+            value = "This is a string"))
 
         self.add(pr.LocalVariable(
             name = 'TestBool',
