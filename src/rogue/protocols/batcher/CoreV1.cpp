@@ -161,13 +161,13 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
    // Drop errored frames
    if ( (frame->getError()) ) {
-      log_->error("Dropping frame due to error: 0x%x",frame->getError());
+      log_->warning("Dropping frame due to error: 0x%x",frame->getError());
       return false;
    }
 
    // Drop small frames
    if ( (rem = frame->getPayload()) < 16)  {
-      log_->error("Dropping small frame size = %i",frame->getPayload());
+      log_->warning("Dropping small frame size = %i",frame->getPayload());
       return false;
    }
 
