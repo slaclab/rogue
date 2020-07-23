@@ -453,7 +453,7 @@ void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
 }
 
 // Set data from pointer to internal staged memory
-void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
+void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t idx ) {
    uint32_t srcBit;
    uint32_t x;
    uint8_t  tmp;
@@ -475,7 +475,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
    else buff = (uint8_t *)data;
 
    // Fast copy
-   if ( var->fastCopy_ ) memcpy(blockData_+var->fastByte_,buff,var->byteSize_);
+   if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[idx],buff,var->byteSize_);
 
    else{
 
@@ -490,7 +490,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var ) {
 }
 
 // Get data to pointer from internal block or staged memory
-void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
+void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t idx ) {
    uint32_t  dstBit;
    uint32_t  x;
 
@@ -498,8 +498,8 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var ) {
    std::lock_guard<std::mutex> lock(mtx_);
 
    // Fast copy
-   if ( var->fastCopy_ ) {
-     memcpy(data,blockData_+var->fastByte_,var->byteSize_);
+   if ( var->fastByte_ != NULL) {
+     memcpy(data,blockData_+var->fastByte_[idx],var->byteSize_);
    }
    else {
       dstBit = 0;
@@ -530,7 +530,7 @@ void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var ) {
    if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
 
-   setBytes((uint8_t *)valueBuf.buf,var);
+   setBytes((uint8_t *)valueBuf.buf,var,0);
 
    PyBuffer_Release(&valueBuf);
 }
@@ -541,7 +541,7 @@ bp::object rim::Block::getPyFunc ( rim::Variable *var ) {
 
    memset(getBuffer,0,var->byteSize_);
 
-   getBytes(getBuffer, var);
+   getBytes(getBuffer, var,0);
    PyObject *val = Py_BuildValue("y#",getBuffer,var->byteSize_);
 
    bp::handle<> handle(val);
@@ -568,7 +568,7 @@ void rim::Block::setByteArrayPy ( bp::object &value, rim::Variable *var ) {
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
 
-   setBytes((uint8_t *)valueBuf.buf,var);
+   setBytes((uint8_t *)valueBuf.buf,var,0);
 
    PyBuffer_Release(&valueBuf);
 }
@@ -579,7 +579,7 @@ bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
 
    memset(getBuffer,0,var->byteSize_);
 
-   getBytes(getBuffer, var);
+   getBytes(getBuffer, var,0);
    PyObject *val = Py_BuildValue("y#",getBuffer,var->byteSize_);
 
    bp::handle<> handle(val);
@@ -592,12 +592,12 @@ bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
 
 // Set data using byte array
 void rim::Block::setByteArray ( const uint8_t *value, rim::Variable *var ) {
-   setBytes(value, var);
+   setBytes(value, var,0);
 }
 
 // Get data using byte array
 void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var ) {
-   getBytes(value, var);
+   getBytes(value, var,0);
 }
 
 //////////////////////////////////////////
@@ -620,14 +620,14 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using unsigned int
 bp::object rim::Block::getUIntPy (rim::Variable *var ) {
    uint64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    PyObject *val = Py_BuildValue("K",tmp);
    bp::handle<> handle(val);
@@ -644,14 +644,14 @@ void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using unsigned int
 uint64_t rim::Block::getUInt (rim::Variable *var ) {
    uint64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    return tmp;
 }
@@ -676,14 +676,14 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using int
 bp::object rim::Block::getIntPy ( rim::Variable *var ) {
    int64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    if ( var->bitTotal_ != 64 ) {
       if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
@@ -704,14 +704,14 @@ void rim::Block::setInt ( const int64_t &val, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%" PRId64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using int
 int64_t rim::Block::getInt ( rim::Variable *var ) {
    int64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    if ( var->bitTotal_ != 64 ) {
       if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
@@ -734,14 +734,14 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
 
    uint8_t val = (uint8_t)tmp;
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using bool
 bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
    uint8_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    bp::handle<> handle(bp::borrowed(tmp?Py_True:Py_False));
    return bp::object(handle);
@@ -752,14 +752,14 @@ bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
 // Set data using bool
 void rim::Block::setBool ( const bool &value, rim::Variable *var ) {
    uint8_t val = (uint8_t)value;
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using bool
 bool rim::Block::getBool ( rim::Variable *var ) {
    uint8_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    return tmp?true:false;
 }
@@ -779,7 +779,7 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
    memcpy(getBuffer,tmp,var->byteSize_);
-   setBytes((uint8_t *)getBuffer,var);
+   setBytes((uint8_t *)getBuffer,var,0);
 }
 
 // Get data using string
@@ -788,7 +788,7 @@ bp::object rim::Block::getStringPy ( rim::Variable *var ) {
 
    memset(getBuffer,0,var->byteSize_);
 
-   getBytes(getBuffer, var);
+   getBytes(getBuffer, var,0);
 
    PyObject *val = Py_BuildValue("s#",getBuffer,var->byteSize_);
    bp::handle<> handle(val);
@@ -801,7 +801,7 @@ bp::object rim::Block::getStringPy ( rim::Variable *var ) {
 
 // Set data using string
 void rim::Block::setString ( const std::string &value, rim::Variable *var ) {
-   setBytes((uint8_t *)value.c_str(),var);
+   setBytes((uint8_t *)value.c_str(),var,0);
 }
 
 // Get data using string
@@ -810,7 +810,7 @@ std::string rim::Block::getString ( rim::Variable *var ) {
 
    memset(getBuffer,0,var->byteSize_+1);
 
-   getBytes((uint8_t *)getBuffer, var);
+   getBytes((uint8_t *)getBuffer, var,0);
 
    std::string ret(getBuffer);
 
@@ -823,7 +823,7 @@ void rim::Block::getString ( rim::Variable *var, std::string & retString ) {
 
    memset(getBuffer,0,var->byteSize_+1);
 
-   getBytes((uint8_t *)getBuffer, var);
+   getBytes((uint8_t *)getBuffer, var,0);
 
    retString = getBuffer;
 }
@@ -849,14 +849,14 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using float
 bp::object rim::Block::getFloatPy ( rim::Variable *var ) {
    float tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    PyObject *val = Py_BuildValue("f",tmp);
    bp::handle<> handle(val);
@@ -873,14 +873,14 @@ void rim::Block::setFloat ( const float &val, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using float
 float rim::Block::getFloat ( rim::Variable *var ) {
    float tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    return tmp;
 }
@@ -906,14 +906,14 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using double
 bp::object rim::Block::getDoublePy ( rim::Variable *var ) {
    double tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    PyObject *val = Py_BuildValue("d",tmp);
    bp::handle<> handle(val);
@@ -930,14 +930,14 @@ void rim::Block::setDouble ( const double &val, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var);
+   setBytes((uint8_t *)&val,var,0);
 }
 
 // Get data using double
 double rim::Block::getDouble ( rim::Variable *var ) {
    double tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var);
+   getBytes((uint8_t *)&tmp,var,0);
 
    return tmp;
 }
@@ -965,7 +965,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var ) {
    // I don't think this is correct!
    uint64_t fPoint = (uint64_t)round(tmp2 * pow(2,var->binPoint_));
 
-   setBytes((uint8_t *)&fPoint,var);
+   setBytes((uint8_t *)&fPoint,var,0);
 }
 
 // Get data using fixed point
@@ -973,7 +973,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var ) {
    uint64_t fPoint = 0;
    double tmp;
 
-   getBytes((uint8_t *)&fPoint,var);
+   getBytes((uint8_t *)&fPoint,var,0);
 
    // I don't think this is correct!
    tmp = (double)fPoint * pow(2,-1*var->binPoint_);
@@ -996,7 +996,7 @@ void rim::Block::setFixed ( const double &val, rim::Variable *var ) {
    // I don't think this is correct!
    uint64_t fPoint = (uint64_t)round(val * pow(2,var->binPoint_));
 
-   setBytes((uint8_t *)&fPoint,var);
+   setBytes((uint8_t *)&fPoint,var,0);
 }
 
 // Get data using fixed point
@@ -1004,7 +1004,7 @@ double rim::Block::getFixed ( rim::Variable *var ) {
    uint64_t fPoint = 0;
    double tmp;
 
-   getBytes((uint8_t *)&fPoint,var);
+   getBytes((uint8_t *)&fPoint,var,0);
 
    // I don't think this is correct!
    tmp = (double)fPoint * pow(2,-1*var->binPoint_);

@@ -68,11 +68,8 @@ namespace rogue {
                // Total number of bits for this value
                uint32_t bitTotal_;
 
-               // Fast copy flag
-               bool fastCopy_;
-
-               // Fast copy base
-               uint32_t fastByte_;
+               // Fast copy base array
+               uint32_t * fastByte_;
 
                // Total bytes (rounded up) for this value
                uint32_t byteSize_;
@@ -124,6 +121,9 @@ namespace rogue {
 
                // Stale flag
                bool stale_;
+
+               // Number of words
+               uint32_t numWords_;
 
 #ifndef NO_PYTHON
                /////////////////////////////////
@@ -236,7 +236,8 @@ namespace rogue {
                      uint32_t modelId,
                      bool byteReverse,
                      bool bitReverse,
-                     uint32_t binPoint);
+                     uint32_t binPoint,
+                     uint32_t numWords);
 
                // Setup class for use in python
                static void setup_python();
@@ -256,7 +257,8 @@ namespace rogue {
                           uint32_t modelId,
                           bool byteReverse,
                           bool bitReverse,
-                          uint32_t binPoint);
+                          uint32_t binPoint,
+                          uint32_t numWords);
 
                // Destroy
                virtual ~Variable();
@@ -322,6 +324,11 @@ namespace rogue {
 
                //! Return bulk enable flag
                bool bulkOpEn();
+
+               //! Return the number of words
+               uint32_t numWords() {
+                   return numWords;
+               }
 
                //! Execute queue update, unused in C++
                virtual void queueUpdate();

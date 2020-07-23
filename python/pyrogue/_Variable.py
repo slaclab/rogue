@@ -514,6 +514,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  highAlarm=None,
                  base=pr.UInt,
                  offset=None,
+                 numWords=1,
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0,
@@ -562,10 +563,14 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         self._typeStr   = self._base.name
 
+        # Verify total bitsize is divisible by the number of words
+        if (sum(bitSize) % numWords) != 0:
+            raise VariableError('Total bitsize {sum(bitSize)} is not evenly divisable by numWords {numWords}')
+
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkOpEn, self._updateNotify, self._base)
+                              self._bulkOpEn, self._updateNotify, self._base, numWords)
 
     @pr.expose
     @property
