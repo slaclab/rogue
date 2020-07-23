@@ -44,6 +44,7 @@ if ( NOT NO_PYTHON )
    endif()
 
    set(Boost_USE_MULTITHREADED ON)
+   set(Boost_NO_BOOST_CMAKE ON)
 
    # Hint for boost on anaconda
    if (DEFINED ENV{CONDA_PREFIX})
@@ -56,12 +57,12 @@ if ( NOT NO_PYTHON )
 
    # libboost_python3.7 style libraries
    message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
 
    # libboost_python3 style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python${PYTHON_VERSION_MAJOR})
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
    endif()
 
    # libboost_python style libraries
@@ -73,13 +74,13 @@ if ( NOT NO_PYTHON )
    # libboost_python-py37 style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
    # libboost_python3-py37 style libraries
    if (NOT Boost_FOUND)
       message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
    endif()
 
    # Nothing worked
@@ -189,6 +190,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
+
 else()
    set(DO_EPICS_V3 0)
 endif()
