@@ -92,6 +92,10 @@ class VariableDev(QTreeWidgetItem):
                         dev=val,
                         noExpand=noExpand)
 
+        # Auto expand list variables
+        for k,v in self._avars.items():
+            v._autoExpand()
+
     def _expand(self):
         if self._dummy is None:
             return
@@ -111,7 +115,7 @@ class VariableArray(QTreeWidgetItem):
         self._dummy    = None
         self._path     = path
         self._list     = []
-        self._depth     = parent._depth+1
+        self._depth    = parent._depth+1
 
         self._lab = QLabel(parent=None, text=self._name + ' (0)')
 
@@ -135,6 +139,10 @@ class VariableArray(QTreeWidgetItem):
         self.removeChild(self._dummy)
         self._dummy = None
         self._setup()
+
+    def _autoExpand(self):
+        if len(self._list) <= self._top._maxListExpand:
+            self.setExpanded(True)
 
     def addNode(self,node):
         self._list.append(node)
@@ -189,6 +197,12 @@ class VariableHolder(QTreeWidgetItem):
             w.showStepExponent      = False
             w.installEventFilter(self._top)
 
+        elif self._var.mode == 'RO':
+            w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
         else:
             w = PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
@@ -209,7 +223,7 @@ class VariableHolder(QTreeWidgetItem):
 
 
 class VariableTree(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
+    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden'], maxListExpand=5):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._node = None
@@ -218,6 +232,8 @@ class VariableTree(PyDMFrame):
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._tree      = None
+
+        self._maxListExpand = maxListExpand
 
         self._colWidths = [250,50,75,200,50]
 

@@ -494,7 +494,7 @@ void rim::Variable::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nVariable c++ get: Read %li times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nVariable c++ get: Read %" PRIu64 " times in %f seconds. Rate = %f\n",count,durr,rate);
 
    gettimeofday(&stime,NULL);
    for (x=0; x < count; ++x) {
@@ -506,9 +506,13 @@ void rim::Variable::rateTest() {
    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
    rate = count / durr;
 
-   printf("\nVariable c++ set: Wrote %li times in %f seconds. Rate = %f\n",count,durr,rate);
+   printf("\nVariable c++ set: Wrote %" PRIu64 " times in %f seconds. Rate = %f\n",count,durr,rate);
 }
 
+void rim::Variable::setLogLevel(uint32_t level) {
+   if ( block_ )
+      block_->setLogLevel( level );
+}
 
 //! Return string representation of value using default converters
 std::string rim::Variable::getDumpValue(bool read) {
@@ -580,13 +584,17 @@ std::string rim::Variable::getDumpValue(bool read) {
 /////////////////////////////////
 
 void rim::Variable::setBytArray(uint8_t *data) {
-   if ( setByteArray_ == NULL ) return;
+   if ( setByteArray_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setByteArray", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setByteArray_)(data,this);
    block_->write(this);
 }
 
 void rim::Variable::getByteArray(uint8_t *data) {
-   if ( getByteArray_ == NULL ) return;
+   if ( getByteArray_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getByteArray", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    (block_->*getByteArray_)(data,this);
 }
@@ -596,13 +604,17 @@ void rim::Variable::getByteArray(uint8_t *data) {
 /////////////////////////////////
 
 void rim::Variable::setUInt(uint64_t &value) {
-   if ( setUInt_ == NULL ) return;
+   if ( setUInt_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setUInt", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setUInt_)(value,this);
    block_->write(this);
 }
 
 uint64_t rim::Variable::getUInt() {
-   if ( getUInt_ == NULL ) return 0;
+   if ( getUInt_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getUInt", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getUInt_)(this);
 }
@@ -613,13 +625,17 @@ uint64_t rim::Variable::getUInt() {
 /////////////////////////////////
 
 void rim::Variable::setInt(int64_t &value) {
-   if ( setInt_ == NULL ) return;
+   if ( setInt_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setInt", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setInt_)(value,this);
    block_->write(this);
 }
 
 int64_t rim::Variable::getInt() {
-   if ( getInt_ == NULL ) return 0;
+   if ( getInt_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getInt", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getInt_)(this);
 }
@@ -629,13 +645,17 @@ int64_t rim::Variable::getInt() {
 /////////////////////////////////
 
 void rim::Variable::setBool(bool &value) {
-   if ( setBool_ == NULL ) return;
+   if ( setBool_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setBool", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setBool_)(value,this);
    block_->write(this);
 }
 
 bool rim::Variable::getBool() {
-   if ( getBool_ == NULL ) return false;
+   if ( getBool_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getBool", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getBool_)(this);
 }
@@ -645,21 +665,25 @@ bool rim::Variable::getBool() {
 /////////////////////////////////
 
 void rim::Variable::setString(const std::string &value) {
-   if ( setString_ == NULL ) return;
+   if ( setString_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setString", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setString_)(value,this);
    block_->write(this);
 }
 
 std::string rim::Variable::getString() {
-   if ( getString_ == NULL ) return "";
+   if ( getString_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getString", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getString_)(this);
 }
 
 void rim::Variable::getValue( std::string & retString ) {
-   if ( getString_ == NULL ) {
-      retString = "";
-   } else {
+   if ( getString_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getValue", "Wrong get type for variable %s",path_.c_str()));
+   else {
       block_->read(this);
       block_->getValue(this, retString);
    }
@@ -670,13 +694,17 @@ void rim::Variable::getValue( std::string & retString ) {
 /////////////////////////////////
 
 void rim::Variable::setFloat(float &value) {
-   if ( setFloat_ == NULL ) return;
+   if ( setFloat_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setFloat", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setFloat_)(value,this);
    block_->write(this);
 }
 
 float rim::Variable::getFloat() {
-   if ( getFloat_ == NULL ) return 0.0;
+   if ( getFloat_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getFloat", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getFloat_)(this);
 }
@@ -686,34 +714,38 @@ float rim::Variable::getFloat() {
 /////////////////////////////////
 
 void rim::Variable::setDouble(double &value) {
-   if ( setDouble_ == NULL ) return;
+   if ( setDouble_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setDouble", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setDouble_)(value,this);
    block_->write(this);
 }
 
 double rim::Variable::getDouble() {
-   if ( getDouble_ == NULL ) return 0.0;
+   if ( getDouble_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getDouble", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getDouble_)(this);
 }
 
 /////////////////////////////////
-// C++ filed point
+// C++ fixed point
 /////////////////////////////////
 
 void rim::Variable::setFixed(double &value) {
-   if ( setFixed_ == NULL ) return;
+   if ( setFixed_ == NULL )
+      throw(rogue::GeneralError::create("Variable::setFixed", "Wrong set type for variable %s",path_.c_str()));
+
    (block_->*setFixed_)(value,this);
    block_->write(this);
 }
 
 double rim::Variable::getFixed() {
-   if ( getFixed_ == NULL ) return 0.0;
+   if ( getFixed_ == NULL )
+      throw(rogue::GeneralError::create("Variable::getFixed", "Wrong get type for variable %s",path_.c_str()));
+
    block_->read(this);
    return (block_->*getFixed_)(this);
 }
 
-void rim::Variable::setLogLevel(uint32_t level) {
-   if ( block_ )
-      block_->setLogLevel( level );
-}

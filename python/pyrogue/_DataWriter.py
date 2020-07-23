@@ -39,6 +39,7 @@ class DataWriter(pr.Device):
 
         self.add(pr.LocalVariable(
             name='IsOpen',
+            mode='RO',
             value=False,
             localGet=self._isOpen,
             description='Data file is open.'))

@@ -11,9 +11,8 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMEnumComboBox
+from pydm.widgets import PyDMEnumComboBox, PyDMLabel
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.pydm.widgets import PyRogueLineEdit
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 
@@ -73,7 +72,7 @@ class RunControl(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         hb.addLayout(fl)
 
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.runCount')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.runCount')
         w.showUnits             = False
         w.precisionFromPV       = True
         w.alarmSensitiveContent = False

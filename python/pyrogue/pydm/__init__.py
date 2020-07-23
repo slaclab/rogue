@@ -14,7 +14,7 @@ import sys
 import pydm
 import pyrogue.pydm.data_plugins.rogue_plugin
 
-def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=800,sizeY=1000):
+def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=800,sizeY=1000,maxListExpand=5):
 
     if root is not None:
 
@@ -35,6 +35,7 @@ def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=80
     args.append(f"sizeX={sizeX}")
     args.append(f"sizeY={sizeY}")
     args.append(f"title='{title}'")
+    args.append(f"maxListExpand={maxListExpand}")
 
     app = pydm.PyDMApplication(ui_file=ui,
                                command_line_args=args,

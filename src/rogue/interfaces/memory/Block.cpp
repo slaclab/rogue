@@ -1,4 +1,4 @@
-/**
+/*
  *-----------------------------------------------------------------------------
  * Title      : Memory Block
  * ----------------------------------------------------------------------------
@@ -154,7 +154,7 @@ bool rim::Block::blockPyTrans() {
 }
 
 // Start a transaction for this block
-void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var) {
+void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var) {
    uint32_t  x;
    uint32_t  tOff;
    uint32_t  tSize;
@@ -188,16 +188,16 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
           lowByte = var->lowTranByte_;
           highByte = var->highTranByte_;
 
-      if ( type == rim::Write || type == rim::Post ) {
-            stale_ = false;
-            for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
-               (*vit)->stale_ = false;
-               if ( (*vit)->stale_ ) {
-                  if ( (*vit)->lowTranByte_  < lowByte  ) lowByte  = (*vit)->lowTranByte_;
-                  if ( (*vit)->highTranByte_ > highByte ) highByte = (*vit)->highTranByte_;
+          if ( type == rim::Write || type == rim::Post ) {
+             stale_ = false;
+             for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
+                (*vit)->stale_ = false;
+                if ( (*vit)->stale_ ) {
+                   if ( (*vit)->lowTranByte_  < lowByte  ) lowByte  = (*vit)->lowTranByte_;
+                   if ( (*vit)->highTranByte_ > highByte ) highByte = (*vit)->highTranByte_;
+               }
             }
          }
-      }
       }
 
       // Device is disabled, check after clearing stale states
@@ -236,17 +236,24 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
    }
+}
+
+// Start a transaction for this block, cpp version
+void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var) {
+   intStartTransaction(type,forceWr,check,var);
 
    if ( check ) checkTransaction();
 }
 
 #ifndef NO_PYTHON
 
-// Start a transaction for this block
+// Start a transaction for this block, python version
 void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
    if ( blockPyTrans_ ) return;
 
-   startTransaction(type,forceWr,check,var.get());
+   intStartTransaction(type,forceWr,check,var.get());
+
+   if ( check && checkTransaction() ) varUpdate();
 }
 
 #endif
