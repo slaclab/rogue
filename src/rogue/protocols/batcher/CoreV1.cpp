@@ -161,13 +161,13 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
    // Drop errored frames
    if ( (frame->getError()) ) {
-      log_->warning("Dropping frame due to error: 0x%x",frame->getError());
+      log_->error("Dropping frame due to error: 0x%x",frame->getError());
       return false;
    }
 
    // Drop small frames
    if ( (rem = frame->getPayload()) < 16)  {
-      log_->warning("Dropping small frame size = %i",frame->getPayload());
+      log_->error("Dropping small frame size = %i",frame->getPayload());
       return false;
    }
 
@@ -188,7 +188,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
    // Check version, convert width
    if ( (temp & 0xF) != 1 ) {
-      log_->warning("Version mismatch. Got %i",(temp&0xF));
+      log_->error("Version mismatch. Got %i",(temp&0xF));
       return false;
    }
 
@@ -203,7 +203,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
      case 3: headerSize_ = 16; break;// If WIDTH=0x3 (TYPE = 128-bit AXI stream), then appended header is 16 bytes.
      case 4: headerSize_ = 32; break;// If WIDTH=0x4 (TYPE = 256-bit AXI stream), then appended header is 32 bytes.
      case 5: headerSize_ = 64; break;// If WIDTH=0x5 (TYPE = 512-bit AXI stream), then appended header is 64 bytes.
-     default: log_->warning("Invalid AXIS Type Detected. Got %i",((temp >> 4) & 0xF)); return false;
+     default: log_->error("Invalid AXIS Type Detected. Got %i",((temp >> 4) & 0xF)); return false;
    }
 
    // Set tail size, min 64-bits
@@ -214,7 +214,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
    // Frame needs to large enough for header + 1 tail
    if ( rem < (headerSize_ + tailSize_)) {
-      log_->warning("Not enough space (%i) for tail (%i) + header (%i)",rem,headerSize_,tailSize_);
+      log_->error("Not enough space (%i) for tail (%i) + header (%i)",rem,headerSize_,tailSize_);
       reset();
       return false;
    }
@@ -231,7 +231,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
       // sanity check
       if ( rem < tailSize_ ) {
-         log_->warning("Not enough space (%i) for tail (%i)",rem,tailSize_);
+         log_->error("Not enough space (%i) for tail (%i)",rem,tailSize_);
          reset();
          return false;
       }
@@ -256,7 +256,7 @@ bool rpb::CoreV1::processFrame ( ris::FramePtr frame ) {
 
       // Not enough data for rewind value
       if ( fJump > rem ) {
-         log_->warning("Not enough space (%i) for frame (%i)",rem,fJump);
+         log_->error("Not enough space (%i) for frame (%i)",rem,fJump);
          reset();
          return false;
       }
