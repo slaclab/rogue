@@ -31,7 +31,7 @@ class DefaultTop(Display):
         self.sizeX  = None
         self.sizeY  = None
         self.title  = None
-        self.maxExp = 5
+        self.maxExp = None
 
         for a in args:
             if 'sizeX=' in a:
