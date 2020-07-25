@@ -122,8 +122,8 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
-               // Number of words
-               uint32_t numWords_;
+               // Number of values
+               uint32_t numValues_;
 
 #ifndef NO_PYTHON
                /////////////////////////////////
@@ -237,7 +237,7 @@ namespace rogue {
                      bool byteReverse,
                      bool bitReverse,
                      uint32_t binPoint,
-                     uint32_t numWords);
+                     uint32_t numValues);
 
                // Setup class for use in python
                static void setup_python();
@@ -258,7 +258,7 @@ namespace rogue {
                           bool byteReverse,
                           bool bitReverse,
                           uint32_t binPoint,
-                          uint32_t numWords);
+                          uint32_t numValues);
 
                // Destroy
                virtual ~Variable();
@@ -326,8 +326,8 @@ namespace rogue {
                bool bulkOpEn();
 
                //! Return the number of words
-               uint32_t numWords() {
-                   return numWords;
+               uint32_t numValues() {
+                   return numValues_;
                }
 
                //! Execute queue update, unused in C++

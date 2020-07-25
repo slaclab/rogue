@@ -53,7 +53,7 @@ rim::VariablePtr rim::Variable::create ( std::string name,
                           bool byteReverse,
                           bool bitReverse,
                           uint32_t binPoint,
-                          uint32_t numWords) {
+                          uint32_t numValues) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
          offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateNotify, modelId, byteReverse, bitReverse, binPoint);
@@ -79,7 +79,7 @@ void rim::Variable::setup_python() {
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
 	  .def("_setLogLevel",     &rim::Variable::setLogLevel)
 	  .def("_getDumpValue",    &rim::Variable::getDumpValue)
-	  .def("_numWords",        &rim::Variable::numWords)
+	  .def("_numValues",       &rim::Variable::numValues)
    ;
 #endif
 }
@@ -100,9 +100,10 @@ rim::Variable::Variable ( std::string name,
                           bool byteReverse,
                           bool bitReverse,
                           uint32_t binPoint,
-                          uint32_t numWords) {
+                          uint32_t numValues) {
 
    uint32_t x;
+   uint32_t bl;
 
    name_        = name;
    path_        = name;
@@ -120,7 +121,7 @@ rim::Variable::Variable ( std::string name,
    minValue_    = minimum;
    maxValue_    = maximum;
    binPoint_    = binPoint;
-   numWords_    = numWords;
+   numValues_   = numValues;
    stale_       = false;
 
    // Compute bit total
@@ -140,12 +141,27 @@ rim::Variable::Variable ( std::string name,
    highTranByte_ = varBytes_ - 1;
 
    // Variable can use fast copies
+   fastByte_ = NULL;
+
+   // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte aligned
    if ( (bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0) ) {
-      fastByte_    = (uint32_t *)malloc(sizeof(uint32_t));
-      fastByte_[0] = bitOffset_[0] / 8;
-   }
-   else {
-      fastByte_ = NULL;
+
+      // Standard variable
+      if ( numValues_ == 0 ) {
+         fastByte_    = (uint32_t *)malloc(sizeof(uint32_t));
+         fastByte_[0] = bitOffset_[0] / 8;
+      }
+
+      // List variable
+      else {
+         bl = (bitOffset_[0] / numValues_);
+
+         if ( (bl % 8) == 0 ) {
+            fastByte_ = (uint32_t *)malloc(numValues_ * sizeof(uint32_t));
+
+            for (x=0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (bl * x)) / 8;
+         }
+      }
    }
 
    // Custom data is NULL for now
@@ -401,7 +417,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool bulkOpEn,
                                   bool updateNotify,
                                   bp::object model,
-                                  uint32_t numWords)
+                                  uint32_t numValues)
                      : rim::Variable ( name,
                                        mode,
                                        py_object_convert<double>(minimum),
@@ -417,7 +433,7 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        bp::extract<bool>(model.attr("isBigEndian")),
                                        bp::extract<bool>(model.attr("bitReverse")),
                                        bp::extract<uint32_t>(model.attr("binPoint")),
-                                       uint32_t numWords) {
+                                       numValues) {
 
    model_ = model;
 }
