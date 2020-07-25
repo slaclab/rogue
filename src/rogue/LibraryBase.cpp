@@ -142,6 +142,7 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    uint32_t modelId   = getFieldUInt32(data,"ModelId");
    uint32_t binPoint  = getFieldUInt32(data,"BinPoint");
    uint32_t blockSize = getFieldUInt32(data,"BlockSize");
+   uint32_t numValues = getFieldUInt32(data,"NumValues",true);
 
    double minimum = getFieldDouble(data,"Minimum");
    double maximum = getFieldDouble(data,"Maximum");
@@ -165,7 +166,7 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
 
    // Create variable
    rim::VariablePtr var = rim::Variable::create(name,mode,minimum,maximum,offset,bitOffset,bitSize,
-      overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint);
+      overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint,numValues);
 
    // Adjust min transaction size to match blocksize field
    var->shiftOffsetDown(0, blockSize);
@@ -201,11 +202,13 @@ uint64_t rogue::LibraryBase::getFieldUInt64(std::map<std::string, std::string> f
 }
 
 //! Helper function to get uint32_t from fields
-uint32_t rogue::LibraryBase::getFieldUInt32(std::map<std::string, std::string> fields, std::string name) {
+uint32_t rogue::LibraryBase::getFieldUInt32(std::map<std::string, std::string> fields, std::string name, bool def) {
    uint32_t ret;
 
-   if (fields.find(name) == fields.end())
-      throw(rogue::GeneralError::create("LibraryBase::getFieldUInt32","Failed to find field '%s' in exported address map",name.c_str()));
+   if (fields.find(name) == fields.end()) {
+      if ( def ) return 0;
+      else throw(rogue::GeneralError::create("LibraryBase::getFieldUInt32","Failed to find field '%s' in exported address map",name.c_str()));
+   }
 
    if (fields[name] == "None") return 0;
 

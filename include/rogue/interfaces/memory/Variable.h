@@ -125,6 +125,9 @@ namespace rogue {
                // Number of values
                uint32_t numValues_;
 
+               // Bits per value
+               uint32_t valueBits_;
+
 #ifndef NO_PYTHON
                /////////////////////////////////
                // Python
@@ -277,11 +280,6 @@ namespace rogue {
                //! Return the total number of bits for this value
                uint32_t bitTotal() const {
                   return bitTotal_;
-               }
-
-               //! Return the fastCopy flag of the variable
-               bool fastCopy() const {
-                  return fastCopy_;
                }
 
                //! Return the total bytes (rounded up) for this value
@@ -510,7 +508,8 @@ namespace rogue {
                               bool verify,
                               bool bulkOpEn,
                               bool updateNotify,
-                              boost::python::object model);
+                              boost::python::object model,
+                              uint32_t numValues );
 
                //! Update the bit offsets
                void updateOffset(boost::python::object &bitOffset);

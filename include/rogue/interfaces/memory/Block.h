@@ -153,10 +153,10 @@ namespace rogue {
                //////////////////////////////////////////
 
                // Set data from pointer to internal staged memory
-               void setBytes ( const uint8_t *data, rogue::interfaces::memory::Variable *var );
+               void setBytes ( const uint8_t *data, rogue::interfaces::memory::Variable *var, uint32_t idx );
 
                // Get data to pointer from internal block or staged memory
-               void getBytes ( uint8_t *data, rogue::interfaces::memory::Variable *var );
+               void getBytes ( uint8_t *data, rogue::interfaces::memory::Variable *var, uint32_t idx );
 
                // Custom init function called after addVariables
                virtual void customInit();

@@ -56,7 +56,7 @@ rim::VariablePtr rim::Variable::create ( std::string name,
                           uint32_t numValues) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateNotify, modelId, byteReverse, bitReverse, binPoint);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateNotify, modelId, byteReverse, bitReverse, binPoint,numValues);
    return(v);
 }
 
@@ -64,7 +64,7 @@ rim::VariablePtr rim::Variable::create ( std::string name,
 void rim::Variable::setup_python() {
 
 #ifndef NO_PYTHON
-   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object>())
+   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object,uint32_t>())
       .def("_varBytes",        &rim::Variable::varBytes)
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
@@ -127,6 +127,7 @@ rim::Variable::Variable ( std::string name,
    // Compute bit total
    bitTotal_ = bitSize_[0];
    for (x=1; x < bitSize_.size(); x++) bitTotal_ += bitSize_[x];
+   valueBits_ = bitTotal_;
 
    // Compute rounded up byte size
    byteSize_ = (int)std::ceil((float)bitTotal_ / 8.0);
@@ -141,7 +142,7 @@ rim::Variable::Variable ( std::string name,
    highTranByte_ = varBytes_ - 1;
 
    // Variable can use fast copies
-   fastByte_ = NULL;
+   fastByte_  = NULL;
 
    // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte aligned
    if ( (bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0) ) {
@@ -154,12 +155,12 @@ rim::Variable::Variable ( std::string name,
 
       // List variable
       else {
-         bl = (bitOffset_[0] / numValues_);
+         valueBits_ = (bitOffset_[0] / numValues_);
 
-         if ( (bl % 8) == 0 ) {
+         if ( (valueBits_ % 8) == 0 ) {
             fastByte_ = (uint32_t *)malloc(numValues_ * sizeof(uint32_t));
 
-            for (x=0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (bl * x)) / 8;
+            for (x=0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueBits_ * x)) / 8;
          }
       }
    }

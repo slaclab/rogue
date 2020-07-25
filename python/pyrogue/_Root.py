@@ -572,6 +572,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         header += "MemBaseName\t"
         header += "BlockName\t"
         header += "BlockSize\t"
+        header += "NumValues\t"
         header += "Description"
 
         lines = []
@@ -598,6 +599,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v._block._reqSlaveName())
                 data += "{}\t".format(v._block.path)
                 data += "{:#x}\t".format(v._block.size)
+                data += "{}\t".format(v._numValues)
                 # Escape " characters
                 description = v.description.replace('"',r'\"')
                 # Escape \n characters and strip each line in the description field
