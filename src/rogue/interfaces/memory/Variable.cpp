@@ -80,6 +80,8 @@ void rim::Variable::setup_python() {
 	  .def("_setLogLevel",     &rim::Variable::setLogLevel)
 	  .def("_getDumpValue",    &rim::Variable::getDumpValue)
 	  .def("_numValues",       &rim::Variable::numValues)
+	  .def("_valueBits",       &rim::Variable::valueBits)
+	  .def("_valueStride",     &rim::Variable::valueStride)
    ;
 #endif
 }
@@ -100,7 +102,9 @@ rim::Variable::Variable ( std::string name,
                           bool byteReverse,
                           bool bitReverse,
                           uint32_t binPoint,
-                          uint32_t numValues) {
+                          uint32_t numValues,
+                          uint32_t valueBits,
+                          uint32_t valueStride) {
 
    uint32_t x;
    uint32_t bl;
@@ -122,6 +126,8 @@ rim::Variable::Variable ( std::string name,
    maxValue_    = maximum;
    binPoint_    = binPoint;
    numValues_   = numValues;
+   valueBits_   = valueBits;
+   valueStride_ = valueStride;
    stale_       = false;
 
    // Compute bit total
@@ -418,7 +424,9 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool bulkOpEn,
                                   bool updateNotify,
                                   bp::object model,
-                                  uint32_t numValues)
+                                  uint32_t numValues,
+                                  uint32_t valueBits,
+                                  uint32_t valueStride)
                      : rim::Variable ( name,
                                        mode,
                                        py_object_convert<double>(minimum),
@@ -434,7 +442,9 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        bp::extract<bool>(model.attr("isBigEndian")),
                                        bp::extract<bool>(model.attr("bitReverse")),
                                        bp::extract<uint32_t>(model.attr("binPoint")),
-                                       numValues) {
+                                       numValues,
+                                       valueBits,
+                                       valueStride) {
 
    model_ = model;
 }

@@ -128,6 +128,10 @@ namespace rogue {
                // Bits per value
                uint32_t valueBits_;
 
+               // Stride per value
+               uint32_t valueStride_;
+
+
 #ifndef NO_PYTHON
                /////////////////////////////////
                // Python
@@ -240,7 +244,9 @@ namespace rogue {
                      bool byteReverse,
                      bool bitReverse,
                      uint32_t binPoint,
-                     uint32_t numValues);
+                     uint32_t numValues,
+                     uint32_t valueBits,
+                     uint32_t valueStride);
 
                // Setup class for use in python
                static void setup_python();
@@ -261,7 +267,9 @@ namespace rogue {
                           bool byteReverse,
                           bool bitReverse,
                           uint32_t binPoint,
-                          uint32_t numValues);
+                          uint32_t numValues,
+                          uint32_t valueBits,
+                          uint32_t valueStride);
 
                // Destroy
                virtual ~Variable();
@@ -323,9 +331,19 @@ namespace rogue {
                //! Return bulk enable flag
                bool bulkOpEn();
 
-               //! Return the number of words
+               //! Return the number of values
                uint32_t numValues() {
                    return numValues_;
+               }
+
+               //! Return the number of bits per value
+               uint32_t valueBits() {
+                   return valueBits_;
+               }
+
+               //! Return the stride per value
+               uint32_t valueStride() {
+                   return valueStride_;
                }
 
                //! Execute queue update, unused in C++
@@ -509,7 +527,9 @@ namespace rogue {
                               bool bulkOpEn,
                               bool updateNotify,
                               boost::python::object model,
-                              uint32_t numValues );
+                              uint32_t numValues,
+                              uint32_t valueBits,
+                              uint32_t valueStride);
 
                //! Update the bit offsets
                void updateOffset(boost::python::object &bitOffset);
