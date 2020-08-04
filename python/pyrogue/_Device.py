@@ -303,7 +303,7 @@ class Device(pr.Node,rim.Hub):
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-            startTransaction(variable._block, type=rim.Write, forceWr=True, checkEach=checkEach, variable=variable, index=index, **kwargs)
+            startTransaction(variable._block, type=rim.Write, forceWr=force, checkEach=checkEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
