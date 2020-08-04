@@ -266,8 +266,9 @@ namespace rogue {
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
                 * @param var     Variable associated with transaction
+                * @param idx     Variable index for list variables, -1 for full variable
                 */
-               void intStartTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var);
+               void intStartTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var, int32_t idx);
 
             public:
 
@@ -278,8 +279,9 @@ namespace rogue {
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
                 * @param var     Variable associated with transaction
+                * @param idx     Variable index for list variables, -1 for full variable
                 */
-               void startTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var);
+               void startTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var, int32_t idx=-1);
 
 #ifndef NO_PYTHON
 
@@ -292,8 +294,9 @@ namespace rogue {
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
                 * @param var     Variable associated with transaction, None for block level
+                * @param idx     Variable index for list variables, -1 for full variable
                 */
-               void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
+               void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var, int32_t idx);
 
 #endif
 

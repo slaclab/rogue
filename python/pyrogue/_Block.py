@@ -15,6 +15,14 @@ import threading
 import pyrogue as pr
 
 
+def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
+    block._startTransaction(type, forceWr, checkEach, variable, index)
+
+
+def checkTransaction(block, **kwargs):
+    block._checkTransaction()
+
+
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 

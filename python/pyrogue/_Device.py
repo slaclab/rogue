@@ -296,82 +296,72 @@ class Device(pr.Node,rim.Hub):
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
-    def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
+    def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
         """
         Write all of the blocks held by this Device to memory
         """
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-
-            # Force=True
-            variable._block.startTransaction(rim.Write, True, checkEach, variable)
+            startTransaction(variable._block, type=rim.Write, forceWr=True, checkEach=checkEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-                    block.startTransaction(rim.Write, force, checkEach, None)
+                    startTransaction(block, type=rim.Write, forceWr=force, checkEach=checkEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.writeBlocks(force=force, recurse=True, checkEach=checkEach)
+                    value.writeBlocks(force=force, recurse=True, checkEach=checkEach, **kwargs)
 
-    def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
+    def verifyBlocks(self, *, recurse=True, variable=None, checkEach=False, **kwargs):
         """
         Perform background verify
         """
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-
-            # Force=False
-            variable._block.startTransaction(rim.Verify, False, checkEach, None) # Verify range is set by previous write
+            startTransaction(variable._block, type=rim.Verify, checkEach=checkEach, **kwargs) # Verify range is set by previous write
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-
-                    # Force=False
-                    block.startTransaction(rim.Verify, False, checkEach, None)
+                    startTransaction(block, type=rim.Verify, checkEach=checkEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.verifyBlocks(recurse=True, checkEach=checkEach)
+                    value.verifyBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def readBlocks(self, recurse=True, variable=None, checkEach=False):
+    def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
         """
         Perform background reads
         """
         checkEach = checkEach or self.forceCheckEach
 
         if variable is not None:
-
-            # Force=False
-            variable._block.startTransaction(rim.Read, False, checkEach, variable)
+            startTransaction(variable._block, type=rim.Read, checkEach=checkEach, variable=variable, index=index, **kwargs)
 
         else:
             for block in self._blocks:
                 if block.bulkOpEn:
-
-                    # Force=False
-                    block.startTransaction(rim.Read, False, checkEach, None)
+                    startTransaction(block, type=rim.Read, checkEach=checkEach, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.readBlocks(recurse=True, checkEach=checkEach)
+                    value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def checkBlocks(self, recurse=True, variable=None):
+    def checkBlocks(self, *, recurse=True, variable=None, **kwargs):
         """Check errors in all blocks and generate variable update notifications"""
         if variable is not None:
-            variable._block.checkTransaction()
+            checkTransaction(variable._block, **kwargs)
 
         else:
             for block in self._blocks:
-                block.checkTransaction()
+                checkTransaction(block, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():
-                    value.checkBlocks(recurse=True)
+                    value.checkBlocks(recurse=True, **kwargs)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """Perform a write, verify and check. Useful for committing any stale variables"""
