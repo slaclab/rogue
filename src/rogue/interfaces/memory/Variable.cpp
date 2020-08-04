@@ -53,10 +53,12 @@ rim::VariablePtr rim::Variable::create ( std::string name,
                           bool byteReverse,
                           bool bitReverse,
                           uint32_t binPoint,
-                          uint32_t numValues) {
+                          uint32_t numValues,
+                          uint32_t valueBits,
+                          uint32_t valueStride) {
 
    rim::VariablePtr v = std::make_shared<rim::Variable>( name, mode, minimum, maximum,
-         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateNotify, modelId, byteReverse, bitReverse, binPoint,numValues);
+         offset, bitOffset, bitSize, overlapEn, verify, bulkOpEn, updateNotify, modelId, byteReverse, bitReverse, binPoint,numValues,valueBits,valueStride);
    return(v);
 }
 
@@ -64,7 +66,8 @@ rim::VariablePtr rim::Variable::create ( std::string name,
 void rim::Variable::setup_python() {
 
 #ifndef NO_PYTHON
-   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object,uint32_t>())
+   //bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object,uint32_t,uint32_t,uint32_t>())
+   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::no_init)
       .def("_varBytes",        &rim::Variable::varBytes)
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
@@ -77,11 +80,11 @@ void rim::Variable::setup_python() {
       .def("_set",             &rim::VariableWrap::set)
       .def("_rateTest",        &rim::VariableWrap::rateTest)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
-	  .def("_setLogLevel",     &rim::Variable::setLogLevel)
-	  .def("_getDumpValue",    &rim::Variable::getDumpValue)
-	  .def("_numValues",       &rim::Variable::numValues)
-	  .def("_valueBits",       &rim::Variable::valueBits)
-	  .def("_valueStride",     &rim::Variable::valueStride)
+	   .def("_setLogLevel",     &rim::Variable::setLogLevel)
+	   .def("_getDumpValue",    &rim::Variable::getDumpValue)
+	   .def("_numValues",       &rim::Variable::numValues)
+	   .def("_valueBits",       &rim::Variable::valueBits)
+	   .def("_valueStride",     &rim::Variable::valueStride)
    ;
 #endif
 }
@@ -130,10 +133,14 @@ rim::Variable::Variable ( std::string name,
    valueStride_ = valueStride;
    stale_       = false;
 
+   if ( numValues_ == 0 ) {
+      valueBits_   = 0;
+      valueStride_ = 0;
+   }
+
    // Compute bit total
    bitTotal_ = bitSize_[0];
    for (x=1; x < bitSize_.size(); x++) bitTotal_ += bitSize_[x];
-   valueBits_ = bitTotal_;
 
    // Compute rounded up byte size
    byteSize_ = (int)std::ceil((float)bitTotal_ / 8.0);
@@ -160,14 +167,10 @@ rim::Variable::Variable ( std::string name,
       }
 
       // List variable
-      else {
-         valueBits_ = (bitOffset_[0] / numValues_);
+      else if ( (valueBits_ % 8) == 0 && (valueStride_ % 8) == 0 ){
+         fastByte_ = (uint32_t *)malloc(numValues_ * sizeof(uint32_t));
 
-         if ( (valueBits_ % 8) == 0 ) {
-            fastByte_ = (uint32_t *)malloc(numValues_ * sizeof(uint32_t));
-
-            for (x=0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueBits_ * x)) / 8;
-         }
+         for (x=0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueStride_ * x)) / 8;
       }
    }
 

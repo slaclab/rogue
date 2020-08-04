@@ -138,11 +138,13 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    bool byteReverse  = getFieldBool(data,"ByteReverse");
    bool bitReverse   = getFieldBool(data,"BitReverse");
 
-   uint64_t offset    = getFieldUInt64(data,"Address");
-   uint32_t modelId   = getFieldUInt32(data,"ModelId");
-   uint32_t binPoint  = getFieldUInt32(data,"BinPoint");
-   uint32_t blockSize = getFieldUInt32(data,"BlockSize");
-   uint32_t numValues = getFieldUInt32(data,"NumValues",true);
+   uint64_t offset      = getFieldUInt64(data,"Address");
+   uint32_t modelId     = getFieldUInt32(data,"ModelId");
+   uint32_t binPoint    = getFieldUInt32(data,"BinPoint");
+   uint32_t blockSize   = getFieldUInt32(data,"BlockSize");
+   uint32_t numValues   = getFieldUInt32(data,"NumValues",true);
+   uint32_t valueBits   = getFieldUInt32(data,"ValueBits",true);
+   uint32_t valueStride = getFieldUInt32(data,"ValueStride",true);
 
    double minimum = getFieldDouble(data,"Minimum");
    double maximum = getFieldDouble(data,"Maximum");
@@ -166,7 +168,8 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
 
    // Create variable
    rim::VariablePtr var = rim::Variable::create(name,mode,minimum,maximum,offset,bitOffset,bitSize,
-      overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint,numValues);
+      overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint,numValues,
+      valueBits,valueStride);
 
    // Adjust min transaction size to match blocksize field
    var->shiftOffsetDown(0, blockSize);

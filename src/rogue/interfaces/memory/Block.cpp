@@ -474,17 +474,30 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t id
    }
    else buff = (uint8_t *)data;
 
-   // Fast copy
-   if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[idx],buff,var->byteSize_);
+   // List variable
+   if ( var->numValues_ != 0 ) {
 
-   else if ( var->bitOffset_.size() == 1 )
-      copyBits(blockData_, var->bitOffset_[0] + (idx * var->valueBits_), buff, 0, var->bitSize_[0]);
+      // Fast copy
+      if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[idx],buff,var->valueBits_/8);
 
+      else copyBits(blockData_, var->bitOffset_[0] + (idx * var->valueStride_), buff, 0, var->valueBits_);
+   }
+
+   // Standard variable
    else {
-      srcBit = 0;
-      for (x=0; x < var->bitOffset_.size(); x++) {
-         copyBits(blockData_, var->bitOffset_[x], buff, srcBit, var->bitSize_[x]);
-         srcBit += var->bitSize_[x];
+
+      // Fast copy
+      if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[0],buff,var->byteSize_);
+
+      else if ( var->bitOffset_.size() == 1 )
+         copyBits(blockData_, var->bitOffset_[0], buff, 0, var->bitSize_[0]);
+
+      else {
+         srcBit = 0;
+         for (x=0; x < var->bitOffset_.size(); x++) {
+            copyBits(blockData_, var->bitOffset_[x], buff, srcBit, var->bitSize_[x]);
+            srcBit += var->bitSize_[x];
+         }
       }
    }
 
@@ -499,17 +512,29 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t idx ) {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
 
-   // Fast copy
-   if ( var->fastByte_ != NULL) memcpy(data,blockData_+var->fastByte_[idx],var->byteSize_);
+   // List variable
+   if ( var->numValues_ != 0 ) {
 
-   else if ( var->bitOffset_.size() == 1 )
-      copyBits(data, 0, blockData_, var->bitOffset_[0] + (idx * var->valueBits_), var->bitSize_[0]);
+      // Fast copy
+      if ( var->fastByte_ != NULL ) memcpy(data,blockData_+var->fastByte_[idx],var->valueBits_/8);
+
+      else copyBits(data, 0, blockData_, var->bitOffset_[0] + (idx * var->valueStride_), var->valueBits_);
+   }
 
    else {
-      dstBit = 0;
-      for (x=0; x < var->bitOffset_.size(); x++) {
-         copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
-         dstBit += var->bitSize_[x];
+
+      // Fast copy
+      if ( var->fastByte_ != NULL) memcpy(data,blockData_+var->fastByte_[idx],var->byteSize_);
+
+      else if ( var->bitOffset_.size() == 1 )
+         copyBits(data, 0, blockData_, var->bitOffset_[0], var->bitSize_[0]);
+
+      else {
+         dstBit = 0;
+         for (x=0; x < var->bitOffset_.size(); x++) {
+            copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
+            dstBit += var->bitSize_[x];
+         }
       }
    }
 
