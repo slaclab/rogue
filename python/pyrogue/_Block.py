@@ -83,14 +83,20 @@ class LocalBlock(object):
     def variables(self):
         return self._variables
 
-    def set(self, var, value):
+    def set(self, var, value, index):
         with self._lock:
 
-            if isinstance(value, list) or isinstance(value,dict):
+            if index < 0 and (isinstance(value, list) or isinstance(value,dict)):
                 changed = True
+            elif index >= 0:
+                changed = self._value[index] != value
             else:
                 changed = self._value != value
-            self._value = value
+
+            if index >= 0:
+                self._value[index] = value
+            else:
+                self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
             if self._enable and self._localSet is not None:
@@ -100,7 +106,7 @@ class LocalBlock(object):
 
                 pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
 
-    def get(self, var):
+    def get(self, var, index):
         if self._enable and self._localGet is not None:
             with self._lock:
 
@@ -109,9 +115,12 @@ class LocalBlock(object):
 
                 self._value = pr.varFuncHelper(self._localGet,pargs, self._log, self._variable.path)
 
-        return self._value
+        if index >= 0:
+            return self._value[index]
+        else:
+            return self._value
 
-    def startTransaction(self, type, forceWr, check, var):
+    def startTransaction(self, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
         """
         Start a transaction.
         """

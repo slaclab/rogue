@@ -154,7 +154,7 @@ bool rim::Block::blockPyTrans() {
 }
 
 // Start a transaction for this block
-void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var) {
+void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var, int32_t index) {
    uint32_t  x;
    uint32_t  tOff;
    uint32_t  tSize;
@@ -185,8 +185,16 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
             for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) (*vit)->stale_ = false;
          }
       } else {
-          lowByte = var->lowTranByte_;
-          highByte = var->highTranByte_;
+
+          if (index < 0 || index >= var->numValues_) {
+              lowByte = var->lowTranByte_;
+              highByte = var->highTranByte_;
+          }
+
+          else {
+              lowByte = var->listLowTranByte_[index];
+              highByte = var->listHighTranByte_[index];
+          }
 
           if ( type == rim::Write || type == rim::Post ) {
              stale_ = false;
@@ -239,8 +247,8 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
 }
 
 // Start a transaction for this block, cpp version
-void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var) {
-   intStartTransaction(type,forceWr,check,var);
+void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var, int32_t index) {
+   intStartTransaction(type,forceWr,check,var,index);
 
    if ( check ) checkTransaction();
 }
@@ -248,10 +256,10 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
 #ifndef NO_PYTHON
 
 // Start a transaction for this block, python version
-void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var) {
+void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var, int32_t index) {
    if ( blockPyTrans_ ) return;
 
-   intStartTransaction(type,forceWr,check,var.get());
+   intStartTransaction(type,forceWr,check,var.get(),index);
 
    if ( check && checkTransaction() ) varUpdate();
 }
@@ -314,15 +322,15 @@ void rim::Block::checkTransactionPy() {
 #endif
 
 // Write sequence
-void rim::Block::write(rim::Variable *var) {
-   startTransaction(rim::Write,true,false,var);
-   startTransaction(rim::Verify,false,false,var);
+void rim::Block::write(rim::Variable *var,int32_t index) {
+   startTransaction(rim::Write,true,false,var,index);
+   startTransaction(rim::Verify,false,false,var,index);
    checkTransaction();
 }
 
 // Read sequence
-void rim::Block::read(rim::Variable *var) {
-   startTransaction(rim::Read,false,false,var);
+void rim::Block::read(rim::Variable *var,int32_t index) {
+   startTransaction(rim::Read,false,false,var,index);
    checkTransaction();
 }
 
@@ -453,7 +461,7 @@ void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
 }
 
 // Set data from pointer to internal staged memory
-void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t idx ) {
+void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t index) {
    uint32_t srcBit;
    uint32_t x;
    uint8_t  tmp;
@@ -468,26 +476,30 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t id
 
    // Change byte order, need to make a copy
    if ( var->byteReverse_ ) {
-      buff = (uint8_t*)malloc(var->byteSize_);
-      memcpy(buff,data,var->byteSize_);
-      reverseBytes(buff,var->byteSize_);
+      buff = (uint8_t*)malloc(var->valueBytes_);
+      memcpy(buff,data,var->valueBytes_);
+      reverseBytes(buff,var->valueBytes_);
    }
    else buff = (uint8_t *)data;
 
    // List variable
    if ( var->numValues_ != 0 ) {
 
-      // Fast copy
-      if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[idx],buff,var->valueBits_/8);
+      // Verify range
+      if ( index < 0 || index >= var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setBytes","Index %i is out of range for %s",index, var->name_.c_str()));
 
-      else copyBits(blockData_, var->bitOffset_[0] + (idx * var->valueStride_), buff, 0, var->valueBits_);
+      // Fast copy
+      if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[index],buff,var->valueBytes_);
+
+      else copyBits(blockData_, var->bitOffset_[0] + (index * var->valueStride_), buff, 0, var->valueBits_);
    }
 
    // Standard variable
    else {
 
       // Fast copy
-      if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[0],buff,var->byteSize_);
+      if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[0],buff,var->valueBytes_);
 
       else if ( var->bitOffset_.size() == 1 )
          copyBits(blockData_, var->bitOffset_[0], buff, 0, var->bitSize_[0]);
@@ -505,7 +517,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t id
 }
 
 // Get data to pointer from internal block or staged memory
-void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t idx ) {
+void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t index ) {
    uint32_t  dstBit;
    uint32_t  x;
 
@@ -515,16 +527,20 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t idx ) {
    // List variable
    if ( var->numValues_ != 0 ) {
 
-      // Fast copy
-      if ( var->fastByte_ != NULL ) memcpy(data,blockData_+var->fastByte_[idx],var->valueBits_/8);
+      // Verify range
+      if ( index < 0 || index >= var->numValues_ )
+         throw(rogue::GeneralError::create("Block::getBytes","Index %i is out of range for %s",index, var->name_.c_str()));
 
-      else copyBits(data, 0, blockData_, var->bitOffset_[0] + (idx * var->valueStride_), var->valueBits_);
+      // Fast copy
+      if ( var->fastByte_ != NULL ) memcpy(data,blockData_+var->fastByte_[index],var->valueBytes_);
+
+      else copyBits(data, 0, blockData_, var->bitOffset_[0] + (index * var->valueStride_), var->valueBits_);
    }
 
    else {
 
       // Fast copy
-      if ( var->fastByte_ != NULL) memcpy(data,blockData_+var->fastByte_[idx],var->byteSize_);
+      if ( var->fastByte_ != NULL) memcpy(data,blockData_+var->fastByte_[index],var->valueBytes_);
 
       else if ( var->bitOffset_.size() == 1 )
          copyBits(data, 0, blockData_, var->bitOffset_[0], var->bitSize_[0]);
@@ -540,7 +556,7 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t idx ) {
 
    // Change byte order
    if ( var->byteReverse_ ) {
-     reverseBytes(data,var->byteSize_);
+     reverseBytes(data,var->valueBytes_);
    }
 }
 
@@ -550,8 +566,10 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t idx ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using python function
-void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var, int32_t index ) {
    Py_buffer valueBuf;
 
    bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
@@ -559,19 +577,19 @@ void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var ) {
    if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
 
-   setBytes((uint8_t *)valueBuf.buf,var,0);
+   setBytes((uint8_t *)valueBuf.buf,var,index);
 
    PyBuffer_Release(&valueBuf);
 }
 
 // Get data using python function
-bp::object rim::Block::getPyFunc ( rim::Variable *var ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
+bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
 
-   memset(getBuffer,0,var->byteSize_);
+   memset(getBuffer,0,var->valueBytes_);
 
-   getBytes(getBuffer, var,0);
-   PyObject *val = Py_BuildValue("y#",getBuffer,var->byteSize_);
+   getBytes(getBuffer, var,index);
+   PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
 
    bp::handle<> handle(val);
    bp::object pass = bp::object(handle);
@@ -590,26 +608,28 @@ bp::object rim::Block::getPyFunc ( rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using byte array
-void rim::Block::setByteArrayPy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setByteArrayPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    Py_buffer valueBuf;
 
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
 
-   setBytes((uint8_t *)valueBuf.buf,var,0);
+   setBytes((uint8_t *)valueBuf.buf,var,index);
 
    PyBuffer_Release(&valueBuf);
 }
 
 // Get data using byte array
-bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
+bp::object rim::Block::getByteArrayPy ( rim::Variable *var, int32_t index ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
 
-   memset(getBuffer,0,var->byteSize_);
+   memset(getBuffer,0,var->valueBytes_);
 
-   getBytes(getBuffer, var,0);
-   PyObject *val = Py_BuildValue("y#",getBuffer,var->byteSize_);
+   getBytes(getBuffer, var,index);
+   PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
 
    bp::handle<> handle(val);
 
@@ -620,13 +640,13 @@ bp::object rim::Block::getByteArrayPy ( rim::Variable *var ) {
 #endif
 
 // Set data using byte array
-void rim::Block::setByteArray ( const uint8_t *value, rim::Variable *var ) {
-   setBytes(value, var,0);
+void rim::Block::setByteArray ( const uint8_t *value, rim::Variable *var, int32_t index ) {
+   setBytes(value, var,index);
 }
 
 // Get data using byte array
-void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var ) {
-   getBytes(value, var,0);
+void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var, int32_t index ) {
+   getBytes(value, var,index);
 }
 
 //////////////////////////////////////////
@@ -635,8 +655,10 @@ void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using unsigned int
-void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    bp::extract<uint64_t> tmp(value);
 
    if ( !tmp.check() )
@@ -649,14 +671,14 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using unsigned int
-bp::object rim::Block::getUIntPy (rim::Variable *var ) {
+bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
    uint64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    PyObject *val = Py_BuildValue("K",tmp);
    bp::handle<> handle(val);
@@ -666,21 +688,21 @@ bp::object rim::Block::getUIntPy (rim::Variable *var ) {
 #endif
 
 // Set data using unsigned int
-void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var ) {
+void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var, int32_t index ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using unsigned int
-uint64_t rim::Block::getUInt (rim::Variable *var ) {
+uint64_t rim::Block::getUInt (rim::Variable *var, int32_t index ) {
    uint64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    return tmp;
 }
@@ -691,8 +713,10 @@ uint64_t rim::Block::getUInt (rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using int
-void rim::Block::setIntPy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    bp::extract<uint64_t> tmp(value);
 
    if ( !tmp.check() )
@@ -705,14 +729,14 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using int
-bp::object rim::Block::getIntPy ( rim::Variable *var ) {
+bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
    int64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    if ( var->bitTotal_ != 64 ) {
       if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
@@ -726,21 +750,21 @@ bp::object rim::Block::getIntPy ( rim::Variable *var ) {
 #endif
 
 // Set data using int
-void rim::Block::setInt ( const int64_t &val, rim::Variable *var ) {
+void rim::Block::setInt ( const int64_t &val, rim::Variable *var, int32_t index ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%" PRId64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using int
-int64_t rim::Block::getInt ( rim::Variable *var ) {
+int64_t rim::Block::getInt ( rim::Variable *var, int32_t index ) {
    int64_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    if ( var->bitTotal_ != 64 ) {
       if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
@@ -755,22 +779,24 @@ int64_t rim::Block::getInt ( rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using bool
-void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    bp::extract<bool> tmp(value);
 
    if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
 
    uint8_t val = (uint8_t)tmp;
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using bool
-bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
+bp::object rim::Block::getBoolPy ( rim::Variable *var, int32_t index ) {
    uint8_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    bp::handle<> handle(bp::borrowed(tmp?Py_True:Py_False));
    return bp::object(handle);
@@ -779,16 +805,16 @@ bp::object rim::Block::getBoolPy ( rim::Variable *var ) {
 #endif
 
 // Set data using bool
-void rim::Block::setBool ( const bool &value, rim::Variable *var ) {
+void rim::Block::setBool ( const bool &value, rim::Variable *var, int32_t index ) {
    uint8_t val = (uint8_t)value;
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using bool
-bool rim::Block::getBool ( rim::Variable *var ) {
+bool rim::Block::getBool ( rim::Variable *var, int32_t index ) {
    uint8_t tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    return tmp?true:false;
 }
@@ -799,27 +825,29 @@ bool rim::Block::getBool ( rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using string
-void rim::Block::setStringPy ( bp::object &value, rim::Variable *var ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
+void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t index ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
    bp::extract<char *> tmp(value);
 
    if ( !tmp.check() )
       throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
-   memcpy(getBuffer,tmp,var->byteSize_);
-   setBytes((uint8_t *)getBuffer,var,0);
+   memcpy(getBuffer,tmp,var->valueBytes_);
+   setBytes((uint8_t *)getBuffer,var,index);
 }
 
 // Get data using string
-bp::object rim::Block::getStringPy ( rim::Variable *var ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->byteSize_);
+bp::object rim::Block::getStringPy ( rim::Variable *var, int32_t index ) {
+   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
 
-   memset(getBuffer,0,var->byteSize_);
+   memset(getBuffer,0,var->valueBytes_);
 
-   getBytes(getBuffer, var,0);
+   getBytes(getBuffer, var, index);
 
-   PyObject *val = Py_BuildValue("s#",getBuffer,var->byteSize_);
+   PyObject *val = Py_BuildValue("s#",getBuffer,var->valueBytes_);
    bp::handle<> handle(val);
 
    free(getBuffer);
@@ -829,17 +857,17 @@ bp::object rim::Block::getStringPy ( rim::Variable *var ) {
 #endif
 
 // Set data using string
-void rim::Block::setString ( const std::string &value, rim::Variable *var ) {
-   setBytes((uint8_t *)value.c_str(),var,0);
+void rim::Block::setString ( const std::string &value, rim::Variable *var, int32_t index ) {
+   setBytes((uint8_t *)value.c_str(),var,index);
 }
 
 // Get data using string
-std::string rim::Block::getString ( rim::Variable *var ) {
-   char getBuffer[var->byteSize_+1];
+std::string rim::Block::getString ( rim::Variable *var, int32_t index ) {
+   char getBuffer[var->valueBytes_+1];
 
-   memset(getBuffer,0,var->byteSize_+1);
+   memset(getBuffer,0,var->valueBytes_+1);
 
-   getBytes((uint8_t *)getBuffer, var,0);
+   getBytes((uint8_t *)getBuffer, var,index);
 
    std::string ret(getBuffer);
 
@@ -847,12 +875,12 @@ std::string rim::Block::getString ( rim::Variable *var ) {
 }
 
 // Get data into string
-void rim::Block::getString ( rim::Variable *var, std::string & retString ) {
-   char getBuffer[var->byteSize_+1];
+void rim::Block::getString ( rim::Variable *var, std::string & retString, int32_t index ) {
+   char getBuffer[var->valueBytes_+1];
 
-   memset(getBuffer,0,var->byteSize_+1);
+   memset(getBuffer,0,var->valueBytes_+1);
 
-   getBytes((uint8_t *)getBuffer, var,0);
+   getBytes((uint8_t *)getBuffer, var,index);
 
    retString = getBuffer;
 }
@@ -864,8 +892,10 @@ void rim::Block::getString ( rim::Variable *var, std::string & retString ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using float
-void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    bp::extract<float> tmp(value);
 
    if ( !tmp.check() )
@@ -878,14 +908,14 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using float
-bp::object rim::Block::getFloatPy ( rim::Variable *var ) {
+bp::object rim::Block::getFloatPy ( rim::Variable *var, int32_t index ) {
    float tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    PyObject *val = Py_BuildValue("f",tmp);
    bp::handle<> handle(val);
@@ -895,21 +925,21 @@ bp::object rim::Block::getFloatPy ( rim::Variable *var ) {
 #endif
 
 // Set data using float
-void rim::Block::setFloat ( const float &val, rim::Variable *var ) {
+void rim::Block::setFloat ( const float &val, rim::Variable *var, int32_t index ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using float
-float rim::Block::getFloat ( rim::Variable *var ) {
+float rim::Block::getFloat ( rim::Variable *var, int32_t index ) {
    float tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    return tmp;
 }
@@ -921,8 +951,10 @@ float rim::Block::getFloat ( rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using double
-void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t index ) {
    bp::extract<double> tmp(value);
 
    if ( !tmp.check() )
@@ -935,14 +967,14 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var ) {
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using double
-bp::object rim::Block::getDoublePy ( rim::Variable *var ) {
+bp::object rim::Block::getDoublePy ( rim::Variable *var, int32_t index ) {
    double tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    PyObject *val = Py_BuildValue("d",tmp);
    bp::handle<> handle(val);
@@ -952,21 +984,21 @@ bp::object rim::Block::getDoublePy ( rim::Variable *var ) {
 #endif
 
 // Set data using double
-void rim::Block::setDouble ( const double &val, rim::Variable *var ) {
+void rim::Block::setDouble ( const double &val, rim::Variable *var, int32_t index ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   setBytes((uint8_t *)&val,var,0);
+   setBytes((uint8_t *)&val,var,index);
 }
 
 // Get data using double
-double rim::Block::getDouble ( rim::Variable *var ) {
+double rim::Block::getDouble ( rim::Variable *var, int32_t index ) {
    double tmp = 0;
 
-   getBytes((uint8_t *)&tmp,var,0);
+   getBytes((uint8_t *)&tmp,var,index);
 
    return tmp;
 }
@@ -977,8 +1009,10 @@ double rim::Block::getDouble ( rim::Variable *var ) {
 
 #ifndef NO_PYTHON
 
+// #### FIX #####
+
 // Set data using fixed point
-void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var ) {
+void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    bp::extract<double> tmp(value);
 
    if ( !tmp.check() )
@@ -994,15 +1028,15 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var ) {
    // I don't think this is correct!
    uint64_t fPoint = (uint64_t)round(tmp2 * pow(2,var->binPoint_));
 
-   setBytes((uint8_t *)&fPoint,var,0);
+   setBytes((uint8_t *)&fPoint,var,index);
 }
 
 // Get data using fixed point
-bp::object rim::Block::getFixedPy ( rim::Variable *var ) {
+bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
    uint64_t fPoint = 0;
    double tmp;
 
-   getBytes((uint8_t *)&fPoint,var,0);
+   getBytes((uint8_t *)&fPoint,var,index);
 
    // I don't think this is correct!
    tmp = (double)fPoint * pow(2,-1*var->binPoint_);
@@ -1015,7 +1049,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var ) {
 #endif
 
 // Set data using fixed point
-void rim::Block::setFixed ( const double &val, rim::Variable *var ) {
+void rim::Block::setFixed ( const double &val, rim::Variable *var, int32_t index ) {
 
    // Check range
    if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
@@ -1025,15 +1059,15 @@ void rim::Block::setFixed ( const double &val, rim::Variable *var ) {
    // I don't think this is correct!
    uint64_t fPoint = (uint64_t)round(val * pow(2,var->binPoint_));
 
-   setBytes((uint8_t *)&fPoint,var,0);
+   setBytes((uint8_t *)&fPoint,var,index);
 }
 
 // Get data using fixed point
-double rim::Block::getFixed ( rim::Variable *var ) {
+double rim::Block::getFixed ( rim::Variable *var, int32_t index ) {
    uint64_t fPoint = 0;
    double tmp;
 
-   getBytes((uint8_t *)&fPoint,var,0);
+   getBytes((uint8_t *)&fPoint,var,index);
 
    // I don't think this is correct!
    tmp = (double)fPoint * pow(2,-1*var->binPoint_);

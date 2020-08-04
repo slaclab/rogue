@@ -630,7 +630,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -638,10 +638,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            self._set(value)
+            self._set(value,index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
                 self._parent.verifyBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
@@ -650,7 +650,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
-    def post(self,value):
+    def post(self,value, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -659,17 +659,16 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            self._set(value)
+            self._set(value,index)
 
-            # Force=False, Check=True
-            self._block.startTransaction(rim.Post, False, True, self)
+            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -677,10 +676,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         try:
             if read:
-                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.readBlocks(recurse=False, variable=self, index=index)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            return self._get()
+            return self._get(index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -751,7 +750,7 @@ class LocalVariable(BaseVariable):
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -761,10 +760,10 @@ class LocalVariable(BaseVariable):
         try:
 
             # Set value to block
-            self._block.set(self, value)
+            self._block.set(self, value, index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
                 self._parent.verifyBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
@@ -773,7 +772,7 @@ class LocalVariable(BaseVariable):
             self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
-    def post(self,value):
+    def post(self,value,index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -782,17 +781,16 @@ class LocalVariable(BaseVariable):
         self._log.debug("{}.post({})".format(self, value))
 
         try:
-            self._block.set(self, value)
+            self._block.set(self, value, index)
 
-            # Force=False, Check=True
-            self._block.startTransaction(rim.Post, False, True, self)
+            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -800,10 +798,10 @@ class LocalVariable(BaseVariable):
         """
         try:
             if read:
-                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.readBlocks(recurse=False, variable=self, index=index)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            ret = self._block.get(self)
+            ret = self._block.get(self,index)
 
         except Exception as e:
             pr.logException(self._log,e)
