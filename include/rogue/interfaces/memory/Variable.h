@@ -527,9 +527,7 @@ namespace rogue {
                               bool bulkOpEn,
                               bool updateNotify,
                               boost::python::object model,
-                              uint32_t numValues,
-                              uint32_t valueBits,
-                              uint32_t valueStride);
+                              boost::python::object listData);
 
                //! Update the bit offsets
                void updateOffset(boost::python::object &bitOffset);

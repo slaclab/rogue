@@ -577,10 +577,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
             if (numValues * valueStride) != sum(bitSize):
                 raise VariableError('Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
 
+        listData = {'numValues':numValues, 'valueBits':valueBits, 'valueStride':valueStride}
+
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkOpEn, self._updateNotify, self._base, numValues, valueBits, valueStride)
+                              self._bulkOpEn, self._updateNotify, self._base, listData)
 
     @pr.expose
     @property

@@ -66,8 +66,7 @@ rim::VariablePtr rim::Variable::create ( std::string name,
 void rim::Variable::setup_python() {
 
 #ifndef NO_PYTHON
-   //bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object,uint32_t,uint32_t,uint32_t>())
-   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::no_init)
+   bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",bp::init<std::string, std::string, bp::object, bp::object, uint64_t, bp::object, bp::object, bool,bool,bool,bool,bp::object,bp::object>())
       .def("_varBytes",        &rim::Variable::varBytes)
       .def("_offset",          &rim::Variable::offset)
       .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
@@ -427,9 +426,8 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                   bool bulkOpEn,
                                   bool updateNotify,
                                   bp::object model,
-                                  uint32_t numValues,
-                                  uint32_t valueBits,
-                                  uint32_t valueStride)
+                                  bp::object listData)
+
                      : rim::Variable ( name,
                                        mode,
                                        py_object_convert<double>(minimum),
@@ -445,9 +443,9 @@ rim::VariableWrap::VariableWrap ( std::string name,
                                        bp::extract<bool>(model.attr("isBigEndian")),
                                        bp::extract<bool>(model.attr("bitReverse")),
                                        bp::extract<uint32_t>(model.attr("binPoint")),
-                                       numValues,
-                                       valueBits,
-                                       valueStride) {
+                                       bp::extract<uint32_t>(listData.attr("numValues")),
+                                       bp::extract<uint32_t>(listData.attr("valueBits")),
+                                       bp::extract<uint32_t>(listData.attr("valueStride"))) {
 
    model_ = model;
 }
