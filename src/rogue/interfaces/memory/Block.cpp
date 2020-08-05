@@ -566,37 +566,87 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using python function
 void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var, int32_t index ) {
+   uint32_t x;
    Py_buffer valueBuf;
+   bp::list vl;
+   bp::object tmp;
 
-   bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setPyFunc","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   setBytes((uint8_t *)valueBuf.buf,var,index);
+      for (x=0; x < var->numValues_; x++) {
+         tmp = vl[x];
+         bp::object ret = ((rim::VariableWrap*)var)->toBytes(tmp);
 
-   PyBuffer_Release(&valueBuf);
+         if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+            throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
+
+         setBytes((uint8_t *)valueBuf.buf,var,x);
+
+         PyBuffer_Release(&valueBuf);
+      }
+   }
+
+   // Single value
+   else {
+
+       bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
+
+       if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+          throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
+
+       setBytes((uint8_t *)valueBuf.buf,var,index);
+
+       PyBuffer_Release(&valueBuf);
+   }
 }
 
 // Get data using python function
 bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   memset(getBuffer,0,var->valueBytes_);
+   uint8_t getBuffer[var->valueBytes_];
 
-   getBytes(getBuffer, var,index);
-   PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
 
-   bp::handle<> handle(val);
-   bp::object pass = bp::object(handle);
+      for (x=0; x < var->numValues_; x++) {
+         memset(getBuffer,0,var->valueBytes_);
 
-   bp::object ret = ((rim::VariableWrap*)var)->fromBytes(pass);
+         getBytes(getBuffer, var, x);
+         PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
 
-   free(getBuffer);
+         bp::handle<> handle(val);
+         bp::object pass = bp::object(handle);
+
+         retList.append(((rim::VariableWrap*)var)->fromBytes(pass));
+      }
+
+      ret = retList;
+   }
+
+   // Single value
+   else {
+
+      memset(getBuffer,0,var->valueBytes_);
+
+      getBytes(getBuffer, var, index);
+      PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+
+      bp::handle<> handle(val);
+      bp::object pass = bp::object(handle);
+
+      ret = ((rim::VariableWrap*)var)->fromBytes(pass);
+   }
+
    return ret;
 }
 
@@ -608,33 +658,80 @@ bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using byte array
 void rim::Block::setByteArrayPy ( bp::object &value, rim::Variable *var, int32_t index ) {
+   uint32_t x;
    Py_buffer valueBuf;
+   bp::list vl;
+   bp::object tmp;
 
-   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   setBytes((uint8_t *)valueBuf.buf,var,index);
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setByteArrayPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   PyBuffer_Release(&valueBuf);
+      for (x=0; x < var->numValues_; x++) {
+         tmp = vl[x];
+
+         if ( PyObject_GetBuffer(tmp.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+            throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
+
+         setBytes((uint8_t *)valueBuf.buf,var,x);
+
+         PyBuffer_Release(&valueBuf);
+      }
+   }
+
+   else {
+
+      if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+         throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
+
+      setBytes((uint8_t *)valueBuf.buf,var,index);
+
+      PyBuffer_Release(&valueBuf);
+   }
 }
 
 // Get data using byte array
 bp::object rim::Block::getByteArrayPy ( rim::Variable *var, int32_t index ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   memset(getBuffer,0,var->valueBytes_);
+   uint8_t getBuffer[var->valueBytes_];
 
-   getBytes(getBuffer, var,index);
-   PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
 
-   bp::handle<> handle(val);
+      for (x=0; x < var->numValues_; x++) {
+         memset(getBuffer,0,var->valueBytes_);
 
-   free(getBuffer);
-   return bp::object(handle);
+         getBytes(getBuffer, var,x);
+         PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+
+         bp::handle<> handle(val);
+         bp::object pass = bp::object(handle);
+
+         retList.append(pass);
+      }
+
+      ret = retList;
+   }
+
+   else {
+      memset(getBuffer,0,var->valueBytes_);
+
+      getBytes(getBuffer, var,index);
+      PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+
+      bp::handle<> handle(val);
+      ret = bp::object(handle);
+   }
+
+   return ret;
 }
 
 #endif
@@ -655,34 +752,63 @@ void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var, int32_t inde
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using unsigned int
 void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   bp::extract<uint64_t> tmp(value);
+   uint32_t x;
+   uint64_t val;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   uint64_t val = tmp;
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setUIntPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
-      throw(rogue::GeneralError::create("Block::setUInt",
-         "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<uint64_t> tmp(vl[x]);
 
-   setBytes((uint8_t *)&val,var,index);
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",var->name_.c_str()));
+
+         val = tmp;
+         setUInt (val, var, x);
+      }
+   }
+
+   else {
+
+      bp::extract<uint64_t> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",var->name_.c_str()));
+
+      val = tmp;
+      setUInt (val, var, index);
+   }
 }
 
 // Get data using unsigned int
 bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
-   uint64_t tmp = 0;
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes((uint8_t *)&tmp,var,index);
-
-   PyObject *val = Py_BuildValue("K",tmp);
-   bp::handle<> handle(val);
-   return bp::object(handle);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         PyObject *val = Py_BuildValue("K",getUInt(var,x));
+         bp::handle<> handle(val);
+         retList.append(bp::object(handle));
+      }
+      ret = retList;
+   }
+   else {
+      PyObject *val = Py_BuildValue("K",getUInt(var,index));
+      bp::handle<> handle(val);
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
@@ -713,38 +839,62 @@ uint64_t rim::Block::getUInt (rim::Variable *var, int32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using int
 void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   bp::extract<uint64_t> tmp(value);
+   uint32_t x;
+   uint64_t val;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   uint64_t val = tmp;
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setIntPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
-      throw(rogue::GeneralError::create("Block::setInt",
-         "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<uint64_t> tmp(vl[x]);
 
-   setBytes((uint8_t *)&val,var,index);
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
+
+         val = tmp;
+         setInt (val, var, x);
+      }
+   }
+   else {
+      bp::extract<uint64_t> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
+
+      val = tmp;
+      setInt (val, var, index);
+   }
 }
 
 // Get data using int
 bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
-   int64_t tmp = 0;
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes((uint8_t *)&tmp,var,index);
-
-   if ( var->bitTotal_ != 64 ) {
-      if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         PyObject *val = Py_BuildValue("L",getInt(var,x));
+         bp::handle<> handle(val);
+         retList.append(bp::object(handle));
+      }
+      ret = retList;
    }
 
-   PyObject *val = Py_BuildValue("L",tmp);
-   bp::handle<> handle(val);
-   return bp::object(handle);
+   else {
+      PyObject *val = Py_BuildValue("L",getInt(var,index));
+      bp::handle<> handle(val);
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
@@ -779,27 +929,61 @@ int64_t rim::Block::getInt ( rim::Variable *var, int32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using bool
 void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   bp::extract<bool> tmp(value);
+   uint32_t x;
+   bool val;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   uint8_t val = (uint8_t)tmp;
-   setBytes((uint8_t *)&val,var,index);
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setBoolPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<bool> tmp(vl[x]);
+
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
+
+         val = (tmp != 0);
+         setBool(val,var,x);
+      }
+   }
+
+   else {
+      bp::extract<bool> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
+
+      val = (tmp != 0);
+      setBool(val,var,index);
+   }
 }
 
 // Get data using bool
 bp::object rim::Block::getBoolPy ( rim::Variable *var, int32_t index ) {
-   uint8_t tmp = 0;
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes((uint8_t *)&tmp,var,index);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         bp::handle<> handle(bp::borrowed(getBool(var,x)?Py_True:Py_False));
+         retList.append(bp::object(handle));
+      }
+      ret = retList;
+   }
 
-   bp::handle<> handle(bp::borrowed(tmp?Py_True:Py_False));
-   return bp::object(handle);
+   else {
+      bp::handle<> handle(bp::borrowed(getBool(var,index)?Py_True:Py_False));
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
@@ -825,33 +1009,75 @@ bool rim::Block::getBool ( rim::Variable *var, int32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using string
 void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
-   bp::extract<char *> tmp(value);
+   uint8_t getBuffer[var->valueBytes_];
+   uint32_t x;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   memcpy(getBuffer,tmp,var->valueBytes_);
-   setBytes((uint8_t *)getBuffer,var,index);
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setString","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<char *> tmp(vl[x]);
+
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
+
+         memcpy(getBuffer,tmp,var->valueBytes_);
+         setBytes((uint8_t *)getBuffer,var,index);
+      }
+   }
+
+   else {
+      bp::extract<char *> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
+
+      memcpy(getBuffer,tmp,var->valueBytes_);
+      setBytes((uint8_t *)getBuffer,var,index);
+   }
 }
 
 // Get data using string
 bp::object rim::Block::getStringPy ( rim::Variable *var, int32_t index ) {
-   uint8_t * getBuffer = (uint8_t *)malloc(var->valueBytes_);
+   uint8_t getBuffer[var->valueBytes_];
 
-   memset(getBuffer,0,var->valueBytes_);
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes(getBuffer, var, index);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         memset(getBuffer,0,var->valueBytes_);
 
-   PyObject *val = Py_BuildValue("s#",getBuffer,var->valueBytes_);
-   bp::handle<> handle(val);
+         getBytes(getBuffer, var, x);
 
-   free(getBuffer);
-   return bp::object(handle);
+         PyObject *val = Py_BuildValue("s#",getBuffer,var->valueBytes_);
+         bp::handle<> handle(val);
+
+         ret = bp::object(handle);
+      }
+      ret = retList;
+   }
+
+   else {
+      memset(getBuffer,0,var->valueBytes_);
+
+      getBytes(getBuffer, var, index);
+
+      PyObject *val = Py_BuildValue("s#",getBuffer,var->valueBytes_);
+      bp::handle<> handle(val);
+
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
@@ -892,34 +1118,63 @@ void rim::Block::getString ( rim::Variable *var, std::string & retString, int32_
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using float
 void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   bp::extract<float> tmp(value);
+   uint32_t x;
+   float val;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   float val = tmp;
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setFloatPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
-      throw(rogue::GeneralError::create("Block::setFloat",
-         "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<float> tmp(vl[x]);
 
-   setBytes((uint8_t *)&val,var,index);
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",var->name_.c_str()));
+
+         val = tmp;
+         setFloat(val,var,x);
+      }
+   }
+
+   else {
+      bp::extract<float> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",var->name_.c_str()));
+
+      val = tmp;
+      setFloat(val,var,index);
+   }
 }
 
 // Get data using float
 bp::object rim::Block::getFloatPy ( rim::Variable *var, int32_t index ) {
-   float tmp = 0;
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes((uint8_t *)&tmp,var,index);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         PyObject *val = Py_BuildValue("f",getFloat(var,x));
+         bp::handle<> handle(val);
+         retList.append(bp::object(handle));
+      }
+      ret = retList;
+   }
 
-   PyObject *val = Py_BuildValue("f",tmp);
-   bp::handle<> handle(val);
-   return bp::object(handle);
+   else {
+      PyObject *val = Py_BuildValue("f",getFloat(var,index));
+      bp::handle<> handle(val);
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
@@ -951,34 +1206,63 @@ float rim::Block::getFloat ( rim::Variable *var, int32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using double
 void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   bp::extract<double> tmp(value);
+   uint32_t x;
+   double val;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   double val = tmp;
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setDoublePy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
-      throw(rogue::GeneralError::create("Block::setDouble",
-         "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<double> tmp(vl[x]);
 
-   setBytes((uint8_t *)&val,var,index);
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",var->name_.c_str()));
+
+         val = tmp;
+         setDouble(val,var,x);
+      }
+   }
+
+   else {
+      bp::extract<double> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",var->name_.c_str()));
+
+      val = tmp;
+      setDouble(val,var,index);
+   }
 }
 
 // Get data using double
 bp::object rim::Block::getDoublePy ( rim::Variable *var, int32_t index ) {
-   double tmp = 0;
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes((uint8_t *)&tmp,var,index);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         PyObject *val = Py_BuildValue("d",getDouble(var,x));
+         bp::handle<> handle(val);
+         ret = bp::object(handle);
+      }
+      ret = retList;
+   }
 
-   PyObject *val = Py_BuildValue("d",tmp);
-   bp::handle<> handle(val);
-   return bp::object(handle);
+   else {
+      PyObject *val = Py_BuildValue("d",getDouble(var,index));
+      bp::handle<> handle(val);
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
@@ -1009,41 +1293,63 @@ double rim::Block::getDouble ( rim::Variable *var, int32_t index ) {
 
 #ifndef NO_PYTHON
 
-// #### FIX #####
-
 // Set data using fixed point
 void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   bp::extract<double> tmp(value);
+   uint32_t x;
+   double val;
+   bp::list vl;
 
-   if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",var->name_.c_str()));
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      vl = bp::extract<bp::list>(value);
 
-   double tmp2 = tmp;
+      if ( len(vl) != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setFixedPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
-   // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (tmp2 > var->maxValue_ || tmp2 < var->minValue_) )
-      throw(rogue::GeneralError::create("Block::setFIxed",
-         "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),tmp2,var->minValue_,var->maxValue_));
+      for (x=0; x < var->numValues_; x++) {
+         bp::extract<double> tmp(vl[x]);
 
-   // I don't think this is correct!
-   uint64_t fPoint = (uint64_t)round(tmp2 * pow(2,var->binPoint_));
+         if ( !tmp.check() )
+            throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",var->name_.c_str()));
 
-   setBytes((uint8_t *)&fPoint,var,index);
+         val = tmp;
+         setFixed(val,var,x);
+      }
+   }
+
+   else {
+      bp::extract<double> tmp(value);
+
+      if ( !tmp.check() )
+         throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",var->name_.c_str()));
+
+      val = tmp;
+      setFixed(val,var,index);
+   }
 }
 
 // Get data using fixed point
 bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
-   uint64_t fPoint = 0;
-   double tmp;
+   bp::object ret;
+   bp::list retList;
+   uint32_t x;
 
-   getBytes((uint8_t *)&fPoint,var,index);
+   // Unindexed with a list variable
+   if ( index < 0 && var->numValues_ > 0 ) {
+      for (x=0; x < var->numValues_; x++) {
+         PyObject *val = Py_BuildValue("d",getFixed(var,x));
+         bp::handle<> handle(val);
+         ret = bp::object(handle);
+      }
+      ret = retList;
+   }
 
-   // I don't think this is correct!
-   tmp = (double)fPoint * pow(2,-1*var->binPoint_);
-
-   PyObject *val = Py_BuildValue("d",tmp);
-   bp::handle<> handle(val);
-   return bp::object(handle);
+   else {
+      PyObject *val = Py_BuildValue("d",getFixed(var,index));
+      bp::handle<> handle(val);
+      ret = bp::object(handle);
+   }
+   return ret;
 }
 
 #endif
