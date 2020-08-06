@@ -1028,7 +1028,7 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t in
             throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
          memcpy(getBuffer,tmp,var->valueBytes_);
-         setBytes((uint8_t *)getBuffer,var,index);
+         setBytes((uint8_t *)getBuffer,var,x);
       }
    }
 
