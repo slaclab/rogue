@@ -164,7 +164,7 @@ class EpicsPvHolder(object):
                 self._valType = 's'
 
         # Detect array
-        if typeStr is not None and 'List' in typeStr:
+        if self._var.isList:
             self._valType = 'a' + self._valType
 
         # Get initial value

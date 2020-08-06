@@ -53,6 +53,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    std::string type;
    uint32_t    i;
    bool        isEnum;
+   bool        isList;
    bp::dict    ed;
    bp::list    el;
    std::string val;
@@ -66,10 +67,11 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    // Get type and determine if this is an enum
    type = std::string(bp::extract<char *>(var_.attr("typeStr")));
    isEnum = std::string(bp::extract<char *>(var_.attr("disp"))) == "enum";
+   isList = bp::extract<bool>(var_.attr("isList"));
    count = 0;
 
    // Detect list type
-   if ( sscanf(type.c_str(),"List[%49[^]]]",(char *)(&tmpType)) == 1 ) {
+   if ( isList ) {
       type = std::string(tmpType);
 
       // Get initial element count

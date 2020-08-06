@@ -139,6 +139,7 @@ class BaseVariable(pr.Node):
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
+        self._isList        = False
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
@@ -158,6 +159,9 @@ class BaseVariable(pr.Node):
 
         if enum is not None:
             self._disp = 'enum'
+
+        if value is not None and isinstance(value, list):
+            self._isList = True
 
         # Determine typeStr from value type
         if typeStr == 'Unknown' and value is not None:
@@ -217,6 +221,11 @@ class BaseVariable(pr.Node):
     @property
     def mode(self):
         return self._mode
+
+    @pr.expose
+    @property
+    def isList(self):
+        return self._isList
 
     @pr.expose
     @property
@@ -575,10 +584,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
             self._base = base(sum(bitSize))
 
         self._typeStr = self._base.name
+        self._isList = False
 
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
             self._typeStr = f'{self._base.name}[{numValues}]'
+            self._isList = True
 
             if len(bitSize) != 1:
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
