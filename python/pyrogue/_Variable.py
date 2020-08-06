@@ -162,7 +162,7 @@ class BaseVariable(pr.Node):
         # Determine typeStr from value type
         if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
-                self._typeStr = f'List[{value[0].__class__.__name__}]'
+                self._typeStr = f'{value[0].__class__.__name__}[]'
             else:
                 self._typeStr = value.__class__.__name__
         else:
@@ -381,6 +381,8 @@ class BaseVariable(pr.Node):
             else:
                 if self.typeStr == 'ndarray':
                     return str(value)
+                elif '[' in self.typeStr and ']' in self.typeStr:
+                    return '[' + ', '.join([self.genDisp(i) for i in value]) + ']'
                 elif (value == '' or value is None):
                     return value
                 else:
@@ -576,6 +578,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
+            self._typeStr = f'{self._base.name}[{numValues}]'
 
             if len(bitSize) != 1:
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
@@ -585,6 +588,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
             if (numValues * valueStride) != sum(bitSize):
                 raise VariableError('Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
+
+        else: self._typeStr = self._base.name
 
         listData = VariableListData(numValues,valueBits,valueStride)
 
@@ -647,6 +652,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
+            print(f"Setting {value} to index {index}")
             self._set(value,index)
 
             if write:
@@ -712,12 +718,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def parseDisp(self, sValue):
         if sValue is None or isinstance(sValue, self.nativeType()):
             return sValue
+        elif self.nativeType() == list:
+            return eval(sValue)
+        elif self.disp == 'enum':
+            return self.revEnum[sValue]
         else:
-
-            if self.disp == 'enum':
-                return self.revEnum[sValue]
-            else:
-                return self._base.fromString(sValue)
+            return self._base.fromString(sValue)
 
 
 class LocalVariable(BaseVariable):

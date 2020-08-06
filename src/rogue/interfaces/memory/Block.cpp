@@ -1010,8 +1010,8 @@ bool rim::Block::getBool ( rim::Variable *var, int32_t index ) {
 
 // Set data using string
 void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   uint8_t getBuffer[var->valueBytes_];
    uint32_t x;
+   std::string strVal;
    bp::list vl;
 
    // Unindexed with a list variable
@@ -1027,8 +1027,8 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t in
          if ( !tmp.check() )
             throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
-         memcpy(getBuffer,tmp,var->valueBytes_);
-         setBytes((uint8_t *)getBuffer,var,x);
+         strVal = tmp;
+         setString(strVal,var,x);
       }
    }
 
@@ -1038,42 +1038,33 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t in
       if ( !tmp.check() )
          throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
-      memcpy(getBuffer,tmp,var->valueBytes_);
-      setBytes((uint8_t *)getBuffer,var,index);
+      strVal = tmp;
+      setString(strVal,var,index);
    }
 }
 
 // Get data using string
 bp::object rim::Block::getStringPy ( rim::Variable *var, int32_t index ) {
-   uint8_t getBuffer[var->valueBytes_];
-
    bp::object ret;
    bp::list retList;
+   std::string strVal;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
       for (x=0; x < var->numValues_; x++) {
-         memset(getBuffer,0,var->valueBytes_);
-
-         getBytes(getBuffer, var, x);
-
-         PyObject *val = Py_BuildValue("s#",getBuffer,var->valueBytes_);
+         getString(var,strVal,x);
+         PyObject *val = Py_BuildValue("s",strVal.c_str());
          bp::handle<> handle(val);
-
-         ret = bp::object(handle);
+         retList.append(bp::object(handle));
       }
       ret = retList;
    }
 
    else {
-      memset(getBuffer,0,var->valueBytes_);
-
-      getBytes(getBuffer, var, index);
-
-      PyObject *val = Py_BuildValue("s#",getBuffer,var->valueBytes_);
+      getString(var,strVal,index);
+      PyObject *val = Py_BuildValue("s",strVal.c_str());
       bp::handle<> handle(val);
-
       ret = bp::object(handle);
    }
    return ret;
@@ -1083,19 +1074,19 @@ bp::object rim::Block::getStringPy ( rim::Variable *var, int32_t index ) {
 
 // Set data using string
 void rim::Block::setString ( const std::string &value, rim::Variable *var, int32_t index ) {
-   setBytes((uint8_t *)value.c_str(),var,index);
+   uint8_t getBuffer[var->valueBytes_];
+
+   memset(getBuffer,0,var->valueBytes_);
+
+   strncpy((char *)getBuffer,value.c_str(),var->valueBytes_-1);
+
+   setBytes(getBuffer,var,index);
 }
 
 // Get data using string
 std::string rim::Block::getString ( rim::Variable *var, int32_t index ) {
-   char getBuffer[var->valueBytes_+1];
-
-   memset(getBuffer,0,var->valueBytes_+1);
-
-   getBytes((uint8_t *)getBuffer, var,index);
-
-   std::string ret(getBuffer);
-
+   std::string ret;
+   getString(var,ret,index);
    return ret;
 }
 
@@ -1105,7 +1096,7 @@ void rim::Block::getString ( rim::Variable *var, std::string & retString, int32_
 
    memset(getBuffer,0,var->valueBytes_+1);
 
-   getBytes((uint8_t *)getBuffer, var,index);
+   getBytes((uint8_t*)getBuffer, var,index);
 
    retString = getBuffer;
 }

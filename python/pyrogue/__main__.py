@@ -14,6 +14,7 @@ import pyrogue.interfaces
 import pyrogue.gui
 import pyrogue.pydm
 import time
+import os
 
 parser = argparse.ArgumentParser('Pyrogue Client')
 
@@ -33,7 +34,7 @@ parser.add_argument('--details',
 
 parser.add_argument('cmd',
                     type=str,
-                    choices=['gui','syslog','monitor','get','value','set','exec'],
+                    choices=['gui','syslog','monitor','get','value','set','exec','path'],
                     help='Client command to issue')
 
 parser.add_argument('path',
@@ -48,6 +49,10 @@ parser.add_argument('value',
 
 args = parser.parse_args()
 
+# Print library path
+if args.cmd == 'path':
+    print(os.path.dirname(__file__))
+    exit()
 
 # Common extraction for single server address
 try:
