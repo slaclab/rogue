@@ -353,11 +353,11 @@ class Device(pr.Node,rim.Hub):
     def checkBlocks(self, *, recurse=True, variable=None, **kwargs):
         """Check errors in all blocks and generate variable update notifications"""
         if variable is not None:
-            checkTransaction(variable._block, **kwargs)
+            pr.checkTransaction(variable._block, **kwargs)
 
         else:
             for block in self._blocks:
-                checkTransaction(block, **kwargs)
+                pr.checkTransaction(block, **kwargs)
 
             if recurse:
                 for key,value in self.devices.items():

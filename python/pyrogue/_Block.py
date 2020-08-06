@@ -120,7 +120,7 @@ class LocalBlock(object):
         else:
             return self._value
 
-    def startTransaction(self, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
+    def _startTransaction(self, type, forceWr, checkEach, variable, index):
         """
         Start a transaction.
         """
@@ -128,7 +128,7 @@ class LocalBlock(object):
             with self._lock:
                 self._doUpdate = self._variable._updateNotify
 
-    def checkTransaction(self):
+    def _checkTransaction(self):
         """
         Check status of block.
         If update=True notify variables if read

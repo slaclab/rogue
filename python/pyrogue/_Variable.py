@@ -93,6 +93,13 @@ class VariableValue(object):
         self.status, self.severity = var._alarmState(self.value)
 
 
+class VariableListData(object):
+    def __init__(self, numValues, valueBits, valueStride):
+        self.numValues   = numValues
+        self.valueBits   = valueBits
+        self.valueStride = valueStride
+
+
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
@@ -560,10 +567,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         if isinstance(base, pr.Model):
             self._base = base
+        elif numValues != 0:
+            self._base = base(valueBits)
         else:
             self._base = base(sum(bitSize))
 
-        self._typeStr   = self._base.name
+        self._typeStr = self._base.name
 
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
@@ -577,7 +586,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             if (numValues * valueStride) != sum(bitSize):
                 raise VariableError('Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
 
-        listData = {'numValues':numValues, 'valueBits':valueBits, 'valueStride':valueStride}
+        listData = VariableListData(numValues,valueBits,valueStride)
 
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,

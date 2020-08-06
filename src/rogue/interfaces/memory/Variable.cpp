@@ -152,7 +152,7 @@ rim::Variable::Variable ( std::string name,
    fastByte_  = NULL;
 
    if ( numValues_ == 0 ) {
-      valueBits_   = 0;
+      valueBits_   = bitTotal_;
       valueStride_ = 0;
       valueBytes_  = byteSize_;
       listLowTranByte_  = NULL;
@@ -165,7 +165,7 @@ rim::Variable::Variable ( std::string name,
 
       for (x=0; x < numValues_; x++) {
          listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueBits_)/8.0);
-         listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)x * (float)valueBits_)/8.0) - 1;
+         listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueBits_)/8.0) - 1;
       }
    }
 
@@ -217,12 +217,12 @@ rim::Variable::Variable ( std::string name,
          break;
 
       case rim::UInt :
-         if (bitTotal_ > 64) setByteArray_ = &rim::Block::setByteArray;
+         if (valueBits_ > 64) setByteArray_ = &rim::Block::setByteArray;
          else setUInt_ = &rim::Block::setUInt;
          break;
 
       case rim::Int :
-         if (bitTotal_ > 64) setByteArray_ = &rim::Block::setByteArray;
+         if (valueBits_ > 64) setByteArray_ = &rim::Block::setByteArray;
          else setInt_ = &rim::Block::setInt;
          break;
 
@@ -260,12 +260,12 @@ rim::Variable::Variable ( std::string name,
          break;
 
       case rim::UInt :
-         if (bitTotal_ > 64) getByteArray_ = &rim::Block::getByteArray;
+         if (valueBits_ > 64) getByteArray_ = &rim::Block::getByteArray;
          else getUInt_ = &rim::Block::getUInt;
          break;
 
       case rim::Int :
-         if (bitTotal_ > 64) getByteArray_ = &rim::Block::getByteArray;
+         if (valueBits_ > 64) getByteArray_ = &rim::Block::getByteArray;
          else getInt_ = &rim::Block::getInt;
          break;
 
@@ -306,12 +306,12 @@ rim::Variable::Variable ( std::string name,
          break;
 
       case rim::UInt :
-         if (bitTotal_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
+         if (valueBits_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
          else setFuncPy_ = &rim::Block::setUIntPy;
          break;
 
       case rim::Int :
-         if (bitTotal_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
+         if (valueBits_ > 64) setFuncPy_ = &rim::Block::setPyFunc;
          else setFuncPy_ = &rim::Block::setIntPy;
          break;
 
@@ -351,12 +351,12 @@ rim::Variable::Variable ( std::string name,
          break;
 
       case rim::UInt :
-         if (bitTotal_ > 64) getFuncPy_ = &rim::Block::getPyFunc;
+         if (valueBits_ > 64) getFuncPy_ = &rim::Block::getPyFunc;
          else getFuncPy_ = &rim::Block::getUIntPy;
          break;
 
       case rim::Int :
-         if (bitTotal_ > 64) getFuncPy_ = &rim::Block::getPyFunc;
+         if (valueBits_ > 64) getFuncPy_ = &rim::Block::getPyFunc;
          else getFuncPy_ = &rim::Block::getIntPy;
          break;
 
@@ -417,7 +417,7 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
    // List variable
    for (x=0; x < numValues_; x++) {
       listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueBits_)/((float)minSize * 8.0)) * minSize;
-      listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)x * (float)valueBits_)/((float)minSize * 8.0)) * minSize - 1;
+      listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueBits_)/((float)minSize * 8.0)) * minSize - 1;
    }
 }
 
@@ -624,7 +624,7 @@ std::string rim::Variable::getDumpValue(bool read) {
              break;
 
           case rim::UInt :
-             if (bitTotal_ > 64) {
+             if (valueBits_ > 64) {
                 (block_->*getByteArray_)(byteData,this,index);
                 ret << "0x";
                 for (x=0; x < valueBytes_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
@@ -633,7 +633,7 @@ std::string rim::Variable::getDumpValue(bool read) {
              break;
 
           case rim::Int :
-             if (bitTotal_ > 64) {
+             if (valueBits_ > 64) {
                 (block_->*getByteArray_)(byteData,this,index);
                 ret << "0x";
                 for (x=0; x < valueBytes_; x++) ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];

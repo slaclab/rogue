@@ -777,7 +777,6 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
    }
 
    else {
-
       bp::extract<uint64_t> tmp(value);
 
       if ( !tmp.check() )
@@ -916,8 +915,8 @@ int64_t rim::Block::getInt ( rim::Variable *var, int32_t index ) {
 
    getBytes((uint8_t *)&tmp,var,index);
 
-   if ( var->bitTotal_ != 64 ) {
-      if ( tmp >= (uint64_t)pow(2,var->bitTotal_-1)) tmp -= (uint64_t)pow(2,var->bitTotal_);
+   if ( var->valueBits_ != 64 ) {
+      if ( tmp >= (uint64_t)pow(2,var->valueBits_-1)) tmp -= (uint64_t)pow(2,var->valueBits_);
    }
 
    return tmp;
