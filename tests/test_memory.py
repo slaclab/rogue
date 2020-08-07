@@ -17,10 +17,70 @@ import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
 
-#rogue.Logging.setLevel(rogue.Logging.Warning)
+#rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
+
+class SimpleDev(pr.Device):
+
+    def __init__(self,**kwargs):
+
+        super().__init__(**kwargs)
+
+        self.add(pr.RemoteVariable(
+            name         = "SimpleTestAA",
+            offset       =  0x1c,
+            bitSize      =  16,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = "SimpleTestAB",
+            offset       =  0x1e,
+            bitSize      =  16,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = "SimpleTestBA",
+            offset       =  0x20,
+            bitSize      =  8,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = "SimpleTestBB",
+            offset       =  0x21,
+            bitSize      =  8,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = "SimpleTestBC",
+            offset       =  0x22,
+            bitSize      =  8,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
+        self.add(pr.RemoteVariable(
+            name         = "SimpleTestBD",
+            offset       =  0x23,
+            bitSize      =  8,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
 
 class MemDev(pr.Device):
 
@@ -89,6 +149,12 @@ class DummyTree(pr.Root):
                 memBase    = mc,
             ))
 
+        self.add(SimpleDev(
+                name       = 'SimpleDev',
+                offset     = 0x80000,
+                memBase    = mc,
+            ))
+
 def test_memory():
 
     with DummyTree() as root:
@@ -99,6 +165,13 @@ def test_memory():
             for i in range(256):
                 root.MemDev[dev].TestBlockBytes[i].set(value=i,write=writeVar)
                 root.MemDev[dev].TestBlockBits[i].set(value=i,write=writeVar)
+
+        root.SimpleDev.SimpleTestAA.set(0x40)
+        root.SimpleDev.SimpleTestAB.set(0x80)
+        root.SimpleDev.SimpleTestBA.set(0x41)
+        root.SimpleDev.SimpleTestBB.set(0x42)
+        root.SimpleDev.SimpleTestBC.set(0x43)
+        root.SimpleDev.SimpleTestBD.set(0x44)
 
         # Bulk Write Device
         root.MemDev[1].WriteDevice()
@@ -117,6 +190,17 @@ def test_memory():
                     retBit  = root.MemDev[dev].TestBlockBits[i].value()
                 if (retByte != i) or (retBit != i):
                     raise AssertionError(f'{root.MemDev[dev].path}: Verification Failure: i={i}, TestBlockBytes={retByte}, TestBlockBits={retBit}')
+
+        retAA = root.SimpleDev.SimpleTestAA.get()
+        retAB = root.SimpleDev.SimpleTestAB.get()
+        retBA = root.SimpleDev.SimpleTestBA.get()
+        retBB = root.SimpleDev.SimpleTestBB.get()
+        retBC = root.SimpleDev.SimpleTestBC.get()
+        retBD = root.SimpleDev.SimpleTestBD.get()
+
+        if (retAA != 0x40) or (retAB != 0x80) or (retBA != 0x41) or (retBB != 0x42) or (retBC != 0x43) or (retBD != 0x44):
+            raise AssertionError(f'Verification Failure: retAA={retAA}, retAB={retAB}, retBA={retBA}, retBB={retBB}, retBC={retBC}, retBD={retBD}')
+
 
 if __name__ == "__main__":
     test_memory()

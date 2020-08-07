@@ -343,6 +343,9 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
    // Compute the highest byte, aligned to min access
    highTranByte_ = varBytes_ - 1;
+
+   // Adjust fast copy location
+   if ( fastCopy_ ) fastByte_ = bitOffset_[0] / 8;
 }
 
 void rim::Variable::updatePath(std::string path) {
