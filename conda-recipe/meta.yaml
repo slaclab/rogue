@@ -10,7 +10,7 @@ build:
 
 requirements:
    build:
-     - python
+     - python<3.8
      - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
@@ -23,7 +23,7 @@ requirements:
      - pcas       [linux]
      - numpy
    host:
-     - python
+     - python<3.8
      - boost
      - bzip2
      - zeromq
@@ -31,7 +31,7 @@ requirements:
      - pcas       [linux]
      - numpy
    run:
-     - python
+     - python<3.8
      - {{ pin_compatible('boost', min_pin='x.x', max_pin='x.x')}}
      - boost
      - bzip2
