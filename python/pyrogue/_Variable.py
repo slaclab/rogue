@@ -332,7 +332,7 @@ class BaseVariable(pr.Node):
             self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -340,7 +340,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def post(self,value):
+    def post(self,value, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -349,7 +349,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -375,7 +375,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def value(self):
-        return self.get(read=False)
+        return self.get(read=False, index=-1)
 
     @pr.expose
     def genDisp(self, value):
@@ -393,12 +393,12 @@ class BaseVariable(pr.Node):
             raise e
 
     @pr.expose
-    def getDisp(self, read=True):
-        return(self.genDisp(self.get(read)))
+    def getDisp(self, read=True, index=-1):
+        return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def valueDisp(self, read=True):
-        return self.getDisp(read=False)
+    def valueDisp(self, read=True, index=-1):
+        return self.getDisp(read=False,index=index)
 
     @pr.expose
     def parseDisp(self, sValue):
@@ -416,8 +416,8 @@ class BaseVariable(pr.Node):
             raise VariableError(msg)
 
     @pr.expose
-    def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue), write)
+    def setDisp(self, sValue, write=True, index=index):
+        self.set(self.parseDisp(sValue), write=write, index=index)
 
     @pr.expose
     def nativeType(self):
@@ -949,20 +949,20 @@ class LinkVariable(BaseVariable):
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         if self._linkedSet is not None:
 
             # Possible args
-            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
+            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write, 'index' : index}
 
             varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
     @pr.expose
-    def get(self, read=True):
+    def get(self, read=True, index=-1):
         if self._linkedGet is not None:
 
             # Possible args
-            pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
+            pargs = {'dev' : self.parent, 'var' : self, 'read' : read, 'index' : index}
 
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
