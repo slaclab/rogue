@@ -28,9 +28,10 @@ class DefaultTop(Display):
         self.setStyleSheet("*[dirty='true']\
                            {background-color: orange;}")
 
-        self.sizeX = None
-        self.sizeY = None
-        self.title = None
+        self.sizeX  = None
+        self.sizeY  = None
+        self.title  = None
+        self.maxExp = None
 
         for a in args:
             if 'sizeX=' in a:
@@ -39,6 +40,8 @@ class DefaultTop(Display):
                 self.sizeY = int(a.split('=')[1])
             if 'title=' in a:
                 self.title = a.split('=')[1]
+            if 'maxListExpand' in a:
+                self.maxExp = int(a.split('=')[1])
 
         if self.title is None:
             self.title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
@@ -48,6 +51,9 @@ class DefaultTop(Display):
         if self.sizeY is None:
             self.sizeY = 1000
 
+        if self.maxExp is None:
+            self.maxExp = 5
+
         self.setWindowTitle(self.title)
 
         vb = QVBoxLayout()
@@ -56,7 +62,7 @@ class DefaultTop(Display):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        var = VariableTree(parent=None, init_channel=Channel)
+        var = VariableTree(parent=None, init_channel=Channel, maxListExpand=self.maxExp)
         self.tab.addTab(var,'Variables')
 
         cmd = CommandTree(parent=None, init_channel=Channel)

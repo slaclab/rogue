@@ -419,6 +419,16 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
       listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueBits_)/((float)minSize * 8.0)) * minSize;
       listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueBits_)/((float)minSize * 8.0)) * minSize - 1;
    }
+
+   // Adjust fast copy locations
+   if ( fastByte_ != NULL ) {
+      if ( numValues_ == 0 ) fastByte_[0] = bitOffset_[0] / 8;
+
+      // List variable
+      else {
+         for (x=0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueStride_ * x)) / 8;
+      }
+   }
 }
 
 void rim::Variable::updatePath(std::string path) {
