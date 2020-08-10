@@ -380,28 +380,17 @@ class BaseVariable(pr.Node):
     @pr.expose
     def genDisp(self, value):
         try:
-            #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
-            if self.disp == 'enum':
-                if value in self.enum:
-                    return self.enum[value]
-                else:
-                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
-                    return 'INVALID: {:#x}'.format(value)
+            if self.typeStr == 'ndarray':
+                return str(value)
+            elif self._isList:
+                return '[' + ', '.join([self._genDispValue(v) for v in value]) + ']'
             else:
-                if self.typeStr == 'ndarray':
-                    return str(value)
-                elif '[' in self.typeStr and ']' in self.typeStr:
-                    return '[' + ', '.join([self.genDisp(i) for i in value]) + ']'
-                elif (value == '' or value is None):
-                    return value
-                else:
-                    return self.disp.format(value)
+                return self._genDispValue(value)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             raise e
-
 
     @pr.expose
     def getDisp(self, read=True):
@@ -414,25 +403,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     def parseDisp(self, sValue):
         try:
-            if sValue is None or isinstance(sValue, self.nativeType()):
+            if sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
                 return sValue
+            elif self._isList:
+                return [self._parseDispValue(v.strip()) for v in sValue.lstrip('[').rstrip(']').split(',')]
             else:
-                if sValue == '':
-                    return ''
-                elif self.disp == 'enum':
-                    return self.revEnum[sValue]
-                else:
-                    t = self.nativeType()
-                    if t == int:
-                        return int(sValue, 0)
-                    elif t == float:
-                        return float(sValue)
-                    elif t == bool:
-                        return str.lower(sValue) == "true"
-                    elif t == list or t == dict:
-                        return eval(sValue)
-                    else:
-                        return sValue
+                return self._parseDispValue(sValue)
 
         except Exception:
             msg = "Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType())
@@ -446,8 +422,44 @@ class BaseVariable(pr.Node):
     @pr.expose
     def nativeType(self):
         if self._nativeType is None:
-            self._nativeType = type(self.value())
+            v = self.value()
+            if isinstance(v,list):
+                self._nativeType = type(v[0])
+            else:
+                self._nativeType = type(self.value())
         return self._nativeType
+
+    def _genDispValue(self,value):
+        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
+        if self.disp == 'enum':
+            if value in self.enum:
+                return self.enum[value]
+            else:
+                self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
+                return 'INVALID: {:#x}'.format(value)
+
+        elif (value == '' or value is None):
+            return value
+        else:
+            return self.disp.format(value)
+
+    def _parseDispValue(self, sValue):
+        if sValue == '':
+            return ''
+        elif self.disp == 'enum':
+            return self.revEnum[sValue]
+        else:
+            t = self.nativeType()
+            if t == int:
+                return int(sValue, 0)
+            elif t == float:
+                return float(sValue)
+            elif t == bool:
+                return str.lower(sValue) == "true"
+            elif t == dict:
+                return eval(sValue)
+            else:
+                return sValue
 
     def _setDefault(self):
         if self._default is not None:
@@ -725,13 +737,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         except Exception as e:
             pr.logException(self._log,e)
 
-    @pr.expose
-    def parseDisp(self, sValue):
-        if sValue is None or isinstance(sValue, self.nativeType()):
-            return sValue
-        elif self.nativeType() == list:
-            return eval(sValue)
-        elif self.disp == 'enum':
+    def _parseDispValue(self, sValue):
+        if self.disp == 'enum':
             return self.revEnum[sValue]
         else:
             return self._base.fromString(sValue)
