@@ -426,7 +426,7 @@ class BaseVariable(pr.Node):
             if isinstance(v,list):
                 self._nativeType = type(v[0])
             else:
-                self._nativeType = type(self.value())
+                self._nativeType = type(v)
         return self._nativeType
 
     def _genDispValue(self,value):
