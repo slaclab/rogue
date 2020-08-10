@@ -137,54 +137,164 @@ class DummyTree(pr.Root):
             memBase    = sim
         ))
 
-#def test_memory():
-#
-#    with DummyTree() as root:
-#
-#        # Load the R/W variables
-#        for dev in range(2):
-#            writeVar = (dev == 0)
-#            for i in range(256):
-#                root.MemDev[dev].TestBlockBytes[i].set(value=i,write=writeVar)
-#                root.MemDev[dev].TestBlockBits[i].set(value=i,write=writeVar)
-#
-#        # Bulk Write Device
-#        root.MemDev[1].WriteDevice()
-#
-#        # Bulk Read Device
-#        root.MemDev[3].ReadDevice()
-#
-#        # Verify all the RW and RO variables
-#        for dev in range(4):
-#            for i in range(256):
-#                if dev!=3:
-#                    retByte = root.MemDev[dev].TestBlockBytes[i].get()
-#                    retBit  = root.MemDev[dev].TestBlockBits[i].get()
-#                else:
-#                    retByte = root.MemDev[dev].TestBlockBytes[i].value()
-#                    retBit  = root.MemDev[dev].TestBlockBits[i].value()
-#                if (retByte != i) or (retBit != i):
-#                    raise AssertionError(f'{root.MemDev[dev].path}: Verification Failure: i={i}, TestBlockBytes={retByte}, TestBlockBits={retBit}')
+def test_memory():
 
-if __name__ == "__main__":
-    #test_memory()
+    UInt32ListA = [i for i in range(32)]
+    FloatListA  = [i/2 for i in range(32)]
+    UInt16ListA = [i for i in range(32)]
+    UInt21ListA = [i for i in range(32)]
+    BoolListA   = [i%2==0 for i in range(32)]
+    StringListA = [str(i) for i in range(32)]
 
+    UInt32ListB = [i+1 for i in range(32)]
+    FloatListB  = [(i+1)/2 for i in range(32)]
+    UInt16ListB = [i+1 for i in range(32)]
+    UInt21ListB = [i+1 for i in range(32)]
+    BoolListB   = [(i+1)%2==0 for i in range(32)]
+    StringListB = [str(i+1) for i in range(32)]
+
+    with DummyTree() as root:
+
+        root.ListDevice.UInt32List.set(UInt32ListA)
+        root.ListDevice.FloatList.set(FloatListA)
+        root.ListDevice.UInt16List.set(UInt16ListA)
+        root.ListDevice.UInt21List.set(UInt21ListA)
+        root.ListDevice.BoolList.set(BoolListA)
+        root.ListDevice.StringList.set(StringListA)
+
+        UInt32ListAA = root.ListDevice.UInt32List.get()
+        FloatListAA  = root.ListDevice.FloatList.get()
+        UInt16ListAA = root.ListDevice.UInt16List.get()
+        UInt21ListAA = root.ListDevice.UInt21List.get()
+        BoolListAA   = root.ListDevice.BoolList.get()
+        StringListAA = root.ListDevice.StringList.get()
+
+        UInt32ListAB = [0] * 32
+        FloatListAB  = [0] * 32
+        UInt16ListAB = [0] * 32
+        UInt21ListAB = [0] * 32
+        BoolListAB   = [0] * 32
+        StringListAB = [0] * 32
+
+        for i in range(32):
+            UInt32ListAB[i] = root.ListDevice.UInt32List.get(index=i)
+            FloatListAB[i]  = root.ListDevice.FloatList.get(index=i)
+            UInt16ListAB[i] = root.ListDevice.UInt16List.get(index=i)
+            UInt21ListAB[i] = root.ListDevice.UInt21List.get(index=i)
+            BoolListAB[i]   = root.ListDevice.BoolList.get(index=i)
+            StringListAB[i] = root.ListDevice.StringList.get(index=i)
+
+        for i in range(32):
+            if UInt32ListAA[i] != UInt32ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt32ListAA at position {i}')
+
+            if FloatListAA[i] != FloatListA[i]:
+                raise AssertionError(f'Verification Failure for FloatListAA at position {i}')
+
+            if UInt16ListAA[i] != UInt16ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt16ListAA at position {i}')
+
+            if UInt21ListAA[i] != UInt21ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt21ListAA at position {i}')
+
+            if BoolListAA[i] != BoolListA[i]:
+                raise AssertionError(f'Verification Failure for BoolListAA at position {i}')
+
+            if StringListAA[i] != StringListA[i]:
+                raise AssertionError(f'Verification Failure for StringListAA at position {i}')
+
+            if UInt32ListAB[i] != UInt32ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt32ListAB at position {i}')
+
+            if FloatListAB[i] != FloatListA[i]:
+                raise AssertionError(f'Verification Failure for FloatListAB at position {i}')
+
+            if UInt16ListAB[i] != UInt16ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt16ListAB at position {i}')
+
+            if UInt21ListAB[i] != UInt21ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt21ListAB at position {i}')
+
+            if BoolListAB[i] != BoolListA[i]:
+                raise AssertionError(f'Verification Failure for BoolListAB at position {i}')
+
+            if StringListAB[i] != StringListA[i]:
+                raise AssertionError(f'Verification Failure for StringListAB at position {i}')
+
+        for i in range(32):
+            root.ListDevice.UInt32List.set(UInt32ListB[i],index=i)
+            root.ListDevice.FloatList.set(FloatListB[i],index=i)
+            root.ListDevice.UInt16List.set(UInt16ListB[i],index=i)
+            root.ListDevice.UInt21List.set(UInt21ListB[i],index=i)
+            root.ListDevice.BoolList.set(BoolListB[i],index=i)
+            root.ListDevice.StringList.set(StringListB[i],index=i)
+
+        UInt32ListBA = root.ListDevice.UInt32List.get()
+        FloatListBA  = root.ListDevice.FloatList.get()
+        UInt16ListBA = root.ListDevice.UInt16List.get()
+        UInt21ListBA = root.ListDevice.UInt21List.get()
+        BoolListBA   = root.ListDevice.BoolList.get()
+        StringListBA = root.ListDevice.StringList.get()
+
+        UInt32ListBB = [0] * 32
+        FloatListBB  = [0] * 32
+        UInt16ListBB = [0] * 32
+        UInt21ListBB = [0] * 32
+        BoolListBB   = [0] * 32
+        StringListBB = [0] * 32
+
+        for i in range(32):
+            UInt32ListBB[i] = root.ListDevice.UInt32List.get(index=i)
+            FloatListBB[i]  = root.ListDevice.FloatList.get(index=i)
+            UInt16ListBB[i] = root.ListDevice.UInt16List.get(index=i)
+            UInt21ListBB[i] = root.ListDevice.UInt21List.get(index=i)
+            BoolListBB[i]   = root.ListDevice.BoolList.get(index=i)
+            StringListBB[i] = root.ListDevice.StringList.get(index=i)
+
+        for i in range(32):
+            if UInt32ListBA[i] != UInt32ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt32ListBA at position {i}')
+
+            if FloatListBA[i] != FloatListB[i]:
+                raise AssertionError(f'Verification Failure for FloatListBA at position {i}')
+
+            if UInt16ListBA[i] != UInt16ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt16ListBA at position {i}')
+
+            if UInt21ListBA[i] != UInt21ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt21ListBA at position {i}')
+
+            if BoolListBA[i] != BoolListB[i]:
+                raise AssertionError(f'Verification Failure for BoolListBA at position {i}')
+
+            if StringListBA[i] != StringListB[i]:
+                raise AssertionError(f'Verification Failure for StringListBA at position {i}')
+
+            if UInt32ListBB[i] != UInt32ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt32ListBB at position {i}')
+
+            if FloatListBB[i] != FloatListB[i]:
+                raise AssertionError(f'Verification Failure for FloatListBB at position {i}')
+
+            if UInt16ListBB[i] != UInt16ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt16ListBB at position {i}')
+
+            if UInt21ListBB[i] != UInt21ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt21ListBB at position {i}')
+
+            if BoolListBB[i] != BoolListB[i]:
+                raise AssertionError(f'Verification Failure for BoolListBB at position {i}')
+
+            if StringListBB[i] != StringListB[i]:
+                raise AssertionError(f'Verification Failure for StringListBB at position {i}')
+
+def run_gui():
     import pyrogue.pydm
 
     with DummyTree() as root:
-        root.ListDevice.UInt32List.set([i for i in range(32)])
-        root.ListDevice.FloatList.set([i/2 for i in range(32)])
-        root.ListDevice.UInt16List.set([i for i in range(32)])
-        root.ListDevice.UInt21List.set([i for i in range(32)])
-        root.ListDevice.BoolList.set([i%2==0 for i in range(32)])
-        root.ListDevice.StringList.set([str(i) for i in range(32)])
-
-        print(str(root.ListDevice.UInt32List.get()))
-        print(str(root.ListDevice.FloatList.get()))
-        print(str(root.ListDevice.UInt16List.get()))
-        print(str(root.ListDevice.UInt21List.get()))
-        print(str(root.ListDevice.BoolList.get()))
-        print(str(root.ListDevice.StringList.get()))
-        print(str(root.ListDevice.StringList.get(index=2)))
-
         pyrogue.pydm.runPyDM(root=root,title='test123',sizeX=1000,sizeY=500)
+
+if __name__ == "__main__":
+    test_memory()
+    #run_gui()
+

@@ -675,7 +675,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            print(f"Setting {value} to index {index}")
             self._set(value,index)
 
             if write:

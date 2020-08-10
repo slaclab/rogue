@@ -79,11 +79,11 @@ void rim::Variable::setup_python() {
       .def("_set",             &rim::VariableWrap::set)
       .def("_rateTest",        &rim::VariableWrap::rateTest)
       .def("_queueUpdate",     &rim::Variable::queueUpdate, &rim::VariableWrap::defQueueUpdate)
-	   .def("_setLogLevel",     &rim::Variable::setLogLevel)
-	   .def("_getDumpValue",    &rim::Variable::getDumpValue)
-	   .def("_numValues",       &rim::Variable::numValues)
-	   .def("_valueBits",       &rim::Variable::valueBits)
-	   .def("_valueStride",     &rim::Variable::valueStride)
+      .def("_setLogLevel",     &rim::Variable::setLogLevel)
+      .def("_getDumpValue",    &rim::Variable::getDumpValue)
+      .def("_numValues",       &rim::Variable::numValues)
+      .def("_valueBits",       &rim::Variable::valueBits)
+      .def("_valueStride",     &rim::Variable::valueStride)
    ;
 #endif
 }
@@ -111,26 +111,26 @@ rim::Variable::Variable ( std::string name,
    uint32_t x;
    uint32_t bl;
 
-   name_        = name;
-   path_        = name;
-   mode_        = mode;
-   modelId_     = modelId;
-   offset_      = offset;
-   bitOffset_   = bitOffset;
-   bitSize_     = bitSize;
-   overlapEn_   = overlapEn;
-   verifyEn_    = verifyEn;
-   byteReverse_ = byteReverse;
+   name_         = name;
+   path_         = name;
+   mode_         = mode;
+   modelId_      = modelId;
+   offset_       = offset;
+   bitOffset_    = bitOffset;
+   bitSize_      = bitSize;
+   overlapEn_    = overlapEn;
+   verifyEn_     = verifyEn;
+   byteReverse_  = byteReverse;
    bitReverse_   = bitReverse;
-   bulkOpEn_    = bulkOpEn;
+   bulkOpEn_     = bulkOpEn;
    updateNotify_ = updateNotify;
-   minValue_    = minimum;
-   maxValue_    = maximum;
-   binPoint_    = binPoint;
-   numValues_   = numValues;
-   valueBits_   = valueBits;
-   valueStride_ = valueStride;
-   stale_       = false;
+   minValue_     = minimum;
+   maxValue_     = maximum;
+   binPoint_     = binPoint;
+   numValues_    = numValues;
+   valueBits_    = valueBits;
+   valueStride_  = valueStride;
+   stale_        = false;
 
    // Compute bit total
    bitTotal_ = bitSize_[0];
@@ -153,7 +153,7 @@ rim::Variable::Variable ( std::string name,
 
    if ( numValues_ == 0 ) {
       valueBits_   = bitTotal_;
-      valueStride_ = 0;
+      valueStride_ = bitTotal_;
       valueBytes_  = byteSize_;
       listLowTranByte_  = NULL;
       listHighTranByte_ = NULL;
@@ -164,8 +164,8 @@ rim::Variable::Variable ( std::string name,
       listHighTranByte_ = (uint32_t *)malloc(numValues_ * sizeof(uint32_t));
 
       for (x=0; x < numValues_; x++) {
-         listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueBits_)/8.0);
-         listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueBits_)/8.0) - 1;
+         listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueStride_)/8.0);
+         listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueStride_)/8.0) - 1;
       }
    }
 
@@ -386,7 +386,6 @@ rim::Variable::Variable ( std::string name,
    }
 
 #endif
-
 }
 
 // Destroy the variable
@@ -416,8 +415,8 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
    // List variable
    for (x=0; x < numValues_; x++) {
-      listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueBits_)/((float)minSize * 8.0)) * minSize;
-      listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueBits_)/((float)minSize * 8.0)) * minSize - 1;
+      listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueStride_)/((float)minSize * 8.0)) * minSize;
+      listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x+1) * (float)valueStride_)/((float)minSize * 8.0)) * minSize - 1;
    }
 
    // Adjust fast copy locations
