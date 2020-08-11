@@ -200,7 +200,7 @@ class BaseCommand(pr.BaseVariable):
     def _getDict(self,modes,incGroups,excGroups):
         return None
 
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         return self._default
 
 # LocalCommand is the same as BaseCommand
@@ -252,23 +252,23 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             bulkOpEn=False,
             verify=False)
 
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         self._log.debug("{}.set({})".format(self, value))
         try:
             self._set(value)
 
             if write:
-                self._block.startTransaction(rogue.interfaces.memory.Write, True, True, self)
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, checkEach=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
             raise e
 
 
-    def get(self, read=True):
+    def get(self, read=True, index=-1):
         try:
             if read:
-                self._block.startTransaction(rogue.interfaces.memory.Read, False, True, self)
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
 
             return self._get()
 
