@@ -540,7 +540,7 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t index ) {
    else {
 
       // Fast copy
-      if ( var->fastByte_ != NULL) memcpy(data,blockData_+var->fastByte_[index],var->valueBytes_);
+      if ( var->fastByte_ != NULL) memcpy(data,blockData_+var->fastByte_[0],var->valueBytes_);
 
       else if ( var->bitOffset_.size() == 1 )
          copyBits(data, 0, blockData_, var->bitOffset_[0], var->bitSize_[0]);
