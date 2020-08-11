@@ -44,7 +44,7 @@ class EnableVariable(pr.BaseVariable):
         return bool
 
     @pr.expose
-    def get(self, read=False):
+    def get(self, read=False, index=-1):
         ret = self._value
 
         with self._lock:
@@ -64,7 +64,7 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         if value != 'parent' and value != 'deps':
             old = self.value()
 

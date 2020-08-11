@@ -416,7 +416,7 @@ class BaseVariable(pr.Node):
             raise VariableError(msg)
 
     @pr.expose
-    def setDisp(self, sValue, write=True, index=index):
+    def setDisp(self, sValue, write=True, index=-1):
         self.set(self.parseDisp(sValue), write=write, index=index)
 
     @pr.expose

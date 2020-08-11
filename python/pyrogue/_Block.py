@@ -16,10 +16,16 @@ import pyrogue as pr
 
 
 def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
+    """ Helper function for calling the startTransaction function in a block. This helper
+        function ensures future changes to the API do not break custom code in a Device's
+        writeBlocks, readBlocks and checkBlocks functions. """
     block._startTransaction(type, forceWr, checkEach, variable, index)
 
 
 def checkTransaction(block, **kwargs):
+    """ Helper function for calling the checkTransaction function in a block. This helper
+        function ensures future changes to the API do not break custom code in a Device's
+        writeBlocks, readBlocks and checkBlocks functions. """
     block._checkTransaction()
 
 
