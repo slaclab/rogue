@@ -17,8 +17,8 @@ Go to https://www.anaconda.com/download to get the latest version of anaconda. E
 
 .. code::
 
-   $ wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
-   $ bash Anaconda3-5.3.0-Linux-x86_64.sh
+   $ wget https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
+   $ bash Anaconda3-2020.07-Linux-x86_64.sh
 
 You do not need to install visual studio.
 
