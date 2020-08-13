@@ -403,10 +403,10 @@ class BaseVariable(pr.Node):
     @pr.expose
     def parseDisp(self, sValue):
         try:
-            if sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
-                return sValue
-            elif self._isList:
+            if self._isList:
                 return [self._parseDispValue(v.strip()) for v in sValue.lstrip('[').rstrip(']').split(',')]
+            elif sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
+                return sValue
             else:
                 return self._parseDispValue(sValue)
 
