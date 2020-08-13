@@ -475,7 +475,7 @@ namespace rogue {
                std::string getString (rogue::interfaces::memory::Variable *var );
 
                //! Get data into String, C++ Version
-               void getString (rogue::interfaces::memory::Variable *var, std::string & );
+               void getString (rogue::interfaces::memory::Variable *var, std::string & valueRet );
 
                //! Get data into String, C++ Version
                void getValue (rogue::interfaces::memory::Variable *var, std::string & valueRet ) {

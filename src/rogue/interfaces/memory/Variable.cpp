@@ -517,6 +517,10 @@ void rim::Variable::setLogLevel(uint32_t level) {
       block_->setLogLevel( level );
 }
 
+void rim::Variable::read() {
+   block_->read(this);
+}
+
 //! Return string representation of value using default converters
 std::string rim::Variable::getDumpValue(bool read) {
    std::stringstream ret;

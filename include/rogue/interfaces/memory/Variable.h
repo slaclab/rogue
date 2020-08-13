@@ -335,6 +335,9 @@ namespace rogue {
                //! Return string representation of value using default converters
                std::string getDumpValue(bool read);
 
+               //! Perform a read operation
+               void read();
+
                /////////////////////////////////
                // C++ Byte Array
                /////////////////////////////////
