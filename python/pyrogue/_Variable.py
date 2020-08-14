@@ -492,8 +492,7 @@ class BaseVariable(pr.Node):
                     for i in range(self._numValues()):
                         self.setDisp(d, write=writeEach, index=i)
                 else:
-                    idxAll = [i for i in range(self._numValues())]
-                    idxSlice = eval(f'idxAll[{keys[0]}]')
+                    idxSlice = eval(f'[i for i in range(self._numValues()][{keys[0]}]')
 
                     # Single entry item
                     if ':' not in keys[0]:
