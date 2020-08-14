@@ -64,6 +64,9 @@ namespace rogue {
 
          static std::shared_ptr<rogue::LibraryBase> create();
 
+         //! Read all variables
+         void readAll();
+
          //! Get variable by name
          std::shared_ptr<rogue::interfaces::memory::Variable> getVariable(const std::string & name);
 
@@ -101,7 +104,7 @@ namespace rogue {
          std::vector<uint32_t> getFieldVectorUInt32(std::map<std::string, std::string> fields, std::string name);
 
          //! Dump the current state of the registers in the system
-         void dumpRegisterStatus(std::string filename, bool read);
+         void dumpRegisterStatus(std::string filename, bool read, bool includeStatus=false);
 
    };
 

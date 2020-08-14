@@ -179,6 +179,14 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    variables_[name]=var;
 }
 
+// Read all variables
+void rogue::LibraryBase::readAll() {
+   std::map< std::string, rim::VariablePtr>::iterator it;
+   for (it=variables_.begin(); it != variables_.end(); ++it) {
+      it->second->read();
+   }
+}
+
 //! Helper function to get string from fields
 std::string rogue::LibraryBase::getFieldString(std::map<std::string, std::string> fields, std::string name) {
    if (fields.find(name) == fields.end())
@@ -279,15 +287,18 @@ std::vector<uint32_t> rogue::LibraryBase::getFieldVectorUInt32(std::map<std::str
 
 
 //! Dump the current state of the registers in the system
-void rogue::LibraryBase::dumpRegisterStatus(std::string filename, bool read) {
+void rogue::LibraryBase::dumpRegisterStatus(std::string filename, bool read, bool includeStatus) {
    std::map< std::string, rim::VariablePtr>::iterator it;
 
    std::ofstream myfile;
 
    myfile.open(filename);
 
-   for (it=variables_.begin(); it != variables_.end(); ++it) myfile << it->second->getDumpValue(read);
-
+   for (it=variables_.begin(); it != variables_.end(); ++it) {
+      if ( includeStatus || it->second->mode() != "RO" ) {
+         myfile << it->second->getDumpValue(read);
+      }
+   }
    myfile.close();
 
 }

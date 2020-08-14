@@ -241,9 +241,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  description='Read configuration from passed filename in YAML format'))
 
         self.add(pr.LocalCommand(name='RemoteVariableDump', value='',
-                                 function=lambda arg: self.remoteVariableDump(name=arg, readFirst=True),
+                                 function=lambda arg: self.remoteVariableDump(name=arg,
+                                                                              modes=['RW','WO','RO'],
+                                                                              readFirst=True),
                                  hidden=True,
                                  description='Save a dump of the remote variable state'))
+
+        self.add(pr.LocalCommand(name='RemoteConfigDump', value='',
+                                 function=lambda arg: self.remoteVariableDump(name=arg,
+                                                                              modes=['RW','WO'],
+                                                                              readFirst=True),
+                                 hidden=True,
+                                 description='Save a dump of the remote variable state'))
+
 
         self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
                                  description='Generate a soft reset to each device in the tree'))
@@ -873,7 +883,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.initialize()
 
 
-    def remoteVariableDump(self,name,readFirst):
+    def remoteVariableDump(self,name,modes,readFirst):
         """Dump remote variable values to a file."""
 
         # Auto generate name if no arg
@@ -885,7 +895,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         with open(name,'w') as f:
             for v in self.variableList:
-                if hasattr(v,'_getDumpValue'):
+                if hasattr(v,'_getDumpValue') and v.mode in modes:
                     f.write(v._getDumpValue(False))
 
         return True

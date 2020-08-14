@@ -226,8 +226,8 @@ namespace rogue {
 
                //! Set logging level for block
                void setLogLevel(uint32_t level) {
-			      bLog_->setLevel( level );
-			   }
+                  bLog_->setLevel( level );
+               }
 
                //! Get offset of this Block
                /** Return the offset of this Block
@@ -478,11 +478,11 @@ namespace rogue {
                std::string getString (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data into String, C++ Version
-               void getString (rogue::interfaces::memory::Variable *var, std::string &, int32_t index );
+               void getString (rogue::interfaces::memory::Variable *var, std::string & valueRet, int32_t index );
 
                //! Get data into String, C++ Version
                void getValue (rogue::interfaces::memory::Variable *var, std::string & valueRet, int32_t index ) {
-                getString( var, valueRet, index );
+               getString( var, valueRet, index );
                }
 
                //////////////////////////////////////////
