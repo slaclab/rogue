@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installing Rogue With Anaconda &mdash; Rogue v5.0.0-6-g78669afa documentation</title>
+  <title>Installing Rogue With Anaconda &mdash; Rogue v5.2.3-42-g028ffcea documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                v5.0.0
+                v5.2.3
               </div>
             
           
@@ -185,8 +185,8 @@
 <h2>Getting Anaconda<a class="headerlink" href="#getting-anaconda" title="Permalink to this headline">¶</a></h2>
 <p>Download and install anaconda (or miniconda) if you don’t already have it installed on your machine. Choose an install location with a lot of available diskspace (&gt; 5GB). Anaconda appears to only work reliably in the bash shell.</p>
 <p>Go to <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a> to get the latest version of anaconda. Example steps for installing anaconda are included below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
-$ bash Anaconda3-5.3.0-Linux-x86_64.sh
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
+$ bash Anaconda3-2020.07-Linux-x86_64.sh
 </pre></div>
 </div>
 <p>You do not need to install visual studio.</p>
@@ -211,7 +211,7 @@ $ bash Anaconda3-5.3.0-Linux-x86_64.sh
 </pre></div>
 </div>
 <p>Alternatively you can install a specific released version of Rogue:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_4.2.1 -c tidair-tag -c tidair-packages -c conda-forge rogue=v4.2.1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_5.2.3 -c tidair-packages -c conda-forge -c pydm-tag -c tidair-tag rogue=v5.2.3
 </pre></div>
 </div>
 </div>
@@ -222,7 +222,7 @@ $ bash Anaconda3-5.3.0-Linux-x86_64.sh
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_tag
 </pre></div>
 </div>
-<p>Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_4.2.1).</p>
+<p>Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_5.2.3).</p>
 <p>To deactivate:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda deactivate
 </pre></div>

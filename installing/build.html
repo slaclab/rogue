@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Building Rogue From Source &mdash; Rogue v5.0.0-6-g78669afa documentation</title>
+  <title>Building Rogue From Source &mdash; Rogue v5.2.3-42-g028ffcea documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                v5.0.0
+                v5.2.3
               </div>
             
           
@@ -99,7 +99,6 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue From Source</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installing-packages-required-for-rogue">Installing Packages Required For Rogue</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#package-manager-install">Package Manager Install</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#python-packages-required">Python Packages Required</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#building-installing-rogue">Building &amp; Installing Rogue</a><ul>
@@ -199,16 +198,17 @@ instructions are only relevant for the Linux and MacOS operating systems. See <a
 </ul>
 <div class="section" id="package-manager-install">
 <h3>Package Manager Install<a class="headerlink" href="#package-manager-install" title="Permalink to this headline">¶</a></h3>
-<div class="section" id="ubuntu-17-04-or-later">
-<h4>Ubuntu 17.04 (or later)<a class="headerlink" href="#ubuntu-17-04-or-later" title="Permalink to this headline">¶</a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ apt-get install cmake (or cmake3)
+<div class="section" id="ubuntu-18-04-or-later">
+<h4>Ubuntu 18.04 (or later)<a class="headerlink" href="#ubuntu-18-04-or-later" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ apt-get install cmake
 $ apt-get install python3
 $ apt-get install libboost-all-dev
 $ apt-get install libbz2-dev
 $ apt-get install python3-pip
 $ apt-get install git
 $ apt-get install libzmq3-dev
-$ apt-get install python3-pyqt5 (or python3-pyqt4)
+$ apt-get install python3-pyqt5
+$ apt-get install python3-pyqt5.qtsvg
 </pre></div>
 </div>
 </div>
@@ -221,7 +221,7 @@ $ pacman -S bzip2
 $ pacman -S python-pip
 $ pacman -S git
 $ pacman -S zeromq
-$ pacman -S python-pyqt5 (or python-pyqt4)
+$ pacman -S python-pyqt5
 </pre></div>
 </div>
 </div>
@@ -240,21 +240,6 @@ $ brew install pyqt5
 </div>
 <p>Epics V3 support is and optional module that will be included in the rogue build
 if the EPICS_BASE directory is set in the user’s environment.</p>
-</div>
-</div>
-<div class="section" id="python-packages-required">
-<h3>Python Packages Required<a class="headerlink" href="#python-packages-required" title="Permalink to this headline">¶</a></h3>
-<p>The following python packages are required to use rogue in the python3
-environment. Currently I am using PIP to install these, but you are free
-to use your favorite python tool.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip3 install PyYAML
-$ pip3 install jsonpickle
-$ pip3 install parse
-$ pip3 install click
-$ pip3 install pyzmq
-$ pip3 install numpy
-$ pip3 install sqlalchemy
-</pre></div>
 </div>
 </div>
 </div>
@@ -282,6 +267,7 @@ $ pip3 install sqlalchemy
 <h3>Local Install<a class="headerlink" href="#local-install" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
+$ pip3 install -r pip_requirements.txt
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=local
@@ -296,6 +282,7 @@ $ source ../setup_rogue.csh (or .sh)
 <p>Make sure you have permission to install into the passed install directory, if not use sudo.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
+$ pip3 install -r pip_requirements.txt
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
@@ -310,6 +297,7 @@ $ source /path/to/custom/dir/setup_rogue.csh (or .sh)
 <p>Make sure you have permission to install into the /usr/local/ directory, if not use sudo.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
+$ pip3 install -r pip_requirements.txt
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=system

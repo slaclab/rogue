@@ -17,8 +17,8 @@ Go to https://www.anaconda.com/download to get the latest version of anaconda. E
 
 .. code::
 
-   $ wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
-   $ bash Anaconda3-5.3.0-Linux-x86_64.sh
+   $ wget https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
+   $ bash Anaconda3-2020.07-Linux-x86_64.sh
 
 You do not need to install visual studio.
 
@@ -55,7 +55,7 @@ Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_4.2.1 -c tidair-tag -c tidair-packages -c conda-forge rogue=v4.2.1
+   $ conda create -n rogue_5.2.3 -c tidair-packages -c conda-forge -c pydm-tag -c tidair-tag rogue=v5.2.3
 
 Using Rogue In Anaconda
 =======================
@@ -68,7 +68,7 @@ To activate:
 
    $ conda activate rogue_tag
 
-Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_4.2.1).
+Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_5.2.3).
 
 
 To deactivate:
