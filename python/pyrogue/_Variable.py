@@ -1028,4 +1028,3 @@ def quoteComma(value):
         return f"'{value}'"
     else:
         return value
-

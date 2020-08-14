@@ -563,7 +563,7 @@ class Device(pr.Node,rim.Hub):
 
         # Override defaults as dictated by the _defaults dict
         for varName, defValue in self._defaults.items():
-            nodes,keys = self.nodeMatch(varname)
+            nodes,keys = self.nodeMatch(varName)
 
             if keys is None:
                 for var in nodes:
