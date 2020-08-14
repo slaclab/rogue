@@ -601,9 +601,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v._block._reqSlaveName())
                 data += "{}\t".format(v._block.path)
                 data += "{:#x}\t".format(v._block.size)
-                data += "{}\t".format(v._numValues)
-                data += "{}\t".format(v._valueBits)
-                data += "{}\t".format(v._valueStride)
+                data += "{}\t".format(v._numValues())
+                data += "{}\t".format(v._valueBits())
+                data += "{}\t".format(v._valueStride())
                 # Escape " characters
                 description = v.description.replace('"',r'\"')
                 # Escape \n characters and strip each line in the description field
@@ -899,7 +899,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Call setDict on node
             if node is not None:
-                node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups)
+                node._setDict(d=value,writeEach=writeEach,modes=modes,incGroups=incGroups,excGroups=excGroups,keys=None)
             else:
                 self._log.error("Entry {} not found".format(key))
 

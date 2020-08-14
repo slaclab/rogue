@@ -194,7 +194,7 @@ class BaseCommand(pr.BaseVariable):
     def replaceFunction(self, function):
         self._function = function
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         pass
 
     def _getDict(self,modes,incGroups,excGroups):

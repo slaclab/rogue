@@ -84,7 +84,7 @@ class MemoryDevice(pr.Device):
                     for i in range(0, len(data), self._stride)]
 
 
-    def _setDict(self, d, writeEach, modes,incGroups,excGroups):
+    def _setDict(self, d, writeEach, modes,incGroups,excGroups,keys):
         # Parse comma separated values at each offset (key) in d
         with self._memLock:
             for offset, values in d.items():

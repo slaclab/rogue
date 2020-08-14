@@ -537,24 +537,29 @@ class Node(object):
         else:
             return data
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
-        for key, value in d.items():
-            ret = self.nodeMatch(key)
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
 
-            if len(ret) == 0:
-                self._log.error("Entry {} not found".format(key))
-            else:
-                for n in ret:
-                    if n is not None:
+        # If keys is not none, someone tried to access this node with array
+        # attributes incorrectly. This should only happen in the variable class.
+        if keys is not None:
+            self._log.error(f"Entry {self.name} with key {keys} not found")
+        else:
+            for key, value in d.items():
+                nodes,keys = self.nodeMatch(key)
+
+                if len(nodes) == 0:
+                    self._log.error("Entry {} not found".format(key))
+                else:
+                    for n in nodes:
                         if n.filterByGroup(incGroups,excGroups):
-                            n._setDict(value,writeEach,modes,incGroups,excGroups)
+                            n._setDict(value,writeEach,modes,incGroups,excGroups,keys)
 
     def _setTimeout(self,timeout):
         pass
 
     def nodeMatch(self,name):
         """
-        Return a node or list of nodes which match the given name. The name can either
+        Return a list of nodes which match the given name. The name can either
         be a single value or a list accessor:
             value
             value[9]
@@ -564,10 +569,12 @@ class Node(object):
         Variables will only match if their depth matches the passed lookup and wildcard:
             value[*] will match a variable named value[1] but not a variable named value[2][3]
             value[*][*] will match a variable named value[2][3].
+        The second return field will contain the array information if the base name
+        matches an item in the non list array.
         """
         # Node matches name in node list
         if name in self.nodes:
-            return [self.nodes[name]]
+            return [self.nodes[name]],None
 
         # Otherwise we may need to slice an array
         else:
@@ -579,11 +586,15 @@ class Node(object):
             aname = fields[0]
             keys  = fields[1:-1]
 
+            # Name is in standard list
+            if aname in self.nodes:
+                return [self.nodes[aname]],keys
+
             # Name not in list
             if aname is None or aname not in self._anodes or len(keys) == 0:
                 return []
 
-            return _iterateDict(self._anodes[aname],keys)
+            return _iterateDict(self._anodes[aname],keys),None
 
 
 def _iterateDict(d, keys):

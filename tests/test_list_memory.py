@@ -108,14 +108,14 @@ class ListDevice(pr.Device):
         self.add(pr.RemoteVariable(
             name         = 'StringList',
             offset       = 0x0500,
-            bitSize      = 8*16*32,
+            bitSize      = 8*32*32,
             bitOffset    = 0x0000,
             base         = pr.String,
             mode         = 'RW',
             disp         = '{}',
             numValues    = 32,
-            valueBits    = 8*16,
-            valueStride  = 8*16
+            valueBits    = 8*32,
+            valueStride  = 8*32
         ))
 
 class DummyTree(pr.Root):
@@ -292,9 +292,10 @@ def run_gui():
     import pyrogue.pydm
 
     with DummyTree() as root:
+        root.ListDevice.StringList.set('this, is a, test',index=30)
         pyrogue.pydm.runPyDM(root=root,title='test123',sizeX=1000,sizeY=500)
 
 if __name__ == "__main__":
-    test_memory()
-    #run_gui()
+    #test_memory()
+    run_gui()
 

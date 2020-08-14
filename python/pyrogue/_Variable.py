@@ -15,6 +15,7 @@ import inspect
 import threading
 import re
 import time
+import shlex
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -383,7 +384,7 @@ class BaseVariable(pr.Node):
             if self.typeStr == 'ndarray':
                 return str(value)
             elif self._isList:
-                return '[' + ', '.join([self._genDispValue(v) for v in value]) + ']'
+                return "[" + ", ".join([quoteComma(self._genDispValue(v)) for v in value]) + "]"
             else:
                 return self._genDispValue(value)
 
@@ -403,8 +404,11 @@ class BaseVariable(pr.Node):
     @pr.expose
     def parseDisp(self, sValue):
         try:
-            if self._isList:
-                return [self._parseDispValue(v.strip()) for v in sValue.lstrip('[').rstrip(']').split(',')]
+            if self._isList and isinstance(sValue,str) and '[' in sValue and ']' in sValue:
+                s = shlex.shlex(" " + sValue.lstrip('[').rstrip(']') + " ",posix=True)
+                s.whitespace_split=True
+                s.whitespace=','
+                return [self._parseDispValue(v.strip()) for v in s]
             elif sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
                 return sValue
             else:
@@ -474,9 +478,41 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
-        #print(f'{self.path}._setDict(d={d})')
-        if self._mode in modes:
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
+
+        # If keys is not none, it should only contain one entry
+        # and the variable should be a list variable
+        if keys is not None:
+
+            if len(keys) != 1 or not self._isList:
+                self._log.error(f"Entry {self.name} with key {keys} not found")
+
+            elif self._mode in modes:
+                if keys[0] == '*' or keys[0] == ':':
+                    for i in range(self._numValues()):
+                        self.setDisp(d, write=writeEach, index=i)
+                else:
+                    idxAll = [i for i in range(self._numValues())]
+                    idxSlice = eval(f'idxAll[{keys[0]}]')
+
+                    # Single entry item
+                    if ':' not in keys[0]:
+                        self.setDisp(d, write=writeEach, index=idxSlice[0])
+
+                    # Multi entry item
+                    else:
+                        if isinstance(d,str):
+                            s = shlex.shlex(" " + d.lstrip('[').rstrip(']') + " ",posix=True)
+                            s.whitespace_split=True
+                            s.whitespace=','
+                        else:
+                            s = d
+
+                        for val,i in zip(s,idxSlice):
+                            self.setDisp(val.strip(), write=writeEach, index=i)
+
+        # Standard set
+        elif self._mode in modes:
             self.setDisp(d,writeEach)
 
     def _getDict(self,modes,incGroups,excGroups):
@@ -985,3 +1021,11 @@ def varFuncHelper(func,pargs,log,path):
         args = {}
 
     return func(**args)
+
+# Quote commas
+def quoteComma(value):
+    if ',' in value:
+        return f"'{value}'"
+    else:
+        return value
+
