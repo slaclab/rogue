@@ -296,6 +296,6 @@ def run_gui():
         pyrogue.pydm.runPyDM(root=root,title='test123',sizeX=1000,sizeY=500)
 
 if __name__ == "__main__":
-    #test_memory()
-    run_gui()
+    test_memory()
+    #run_gui()
 
