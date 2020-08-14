@@ -15,6 +15,20 @@ import threading
 import pyrogue as pr
 
 
+def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
+    """ Helper function for calling the startTransaction function in a block. This helper
+        function ensures future changes to the API do not break custom code in a Device's
+        writeBlocks, readBlocks and checkBlocks functions. """
+    block._startTransaction(type, forceWr, checkEach, variable, index)
+
+
+def checkTransaction(block, **kwargs):
+    """ Helper function for calling the checkTransaction function in a block. This helper
+        function ensures future changes to the API do not break custom code in a Device's
+        writeBlocks, readBlocks and checkBlocks functions. """
+    block._checkTransaction()
+
+
 class MemoryError(Exception):
     """ Exception for memory access errors."""
 
@@ -75,14 +89,20 @@ class LocalBlock(object):
     def variables(self):
         return self._variables
 
-    def set(self, var, value):
+    def set(self, var, value, index):
         with self._lock:
 
-            if isinstance(value, list) or isinstance(value,dict):
+            if index < 0 and (isinstance(value, list) or isinstance(value,dict)):
                 changed = True
+            elif index >= 0:
+                changed = self._value[index] != value
             else:
                 changed = self._value != value
-            self._value = value
+
+            if index >= 0:
+                self._value[index] = value
+            else:
+                self._value = value
 
             # If a setFunction exists, call it (Used by local variables)
             if self._enable and self._localSet is not None:
@@ -92,7 +112,7 @@ class LocalBlock(object):
 
                 pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
 
-    def get(self, var):
+    def get(self, var, index):
         if self._enable and self._localGet is not None:
             with self._lock:
 
@@ -101,9 +121,12 @@ class LocalBlock(object):
 
                 self._value = pr.varFuncHelper(self._localGet,pargs, self._log, self._variable.path)
 
-        return self._value
+        if index >= 0:
+            return self._value[index]
+        else:
+            return self._value
 
-    def startTransaction(self, type, forceWr, check, var):
+    def _startTransaction(self, type, forceWr, checkEach, variable, index):
         """
         Start a transaction.
         """
@@ -111,7 +134,7 @@ class LocalBlock(object):
             with self._lock:
                 self._doUpdate = self._variable._updateNotify
 
-    def checkTransaction(self):
+    def _checkTransaction(self):
         """
         Check status of block.
         If update=True notify variables if read

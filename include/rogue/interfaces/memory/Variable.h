@@ -68,11 +68,8 @@ namespace rogue {
                // Total number of bits for this value
                uint32_t bitTotal_;
 
-               // Fast copy flag
-               bool fastCopy_;
-
-               // Fast copy base
-               uint32_t fastByte_;
+               // Fast copy base array
+               uint32_t * fastByte_;
 
                // Total bytes (rounded up) for this value
                uint32_t byteSize_;
@@ -116,6 +113,12 @@ namespace rogue {
                // High byte value
                uint32_t highTranByte_;
 
+               // Low byte value for list variables
+               uint32_t * listLowTranByte_;
+
+               // High byte value for list variables
+               uint32_t * listHighTranByte_;
+
                // Poiner to custom data
                void * customData_;
 
@@ -125,81 +128,94 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
+               // Number of values
+               uint32_t numValues_;
+
+               // Bits per value
+               uint32_t valueBits_;
+
+               // Bytes per value
+               uint32_t valueBytes_;
+
+               // Stride per value
+               uint32_t valueStride_;
+
+
 #ifndef NO_PYTHON
                /////////////////////////////////
                // Python
                /////////////////////////////////
 
                // Set pointer function
-               void (rogue::interfaces::memory::Block::*setFuncPy_)(boost::python::object &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFuncPy_)(boost::python::object &, rogue::interfaces::memory::Variable *, int32_t index);
 
                // Get pointer function
-               boost::python::object (rogue::interfaces::memory::Block::*getFuncPy_)(rogue::interfaces::memory::Variable *);
+               boost::python::object (rogue::interfaces::memory::Block::*getFuncPy_)(rogue::interfaces::memory::Variable *, int32_t index);
 #endif
 
                /////////////////////////////////
                // C++ Byte Array
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setByteArray_)(const uint8_t *, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setByteArray_)(const uint8_t *, rogue::interfaces::memory::Variable *, int32_t index);
 
-               void (rogue::interfaces::memory::Block::*getByteArray_)(uint8_t *, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*getByteArray_)(uint8_t *, rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ Uint
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setUInt_)(const uint64_t &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setUInt_)(const uint64_t &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               uint64_t (rogue::interfaces::memory::Block::*getUInt_)(rogue::interfaces::memory::Variable *);
+               uint64_t (rogue::interfaces::memory::Block::*getUInt_)(rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ int
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setInt_)(const int64_t &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setInt_)(const int64_t &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               int64_t (rogue::interfaces::memory::Block::*getInt_)(rogue::interfaces::memory::Variable *);
+               int64_t (rogue::interfaces::memory::Block::*getInt_)(rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ bool
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setBool_)(const bool &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setBool_)(const bool &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               bool (rogue::interfaces::memory::Block::*getBool_)(rogue::interfaces::memory::Variable *);
+               bool (rogue::interfaces::memory::Block::*getBool_)(rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ String
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setString_)(const std::string &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setString_)(const std::string &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               std::string (rogue::interfaces::memory::Block::*getString_)(rogue::interfaces::memory::Variable *);
+               std::string (rogue::interfaces::memory::Block::*getString_)(rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ Float
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setFloat_)(const float &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFloat_)(const float &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               float (rogue::interfaces::memory::Block::*getFloat_)(rogue::interfaces::memory::Variable *);
+               float (rogue::interfaces::memory::Block::*getFloat_)(rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ double
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setDouble_)(const double &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setDouble_)(const double &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               double (rogue::interfaces::memory::Block::*getDouble_)(rogue::interfaces::memory::Variable *);
+               double (rogue::interfaces::memory::Block::*getDouble_)(rogue::interfaces::memory::Variable *, int32_t index);
 
                /////////////////////////////////
                // C++ filed point
                /////////////////////////////////
 
-               void (rogue::interfaces::memory::Block::*setFixed_)(const double &, rogue::interfaces::memory::Variable *);
+               void (rogue::interfaces::memory::Block::*setFixed_)(const double &, rogue::interfaces::memory::Variable *, int32_t index);
 
-               double (rogue::interfaces::memory::Block::*getFixed_)(rogue::interfaces::memory::Variable *);
+               double (rogue::interfaces::memory::Block::*getFixed_)(rogue::interfaces::memory::Variable *, int32_t index);
 
             public:
 
@@ -236,7 +252,10 @@ namespace rogue {
                      uint32_t modelId,
                      bool byteReverse,
                      bool bitReverse,
-                     uint32_t binPoint);
+                     uint32_t binPoint,
+                     uint32_t numValues,
+                     uint32_t valueBits,
+                     uint32_t valueStride);
 
                // Setup class for use in python
                static void setup_python();
@@ -256,7 +275,10 @@ namespace rogue {
                           uint32_t modelId,
                           bool byteReverse,
                           bool bitReverse,
-                          uint32_t binPoint);
+                          uint32_t binPoint,
+                          uint32_t numValues,
+                          uint32_t valueBits,
+                          uint32_t valueStride);
 
                // Destroy
                virtual ~Variable();
@@ -275,11 +297,6 @@ namespace rogue {
                //! Return the total number of bits for this value
                uint32_t bitTotal() const {
                   return bitTotal_;
-               }
-
-               //! Return the fastCopy flag of the variable
-               bool fastCopy() const {
-                  return fastCopy_;
                }
 
                //! Return the total bytes (rounded up) for this value
@@ -323,6 +340,26 @@ namespace rogue {
                //! Return bulk enable flag
                bool bulkOpEn();
 
+               //! Return the number of values
+               uint32_t numValues() {
+                   return numValues_;
+               }
+
+               //! Return the number of bits per value
+               uint32_t valueBits() {
+                   return valueBits_;
+               }
+
+               //! Return the number of bytes per value
+               uint32_t valueBytes() {
+                   return valueBytes_;
+               }
+
+               //! Return the stride per value
+               uint32_t valueStride() {
+                   return valueStride_;
+               }
+
                //! Execute queue update, unused in C++
                virtual void queueUpdate();
 
@@ -343,29 +380,29 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set byte array
-               void setBytArray(uint8_t *);
+               void setBytArray(uint8_t *, int32_t index=-1);
 
                //! Get byte array
-               void getByteArray(uint8_t *);
+               void getByteArray(uint8_t *, int32_t index=-1);
 
                /////////////////////////////////
                // C++ Uint
                /////////////////////////////////
 
                //! Set unsigned int
-               void setUInt(uint64_t &);
+               void setUInt(uint64_t &, int32_t index=-1);
 
                //! Set unsigned int
-               void setValue(uint64_t value) {
-                  setUInt(value);
+               void setValue(uint64_t value, int32_t index=-1) {
+                  setUInt(value,index);
                }
 
                //! Get unsigned int
-               uint64_t getUInt();
+               uint64_t getUInt(int32_t index=-1);
 
                //! Get unsigned int
-               void getValue(uint64_t & valueRet) {
-                  valueRet = getUInt();
+               void getValue(uint64_t & valueRet, int32_t index=-1) {
+                  valueRet = getUInt(index);
                }
 
                /////////////////////////////////
@@ -373,19 +410,19 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set signed int
-               void setInt(int64_t &);
+               void setInt(int64_t &, int32_t index=-1);
 
                //! Set int
-               void setValue(int64_t value) {
-                  setInt(value);
+               void setValue(int64_t value, int32_t index=-1) {
+                  setInt(value, index);
                }
 
                //! Get signed int
-               int64_t getInt();
+               int64_t getInt(int32_t index=-1);
 
                //! Get signed int
-               void getValue(int64_t & valueRet) {
-                  valueRet = getInt();
+               void getValue(int64_t & valueRet, int32_t index=-1) {
+                  valueRet = getInt(index);
                }
 
                /////////////////////////////////
@@ -393,19 +430,19 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set bool
-               void setBool(bool &);
+               void setBool(bool &, int32_t index=-1);
 
                //! Set bool
-               void setValue(bool value) {
-                  setBool(value);
+               void setValue(bool value, int32_t index=-1) {
+                  setBool(value,index);
                }
 
                //! Get bool
-               bool getBool();
+               bool getBool(int32_t index=-1);
 
                //! Get bool
-               void getValue(bool & valueRet) {
-                  valueRet = getBool();
+               void getValue(bool & valueRet, int32_t index=-1) {
+                  valueRet = getBool(index);
                }
 
                /////////////////////////////////
@@ -413,42 +450,42 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set string
-               void setString(const std::string &);
+               void setString(const std::string &, int32_t index=-1);
 
                //! Set string
-               void setValue(const std::string & value) {
-                  setString(value);
+               void setValue(const std::string & value, int32_t index=-1) {
+                  setString(value, index);
                }
 
                //! Get string
-               std::string getString();
+               std::string getString(int32_t index=-1);
 
                //! Get string
-               void getString(std::string & retString) {
-                  getValue( retString );
+               void getString(std::string & retString, int32_t index=-1) {
+                  getValue( retString, index );
                }
 
                //! Get string
-               void getValue(std::string &);
+               void getValue(std::string &, int32_t index=-1);
 
                /////////////////////////////////
                // C++ Float
                /////////////////////////////////
 
                //! Set Float
-               void setFloat(float &);
+               void setFloat(float &, int32_t index=-1);
 
                //! Set Float
-               void setValue(float value) {
-                  setFloat(value);
+               void setValue(float value, int32_t index=-1) {
+                  setFloat(value,index);
                }
 
                //! Get Float
-               float getFloat();
+               float getFloat(int32_t index=-1);
 
                //! Get Float
-               void getValue(float & valueRet) {
-                  valueRet = getFloat();
+               void getValue(float & valueRet, int32_t index=-1) {
+                  valueRet = getFloat(index);
                }
 
                /////////////////////////////////
@@ -456,19 +493,19 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set Double
-               void setDouble(double &);
+               void setDouble(double &, int32_t index=-1);
 
                //! Set Double
-               void setValue(double value) {
-                  setDouble(value);
+               void setValue(double value, int32_t index=-1) {
+                  setDouble(value,index);
                }
 
                //! Get Double
-               double getDouble();
+               double getDouble(int32_t index=-1);
 
                //! Get Double
-               void getValue(double & valueRet) {
-                  valueRet = getDouble();
+               void getValue(double & valueRet, int32_t index=-1) {
+                  valueRet = getDouble(index);
                }
 
                /////////////////////////////////
@@ -476,10 +513,10 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set fixed point
-               void setFixed(double &);
+               void setFixed(double &, int32_t index=-1);
 
                //! Get Fixed point
-               double getFixed();
+               double getFixed(int32_t index=-1);
 
          };
 
@@ -506,7 +543,8 @@ namespace rogue {
                               bool verify,
                               bool bulkOpEn,
                               bool updateNotify,
-                              boost::python::object model);
+                              boost::python::object model,
+                              boost::python::object listData);
 
                //! Update the bit offsets
                void updateOffset(boost::python::object &bitOffset);
@@ -516,16 +554,19 @@ namespace rogue {
                 *
                 * Exposed as set() method to Python
                 *
-                * @param value   Byte array containing variable value
+                * @param value   Variable value
+                * @param index   Index of value, -1 to set full list
                 */
-               void set(boost::python::object &value);
+               void set(boost::python::object &value, int32_t index);
 
                //! Get value from RemoteVariable
                /** Copy the shadow memory value into the passed byte array.
                 *
                 * Exposed as get() method to Python
+                *
+                * @param index   Index of value, -1 to get full list
                 */
-               boost::python::object get();
+               boost::python::object get(int32_t index);
 
                //! To Bytes
                boost::python::object toBytes(boost::python::object &value);

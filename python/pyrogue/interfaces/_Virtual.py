@@ -186,7 +186,7 @@ class VirtualNode(pr.Node):
     def _getDict(self,modes):
         raise pr.NodeError('_getDict not supported in VirtualNode')
 
-    def _setDict(self,d,writeEach,modes=['RW']):
+    def _setDict(self,*args,**kwargs):
         raise pr.NodeError('_setDict not supported in VirtualNode')
 
     def _doUpdate(self, val):

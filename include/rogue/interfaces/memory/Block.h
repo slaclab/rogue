@@ -153,10 +153,10 @@ namespace rogue {
                //////////////////////////////////////////
 
                // Set data from pointer to internal staged memory
-               void setBytes ( const uint8_t *data, rogue::interfaces::memory::Variable *var );
+               void setBytes ( const uint8_t *data, rogue::interfaces::memory::Variable *var, uint32_t index);
 
                // Get data to pointer from internal block or staged memory
-               void getBytes ( uint8_t *data, rogue::interfaces::memory::Variable *var );
+               void getBytes ( uint8_t *data, rogue::interfaces::memory::Variable *var, uint32_t index);
 
                // Custom init function called after addVariables
                virtual void customInit();
@@ -226,8 +226,8 @@ namespace rogue {
 
                //! Set logging level for block
                void setLogLevel(uint32_t level) {
-			      bLog_->setLevel( level );
-			   }
+                  bLog_->setLevel( level );
+               }
 
                //! Get offset of this Block
                /** Return the offset of this Block
@@ -266,8 +266,9 @@ namespace rogue {
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
                 * @param var     Variable associated with transaction
+                * @param index   Variable index for list variables, -1 for full variable
                 */
-               void intStartTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var);
+               void intStartTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var, int32_t index);
 
             public:
 
@@ -278,8 +279,9 @@ namespace rogue {
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
                 * @param var     Variable associated with transaction
+                * @param index   Variable index for list variables, -1 for full variable
                 */
-               void startTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var);
+               void startTransaction(uint32_t type, bool forceWr, bool check, rogue::interfaces::memory::Variable *var, int32_t index=-1);
 
 #ifndef NO_PYTHON
 
@@ -292,8 +294,9 @@ namespace rogue {
                 * @param forceWr Force write of non-stale block
                 * @param check   Flag to indicate if the transaction results should be immediately checked
                 * @param var     Variable associated with transaction, None for block level
+                * @param index   Variable index for list variables, -1 for full variable
                 */
-               void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var);
+               void startTransactionPy(uint32_t type, bool forceWr, bool check, std::shared_ptr<rogue::interfaces::memory::Variable> var, int32_t index);
 
 #endif
 
@@ -314,10 +317,10 @@ namespace rogue {
 #endif
 
                //! Issue write/verify/check sequence from c++
-               void write(rogue::interfaces::memory::Variable *var);
+               void write(rogue::interfaces::memory::Variable *var, int32_t index=-1);
 
                //! Issue read/check sequence from c++
-               void read(rogue::interfaces::memory::Variable *var);
+               void read(rogue::interfaces::memory::Variable *var, int32_t index=-1);
 
                //! Add variables to block, C++ version
                /** Add the passed list of variables to this block
@@ -366,10 +369,10 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                // Set data using python function
-               void setPyFunc ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setPyFunc ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                // Get data using python function
-               boost::python::object getPyFunc (rogue::interfaces::memory::Variable *var );
+               boost::python::object getPyFunc (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
@@ -380,18 +383,18 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using byte array, python version
-               void setByteArrayPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setByteArrayPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using byte array, python version
-               boost::python::object getByteArrayPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getByteArrayPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using byte array, C++ Version
-               void setByteArray ( const uint8_t *value, rogue::interfaces::memory::Variable *var );
+               void setByteArray ( const uint8_t *value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using byte array, C++ Version
-               void getByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var );
+               void getByteArray ( uint8_t *value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //////////////////////////////////////////
                // Unsigned int
@@ -400,19 +403,19 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using unsigned int, python version
-               void setUIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setUIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
 
                //! Get data using unsigned int, python version
-               boost::python::object getUIntPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getUIntPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using unsigned int, C++ Version
-               void setUInt ( const uint64_t &value, rogue::interfaces::memory::Variable *var );
+               void setUInt ( const uint64_t &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using unsigned int, C++ Version
-               uint64_t getUInt (rogue::interfaces::memory::Variable *var );
+               uint64_t getUInt (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //////////////////////////////////////////
                // Int
@@ -421,18 +424,18 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using int, python version
-               void setIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setIntPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using int, python version
-               boost::python::object getIntPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getIntPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using int, C++ Version
-               void setInt ( const int64_t &value, rogue::interfaces::memory::Variable *var );
+               void setInt ( const int64_t &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using int, C++ Version
-               int64_t getInt (rogue::interfaces::memory::Variable *var );
+               int64_t getInt (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //////////////////////////////////////////
                // Bool
@@ -441,18 +444,18 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using bool, python version
-               void setBoolPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setBoolPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using bool, python version
-               boost::python::object getBoolPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getBoolPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using bool, C++ Version
-               void setBool ( const bool &value, rogue::interfaces::memory::Variable *var );
+               void setBool ( const bool &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using bool, C++ Version
-               bool getBool (rogue::interfaces::memory::Variable *var );
+               bool getBool (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //////////////////////////////////////////
                // String
@@ -461,25 +464,25 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using String, python version
-               void setStringPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setStringPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using String, python version
-               boost::python::object getStringPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getStringPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using String, C++ Version
-               void setString ( const std::string &value, rogue::interfaces::memory::Variable *var );
+               void setString ( const std::string &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using String, C++ Version
-               std::string getString (rogue::interfaces::memory::Variable *var );
+               std::string getString (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data into String, C++ Version
-               void getString (rogue::interfaces::memory::Variable *var, std::string & valueRet );
+               void getString (rogue::interfaces::memory::Variable *var, std::string & valueRet, int32_t index );
 
                //! Get data into String, C++ Version
-               void getValue (rogue::interfaces::memory::Variable *var, std::string & valueRet ) {
-                getString( var, valueRet );
+               void getValue (rogue::interfaces::memory::Variable *var, std::string & valueRet, int32_t index ) {
+               getString( var, valueRet, index );
                }
 
                //////////////////////////////////////////
@@ -489,18 +492,18 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using Float, python version
-               void setFloatPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setFloatPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using Float, python version
-               boost::python::object getFloatPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getFloatPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using Float, C++ Version
-               void setFloat ( const float &value, rogue::interfaces::memory::Variable *var );
+               void setFloat ( const float &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using Float, C++ Version
-               float getFloat (rogue::interfaces::memory::Variable *var );
+               float getFloat (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //////////////////////////////////////////
                // Double
@@ -509,18 +512,18 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using Double, python version
-               void setDoublePy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setDoublePy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using Double, python version
-               boost::python::object getDoublePy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getDoublePy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using Double, C++ Version
-               void setDouble ( const double &value, rogue::interfaces::memory::Variable *var );
+               void setDouble ( const double &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using Double, C++ Version
-               double getDouble (rogue::interfaces::memory::Variable *var );
+               double getDouble (rogue::interfaces::memory::Variable *var, int32_t index );
 
                //////////////////////////////////////////
                // Fixed Point
@@ -529,18 +532,18 @@ namespace rogue {
 #ifndef NO_PYTHON
 
                //! Set data using Fixed Point, Python version
-               void setFixedPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var );
+               void setFixedPy ( boost::python::object &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using Fixed Point, Python version
-               boost::python::object getFixedPy (rogue::interfaces::memory::Variable *var );
+               boost::python::object getFixedPy (rogue::interfaces::memory::Variable *var, int32_t index );
 
 #endif
 
                //! Set data using Fixed Point, C++ Version
-               void setFixed ( const double &value, rogue::interfaces::memory::Variable *var );
+               void setFixed ( const double &value, rogue::interfaces::memory::Variable *var, int32_t index );
 
                //! Get data using Fixed Point, C++ Version
-               double getFixed (rogue::interfaces::memory::Variable *var );
+               double getFixed (rogue::interfaces::memory::Variable *var, int32_t index );
 
          };
 

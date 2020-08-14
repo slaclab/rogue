@@ -22,7 +22,7 @@ import time
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-class TestDev(pr.Device):
+class EnumDev(pr.Device):
 
     def __init__(self,**kwargs):
 
@@ -83,7 +83,7 @@ class DummyTree(pr.Root):
         self.addInterface(mc)
 
         # Add Device
-        self.add(TestDev(
+        self.add(EnumDev(
             name       = 'Dev',
             offset     = 0x0,
             memBase    = mc,

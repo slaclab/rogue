@@ -15,6 +15,7 @@ import inspect
 import threading
 import re
 import time
+import shlex
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -93,6 +94,13 @@ class VariableValue(object):
         self.status, self.severity = var._alarmState(self.value)
 
 
+class VariableListData(object):
+    def __init__(self, numValues, valueBits, valueStride):
+        self.numValues   = numValues
+        self.valueBits   = valueBits
+        self.valueStride = valueStride
+
+
 class BaseVariable(pr.Node):
 
     def __init__(self, *,
@@ -132,6 +140,7 @@ class BaseVariable(pr.Node):
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
+        self._isList        = False
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
@@ -152,10 +161,13 @@ class BaseVariable(pr.Node):
         if enum is not None:
             self._disp = 'enum'
 
+        if value is not None and isinstance(value, list):
+            self._isList = True
+
         # Determine typeStr from value type
         if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
-                self._typeStr = f'List[{value[0].__class__.__name__}]'
+                self._typeStr = f'{value[0].__class__.__name__}[]'
             else:
                 self._typeStr = value.__class__.__name__
         else:
@@ -210,6 +222,11 @@ class BaseVariable(pr.Node):
     @property
     def mode(self):
         return self._mode
+
+    @pr.expose
+    @property
+    def isList(self):
+        return self._isList
 
     @pr.expose
     @property
@@ -316,7 +333,7 @@ class BaseVariable(pr.Node):
             self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -324,7 +341,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def post(self,value):
+    def post(self,value, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -333,7 +350,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -359,62 +376,43 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def value(self):
-        return self.get(read=False)
+        return self.get(read=False, index=-1)
 
     @pr.expose
     def genDisp(self, value):
         try:
-            #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
-            if self.disp == 'enum':
-                if value in self.enum:
-                    return self.enum[value]
-                else:
-                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
-                    return 'INVALID: {:#x}'.format(value)
+            if self.typeStr == 'ndarray':
+                return str(value)
+            elif self._isList:
+                return "[" + ", ".join([quoteComma(self._genDispValue(v)) for v in value]) + "]"
             else:
-                if self.typeStr == 'ndarray':
-                    return str(value)
-                elif (value == '' or value is None):
-                    return value
-                else:
-                    return self.disp.format(value)
+                return self._genDispValue(value)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error(f"Error generating disp for value {value} in variable {self.path}")
             raise e
 
+    @pr.expose
+    def getDisp(self, read=True, index=-1):
+        return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def getDisp(self, read=True):
-        return(self.genDisp(self.get(read)))
-
-    @pr.expose
-    def valueDisp(self, read=True):
-        return self.getDisp(read=False)
+    def valueDisp(self, read=True, index=-1):
+        return self.getDisp(read=False,index=index)
 
     @pr.expose
     def parseDisp(self, sValue):
         try:
-            if sValue is None or isinstance(sValue, self.nativeType()):
+            if self._isList and isinstance(sValue,str) and '[' in sValue and ']' in sValue:
+                s = shlex.shlex(" " + sValue.lstrip('[').rstrip(']') + " ",posix=True)
+                s.whitespace_split=True
+                s.whitespace=','
+                return [self._parseDispValue(v.strip()) for v in s]
+            elif sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
                 return sValue
             else:
-                if sValue == '':
-                    return ''
-                elif self.disp == 'enum':
-                    return self.revEnum[sValue]
-                else:
-                    t = self.nativeType()
-                    if t == int:
-                        return int(sValue, 0)
-                    elif t == float:
-                        return float(sValue)
-                    elif t == bool:
-                        return str.lower(sValue) == "true"
-                    elif t == list or t == dict:
-                        return eval(sValue)
-                    else:
-                        return sValue
+                return self._parseDispValue(sValue)
 
         except Exception:
             msg = "Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType())
@@ -422,14 +420,50 @@ class BaseVariable(pr.Node):
             raise VariableError(msg)
 
     @pr.expose
-    def setDisp(self, sValue, write=True):
-        self.set(self.parseDisp(sValue), write)
+    def setDisp(self, sValue, write=True, index=-1):
+        self.set(self.parseDisp(sValue), write=write, index=index)
 
     @pr.expose
     def nativeType(self):
         if self._nativeType is None:
-            self._nativeType = type(self.value())
+            v = self.value()
+            if isinstance(v,list):
+                self._nativeType = type(v[0])
+            else:
+                self._nativeType = type(v)
         return self._nativeType
+
+    def _genDispValue(self,value):
+        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
+        if self.disp == 'enum':
+            if value in self.enum:
+                return self.enum[value]
+            else:
+                self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
+                return 'INVALID: {:#x}'.format(value)
+
+        elif (value == '' or value is None):
+            return value
+        else:
+            return self.disp.format(value)
+
+    def _parseDispValue(self, sValue):
+        if sValue == '':
+            return ''
+        elif self.disp == 'enum':
+            return self.revEnum[sValue]
+        else:
+            t = self.nativeType()
+            if t == int:
+                return int(sValue, 0)
+            elif t == float:
+                return float(sValue)
+            elif t == bool:
+                return str.lower(sValue) == "true"
+            elif t == dict:
+                return eval(sValue)
+            else:
+                return sValue
 
     def _setDefault(self):
         if self._default is not None:
@@ -444,9 +478,40 @@ class BaseVariable(pr.Node):
         self._setDefault()
         self._updatePollInterval()
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups):
-        #print(f'{self.path}._setDict(d={d})')
-        if self._mode in modes:
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
+
+        # If keys is not none, it should only contain one entry
+        # and the variable should be a list variable
+        if keys is not None:
+
+            if len(keys) != 1 or not self._isList:
+                self._log.error(f"Entry {self.name} with key {keys} not found")
+
+            elif self._mode in modes:
+                if keys[0] == '*' or keys[0] == ':':
+                    for i in range(self._numValues()):
+                        self.setDisp(d, write=writeEach, index=i)
+                else:
+                    idxSlice = eval(f'[i for i in range(self._numValues())][{keys[0]}]')
+
+                    # Single entry item
+                    if ':' not in keys[0]:
+                        self.setDisp(d, write=writeEach, index=idxSlice[0])
+
+                    # Multi entry item
+                    else:
+                        if isinstance(d,str):
+                            s = shlex.shlex(" " + d.lstrip('[').rstrip(']') + " ",posix=True)
+                            s.whitespace_split=True
+                            s.whitespace=','
+                        else:
+                            s = d
+
+                        for val,i in zip(s,idxSlice):
+                            self.setDisp(val.strip(), write=writeEach, index=i)
+
+        # Standard set
+        elif self._mode in modes:
             self.setDisp(d,writeEach)
 
     def _getDict(self,modes,incGroups,excGroups):
@@ -514,6 +579,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  highAlarm=None,
                  base=pr.UInt,
                  offset=None,
+                 numValues=0,
+                 valueBits=0,
+                 valueStride=0,
                  bitSize=32,
                  bitOffset=0,
                  pollInterval=0,
@@ -557,15 +625,37 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         if isinstance(base, pr.Model):
             self._base = base
+        elif numValues != 0:
+            self._base = base(valueBits)
         else:
             self._base = base(sum(bitSize))
 
-        self._typeStr   = self._base.name
+        self._typeStr = self._base.name
+        self._isList = False
+
+        # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
+        if numValues != 0:
+            self._typeStr = f'{self._base.name}[{numValues}]'
+            self._isList = True
+
+            if len(bitSize) != 1:
+                raise VariableError('BitSize array must have a length of one when numValues > 0')
+
+            if valueBits > valueStride:
+                raise VariableError('ValueBits {valueBits} is greater than valueStrude {valueStride}')
+
+            if (numValues * valueStride) != sum(bitSize):
+                raise VariableError('Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
+
+        else:
+            self._typeStr = self._base.name
+
+        listData = VariableListData(numValues,valueBits,valueStride)
 
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkOpEn, self._updateNotify, self._base)
+                              self._bulkOpEn, self._updateNotify, self._base, listData)
 
     @pr.expose
     @property
@@ -613,7 +703,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -621,10 +711,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            self._set(value)
+            self._set(value,index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
                 self._parent.verifyBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
@@ -633,7 +723,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
-    def post(self,value):
+    def post(self,value, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -642,17 +732,16 @@ class RemoteVariable(BaseVariable,rim.Variable):
         try:
 
             # Set value to block
-            self._set(value)
+            self._set(value,index)
 
-            # Force=False, Check=True
-            self._block.startTransaction(rim.Post, False, True, self)
+            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -660,10 +749,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         try:
             if read:
-                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.readBlocks(recurse=False, variable=self, index=index)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            return self._get()
+            return self._get(index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -683,16 +772,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
         except Exception as e:
             pr.logException(self._log,e)
 
-    @pr.expose
-    def parseDisp(self, sValue):
-        if sValue is None or isinstance(sValue, self.nativeType()):
-            return sValue
+    def _parseDispValue(self, sValue):
+        if self.disp == 'enum':
+            return self.revEnum[sValue]
         else:
-
-            if self.disp == 'enum':
-                return self.revEnum[sValue]
-            else:
-                return self._base.fromString(sValue)
+            return self._base.fromString(sValue)
 
 
 class LocalVariable(BaseVariable):
@@ -734,7 +818,7 @@ class LocalVariable(BaseVariable):
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -744,10 +828,10 @@ class LocalVariable(BaseVariable):
         try:
 
             # Set value to block
-            self._block.set(self, value)
+            self._block.set(self, value, index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self)
+                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
                 self._parent.verifyBlocks(recurse=False, variable=self)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
@@ -756,7 +840,7 @@ class LocalVariable(BaseVariable):
             self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
 
     @pr.expose
-    def post(self,value):
+    def post(self,value,index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -765,17 +849,16 @@ class LocalVariable(BaseVariable):
         self._log.debug("{}.post({})".format(self, value))
 
         try:
-            self._block.set(self, value)
+            self._block.set(self, value, index)
 
-            # Force=False, Check=True
-            self._block.startTransaction(rim.Post, False, True, self)
+            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
 
     @pr.expose
-    def get(self,read=True):
+    def get(self,read=True, index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -783,10 +866,10 @@ class LocalVariable(BaseVariable):
         """
         try:
             if read:
-                self._parent.readBlocks(recurse=False, variable=self)
+                self._parent.readBlocks(recurse=False, variable=self, index=index)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            ret = self._block.get(self)
+            ret = self._block.get(self,index)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -902,20 +985,20 @@ class LinkVariable(BaseVariable):
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value, write=True):
+    def set(self, value, write=True, index=-1):
         if self._linkedSet is not None:
 
             # Possible args
-            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write}
+            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write, 'index' : index}
 
             varFuncHelper(self._linkedSet,pargs,self._log,self.path)
 
     @pr.expose
-    def get(self, read=True):
+    def get(self, read=True, index=-1):
         if self._linkedGet is not None:
 
             # Possible args
-            pargs = {'dev' : self.parent, 'var' : self, 'read' : read}
+            pargs = {'dev' : self.parent, 'var' : self, 'read' : read, 'index' : index}
 
             return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
         else:
@@ -937,3 +1020,10 @@ def varFuncHelper(func,pargs,log,path):
         args = {}
 
     return func(**args)
+
+# Quote commas
+def quoteComma(value):
+    if ',' in value:
+        return f"'{value}'"
+    else:
+        return value

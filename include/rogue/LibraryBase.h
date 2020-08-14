@@ -92,7 +92,7 @@ namespace rogue {
          uint64_t getFieldUInt64(std::map<std::string, std::string> fields, std::string name);
 
          //! Helper function to get uint32_t from fields
-         uint32_t getFieldUInt32(std::map<std::string, std::string> fields, std::string name);
+         uint32_t getFieldUInt32(std::map<std::string, std::string> fields, std::string name, bool def=false);
 
          //! Helper function to get bool from fields
          bool getFieldBool(std::map<std::string, std::string> fields, std::string name);

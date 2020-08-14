@@ -176,7 +176,7 @@ class String(Model):
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-        self.name = f'{self.__class__.__name__}[{self.bitSize/8}]'
+        self.name = f'{self.__class__.__name__}({self.bitSize//8})'
 
     def fromString(self, string):
         return string
