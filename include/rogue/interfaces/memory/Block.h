@@ -138,6 +138,9 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
+               // Retry count
+               uint32_t retryCount_;
+
 #ifndef NO_PYTHON
 
                // Call variable update for all variables
