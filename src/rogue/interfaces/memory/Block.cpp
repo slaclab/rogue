@@ -268,7 +268,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       } catch ( rogue::GeneralError err ) {
          if ( (count+1) >= retryCount_ ) throw err;
          bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
-         fWr = true; // State state is now lost
+         fWr = true; // Stale state is now lost
       }
    }
    while (count++ < retryCount_);
@@ -301,7 +301,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
       } catch ( rogue::GeneralError err ) {
          if ( (count+1) >= retryCount_ ) throw err;
          bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
-         fWr = true; // State state is now lost
+         fWr = true; // Stale state is now lost
       }
    }
    while (count++ < retryCount_);
