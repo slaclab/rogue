@@ -57,7 +57,6 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    bp::dict    ed;
    bp::list    el;
    std::string val;
-   char        tmpType[50];
    uint32_t    count;
 
    var_      = bp::object(p);
@@ -72,7 +71,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
 
    // Detect list type
    if ( isList ) {
-      type = std::string(tmpType);
+      type = type.substr(0,type.find("["));
 
       // Get initial element count
       count = len(bp::extract<bp::list>(var_.attr("value")()));
@@ -382,7 +381,7 @@ void rpe::Variable::fromPython(bp::object value) {
          for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
          pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
       }
-      else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
+      else throw rogue::GeneralError::create("Variable::fromPython","Invalid Variable Type For %s",epicsName_.c_str());
 
    } else {
 
@@ -418,13 +417,13 @@ void rpe::Variable::fromPython(bp::object value) {
          else if ( enumBool.check() ) idx = (enumBool)?1:0;
 
          // Invalid
-         else throw rogue::GeneralError("Variable::fromPython","Invalid enum");
+         else throw rogue::GeneralError::create("Variable::fromPython","Invalid enum for %s",epicsName_.c_str());
 
          log_->info("Python set enum for %s: Enum Value=%i", epicsName_.c_str(),idx);
          pValue_->putConvert(idx);
       }
 
-      else throw rogue::GeneralError("Variable::fromPython","Invalid Variable Type");
+      else throw rogue::GeneralError::create("Variable::fromPython","Invalid Variable Type for %s",epicsName_.c_str());
 
    }
 
