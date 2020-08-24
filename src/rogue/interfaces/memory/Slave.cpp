@@ -99,7 +99,7 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
       // Clean up if we found an expired transaction, overtime this will clean up
       // the list, even if it deletes one expired transaction per call
       if ( exp != tranMap_.end() ) {
-          printf("Removing expired transaction with id = %i\n",it->second->id());
+          printf("Removing expired transaction with id = %i\n",exp->second->id());
           tranMap_.erase(exp);
       }
 
