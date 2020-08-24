@@ -27,6 +27,7 @@
 #include <string.h>
 #include <memory>
 #include <cmath>
+#include <exception>
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
@@ -257,7 +258,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
 
    do {
 
-      intStartTransaction(type,forceWr,check,var,index);
+      intStartTransaction(type,fWr,check,var,index);
 
       try {
          if ( check ) checkTransaction();
@@ -290,7 +291,8 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
    do {
 
-      intStartTransaction(type,forceWr,check,var.get(),index);
+      printf("Starting transaction, check=%i, retryCount_ = %i\n",check,retryCount_);
+      intStartTransaction(type,fWr,check,var.get(),index);
 
       try {
          if ( check ) upd = checkTransaction();
@@ -299,6 +301,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
          count = retryCount_;
 
       } catch ( rogue::GeneralError err ) {
+         printf("Exception caught on try %i out of %i\n",(count+1),(retryCount_+1));
          if ( (count+1) >= retryCount_ ) throw err;
          bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
          fWr = true; // Stale state is now lost
