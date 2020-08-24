@@ -255,7 +255,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
     def set(self, value, write=True, index=-1):
         self._log.debug("{}.set({})".format(self, value))
         try:
-            self._set(value)
+            self._set(value,index)
 
             if write:
                 pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, checkEach=True, variable=self, index=index)
@@ -270,7 +270,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             if read:
                 pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
 
-            return self._get()
+            return self._get(index)
 
         except Exception as e:
             pr.logException(self._log,e)
