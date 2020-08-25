@@ -1,13 +1,13 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Stream Filter
+ * Title         : SLAC Stream Interface Rate Drop
  * ----------------------------------------------------------------------------
- * File          : Filter.h
+ * File          : RateDrop.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 11/01/2018
+ * Created       : 08/25/2020
  *-----------------------------------------------------------------------------
  * Description :
- *    AXI Stream Filter
+ *    Drops frames at a specified rate.
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -18,8 +18,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACES_STREAM_FILTER_H__
-#define __ROGUE_INTERFACES_STREAM_FILTER_H__
+#ifndef __ROGUE_INTERFACES_STREAM_RATE_DROP_H__
+#define __ROGUE_INTERFACES_STREAM_RATE_DROP_H__
 #include <stdint.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
@@ -29,40 +29,44 @@ namespace rogue {
    namespace interfaces {
       namespace stream {
 
-         //! Stream Filter
-         /** In some cases a Frame will have a non zero channel number. This can be the case
-          * when reading data from a Data file using a StreamWReader object. This can also
-          * occur when receiving data from a Batcher protocol Frame Splitter. The Filter allows
-          * a Slave to be sure it only receives Frame data for a particular channel. The
-          * Filter object has a configured channel number and a flag to determine if Frame
-          * objects with a non-zero error field will be dropped.
+         //! Stream Rate Drop
+         /** Drops frames at a defined rate. The rate value will defined as either the number of frames to drop
+          * between each kept frame or the time interval  between each kept frame. If the period flag is true the passed
+          * value will be interpreted as the time between kept frames in seconds. If the rate flag is false the value will
+          * be interpreted as the number of frames to drop between each ketp frame.
           */
          class Filter : public rogue::interfaces::stream::Master,
                         public rogue::interfaces::stream::Slave {
 
-               std::shared_ptr<rogue::Logging> log_;
-
                // Configurations
-               bool     dropErrors_;
-               uint8_t  channel_;
+               bool     periodFlag_;
+
+               uint32_t countPeriod_;
+
+               struct timeval timePeriod_;
+
+               // Status
+               uint32_t dropCount_;
+
+               struct timeval nextPeriod_;
 
             public:
 
-               //! Create a Filter object and return as a FilterPtr
-               /** @param dropErrors Set to True to drop errored Frames
-                * @param channel Set channel number to allow through the filter.
-                * @return Filter object as a FilterPtr
+               //! Create a RateDrop object and return as a RateDropPtr
+               /** @param period Set to true to define the parameter as a period value.
+                * @param value Period value or drop count
+                * @return RateDrop object as a RateDropPtr
                 */
-               static std::shared_ptr<rogue::interfaces::stream::Filter> create(bool dropErrors, uint8_t channel);
+               static std::shared_ptr<rogue::interfaces::stream::RateDrop> create(bool period, double value);
 
                // Setup class for use in python
                static void setup_python();
 
-               // Create a Filter object
-               Filter(bool dropErrors, uint8_t channel);
+               // Create a RateDrop object
+               RateDrop(bool period, double value);
 
-               // Destroy the Filter
-               ~Filter();
+               // Destroy the RateDrop
+               ~RateDrop();
 
                // Receive frame from Master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
@@ -70,7 +74,7 @@ namespace rogue {
          };
 
          //! Alias for using shared pointer as FilterPtr
-         typedef std::shared_ptr<rogue::interfaces::stream::Filter> FilterPtr;
+         typedef std::shared_ptr<rogue::interfaces::stream::RateDrop> RateDropPtr;
       }
    }
 }
