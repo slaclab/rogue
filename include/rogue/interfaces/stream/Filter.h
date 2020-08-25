@@ -1,6 +1,6 @@
 /**
  *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) Filter
+ * Title         : SLAC Stream Filter
  * ----------------------------------------------------------------------------
  * File          : Filter.h
  * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
