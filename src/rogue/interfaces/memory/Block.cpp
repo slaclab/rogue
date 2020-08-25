@@ -816,7 +816,7 @@ bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
 void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var, int32_t index ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
+   if ( (var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -902,7 +902,7 @@ bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
 void rim::Block::setInt ( const int64_t &val, rim::Variable *var, int32_t index ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
+   if ( (var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%" PRId64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -1173,7 +1173,7 @@ bp::object rim::Block::getFloatPy ( rim::Variable *var, int32_t index ) {
 void rim::Block::setFloat ( const float &val, rim::Variable *var, int32_t index ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
+   if ( (var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFloat",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -1261,7 +1261,7 @@ bp::object rim::Block::getDoublePy ( rim::Variable *var, int32_t index ) {
 void rim::Block::setDouble ( const double &val, rim::Variable *var, int32_t index ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
+   if ( (var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setDouble",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
@@ -1348,7 +1348,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
 void rim::Block::setFixed ( const double &val, rim::Variable *var, int32_t index ) {
 
    // Check range
-   if ( (var->minValue_ !=0 && var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
+   if ( (var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
       throw(rogue::GeneralError::create("Block::setFIxed",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
