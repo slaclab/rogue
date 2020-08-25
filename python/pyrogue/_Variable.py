@@ -593,15 +593,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         if disp is None:
             disp = base.defaultdisp
 
-        BaseVariable.__init__(self, name=name, description=description,
-                              mode=mode, value=value, disp=disp,
-                              enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum, bulkOpEn=bulkOpEn,
-                              lowWarning=lowWarning, lowAlarm=lowAlarm,
-                              highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify)
-
-        self._block    = None
+        self._block = None
 
         # Convert the address parameters into lists
         addrParams = [offset, bitOffset, bitSize] # Make a copy
@@ -630,8 +622,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
         else:
             self._base = base(sum(bitSize))
 
+        # Apply default min and max
+        if minimum is None or (self._base.minValue() is not None and minimum < self._base.minValue()):
+            minimum = self._base.minValue()
+
+        if maximum is None or (self._base.maxValue() is not None and maximum > self._base.maxValue()):
+            maximum = self._base.maxValue()
+
+        BaseVariable.__init__(self, name=name, description=description,
+                              mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
+                              minimum=minimum, maximum=maximum, bulkOpEn=bulkOpEn,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
+                              pollInterval=pollInterval,updateNotify=updateNotify)
+
         self._typeStr = self._base.name
-        self._isList = False
 
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
@@ -721,6 +727,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+            raise e
 
     @pr.expose
     def post(self,value, index=-1):
@@ -739,6 +746,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            raise e
 
     @pr.expose
     def get(self,read=True, index=-1):
@@ -757,7 +765,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
-            return None
+            raise e
 
     @pr.expose
     def write(self):
@@ -771,6 +779,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         except Exception as e:
             pr.logException(self._log,e)
+            raise e
 
     def _parseDispValue(self, sValue):
         if self.disp == 'enum':
@@ -838,6 +847,7 @@ class LocalVariable(BaseVariable):
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+            raise e
 
     @pr.expose
     def post(self,value,index=-1):
@@ -856,6 +866,7 @@ class LocalVariable(BaseVariable):
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            raise e
 
     @pr.expose
     def get(self,read=True, index=-1):
@@ -869,14 +880,12 @@ class LocalVariable(BaseVariable):
                 self._parent.readBlocks(recurse=False, variable=self, index=index)
                 self._parent.checkBlocks(recurse=False, variable=self)
 
-            ret = self._block.get(self,index)
+            return self._block.get(self,index)
 
         except Exception as e:
             pr.logException(self._log,e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
-            ret = None
-
-        return ret
+            raise e
 
     def __get__(self):
         return self.get(read=False)

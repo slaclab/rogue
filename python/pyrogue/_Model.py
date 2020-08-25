@@ -74,6 +74,12 @@ class Model(object, metaclass=ModelMeta):
     def isBigEndian(self):
         return self.endianness == 'big'
 
+    def minValue(self):
+        return None
+
+    def maxValue(self):
+        return None
+
 
 class UInt(Model):
     pytype      = int
@@ -94,6 +100,12 @@ class UInt(Model):
 
     def fromString(self, string):
         return int(string, 0)
+
+    def minValue(self):
+        return 0
+
+    def maxValue(self):
+        return (2**self.bitSize)-1
 
 
 class UIntReversed(UInt):
@@ -147,6 +159,12 @@ class Int(UInt):
             i = i - (1 << self.bitSize)
         return i
 
+    def minValue(self):
+        return -1 * ((2**(self.bitSize-1))-1)
+
+    def maxValue(self):
+        return (2**(self.bitSize-1))-1
+
 
 class UIntBE(UInt):
     endianness = 'big'
@@ -166,6 +184,12 @@ class Bool(Model):
 
     def fromString(self, string):
         return str.lower(string) == "true"
+
+    def minValue(self):
+        return 0
+
+    def maxValue(self):
+        return 1
 
 
 class String(Model):
@@ -198,6 +222,12 @@ class Float(Model):
     def fromString(self, string):
         return float(string)
 
+    def minValue(self):
+        return -3.4e38
+
+    def maxValue(self):
+        return 3.4e38
+
 
 class Double(Float):
     fstring = 'd'
@@ -207,6 +237,12 @@ class Double(Float):
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
+
+    def minValue(self):
+        return -1.80e308
+
+    def maxValue(self):
+        return 1.80e308
 
 
 class FloatBE(Float):
@@ -228,3 +264,9 @@ class Fixed(Model):
         super().__init__(bitSize,binPoint)
 
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
+
+    def minValue(self):
+        return 0
+
+    def maxValue(self):
+        return 1
