@@ -35,8 +35,8 @@ namespace rogue {
           * value will be interpreted as the time between kept frames in seconds. If the rate flag is false the value will
           * be interpreted as the number of frames to drop between each ketp frame.
           */
-         class Filter : public rogue::interfaces::stream::Master,
-                        public rogue::interfaces::stream::Slave {
+         class RateDrop : public rogue::interfaces::stream::Master,
+                          public rogue::interfaces::stream::Slave {
 
                // Configurations
                bool     periodFlag_;
@@ -73,7 +73,7 @@ namespace rogue {
 
          };
 
-         //! Alias for using shared pointer as FilterPtr
+         //! Alias for using shared pointer as RateDropPtr
          typedef std::shared_ptr<rogue::interfaces::stream::RateDrop> RateDropPtr;
       }
    }

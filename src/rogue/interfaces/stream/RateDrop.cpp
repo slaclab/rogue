@@ -60,7 +60,7 @@ ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave()
    else {
       periodFlag_ = false;
 
-      div_t divResult = div(timeout,1000000);
+      div_t divResult = div(value,1000000);
       timePeriod_.tv_sec  = divResult.quot;
       timePeriod_.tv_usec = divResult.rem;
 
@@ -78,7 +78,7 @@ void ris::RateDrop::acceptFrame ( ris::FramePtr frame ) {
 
    // Dropping based upon frame count, if countPeriod_ is zero we never drop
    if ( periodFlag_ ) {
-      if ( dropCount_++ = countPeriod_ ) {
+      if ( dropCount_++ == countPeriod_ ) {
          sendFrame(frame);
          dropCount_ = 0;
       }
