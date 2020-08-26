@@ -120,7 +120,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
 
    // Unsigned Int types, > 32-bits treated as string
    else if ( sscanf(typeStr.c_str(),"UInt%i",&bitSize) == 1 ) {
-      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8; }
+      if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8;}
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
       else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; }
       else { epicsType_ = aitEnumString; }
@@ -195,6 +195,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
       log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
    }
+
 }
 
 void rpe::Value::updated() {

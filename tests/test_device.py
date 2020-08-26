@@ -289,6 +289,16 @@ class AxiVersion(pr.Device):
         ))
 
         self.add(pr.RemoteVariable(
+            name         = 'Test10Bit',
+            description  = 'Test 10 bits',
+            offset       = 0x2008,
+            bitSize      = 10,
+            bitOffset    = 0,
+            base         = pr.UInt,
+            mode         = 'RW',
+        ))
+
+        self.add(pr.RemoteVariable(
             name         = 'AlarmTest'.format(i),
             description  = 'Alarm Test Field',
             offset       = 0x8000,

@@ -30,6 +30,7 @@
 #include <rogue/interfaces/stream/TcpCore.h>
 #include <rogue/interfaces/stream/TcpClient.h>
 #include <rogue/interfaces/stream/TcpServer.h>
+#include <rogue/interfaces/stream/RateDrop.h>
 #include <rogue/interfaces/stream/module.h>
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
@@ -59,5 +60,6 @@ void ris::setup_module() {
    ris::TcpCore::setup_python();
    ris::TcpClient::setup_python();
    ris::TcpServer::setup_python();
+   ris::RateDrop::setup_python();
 }
 

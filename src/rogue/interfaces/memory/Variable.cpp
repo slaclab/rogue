@@ -24,6 +24,7 @@
 #include <rogue/GeneralError.h>
 #include <memory>
 #include <cmath>
+#include <string.h>
 #include <sys/time.h>
 #include <iostream>
 #include <iomanip>

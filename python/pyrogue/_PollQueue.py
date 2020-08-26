@@ -166,7 +166,7 @@ class PollQueue(object):
 
                     for entry in blockEntries:
                         try:
-                            entry.block.checkTransaction()
+                            pr.checkTransaction(entry.block)
                         except Exception as e:
                             pr.logException(self._log,e)
 
