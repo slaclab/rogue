@@ -18,7 +18,7 @@ import time
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, *, **kwargs):
+    def __init__(self, **kwargs):
         pr.Device.__init__(self, **kwargs)
 
         self.add(pr.LocalVariable(name='RxEnable',
