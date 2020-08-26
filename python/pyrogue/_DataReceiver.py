@@ -18,18 +18,13 @@ import time
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, *, maxRate=30, **kwargs):
+    def __init__(self, *, doNumpy=True, **kwargs):
         pr.Device.__init__(self, **kwargs)
-        self._lastTime = time.time()
+        self._doNumpy = doNumpy
 
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
                                   description='Frame Rx Enable'))
-
-        self.add(pr.LocalVariable(name='MaxRxRate',
-                                  value=maxRate,
-                                  units='Hz',
-                                  description='Max allowed Rx Frame Rate'))
 
         self.add(pr.LocalVariable(name='FrameCount',
                                   value=0,
@@ -73,9 +68,14 @@ class DataReceiver(pr.Device,ris.Slave):
 
                 return
 
-            # Get numpy array from frame
+            # Get data from frame
             fl = frame.getPayload()
-            nb = frame.getNumpy(0,fl)  # uint8
+
+            if self._doNumpy:
+                dat = frame.getNumpy(0,fl)  # uint8
+            else:
+                dat = bytearray(fl)
+                frame.read(dat,0)
 
             with self.FrameCount.lock:
                 self.FrameCount.set(self.FrameCount.value() + 1, write=False)
@@ -83,23 +83,15 @@ class DataReceiver(pr.Device,ris.Slave):
             with self.ByteCount.lock:
                 self.ByteCount.set(self.ByteCount.value() + fl, write=False)
 
-        # User overridable method for numpy restructuring
-        self.process(nb)
+        # User overridable method for data restructuring
+        self.process(dat)
 
 
-    def process(self,npArray):
+    def process(self,dat):
         """
         The user can use this method to restructure the numpy array.
         This may include separating data, header and other payload sub-fields
-        The user should track the max refresh rate using the self._lastTime variable.
         """
-        doWrite = False
-
-        # Check for min period
-        if (time.time() - self._lastTime) > (1.0 / float(self.MaxRxRate.value())):
-            doWrite = True
-            self._lastTime = time.time()
-
         # Update data
-        self.Data.set(npArray,write=doWrite)
+        self.Data.set(dat,write=doWrite)
         self.Updated.set(True,write=doWrite)
