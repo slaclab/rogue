@@ -18,9 +18,8 @@ import time
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, *, doNumpy=True, **kwargs):
+    def __init__(self, *, **kwargs):
         pr.Device.__init__(self, **kwargs)
-        self._doNumpy = doNumpy
 
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
@@ -68,30 +67,27 @@ class DataReceiver(pr.Device,ris.Slave):
 
                 return
 
-            # Get data from frame
-            fl = frame.getPayload()
-
-            if self._doNumpy:
-                dat = frame.getNumpy(0,fl)  # uint8
-            else:
-                dat = bytearray(fl)
-                frame.read(dat,0)
-
             with self.FrameCount.lock:
                 self.FrameCount.set(self.FrameCount.value() + 1, write=False)
 
             with self.ByteCount.lock:
                 self.ByteCount.set(self.ByteCount.value() + fl, write=False)
 
-        # User overridable method for data restructuring
-        self.process(dat)
+            # User overridable method for data restructuring
+            self.process(frame)
 
 
-    def process(self,dat):
+    def process(self,frame):
         """
-        The user can use this method to restructure the numpy array.
+        The user can use this method to process the data, by default a byte numpy array is generated
         This may include separating data, header and other payload sub-fields
+        This all occurs with the frame lock held
         """
+
+        # Get data from frame
+        fl = frame.getPayload()
+        dat = frame.getNumpy(0,fl)  # uint8
+
         # Update data
         self.Data.set(dat,write=doWrite)
         self.Updated.set(True,write=doWrite)
