@@ -12,7 +12,6 @@
 import rogue.interfaces.stream as ris
 import pyrogue as pr
 import numpy
-import time
 
 
 class DataReceiver(pr.Device,ris.Slave):
@@ -71,7 +70,7 @@ class DataReceiver(pr.Device,ris.Slave):
                 self.FrameCount.set(self.FrameCount.value() + 1, write=False)
 
             with self.ByteCount.lock:
-                self.ByteCount.set(self.ByteCount.value() + fl, write=False)
+                self.ByteCount.set(self.ByteCount.value() + frame.getPayload(), write=False)
 
             # User overridable method for data restructuring
             self.process(frame)
@@ -89,5 +88,5 @@ class DataReceiver(pr.Device,ris.Slave):
         dat = frame.getNumpy(0,fl)  # uint8
 
         # Update data
-        self.Data.set(dat,write=doWrite)
-        self.Updated.set(True,write=doWrite)
+        self.Data.set(dat,write=True)
+        self.Updated.set(True,write=True)
