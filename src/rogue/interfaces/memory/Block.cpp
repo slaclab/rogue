@@ -261,7 +261,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
       intStartTransaction(type,fWr,check,var,index);
 
       try {
-         if ( check ) checkTransaction();
+         if ( check || retryCount_ > 0 ) checkTransaction();
 
          // Success
          count = retryCount_;
@@ -295,7 +295,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
       intStartTransaction(type,fWr,check,var.get(),index);
 
       try {
-         if ( check ) upd = checkTransaction();
+         if ( check || retryCount_ > 0 ) upd = checkTransaction();
 
          // Success
          count = retryCount_;
