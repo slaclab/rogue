@@ -78,6 +78,7 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    size_       = size;
    verifyEn_   = false;
    verifyReq_  = false;
+   verifyInp_  = false;
    doUpdate_   = false;
    blockPyTrans_ = false;
    enable_     = false;
@@ -218,7 +219,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
          tOff  = verifyBase_;
          tSize = verifySize_;
          tData = verifyData_ + verifyBase_;
-         verifyReq_ = false;
+         verifyInp_ = true;
       }
 
       // Not a verify transaction
@@ -235,7 +236,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
          // Only verify blocks that have been written since last verify
          if ( type == rim::Write ) {
             verifyBase_ = tOff;
-            verifySize_ = (verifyEn_)?tSize:0;
+            verifySize_ = tSize;
             verifyReq_  = verifyEn_;
          }
       }
@@ -291,7 +292,6 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
    do {
 
-      printf("Starting transaction, check=%i, retryCount_ = %i\n",check,retryCount_);
       intStartTransaction(type,fWr,check,var.get(),index);
 
       try {
@@ -301,7 +301,6 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
          count = retryCount_;
 
       } catch ( rogue::GeneralError err ) {
-         printf("Exception caught on try %i out of %i\n",(count+1),(retryCount_+1));
          if ( (count+1) >= retryCount_ ) throw err;
          bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
          fWr = true; // Stale state is now lost
@@ -337,9 +336,11 @@ bool rim::Block::checkTransaction() {
       // Device is disabled
       if ( ! enable_ ) return false;
 
-      // Check verify data if verify size is set and verifyReq is not set
-      if ( verifySize_ != 0 && ! verifyReq_ ) {
+      // Check verify data if verifyInp is set
+      if ( verifyInp_ ) {
          bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
+         verifyReq_ = false;
+         verifyInp_ = false;
 
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
@@ -348,7 +349,6 @@ bool rim::Block::checkTransaction() {
                   path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
             }
          }
-         verifySize_ = 0;
       }
       bLog_->debug("Transaction complete");
 
