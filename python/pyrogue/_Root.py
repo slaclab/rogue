@@ -585,6 +585,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         header += "NumValues\t"
         header += "ValueBits\t"
         header += "ValueStride\t"
+        header += "RetryCount\t"
         header += "Description"
 
         lines = []
@@ -614,6 +615,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v._numValues())
                 data += "{}\t".format(v._valueBits())
                 data += "{}\t".format(v._valueStride())
+                data += "{}\t".format(v._retryCount())
                 # Escape " characters
                 description = v.description.replace('"',r'\"')
                 # Escape \n characters and strip each line in the description field

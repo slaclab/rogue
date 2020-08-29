@@ -27,6 +27,7 @@
 #include <string.h>
 #include <memory>
 #include <cmath>
+#include <exception>
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
@@ -77,10 +78,12 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    size_       = size;
    verifyEn_   = false;
    verifyReq_  = false;
+   verifyInp_  = false;
    doUpdate_   = false;
    blockPyTrans_ = false;
    enable_     = false;
-   stale_        = false;
+   stale_      = false;
+   retryCount_ = 0;
 
    verifyBase_ = 0; // Verify Range
    verifySize_ = 0; // Verify Range
@@ -216,7 +219,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
          tOff  = verifyBase_;
          tSize = verifySize_;
          tData = verifyData_ + verifyBase_;
-         verifyReq_ = false;
+         verifyInp_ = true;
       }
 
       // Not a verify transaction
@@ -233,7 +236,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
          // Only verify blocks that have been written since last verify
          if ( type == rim::Write ) {
             verifyBase_ = tOff;
-            verifySize_ = (verifyEn_)?tSize:0;
+            verifySize_ = tSize;
             verifyReq_  = verifyEn_;
          }
       }
@@ -248,20 +251,64 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
 
 // Start a transaction for this block, cpp version
 void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::Variable *var, int32_t index) {
-   intStartTransaction(type,forceWr,check,var,index);
+   uint32_t count;
+   bool     fWr;
 
-   if ( check ) checkTransaction();
+   count = 0;
+   fWr = forceWr;
+
+   do {
+
+      intStartTransaction(type,fWr,check,var,index);
+
+      try {
+         if ( check || retryCount_ > 0 ) checkTransaction();
+
+         // Success
+         count = retryCount_;
+
+      } catch ( rogue::GeneralError err ) {
+         if ( (count+1) >= retryCount_ ) throw err;
+         bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
+         fWr = true; // Stale state is now lost
+      }
+   }
+   while (count++ < retryCount_);
 }
 
 #ifndef NO_PYTHON
 
 // Start a transaction for this block, python version
 void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim::VariablePtr var, int32_t index) {
+   uint32_t count;
+   bool     upd;
+   bool     fWr;
+
    if ( blockPyTrans_ ) return;
 
-   intStartTransaction(type,forceWr,check,var.get(),index);
+   count = 0;
+   upd = false;
+   fWr = forceWr;
 
-   if ( check && checkTransaction() ) varUpdate();
+   do {
+
+      intStartTransaction(type,fWr,check,var.get(),index);
+
+      try {
+         if ( check || retryCount_ > 0 ) upd = checkTransaction();
+
+         // Success
+         count = retryCount_;
+
+      } catch ( rogue::GeneralError err ) {
+         if ( (count+1) >= retryCount_ ) throw err;
+         bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
+         fWr = true; // Stale state is now lost
+      }
+   }
+   while (count++ < retryCount_);
+
+   if ( upd ) varUpdate();
 }
 
 #endif
@@ -289,9 +336,11 @@ bool rim::Block::checkTransaction() {
       // Device is disabled
       if ( ! enable_ ) return false;
 
-      // Check verify data if verify size is set and verifyReq is not set
-      if ( verifySize_ != 0 && ! verifyReq_ ) {
+      // Check verify data if verifyInp is set
+      if ( verifyInp_ ) {
          bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
+         verifyReq_ = false;
+         verifyInp_ = false;
 
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
@@ -300,7 +349,6 @@ bool rim::Block::checkTransaction() {
                   path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
             }
          }
-         verifySize_ = 0;
       }
       bLog_->debug("Transaction complete");
 
@@ -376,6 +424,9 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
       if ( (*vit)->bulkOpEn_ ) bulkOpEn_ = true;
       if ( (*vit)->updateNotify_ ) updateEn_ = true;
 
+      // Retry count
+      if ( (*vit)->retryCount_ > retryCount_ ) retryCount_ =  (*vit)->retryCount_;
+
       // If variable modes mismatch, set block to read/write
       if ( mode_ != (*vit)->mode_ ) mode_ = "RW";
 
@@ -404,7 +455,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
       }
 
       bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",(*vit)->name_.c_str(),path_.c_str(),offset_);
-      }
+   }
 
    // Init overlap enable before check
    overlapEn_ = true;

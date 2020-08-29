@@ -145,6 +145,7 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    uint32_t numValues   = getFieldUInt32(data,"NumValues",true);
    uint32_t valueBits   = getFieldUInt32(data,"ValueBits",true);
    uint32_t valueStride = getFieldUInt32(data,"ValueStride",true);
+   uint32_t retryCount  = getFieldUInt32(data,"RetryCount",true);
 
    double minimum = getFieldDouble(data,"Minimum");
    double maximum = getFieldDouble(data,"Maximum");
@@ -169,7 +170,7 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string> &data
    // Create variable
    rim::VariablePtr var = rim::Variable::create(name,mode,minimum,maximum,offset,bitOffset,bitSize,
       overlapEn,verify,bulkEn,updateNotify,modelId,byteReverse,bitReverse,binPoint,numValues,
-      valueBits,valueStride);
+      valueBits,valueStride,retryCount);
 
    // Adjust min transaction size to match blocksize field
    var->shiftOffsetDown(0, blockSize);

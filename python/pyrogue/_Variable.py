@@ -588,7 +588,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  updateNotify=True,
                  overlapEn=False,
                  bulkOpEn=True,
-                 verify=True, ):
+                 verify=True,
+                 retryCount=0):
 
         if disp is None:
             disp = base.defaultdisp
@@ -661,7 +662,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         # Setup C++ Base class
         rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
                               offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkOpEn, self._updateNotify, self._base, listData)
+                              self._bulkOpEn, self._updateNotify, self._base, listData, retryCount)
 
     @pr.expose
     @property

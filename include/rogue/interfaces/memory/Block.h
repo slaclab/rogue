@@ -96,6 +96,9 @@ namespace rogue {
                // Verify Requred After Write, transiant
                bool verifyReq_;
 
+               // Verify transaction in progress
+               bool verifyInp_;
+
                // verifyBase byte, transiant
                uint32_t verifyBase_;
 
@@ -137,6 +140,9 @@ namespace rogue {
 
                // Stale flag
                bool stale_;
+
+               // Retry count
+               uint32_t retryCount_;
 
 #ifndef NO_PYTHON
 

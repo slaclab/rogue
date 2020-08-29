@@ -140,6 +140,8 @@ namespace rogue {
                // Stride per value
                uint32_t valueStride_;
 
+               // Retry count
+               uint32_t retryCount_;
 
 #ifndef NO_PYTHON
                /////////////////////////////////
@@ -255,7 +257,8 @@ namespace rogue {
                      uint32_t binPoint,
                      uint32_t numValues,
                      uint32_t valueBits,
-                     uint32_t valueStride);
+                     uint32_t valueStride,
+                     uint32_t retryCount);
 
                // Setup class for use in python
                static void setup_python();
@@ -278,7 +281,8 @@ namespace rogue {
                           uint32_t binPoint,
                           uint32_t numValues,
                           uint32_t valueBits,
-                          uint32_t valueStride);
+                          uint32_t valueStride,
+                          uint32_t retryCount);
 
                // Destroy
                virtual ~Variable();
@@ -358,6 +362,11 @@ namespace rogue {
                //! Return the stride per value
                uint32_t valueStride() {
                    return valueStride_;
+               }
+
+               //! Return the retry count
+               uint32_t retryCount() {
+                   return retryCount_;
                }
 
                //! Execute queue update, unused in C++
@@ -544,7 +553,8 @@ namespace rogue {
                               bool bulkOpEn,
                               bool updateNotify,
                               boost::python::object model,
-                              boost::python::object listData);
+                              boost::python::object listData,
+                              uint32_t retryCount);
 
                //! Update the bit offsets
                void updateOffset(boost::python::object &bitOffset);

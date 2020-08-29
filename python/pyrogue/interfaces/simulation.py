@@ -127,12 +127,15 @@ def connectPgp2bSim(pgpA, pgpB):
 
 class MemEmulate(rogue.interfaces.memory.Slave):
 
-    def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF):
+    def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF, dropCount=0):
         rogue.interfaces.memory.Slave.__init__(self,4,4)
         self._minWidth = minWidth
         self._maxSize  = maxSize
         self._data = {}
         self._cb   = {}
+
+        self._count = 0
+        self._dropCount = dropCount
 
     def _checkRange(self, address, size):
         return 0
@@ -147,6 +150,12 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         address = transaction.address()
         size    = transaction.size()
         type    = transaction.type()
+
+        self._count += 1
+
+        if self._dropCount != 0 and self._count == self._dropCount:
+            self._count = 0
+            return
 
         if (address % self._minWidth) != 0:
             transaction.error("Transaction address {address:#x} is not aligned to min width {self._minWidth:#x}")
