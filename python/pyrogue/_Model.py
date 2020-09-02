@@ -265,8 +265,3 @@ class Fixed(Model):
 
         self.name = f'Fixed_{self.sign}_{self.bitSize}_{self.binPoint}'
 
-    def minValue(self):
-        return 0
-
-    def maxValue(self):
-        return 1
