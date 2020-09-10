@@ -563,16 +563,7 @@ class RemoteVariable(BaseVariable):
         if disp is None:
             disp = base.defaultdisp
 
-        BaseVariable.__init__(self, name=name, description=description,
-                              mode=mode, value=value, disp=disp,
-                              enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum,
-                              lowWarning=lowWarning, lowAlarm=lowAlarm,
-                              highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
-
-
-        self._block    = None
+        self._block = None
 
         # Convert the address parameters into lists
         addrParams = [offset, bitOffset, bitSize] # Make a copy
@@ -606,6 +597,23 @@ class RemoteVariable(BaseVariable):
         self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
         self._overlapEn = overlapEn
+
+        # Apply default min and max
+        if minimum is None or (self._base.minValue() is not None and minimum < self._base.minValue()):
+            minimum = self._base.minValue()
+
+        if maximum is None or (self._base.maxValue() is not None and maximum > self._base.maxValue()):
+            maximum = self._base.maxValue()
+
+        BaseVariable.__init__(self, name=name, description=description,
+                              mode=mode, value=value, disp=disp,
+                              enum=enum, units=units, hidden=hidden, groups=groups,
+                              minimum=minimum, maximum=maximum,
+                              lowWarning=lowWarning, lowAlarm=lowAlarm,
+                              highWarning=highWarning, highAlarm=highAlarm,
+                              pollInterval=pollInterval)
+
+
 
 
     @pr.expose
