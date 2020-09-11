@@ -103,6 +103,11 @@ class DummyTree(pyrogue.Root):
         self.add(self._fw)
         self._prbsTx >> self._fw.getChannel(0)
 
+        # Add Data Receiver
+        drx = pyrogue.DataReceiver()
+        self._prbsTx >> drx
+        self.add(drx)
+
         # Add Run Control
         self.add(pyrogue.RunControl())
 
