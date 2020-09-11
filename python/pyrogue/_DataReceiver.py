@@ -19,6 +19,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
     def __init__(self, **kwargs):
         pr.Device.__init__(self, **kwargs)
+        ris.Slave.__init__(self)
 
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
@@ -45,7 +46,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
         self.add(pr.LocalVariable(name='Data',
                                   hidden=True,
-                                  value=numpy.empty(shape=0, dtype=numpy.Int8, order='C'),
+                                  value=numpy.empty(shape=0, dtype=numpy.int8, order='C'),
                                   description='Data Frame Container'))
 
     def countReset(self):
