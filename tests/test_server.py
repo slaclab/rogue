@@ -98,6 +98,8 @@ class DummyTree(pyrogue.Root):
             disp='{:1.2f}',
             value = np.array(0)))
 
+        self.add(test_large.TestLarge())
+
         #self.add(pyrogue.LocalVariable(
         #    name = 'Test/Slash',
         #    mode = 'RW',
