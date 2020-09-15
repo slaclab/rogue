@@ -180,6 +180,7 @@ class Bool(Model):
     modelId     = rim.Bool
 
     def __init__(self, bitSize):
+        assert bitSize == 1, f"The bitSize param of Model {self.__class__.__name__} must be 1"
         super().__init__(bitSize)
 
     def fromString(self, string):
