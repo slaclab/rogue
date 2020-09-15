@@ -25,13 +25,12 @@ class DefaultTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
         super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)
 
-        self.setStyleSheet("*[dirty='true']\
-                           {background-color: orange;}")
-
         self.sizeX  = None
         self.sizeY  = None
         self.title  = None
-        self.maxExp = None
+
+        self.maxListExpand = None
+        self.maxListSize   = None
 
         for a in args:
             if 'sizeX=' in a:
