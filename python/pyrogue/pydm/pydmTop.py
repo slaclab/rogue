@@ -11,7 +11,6 @@
 #-----------------------------------------------------------------------------
 
 import os
-from qtpy import QtCore
 from pydm import Display
 from qtpy.QtWidgets import (QVBoxLayout, QTabWidget)
 
@@ -21,24 +20,44 @@ from pyrogue.pydm.widgets import SystemWindow
 
 Channel = 'rogue://0/root'
 
+
 class DefaultTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
         super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)
 
-        self.sizeX = None
-        self.sizeY = None
-        self.title = None
+        self.setStyleSheet("*[dirty='true']\
+                           {background-color: orange;}")
+
+        self.sizeX  = None
+        self.sizeY  = None
+        self.title  = None
+        self.maxExp = None
 
         for a in args:
-            if 'sizeX=' in a: self.sizeX = int(a.split('=')[1])
-            if 'sizeY=' in a: self.sizeY = int(a.split('=')[1])
-            if 'title=' in a: self.title = a.split('=')[1]
+            if 'sizeX=' in a:
+                self.sizeX = int(a.split('=')[1])
+            if 'sizeY=' in a:
+                self.sizeY = int(a.split('=')[1])
+            if 'title=' in a:
+                self.title = a.split('=')[1]
+            if 'maxListExpand' in a:
+                self.maxListExpand = int(a.split('=')[1])
+            if 'maxListSize' in a:
+                self.maxListSize = int(a.split('=')[1])
 
         if self.title is None:
             self.title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
 
-        if self.sizeX is None: self.sizeX = 800
-        if self.sizeY is None: self.sizeY = 1000
+        if self.sizeX is None:
+            self.sizeX = 800
+        if self.sizeY is None:
+            self.sizeY = 1000
+
+        if self.maxListExpand is None:
+            self.maxListExpand = 5
+
+        if self.maxListSize is None:
+            self.maxListSize = 100
 
         self.setWindowTitle(self.title)
 
@@ -48,7 +67,7 @@ class DefaultTop(Display):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        var = VariableTree(parent=None, init_channel=Channel)
+        var = VariableTree(parent=None, init_channel=Channel, maxListExpand=self.maxListExpand, maxListSize=self.maxListSize)
         self.tab.addTab(var,'Variables')
 
         cmd = CommandTree(parent=None, init_channel=Channel)
@@ -62,4 +81,3 @@ class DefaultTop(Display):
     def ui_filepath(self):
         # No UI file is being used
         return None
-

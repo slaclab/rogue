@@ -48,11 +48,13 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             nAttr = getattr(node, attr)
 
             if nAttr is None:
-                return self.encode(None,rawStr=False)
+                resp = None
             elif callable(nAttr):
-                return self.encode(nAttr(*args,**kwargs),rawStr=rawStr)
+                resp = nAttr(*args,**kwargs)
             else:
-                return self.encode(nAttr,rawStr=rawStr)
+                resp = nAttr
+
+            return self.encode(resp,rawStr=rawStr)
 
         except Exception as msg:
             return self.encode(msg,rawStr=False)
