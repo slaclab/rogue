@@ -63,9 +63,7 @@ class VariableDev(QTreeWidgetItem):
     def _setup(self,noExpand):
 
         # First create variables
-        lst = self._dev.variablesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups)
-
-        for key,val in lst.items():
+        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
             # Test for array
             fields = re.split('\\]\\[|\\[|\\]',val.name)
@@ -216,7 +214,7 @@ class VariableHolder(QTreeWidgetItem):
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
         else:
-            w = PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
+            w = PyDMLineEdit(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
             w.precisionFromPV       = True
             w.alarmSensitiveContent = False
