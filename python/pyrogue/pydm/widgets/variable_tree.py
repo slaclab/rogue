@@ -64,8 +64,7 @@ class VariableDev(QTreeWidgetItem):
     def _setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups,
-                                                  excGroups=self._top._excGroups).items():
+        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
             # Test for array
             fields = re.split('\\]\\[|\\[|\\]',val.name)
@@ -75,13 +74,14 @@ class VariableDev(QTreeWidgetItem):
                                parent=self,
                                variable=val)
             else:
-                if not fields[0] in self._avars:
+                if not fields[0] in self._avars or self._avars[fields[0]].length() >= self._top._maxListSize:
                     self._avars[fields[0]] = VariableArray(path=self._path,
                                                            top=self._top,
                                                            parent=self,
                                                            name=fields[0])
-                self._avars[fields[0]].addNode(val)
 
+
+                self._avars[fields[0]].addNode(val,fields[1])
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
@@ -116,6 +116,8 @@ class VariableArray(QTreeWidgetItem):
         self._path     = path
         self._list     = []
         self._depth    = parent._depth+1
+        self._first    = None
+        self._last     = None
 
         self._lab = QLabel(parent=None, text=self._name + ' (0)')
 
@@ -144,10 +146,19 @@ class VariableArray(QTreeWidgetItem):
         if len(self._list) <= self._top._maxListExpand:
             self.setExpanded(True)
 
-    def addNode(self,node):
+    def addNode(self,node,idx):
         self._list.append(node)
-        self._lab.setText(self._name + ' ({})'.format(len(self._list)))
 
+        if self._first is None or idx < self._first:
+            self._first = idx
+
+        if self._last is None or idx > self._last:
+            self._last = idx
+
+        self._lab.setText(self._name + f' ({self._first} - {self._last})')
+
+    def length(self):
+        return len(self._list)
 
 class VariableHolder(QTreeWidgetItem):
 
@@ -223,7 +234,7 @@ class VariableHolder(QTreeWidgetItem):
 
 
 class VariableTree(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden'], maxListExpand=5):
+    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden'], maxListExpand=5, maxListSize=100):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._node = None
@@ -234,6 +245,7 @@ class VariableTree(PyDMFrame):
         self._tree      = None
 
         self._maxListExpand = maxListExpand
+        self._maxListSize   = maxListSize
 
         self._colWidths = [250,50,75,200,50]
 

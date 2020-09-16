@@ -23,6 +23,7 @@ import logging
 import math
 import numpy as np
 import argparse
+import test_large
 
 
 # Set the argument parser
@@ -95,6 +96,7 @@ class DummyTree(pyrogue.Root):
 
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
+        self.add(test_large.TestLarge())
 
         # Add Data Writer
         self._prbsTx = pyrogue.utilities.prbs.PrbsTx()
