@@ -15,12 +15,12 @@ import pyrogue.pydm.widgets
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLineEdit, PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.interfaces import VirtualClient
+from qtpy.QtCore import Property, Slot, QEvent
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
-from qtpy.QtCore import Qt, Property, Slot, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QMenu, QDialog, QPushButton
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit, QFormLayout, QLabel
 import re
+
 
 class VariableDev(QTreeWidgetItem):
 
@@ -63,24 +63,24 @@ class VariableDev(QTreeWidgetItem):
     def _setup(self,noExpand):
 
         # First create variables
-        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups,
-                                                  excGroups=self._top._excGroups).items():
+        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
             # Test for array
-            fields = re.split('\]\[|\[|\]',val.name)
+            fields = re.split('\\]\\[|\\[|\\]',val.name)
             if len(fields) < 3:
                 VariableHolder(path=self._path + '.' + val.name,
                                top=self._top,
                                parent=self,
                                variable=val)
             else:
-                if not fields[0] in self._avars:
+                if not fields[0] in self._avars or self._avars[fields[0]].length() >= self._top._maxListSize:
                     self._avars[fields[0]] = VariableArray(path=self._path,
                                                            top=self._top,
                                                            parent=self,
                                                            name=fields[0])
-                self._avars[fields[0]].addNode(val)
 
+
+                self._avars[fields[0]].addNode(val,fields[1])
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
@@ -90,6 +90,10 @@ class VariableDev(QTreeWidgetItem):
                         top=self._top, parent=self,
                         dev=val,
                         noExpand=noExpand)
+
+        # Auto expand list variables
+        for k,v in self._avars.items():
+            v._autoExpand()
 
     def _expand(self):
         if self._dummy is None:
@@ -110,7 +114,9 @@ class VariableArray(QTreeWidgetItem):
         self._dummy    = None
         self._path     = path
         self._list     = []
-        self._depth     = parent._depth+1
+        self._depth    = parent._depth+1
+        self._first    = None
+        self._last     = None
 
         self._lab = QLabel(parent=None, text=self._name + ' (0)')
 
@@ -135,10 +141,23 @@ class VariableArray(QTreeWidgetItem):
         self._dummy = None
         self._setup()
 
-    def addNode(self,node):
-        self._list.append(node)
-        self._lab.setText(self._name + ' ({})'.format(len(self._list)))
+    def _autoExpand(self):
+        if len(self._list) <= self._top._maxListExpand:
+            self.setExpanded(True)
 
+    def addNode(self,node,idx):
+        self._list.append(node)
+
+        if self._first is None or idx < self._first:
+            self._first = idx
+
+        if self._last is None or idx > self._last:
+            self._last = idx
+
+        self._lab.setText(self._name + f' ({self._first} - {self._last})')
+
+    def length(self):
+        return len(self._list)
 
 class VariableHolder(QTreeWidgetItem):
 
@@ -188,6 +207,12 @@ class VariableHolder(QTreeWidgetItem):
             w.showStepExponent      = False
             w.installEventFilter(self._top)
 
+        elif self._var.mode == 'RO':
+            w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
         else:
             w = PyDMLineEdit(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
@@ -208,7 +233,7 @@ class VariableHolder(QTreeWidgetItem):
 
 
 class VariableTree(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
+    def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden'], maxListExpand=5, maxListSize=100):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._node = None
@@ -218,13 +243,17 @@ class VariableTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
+        self._maxListExpand = maxListExpand
+        self._maxListSize   = maxListSize
+
         self._colWidths = [250,50,75,200,50]
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(VariableTree, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -303,4 +332,3 @@ class VariableTree(PyDMFrame):
             return True
         else:
             return False
-

@@ -145,19 +145,14 @@ class VirtualNode(pr.Node):
     def _loadNodes(self):
         self._loaded = True
 
-        for k,v in self._nodes.items():
-            if v is None:
-
-                node = self._client._remoteAttr(self._path, 'node', k)
-
+        for k,node in self._client._remoteAttr(self._path, 'nodes').items():
+            if k in self._nodes:
                 node._parent = self
                 node._root   = self._root
                 node._client = self._client
 
                 self._nodes[k] = node
                 self._addArrayNode(node)
-
-                #print(f"Loaded node {node.path}")
 
     def _getNode(self,path,load=True):
         obj = self

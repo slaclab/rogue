@@ -86,7 +86,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    }
    else units_->putConvert("");
 
-   if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
+   if ( (! isString_) && (epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 )) {
       bp::extract<uint32_t> hopr(var_.attr("maximum"));
       bp::extract<uint32_t> lopr(var_.attr("minimum"));
       bp::extract<uint32_t> ha(var_.attr("highAlarm"));
