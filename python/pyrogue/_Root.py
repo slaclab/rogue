@@ -22,6 +22,7 @@ import functools as ft
 import time
 import queue
 import jsonpickle
+import pickle
 import zipfile
 import traceback
 import datetime
@@ -996,7 +997,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Send over zmq link
                 if self._zmqServer is not None:
-                    self._zmqServer._publish(jsonpickle.encode(zmq))
+                    self._zmqServer._publish(pickle.dumps(zmq))
                 zmq = {}
 
             # Set done

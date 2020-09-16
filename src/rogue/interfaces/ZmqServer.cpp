@@ -159,57 +159,79 @@ uint16_t rogue::interfaces::ZmqServer::port() {
    return this->basePort_;
 }
 
-void rogue::interfaces::ZmqServer::publish(std::string value) {
-   rogue::GilRelease noGil;
-   zmq_send(this->zmqPub_,value.c_str(),value.size(),0);
-}
-
-std::string rogue::interfaces::ZmqServer::doRequest ( std::string data ) {
-   return("");
-}
-
 #ifndef NO_PYTHON
+
+void rogue::interfaces::ZmqServer::publish(bp::object value) {
+   zmq_msg_t msg;
+   Py_buffer valueBuf;
+
+   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError::create("ZmqServer::publish","Failed to extract object data"));
+
+   zmq_msg_init_size(&msg,valueBuf.len);
+   memcpy(zmq_msg_data(&msg),valueBuf.buf,valueBuf.len);
+   PyBuffer_Release(&valueBuf);
+
+   rogue::GilRelease noGil;
+   zmq_sendmsg(this->zmqPub_,&msg,0);
+}
+
+bp::object rogue::interfaces::ZmqServer::doRequest ( bp::object data ) {
+   bp::handle<> handle(bp::borrowed(Py_None));
+   return bp::object(handle);
+}
 
 rogue::interfaces::ZmqServerWrap::ZmqServerWrap (std::string addr, uint16_t port) : rogue::interfaces::ZmqServer(addr,port) {}
 
-std::string rogue::interfaces::ZmqServerWrap::doRequest ( std::string data ) {
-   {
-      rogue::ScopedGil gil;
-
-      if (bp::override f = this->get_override("_doRequest")) {
-         try {
-            return(f(data));
-         } catch (...) {
-            PyErr_Print();
-         }
+bp::object rogue::interfaces::ZmqServerWrap::doRequest ( bp::object data ) {
+   if (bp::override f = this->get_override("_doRequest")) {
+      try {
+         return(f(data));
+      } catch (...) {
+         PyErr_Print();
       }
    }
    return(rogue::interfaces::ZmqServer::doRequest(data));
 }
 
-std::string rogue::interfaces::ZmqServerWrap::defDoRequest ( std::string data ) {
+bp::object rogue::interfaces::ZmqServerWrap::defDoRequest ( bp::object data ) {
    return(rogue::interfaces::ZmqServer::doRequest(data));
 }
 
 #endif
 
 void rogue::interfaces::ZmqServer::runThread() {
-   std::string data;
-   std::string ret;
-   zmq_msg_t msg;
+   zmq_msg_t rxMsg;
+   zmq_msg_t txMsg;
+   Py_buffer valueBuf;
 
    log_->logThreadId();
    log_->info("Started Rogue server thread");
 
    while(threadEn_) {
-      zmq_msg_init(&msg);
+      zmq_msg_init(&rxMsg);
 
       // Get the message
-      if ( zmq_recvmsg(this->zmqRep_,&msg,0) > 0 ) {
-         data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
-         ret = this->doRequest(data);
-         zmq_send(this->zmqRep_,ret.c_str(),ret.size(),0);
-         zmq_msg_close(&msg);
+      if ( zmq_recvmsg(this->zmqRep_,&rxMsg,0) > 0 ) {
+
+#ifndef NO_PYTHON
+         rogue::ScopedGil gil;
+         PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
+         bp::handle<> handle(val);
+
+         bp::object ret = this->doRequest(bp::object(handle));
+
+         if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+            throw(rogue::GeneralError::create("ZmqServer::runThread","Failed to extract object data"));
+
+         zmq_msg_init_size(&txMsg,valueBuf.len);
+         memcpy(zmq_msg_data(&txMsg),valueBuf.buf,valueBuf.len);
+         PyBuffer_Release(&valueBuf);
+
+         zmq_sendmsg(this->zmqRep_,&txMsg,0);
+#endif
+
+         zmq_msg_close(&rxMsg);
       }
    }
    log_->info("Stopped Rogue server thread");

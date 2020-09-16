@@ -1,7 +1,7 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue Simple ZMQ Client for Rogue
 #-----------------------------------------------------------------------------
-# To use in Matlab first you need both the zmq and jsonpickle package in your
+# To use in Matlab first you need the zmq package in your
 # python installation:
 #
 # > pip install zmq
@@ -24,7 +24,6 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import zmq
-import jsonpickle
 import threading
 
 
@@ -53,9 +52,7 @@ class SimpleClient(object):
         self._sub.setsockopt(zmq.SUBSCRIBE,"".encode('utf-8'))
 
         while self._runEn:
-            msg = self._sub.recv_string()
-
-            d = jsonpickle.decode(msg)
+            d = self._sub.recv_pyobj()
 
             for k,val in d.items():
                 self._cb(k,val)
@@ -68,8 +65,8 @@ class SimpleClient(object):
                'kwargs':kwargs}
 
         try:
-            self._req.send_string(jsonpickle.encode(msg))
-            resp = jsonpickle.decode(self._req.recv_string())
+            self._req.send_pyobj(msg)
+            resp = self._req.recv_pyobj()
         except Exception as e:
             raise Exception(f"ZMQ Interface Exception: {e}")
 

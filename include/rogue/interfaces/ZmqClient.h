@@ -63,22 +63,13 @@ namespace rogue {
 
             void setTimeout(uint32_t msecs, bool waitRetry);
 
-            std::string send(std::string value);
+#ifndef NO_PYTHON
+            boost::python::object send(boost::python::object data);
+
+            virtual void doUpdate (boost::python::object data);
+#endif
 
             void stop();
-
-            virtual void doUpdate (std::string data);
-
-
-            std::string sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr);
-
-            std::string getDisp(std::string path);
-
-            void setDisp(std::string path, std::string value);
-
-            std::string exec(std::string path, std::string arg = "");
-
-            std::string valueDisp(std::string path);
 
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
@@ -94,9 +85,9 @@ namespace rogue {
 
             ZmqClientWrap (std::string addr, uint16_t port);
 
-            void doUpdate  ( std::string data );
+            void doUpdate  ( boost::python::object data );
 
-            void defDoUpdate  ( std::string data );
+            void defDoUpdate  ( boost::python::object data );
       };
 
       typedef std::shared_ptr<rogue::interfaces::ZmqClientWrap> ZmqClientWrapPtr;
