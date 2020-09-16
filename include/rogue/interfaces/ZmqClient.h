@@ -5,12 +5,12 @@
  * File       : ZmqClient.h
  * Created    : 2019-05-02
  * ----------------------------------------------------------------------------
- * This file is part of the rogue software platform. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the rogue software platform, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -38,7 +38,7 @@ namespace rogue {
             // Zeromq response port
             void * zmqReq_;
 
-            //! Log 
+            //! Log
             std::shared_ptr<rogue::Logging> log_;
 
             uint32_t timeout_;
@@ -62,22 +62,13 @@ namespace rogue {
 
             void setTimeout(uint32_t msecs, bool waitRetry);
 
-            std::string send(std::string value);
+#ifndef NO_PYTHON
+            boost::python::object send(boost::python::object data);
+
+            virtual void doUpdate (boost::python::object data);
+#endif
 
             void close();
-
-            virtual void doUpdate (std::string data);
-
-
-            std::string sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr);
-
-            std::string getDisp(std::string path);
-
-            void setDisp(std::string path, std::string value);
-
-            std::string exec(std::string path, std::string arg = "");
-
-            std::string valueDisp(std::string path);
 
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
@@ -85,17 +76,17 @@ namespace rogue {
 #ifndef NO_PYTHON
 
       //! Stream slave class, wrapper to enable python overload of virtual methods
-      class ZmqClientWrap : 
-         public rogue::interfaces::ZmqClient, 
+      class ZmqClientWrap :
+         public rogue::interfaces::ZmqClient,
          public boost::python::wrapper<rogue::interfaces::ZmqClient> {
 
          public:
 
             ZmqClientWrap (std::string addr, uint16_t port);
 
-            void doUpdate  ( std::string data );
+            void doUpdate  ( boost::python::object data );
 
-            void defDoUpdate  ( std::string data );
+            void defDoUpdate  ( boost::python::object data );
       };
 
       typedef std::shared_ptr<rogue::interfaces::ZmqClientWrap> ZmqClientWrapPtr;
