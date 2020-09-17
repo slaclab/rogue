@@ -17,7 +17,7 @@ import numpy
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, typeStr='UInt[]', **kwargs):
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
 
@@ -45,6 +45,7 @@ class DataReceiver(pr.Device,ris.Slave):
                                   description='Data has been updated flag'))
 
         self.add(pr.LocalVariable(name='Data',
+                                  typeStr=typeStr,
                                   hidden=True,
                                   value=numpy.empty(shape=0, dtype=numpy.int8, order='C'),
                                   description='Data Frame Container'))
