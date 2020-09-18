@@ -19,7 +19,6 @@ import pyrogue
 import time
 import warnings
 import re
-import numpy as np
 
 try:
     import p4p.server.thread
@@ -126,7 +125,7 @@ class EpicsPvHolder(object):
 
             # Unsigned
             if 'UInt' in typeStr:
-                m = re.search('^UInt(\d+)\.*',typeStr)
+                m = re.search('^UInt(\\d+)\\.*',typeStr)
 
                 if m is not None and m.lastindex == 1:
                     bits = int(m[1])
@@ -146,7 +145,7 @@ class EpicsPvHolder(object):
 
             # Signed
             elif 'int' in typeStr or 'Int' in typeStr:
-                m = re.search('^Int(\d+)\.*',typeStr)
+                m = re.search('^Int(\\d+)\\.*',typeStr)
 
                 if m is not None and m.lastindex == 1:
                     bits = int(m[1])
