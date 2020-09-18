@@ -17,7 +17,12 @@ import numpy
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, typeStr='UInt32[]', **kwargs):
+    def __init__(self,
+                 typeStr='UInt32[]',
+                 hideData=True,
+                 value=numpy.zeros(shape=1, dtype=numpy.int8, order='C'),
+                 **kwargs):
+
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
 
@@ -46,9 +51,8 @@ class DataReceiver(pr.Device,ris.Slave):
 
         self.add(pr.LocalVariable(name='Data',
                                   typeStr=typeStr,
-                                  value=[0],
-                                  hidden=True,
-                                  #value=numpy.empty(shape=0, dtype=numpy.int8, order='C'),
+                                  value=value,
+                                  hidden=hideData,
                                   description='Data Frame Container'))
 
     def countReset(self):

@@ -69,7 +69,7 @@ namespace rogue {
 
                std::mutex mtx_;
 
-               void initGdd(std::string typeStr, bool isEnum, uint32_t count );
+               void initGdd(std::string typeStr, bool isEnum, uint32_t count, bool forceStr );
 
                void updated();
 

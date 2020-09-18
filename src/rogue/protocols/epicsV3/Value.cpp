@@ -103,7 +103,7 @@ rpe::Value::~Value () {
 }
 
 
-void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
+void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool forceStr) {
    uint32_t bitSize;
 
    log_->info("Init GDD for %s typeStr=%s, isEnum=%i, count=%i",
@@ -117,6 +117,9 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
       epicsType_ = aitEnumEnum16;
       log_->info("Detected enum for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
    }
+
+   // Force to string
+   else if ( forceStr ) epicsType_ = aitEnumString;
 
    // Unsigned Int types, > 32-bits treated as string
    else if ( sscanf(typeStr.c_str(),"UInt%i",&bitSize) == 1 ) {
@@ -141,7 +144,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    }
 
    // Python int
-   else if ( typeStr == "int" ) {
+   else if ( typeStr.find("int") == 0 ) {
       fSize_ = 4;
       epicsType_ = aitEnumInt32;
       log_->info("Detected python int with size %i for %s typeStr=%s",
@@ -149,14 +152,14 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count) {
    }
 
    // 32-bit Float
-   else if ( typeStr == "float" or typeStr == "Float32" ) {
+   else if ( typeStr.find("float") == 0 or typeStr.find("Float32") == 0 ) {
       log_->info("Detected 32-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat32;
       fSize_ = 4;
    }
 
    // 64-bit float
-   else if ( typeStr == "Float64" ) {
+   else if (( typeStr.find("Double64") == 0 ) || ( typeStr.find("Float64") == 0 )) {
       log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
       epicsType_ = aitEnumFloat64;
       fSize_ = 8;

@@ -106,7 +106,7 @@ class DummyTree(pyrogue.Root):
         self._prbsTx >> self._fw.getChannel(0)
 
         # Add Data Receiver
-        drx = pyrogue.DataReceiver()
+        drx = pyrogue.DataReceiver(typeStr='Int8[]') #,value=[0]*100)
         self._prbsTx >> drx
         self.add(drx)
 
@@ -145,7 +145,7 @@ class DummyTree(pyrogue.Root):
             pollInterval=1.0,
             localGet = self._myArray,
             disp='{:1.2f}',
-            value = np.array(0)))
+            value = np.zeros(100,dtype=np.float64)))
 
         #self.add(pyrogue.LocalVariable(
         #    name = 'Test/Slash',

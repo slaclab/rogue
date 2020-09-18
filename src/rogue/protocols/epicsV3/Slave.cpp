@@ -52,7 +52,7 @@ void rpe::Slave::setup_python() {
 rpe::Slave::Slave (std::string epicsName, uint32_t max, std::string type) : Value(epicsName) {
 
    // Init gdd record
-   this->initGdd(type, false, 1);
+   this->initGdd(type, false, 1, false);
    max_ = max;
 
    // Determine size in bytes & init data
