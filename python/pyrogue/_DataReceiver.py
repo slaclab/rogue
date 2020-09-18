@@ -17,7 +17,7 @@ import numpy
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, typeStr='UInt[]', **kwargs):
+    def __init__(self, typeStr='UInt32[]', **kwargs):
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
 
