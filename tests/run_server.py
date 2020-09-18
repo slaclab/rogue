@@ -106,7 +106,7 @@ class DummyTree(pyrogue.Root):
         self._prbsTx >> self._fw.getChannel(0)
 
         # Add Data Receiver
-        drx = pyrogue.DataReceiver(typeStr='Int8[]') #,value=[0]*100)
+        drx = pyrogue.DataReceiver()
         self._prbsTx >> drx
         self.add(drx)
 

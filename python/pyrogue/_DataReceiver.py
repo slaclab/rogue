@@ -18,9 +18,9 @@ class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
     def __init__(self,
-                 typeStr='UInt32[]',
+                 typeStr='UInt8[np]',
                  hideData=True,
-                 value=numpy.zeros(shape=1, dtype=numpy.int8, order='C'),
+                 value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
                  **kwargs):
 
         pr.Device.__init__(self, **kwargs)
