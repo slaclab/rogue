@@ -53,7 +53,7 @@ class DummyTree(pyrogue.Root):
         sim = pyrogue.interfaces.simulation.MemEmulate()
 
         # Add Device
-        self.add(test_device.AxiVersion(memBase=sim,offset=0x0))
+        self.add(test_device.AxiVersion(memBase=sim,offset=0x0,guiGroup='TestGroup'))
 
         # Add Data Writer
         self._prbsTx = pyrogue.utilities.prbs.PrbsTx()
@@ -97,7 +97,8 @@ class DummyTree(pyrogue.Root):
             pollInterval=1.0,
             localGet = self._myArray,
             disp='{:1.2f}',
-            value = np.array(0)))
+            value = np.array(0),
+            guiGroup='TestGroup'))
 
         #self.add(test_large.TestLarge())
 

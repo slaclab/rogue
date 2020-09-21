@@ -115,8 +115,8 @@ class BaseVariable(pr.Node):
                  highAlarm=None,
                  pollInterval=0,
                  typeStr='Unknown',
-                 offset=0
-                ):
+                 offset=0,
+                 guiGroup=None):
 
         # Public Attributes
         self._mode          = mode
@@ -171,7 +171,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
 
     @pr.expose
     @property
@@ -558,7 +558,8 @@ class RemoteVariable(BaseVariable):
                  bitOffset=0,
                  pollInterval=0,
                  overlapEn=False,
-                 verify=True, ):
+                 verify=True,
+                 guiGroup=None):
 
         if disp is None:
             disp = base.defaultdisp
@@ -611,7 +612,8 @@ class RemoteVariable(BaseVariable):
                               minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,
+                              guiGroup=guiGroup)
 
 
 
@@ -706,7 +708,8 @@ class LocalVariable(BaseVariable):
                  localSet=None,
                  localGet=None,
                  typeStr='Unknown',
-                 pollInterval=0):
+                 pollInterval=0,
+                 guiGroup=None):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -717,7 +720,8 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval)
+                              pollInterval=pollInterval,
+                              guiGroup=guiGroup)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
