@@ -19,7 +19,10 @@ class TestLarge(pyrogue.Device):
 
 
         for i in range(4096):
+            b = (i // 100) * 100
+            t = (i // 100) * 100 + 99
             self.add(pyrogue.LocalVariable(
                 name = f'TestValue[{i}]',
                 mode = 'RW',
+                guiGroup=f'TestLargeGroup[{b}-{t}]',
                 value = 0))
