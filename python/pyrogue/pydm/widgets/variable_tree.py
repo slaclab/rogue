@@ -20,7 +20,6 @@ from qtpy.QtCore import Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
-import re
 
 
 class VariableDev(QTreeWidgetItem):
