@@ -129,7 +129,8 @@ class Device(pr.Node,rim.Hub):
                  defaults=None,
                  enableDeps=None,
                  hubMin=0,
-                 hubMax=0):
+                 hubMax=0,
+                 guiGroup=None):
 
 
         """Initialize device class"""
@@ -156,7 +157,7 @@ class Device(pr.Node,rim.Hub):
             self._setSlave(memBase)
 
         # Node.__init__ can't be called until after self._memBase is created
-        pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand)
+        pr.Node.__init__(self, name=name, hidden=hidden, groups=groups, description=description, expand=expand, guiGroup=guiGroup)
 
         self._log.info("Making device {:s}".format(name))
 
