@@ -94,7 +94,7 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
     """
 
-    def __init__(self, *, name, description="", expand=True, hidden=False, groups=None):
+    def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
         """Init the node with passed attributes"""
 
         # Public attributes
@@ -102,6 +102,7 @@ class Node(object):
         self._description = description
         self._path        = name
         self._expand      = expand
+        self._guiGroup    = guiGroup
 
         # Tracking
         self._parent  = None
@@ -183,6 +184,10 @@ class Node(object):
     def expand(self):
         return self._expand
 
+    @property
+    def guiGroup(self):
+        return self._guiGroup
+
     def __repr__(self):
         return self.path
 
@@ -217,6 +222,7 @@ class Node(object):
         attr['groups']      = self._groups
         attr['path']        = self._path
         attr['expand']      = self._expand
+        attr['guiGroup']    = self._guiGroup
         attr['nodes']       = odict({k:None for k,v in self._nodes.items() if not v.inGroup('NoServe')})
         attr['props']       = []
         attr['funcs']       = {}

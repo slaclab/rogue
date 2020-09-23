@@ -30,6 +30,7 @@ class CommandDev(QTreeWidgetItem):
         self._dev      = dev
         self._dummy    = None
         self._path     = path
+        self._groups   = {}
 
         if isinstance(parent,CommandDev):
             self._depth = parent._depth+1
@@ -63,20 +64,40 @@ class CommandDev(QTreeWidgetItem):
         for key,val in self._dev.commandsByGroup(incGroups=self._top._incGroups,
                                                  excGroups=self._top._excGroups).items():
 
-            CommandHolder(path=self._path + '.' + val.name,
-                          top=self._top,
-                          parent=self,
-                          command=val)
+            if val.guiGroup is not None:
+                if val.guiGroup not in self._groups:
+                    self._groups[val.guiGroup] = CommandGroup(path=self._path,
+                                                              top=self._top,
+                                                              parent=self,
+                                                              name=val.guiGroup)
+
+                self._groups[val.guiGroup].addNode(val)
+
+            else:
+                CommandHolder(path=self._path + '.' + val.name,
+                              top=self._top,
+                              parent=self,
+                              command=val)
 
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
                                                 excGroups=self._top._excGroups).items():
 
-            CommandDev(path=self._path + '.' + val.name,
-                       top=self._top,
-                       parent=self,
-                       dev=val,
-                       noExpand=noExpand)
+            if val.guiGroup is not None:
+                if val.guiGroup not in self._groups:
+                    self._groups[val.guiGroup] = CommandGroup(path=self._path,
+                                                              top=self._top,
+                                                              parent=self,
+                                                              name=val.guiGroup)
+
+                self._groups[val.guiGroup].addNode(val)
+
+            else:
+                CommandDev(path=self._path + '.' + val.name,
+                           top=self._top,
+                           parent=self,
+                           dev=val,
+                           noExpand=noExpand)
 
     def _expand(self):
         if self._dummy is None:
@@ -85,6 +106,55 @@ class CommandDev(QTreeWidgetItem):
         self.removeChild(self._dummy)
         self._dummy = None
         self._setup(True)
+
+
+class CommandGroup(QTreeWidgetItem):
+
+    def __init__(self,*, path, top, parent, name):
+        QTreeWidgetItem.__init__(self,parent)
+        self._top      = top
+        self._parent   = parent
+        self._name     = name
+        self._dummy    = None
+        self._path     = path
+        self._list     = []
+        self._depth    = parent._depth+1
+
+        self._lab = QLabel(parent=None, text=self._name)
+
+        self._top._tree.setItemWidget(self,0,self._lab)
+        self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
+        self.setExpanded(False)
+
+    def _setup(self):
+
+        # Create variables
+        for n in self._list:
+
+            if n.isDevice:
+                CommandDev(path=self._path + '.' + n.name,
+                           top=self._top,
+                           parent=self,
+                           dev=n,
+                           noExpand=True)
+
+            elif n.isVariable:
+                CommandHolder(path=self._path + '.' + n.name,
+                              top=self._top,
+                              parent=self,
+                              command=n)
+
+    def _expand(self):
+        if self._dummy is None:
+            return
+
+        self.removeChild(self._dummy)
+        self._dummy = None
+        self._setup()
+
+    def addNode(self,node):
+        self._list.append(node)
+
 
 class CommandHolder(QTreeWidgetItem):
 
@@ -98,7 +168,8 @@ class CommandHolder(QTreeWidgetItem):
         self._value  = self._cmd.valueDisp()
         self._depth  = parent._depth+1
 
-        if self._value is None: self._value = ''
+        if self._value is None:
+            self._value = ''
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -160,7 +231,6 @@ class CommandHolder(QTreeWidgetItem):
                 self._top._colWidths[3] = width
 
 
-    #@Slot(str)
     def _argChanged(self,value):
         self._btn.pressValue = value
 
@@ -180,10 +250,11 @@ class CommandTree(PyDMFrame):
         self._colWidths = [250,50,50,200]
 
     def connection_changed(self, connected):
-        build = (self._node is None) and (self._connected != connected and connected == True)
+        build = (self._node is None) and (self._connected != connected and connected is True)
         super(CommandTree, self).connection_changed(connected)
 
-        if not build: return
+        if not build:
+            return
 
         self._node = nodeFromAddress(self.channel)
         self._path = self.channel
@@ -259,4 +330,3 @@ class CommandTree(PyDMFrame):
             return True
         else:
             return False
-

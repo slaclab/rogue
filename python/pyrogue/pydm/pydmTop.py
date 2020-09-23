@@ -29,9 +29,6 @@ class DefaultTop(Display):
         self.sizeY  = None
         self.title  = None
 
-        self.maxListExpand = None
-        self.maxListSize   = None
-
         for a in args:
             if 'sizeX=' in a:
                 self.sizeX = int(a.split('=')[1])
@@ -39,10 +36,6 @@ class DefaultTop(Display):
                 self.sizeY = int(a.split('=')[1])
             if 'title=' in a:
                 self.title = a.split('=')[1]
-            if 'maxListExpand' in a:
-                self.maxListExpand = int(a.split('=')[1])
-            if 'maxListSize' in a:
-                self.maxListSize = int(a.split('=')[1])
 
         if self.title is None:
             self.title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
@@ -52,12 +45,6 @@ class DefaultTop(Display):
         if self.sizeY is None:
             self.sizeY = 1000
 
-        if self.maxListExpand is None:
-            self.maxListExpand = 5
-
-        if self.maxListSize is None:
-            self.maxListSize = 100
-
         self.setWindowTitle(self.title)
 
         vb = QVBoxLayout()
@@ -66,7 +53,7 @@ class DefaultTop(Display):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
-        var = VariableTree(parent=None, init_channel=Channel, maxListExpand=self.maxListExpand, maxListSize=self.maxListSize)
+        var = VariableTree(parent=None, init_channel=Channel)
         self.tab.addTab(var,'Variables')
 
         cmd = CommandTree(parent=None, init_channel=Channel)
