@@ -36,7 +36,7 @@ namespace rogue {
             // Zeromq publish port
             void * zmqSub_;
 
-            // Zeromq response port
+            // Zeromq request port
             void * zmqReq_;
 
             //! Log
@@ -48,20 +48,32 @@ namespace rogue {
 
             std::thread   * thread_;
             bool threadEn_;
+            bool running_;
+            bool doString_;
 
             void runThread();
 
          public:
 
-            static std::shared_ptr<rogue::interfaces::ZmqClient> create(std::string addr, uint16_t port);
+            static std::shared_ptr<rogue::interfaces::ZmqClient> create(std::string addr, uint16_t port, bool doString);
 
             //! Setup class in python
             static void setup_python();
 
-            ZmqClient (std::string addr, uint16_t port);
+            ZmqClient (std::string addr, uint16_t port, bool doString);
             virtual ~ZmqClient();
 
             void setTimeout(uint32_t msecs, bool waitRetry);
+
+            std::string sendString(std::string path, std::string attr, std::string arg);
+
+            std::string getDisp(std::string path);
+
+            void setDisp(std::string path, std::string value);
+
+            std::string exec(std::string path, std::string arg = "");
+
+            std::string valueDisp(std::string path);
 
 #ifndef NO_PYTHON
             boost::python::object send(boost::python::object data);
