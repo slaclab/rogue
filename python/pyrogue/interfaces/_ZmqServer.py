@@ -21,10 +21,8 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
 
-    def _doRequest(self,data):
+    def _doOperation(self,d):
         try:
-            d = pickle.loads(data)
-
             path    = d['path']   if 'path'   in d else None
             attr    = d['attr']   if 'attr'   in d else None
             args    = d['args']   if 'args'   in d else ()
@@ -32,53 +30,27 @@ class ZmqServer(rogue.interfaces.ZmqServer):
 
             # Special case to get root node
             if path == "__ROOT__":
-                return pickle.dumps(self._root)
+                return self._root
 
             node = self._root.getNode(path)
 
             if node is None:
-                return pickle.dumps(None)
+                return None
 
             nAttr = getattr(node, attr)
 
             if nAttr is None:
-                resp = None
+                return None
             elif callable(nAttr):
-                resp = nAttr(*args,**kwargs)
+                return nAttr(*args,**kwargs)
             else:
-                resp = nAttr
-
-            return pickle.dumps(resp)
+                return nAttr
 
         except Exception as msg:
-            return pickle.dumps(msg)
+            return msg
+
+    def _doRequest(self,data):
+        return pickle.dumps(self._doOperation(pickle.loads(data)))
 
     def _doString(self,data):
-        try:
-            d = jsonpickle.decode(data)
-
-            path    = d['path']   if 'path'   in d else None
-            attr    = d['attr']   if 'attr'   in d else None
-            args    = d['args']   if 'args'   in d else ()
-            kwargs  = d['kwargs'] if 'kwargs' in d else {}
-
-            # Special case to get root node
-            if path == "__ROOT__":
-                return "__ERROR__"
-
-            node = self._root.getNode(path)
-
-            if node is None:
-                return ""
-
-            nAttr = getattr(node, attr)
-
-            if nAttr is None:
-                return "__NONE__"
-            elif callable(nAttr):
-                return str(nAttr(*args,**kwargs))
-            else:
-                return str(nAttr)
-
-        except Exception as msg:
-            return f"__EXCEPTION__: {msg}"
+        return str(self._doOperation(jsonpickle.decode(data)))
