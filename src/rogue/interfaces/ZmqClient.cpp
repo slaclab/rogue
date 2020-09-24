@@ -168,7 +168,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
    zmq_send(this->zmqReq_,snd.c_str(),snd.size(),0);
 
    while (1) {
-   zmq_msg_init(&msg);
+      zmq_msg_init(&msg);
       if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
          seconds += (float)timeout_ / 1000.0;
          if ( waitRetry_ ) {
