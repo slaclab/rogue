@@ -100,6 +100,7 @@ class DataReceiver(pr.Device,ris.Slave):
         super()._start()
         self._rxEnable = True
 
+
     def _stop(self):
         self._rxEnable = False
         super()._stop()
