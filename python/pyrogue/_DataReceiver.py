@@ -20,6 +20,7 @@ class DataReceiver(pr.Device,ris.Slave):
     def __init__(self, **kwargs):
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
+        self._rxEnable = False
 
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
@@ -56,6 +57,8 @@ class DataReceiver(pr.Device,ris.Slave):
         super().countReset()
 
     def _acceptFrame(self, frame):
+        if not self._rxEnable:
+            return
 
         # Lock frame
         with frame.lock():
@@ -91,3 +94,12 @@ class DataReceiver(pr.Device,ris.Slave):
         # Update data
         self.Data.set(dat,write=True)
         self.Updated.set(True,write=True)
+
+
+    def _start(self):
+        super()._start()
+        self._rxEnable = True
+
+    def _stop(self):
+        super()._stop()
+        self._rxEnable = False
