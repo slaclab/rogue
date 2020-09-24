@@ -380,7 +380,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._serverPort is not None:
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
-            print("start: Started zmqServer on port %d" % self._serverPort)
+            print("start: Started zmqServer on ports {self._serverPort}-{self._serverPort+2}")
 
         # Start sql interface
         if self._sqlUrl is not None:
