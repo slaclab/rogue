@@ -39,7 +39,11 @@ namespace rogue {
             // Zeromq response port
             void * zmqRep_;
 
-            std::thread   * thread_;
+            // Zeromq string response port
+            void * zmqStr_;
+
+            std::thread   * rThread_;
+            std::thread   * sThread_;
             bool threadEn_;
 
             std::string addr_;
@@ -49,6 +53,7 @@ namespace rogue {
             std::shared_ptr<rogue::Logging> log_;
 
             void runThread();
+            void strThread();
 
             bool tryConnect();
 
@@ -67,6 +72,8 @@ namespace rogue {
 
             virtual boost::python::object doRequest (boost::python::object data);
 #endif
+
+            virtual std::string doString (std::string data);
 
             uint16_t port();
 
@@ -88,6 +95,11 @@ namespace rogue {
             boost::python::object doRequest ( boost::python::object data );
 
             boost::python::object defDoRequest ( boost::python::object data );
+
+            std::string doString ( std::string data );
+
+            std::string defDoString ( std::string data );
+
       };
 
       typedef std::shared_ptr<rogue::interfaces::ZmqServerWrap> ZmqServerWrapPtr;
