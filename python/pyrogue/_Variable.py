@@ -595,7 +595,6 @@ class RemoteVariable(BaseVariable):
         self._bitSize   = bitSize
         self._bitOffset = bitOffset
         self._verify    = verify
-        self._typeStr   = self._base.name
         self._bytes     = int(math.ceil(float(self._bitOffset[-1] + self._bitSize[-1]) / 8.0))
         self._overlapEn = overlapEn
 
@@ -615,7 +614,7 @@ class RemoteVariable(BaseVariable):
                               pollInterval=pollInterval,
                               guiGroup=guiGroup)
 
-
+        self._typeStr   = self._base.name
 
 
     @pr.expose

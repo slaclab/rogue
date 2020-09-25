@@ -9,9 +9,10 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+
 import rogue.interfaces
-import pyrogue
-import jsonpickle
+import pickle
+
 
 class ZmqServer(rogue.interfaces.ZmqServer):
 
@@ -19,31 +20,23 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
 
-    def encode(self,data,rawStr):
-
-        if rawStr and isinstance(data,str):
-            return data
-        else:
-            return jsonpickle.encode(data)
-
     def _doRequest(self,data):
         try:
-            d = jsonpickle.decode(data)
+            d = pickle.loads(data)
 
             path    = d['path']   if 'path'   in d else None
             attr    = d['attr']   if 'attr'   in d else None
             args    = d['args']   if 'args'   in d else ()
             kwargs  = d['kwargs'] if 'kwargs' in d else {}
-            rawStr  = d['rawStr'] if 'rawStr' in d else False
 
             # Special case to get root node
             if path == "__ROOT__":
-                return self.encode(self._root,rawStr=False)
+                return pickle.dumps(self._root)
 
             node = self._root.getNode(path)
 
             if node is None:
-                return self.encode(None,rawStr=False)
+                return pickle.dumps(None)
 
             nAttr = getattr(node, attr)
 
@@ -54,8 +47,7 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             else:
                 resp = nAttr
 
-            return self.encode(resp,rawStr=rawStr)
+            return pickle.dumps(resp)
 
         except Exception as msg:
-            return self.encode(msg,rawStr=False)
-
+            return pickle.dumps(msg)

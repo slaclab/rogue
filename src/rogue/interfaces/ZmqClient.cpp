@@ -41,10 +41,6 @@ void rogue::interfaces::ZmqClient::setup_python() {
       .def("_doUpdate",    &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
       .def("_send",        &rogue::interfaces::ZmqClient::send)
       .def("setTimeout",   &rogue::interfaces::ZmqClient::setTimeout)
-      .def("getDisp",      &rogue::interfaces::ZmqClient::getDisp)
-      .def("setDisp",      &rogue::interfaces::ZmqClient::setDisp)
-      .def("exec",         &rogue::interfaces::ZmqClient::exec)
-      .def("valueDisp",    &rogue::interfaces::ZmqClient::valueDisp)
    ;
 #endif
 }
@@ -129,71 +125,79 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
    waitRetry_ = waitRetry;
    timeout_ = msecs;
 
-   printf("Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
+   printf("ZmqClient::setTimeout: Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
 
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));
 }
 
-std::string rogue::interfaces::ZmqClient::send(std::string value) {
-   zmq_msg_t msg;
-   std::string data;
+#ifndef NO_PYTHON
+
+bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
+   zmq_msg_t txMsg;
+   zmq_msg_t rxMsg;
+   Py_buffer valueBuf;
+   bp::object ret;
    double seconds = 0;
 
-   rogue::GilRelease noGil;
-   zmq_send(this->zmqReq_,value.c_str(),value.size(),0);
+   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError::create("ZmqClient::send","Failed to extract object data"));
 
-   while (1) {
-      zmq_msg_init(&msg);
-      if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
-         seconds += (float)timeout_ / 1000.0;
-         if ( waitRetry_ ) {
-            log_->error("Timeout wating for response after %f Seconds, server may be busy! Waiting...",seconds);
-            zmq_msg_close(&msg);
+   zmq_msg_init_size(&txMsg,valueBuf.len);
+   memcpy(zmq_msg_data(&txMsg),valueBuf.buf,valueBuf.len);
+   PyBuffer_Release(&valueBuf);
+
+   {
+      rogue::GilRelease noGil;
+      zmq_sendmsg(this->zmqReq_,&txMsg,0);
+
+      while (1) {
+         zmq_msg_init(&rxMsg);
+         if ( zmq_recvmsg(this->zmqReq_,&rxMsg,0) <= 0 ) {
+            seconds += (float)timeout_ / 1000.0;
+            if ( waitRetry_ ) {
+               log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",seconds);
+               zmq_msg_close(&rxMsg);
+            }
+            else
+               throw rogue::GeneralError::create("ZmqClient::send","Timeout waiting for response after %f Seconds, server may be busy!",seconds);
          }
-         else
-            throw rogue::GeneralError::create("ZmqClient::send","Timeout wating for response after %f Seconds, server may be busy!",seconds);
+         else break;
       }
-      else break;
    }
 
    if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
 
-   data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
-   zmq_msg_close(&msg);
-   return data;
+   PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
+   zmq_msg_close(&rxMsg);
+
+   bp::handle<> handle(val);
+   ret = bp::object(handle);
+   return ret;
 }
 
-void rogue::interfaces::ZmqClient::doUpdate ( std::string data ) { }
-
-#ifndef NO_PYTHON
+void rogue::interfaces::ZmqClient::doUpdate ( bp::object data ) { }
 
 rogue::interfaces::ZmqClientWrap::ZmqClientWrap (std::string addr, uint16_t port) : rogue::interfaces::ZmqClient(addr,port) {}
 
-void rogue::interfaces::ZmqClientWrap::doUpdate ( std::string data ) {
-   {
-      rogue::ScopedGil gil;
-
-      if (bp::override f = this->get_override("_doUpdate")) {
-         try {
-            f(data);
-         } catch (...) {
-            PyErr_Print();
-         }
+void rogue::interfaces::ZmqClientWrap::doUpdate ( bp::object data ) {
+   if (bp::override f = this->get_override("_doUpdate")) {
+      try {
+         f(data);
+      } catch (...) {
+         PyErr_Print();
       }
    }
    rogue::interfaces::ZmqClient::doUpdate(data);
 }
 
-void rogue::interfaces::ZmqClientWrap::defDoUpdate ( std::string data ) {
+void rogue::interfaces::ZmqClientWrap::defDoUpdate ( bp::object data ) {
    rogue::interfaces::ZmqClient::doUpdate(data);
 }
 
 #endif
 
 void rogue::interfaces::ZmqClient::runThread() {
-   std::string data;
-   std::string ret;
    zmq_msg_t msg;
 
    log_->logThreadId();
@@ -203,42 +207,16 @@ void rogue::interfaces::ZmqClient::runThread() {
 
       // Get the message
       if ( zmq_recvmsg(this->zmqSub_,&msg,0) > 0 ) {
-         data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
+
+#ifndef NO_PYTHON
+         rogue::ScopedGil gil;
+         PyObject *val = Py_BuildValue("y#",zmq_msg_data(&msg),zmq_msg_size(&msg));
+         bp::handle<> handle(val);
+         bp::object dat = bp::object(handle);
+         this->doUpdate(dat);
+#endif
          zmq_msg_close(&msg);
-         this->doUpdate(data);
       }
    }
-}
-
-std::string rogue::interfaces::ZmqClient::sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr) {
-   std::string snd;
-   std::string ret;
-
-   snd  = "{\"attr\": \"" + attr + "\",";
-   snd += "\"path\": \"" + path + "\",";
-
-   if (arg != "")
-      snd += "\"args\": {\"py/tuple\": [\"" + arg + "\"]},";
-
-   if ( rawStr ) snd += "\"rawStr\": true}";
-   else snd += "\"rawStr\": false}";
-
-   return(send(snd));
-}
-
-std::string rogue::interfaces::ZmqClient::getDisp(std::string path) {
-   return sendWrapper(path, "getDisp", "", true);
-}
-
-void rogue::interfaces::ZmqClient::setDisp(std::string path, std::string value) {
-   sendWrapper(path, "setDisp", value, true);
-}
-
-std::string rogue::interfaces::ZmqClient::exec(std::string path, std::string arg) {
-   return sendWrapper(path, "__call__", arg, true);
-}
-
-std::string rogue::interfaces::ZmqClient::valueDisp(std::string path) {
-   return sendWrapper(path, "valueDisp", "", true);
 }
 
