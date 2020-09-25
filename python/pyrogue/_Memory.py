@@ -40,7 +40,6 @@ class MemoryDevice(pr.Device):
         )
 
         self._size    = size
-        self._lockCnt = 0
         self._txnLock = threading.RLock()
 
         if isinstance(base, pr.Model):
