@@ -150,6 +150,11 @@ class MemoryDevice(pr.Device):
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         pass
 
+    @pr.expose
+    @property
+    def size(self):
+        return self._size
+
     def _txnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
 
         if not isinstance(base, pr.Model):
