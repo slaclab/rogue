@@ -172,7 +172,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
    temp.append(":");
    temp.append(std::to_string(static_cast<long long>(this->basePort_+2)));
 
-   if ( zmq_bind(this->zmqRep_,temp.c_str()) < 0 ) {
+   if ( zmq_bind(this->zmqStr_,temp.c_str()) < 0 ) {
       zmq_close(this->zmqPub_);
       zmq_close(this->zmqRep_);
       zmq_close(this->zmqStr_);

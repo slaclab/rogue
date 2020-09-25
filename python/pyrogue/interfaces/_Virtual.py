@@ -206,7 +206,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         VirtualClient.ClientCache[hash((addr, port))] = self
 
-        rogue.interfaces.ZmqClient.__init__(self,addr,port)
+        rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
         self._varListeners = []
         self._monitors = []
         self._root  = None

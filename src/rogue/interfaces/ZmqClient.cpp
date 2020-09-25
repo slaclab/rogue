@@ -38,10 +38,14 @@ rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(std::string
 void rogue::interfaces::ZmqClient::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rogue::interfaces::ZmqClientWrap, rogue::interfaces::ZmqClientWrapPtr, boost::noncopyable>("ZmqClient",bp::init<std::string, uint16_t>())
+   bp::class_<rogue::interfaces::ZmqClientWrap, rogue::interfaces::ZmqClientWrapPtr, boost::noncopyable>("ZmqClient",bp::init<std::string, uint16_t, bool>())
       .def("_doUpdate",    &rogue::interfaces::ZmqClient::doUpdate, &rogue::interfaces::ZmqClientWrap::defDoUpdate)
       .def("_send",        &rogue::interfaces::ZmqClient::send)
       .def("setTimeout",   &rogue::interfaces::ZmqClient::setTimeout)
+      .def("getDisp",      &rogue::interfaces::ZmqClient::getDisp)
+      .def("setDisp",      &rogue::interfaces::ZmqClient::setDisp)
+      .def("exec",         &rogue::interfaces::ZmqClient::exec)
+      .def("valueDisp",    &rogue::interfaces::ZmqClient::valueDisp)
       .def("_stop",        &rogue::interfaces::ZmqClient::stop)
    ;
 #endif
@@ -158,11 +162,16 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
    std::string data;
    double seconds = 0;
 
+   if ( ! doString_ )
+      throw rogue::GeneralError::create("ZmqClient::sendString","Invalid send call in standard mode");
+
    snd  = "{\"attr\": \"" + attr + "\",";
-   snd += "\"path\": \"" + path + "\",";
+   snd += "\"path\": \"" + path + "\"";
 
    if (arg != "")
-      snd += "\"args\": {\"py/tuple\": [\"" + arg + "\"]},";
+      snd += ",\"args\": {\"py/tuple\": [\"" + arg + "\"]}";
+
+   snd += "}";
 
    rogue::GilRelease noGil;
    zmq_send(this->zmqReq_,snd.c_str(),snd.size(),0);
@@ -254,7 +263,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
 void rogue::interfaces::ZmqClient::doUpdate ( bp::object data ) { }
 
-rogue::interfaces::ZmqClientWrap::ZmqClientWrap (std::string addr, uint16_t port) : rogue::interfaces::ZmqClient(addr,port,false) {}
+rogue::interfaces::ZmqClientWrap::ZmqClientWrap (std::string addr, uint16_t port, bool doString) : rogue::interfaces::ZmqClient(addr,port,doString) {}
 
 void rogue::interfaces::ZmqClientWrap::doUpdate ( bp::object data ) {
    if (bp::override f = this->get_override("_doUpdate")) {

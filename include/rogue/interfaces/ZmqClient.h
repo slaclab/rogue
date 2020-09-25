@@ -95,7 +95,7 @@ namespace rogue {
 
          public:
 
-            ZmqClientWrap (std::string addr, uint16_t port);
+            ZmqClientWrap (std::string addr, uint16_t port, bool doString);
 
             void doUpdate  ( boost::python::object data );
 

@@ -22,35 +22,37 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         self._root = root
 
     def _doOperation(self,d):
-        try:
-            path    = d['path']   if 'path'   in d else None
-            attr    = d['attr']   if 'attr'   in d else None
-            args    = d['args']   if 'args'   in d else ()
-            kwargs  = d['kwargs'] if 'kwargs' in d else {}
+        path    = d['path']   if 'path'   in d else None
+        attr    = d['attr']   if 'attr'   in d else None
+        args    = d['args']   if 'args'   in d else ()
+        kwargs  = d['kwargs'] if 'kwargs' in d else {}
 
-            # Special case to get root node
-            if path == "__ROOT__":
-                return self._root
+        # Special case to get root node
+        if path == "__ROOT__":
+            return self._root
 
-            node = self._root.getNode(path)
+        node = self._root.getNode(path)
 
-            if node is None:
-                return None
+        if node is None:
+            return None
 
-            nAttr = getattr(node, attr)
+        nAttr = getattr(node, attr)
 
-            if nAttr is None:
-                return None
-            elif callable(nAttr):
-                return nAttr(*args,**kwargs)
-            else:
-                return nAttr
-
-        except Exception as msg:
-            return msg
+        if nAttr is None:
+            return None
+        elif callable(nAttr):
+            return nAttr(*args,**kwargs)
+        else:
+            return nAttr
 
     def _doRequest(self,data):
-        return pickle.dumps(self._doOperation(pickle.loads(data)))
+        try:
+            return pickle.dumps(self._doOperation(pickle.loads(data)))
+        except Exception as msg:
+            return pickle.dumps(msg)
 
     def _doString(self,data):
-        return str(self._doOperation(jsonpickle.decode(data)))
+        try:
+            return str(self._doOperation(jsonpickle.decode(data)))
+        except Exception as msg:
+            return "EXCEPTION: " + str(msg)
