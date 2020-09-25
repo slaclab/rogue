@@ -18,6 +18,7 @@
 import pyrogue
 import time
 import warnings
+import re
 
 try:
     import p4p.server.thread
@@ -118,18 +119,24 @@ class EpicsPvHolder(object):
         # Convert valType
         if self._var.disp == 'enum':
             self._valType = 'enum'
+        elif typeStr is None:
+            self._valType = 's'
         else:
 
             # Unsigned
-            if typeStr is not None and 'UInt' in typeStr:
-                if isinstance(self._var,pyrogue.RemoteVariable):
-                    if sum(self._var.bitSize) <= 8:
+            if 'UInt' in typeStr:
+                m = re.search('^UInt(\\d+)\\.*',typeStr)
+
+                if m is not None and m.lastindex == 1:
+                    bits = int(m[1])
+
+                    if bits <= 8:
                         self._valType = 'B'
-                    elif sum(self._var.bitSize) <= 16:
+                    elif bits <= 16:
                         self._valType = 'H'
-                    elif sum(self._var.bitSize) <= 32:
+                    elif bits <= 32:
                         self._valType = 'I'
-                    elif sum(self._var.bitSize) <= 64:
+                    elif bits <= 64:
                         self._valType = 'L'
                     else:
                         self._valType = 's'
@@ -137,50 +144,59 @@ class EpicsPvHolder(object):
                     self._valType = 'L'
 
             # Signed
-            elif typeStr is not None and ('int' in typeStr or 'Int' in typeStr):
-                if isinstance(self._var,pyrogue.RemoteVariable):
-                    if sum(self._var.bitSize) <= 8:
+            elif 'int' in typeStr or 'Int' in typeStr:
+                m = re.search('^Int(\\d+)\\.*',typeStr)
+
+                if m is not None and m.lastindex == 1:
+                    bits = int(m[1])
+
+                    if bits <= 8:
                         self._valType = 'b'
-                    elif sum(self._var.bitSize) <= 16:
+                    elif bits <= 16:
                         self._valType = 'h'
-                    elif sum(self._var.bitSize) <= 32:
+                    elif bits <= 32:
                         self._valType = 'i'
-                    else:
+                    elif bits <= 64:
                         self._valType = 'l'
+                    else:
+                        self._valType = 's'
                 else:
                     self._valType = 'l'
 
             # Float
-            elif typeStr is not None and ('float' in typeStr or 'Float' in typeStr):
-                if isinstance(self._var,pyrogue.RemoteVariable):
-                    if sum(self._var.bitSize)   <= 32:
-                        self._valType = 'f'
-                    else:
-                        self._valType = 'd'
-                else:
-                    self._valType = 'd'
+            elif 'float' in typeStr or 'Float32' in typeStr:
+                self._valType = 'f'
 
+            # Double
+            elif 'Double64' in typeStr or 'Float64' in typeStr:
+                self._valType = 'd'
+
+            # Default to string
             else:
                 self._valType = 's'
+
+        # Get initial value
+        varVal = var.getVariableValue(read=False)
 
         # Detect array
         if self._var.isList:
             self._valType = 'a' + self._valType
 
-        # Get initial value
-        varVal = var.getVariableValue(read=False)
         self._log.info("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
-
-        if self._valType == 'enum':
-            nt = p4p.nt.NTEnum(display=False, control=False, valueAlarm=False)
-            enum = list(self._var.enum.values())
-            iv = {'choices':enum, 'index':enum.index(varVal.valueDisp)}
-        elif self._valType == 's':
-            nt = p4p.nt.NTScalar(self._valType, display=False, control=False, valueAlarm=False)
-            iv = nt.wrap(varVal.valueDisp)
-        else:
-            nt = p4p.nt.NTScalar(self._valType, display=True, control=True,  valueAlarm=True)
-            iv = nt.wrap(varVal.value)
+        try:
+            if self._valType == 'enum':
+                nt = p4p.nt.NTEnum(display=False, control=False, valueAlarm=False)
+                enum = list(self._var.enum.values())
+                iv = {'choices':enum, 'index':enum.index(varVal.valueDisp)}
+            elif self._valType == 's':
+                nt = p4p.nt.NTScalar(self._valType, display=False, control=False, valueAlarm=False)
+                iv = nt.wrap(varVal.valueDisp)
+            else:
+                nt = p4p.nt.NTScalar(self._valType, display=True, control=True,  valueAlarm=True)
+                #print(f"Setting value {varVal.value} to {self._name}")
+                iv = nt.wrap(varVal.value)
+        except Exception as e:
+            raise Exception("Failed to add {} with type {} init={}. Error={}".format(self._name,self._valType,varVal.valueDisp,e))
 
         # Setup variable
         self._pv = p4p.server.thread.SharedPV(queue=None,

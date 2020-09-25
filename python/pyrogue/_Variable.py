@@ -16,6 +16,7 @@ import threading
 import re
 import time
 import shlex
+import numpy as np
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -162,13 +163,15 @@ class BaseVariable(pr.Node):
         if enum is not None:
             self._disp = 'enum'
 
-        if value is not None and isinstance(value, list):
+        if value is not None and (isinstance(value, list) or isinstance(value, np.ndarray)):
             self._isList = True
 
         # Determine typeStr from value type
         if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
                 self._typeStr = f'{value[0].__class__.__name__}[]'
+            elif isinstance(value, np.ndarray):
+                self._typeStr = str(value.dtype).capitalize() + '[np]'
             else:
                 self._typeStr = value.__class__.__name__
         else:

@@ -147,7 +147,7 @@ class DummyTree(pyrogue.Root):
             pollInterval=1.0,
             localGet = self._myArray,
             disp='{:1.2f}',
-            value = np.array(0)))
+            value = np.zeros(100,dtype=np.float64)))
 
         #self.add(pyrogue.LocalVariable(
         #    name = 'Test/Slash',
