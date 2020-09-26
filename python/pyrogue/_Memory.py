@@ -102,14 +102,14 @@ class MemoryDevice(pr.Device):
         with self._txnLock:
             self._wrValues = self._setValues
             for offset, values in self._setValues.items():
-                self._txnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
+                self._txnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write, len(values))
 
             # clear out setValues when done
             self._setValues = odict()
 
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get():
+        if (not self._verify) or (not self.enable.get()):
             return
 
         with self._txnLock:
