@@ -10,6 +10,8 @@
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 from collections import OrderedDict as odict
+import collections
+import threading
 
 
 class MemoryDevice(pr.Device):
@@ -189,5 +191,3 @@ class MemoryDevice(pr.Device):
                 self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
 
             return ldata
-
-
