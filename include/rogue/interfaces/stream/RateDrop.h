@@ -41,7 +41,7 @@ namespace rogue {
                // Configurations
                bool     periodFlag_;
 
-               uint32_t countPeriod_;
+               uint32_t dropTarget_;
 
                struct timeval timePeriod_;
 

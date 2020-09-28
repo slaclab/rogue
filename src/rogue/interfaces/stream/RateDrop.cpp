@@ -52,13 +52,13 @@ ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave()
 
    struct timeval currTime;
 
-   if ( period || value == 0) {
-      periodFlag_ = true;
-      dropCount_ = 0;
-      countPeriod_ = (uint32_t)value;
+   if ( (!period) || value == 0) {
+      periodFlag_ = false;
+      dropCount_  = (uint32_t)value;
+      dropTarget_ = (uint32_t)value;
    }
    else {
-      periodFlag_ = false;
+      periodFlag_ = true;
 
       div_t divResult = div(value,1000000);
       timePeriod_.tv_sec  = divResult.quot;
@@ -77,8 +77,8 @@ void ris::RateDrop::acceptFrame ( ris::FramePtr frame ) {
    struct timeval currTime;
 
    // Dropping based upon frame count, if countPeriod_ is zero we never drop
-   if ( periodFlag_ ) {
-      if ( dropCount_++ == countPeriod_ ) {
+   if ( ! periodFlag_ ) {
+      if ( dropCount_++ == dropTarget_ ) {
          sendFrame(frame);
          dropCount_ = 0;
       }
