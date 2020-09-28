@@ -51,6 +51,7 @@ void ris::RateDrop::setup_python() {
 ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave() {
 
    struct timeval currTime;
+   uint32_t per;
 
    if ( (!period) || value == 0) {
       periodFlag_ = false;
@@ -60,7 +61,9 @@ ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave()
    else {
       periodFlag_ = true;
 
-      div_t divResult = div(value,1000000);
+      per = (uint32_t)(value * 1e6);
+
+      div_t divResult = div(per,1000000);
       timePeriod_.tv_sec  = divResult.quot;
       timePeriod_.tv_usec = divResult.rem;
 
