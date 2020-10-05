@@ -58,10 +58,12 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    bp::list    el;
    std::string val;
    uint32_t    count;
+   bool        forceStr;
 
    var_      = bp::object(p);
    syncRead_ = syncRead;
    setAttr_  = "setDisp";
+   forceStr  = false;
 
    // Get type and determine if this is an enum
    type = std::string(bp::extract<char *>(var_.attr("typeStr")));
@@ -73,13 +75,25 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    if ( isList ) {
       type = type.substr(0,type.find("["));
 
-      // Get initial element count
-      count = len(bp::extract<bp::list>(var_.attr("value")()));
-      log_->info("Detected list for %s with type = %s and count = %i", epicsName.c_str(),type.c_str(),count);
+      // First try native list
+      bp::extract<bp::list> ldata(var_.attr("value")());
+
+      if ( ldata.check() ) {
+         count = len(ldata);
+
+         // Get initial element count
+         log_->info("Detected list for %s with type = %s and count = %i", epicsName.c_str(),type.c_str(),count);
+      }
+
+      else {
+         forceStr = true;
+         count = 0;
+         log_->info("Unsupported list for %s with type = %s. Forcing to string\n", epicsName.c_str(),type.c_str());
+      }
    }
 
    // Init gdd record
-   this->initGdd(type, isEnum, count);
+   this->initGdd(type, isEnum, count, forceStr);
 
    // Extract units
    bp::extract<char *> ret(var_.attr("units"));

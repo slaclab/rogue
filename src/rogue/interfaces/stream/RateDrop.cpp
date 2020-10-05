@@ -51,16 +51,19 @@ void ris::RateDrop::setup_python() {
 ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave() {
 
    struct timeval currTime;
+   uint32_t per;
 
-   if ( period || value == 0) {
-      periodFlag_ = true;
-      dropCount_ = 0;
-      countPeriod_ = (uint32_t)value;
+   if ( (!period) || value == 0) {
+      periodFlag_ = false;
+      dropCount_  = (uint32_t)value;
+      dropTarget_ = (uint32_t)value;
    }
    else {
-      periodFlag_ = false;
+      periodFlag_ = true;
 
-      div_t divResult = div(value,1000000);
+      per = (uint32_t)(value * 1e6);
+
+      div_t divResult = div(per,1000000);
       timePeriod_.tv_sec  = divResult.quot;
       timePeriod_.tv_usec = divResult.rem;
 
@@ -77,8 +80,8 @@ void ris::RateDrop::acceptFrame ( ris::FramePtr frame ) {
    struct timeval currTime;
 
    // Dropping based upon frame count, if countPeriod_ is zero we never drop
-   if ( periodFlag_ ) {
-      if ( dropCount_++ == countPeriod_ ) {
+   if ( ! periodFlag_ ) {
+      if ( dropCount_++ == dropTarget_ ) {
          sendFrame(frame);
          dropCount_ = 0;
       }

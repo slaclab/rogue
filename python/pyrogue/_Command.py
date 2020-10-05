@@ -33,7 +33,8 @@ class BaseCommand(pr.BaseVariable):
                  minimum=None,
                  maximum=None,
                  function=None,
-                 background=False):
+                 background=False,
+                 guiGroup=None):
 
         pr.BaseVariable.__init__(
             self,
@@ -46,7 +47,8 @@ class BaseCommand(pr.BaseVariable):
             groups=groups,
             minimum=minimum,
             maximum=maximum,
-            bulkOpEn=False)
+            bulkOpEn=False,
+            guiGroup=guiGroup)
 
         self._function = function if function is not None else BaseCommand.nothing
         self._thread = None
@@ -224,14 +226,16 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  offset=None,
                  bitSize=32,
                  bitOffset=0,
-                 overlapEn=False):
+                 overlapEn=False,
+                 guiGroup=None):
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
             self,
             name=name,
             retValue=retValue,
-            function=function)
+            function=function,
+            guiGroup=guiGroup)
 
         pr.RemoteVariable.__init__(
             self,
@@ -250,7 +254,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             bitOffset=bitOffset,
             overlapEn=overlapEn,
             bulkOpEn=False,
-            verify=False)
+            verify=False,
+            guiGroup=guiGroup)
 
     def set(self, value, write=True, index=-1):
         self._log.debug("{}.set({})".format(self, value))

@@ -17,9 +17,15 @@ import numpy
 class DataReceiver(pr.Device,ris.Slave):
     """Data Receiver Devicer."""
 
-    def __init__(self, **kwargs):
+    def __init__(self,
+                 typeStr='UInt8[np]',
+                 hideData=True,
+                 value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 **kwargs):
+
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
+        self._rxEnable = False
 
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
@@ -45,8 +51,9 @@ class DataReceiver(pr.Device,ris.Slave):
                                   description='Data has been updated flag'))
 
         self.add(pr.LocalVariable(name='Data',
-                                  hidden=True,
-                                  value=numpy.empty(shape=0, dtype=numpy.int8, order='C'),
+                                  typeStr=typeStr,
+                                  value=value,
+                                  hidden=hideData,
                                   description='Data Frame Container'))
 
     def countReset(self):
@@ -56,6 +63,8 @@ class DataReceiver(pr.Device,ris.Slave):
         super().countReset()
 
     def _acceptFrame(self, frame):
+        if not self._rxEnable:
+            return
 
         # Lock frame
         with frame.lock():
@@ -91,3 +100,13 @@ class DataReceiver(pr.Device,ris.Slave):
         # Update data
         self.Data.set(dat,write=True)
         self.Updated.set(True,write=True)
+
+
+    def _start(self):
+        super()._start()
+        self._rxEnable = True
+
+
+    def _stop(self):
+        self._rxEnable = False
+        super()._stop()

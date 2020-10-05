@@ -10,6 +10,8 @@
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 from collections import OrderedDict as odict
+import collections
+import threading
 
 
 class MemoryDevice(pr.Device):
@@ -33,14 +35,14 @@ class MemoryDevice(pr.Device):
             description=description,
             memBase=memBase,
             offset=offset,
-            size=size,
             hidden=hidden,
             groups=groups,
             expand=expand,
             enabled=enabled,
         )
 
-        self._lockCnt = 0
+        self._size    = size
+        self._txnLock = threading.RLock()
 
         if isinstance(base, pr.Model):
             self._base = base
@@ -63,7 +65,7 @@ class MemoryDevice(pr.Device):
 
     @pr.expose
     def set(self, offset, values, write=False):
-        with self._memLock:
+        with self._txnLock:
             self._setValues[offset] = values
             if write:
                 self.writeBlocks()
@@ -72,12 +74,12 @@ class MemoryDevice(pr.Device):
 
     @pr.expose
     def get(self, offset, numWords):
-        with self._memLock:
+        with self._txnLock:
             #print(f'get() self._wordBitSize={self._wordBitSize}')
-            data = self._rawTxnChunker(offset=offset, data=None,
-                                       base=self._base, stride=self._stride,
-                                       wordBitSize=self._wordBitSize, txnType=rim.Read,
-                                       numWords=numWords)
+            data = self._txnChunker(offset=offset, data=None,
+                                    base=self._base, stride=self._stride,
+                                    wordBitSize=self._wordBitSize, txnType=rim.Read,
+                                    numWords=numWords)
             self._waitTransaction(0)
             self._clearError()
             return [self._base.fromBytes(data[i:i+self._stride])
@@ -86,7 +88,7 @@ class MemoryDevice(pr.Device):
 
     def _setDict(self, d, writeEach, modes,incGroups,excGroups,keys):
         # Parse comma separated values at each offset (key) in d
-        with self._memLock:
+        with self._txnLock:
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
 
@@ -97,26 +99,26 @@ class MemoryDevice(pr.Device):
         if not self.enable.get():
             return
 
-        with self._memLock:
+        with self._txnLock:
             self._wrValues = self._setValues
             for offset, values in self._setValues.items():
-                self._rawTxnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write)
+                self._txnChunker(offset, values, self._base, self._stride, self._wordBitSize, rim.Write, len(values))
 
             # clear out setValues when done
             self._setValues = odict()
 
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get():
+        if (not self._verify) or (not self.enable.get()):
             return
 
-        with self._memLock:
+        with self._txnLock:
             for offset, ba in self._wrValues.items():
                 # _verValues will not be filled until waitTransaction completes
-                self._verValues[offset] = self._rawTxnChunker(offset, None, self._base, self._stride, self._wordBitSize, txnType=rim.Verify, numWords=len(ba))
+                self._verValues[offset] = self._txnChunker(offset, None, self._base, self._stride, self._wordBitSize, txnType=rim.Verify, numWords=len(ba))
 
     def checkBlocks(self, recurse=True, variable=None):
-        with self._memLock:
+        with self._txnLock:
             # Wait for all txns to complete
             self._waitTransaction(0)
 
@@ -148,3 +150,44 @@ class MemoryDevice(pr.Device):
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         pass
+
+    @pr.expose
+    @property
+    def size(self):
+        return self._size
+
+    def _txnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
+
+        if not isinstance(base, pr.Model):
+            base = base(wordBitSize)
+
+        if offset + (numWords * stride) > self._size:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 msg='Raw transaction outside of device size')
+
+        if base.bitSize > stride*8:
+            raise pr.MemoryError(name=self.name, address=offset|self.address,
+                                 msg='Called raw memory access with wordBitSize > stride')
+
+        if txnType == rim.Write or txnType == rim.Post:
+            if isinstance(data, bytearray):
+                ldata = data
+            elif isinstance(data, collections.abc.Iterable):
+                ldata = b''.join(base.toBytes(word) for word in data)
+            else:
+                ldata = base.toBytes(data)
+
+        else:
+            if data is not None:
+                ldata = data
+            else:
+                ldata = bytearray(numWords*stride)
+
+        with self._txnLock:
+            for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
+                sliceOffset = i | self.offset
+                txnSize = min(self._reqMaxAccess(), len(ldata)-(i-offset))
+                #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
+                self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
+
+            return ldata

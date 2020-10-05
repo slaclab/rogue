@@ -258,15 +258,23 @@ class AxiVersion(pr.Device):
         for i in range(4):
             for j in range(4):
                 for k in range(4):
-                    self.add(pr.LocalVariable(name = f'TestArray[{i}][{j}][{k}]',value=0))
+                    self.add(pr.LocalVariable(name = f'TestArray[{i}][{j}][{k}]',
+                                              guiGroup='TestArray',
+                                              value=0))
 
-        self.add(pr.LocalVariable(name = 'TestArray[4][5]',value=0))
-        self.add(pr.LocalVariable(name = 'TestArray[6]',value=0))
+        self.add(pr.LocalVariable(name = 'TestArray[4][5]',
+                                  guiGroup='TestArray',
+                                  value=0))
+        self.add(pr.LocalVariable(name = 'TestArray[6]',
+                                  guiGroup='TestArray',
+                                  value=0))
 
         #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
 
         for i in range(2):
-            self.add(pr.LocalVariable(name = f'TestArray2[{i}]',value=0))
+            self.add(pr.LocalVariable(name = f'TestArray2[{i}]',
+                                      guiGroup='TestArray',
+                                      value=0))
 
         self.add(pr.RemoteVariable(
             name         = 'TestSpareArray[5][5]',

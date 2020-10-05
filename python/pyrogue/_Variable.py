@@ -16,6 +16,7 @@ import threading
 import re
 import time
 import shlex
+import numpy as np
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -123,7 +124,8 @@ class BaseVariable(pr.Node):
                  updateNotify=True,
                  typeStr='Unknown',
                  bulkOpEn=True,
-                 offset=0):
+                 offset=0,
+                 guiGroup=None):
 
         # Public Attributes
         self._bulkOpEn      = bulkOpEn
@@ -161,13 +163,15 @@ class BaseVariable(pr.Node):
         if enum is not None:
             self._disp = 'enum'
 
-        if value is not None and isinstance(value, list):
+        if value is not None and (isinstance(value, list) or isinstance(value, np.ndarray)):
             self._isList = True
 
         # Determine typeStr from value type
         if typeStr == 'Unknown' and value is not None:
             if isinstance(value, list):
                 self._typeStr = f'{value[0].__class__.__name__}[]'
+            elif isinstance(value, np.ndarray):
+                self._typeStr = str(value.dtype).capitalize() + '[np]'
             else:
                 self._typeStr = value.__class__.__name__
         else:
@@ -184,7 +188,7 @@ class BaseVariable(pr.Node):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups)
+        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
 
     @pr.expose
     @property
@@ -589,7 +593,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  overlapEn=False,
                  bulkOpEn=True,
                  verify=True,
-                 retryCount=0):
+                 retryCount=0,
+                 guiGroup=None):
 
         if disp is None:
             disp = base.defaultdisp
@@ -636,7 +641,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               minimum=minimum, maximum=maximum, bulkOpEn=bulkOpEn,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify)
+                              pollInterval=pollInterval,updateNotify=updateNotify,
+                              guiGroup=guiGroup)
 
         self._typeStr = self._base.name
 
@@ -812,7 +818,8 @@ class LocalVariable(BaseVariable):
                  typeStr='Unknown',
                  pollInterval=0,
                  updateNotify=True,
-                 bulkOpEn=True):
+                 bulkOpEn=True,
+                 guiGroup=None):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -823,7 +830,8 @@ class LocalVariable(BaseVariable):
                               minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn)
+                              pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
+                              guiGroup=guiGroup)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
