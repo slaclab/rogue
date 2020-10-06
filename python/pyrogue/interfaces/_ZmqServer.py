@@ -11,6 +11,7 @@
 #-----------------------------------------------------------------------------
 
 import rogue.interfaces
+import pickle
 import jsonpickle
 
 
@@ -20,42 +21,38 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
 
-    def encode(self,data,rawStr):
+    def _doOperation(self,d):
+        path    = d['path']   if 'path'   in d else None
+        attr    = d['attr']   if 'attr'   in d else None
+        args    = d['args']   if 'args'   in d else ()
+        kwargs  = d['kwargs'] if 'kwargs' in d else {}
 
-        if rawStr and isinstance(data,str):
-            return data
+        # Special case to get root node
+        if path == "__ROOT__":
+            return self._root
+
+        node = self._root.getNode(path)
+
+        if node is None:
+            return None
+
+        nAttr = getattr(node, attr)
+
+        if nAttr is None:
+            return None
+        elif callable(nAttr):
+            return nAttr(*args,**kwargs)
         else:
-            return jsonpickle.encode(data)
+            return nAttr
 
     def _doRequest(self,data):
         try:
-            d = jsonpickle.decode(data)
-
-            path    = d['path']   if 'path'   in d else None
-            attr    = d['attr']   if 'attr'   in d else None
-            args    = d['args']   if 'args'   in d else ()
-            kwargs  = d['kwargs'] if 'kwargs' in d else {}
-            rawStr  = d['rawStr'] if 'rawStr' in d else False
-
-            # Special case to get root node
-            if path == "__ROOT__":
-                return self.encode(self._root,rawStr=False)
-
-            node = self._root.getNode(path)
-
-            if node is None:
-                return self.encode(None,rawStr=False)
-
-            nAttr = getattr(node, attr)
-
-            if nAttr is None:
-                resp = None
-            elif callable(nAttr):
-                resp = nAttr(*args,**kwargs)
-            else:
-                resp = nAttr
-
-            return self.encode(resp,rawStr=rawStr)
-
+            return pickle.dumps(self._doOperation(pickle.loads(data)))
         except Exception as msg:
-            return self.encode(msg,rawStr=False)
+            return pickle.dumps(msg)
+
+    def _doString(self,data):
+        try:
+            return str(self._doOperation(jsonpickle.decode(data)))
+        except Exception as msg:
+            return "EXCEPTION: " + str(msg)

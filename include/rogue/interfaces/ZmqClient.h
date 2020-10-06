@@ -36,7 +36,7 @@ namespace rogue {
             // Zeromq publish port
             void * zmqSub_;
 
-            // Zeromq response port
+            // Zeromq request port
             void * zmqReq_;
 
             //! Log
@@ -48,6 +48,8 @@ namespace rogue {
 
             std::thread   * thread_;
             bool threadEn_;
+            bool running_;
+            bool doString_;
 
             void runThread();
 
@@ -58,19 +60,12 @@ namespace rogue {
             //! Setup class in python
             static void setup_python();
 
-            ZmqClient (std::string addr, uint16_t port);
+            ZmqClient (std::string addr, uint16_t port, bool doString);
             virtual ~ZmqClient();
 
             void setTimeout(uint32_t msecs, bool waitRetry);
 
-            std::string send(std::string value);
-
-            void stop();
-
-            virtual void doUpdate (std::string data);
-
-
-            std::string sendWrapper(std::string path, std::string attr, std::string arg, bool rawStr);
+            std::string sendString(std::string path, std::string attr, std::string arg);
 
             std::string getDisp(std::string path);
 
@@ -79,6 +74,14 @@ namespace rogue {
             std::string exec(std::string path, std::string arg = "");
 
             std::string valueDisp(std::string path);
+
+#ifndef NO_PYTHON
+            boost::python::object send(boost::python::object data);
+
+            virtual void doUpdate (boost::python::object data);
+#endif
+
+            void stop();
 
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
@@ -92,11 +95,11 @@ namespace rogue {
 
          public:
 
-            ZmqClientWrap (std::string addr, uint16_t port);
+            ZmqClientWrap (std::string addr, uint16_t port, bool doString);
 
-            void doUpdate  ( std::string data );
+            void doUpdate  ( boost::python::object data );
 
-            void defDoUpdate  ( std::string data );
+            void defDoUpdate  ( boost::python::object data );
       };
 
       typedef std::shared_ptr<rogue::interfaces::ZmqClientWrap> ZmqClientWrapPtr;

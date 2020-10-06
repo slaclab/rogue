@@ -12,7 +12,7 @@
 
 import pyrogue as pr
 import rogue.interfaces
-import jsonpickle
+import pickle
 import time
 import threading
 
@@ -207,7 +207,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         VirtualClient.ClientCache[hash((addr, port))] = self
 
-        rogue.interfaces.ZmqClient.__init__(self,addr,port)
+        rogue.interfaces.ZmqClient.__init__(self,addr,port,False)
         self._varListeners = []
         self._monitors = []
         self._root  = None
@@ -270,11 +270,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
 
     def _remoteAttr(self, path, attr, *args, **kwargs):
-        snd = { 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs }
-        y = jsonpickle.encode(snd)
         try:
-            resp = self._send(y)
-            ret = jsonpickle.decode(resp)
+            ret = pickle.loads(self._send(pickle.dumps({ 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs })))
         except Exception as e:
             raise Exception(f"ZMQ Interface Exception: {e}")
 
@@ -293,7 +290,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         if self._root is None:
             return
 
-        d = jsonpickle.decode(data)
+        d = pickle.loads(data)
 
         for k,val in d.items():
             n = self._root.getNode(k,False)
