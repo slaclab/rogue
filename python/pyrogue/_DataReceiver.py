@@ -101,12 +101,20 @@ class DataReceiver(pr.Device,ris.Slave):
         self.Data.set(dat,write=True)
         self.Updated.set(True,write=True)
 
-
     def _start(self):
         super()._start()
         self._rxEnable = True
 
-
     def _stop(self):
         self._rxEnable = False
         super()._stop()
+
+    # source >> destination
+    def __rshift__(self,other):
+        pr.streamConnect(self,other)
+        return other
+
+    # destination << source
+    def __lshift__(self,other):
+        pr.streamConnect(other,self)
+        return other
