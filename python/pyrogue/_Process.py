@@ -27,12 +27,12 @@ class Process(pr.Device):
 
         self.add(pr.LocalCommand(
             name='Start',
-            function=self._start,
+            function=self._startProcess,
             description='Start process.'))
 
         self.add(pr.LocalCommand(
             name='Stop',
-            function=self._stop,
+            function=self._stopProcess,
             description='Stop process.'))
 
         self.add(pr.LocalVariable(
@@ -60,7 +60,7 @@ class Process(pr.Device):
             pollInterval=1.0,
             description='Process status message. Prefix with Error: if an error occurred.'))
 
-    def _start(self):
+    def _startProcess(self):
         with self._lock:
             if self.Running.value() is False:
                 self._runEn  = True
@@ -69,9 +69,13 @@ class Process(pr.Device):
             else:
                 self._log.warning("Process already running!")
 
-    def _stop(self):
+    def _stopProcess(self):
         with self._lock:
             self._runEn  = False
+
+    def _stop(self):
+        self._stopProcess()
+        pr.Device._stop(self)
 
     def __call__(self,arg=None):
         with self._lock:
