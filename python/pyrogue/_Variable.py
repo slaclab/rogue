@@ -201,7 +201,8 @@ class BaseVariable(pr.Node):
             try:
                 return int(res[2])
             except:
-                return 3
+                #return 3
+                return 1
         else:
             return 0
 
