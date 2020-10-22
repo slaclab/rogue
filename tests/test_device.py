@@ -346,6 +346,11 @@ class AxiVersion(pr.Device):
             mode = 'RW',
             value = ''))
 
+        self.add(pr.LocalVariable(
+            name = 'TestFloatConv',
+            mode = 'RO',
+            value = 614.4))
+
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
             return('Got {}'.format(arg))
