@@ -293,11 +293,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
-        self.add(pr.LocalCommand(name='Restart', function=self._restart,
-                                 description='Restart and reload the server application'))
+        #self.add(pr.LocalCommand(name='Restart', function=self._restart,
+        #                         description='Restart and reload the server application'))
 
-        self.add(pr.LocalCommand(name='Exit', function=self._exit,
-                                 description='Exit the server application'))
+        #self.add(pr.LocalCommand(name='Exit', function=self._exit,
+        #                         description='Exit the server application'))
 
 
     def start(self, **kwargs):
@@ -673,14 +673,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             with self.updateGroup():
                 self.Time.set(time.time())
 
-    def _exit(self):
-        self.stop()
-        exit()
+    #def _exit(self):
+    #    self.stop()
+    #    exit()
 
-    def _restart(self):
-        self.stop()
-        py = sys.executable
-        os.execl(py, py, *sys.argv)
+    #def _restart(self):
+    #    self.stop()
+    #    py = sys.executable
+    #    os.execl(py, py, *sys.argv)
 
     def _rootAttached(self):
         self._parent = self
