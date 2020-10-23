@@ -102,7 +102,7 @@ class DummyTree(pr.Root):
                 memBase    = sim,
             ))
 
-def test_memory():
+def test_int():
 
     with DummyTree() as root:
 
@@ -125,4 +125,4 @@ def test_memory():
 
 
 if __name__ == "__main__":
-    test_memory()
+    test_int()
