@@ -903,7 +903,7 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
          throw(rogue::GeneralError::create("Block::setIntPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
 
       for (x=0; x < var->numValues_; x++) {
-         bp::extract<uint64_t> tmp(vl[x]);
+         bp::extract<int64_t> tmp(vl[x]);
 
          if ( !tmp.check() )
             throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
@@ -913,7 +913,7 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
       }
    }
    else {
-      bp::extract<uint64_t> tmp(value);
+      bp::extract<int64_t> tmp(value);
 
       if ( !tmp.check() )
          throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
@@ -957,6 +957,7 @@ void rim::Block::setInt ( const int64_t &val, rim::Variable *var, int32_t index 
       throw(rogue::GeneralError::create("Block::setInt",
          "Value range error for %s. Value=%" PRId64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
+   // This works because all bits between the msb and bit 64 are set to '1' for a negative value
    setBytes((uint8_t *)&val,var,index);
 }
 
