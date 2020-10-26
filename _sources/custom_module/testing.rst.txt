@@ -56,7 +56,7 @@ The output of this python script should be the following (with a different rogue
 Testing With EPICS
 ==================
 
-The following scripts is similiar to the above but exposes the variables 
+The following scripts is similiar to the above but exposes the variables
 to epics to allow external control.
 
 .. code:: python
@@ -108,7 +108,7 @@ In the first terminal:
 
 .. code::
 
-   $ python myEpicsTest.py 
+   $ python myEpicsTest.py
    Rogue/pyrogue version v3.3.1-4-gd384a633. https://github.com/slaclab/rogue
    Loaded my module
    myTest:MyRoot:enable -> MyRoot.enable
@@ -144,14 +144,14 @@ pass a value of 0 to keep epics happy.
    $ caget myTest:MyRoot:testMaster:FrameCount
    myTest:MyRoot:testMaster:FrameCount 0
 
-   $ caget myTest:MyRoot:testSlave:FrameCount 
+   $ caget myTest:MyRoot:testSlave:FrameCount
    myTest:MyRoot:testSlave:FrameCount 0
 
    $ caput myTest:MyRoot:testMaster:FrameSize 210
    Old : myTest:MyRoot:testMaster:FrameSize 0
    New : myTest:MyRoot:testMaster:FrameSize 210
 
-   $ caput myTest:MyRoot:testMaster:MyFrameGen 0  
+   $ caput myTest:MyRoot:testMaster:MyFrameGen 0
    Old : myTest:MyRoot:testMaster:MyFrameGen 0
    New : myTest:MyRoot:testMaster:MyFrameGen 0
 
@@ -159,7 +159,7 @@ pass a value of 0 to keep epics happy.
    Old : myTest:MyRoot:testMaster:MyFrameGen 0
    New : myTest:MyRoot:testMaster:MyFrameGen 0
 
-   $ caget myTest:MyRoot:testMaster:FrameCount   
+   $ caget myTest:MyRoot:testMaster:FrameCount
    myTest:MyRoot:testMaster:FrameCount 2
 
    $ caget myTest:MyRoot:testMaster:ByteCount
@@ -187,7 +187,7 @@ to start one or more remote GUIs. That process is described in TBD.
    import MyWrapper
    import time
    import pyrogue.protocols.epics
-   import pyrogue.gui
+   import pyrogue.pydm
    import sys
 
    class TestRoot(pyrogue.Root):
@@ -217,18 +217,11 @@ to start one or more remote GUIs. That process is described in TBD.
 
    with TestRoot() as r:
        print("Running")
-
-       # Create GUI
-       appTop = pyrogue.gui.application(sys.argv)
-       guiTop = pyrogue.gui.GuiTop(group='myTest')
-       guiTop.addTree(r)
-
-       # Run gui
-       appTop.exec_()
+       pyrogue.pydm.runPyDM(root=r,title='MyGui')
 
 You can then start the server:
 
 .. code::
 
-   $ python myEpicsGuiTest.py 
+   $ python myEpicsGuiTest.py
 
