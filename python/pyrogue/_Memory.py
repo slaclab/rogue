@@ -41,7 +41,7 @@ class MemoryDevice(pr.Device):
             enabled=enabled,
         )
 
-        self._size    = size
+        self._rawSize = size
         self._txnLock = threading.RLock()
 
         if isinstance(base, pr.Model):
@@ -140,7 +140,7 @@ class MemoryDevice(pr.Device):
                     msg += f'Expected: \n {self._wrValues} \n'
                     msg += f'Got: \n {checkValues}'
                     print(msg)
-                    raise MemoryError(name=self.name, address=self.address, msg=msg, size=self._size)
+                    raise MemoryError(name=self.name, address=self.address, msg=msg, size=self._rawSize)
 
 
             # destroy the txn maps when done with verify
@@ -154,14 +154,14 @@ class MemoryDevice(pr.Device):
     @pr.expose
     @property
     def size(self):
-        return self._size
+        return self._rawSize
 
     def _txnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
 
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
 
-        if offset + (numWords * stride) > self._size:
+        if offset + (numWords * stride) > self._rawSize:
             raise pr.MemoryError(name=self.name, address=offset|self.address,
                                  msg='Raw transaction outside of device size')
 

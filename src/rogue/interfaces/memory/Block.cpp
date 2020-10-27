@@ -457,7 +457,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
       bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",(*vit)->name_.c_str(),path_.c_str(),offset_);
    }
 
-   // Init overlap enable before check
+   // Init overlap enable before check, block level overlap enable flag will be removed in the future
    overlapEn_ = true;
 
    // Check for overlaps by anding exclusive and overlap bit vectors

@@ -148,6 +148,16 @@ class Device(pr.Node,rim.Hub):
         self._size       = size
         self._defaults   = defaults if defaults is not None else {}
 
+        if size != 0:
+            print("")
+            print("============ Deprecation Warning =========================")
+            print(f" Detected non zero size for Device {name}")
+            print(" Creating devices with a non zero size to enable rawWrite ")
+            print(" and rawRead is now deprecated.                           ")
+            print(" The Device size attribute will be removed in a future    ")
+            print(" Rogue release                                            ")
+            print("==========================================================")
+
         self._ifAndProto = []
 
         self.forceCheckEach = False

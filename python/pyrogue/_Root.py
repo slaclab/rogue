@@ -96,17 +96,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def __enter__(self):
         """Root enter."""
-
-        if self._running:
-            print("")
-            print("=======================================================================")
-            print("Detected 'with Root() as root' call after start() being called in")
-            print("Root's __init__ method. It is no longer recommended to call")
-            print("start() in a Root class's init() method! Instead start() should")
-            print("be re-implemented to startup sub-modules such as epics!")
-            print("=======================================================================")
-        else:
-            self.start()
+        self.start()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
@@ -300,42 +290,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         #                         description='Exit the server application'))
 
 
-    def start(self, **kwargs):
+    def start(self):
         """Setup the tree. Start the polling thread."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
-
-        # Deprecation Warning
-        if len(kwargs) != 0:
-            print("")
-            print("==========================================================")
-            print(" Passing startup args in start() method is now deprecated.")
-            print(" Startup args should now be passed to the root creator.   ")
-            print("    Example: pyrogue.Root(timeout=1.0, pollEn=True)       ")
-            print("==========================================================")
-
-            # Override startup parameters if passed in start()
-            if 'streamIncGroups' in kwargs:
-                self._streamIncGroups = kwargs['streamIncGroups']
-            if 'streamExcGroups' in kwargs:
-                self._streamExcGroups = kwargs['streamExcGroups']
-            if 'sqlIncGroups'    in kwargs:
-                self._sqlIncGroups    = kwargs['sqlIncGroups']
-            if 'sqlExcGroups'    in kwargs:
-                self._sqlExcGroups    = kwargs['sqlExcGroups']
-            if 'timeout'         in kwargs:
-                self._timeout         = kwargs['timeout']
-            if 'initRead'        in kwargs:
-                self._initRead        = kwargs['initRead']
-            if 'initWrite'       in kwargs:
-                self._initWrite       = kwargs['initWrite']
-            if 'pollEn'          in kwargs:
-                self._pollEn          = kwargs['pollEn']
-            if 'serverPort'      in kwargs:
-                self._serverPort      = kwargs['serverPort']
-            if 'sqlUrl'          in kwargs:
-                self._sqlUrl          = kwargs['sqlUrl']
 
         # Call special root level rootAttached
         self._rootAttached()
@@ -364,12 +323,27 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
                 # Check for instances when device comes before block and when block comes before device
+                # This will be removed in the future and an error will always be raised
                 if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
                         (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
 
                     raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
                                        tmpList[i].path,tmpList[i].address,
                                        tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
+
+                # Deprecation Error
+                print("")
+                print("========== Deprecation Warning ===============================")
+                print(" Detected overlap between the following Devices/Blocks        ")
+                print("    {} at address={:#x} wht size {}".format(tmpList[i].path,tmpList[i].address,tmpList[i].size))
+                print("    {} at address={:#x} wht size {}".format(tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
+                print(" Creating these types of overlaps can generate inconsistencies")
+                print(" in the variable state and can cause errors. Please consider  ")
+                print(" using a listDevice and or a MemoryDevice class instead.      ")
+                print(" Link variables can be used to map multiple variables to the  ")
+                print(" underlying address space. Future releases of Rogue will treat")
+                print(" these overlaps as errors.")
+                print("==============================================================")
 
         # Set timeout if not default
         if self._timeout != 1.0:
