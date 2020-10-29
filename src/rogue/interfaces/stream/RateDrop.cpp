@@ -25,6 +25,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/RateDrop.h>
 #include <rogue/Logging.h>
+#include <sys/time.h>
 
 namespace ris = rogue::interfaces::stream;
 
