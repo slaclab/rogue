@@ -264,7 +264,7 @@ void rogue::interfaces::ZmqServer::runThread() {
       if ( zmq_recvmsg(this->zmqRep_,&rxMsg,0) > 0 ) {
 
 #ifndef NO_PYTHON
-	Py_buffer valueBuf;
+         Py_buffer valueBuf;
          rogue::ScopedGil gil;
          PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
          bp::handle<> handle(val);
