@@ -253,7 +253,6 @@ std::string rogue::interfaces::ZmqServerWrap::defDoString ( std::string data ) {
 void rogue::interfaces::ZmqServer::runThread() {
    zmq_msg_t rxMsg;
    zmq_msg_t txMsg;
-   Py_buffer valueBuf;
 
    log_->logThreadId();
    log_->info("Started Rogue server thread");
@@ -265,6 +264,7 @@ void rogue::interfaces::ZmqServer::runThread() {
       if ( zmq_recvmsg(this->zmqRep_,&rxMsg,0) > 0 ) {
 
 #ifndef NO_PYTHON
+         Py_buffer valueBuf;
          rogue::ScopedGil gil;
          PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
          bp::handle<> handle(val);
