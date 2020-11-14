@@ -398,11 +398,11 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 if ( NOT DEFINED ENV{DESTDIR} )
 
    # Always install core libraries and config files
-   if (STATIC_LIB)
-      install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
-   endif()
+   #   if (STATIC_LIB)
+   #   install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+   #endif()
 
-   install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+   #install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 endif()
 
 install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
