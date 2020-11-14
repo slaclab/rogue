@@ -228,14 +228,13 @@ if ( NOT ROGUE_VERSION )
          COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
          OUTPUT_VARIABLE ROGUE_VERSION
          OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-      string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
    else()
       message("")
       message(FATAL_ERROR "Git is required to build rogue!")
    endif()
 endif()
 
+string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
 
 #####################################
 # Setup Type and Directories
