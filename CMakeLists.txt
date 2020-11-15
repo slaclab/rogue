@@ -257,7 +257,7 @@ elseif (NOT ROGUE_DIR)
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}/rogue")
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}")
-   elseif ( DEFINED ENV{DESTDIR} )
+   elseif (DEFINED ENV{DESTDIR})
       set (ROGUE_DIR "$ENV{DESTDIR}/${CMAKE_INSTALL_PREFIX}")
    else()
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
@@ -393,19 +393,24 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 # Install Setup
 #####################################
+#    CMAKE_INSTALL_BINDIR
+#    CMAKE_INSTALL_DATAROOTDIR
+#    CMAKE_INSTALL_INCLUDEDIR
+#    CMAKE_INSTALL_LIBDIR
+#    CMAKE_INSTALL_LIBEXECDIR
+#    CMAKE_INSTALL_LOCALSTATEDIR
+#    CMAKE_INSTALL_SBINDIR
+#    CMAKE_INSTALL_SHAREDSTATEDIR
+#    CMAKE_INSTALL_SYSCONFDIR
 
-# DONT Do Install If DESTDIR is defined
-if ( NOT DEFINED ENV{DESTDIR} )
-
-   # Always install core libraries and config files
-   #   if (STATIC_LIB)
-   #   install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
-   #endif()
-
-   #install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+# Always install core libraries and config files
+if (STATIC_LIB)
+   #install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+   install(TARGETS rogue-core-static LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
+#install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
+install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
@@ -414,7 +419,8 @@ endif()
 
 # Install header files for non local installs
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
-   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+   #install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
 endif()
 
 # Conda activate and deactivate functions
