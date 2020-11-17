@@ -50,8 +50,10 @@ if ( NOT NO_PYTHON )
       COMMAND python3 -c "import numpy; print(numpy.get_include(), end='')"
       RESULT_VARIABLE Python3_NumPy_RESULT
       OUTPUT_VARIABLE Python3_NumPy_INCLUDE_DIRS
-      ERROR_QUIET
       OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+   #ERROR_QUIET
+
 
    if (Python3_NumPy_RESULT)
       message("")
