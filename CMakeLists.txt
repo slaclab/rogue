@@ -443,8 +443,8 @@ if (NOT NO_PYTHON)
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
    # Use setuptools with python3 for system
-   elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
+   #   elseif (${ROGUE_INSTALL} STREQUAL "system")
+   #   install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
 
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
