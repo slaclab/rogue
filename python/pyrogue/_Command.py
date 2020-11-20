@@ -281,5 +281,5 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             pr.logException(self._log,e)
             raise e
 
-# Alias
+# Alias, this should go away
 Command = BaseCommand
