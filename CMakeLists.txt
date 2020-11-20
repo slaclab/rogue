@@ -444,12 +444,12 @@ if (NOT NO_PYTHON)
 
    # Use setuptools with python3 for system
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
+      install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
 
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
       install(CODE "execute_process(COMMAND python
-              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR})")
+              ${PROJECT_BINARY_DIR}/setup.py install --prefix=${ROGUE_DIR})")
    endif()
 
    # Do byte compile for custom or local
