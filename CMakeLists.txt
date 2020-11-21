@@ -37,6 +37,9 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
+SET(CMAKE_SKIP_BUILD_RPATH TRUE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
 #####################################
 # Boost + Python
@@ -264,6 +267,14 @@ elseif (NOT ROGUE_DIR)
    endif()
 endif()
 
+if ( NOT CMAKE_INSTALL_LIBDIR )
+   set (CMAKE_INSTALL_LIBDIR "${ROGUE_DIR}/lib")
+endif()
+
+if ( NOT CMAKE_INSTALL_INCLUDEDIR )
+   set (CMAKE_INSTALL_INCLUDEDIR "${ROGUE_DIR}/include")
+endif()
+
 
 #####################################
 # Setup build, core library
@@ -393,26 +404,14 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 #####################################
 # Install Setup
 #####################################
-#    CMAKE_INSTALL_BINDIR
-#    CMAKE_INSTALL_DATAROOTDIR
-#    CMAKE_INSTALL_INCLUDEDIR
-#    CMAKE_INSTALL_LIBDIR
-#    CMAKE_INSTALL_LIBEXECDIR
-#    CMAKE_INSTALL_LOCALSTATEDIR
-#    CMAKE_INSTALL_SBINDIR
-#    CMAKE_INSTALL_SHAREDSTATEDIR
-#    CMAKE_INSTALL_SYSCONFDIR
 
 # Always install core libraries and config files
 if (STATIC_LIB)
-   #install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
    install(TARGETS rogue-core-static LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-#install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 install(TARGETS rogue-core-shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-#install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 # Copy setup files for local or custom
@@ -422,7 +421,6 @@ endif()
 
 # Install header files for non local installs
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
-   #install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
    install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
 endif()
 
