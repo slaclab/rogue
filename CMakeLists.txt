@@ -373,16 +373,16 @@ endif()
 #########################################
 # Configuration & Setup Script Generation
 #########################################
-set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
+set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
    set(CONF_LIBRARIES PUBLIC rogue-core)
 else()
    if (APPLE)
-      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
+      set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
    else()
-      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+      set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.so.${ROGUE_SOVER})
    endif()
 endif()
 
