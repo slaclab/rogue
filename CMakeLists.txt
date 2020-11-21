@@ -37,6 +37,9 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
+SET(CMAKE_SKIP_BUILD_RPATH TRUE)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
 #####################################
 # Boost + Python
@@ -228,14 +231,13 @@ if ( NOT ROGUE_VERSION )
          COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
          OUTPUT_VARIABLE ROGUE_VERSION
          OUTPUT_STRIP_TRAILING_WHITESPACE)
-
-      string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
    else()
       message("")
       message(FATAL_ERROR "Git is required to build rogue!")
    endif()
 endif()
 
+string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
 
 #####################################
 # Setup Type and Directories
@@ -261,6 +263,14 @@ elseif (NOT ROGUE_DIR)
    else()
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
    endif()
+endif()
+
+if ( NOT CMAKE_INSTALL_LIBDIR )
+   set (CMAKE_INSTALL_LIBDIR "${ROGUE_DIR}/lib")
+endif()
+
+if ( NOT CMAKE_INSTALL_INCLUDEDIR )
+   set (CMAKE_INSTALL_INCLUDEDIR "${ROGUE_DIR}/include")
 endif()
 
 
@@ -361,16 +371,16 @@ endif()
 #########################################
 # Configuration & Setup Script Generation
 #########################################
-set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
+set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
    set(CONF_LIBRARIES PUBLIC rogue-core)
 else()
    if (APPLE)
-      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
+      set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.${ROGUE_SOVER}.dylib)
    else()
-      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
+      set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.so.${ROGUE_SOVER})
    endif()
 endif()
 
@@ -395,12 +405,12 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
 
 # Always install core libraries and config files
 if (STATIC_LIB)
-   install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+   install(TARGETS rogue-core-static LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 endif()
 
-install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
+install(TARGETS rogue-core-shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
-install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
+install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
@@ -409,7 +419,7 @@ endif()
 
 # Install header files for non local installs
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
-   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
 endif()
 
 # Conda activate and deactivate functions
@@ -430,12 +440,12 @@ if (NOT NO_PYTHON)
 
    # Use setuptools with python3 for system
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
+      install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
 
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
       install(CODE "execute_process(COMMAND python
-              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR})")
+              ${PROJECT_BINARY_DIR}/setup.py install --prefix=${ROGUE_DIR})")
    endif()
 
    # Do byte compile for custom or local

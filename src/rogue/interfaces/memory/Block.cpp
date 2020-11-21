@@ -345,7 +345,7 @@ bool rim::Block::checkTransaction() {
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
                throw(rogue::GeneralError::create("Block::checkTransaction",
-                  "Verify error for block %s with address 0x%.8x. Index: %i. Got: 0x%.2x, Exp: 0x%.2x, Mask: 0x%.2x",
+                  "Verify error for block %s with address 0x%.8x. Byte: %i. Got: 0x%.2x, Exp: 0x%.2x, Mask: 0x%.2x",
                   path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
             }
          }
