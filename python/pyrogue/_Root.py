@@ -21,7 +21,7 @@ import pyrogue.interfaces
 import functools as ft
 import time
 import queue
-import jsonpickle
+import json
 import pickle
 import zipfile
 import traceback
@@ -68,7 +68,7 @@ class RootLogHandler(logging.Handler):
                     if len(msg) > 1:
                         msg += ',\n'
 
-                    msg += jsonpickle.encode(se) + ']'
+                    msg += json.dumps(se) + ']'
                     self._root.SystemLog.set(msg)
                     #print(f"Error: {msg}")
 

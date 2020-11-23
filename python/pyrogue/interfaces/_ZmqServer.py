@@ -12,7 +12,7 @@
 
 import rogue.interfaces
 import pickle
-import jsonpickle
+import json
 
 
 class ZmqServer(rogue.interfaces.ZmqServer):
@@ -53,6 +53,6 @@ class ZmqServer(rogue.interfaces.ZmqServer):
 
     def _doString(self,data):
         try:
-            return str(self._doOperation(jsonpickle.decode(data)))
+            return str(self._doOperation(json.loads(data)))
         except Exception as msg:
             return "EXCEPTION: " + str(msg)

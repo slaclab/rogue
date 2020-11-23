@@ -14,7 +14,7 @@ from pyrogue.interfaces._SimpleClient import *
 from pyrogue.interfaces._SqlLogging   import *
 
 import time
-import jsonpickle
+import json
 
 # Common class for system log display
 class SystemLogMonitor(object):
@@ -24,7 +24,7 @@ class SystemLogMonitor(object):
         self._logCount = 0
 
     def processLogString(self, logstr):
-        lst = jsonpickle.decode(logstr)
+        lst = json.loads(logstr)
 
         if len(lst) > self._logCount:
             for i in range(self._logCount,len(lst)):
