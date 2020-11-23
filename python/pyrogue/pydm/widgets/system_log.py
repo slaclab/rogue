@@ -15,7 +15,7 @@ from pydm.widgets import PyDMPushButton
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QTreeWidgetItem, QTreeWidget, QGroupBox
-import jsonpickle
+import json
 import time
 
 
@@ -59,7 +59,7 @@ class SystemLog(PyDMFrame):
         vb.addWidget(self._pb)
 
     def value_changed(self, new_val):
-        lst = jsonpickle.decode(new_val)
+        lst = json.loads(new_val)
 
         if len(lst) == 0:
             self._systemLog.clear()

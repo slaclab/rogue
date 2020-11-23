@@ -19,7 +19,7 @@ from PyQt5.QtGui     import QPalette
 
 import pyrogue
 import datetime
-import jsonpickle
+import json
 import time
 
 
@@ -461,7 +461,7 @@ class SystemWidget(QWidget):
 
     @pyqtSlot(str)
     def updateSyslog(self,value):
-        lst = jsonpickle.decode(value)
+        lst = json.loads(value)
 
         if len(lst) == 0:
             self.systemLog.clear()
