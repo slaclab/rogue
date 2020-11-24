@@ -60,7 +60,7 @@ Update the ROGUE_VERSION line for an updated version when appropriate (min versi
 
 If your rogue application requires additional python libraries you can add them to the DEPENDS += line in the above text.
 
-To enable compilation and installation of the rogue package in your petalinux project execuate the following command:
+To enable compilation and installation of the rogue package in your petalinux project execute the following command:
 
 .. code::
 
