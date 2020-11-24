@@ -27,6 +27,7 @@
 ./_sources/installing/docker.rst.txt
 ./_sources/installing/firewall.rst.txt
 ./_sources/installing/index.rst.txt
+./_sources/installing/petalinux.rst.txt
 ./_sources/installing/windows.rst.txt
 ./_sources/interfaces/cpp_api.rst.txt
 ./_sources/interfaces/index.rst.txt
@@ -192,6 +193,7 @@
 ./installing/docker.html
 ./installing/firewall.html
 ./installing/index.html
+./installing/petalinux.html
 ./installing/windows.html
 ./interfaces/cpp_api.html
 ./interfaces/index.html

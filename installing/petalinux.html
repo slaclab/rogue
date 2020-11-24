@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Rogue and Anaconda behind a firewall &mdash; Rogue v5.6.1-2-gcf6aa1ca documentation</title>
+  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.6.1-2-gcf6aa1ca documentation</title>
   
 
   
@@ -36,8 +36,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Setting Up Ubuntu On Windows" href="windows.html" />
-    <link rel="prev" title="Compiling A Rogue Application" href="application.html" /> 
+    <link rel="prev" title="Setting Up Ubuntu On Windows" href="windows.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,9 +97,9 @@
 <li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Rogue and Anaconda behind a firewall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
-<li class="toctree-l2"><a class="reference internal" href="petalinux.html">Setting Up Rogue In Petalinux</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Rogue In Petalinux</a></li>
 </ul>
 </li>
 </ul>
@@ -151,13 +150,13 @@
         
           <li><a href="index.html">Installing &amp; Compiling Rogue</a> &raquo;</li>
         
-      <li>Rogue and Anaconda behind a firewall</li>
+      <li>Setting Up Rogue In Petalinux</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/installing/firewall.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/installing/petalinux.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -170,26 +169,63 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="rogue-and-anaconda-behind-a-firewall">
-<span id="installing-firewall"></span><h1>Rogue and Anaconda behind a firewall<a class="headerlink" href="#rogue-and-anaconda-behind-a-firewall" title="Permalink to this headline">¶</a></h1>
-<p>To install rogue and anaconda behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mitmproxy --list-host=gateway.machine.com --list-port=8080
+  <div class="section" id="setting-up-rogue-in-petalinux">
+<span id="installing-petalinux"></span><h1>Setting Up Rogue In Petalinux<a class="headerlink" href="#setting-up-rogue-in-petalinux" title="Permalink to this headline">¶</a></h1>
+<p>First you need to create a blank application in your petalinux project:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">create</span> <span class="o">-</span><span class="n">t</span> <span class="n">apps</span> <span class="o">--</span><span class="n">name</span> <span class="n">rogue</span> <span class="o">--</span><span class="n">template</span> <span class="n">install</span>
 </pre></div>
 </div>
-<p>You will execute a number of steps to enable proxy for wget, git and anaconda</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ setenv https_proxy gateway.machine.com:8080
-$ git config --global https.proxy https://gateway.machine.com:8080
-$ git config --global http.sslVerify false
-</pre></div>
-</div>
-<p>Create a file $HOME/.condarc and add the following lines:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">proxy_servers</span><span class="p">:</span>
-   <span class="n">http</span><span class="p">:</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">gateway</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">8080</span>
-   <span class="n">https</span><span class="p">:</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">gateway</span><span class="o">.</span><span class="n">machine</span><span class="o">.</span><span class="n">com</span><span class="p">:</span><span class="mi">8080</span>
+<p>This will create a directory in project-spec/meta-user/recipes-apps/rogue</p>
+<p>The sub-directory ‘files’ can be ignored or removed.</p>
+<p>You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogue.bb with the following content:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ROGUE_VERSION = &quot;5.6.1&quot;
+ROGUE_MD5SUM  = &quot;710712ef00707473a7707782a05d1de8&quot;
 
-<span class="n">ssl_verify</span><span class="p">:</span> <span class="n">false</span>
+SUMMARY = &quot;Rogue Application&quot;
+SECTION = &quot;PETALINUX/apps&quot;
+LICENSE = &quot;MIT&quot;
+LIC_FILES_CHKSUM = &quot;file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302&quot;
+
+SRC_URI = &quot;https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz&quot;
+SRC_URI[md5sum] = &quot;${ROGUE_MD5SUM}&quot;
+S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}/&quot;
+
+DEPENDS += &quot;python3 python3-numpy python3-native python3-numpy-native cmake boost zeromq bzip2&quot;
+DEPENDS += &quot;python3-pyzmq python3-parse python3-pyyaml python3-click python3-sqlalchemy python3-pyserial&quot;
+
+PROVIDES = &quot;rogue&quot;
+EXTRA_OECMAKE += &quot;-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}&quot;
+
+inherit cmake python3native distutils3
+
+FILES_${PN}-dev += &quot;/usr/include/rogue/*&quot;
+FILES_${PN} += &quot;/usr/lib/*&quot;
+
+do_configure() {
+   cmake_do_configure
+}
+
+do_install() {
+   cmake_do_install
+   distutils3_do_install
+}
 </pre></div>
 </div>
+<p>Update the ROGUE_VERSION line for an updated version when appropriate (min version is 5.6.1). You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">slaclab</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">vx</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+<span class="o">&gt;</span> <span class="n">md5sum</span> <span class="n">vx</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
+</pre></div>
+</div>
+<p>If your rogue application requires additional python libraries you can add them to the DEPENDS += line in the above text.</p>
+<p>To enable compilation and installation of the rogue package in your petalinux project execuate the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">config</span> <span class="n">rootfs</span>
+</pre></div>
+</div>
+<p>and enable the rogue package under ‘user packages’. Save and exit the meny configuration. You can then build the rogue package with the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">c</span> <span class="n">rogue</span>
+</pre></div>
+</div>
+<p>You can then build the petalinux project as normal.</p>
 </div>
 
 
@@ -200,10 +236,8 @@ $ git config --global http.sslVerify false
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="windows.html" class="btn btn-neutral float-right" title="Setting Up Ubuntu On Windows" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="application.html" class="btn btn-neutral float-left" title="Compiling A Rogue Application" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="windows.html" class="btn btn-neutral float-left" title="Setting Up Ubuntu On Windows" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

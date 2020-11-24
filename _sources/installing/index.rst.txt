@@ -19,4 +19,5 @@ This section describes how to obtain and install Rogue.
    application
    firewall
    windows
+   petalinux
 
