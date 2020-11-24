@@ -66,7 +66,16 @@ To enable compilation and installation of the rogue package in your petalinux pr
 
    > petalinux-config rootfs
 
-and enable the rogue package under 'user packages'. Save and exit the meny configuration. You can then build the rogue package with the following command:
+and enable the rogue package under 'user packages'. Save and exit the menu configuration.
+
+In order to install the rogue headers you will need to enable the rogue-dev package by editing project-spec/configs/rootfs_config and adding CONFIG_rogue-dev:
+
+.. code::
+
+   CONFIG_rogue=y
+   CONFIG_rogue-dev=y
+
+You can then build the rogue package with the following command:
 
 .. code::
 
