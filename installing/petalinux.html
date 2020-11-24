@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.6.1-3-g84aba20c documentation</title>
+  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.6.1-5-gf87b30de documentation</title>
   
 
   
@@ -217,11 +217,17 @@ do_install() {
 </pre></div>
 </div>
 <p>If your rogue application requires additional python libraries you can add them to the DEPENDS += line in the above text.</p>
-<p>To enable compilation and installation of the rogue package in your petalinux project execuate the following command:</p>
+<p>To enable compilation and installation of the rogue package in your petalinux project execute the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">config</span> <span class="n">rootfs</span>
 </pre></div>
 </div>
-<p>and enable the rogue package under ‘user packages’. Save and exit the meny configuration. You can then build the rogue package with the following command:</p>
+<p>and enable the rogue package under ‘user packages’. Save and exit the menu configuration.</p>
+<p>In order to install the rogue headers you will need to enable the rogue-dev package by editing project-spec/configs/rootfs_config and adding CONFIG_rogue-dev:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CONFIG_rogue</span><span class="o">=</span><span class="n">y</span>
+<span class="n">CONFIG_rogue</span><span class="o">-</span><span class="n">dev</span><span class="o">=</span><span class="n">y</span>
+</pre></div>
+</div>
+<p>You can then build the rogue package with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">c</span> <span class="n">rogue</span>
 </pre></div>
 </div>
