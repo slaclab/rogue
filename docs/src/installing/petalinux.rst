@@ -19,7 +19,7 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 .. code::
 
    ROGUE_VERSION = "5.6.1"
-   ROGUE_MD5SUM  = "710712ef00707473a7707782a05d1de8"
+   ROGUE_MD5SUM  = "a1a727bb2bdcb19a90c0d27ddebb3180"
 
    SUMMARY = "Rogue Application"
    SECTION = "PETALINUX/apps"
