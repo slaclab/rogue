@@ -353,6 +353,7 @@ class AxiVersion(pr.Device):
 
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
+            print('Got {}'.format(arg))
             return('Got {}'.format(arg))
 
         @self.command(hidden=False,value='',retValue='')
