@@ -13,8 +13,7 @@
 import logging
 from pydm.tools import ExternalTool
 from pydm.utilities.iconfont import IconFont
-from qtpy.QtWidgets import QVBoxLayout, QFileDialog, QDialog, QPushButton, QFormLayout, QLineEdit
-from qtpy.QtCore import Qt
+from qtpy.QtWidgets import QFileDialog
 
 import pyrogue
 from pyrogue.interfaces import VirtualClient
