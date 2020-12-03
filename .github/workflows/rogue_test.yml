@@ -28,6 +28,7 @@ jobs:
 
       - name: Install EPICS Base
         run: |
+          mkdir -p $EPICS_DIR
           cd $EPICS_DIR
           wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
           tar xzf base-7.0.3.tar.gz --strip 1
