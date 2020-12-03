@@ -1,8 +1,8 @@
-name: Testing
+name: Rogue Integration
 on: [push]
 
 jobs:
-  build:
+  Build And Test:
     runs-on: ubuntu-latest
     steps:
 
@@ -12,12 +12,12 @@ jobs:
       - name: Setup Environment
         run: |
          MAKEFLAGS="-j 2"
-         EPICS_DIR=${GITHUB_WORKSPACE}/packages/epics/base-7.0.3
+         EPICS_BASE=${GITHUB_WORKSPACE}/packages/epics/base-7.0.3
          EPICS_PCAS_DIR=${GITHUB_WORKSPACE}/packages/pcas/pcas-4.13.2
          MINICONDA_DIR=${GITHUB_WORKSPACE}/packages/miniconda
          ROGUE_DIR=${GITHUB_WORKSPACE}/rogue
          echo "MAKEFLAGS=$MAKEFLAGS" >> $GITHUB_ENV
-         echo "EPICS_DIR=$EPICS_DIR" >> $GITHUB_ENV
+         echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
          echo "EPICS_PCAS_DIR=$EPICS_PCAS_DIR" >> $GITHUB_ENV
          echo "MINICONDA_DIR=$MINICONDA_DIR" >> $GITHUB_ENV
          echo "ROGUE_DIR=$ROGUE_DIR" >> $GITHUB_ENV
@@ -30,8 +30,8 @@ jobs:
 
       - name: Install EPICS Base
         run: |
-          mkdir -p ${EPICS_DIR}
-          cd ${EPICS_DIR}
+          mkdir -p ${EPICS_BASE}
+          cd ${EPICS_BASE}
           pwd
           wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
           tar xzf base-7.0.3.tar.gz --strip 1
@@ -40,7 +40,7 @@ jobs:
       - name: Install EPICS PCAS
         run: |
           mkdir -p ${EPICS_PCAS_DIR}
-          cd $EPICS_PCAS_DIR
+          cd ${EPICS_PCAS_DIR}
           wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
           tar xzf pcas-4.13.2.tar.gz --strip 1
           echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
