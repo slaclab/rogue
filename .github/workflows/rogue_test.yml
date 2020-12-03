@@ -5,9 +5,9 @@ env:
   APP_NAME: My App
   MAKEFLAGS: "-j 2"
   PACKAGE_DIR: /packages
-  EPICS_DIR: ${{ env.$PACKAGE_DIR }}/epics/base-7.0.3
+  EPICS_DIR: ${{ env.PACKAGE_DIR }}/epics/base-7.0.3
   EPICS_PCAS_DIR: ${{ env.PACKAGE_DIR }}/pcas/pcas-4.13.2
-  LD_LIBRARY_PATH: /usr/lib:${{ env.EPICS_DIR}}/lib/linux-x86_64:${{ env.EPICS_PCAS_DIR }}/lib/linux-x86_64
+  LD_LIBRARY_PATH: /usr/lib:${{ env.EPICS_DIR }}/lib/linux-x86_64:${{ env.EPICS_PCAS_DIR }}/lib/linux-x86_64
   MINICONDA_DIR: ${{ env.PACKAGE_DIR}} /miniconda
   DOCKER_ORG_NAME: tidair
   GITHUB_REPO: slaclab/rogue
@@ -27,6 +27,8 @@ jobs:
           pip3 install -r pip_requirements.txt
 
       - name: Install EPICS Base
+        env:
+          EPICS_DIR: ${{ env.EPICS_DIR }}
         run: |
           mkdir -p ${{ env.EPICS_DIR }}
           cd ${{ env.EPICS_DIR }}
