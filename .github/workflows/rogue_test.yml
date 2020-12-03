@@ -2,7 +2,7 @@ name: Rogue Integration
 on: [push]
 
 jobs:
-  Build And Test:
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
 
