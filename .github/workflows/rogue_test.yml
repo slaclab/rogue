@@ -23,6 +23,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
+          pip3 install setuptools
           pip3 install -r pip_requirements.txt
 
       - name: Install EPICS Base
