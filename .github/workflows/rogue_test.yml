@@ -15,12 +15,12 @@ jobs:
          EPICS_BASE=${GITHUB_WORKSPACE}/packages/epics/base-7.0.3
          EPICS_PCAS_DIR=${GITHUB_WORKSPACE}/packages/pcas/pcas-4.13.2
          MINICONDA_DIR=${GITHUB_WORKSPACE}/packages/miniconda
-         ROGUE_DIR=${GITHUB_WORKSPACE}/rogue
+         LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_DIR}/lib/linux-x86_64
          echo "MAKEFLAGS=$MAKEFLAGS" >> $GITHUB_ENV
          echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
          echo "EPICS_PCAS_DIR=$EPICS_PCAS_DIR" >> $GITHUB_ENV
          echo "MINICONDA_DIR=$MINICONDA_DIR" >> $GITHUB_ENV
-         echo "ROGUE_DIR=$ROGUE_DIR" >> $GITHUB_ENV
+         echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
@@ -49,10 +49,9 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
-          cd ${ROGUE_DIR}
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
-          source ${ROGUE_DIR)/setup_rogue.sh
+          source ../setup_rogue.sh
 
 #LD_LIBRARY_PATH=/usr/lib:${EPICS_DIR}/lib/linux-x86_64:${EPICS_PCAS_DIR}/lib/linux-x86_64
