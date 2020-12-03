@@ -27,9 +27,8 @@ jobs:
           pip3 install -r pip_requirements.txt
 
       - name: Install EPICS Base
-        env:
-          EPICS_DIR: ${EPICS_DIR}
         run: |
+          echo "DIR = ${EPICS_DIR}"
           mkdir -p ${EPICS_DIR}
           cd ${EPICS_DIR}
           pwd
