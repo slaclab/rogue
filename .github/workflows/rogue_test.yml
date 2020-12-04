@@ -65,6 +65,7 @@ jobs:
           cat setup_rogue.sh
           ls -l python/ lib/
           source setup_rogue.sh
+          python -c 'import rogue; print(rogue.Version.current())'
           python3 -m pytest --cov
           python3 -m compileall -f python/
           flake8 --count python/
