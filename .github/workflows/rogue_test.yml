@@ -29,9 +29,9 @@ jobs:
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
           python --version
           pip --version
-          sudo python -m pip install --upgrade pip
-          sudo pip install setuptools
-          sudo pip3 install -r pip_requirements.txt
+          python -m pip install --upgrade pip
+          pip install setuptools
+          pip install -r pip_requirements.txt
 
       - name: Install EPICS Base
         run: |
@@ -122,7 +122,7 @@ jobs:
       - name: Get Ruckus
         run: |
           git clone https://github.com/slaclab/ruckus.git
-          sudo pip3 install -r ruckus/scripts/pip_requirements.txt
+          pip install -r ruckus/scripts/pip_requirements.txt
 
       - name: Gen Release
         env:
@@ -146,6 +146,10 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.8
+
+      - name: Install dependencies
+        run: |
+          pip install conda-build
 
       - name: Get Image Information
         id: get_image_info
