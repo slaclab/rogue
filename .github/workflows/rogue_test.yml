@@ -27,8 +27,10 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
-          sudo pip3 install setuptools
-          sudo pip3 install -r pip_requirements.txt
+          python --version
+          sudo python -m pip install --upgrade pip
+          sudo pip install setuptools
+          sudo pip install -r pip_requirements.txt
 
       - name: Install EPICS Base
         run: |
@@ -51,7 +53,7 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
-          python3 -c "import numpy; print(numpy.get_include())"
+          python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
@@ -60,8 +62,8 @@ jobs:
       - name: Rogue Tests
         run: |
           source setup_rogue.sh
-          python3 -m pytest --cov
-          python3 -m compileall -f ./python/
+          python -m pytest --cov
+          python -m compileall -f ./python/
           flake8 --count ./python/
 
       # Code Coverage
@@ -127,7 +129,7 @@ jobs:
           TRAVIS_TAG: ${{ steps.get_image_info.outputs.tag }}
           GH_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python3 ruckus/scripts/releaseGen.py
+          python ruckus/scripts/releaseGen.py
 
   conda_build:
     runs-on: ubuntu-latest
