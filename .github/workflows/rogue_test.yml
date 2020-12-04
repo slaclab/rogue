@@ -8,6 +8,8 @@ jobs:
 
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
       - name: Setup Environment
         run: |
@@ -48,11 +50,6 @@ jobs:
           make clean && make && make install
           echo ${EPICS_PCAS_ROOT}
           ls -l ${EPICS_PCAS_ROOT}/include/
-
-      # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       # Rogue
       - name: Build Rogue

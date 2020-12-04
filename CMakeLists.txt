@@ -188,7 +188,6 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
    # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
    find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICS_PCAS_DIR}/include)
-   message("Result = ${E3_TEST_INCLUDE_DIR}")
    if (NOT E3_TEST_INCLUDE_DIR)
       set(DO_EPICS_V3 0)
    elseif(APPLE)
