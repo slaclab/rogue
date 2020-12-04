@@ -190,6 +190,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICS_PCAS_DIR}/include)
    if (NOT E3_TEST_INCLUDE_DIR)
       set(DO_EPICS_V3 0)
+      message("Failed to find pcas")
    elseif(APPLE)
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
@@ -215,6 +216,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    endif()
 
 else()
+   message("EPICS Not Enabled")
    set(DO_EPICS_V3 0)
 endif()
 
