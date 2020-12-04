@@ -31,6 +31,8 @@ jobs:
 
       - name: Install EPICS Base
         run: |
+          echo -n "epics base pwd: "
+          pwd
           mkdir -p ${EPICS_BASE}
           cd ${EPICS_BASE}
           pwd
@@ -40,6 +42,8 @@ jobs:
 
       - name: Install EPICS PCAS
         run: |
+          echo -n "epics pcas pwd: "
+          pwd
           mkdir -p ${EPICS_PCAS_DIR}
           cd ${EPICS_PCAS_DIR}
           wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
@@ -54,6 +58,8 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
+          echo -n "rogue pwd: "
+          pwd
           ls -ltr
           git describe --tags
           mkdir build; cd build
