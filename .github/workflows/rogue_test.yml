@@ -46,6 +46,7 @@ jobs:
           tar xzf pcas-4.13.2.tar.gz --strip 1
           echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
           make clean && make && make install
+          echo ${EPICS_PCAS_ROOT}
           ls -l ${EPICS_PCAS_ROOT}/include/
 
       # This step checks out a copy of your repository.
