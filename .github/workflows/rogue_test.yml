@@ -55,6 +55,7 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
+          env
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
