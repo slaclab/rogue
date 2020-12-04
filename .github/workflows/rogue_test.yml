@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev git
+          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
           python3 -m pip install --upgrade pip
           pip3 install setuptools
           pip3 install -r pip_requirements.txt
@@ -48,7 +48,7 @@ jobs:
           make clean && make && make install
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
+      #- uses: actions/checkout@v2
 
       # Rogue
       - name: Build Rogue
