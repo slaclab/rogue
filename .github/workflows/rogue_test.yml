@@ -62,6 +62,7 @@ jobs:
       # Run Tests
       - name: Rogue Tests
         run: |
+          cat setup_rogue.sh
           source setup_rogue.sh
           python3 -m pytest --cov
           python3 -m compileall -f python/
