@@ -50,9 +50,11 @@ jobs:
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v2
 
+
       # Rogue
       - name: Build Rogue
         run: |
+          ls -ltr
           git describe --tags
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
