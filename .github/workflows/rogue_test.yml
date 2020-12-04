@@ -48,7 +48,7 @@ jobs:
           make clean && make && make install
 
       # This step checks out a copy of your repository.
-      #- uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
       # Rogue
       - name: Build Rogue
