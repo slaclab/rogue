@@ -53,7 +53,8 @@ jobs:
 
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v2
-
+        with:
+          fetch-depth: 0
 
       # Rogue
       - name: Build Rogue
