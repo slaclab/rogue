@@ -57,6 +57,7 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
+          ls -l ${EPICS_PCAS_ROOT}/include/
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
