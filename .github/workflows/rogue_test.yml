@@ -47,13 +47,10 @@ jobs:
           tar xzf pcas-4.13.2.tar.gz --strip 1
           echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
           make clean && make && make install
-          echo ${EPICS_PCAS_ROOT}
-          ls -l ${EPICS_PCAS_ROOT}/include/
 
       # Rogue
       - name: Build Rogue
         run: |
-          ls -l ${EPICS_PCAS_ROOT}/include/
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
@@ -99,7 +96,6 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
-          ls -l ${EPICS_PCAS_ROOT}/include/
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
           make -j4 install
