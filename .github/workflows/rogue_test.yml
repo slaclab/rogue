@@ -1,0 +1,200 @@
+name: Rogue Integration
+on: [push]
+
+jobs:
+  full_build_test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        run: |
+          EPICS_BASE=${GITHUB_WORKSPACE}/packages/epics/base-7.0.3
+          EPICS_PCAS_ROOT=${GITHUB_WORKSPACE}/packages/pcas/pcas-4.13.2
+          LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
+          echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
+          echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" >> $GITHUB_ENV
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
+          sudo python3 -m pip install --upgrade pip
+          sudo pip3 install setuptools
+          sudo pip3 install flake8
+          sudo pip3 install -r pip_requirements.txt
+
+      - name: Install EPICS Base
+        run: |
+          mkdir -p ${EPICS_BASE}
+          cd ${EPICS_BASE}
+          pwd
+          wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
+          tar xzf base-7.0.3.tar.gz --strip 1
+          make clean && make && make install
+
+      - name: Install EPICS PCAS
+        run: |
+          mkdir -p ${EPICS_PCAS_ROOT}
+          cd ${EPICS_PCAS_ROOT}
+          wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
+          tar xzf pcas-4.13.2.tar.gz --strip 1
+          echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
+          make clean && make && make install
+
+      # Rogue
+      - name: Build Rogue
+        run: |
+          mkdir build; cd build
+          cmake .. -DROGUE_INSTALL=local
+          make -j4 install
+
+      # Run Tests
+      - name: Rogue Tests
+        run: |
+          source setup_rogue.sh
+          python3 -m pytest --cov
+          python3 -m compileall -f python/
+          flake8 --count python/
+
+      # Code Coverage
+      - name: Code Coverage
+        run: |
+          source setup_rogue.sh
+          codecov
+          coverage report -m
+
+      # Documentation
+      - name: Generate Documentation
+        if: github.ref == 'refs/heads/documentation'
+        run: |
+          source setup_rogue.sh
+          cd docs
+          make html
+          cd ..
+          doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
+
+  small_build_test:
+    runs-on: ubuntu-latest
+    steps:
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get install libzmq3-dev
+
+      # Rogue
+      - name: Build Rogue
+        run: |
+          mkdir build; cd build
+          cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
+          make -j4 install
+
+  gen_release:
+    runs-on: ubuntu-latest
+    needs: [full_build_test, small_build_test]
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+
+      - name: Get Ruckus
+        run: |
+          git clone https://github.com/slaclab/ruckus.git
+          sudo pip install -r ruckus/scripts/pip_requirements.txt
+
+      - name: Gen Release
+        run: |
+          python ruckus/scripts/releaseGen.py
+
+  conda_build:
+    runs-on: ubuntu-latest
+    needs: [full_build_test, small_build_test]
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
+    steps:
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        run: |
+          MINICONDA_DIR=${GITHUB_WORKSPACE}/packages/miniconda
+          echo "github.ref = ${github.ref}"
+
+          if [ ${github.ref} eq "refs/head/pre-release" ]; then
+              echo "Using dev token"
+              CONDA_TOKEN=${CONDA_UPLOAD_TOKEN_DEV}
+          else
+              echo "Using tag token"
+              CONDA_TOKEN=${CONDA_UPLOAD_TOKEN_TAG}
+          fi
+          echo "MINICONDA_DIR=$MINICONDA_DIR" >> $GITHUB_ENV
+          echo "CONDA_TOKEN=$CONDA_TOKEN" >> $GITHUB_ENV
+
+
+      - name: Install Anaconda
+        run: |
+          mkdir -p ${MINICONDA_DIR}
+          cd ${MINICONDA_DIR}
+          wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh;
+          bash miniconda.sh -b -p ${MINICONDA_DIR}/miniconda
+          export PATH="${MINICONDA_DIR}/miniconda/bin:$PATH"
+          hash -r
+          source ${MINICONDA_DIR}/miniconda/etc/profile.d/conda.sh
+          conda config --set always_yes yes
+          conda install conda-build anaconda-client conda-verify
+          conda update -q conda conda-build
+          conda update --all
+
+      - name: Build Rogue
+        run: |
+          export PATH="${MINICONDA_DIR}/miniconda/bin:$PATH"
+          source ${MINICONDA_DIR}/miniconda/etc/profile.d/conda.sh
+          conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge
+          anaconda -t ${CONDA_TOKEN} upload bld-dir/linux-64/*.tar.bz2
+
+  docker_build:
+    runs-on: ubuntu-latest
+    needs: [full_build_test, small_build_test]
+    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
+    steps:
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Setup Environment
+        run: |
+          MINICONDA_DIR=${GITHUB_WORKSPACE}/packages/miniconda
+          DOCKER_TAG=`git describe --tags`
+          echo "github.ref = ${github.ref}"
+
+          if [ ${github.ref} eq "refs/head/pre-release" ]; then
+              DOCKER_IMAGE_NAME=tidair/rogue-dev
+              DOCKER_BRANCH=pre-release
+          else
+              DOCKER_IMAGE_NAME=tidair/rogue
+              DOCKER_BRANCH=master
+          fi
+          echo "MINICONDA_DIR=$MINICONDA_DIR" >> $GITHUB_ENV
+          echo "DOCKER_TAG=$DOCKER_TAG" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE_NAME=$DOCKER_IMAGE_NAME" >> $GITHUB_ENV
+          echo "DOCKER_BRANCH=$DOCKER_BRANCH" >> $GITHUB_ENV
+
+      - name: Build Docker
+        run: |
+           echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin;
+           docker build -q --build-arg branch=${DOCKER_BRANCH} -t ${DOCKER_IMAGE_NAME} .;
+           docker push ${DOCKER_IMAGE_NAME}
+           docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_IMAGE_NAME}:${DOCKER_TAG}
+           docker push ${DOCKER_IMAGE_NAME} ${DOCKER_TAG}
+
