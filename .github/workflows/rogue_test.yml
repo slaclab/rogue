@@ -27,8 +27,6 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
-          python --version
-          pip --version
           python -m pip install --upgrade pip
           pip install setuptools
           pip install -r pip_requirements.txt
@@ -147,9 +145,10 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Install dependencies
-        run: |
-          pip install conda-build
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 3.8
 
       - name: Get Image Information
         id: get_image_info
@@ -188,6 +187,7 @@ jobs:
         run: |
           echo ::set-output name=tag::`git describe --tags`
           echo ::set-output name=branch::`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'`
+          echo "GITHUB_REF = {GITHUB_REF}"
           if [ ${GITHUB_REF} eq "refs/heads/pre-release" ]
           then
               echo ::set-output name=name::"rogue-dev"
