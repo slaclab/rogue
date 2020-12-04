@@ -28,7 +28,6 @@ jobs:
         run: |
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
           sudo pip3 install setuptools
-          sudo pip3 install flake8
           sudo pip3 install -r pip_requirements.txt
 
       - name: Install EPICS Base
@@ -52,6 +51,7 @@ jobs:
       # Rogue
       - name: Build Rogue
         run: |
+          python3 -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
@@ -162,7 +162,7 @@ jobs:
       - name: Build Rogue
         run: |
           conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge
-          anaconda -t ${CONDA_TOKEN} upload bld-dir/linux-64/*.tar.bz2
+          anaconda -t ${{ steps.get_image_info.outputs.token }} upload bld-dir/linux-64/*.tar.bz2
 
   docker_build:
     name: Build Docker Image
