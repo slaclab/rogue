@@ -187,11 +187,13 @@ jobs:
         run: |
           echo ::set-output name=tag::`git describe --tags`
           echo ::set-output name=branch::`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'`
-          echo "GITHUB_REF = {GITHUB_REF}"
-          if [ ${GITHUB_REF} eq "refs/heads/pre-release" ]
+          echo "GITHUB_REF = ${GITHUB_REF}"
+          if [ ${GITHUB_REF} == "refs/heads/pre-release" ]
           then
+              echo "Using rogue-dev"
               echo ::set-output name=name::"rogue-dev"
           else
+              echo "Using rogue"
               echo ::set-output name=name::"rogue"
           fi
 
