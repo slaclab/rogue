@@ -58,12 +58,30 @@ jobs:
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
           make -j4 install
-          source ../setup_rogue.sh
 
       # Run Tests
       - name: Rogue Tests
         run: |
+          source setup_rogue.sh
           python3 -m pytest --cov
           python3 -m compileall -f python/
           flake8 --count python/
+
+      # Code Coverage
+      - name: Code Coverage
+        run: |
+          source setup_rogue.sh
+          codecov
+          coverage report -m
+
+      # Documentation
+      - name: Generate Documentation
+        if: github.ref == 'refs/heads/documentation'
+        run: |
+          source setup_rogue.sh
+          cd docs
+          make html
+          cd ..
+          doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
+
 
