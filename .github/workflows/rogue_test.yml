@@ -24,7 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
+          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev git
           python3 -m pip install --upgrade pip
           pip3 install setuptools
           pip3 install -r pip_requirements.txt
@@ -46,6 +46,9 @@ jobs:
           tar xzf pcas-4.13.2.tar.gz --strip 1
           echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
           make clean && make && make install
+
+      # This step checks out a copy of your repository.
+      - uses: actions/checkout@v2
 
       # Rogue
       - name: Build Rogue
