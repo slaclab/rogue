@@ -180,10 +180,13 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    # PCAS is part of epics before version 4
    if(EPICS_PCAS_ROOT)
       set(EPICS_PCAS_DIR ${EPICS_PCAS_ROOT})
+      message("Here 1")
    elseif(DEFINED ENV{EPICS_PCAS_ROOT})
       set(EPICS_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
+      message("Here 2")
    else()
       set(EPICS_PCAS_DIR $ENV{EPICS_BASE})
+      message("Here 3")
    endif()
 
    # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
