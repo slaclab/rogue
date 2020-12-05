@@ -155,7 +155,7 @@ jobs:
           python-version: 3.8
 
       - name: Setup MacOS
-        if: ${{ matrix.os }} == macos-10.15
+        if: ${{ matrix.os }} == 'macos-10.15'
         run: |
           git clone https://github.com/phracker/MacOSX-SDKs
           sudo mkdir -p /opt/
@@ -170,6 +170,7 @@ jobs:
           OS_NAME: ${{ matrix.os }}
         run: |
           if [ $OS_NAME == "macos-10.15" ]
+          then
             wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
           else
             wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -201,6 +202,7 @@ jobs:
               echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_TAG
           fi
           if [ $OS_NAME == "macos-10.15" ]
+          then
               echo ::set-output name=os::osx-64
           else
               echo ::set-output name=os::linux-64
