@@ -211,6 +211,9 @@ jobs:
 
       - name: Build And Upload Rogue
         run: |
+          export PATH="${GITHUB_WORKSPACE}/miniconda/bin:$PATH"
+          hash -r
+          source miniconda/etc/profile.d/conda.sh
           conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge
           anaconda -t ${{ steps.get_image_info.outputs.token }} upload bld-dir/${{ steps.get_image_info.outputs.os }}/*.tar.bz2
 
