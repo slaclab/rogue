@@ -1,3 +1,20 @@
+# ----------------------------------------------------------------------------
+# Title      : ROGUE GitHub Actions Script
+# ----------------------------------------------------------------------------
+# This file is part of the rogue software package. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software package, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+# ----------------------------------------------------------------------------
+# The following environment variables are required for this process:
+# secrets.GH_TOKEN
+# secrets.CONDA_UPLOAD_TOKEN_DEV
+# secrets.CONDA_UPLOAD_TOKEN_TAG
+# secrets.DOCKERHUB_TOKEN
+
 name: Rogue Integration
 on: [push]
 
@@ -129,13 +146,13 @@ jobs:
         env:
           TRAVIS_REPO_SLUG: slaclab/rogue
           TRAVIS_TAG: ${{ steps.get_image_info.outputs.tag }}
-          GH_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           python ruckus/scripts/releaseGen.py
 
   conda_build:
     name: Anaconda Build
-      #needs: [full_build_test, small_build_test]
+    needs: [full_build_test, small_build_test]
     if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
     strategy:
       matrix:
@@ -223,7 +240,7 @@ jobs:
   docker_build:
     name: Docker Build
     runs-on: ubuntu-latest
-      #needs: [full_build_test, small_build_test]
+    needs: [full_build_test, small_build_test]
     if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
     steps:
 
