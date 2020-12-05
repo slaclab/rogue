@@ -101,7 +101,7 @@ def test_enum():
 
         # Test the undef enum case
         status = root.Dev.Status.getDisp()
-        if ( status != 'INVALID: 0x3'):
+        if ( status != 'INVALID: 3'):
             raise AssertionError( f'root.Dev.Status.getDisp()={status}' )
 
 if __name__ == "__main__":
