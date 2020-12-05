@@ -12,6 +12,10 @@
 # See notes for compiling on macros under anaconda:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
+message("CONDA_BUILD_SYSROOT ${CONDA_BUILD_SYSROOT}")
+message("CONDA_BUILD         ${CONDA_BUILD}")
+message("")
+
 # Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
@@ -467,9 +471,6 @@ message("")
 message("-- Install Type: -DROGUE_INSTALL=${ROGUE_INSTALL}")
 message("")
 message("-- Install Path: -DROGUE_DIR=${ROGUE_DIR}")
-message("")
-message("CONDA_BUILD_SYSROOT ${CONDA_BUILD_SYSROOT}")
-message("CONDA_BUILD         ${CONDA_BUILD}")
 message("")
 
 if (NO_PYTHON)
