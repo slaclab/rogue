@@ -157,9 +157,10 @@ jobs:
       - name: Setup MacOS
         if: matrix.os == 'macos-10.15'
         run: |
-          git clone https://github.com/phracker/MacOSX-SDKs
+          wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
+          tar xzf MacOSX10.15.sdk.tar.xz
           sudo mkdir -p /opt/
-          sudo mv MacOSX-SDKs/MacOSX10.15.sdk /opt/
+          sudo mv MacOSX10.15.sdk /opt/
           CONDA_BUILD_SYSROOT=/opt/MacOSX10.15.sdk
           CONDA_BUILD=1
           echo "CONDA_BUILD_SYSROOT=$CONDA_BUILD_SYSROOT" >> $GITHUB_ENV
