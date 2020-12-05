@@ -90,15 +90,22 @@ jobs:
           codecov
           coverage report -m
 
-      # Documentation
+      # Generate Documentation
       - name: Generate Documentation
         if: github.ref == 'refs/heads/documentation'
         run: |
           source setup_rogue.sh
           cd docs
           make html
-          cd ..
-          doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
+
+      - name: Deploy Documentation
+        if: github.ref == 'refs/heads/documentation'
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: docs/build/html
+          CLEAN: true
 
   small_build_test:
     name: Small Build Test
