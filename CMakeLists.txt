@@ -12,8 +12,8 @@
 # See notes for compiling on macros under anaconda:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
-message("CONDA_BUILD_SYSROOT ${CONDA_BUILD_SYSROOT}")
-message("CONDA_BUILD         ${CONDA_BUILD}")
+message("CONDA_BUILD_SYSROOT $ENV{CONDA_BUILD_SYSROOT}")
+message("CONDA_BUILD         $ENV{CONDA_BUILD}")
 message("")
 
 # Add support for building in conda environment
