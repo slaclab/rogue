@@ -154,20 +154,6 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Setup MacOS
-        #if: matrix.os == 'macos-10.15'
-        if: matrix.os == 'xxxxx-10.15'
-        run: |
-          cd ${HOME}
-          wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
-          tar xzf MacOSX10.15.sdk.tar.xz
-          sudo mkdir -p /opt/
-          sudo mv MacOSX10.15.sdk /opt/
-          CONDA_BUILD_SYSROOT=/opt/MacOSX10.15.sdk
-          CONDA_BUILD=1
-          echo "CONDA_BUILD_SYSROOT=$CONDA_BUILD_SYSROOT" >> $GITHUB_ENV
-          echo "CONDA_BUILD=$CONDA_BUILD" >> $GITHUB_ENV
-
       - name: Setup anaconda
         env:
           OS_NAME: ${{ matrix.os }}
@@ -190,6 +176,19 @@ jobs:
           fi
           conda update -q conda conda-build
           conda update --all
+
+      - name: Setup MacOS
+        if: matrix.os == 'macos-10.15'
+        run: |
+          cd ${HOME}
+          wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
+          tar xzf MacOSX10.15.sdk.tar.xz
+          sudo mkdir -p /opt/
+          sudo mv MacOSX10.15.sdk /opt/
+          CONDA_BUILD_SYSROOT=/opt/MacOSX10.15.sdk
+          CONDA_BUILD=1
+          echo "CONDA_BUILD_SYSROOT=$CONDA_BUILD_SYSROOT" >> $GITHUB_ENV
+          echo "CONDA_BUILD=$CONDA_BUILD" >> $GITHUB_ENV
 
       - name: Get Image Information
         id: get_image_info
