@@ -12,10 +12,6 @@
 # See notes for compiling on macros under anaconda:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
-message("CONDA_BUILD_SYSROOT $ENV{CONDA_BUILD_SYSROOT}")
-message("CONDA_BUILD         $ENV{CONDA_BUILD}")
-message("")
-
 # Add support for building in conda environment
 if (DEFINED ENV{CONDA_PREFIX})
    set(CMAKE_PREFIX_PATH "$ENV{CONDA_PREFIX}")
