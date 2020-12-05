@@ -18,8 +18,8 @@ jobs:
 
       - name: Setup Environment
         run: |
-          EPICS_BASE=${GITHUB_WORKSPACE}/packages/epics/base-7.0.3
-          EPICS_PCAS_ROOT=${GITHUB_WORKSPACE}/packages/pcas/pcas-4.13.2
+          EPICS_BASE=${HOME}/packages/epics/base-7.0.3
+          EPICS_PCAS_ROOT=${HOME}/packages/pcas/pcas-4.13.2
           LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
           echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
           echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" >> $GITHUB_ENV
@@ -157,6 +157,7 @@ jobs:
       - name: Setup MacOS
         if: matrix.os == 'macos-10.15'
         run: |
+          cd ${HOME}
           wget https://github.com/phracker/MacOSX-SDKs/releases/download/10.15/MacOSX10.15.sdk.tar.xz
           tar xzf MacOSX10.15.sdk.tar.xz
           sudo mkdir -p /opt/
@@ -170,15 +171,16 @@ jobs:
         env:
           OS_NAME: ${{ matrix.os }}
         run: |
+          cd ${HOME}
           if [ $OS_NAME == "macos-10.15" ]
           then
             wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
           else
             wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
           fi
-          bash miniconda.sh -b -p miniconda
-          export PATH="${GITHUB_WORKSPACE}/miniconda/bin:$PATH"
-          source miniconda/etc/profile.d/conda.sh
+          bash miniconda.sh -b -p ${HOME}/miniconda
+          export PATH="${HOME}/miniconda/bin:$PATH"
+          source ${HOME}/miniconda/etc/profile.d/conda.sh
           conda config --set always_yes yes
           conda install conda-build anaconda-client conda-verify
           if [ $OS_NAME == "macos-10.15" ]
@@ -211,8 +213,8 @@ jobs:
 
       - name: Build And Upload Rogue
         run: |
-          export PATH="${GITHUB_WORKSPACE}/miniconda/bin:$PATH"
-          source miniconda/etc/profile.d/conda.sh
+          export PATH="${HOME}/miniconda/bin:$PATH"
+          source ${HOME}/miniconda/etc/profile.d/conda.sh
           conda build --debug conda-recipe --output-folder bld-dir -c tidair-packages -c conda-forge
           anaconda -t ${{ steps.get_image_info.outputs.token }} upload bld-dir/${{ steps.get_image_info.outputs.os }}/*.tar.bz2
 
