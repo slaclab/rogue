@@ -105,12 +105,10 @@ jobs:
 
       - name: Deploy Documentation
         if: github.ref == 'refs/heads/documentation'
-        uses: JamesIves/github-pages-deploy-action@3.7.1
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: docs/build/html
-          CLEAN: true
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: docs/build/html
 
   small_build_test:
     name: Small Build Test
