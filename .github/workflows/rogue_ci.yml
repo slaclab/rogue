@@ -80,6 +80,11 @@ jobs:
         run: |
           source setup_rogue.sh
           python -m pytest --cov
+
+      # Flake 8 check
+      - name: Flake8 Tests
+        run: |
+          source setup_rogue.sh
           python -m compileall -f ./python/
           flake8 --count ./python/
 
@@ -90,15 +95,20 @@ jobs:
           codecov
           coverage report -m
 
-      # Documentation
+      # Generate Documentation
       - name: Generate Documentation
         if: github.ref == 'refs/heads/documentation'
         run: |
           source setup_rogue.sh
           cd docs
           make html
-          cd ..
-          doctr deploy . --built-docs docs/build/html --deploy-branch-name gh-pages --branch-whitelist documentation
+
+      - name: Deploy Documentation
+        if: github.ref == 'refs/heads/documentation'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: docs/build/html
 
   small_build_test:
     name: Small Build Test
