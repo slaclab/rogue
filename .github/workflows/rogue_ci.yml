@@ -150,6 +150,7 @@ jobs:
       - name: Get Ruckus
         run: |
           git clone https://github.com/slaclab/ruckus.git
+          python -m pip install --upgrade pip
           pip install -r ruckus/scripts/pip_requirements.txt
 
       - name: Gen Release
