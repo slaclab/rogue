@@ -223,6 +223,7 @@ jobs:
         env:
           CONDA_UPLOAD_TOKEN_DEV: ${{ secrets.CONDA_UPLOAD_TOKEN_DEV }}
           CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
+          OS_NAME: ${{ matrix.os }}
         run: |
           echo ::set-output name=tag::`git describe --tags`
           echo ::set-output name=branch::`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'`
