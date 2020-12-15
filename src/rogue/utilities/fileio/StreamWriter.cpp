@@ -94,6 +94,7 @@ ruf::StreamWriter::StreamWriter() {
    frameCount_ = 0;
    currBuffer_ = 0;
    dropErrors_ = false;
+   isOpen_     = false;
 
    log_ = rogue::Logging::create("fileio.StreamWriter");
 }
@@ -109,6 +110,7 @@ void ruf::StreamWriter::open(std::string file) {
 
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
+   isOpen_ = false;
    flush();
 
    // Close if open
@@ -133,12 +135,14 @@ void ruf::StreamWriter::open(std::string file) {
    for (std::map<uint32_t,ruf::StreamWriterChannelPtr>::iterator it=channelMap_.begin(); it!=channelMap_.end(); ++it) {
      it->second->setFrameCount(0);
    }
+   isOpen_ = true;
 }
 
 //! Close a data file
 void ruf::StreamWriter::close() {
    rogue::GilRelease noGil;
    std::lock_guard<std::mutex> lock(mtx_);
+   isOpen_ = false;
    flush();
    if ( fd_ >= 0 ) ::close(fd_);
    fd_ = -1;
@@ -146,7 +150,7 @@ void ruf::StreamWriter::close() {
 
 //! Get open status
 bool ruf::StreamWriter::isOpen() {
-   return ( fd_ >= 0 );
+   return ( isOpen_ );
 }
 
 //! Set buffering size, 0 to disable
