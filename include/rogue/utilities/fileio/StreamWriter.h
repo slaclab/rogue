@@ -62,6 +62,9 @@ namespace rogue {
                std::string baseName_;
 
                //! Current file index
+               bool isOpen_;
+
+               //! Current file index
                uint32_t fdIdx_;
 
                //! Size limit for auto close and re-open when limit is exceeded, zero to disable
