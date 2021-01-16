@@ -242,8 +242,9 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Check tail
    if ( tail[0] != 0 ) {
-      if ( tail[0] & 0x100 ) tran->error("Axi bus timeout detected in hardware");
-      else tran->error("Non zero status message returned on axi bus in hardware: 0x%x",tail[0]);
+      if ( tail[0] & 0x2000 ) tran->error("FPGA register bus lockup detected in hardware. Power cycle required.");
+      else if ( tail[0] & 0x0100 ) tran->error("FPGA register bus timeout detected in hardware");
+      else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%x",tail[0]);
       log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
       return;
    }
