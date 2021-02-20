@@ -178,7 +178,7 @@ In this file you also need to point to the location of the cross-compile version
    PYTHON_INCLUDE_DIR
    BOOST_ROOT
 
-Note: for python you also need cross-compile version of its packages, like for example numpy.
+**Note:** for python you also need cross-compile version of its packages, like for example numpy.
 
 Once you have that file define, you pas that file to CMake with the option ``-CMAKE_TOOLCHAIN_FILE=<file_name>``.
 
@@ -227,3 +227,4 @@ Then we build rogue as described in the previous section, but adding the ``CMAKE
 
    cmake .. -DCMAKE_TOOLCHAIN_FILE=buildroot-2019.08-x86_64.cmake
 
+**Note:** you need to pass the correct path, either absolute or relative, of you toolchain file  to the ``CMAKE_TOOLCHAIN_FILE`` variable.
