@@ -58,16 +58,14 @@ class RootLogHandler(logging.Handler):
                         se['traceBack'].append(tb.rstrip())
 
                 # System log is a running json encoded list
-                # Need to remove list terminator ']' and add new entry + list terminator
                 with self._root.SystemLog.lock:
-                    msg =  self._root.SystemLog.value()[:-1]
+                    lst = jsonpickle.decode(self._root.SystemLog.value())
 
-                    # Only add a comma and return if list is not empty
-                    if len(msg) > 1:
-                        msg += ',\n'
+                    # Limit system log size
+                    lst = lst[-1 * (self._root._maxLog-1):]
 
-                    msg += jsonpickle.encode(se) + ']'
-                    self._root.SystemLog.set(msg)
+                    lst.append(se)
+                    self._root.SystemLog.set(jsonpickle.encode(lst))
 
                 # Log to database
                 if self._root._sqlLog is not None:
@@ -119,6 +117,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                  pollEn=True,
                  serverPort=0,  # 9099 is the default, 0 for auto
                  sqlUrl=None,
+                 maxLog=1000,
                  streamIncGroups=None,
                  streamExcGroups=['NoStream'],
                  sqlIncGroups=None,
@@ -133,6 +132,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._pollEn          = pollEn
         self._serverPort      = serverPort
         self._sqlUrl          = sqlUrl
+        self._maxLog          = maxLog
         self._streamIncGroups = streamIncGroups
         self._streamExcGroups = streamExcGroups
         self._sqlIncGroups    = sqlIncGroups

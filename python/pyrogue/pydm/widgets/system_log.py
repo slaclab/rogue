@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM System Log Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -24,7 +24,7 @@ class SystemLog(PyDMFrame):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._systemLog = None
-        self._logCount  = 0
+        self._logTrack  = ''
         self._node = None
 
     def connection_changed(self, connected):
@@ -52,7 +52,7 @@ class SystemLog(PyDMFrame):
         self._systemLog.setHeaderLabels(['Field','Value'])
         self._systemLog.setColumnWidth(0,200)
 
-        self._logCount = 0
+        self._logTrack = ''
 
         self._pb = PyDMPushButton(label='Clear Log',pressValue=1,init_channel=self._path)
         vb.addWidget(self._pb)
@@ -60,11 +60,11 @@ class SystemLog(PyDMFrame):
     def value_changed(self, new_val):
         lst = jsonpickle.decode(new_val)
 
-        if len(lst) == 0:
-            self._systemLog.clear()
+        #if len(lst) == 0:
+        self._systemLog.clear()
 
-        elif len(lst) > self._logCount:
-            for i in range(self._logCount,len(lst)):
+        if len(lst) != 0 and lst[-1]['created'] != self._logTrack:
+            for i in range(len(lst)):
                 widget = QTreeWidgetItem(self._systemLog)
                 widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])))
 
@@ -94,5 +94,5 @@ class SystemLog(PyDMFrame):
                         temp.setText(0,'')
                         temp.setText(1,v)
 
-        self._logCount = len(lst)
+        self._logTrack = lst[-1]['created']
 
