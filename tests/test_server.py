@@ -46,7 +46,7 @@ class DummyTree(pyrogue.Root):
                               timeout=2.0,
                               pollEn=True,
                               serverPort=0,
-                              maxLog=10,
+                              #maxLog=10,
                               #sqlUrl='sqlite:///test.db')
                             )
 
