@@ -38,7 +38,7 @@ class SystemLog(PyDMFrame):
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('System Log')
+        gb = QGroupBox('System Log (20 most recent entries)')
         vb.addWidget(gb)
 
         vb = QVBoxLayout()
