@@ -88,7 +88,7 @@ jobs:
         run: |
           source setup_rogue.sh
           python -m compileall -f ./python/
-          flake8 --count ./python/
+          #flake8 --count ./python/
 
       # Code Coverage
       - name: Code Coverage
