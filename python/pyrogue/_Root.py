@@ -61,13 +61,13 @@ class RootLogHandler(logging.Handler):
 
                 # System log is a running json encoded list
                 with self._root.SystemLog.lock:
-                    lst = jsonpickle.loads(self._root.SystemLog.value())
+                    lst = json.loads(self._root.SystemLog.value())
 
                     # Limit system log size
                     lst = lst[-1 * (self._root._maxLog-1):]
 
                     lst.append(se)
-                    self._root.SystemLog.set(jsonpickle.dumps(lst))
+                    self._root.SystemLog.set(json.dumps(lst))
 
                 # Log to database
                 if self._root._sqlLog is not None:
