@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>EvrControl &mdash; Rogue v5.6.1-102-g841a7feb documentation</title>
+  <title>EvrControl &mdash; Rogue v5.6.1-105-gd3ad3e16 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -51,7 +53,7 @@
           
 
           
-            <a href="../../../index.html" class="icon icon-home" alt="Documentation Home"> Rogue
+            <a href="../../../index.html" class="icon icon-home"> Rogue
           
 
           
@@ -148,6 +150,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -165,7 +169,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../../../_sources/hardware/pgp/classes/evrControl.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -184,14 +188,14 @@
 <p>EvrControl objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt id="_CPPv4N5rogue8hardware3pgp13EvrControlPtrE">
-<span id="_CPPv3N5rogue8hardware3pgp13EvrControlPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp13EvrControlPtrE"></span><span id="rogue::hardware::pgp::EvrControlPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1ac28f8dfef95b7f51d729f4c0313ad2d6"></span><em class="property">typedef </em>std::shared_ptr&lt;rogue::hardware::pgp::<a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl">EvrControl</a>&gt; <code class="sig-prename descclassname">rogue::hardware::pgp<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">EvrControlPtr</code><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp13EvrControlPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3pgp13EvrControlPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp13EvrControlPtrE"></span><span id="rogue::hardware::pgp::EvrControlPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1ac28f8dfef95b7f51d729f4c0313ad2d6"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">hardware</span><span class="pre">::</span><span class="pre">pgp</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl"><span class="pre">EvrControl</span></a><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">hardware</span><span class="pre">::</span><span class="pre">pgp</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">EvrControlPtr</span></code><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp13EvrControlPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as EvrControlPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt id="_CPPv4N5rogue8hardware3pgp10EvrControlE">
-<span id="_CPPv3N5rogue8hardware3pgp10EvrControlE"></span><span id="_CPPv2N5rogue8hardware3pgp10EvrControlE"></span><span id="rogue::hardware::pgp::EvrControl"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1EvrControl"></span><em class="property">class </em><code class="sig-name descname">EvrControl</code> : <em class="property">public</em> <a class="reference internal" href="#_CPPv413PgpEvrControl" title="PgpEvrControl">PgpEvrControl</a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N5rogue8hardware3pgp10EvrControlE"></span><span id="_CPPv2N5rogue8hardware3pgp10EvrControlE"></span><span id="rogue::hardware::pgp::EvrControl"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1EvrControl"></span><em class="property"><span class="pre">class</span> </em><code class="sig-name descname"><span class="pre">EvrControl</span></code> <span class="pre">:</span> <em class="property"><span class="pre">public</span></em> <a class="reference internal" href="#_CPPv413PgpEvrControl" title="PgpEvrControl"><span class="pre">PgpEvrControl</span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR Control Class. </p>
 <p>This class contains the current EVR configuration for one of the 8 lanes on a PGP card. This class is used to obtain the current configuration of the EVR functions of the PGP lane and to then modify the configuration. There is one member, evrEnable, which is global to the entire card. Updating this bit will impact the operation of the other 7 channels. This class is a C++ wrapper around the <a class="reference internal" href="#structPgpEvrControl"><span class="std std-ref">PgpEvrControl</span></a> structure used by the lower level driver. All structure members are exposed to Python using their original names and can be read and updated directly. </p>
 </dd></dl>
@@ -200,74 +204,74 @@
 members are exposed in the above class.</p>
 <dl class="cpp struct">
 <dt id="_CPPv413PgpEvrControl">
-<span id="_CPPv313PgpEvrControl"></span><span id="_CPPv213PgpEvrControl"></span><span id="PgpEvrControl"></span><span class="target" id="structPgpEvrControl"></span><em class="property">struct </em><code class="sig-name descname">PgpEvrControl</code><a class="headerlink" href="#_CPPv413PgpEvrControl" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv313PgpEvrControl"></span><span id="_CPPv213PgpEvrControl"></span><span id="PgpEvrControl"></span><span class="target" id="structPgpEvrControl"></span><em class="property"><span class="pre">struct</span> </em><code class="sig-name descname"><span class="pre">PgpEvrControl</span></code><a class="headerlink" href="#_CPPv413PgpEvrControl" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR Control, one per lane. </p>
 <p>Subclassed by <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">rogue::hardware::pgp::EvrControl</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl4laneE">
-<span id="_CPPv3N13PgpEvrControl4laneE"></span><span id="_CPPv2N13PgpEvrControl4laneE"></span><span id="PgpEvrControl::lane__uint32_t"></span><span class="target" id="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1"></span>uint32_t <code class="sig-name descname">lane</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl4laneE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl4laneE"></span><span id="_CPPv2N13PgpEvrControl4laneE"></span><span id="PgpEvrControl::lane__uint32_t"></span><span class="target" id="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">lane</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl4laneE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Lane number associated with this record. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl9evrEnableE">
-<span id="_CPPv3N13PgpEvrControl9evrEnableE"></span><span id="_CPPv2N13PgpEvrControl9evrEnableE"></span><span id="PgpEvrControl::evrEnable__uint32_t"></span><span class="target" id="structPgpEvrControl_1ad513daf7da80f9963418aa0f00db6e44"></span>uint32_t <code class="sig-name descname">evrEnable</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl9evrEnableE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl9evrEnableE"></span><span id="_CPPv2N13PgpEvrControl9evrEnableE"></span><span id="PgpEvrControl::evrEnable__uint32_t"></span><span class="target" id="structPgpEvrControl_1ad513daf7da80f9963418aa0f00db6e44"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">evrEnable</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl9evrEnableE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Global EVR enable for all lanes, 1 = enable, 0 = disabled. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl11laneRunMaskE">
-<span id="_CPPv3N13PgpEvrControl11laneRunMaskE"></span><span id="_CPPv2N13PgpEvrControl11laneRunMaskE"></span><span id="PgpEvrControl::laneRunMask__uint32_t"></span><span class="target" id="structPgpEvrControl_1a294feacc679669cea2a340c6ecd5e6cd"></span>uint32_t <code class="sig-name descname">laneRunMask</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl11laneRunMaskE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl11laneRunMaskE"></span><span id="_CPPv2N13PgpEvrControl11laneRunMaskE"></span><span id="PgpEvrControl::laneRunMask__uint32_t"></span><span class="target" id="structPgpEvrControl_1a294feacc679669cea2a340c6ecd5e6cd"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">laneRunMask</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl11laneRunMaskE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Run trigger enable for this lane, 1 = enable, 0 = disable. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl9evrSyncEnE">
-<span id="_CPPv3N13PgpEvrControl9evrSyncEnE"></span><span id="_CPPv2N13PgpEvrControl9evrSyncEnE"></span><span id="PgpEvrControl::evrSyncEn__uint32_t"></span><span class="target" id="structPgpEvrControl_1aec3d01258c4deb856f9cb44bcb3a1e92"></span>uint32_t <code class="sig-name descname">evrSyncEn</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl9evrSyncEnE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl9evrSyncEnE"></span><span id="_CPPv2N13PgpEvrControl9evrSyncEnE"></span><span id="PgpEvrControl::evrSyncEn__uint32_t"></span><span class="target" id="structPgpEvrControl_1aec3d01258c4deb856f9cb44bcb3a1e92"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">evrSyncEn</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl9evrSyncEnE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR Sync enable, 1 = start, 0 = stop. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl10evrSyncSelE">
-<span id="_CPPv3N13PgpEvrControl10evrSyncSelE"></span><span id="_CPPv2N13PgpEvrControl10evrSyncSelE"></span><span id="PgpEvrControl::evrSyncSel__uint32_t"></span><span class="target" id="structPgpEvrControl_1a78a08f0fb2007869027483428309a936"></span>uint32_t <code class="sig-name descname">evrSyncSel</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl10evrSyncSelE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl10evrSyncSelE"></span><span id="_CPPv2N13PgpEvrControl10evrSyncSelE"></span><span id="PgpEvrControl::evrSyncSel__uint32_t"></span><span class="target" id="structPgpEvrControl_1a78a08f0fb2007869027483428309a936"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">evrSyncSel</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl10evrSyncSelE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Sync select, 0 = async, 1 = sync for start/stop. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl10headerMaskE">
-<span id="_CPPv3N13PgpEvrControl10headerMaskE"></span><span id="_CPPv2N13PgpEvrControl10headerMaskE"></span><span id="PgpEvrControl::headerMask__uint32_t"></span><span class="target" id="structPgpEvrControl_1a1f1af2399b15ffb671cd9024ef6a530d"></span>uint32_t <code class="sig-name descname">headerMask</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl10headerMaskE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl10headerMaskE"></span><span id="_CPPv2N13PgpEvrControl10headerMaskE"></span><span id="PgpEvrControl::headerMask__uint32_t"></span><span class="target" id="structPgpEvrControl_1a1f1af2399b15ffb671cd9024ef6a530d"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">headerMask</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl10headerMaskE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Header checking mask, 1 enable bit for each of 4 virtual channels. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl11evrSyncWordE">
-<span id="_CPPv3N13PgpEvrControl11evrSyncWordE"></span><span id="_CPPv2N13PgpEvrControl11evrSyncWordE"></span><span id="PgpEvrControl::evrSyncWord__uint32_t"></span><span class="target" id="structPgpEvrControl_1aff639156d1b8479e0188d51464f54830"></span>uint32_t <code class="sig-name descname">evrSyncWord</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl11evrSyncWordE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl11evrSyncWordE"></span><span id="_CPPv2N13PgpEvrControl11evrSyncWordE"></span><span id="PgpEvrControl::evrSyncWord__uint32_t"></span><span class="target" id="structPgpEvrControl_1aff639156d1b8479e0188d51464f54830"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">evrSyncWord</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl11evrSyncWordE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>EVR Sync word, 32-bit timing fidicial to transition start/stop on. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl7runCodeE">
-<span id="_CPPv3N13PgpEvrControl7runCodeE"></span><span id="_CPPv2N13PgpEvrControl7runCodeE"></span><span id="PgpEvrControl::runCode__uint32_t"></span><span class="target" id="structPgpEvrControl_1a0e616cde63ad93e83c19e44501dc44a9"></span>uint32_t <code class="sig-name descname">runCode</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl7runCodeE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl7runCodeE"></span><span id="_CPPv2N13PgpEvrControl7runCodeE"></span><span id="PgpEvrControl::runCode__uint32_t"></span><span class="target" id="structPgpEvrControl_1a0e616cde63ad93e83c19e44501dc44a9"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">runCode</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl7runCodeE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>8-bit timing code to assert run trigger </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl8runDelayE">
-<span id="_CPPv3N13PgpEvrControl8runDelayE"></span><span id="_CPPv2N13PgpEvrControl8runDelayE"></span><span id="PgpEvrControl::runDelay__uint32_t"></span><span class="target" id="structPgpEvrControl_1a6e55bb57203eb534198591d933343cbd"></span>uint32_t <code class="sig-name descname">runDelay</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl8runDelayE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl8runDelayE"></span><span id="_CPPv2N13PgpEvrControl8runDelayE"></span><span id="PgpEvrControl::runDelay__uint32_t"></span><span class="target" id="structPgpEvrControl_1a6e55bb57203eb534198591d933343cbd"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">runDelay</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl8runDelayE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Delay between timing code reception and assertion of run trigger. </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl10acceptCodeE">
-<span id="_CPPv3N13PgpEvrControl10acceptCodeE"></span><span id="_CPPv2N13PgpEvrControl10acceptCodeE"></span><span id="PgpEvrControl::acceptCode__uint32_t"></span><span class="target" id="structPgpEvrControl_1a0183de708c213b2c800f006f6db322eb"></span>uint32_t <code class="sig-name descname">acceptCode</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl10acceptCodeE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl10acceptCodeE"></span><span id="_CPPv2N13PgpEvrControl10acceptCodeE"></span><span id="PgpEvrControl::acceptCode__uint32_t"></span><span class="target" id="structPgpEvrControl_1a0183de708c213b2c800f006f6db322eb"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">acceptCode</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl10acceptCodeE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>8-bit timing code to assert accept trigger </p>
 </dd></dl>
 
 <dl class="cpp var">
 <dt id="_CPPv4N13PgpEvrControl11acceptDelayE">
-<span id="_CPPv3N13PgpEvrControl11acceptDelayE"></span><span id="_CPPv2N13PgpEvrControl11acceptDelayE"></span><span id="PgpEvrControl::acceptDelay__uint32_t"></span><span class="target" id="structPgpEvrControl_1ae4c184800f1ecb4a5a5d4111203c5f53"></span>uint32_t <code class="sig-name descname">acceptDelay</code><a class="headerlink" href="#_CPPv4N13PgpEvrControl11acceptDelayE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N13PgpEvrControl11acceptDelayE"></span><span id="_CPPv2N13PgpEvrControl11acceptDelayE"></span><span id="PgpEvrControl::acceptDelay__uint32_t"></span><span class="target" id="structPgpEvrControl_1ae4c184800f1ecb4a5a5d4111203c5f53"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">acceptDelay</span></code><a class="headerlink" href="#_CPPv4N13PgpEvrControl11acceptDelayE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Delay between timing code reception and assertion of accept trigger. </p>
 </dd></dl>
 
@@ -281,37 +285,29 @@ members are exposed in the above class.</p>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../../../logging/index.html" class="btn btn-neutral float-right" title="Logging In Rogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="evrStatus.html" class="btn btn-neutral float-left" title="EvrStatus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="../../../logging/index.html" class="btn btn-neutral float-right" title="Logging In Rogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="evrStatus.html" class="btn btn-neutral float-left" title="EvrStatus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

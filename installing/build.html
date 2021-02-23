@@ -3,11 +3,11 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Building Rogue From Source &mdash; Rogue v5.6.1-102-g841a7feb documentation</title>
+  <title>Building Rogue From Source &mdash; Rogue v5.6.1-105-gd3ad3e16 documentation</title>
   
 
   
@@ -16,7 +16,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,7 +32,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -51,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> Rogue
+            <a href="../index.html" class="icon icon-home"> Rogue
           
 
           
@@ -108,6 +110,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#updating-rogue">Updating Rogue</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="#cross-compiling-rogue">Cross-compiling Rogue</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
@@ -156,6 +162,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -169,7 +177,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/installing/build.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -319,6 +327,78 @@ $ make install
 </div>
 </div>
 </div>
+<div class="section" id="cross-compiling-rogue">
+<h2>Cross-compiling Rogue<a class="headerlink" href="#cross-compiling-rogue" title="Permalink to this headline">¶</a></h2>
+<p>If you want to cross-compile rogue, first you need to have your cross-compilation toolchain setup. You also need to have cross-compiled version of all the dependencies with that toolchain.</p>
+<p>Then, you need to create a CMake toolchain file, where you have to manually point the CMake compiler variables to the path of your cross-compiler. Those variables are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CMAKE_SYSTEM_NAME</span>
+<span class="n">CMAKE_SYSTEM_PROCESSOR</span>
+<span class="n">CMAKE_C_COMPILER_AR</span>
+<span class="n">CMAKE_ASM_COMPILER</span>
+<span class="n">CMAKE_C_COMPILER</span>
+<span class="n">CMAKE_CXX_COMPILER</span>
+<span class="n">CMAKE_LINKER</span>
+<span class="n">CMAKE_OBJCOPY</span>
+<span class="n">CMAKE_C_COMPILER_RANLIB</span>
+<span class="n">CMAKE_SIZE</span>
+<span class="n">CMAKE_STRIP</span>
+</pre></div>
+</div>
+<p>In this file you also need to point to the location of the cross-compile version of the dependencies by using these variables:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">BZIP2_LIBRARIES</span>
+<span class="n">BZIP2_INCLUDE_DIR</span>
+<span class="n">ZeroMQ_LIBRARY</span>
+<span class="n">ZeroMQ_INCLUDE_DIR</span>
+<span class="n">PYTHON_LIBRARY</span>
+<span class="n">PYTHON_INCLUDE_DIR</span>
+<span class="n">BOOST_ROOT</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> for python you also need cross-compile version of its packages, like for example numpy.</p>
+<p>Once you have that file define, you pas that file to CMake with the option <code class="docutils literal notranslate"><span class="pre">-CMAKE_TOOLCHAIN_FILE=&lt;file_name&gt;</span></code>.</p>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<p>To cross-compile rogue at SLAC using our internal <code class="docutils literal notranslate"><span class="pre">buildroot</span></code> toolchain, we defined the following toolchain file, called <code class="docutils literal notranslate"><span class="pre">buildroot-2019.08-x86_64.cmake</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_SYSTEM_NAME</span>               <span class="n">Generic</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_SYSTEM_PROCESSOR</span>          <span class="n">x86_64</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_C_COMPILER_AR</span>     <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">ar</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_ASM_COMPILER</span>      <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gcc</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_C_COMPILER</span>        <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">gcc</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_CXX_COMPILER</span>      <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">g</span><span class="o">++</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_LINKER</span>            <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">ld</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_OBJCOPY</span>           <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">objcopy</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_C_COMPILER_RANLIB</span> <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">ranlib</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_SIZE</span>              <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">size</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_STRIP</span>             <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">linuxRT</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">/</span><span class="n">host</span><span class="o">/</span><span class="n">linux</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">x86_64</span><span class="o">/</span><span class="n">usr</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">x86_64</span><span class="o">-</span><span class="n">linux</span><span class="o">-</span><span class="n">strip</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_FIND_ROOT_PATH_MODE_PROGRAM</span> <span class="n">NEVER</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_FIND_ROOT_PATH_MODE_LIBRARY</span> <span class="n">ONLY</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">CMAKE_FIND_ROOT_PATH_MODE_INCLUDE</span> <span class="n">ONLY</span><span class="p">)</span>
+
+<span class="c1"># Define location of BZIP2 (cross-compiled)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">BZIP2_LIBRARIES</span>   <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">bzip2</span><span class="o">/</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">6</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libbz2</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">BZIP2_INCLUDE_DIR</span> <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">bzip2</span><span class="o">/</span><span class="mf">1.0</span><span class="o">.</span><span class="mi">6</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">include</span><span class="p">)</span>
+
+<span class="c1"># Define  the location of ZMQ (cross-compiled)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">ZeroMQ_LIBRARY</span>     <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">libzmq</span><span class="o">/</span><span class="n">zeromq</span><span class="o">-</span><span class="mf">4.3</span><span class="o">.</span><span class="mi">4</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libzmq</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">ZeroMQ_INCLUDE_DIR</span> <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">libzmq</span><span class="o">/</span><span class="n">zeromq</span><span class="o">-</span><span class="mf">4.3</span><span class="o">.</span><span class="mi">4</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">include</span><span class="p">)</span>
+
+<span class="c1"># Define the location of python3 (cross-compiled)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">PYTHON_LIBRARY</span>     <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="mf">3.6</span><span class="o">.</span><span class="mi">1</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libpython3</span><span class="o">.</span><span class="mi">6</span><span class="n">m</span><span class="o">.</span><span class="n">so</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">PYTHON_INCLUDE_DIR</span> <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">python</span><span class="o">/</span><span class="mf">3.6</span><span class="o">.</span><span class="mi">1</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">/</span><span class="n">include</span><span class="o">/</span><span class="n">python3</span><span class="o">.</span><span class="mi">6</span><span class="n">m</span><span class="p">)</span>
+
+<span class="c1"># Define the location of boost (cross-compiled)</span>
+<span class="nb">set</span><span class="p">(</span><span class="n">BOOST_ROOT</span> <span class="o">/</span><span class="n">afs</span><span class="o">/</span><span class="n">slac</span><span class="o">/</span><span class="n">g</span><span class="o">/</span><span class="n">lcls</span><span class="o">/</span><span class="n">package</span><span class="o">/</span><span class="n">boost</span><span class="o">/</span><span class="mf">1.64</span><span class="o">.</span><span class="mi">0</span><span class="o">/</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Then we build rogue as described in the previous section, but adding the <code class="docutils literal notranslate"><span class="pre">CMAKE_TOOLCHAIN_FILE</span></code> variable when calling CMake:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cmake</span> <span class="o">..</span> <span class="o">-</span><span class="n">DCMAKE_TOOLCHAIN_FILE</span><span class="o">=</span><span class="n">buildroot</span><span class="o">-</span><span class="mf">2019.08</span><span class="o">-</span><span class="n">x86_64</span><span class="o">.</span><span class="n">cmake</span>
+</pre></div>
+</div>
+<p><strong>Note:</strong> you need to pass the correct path, either absolute or relative, of you toolchain file  to the <code class="docutils literal notranslate"><span class="pre">CMAKE_TOOLCHAIN_FILE</span></code> variable.</p>
+</div>
+</div>
 </div>
 
 
@@ -326,37 +406,29 @@ $ make install
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="application.html" class="btn btn-neutral float-right" title="Compiling A Rogue Application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="docker.html" class="btn btn-neutral float-left" title="Installing Rogue Docker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="application.html" class="btn btn-neutral float-right" title="Compiling A Rogue Application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="docker.html" class="btn btn-neutral float-left" title="Installing Rogue Docker" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2019, SLAC National Accelerator Laboratory
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 
