@@ -12,7 +12,7 @@ SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
 *JIRA:*
 
-   https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
+   https://jira.slac.stanford.edu/projects/ESROGUE
 
 # Getting Rogue
 
