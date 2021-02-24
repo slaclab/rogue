@@ -95,3 +95,9 @@ class SimpleClient(object):
 
     def exec(self,path,arg):
         return self._remoteAttr(path, '__call__', arg)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self._stop()

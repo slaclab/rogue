@@ -316,3 +316,10 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
     def __ne__(self, other):
         return not (self == other)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.stop()
+
