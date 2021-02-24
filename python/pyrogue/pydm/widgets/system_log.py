@@ -1,12 +1,12 @@
 #-----------------------------------------------------------------------------
 # Title      : PyRogue PyDM System Log Widget
 #-----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
@@ -24,7 +24,6 @@ class SystemLog(PyDMFrame):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._systemLog = None
-        self._logCount  = 0
         self._node = None
 
     def connection_changed(self, connected):
@@ -39,7 +38,7 @@ class SystemLog(PyDMFrame):
         vb = QVBoxLayout()
         self.setLayout(vb)
 
-        gb = QGroupBox('System Log')
+        gb = QGroupBox('System Log (20 most recent entries)')
         vb.addWidget(gb)
 
         vb = QVBoxLayout()
@@ -52,47 +51,45 @@ class SystemLog(PyDMFrame):
         self._systemLog.setHeaderLabels(['Field','Value'])
         self._systemLog.setColumnWidth(0,200)
 
-        self._logCount = 0
-
         self._pb = PyDMPushButton(label='Clear Log',pressValue=1,init_channel=self._path)
         vb.addWidget(self._pb)
 
     def value_changed(self, new_val):
         lst = jsonpickle.decode(new_val)
 
-        if len(lst) == 0:
-            self._systemLog.clear()
+        self._systemLog.clear()
 
-        elif len(lst) > self._logCount:
-            for i in range(self._logCount,len(lst)):
-                widget = QTreeWidgetItem(self._systemLog)
-                widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(lst[i]['created'])))
+        # Show only the last 20 entries
+        # In the future we can consider a pop up dialog with the full log.
+        # Unclear if that is neccessary.
+        for ent in lst[-20:]:
+            widget = QTreeWidgetItem(self._systemLog)
+            widget.setText(0, time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(ent['created'])))
 
-                widget.setText(1,lst[i]['message'])
-                widget.setExpanded(False)
-                widget.setTextAlignment(0,Qt.AlignTop)
+            widget.setText(1,ent['message'])
+            widget.setExpanded(False)
+            widget.setTextAlignment(0,Qt.AlignTop)
 
-                temp = QTreeWidgetItem(widget)
-                temp.setText(0,'Name')
-                temp.setText(1,str(lst[i]['name']))
-                temp.setTextAlignment(0,Qt.AlignRight)
+            temp = QTreeWidgetItem(widget)
+            temp.setText(0,'Name')
+            temp.setText(1,str(ent['name']))
+            temp.setTextAlignment(0,Qt.AlignRight)
 
-                temp = QTreeWidgetItem(widget)
-                temp.setText(0,'Level')
-                temp.setText(1,'{} ({})'.format(lst[i]['levelName'],lst[i]['levelNumber']))
-                temp.setTextAlignment(0,Qt.AlignRight)
+            temp = QTreeWidgetItem(widget)
+            temp.setText(0,'Level')
+            temp.setText(1,'{} ({})'.format(ent['levelName'],ent['levelNumber']))
+            temp.setTextAlignment(0,Qt.AlignRight)
 
-                if lst[i]['exception'] is not None:
-                    exc = QTreeWidgetItem(widget)
-                    exc.setText(0,'exception')
-                    exc.setText(1,str(lst[i]['exception']))
-                    exc.setExpanded(False)
-                    exc.setTextAlignment(0,Qt.AlignRight)
+            if ent['exception'] is not None:
+                exc = QTreeWidgetItem(widget)
+                exc.setText(0,'exception')
+                exc.setText(1,str(ent['exception']))
+                exc.setExpanded(False)
+                exc.setTextAlignment(0,Qt.AlignRight)
 
-                    for v in lst[i]['traceBack']:
-                        temp = QTreeWidgetItem(exc)
-                        temp.setText(0,'')
-                        temp.setText(1,v)
+                for v in ent['traceBack']:
+                    temp = QTreeWidgetItem(exc)
+                    temp.setText(0,'')
+                    temp.setText(1,v)
 
-        self._logCount = len(lst)
 

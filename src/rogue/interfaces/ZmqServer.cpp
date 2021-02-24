@@ -202,7 +202,10 @@ bp::object rogue::interfaces::ZmqServerWrap::defDoRequest ( bp::object data ) {
 void rogue::interfaces::ZmqServer::runThread() {
    zmq_msg_t rxMsg;
    zmq_msg_t txMsg;
+
+#ifndef NO_PYTHON
    Py_buffer valueBuf;
+#endif
 
    log_->logThreadId();
    log_->info("Started Rogue server thread");
