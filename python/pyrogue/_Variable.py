@@ -11,7 +11,6 @@
 #-----------------------------------------------------------------------------
 import pyrogue as pr
 import rogue.interfaces.memory as rim
-import inspect
 import threading
 import re
 import time
@@ -388,7 +387,7 @@ class BaseVariable(pr.Node):
             if self.typeStr == 'ndarray':
                 return str(value)
             elif self._isList:
-                return "[" + ", ".join([quoteComma(self._genDispValue(v)) for v in value]) + "]"
+                return "[" + ", ".join([pr.quoteComma(self._genDispValue(v)) for v in value]) + "]"
             else:
                 return self._genDispValue(value)
 
@@ -1009,7 +1008,7 @@ class LinkVariable(BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write, 'index' : index}
 
-            varFuncHelper(self._linkedSet,pargs,self._log,self.path)
+            pr.functionHelper(self._linkedSet,pargs,self._log,self.path)
 
     @pr.expose
     def get(self, read=True, index=-1):
@@ -1018,30 +1017,6 @@ class LinkVariable(BaseVariable):
             # Possible args
             pargs = {'dev' : self.parent, 'var' : self, 'read' : read, 'index' : index}
 
-            return varFuncHelper(self._linkedGet,pargs,self._log,self.path)
+            return pr.functionHelper(self._linkedGet,pargs,self._log,self.path)
         else:
             return None
-
-
-# Function helper
-def varFuncHelper(func,pargs,log,path):
-
-    try:
-        # Function args
-        fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
-
-        # Build overlapping arg list
-        args = {k:pargs[k] for k in fargs if k != 'self' and k in pargs}
-
-    # handle c++ functions, no args supported for now
-    except Exception:
-        args = {}
-
-    return func(**args)
-
-# Quote commas
-def quoteComma(value):
-    if ',' in value:
-        return f"'{value}'"
-    else:
-        return value

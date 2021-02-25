@@ -110,7 +110,7 @@ class LocalBlock(object):
                 # Possible args
                 pargs = {'dev' : self._device, 'var' : self._variable, 'value' : self._value, 'changed' : changed}
 
-                pr.varFuncHelper(self._localSet, pargs, self._log, self._variable.path)
+                pr.functionHelper(self._localSet, pargs, self._log, self._variable.path)
 
     def get(self, var, index):
         if self._enable and self._localGet is not None:
@@ -119,7 +119,7 @@ class LocalBlock(object):
                 # Possible args
                 pargs = {'dev' : self._device, 'var' : self._variable}
 
-                self._value = pr.varFuncHelper(self._localGet,pargs, self._log, self._variable.path)
+                self._value = pr.functionHelper(self._localGet,pargs, self._log, self._variable.path)
 
         if index >= 0:
             return self._value[index]

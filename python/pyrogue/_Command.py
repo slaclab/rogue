@@ -111,9 +111,9 @@ class BaseCommand(pr.BaseVariable):
                 arg = self.parseDisp(arg)
 
             # Possible args
-            pargs = {'dev' : self.parent, 'cmd' : self, 'arg' : arg}
+            pargs = {'root' : self.root, 'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            return pr.varFuncHelper(self._function,pargs, self._log,self.path)
+            return pr.functionHelper(self._function,pargs, self._log,self.path)
 
         except Exception as e:
             pr.logException(self._log,e)

@@ -13,6 +13,7 @@ import signal
 import yaml
 import time
 import zipfile
+import inspect
 
 import pyrogue as pr
 import rogue.interfaces.stream
@@ -285,3 +286,28 @@ def yamlUpdate(old, new):
 
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
+
+# Function helper
+def functionHelper(func,pargs,log,path):
+
+    try:
+        # Function args
+        fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
+
+        # Build overlapping arg list
+        args = {k:pargs[k] for k in fargs if k != 'self' and k in pargs}
+
+    # handle c++ functions, no args supported for now
+    except Exception:
+        args = {}
+
+    return func(**args)
+
+# Quote commas
+def quoteComma(value):
+    if ',' in value:
+        return f"'{value}'"
+    else:
+        return value
+
+
