@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Using A Fifo &mdash; Rogue v5.6.5-12-ge01909bd documentation</title>
+  <title>Using A Fifo &mdash; Rogue v5.6.5-13-g5f17870b documentation</title>
   
 
   
@@ -102,6 +102,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usingRateDrop.html">Using A Rate Drop Object</a></li>
 <li class="toctree-l3"><a class="reference internal" href="debugStreams.html">Debugging Streams</a></li>
 <li class="toctree-l3"><a class="reference internal" href="classes/index.html">Stream Interface Class Descriptions</a></li>
 </ul>
@@ -214,7 +215,7 @@ and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noC
 <span class="c1"># Create a Fifo with maxDepth=100, trimSize=0, noCopy=True</span>
 <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Fifo</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
 
-<span class="c1"># Connect the fifo to the source and on to the FIFO</span>
+<span class="c1"># Connect the fifo to the source and on to the destination</span>
 <span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">fifo</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 </pre></div>
 </div>
@@ -268,7 +269,7 @@ and a slave. This Fifo is configured to only copy the first 20 bytes of the Fram
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomMaster.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Data source</span>
-<span class="n">MyCustomMasterPtr</span> <span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
+<span class="n">MyCustomMasterPtr</span> <span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Data destination</span>
 <span class="n">MyCustomSlavePtr</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
@@ -277,7 +278,7 @@ and a slave. This Fifo is configured to only copy the first 20 bytes of the Fram
 <span class="n">MyCustomMonitorPtr</span> <span class="n">mon</span> <span class="o">=</span> <span class="n">MyCustomMonitor</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="cp"># Create a Fifo with maxDepth=150, trimSize=20, noCopy=false</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FifoPtr</span> <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Fifo</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">false</span><span class="p">)</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FifoPtr</span> <span class="n">fifo</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Fifo</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
 <span class="cp"># Connect the src and dst</span>
 <span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>

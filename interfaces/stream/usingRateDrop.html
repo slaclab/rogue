@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Debugging Streams &mdash; Rogue v5.6.5-13-g5f17870b documentation</title>
+  <title>Using A Rate Drop Object &mdash; Rogue v5.6.5-13-g5f17870b documentation</title>
   
 
   
@@ -38,8 +38,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Stream Interface Class Descriptions" href="classes/index.html" />
-    <link rel="prev" title="Using A Rate Drop Object" href="usingRateDrop.html" /> 
+    <link rel="next" title="Debugging Streams" href="debugStreams.html" />
+    <link rel="prev" title="Using A Filter" href="usingFilter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,8 +98,11 @@
 <li class="toctree-l3"><a class="reference internal" href="usingTcp.html">Using The TCP Bridge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usingFifo.html">Using A Fifo</a></li>
 <li class="toctree-l3"><a class="reference internal" href="usingFilter.html">Using A Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="usingRateDrop.html">Using A Rate Drop Object</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Debugging Streams</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Using A Rate Drop Object</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ratedrop-example">RateDrop Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="debugStreams.html">Debugging Streams</a></li>
 <li class="toctree-l3"><a class="reference internal" href="classes/index.html">Stream Interface Class Descriptions</a></li>
 </ul>
 </li>
@@ -162,13 +165,13 @@
         
           <li><a href="index.html">Stream Interface</a> &raquo;</li>
         
-      <li>Debugging Streams</li>
+      <li>Using A Rate Drop Object</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/interfaces/stream/debugStreams.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/interfaces/stream/usingRateDrop.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -181,15 +184,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <p>i.. _interfaces_stream_debug_streams:</p>
-<div class="section" id="debugging-streams">
-<h1>Debugging Streams<a class="headerlink" href="#debugging-streams" title="Permalink to this headline">¶</a></h1>
-<p>The base stream <a class="reference internal" href="classes/slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> class can server as a debug Frame receiver. This can
-be useful when you want to display some or all of the data streams used in your designs. In most
-cases the debug Slave module will be used as a secondary slave. In order to enable debugging the setDebug()
-method of the Stream class must be called.</p>
-<p>The following is an example of using the base Slave class as a debug monitor on a stream between
-between an existing Master and Slave instance.</p>
+  <div class="section" id="using-a-rate-drop-object">
+<span id="interfaces-stream-using-rate-drop"></span><h1>Using A Rate Drop Object<a class="headerlink" href="#using-a-rate-drop-object" title="Permalink to this headline">¶</a></h1>
+<p>A <a class="reference internal" href="classes/rateDrop.html#interfaces-stream-rate-drop"><span class="std std-ref">RateDrop</span></a> object provides a mechanism for rate limiting stream frames
+for receivers which can not keep up with data at the expected full rate. The RateDrop class allows
+the user to drop limit the frame rate either by dropping every n frames, or by specifying a minimum time
+period between frames.</p>
+<div class="section" id="ratedrop-example">
+<h2>RateDrop Example<a class="headerlink" href="#ratedrop-example" title="Permalink to this headline">¶</a></h2>
+<p>The following python example shows how to limit the data rate in an incoming stream to 10hz.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
 <span class="kn">import</span> <span class="nn">pyrogue</span>
 
@@ -197,24 +200,20 @@ between an existing Master and Slave instance.</p>
 <span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
 
 <span class="c1"># Data destination</span>
-<span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
+<span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
 
-<span class="c1"># Debug Slave</span>
-<span class="n">dbg</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">slave</span><span class="p">()</span>
+<span class="c1"># Create a rate drop module, with the period flag set to true and the</span>
+<span class="c1"># period value set to 0.01 seconds</span>
+<span class="n">rate</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">RateDrop</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span><span class="mf">0.01</span><span class="p">)</span>
 
-<span class="c1"># Set debug mode for first 100 bytes, with name myDebug</span>
-<span class="n">dbg</span><span class="o">.</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="s2">&quot;myDebug&quot;</span><span class="p">)</span>
-
-<span class="c1"># Connect the src and dst</span>
-<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
-
-<span class="c1"># Add the debug slave as a second slave</span>
-<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dbg</span>
+<span class="c1"># Connect the rate drop object to the source and on to the destination</span>
+<span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">rate</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span>
 </pre></div>
 </div>
 <p>Below is the equivalent code in C++</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/Fifo.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/interfaces/stream/RateDrop.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;MyCustomMaster.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;MyCustomSlave.h&gt;</span><span class="cp"></span>
 
 <span class="c1">// Data source</span>
 <span class="n">MyCustomMasterPtr</span> <span class="n">src</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
@@ -222,18 +221,14 @@ between an existing Master and Slave instance.</p>
 <span class="c1">// Data destination</span>
 <span class="n">MyCustomSlavePtr</span> <span class="n">dst</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
-<span class="c1">// Debug Slave</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="nl">stream</span><span class="p">:;</span><span class="n">SlavePtr</span> <span class="n">dbg</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="p">;</span><span class="o">:</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
+<span class="c1">// Create a rate drop module, with the period flag set to true and the</span>
+<span class="c1">// period value set to 0.01 seconds</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">RateDropPtr</span> <span class="n">rate</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">RateDrop</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="n">True</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">);</span>
 
-<span class="c1">// Set debug mode for first 100 bytes, with name myDebug</span>
-<span class="n">dbg</span><span class="o">-&gt;</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="s">&quot;myDebug&quot;</span><span class="p">);</span>
-
-<span class="cp"># Connect the src and dst</span>
-<span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
-
-<span class="cp"># Add the debug slave as a second slave</span>
-<span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">dbg</span><span class="p">;</span>
+<span class="c1">// Connect the rate drop object to the source and on to the dst</span>
+<span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">src</span> <span class="o">&gt;&gt;</span> <span class="n">fifo</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">dst</span><span class="p">;</span>
 </pre></div>
+</div>
 </div>
 </div>
 
@@ -243,8 +238,8 @@ between an existing Master and Slave instance.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="classes/index.html" class="btn btn-neutral float-right" title="Stream Interface Class Descriptions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="usingRateDrop.html" class="btn btn-neutral float-left" title="Using A Rate Drop Object" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="debugStreams.html" class="btn btn-neutral float-right" title="Debugging Streams" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="usingFilter.html" class="btn btn-neutral float-left" title="Using A Filter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

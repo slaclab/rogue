@@ -13,6 +13,7 @@ The following are detailed descriptions of the various C++ classes that make up 
    frame
    frameLock
    frameIterator
+   frameAccessor
    helpers
    master
    slave
@@ -21,6 +22,7 @@ The following are detailed descriptions of the various C++ classes that make up 
    tcpClient
    tcpServer
    filter
+   rateDrop
    buffer
    pool
 
