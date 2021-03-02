@@ -1,7 +1,3 @@
-| branch      | status
-|-------------|--------
-| master      |[![Build Status](https://travis-ci.org/slaclab/rogue.svg?branch=master)](https://travis-ci.org/slaclab/rogue) [![codecov](https://codecov.io/gh/slaclab/rogue/branch/master/graph/badge.svg)](https://codecov.io/gh/slaclab/rogue) [![Anaconda-Server Badge](https://anaconda.org/tidair-tag/rogue/badges/version.svg)](https://anaconda.org/tidair-tag/rogue)
-| pre-release |[![Build Status](https://travis-ci.org/slaclab/rogue.svg?branch=pre-release)](https://travis-ci.org/slaclab/rogue) [![codecov](https://codecov.io/gh/slaclab/rogue/branch/pre-release/graph/badge.svg)](https://codecov.io/gh/slaclab/rogue) [![Anaconda-Server Badge](https://anaconda.org/tidair-dev/rogue/badges/version.svg)](https://anaconda.org/tidair-dev/rogue)
 
 # rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
@@ -16,7 +12,7 @@ SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
 *JIRA:*
 
-   https://jira.slac.stanford.edu/plugins/servlet/project-config/ESROGUE
+   https://jira.slac.stanford.edu/projects/ESROGUE
 
 # Getting Rogue
 

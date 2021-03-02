@@ -598,7 +598,7 @@ class Node(object):
 
             # Name not in list
             if aname is None or aname not in self._anodes or len(keys) == 0:
-                return []
+                return [],None
 
             return _iterateDict(self._anodes[aname],keys),None
 

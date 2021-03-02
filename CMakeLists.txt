@@ -194,7 +194,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc
+                            ${EPICS_BASE_DIR}/include/compiler/clang
                             ${EPICS_BASE_DIR}/include/os/Darwin)
 
       set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib
