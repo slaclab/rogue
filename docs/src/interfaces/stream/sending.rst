@@ -5,17 +5,17 @@ Sending Frames
 ==============
 
 Frames are transmitted by a subclass of the :ref:`interfaces_stream_master` class in rogue.
-This subclass can be created either in python or in c++. In order to send a Frame, the 
-master sub-class must first request the creation of a new Frame with enough space available for 
+This subclass can be created either in python or in c++. In order to send a Frame, the
+master sub-class must first request the creation of a new Frame with enough space available for
 the intended payload. This is done by generating a Frame request to the primary slave with two
 parameters: the Frame size and a zero copy enable flag. In most cases the implementer will
 want to set the zero copy flag to True, allowing the primary slave to determine if it will
-use zero copy buffers for the new Frame. If the master intends to re-use the Frame, i.e. sending it 
-multiple times, it will want to disallow the creation of zero copy buffers. A Frame with 
+use zero copy buffers for the new Frame. If the master intends to re-use the Frame, i.e. sending it
+multiple times, it will want to disallow the creation of zero copy buffers. A Frame with
 zero copy buffers is usually emptied when it is passed to the primary slave and cannot be
 reused.
 
-Python and C++ subclasses of the Master class can be used interchangeably, allowing c++ subclasses 
+Python and C++ subclasses of the Master class can be used interchangeably, allowing c++ subclasses
 to receive Frames from python masters and python subclasses to receive Frames from c++ masters.
 
 Python Master Subclass
@@ -56,14 +56,14 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
            frame.write(ba,0)
 
            # The user may also write to an arbitrary offset, the valid payload
-           # size of the frame is set to the highest index written. 
+           # size of the frame is set to the highest index written.
            # Locations not explicitly written, but below the highest written
            # index, will be considered valid, but may contain random data
            ba = bytearray([i*2 for i in range (10)])
            frame.write(ba,50)
 
            # At this point locations 0 - 9 and 50 - 59 contain known values
-           # The new payload size is now 60, but locations 10 - 49 may 
+           # The new payload size is now 60, but locations 10 - 49 may
            # contain random data
 
            # Send the frame to the currently attached slaves
@@ -74,16 +74,16 @@ Implementing a Master subclass in python is easy, but may result in a lower leve
 C++ Master Subclass
 ===================
 
-Creating a Master sub-class in c++ is done in a similar fashion. A new frame is 
+Creating a Master sub-class in c++ is done in a similar fashion. A new frame is
 requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
-data can be done more directly using an iterator. 
+data can be done more directly using an iterator.
 
 In order to use a custom c++ Master subclass, you will need to build it into a c++ python module or into
 a c++ application. See the sections :ref:`custom_module` and :ref:`installing_application`.
 
-The example below shows the most direct method for updating data within a frame using 
-an iterator. Here we both de-reference the iterator directly to update specific locations 
+The example below shows the most direct method for updating data within a frame using
+an iterator. Here we both de-reference the iterator directly to update specific locations
 and we use std::copy to move data from data buffer into the Frame.
 
 .. code-block:: c
@@ -103,7 +103,7 @@ and we use std::copy to move data from data buffer into the Frame.
             return(ret);
          }
 
-         // Standard class creator which is called by create 
+         // Standard class creator which is called by create
          MyCustomMaster() : rogue::interfaces::stream::Master() { }
 
          void myFrameGen() {
@@ -144,14 +144,16 @@ and we use std::copy to move data from data buffer into the Frame.
    typedef std::shared_ptr<MyCustomMaster> MyCustomMasterPtr;
 
 
-The std::copy call works very well for moving data between two standard C++ iterators. It will
-properly deal with iterators which manage non-contiguous buffers, which may be the case when allocating 
-new Frames. For example when sending large data frames over a UDP interface, the Slave which allocates the 
+The std::copy call is the safest method for moving frame data round using The FrameIterator class. It will
+properly deal with iterators which manage non-contiguous buffers, which may be the case when allocating
+new Frames. For example when sending large data frames over a UDP interface, the Slave which allocates the
 buffer may create a Frame consisting up a number of 1500 byte frames which may exist at random locations
-in memory. If we are to use std::copy in this case, it will detect that the passed iterator range is non-contiguous, and default to a less performant method of copying data byte by byte.
+in memory.
 
-In order to ensure the best possible performance, the Rogue :ref:`interfaces_stream_frame_iterator` provides
-mechanisms for iterating through each contiguous buffer. The following example performs a data copy from 
+This however comes at a performance penalty as the iterator is updated on each access to the underlying Frame data. In
+order to move data in the most effecient way, it is best to use std::memcpy with the data pointer interface
+provided by the Buffer class.  The Rogue :ref:`interfaces_stream_frame_iterator` provides
+mechanisms for iterating through each contiguous buffer. The following example performs a data copy from
 a passed data buffer into the Rogue frame, ensuring that the most efficient copy methods are used:
 
 .. code-block:: c
@@ -162,7 +164,7 @@ a passed data buffer into the Rogue frame, ensuring that the most efficient copy
    // Request a new buffer with 100 bytes
    frame = reqFrame(100,true);
 
-   // Update the new payload size 
+   // Update the new payload size
    frame->setPayload(100);
 
    // Get an iterator to the start of the Frame
@@ -174,14 +176,17 @@ a passed data buffer into the Rogue frame, ensuring that the most efficient copy
       // The rem buffer method returns the number of bytes left in the current contiguous buffer
       size = it->remBuffer();
 
-      // Copy size number of bytes, updating both pointers
-      it = std::copy(data, data+size; it);
+      // Copy the data using the iterator ptr method
+      std::memcpy(data, it->ptr(), size);
+
+      // Update the pointer and the iterator
       data += size;
+      it += size;
    }
 
 
-Alternatively if the user wishes to access individual values in the data frame at various offsets, 
-they can make use of the toFrame helper function defined in :ref:`interfaces_stream_helpers`. 
+Alternatively if the user wishes to access individual values in the data frame at various offsets,
+they can make use of the toFrame helper function defined in :ref:`interfaces_stream_helpers`.
 
 .. code-block:: c
 
@@ -192,10 +197,10 @@ they can make use of the toFrame helper function defined in :ref:`interfaces_str
    // Update frame payload size
    frame->setPayload(13);
 
-   it = frame->begin(); 
+   it = frame->begin();
 
-   // Write 64-bits and advance iterator 8 bytes 
-   toFrame(it, 8, &data64); 
+   // Write 64-bits and advance iterator 8 bytes
+   toFrame(it, 8, &data64);
 
    // Write 32-bits and advance iterator 4 bytes
    toFrame(it, 4, &data32);
@@ -203,6 +208,38 @@ they can make use of the toFrame helper function defined in :ref:`interfaces_str
    // Write 8-bits and advance iterator 1 byte
    toFrame(it, 1, &data8);
 
-Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more 
-advanced methods of access frame and buffer data. 
+In some cases the user will need high performance element level access to the frame data. The :ref:`interfaces_stream_frame_accessor`
+provides a memory pointer mapped view of the frame data. There is a limitation in the use of a FrameAccessor in that it can
+only map frame data that is represented by a single buffer. If the range to be accessed spans multiple buffers, attempting
+to use a FrameAccessor will throw an exception. Luckily there is a helper in the :ref:`interfaces_stream_master` class
+class which will verify that a given frame is representated by a single buffer. If this is not the case it create a copy of the
+Frame into a new Frame which is made up of a single buffer.
+
+The user must be carefull to not "flatten" a frame that is purposely segmented into multiple buffers (i.e. createa a frame for
+sending over a UDP interface). The :ref:`interfaces_stream_frame_accessor` in combination with the ensureSingleBuffer() call on
+received frames.
+
+.. code-block:: c
+
+   // First lets make sure the frame is made up of a single buffer
+   // Set the request enable flag to true, allowing a new frame to
+   // be created. (be carefull with this call, see note above)
+   self->ensureSingleBuffer(frame,True);
+
+   // Update frame payload size
+   frame->setPayload(800);
+
+   // Get the iterator
+   it = frame->begin();
+
+   // Create accessor at current iterator position
+   // We want to access 100 64-bit values
+   rogue::interfaces::stream::FrameAccessor<uint64_t> acc = rogue::interfaces::stream::FrameAccessor<uint64_t>(it,100);
+
+   // We can now access the values as an array:
+   acc[0] = value1;
+   acc[1] = value2;
+
+Further study of the :ref:`interfaces_stream_frame` and :ref:`interfaces_stream_buffer` APIs will reveal more
+advanced methods of access frame and buffer data.
 
