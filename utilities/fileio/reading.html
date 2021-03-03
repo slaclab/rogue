@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Reading Frames From A File &mdash; Rogue v5.6.5-19-g6e6f0ec8 documentation</title>
+  <title>Reading Frames From A File &mdash; Rogue v5.6.5-20-g88c345a5 documentation</title>
   
 
   
@@ -208,6 +208,23 @@ object can be used to direct the Frames based upon their channel IDs.</p>
 <span class="c1"># is a blocking command that will wait until all the frames are read, and then close() the</span>
 <span class="c1"># file</span>
 <span class="n">fread</span><span class="o">.</span><span class="n">closeWait</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>A Rogue Device wrapper is provided for including the StreamReader class as part of the Rogue tree. This allows the StreamReader to be
+present in the Rogue PyDM GUI, providing an interface for opening and closing files.</p>
+<p>The following code is an example of using the Rogue StreamReader wrapper in the Rogue tree.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">pyrogue.utilities.fileio</span>
+
+<span class="c1"># First we create a file reader instance, use the python wrapper</span>
+<span class="n">fread</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+
+<span class="c1"># Add the file reader to the Rogue tree.</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fread</span><span class="p">)</span>
+
+<span class="c1"># Assuming we already have a frame receiver, we can connect the reader</span>
+<span class="c1"># instance to the receiver</span>
+<span class="n">receiver</span> <span class="o">&lt;&lt;</span> <span class="n">fread</span>
 </pre></div>
 </div>
 <p>The following code shows how to use a StreamReader in c++.</p>

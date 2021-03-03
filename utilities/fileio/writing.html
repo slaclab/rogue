@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Writing Frames To A File &mdash; Rogue v5.6.5-19-g6e6f0ec8 documentation</title>
+  <title>Writing Frames To A File &mdash; Rogue v5.6.5-20-g88c345a5 documentation</title>
   
 
   
@@ -224,9 +224,33 @@ when writing the file.</p>
 <span class="n">fwrite</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Most uses of the StreamWriter class will be used in the larger Rogue tree. Using the StreamWriter as
-a Device in the Rogue tree will provide a Variable and Command interface, including PyDM GUI supports
-for opening and closing files.</p>
+<p>A Rogue Device wrapper is provided for including the StreamWriter class as part of the Rogue tree. This allows the StreamWriter to be
+present in the Rogue PyDM GUI, providing an interface for opening and closing files.</p>
+<p>The following code is an example of using the Rogue StreamWriter wrapper in the Rogue tree.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">pyrogue.utilities.fileio</span>
+
+<span class="c1"># Assume we have to incoming data streams, streamA and streamB coming from a pair</span>
+<span class="c1"># of stream Masters</span>
+<span class="c1"># streamA</span>
+<span class="c1"># streamB</span>
+
+<span class="c1"># First we create a file writer instance, use the python wrapper</span>
+<span class="n">fwrite</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">()</span>
+
+<span class="c1"># Add the file writer to the Rogue tree.</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fwrite</span><span class="p">)</span>
+
+<span class="c1"># Don&#39;t set any other parameters as you will use the Rogue tree to set the</span>
+<span class="c1"># file parameters and open/close files</span>
+
+<span class="c1"># Connect stream A to the file writer channel 0</span>
+<span class="n">streamA</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Connect stream B to the file writer channel 1</span>
+<span class="n">streamB</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The following code shows how to use a StreamWriter in c++.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/fileio/StreamWriterChannel.h&gt;</span><span class="cp"></span>

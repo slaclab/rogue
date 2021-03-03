@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Sending Frames &mdash; Rogue v5.6.5-19-g6e6f0ec8 documentation</title>
+  <title>Sending Frames &mdash; Rogue v5.6.5-20-g88c345a5 documentation</title>
   
 
   
@@ -248,6 +248,36 @@ the writeFile virtual method.</p>
 
 <span class="c1">// Smart pointer alias for our custom class</span>
 <span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyDataWriter</span><span class="o">&gt;</span> <span class="n">MyDataWriterPtr</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>Once your custom writer is created you may want to use it in the Rogue tree, allowing you to open and write
+files using the Rogue PyDM GUI. You can sub-class the rogue StreamWriter class for use with your custom
+module.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">pyrogue.utilities.fileio</span>
+
+<span class="c1"># Assume we have to incoming data streams, streamA and streamB coming from a pair</span>
+<span class="c1"># of stream Masters</span>
+<span class="c1"># streamA</span>
+<span class="c1"># streamB</span>
+
+<span class="c1"># Instantiate your custom writer</span>
+<span class="n">mywrite</span> <span class="o">=</span> <span class="n">MyWriter</span><span class="p">()</span>
+
+<span class="c1"># Pass the custom writer to the Rogue wrapper</span>
+<span class="n">fwrite</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">writer</span><span class="o">=</span><span class="n">myWrite</span><span class="p">)</span>
+
+<span class="c1"># Add the file writer to the Rogue tree.</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fwrite</span><span class="p">)</span>
+
+<span class="c1"># Don&#39;t set any other parameters as you will use the Rogue tree to set the</span>
+<span class="c1"># file parameters and open/close files</span>
+
+<span class="c1"># Connect stream A to the file writer channel 0</span>
+<span class="n">streamA</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Connect stream B to the file writer channel 1</span>
+<span class="n">streamB</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

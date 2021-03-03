@@ -39,6 +39,28 @@ The following code block describes how to create and connect a file reader in py
    # file
    fread.closeWait()
 
+
+A Rogue Device wrapper is provided for including the StreamReader class as part of the Rogue tree. This allows the StreamReader to be
+present in the Rogue PyDM GUI, providing an interface for opening and closing files.
+
+The following code is an example of using the Rogue StreamReader wrapper in the Rogue tree.
+
+.. code-block:: python
+
+   import pyrogue
+   import pyrogue.utilities.fileio
+
+   # First we create a file reader instance, use the python wrapper
+   fread = pyrogue.utilities.fileio.StreamReader()
+
+   # Add the file reader to the Rogue tree.
+   root.add(fread)
+
+   # Assuming we already have a frame receiver, we can connect the reader
+   # instance to the receiver
+   receiver << fread
+
+
 The following code shows how to use a StreamReader in c++.
 
 .. code-block:: c
