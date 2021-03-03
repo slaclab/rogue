@@ -21,13 +21,9 @@ import rogue
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
 
-    def __init__(self, *, reader=None, **kwargs):
+    def __init__(self, *, **kwargs):
         pyrogue.Device.__init__(self, **kwargs)
-
-        if reader is None:
-            self._reader = rogue.utilities.fileio.StreamReader()
-        else:
-            self._reader = reader
+        self._reader = rogue.utilities.fileio.StreamReader()
 
         self.add(pyrogue.LocalVariable(
             name='DataFile',
