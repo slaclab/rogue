@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Reading Frames From A File &mdash; Rogue v5.6.5-17-ge74a8f2b documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Reading Frames From A File</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/utilities/fileio/reading.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reading-frames-from-a-file">
+<span id="utilities-filio-reading"></span><h1>Reading Frames From A File<a class="headerlink" href="#reading-frames-from-a-file" title="Permalink to this headline">¶</a></h1>
+<p>Frames can be read in a streaming fashion using the <a class="reference internal" href="classes/reader.html#utilities-fileio-reader"><span class="std std-ref">StreamReader</span></a> class. This
+class will output frames using the standard stream interface, with a Frame object created for
+each data blob in the Frame, with the same format and with the same flags when it was originally
+written. Since multiple “channels” may have been used when writing the file, generated frames will
+be tagged with a channel ID to match the channel value when written. A <span class="xref std std-ref">interfaces_stream_filter’</span>
+object can be used to direct the Frames based upon their channel IDs.</p>
+<p>There is also a python utilitiy for reading frames in python using a non-streaming method.</p>
+<p>The following code block describes how to create and connect a file reader in python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">rogue.utilities.fileio</span>
+
+<span class="c1"># First we create a file reader instance</span>
+<span class="n">fread</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamReader</span><span class="p">()</span>
+
+<span class="c1"># Assuming we already have a frame receiver, we can connect the reader</span>
+<span class="c1"># instance to the receiver</span>
+<span class="n">receiver</span> <span class="o">&lt;&lt;</span> <span class="n">fread</span>
+
+<span class="c1"># We can then open the file. As soon as the file is opened the read frames</span>
+<span class="c1"># will be streamed to the receiver until all frames are read. If the file</span>
+<span class="c1"># was written using the maxSize attribute, you can include the index of the</span>
+<span class="c1"># first file, and all of the seperate files in the split sequence will be written</span>
+<span class="c1"># in order:</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;myFile.dat.1&quot;</span><span class="p">)</span>
+
+<span class="c1"># After all of the files are read, you can then close the file. The closeWait() command</span>
+<span class="c1"># is a blocking command that will wait until all the frames are read, and then close() the</span>
+<span class="c1"># file</span>
+<span class="n">fread</span><span class="o">.</span><span class="n">closeWait</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The following code shows how to use a StreamReader in c++.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/fileio/StreamReader.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// First we create a file reader instance</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamReaderPtr</span> <span class="n">fwrite</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamReaderPtr</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
+
+<span class="c1">// Connect the reader to an existing receiver</span>
+<span class="n">receiver</span> <span class="o">&lt;&lt;</span> <span class="n">fread</span>
+
+<span class="c1">// Open the data file</span>
+<span class="n">freade</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat.1&quot;</span><span class="p">)</span>
+
+<span class="c1">// Close the data file after all frames are read</span>
+<span class="n">fread</span><span class="o">-&gt;</span><span class="n">closeWait</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
