@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Logging In Rogue &mdash; Rogue v5.6.5-15-gbdc53223 documentation</title>
+  <title>Logging In Rogue &mdash; Rogue v5.6.5-16-gccc3f10c documentation</title>
   
 
   
@@ -39,7 +39,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Creating Custom Modules" href="../custom_module/index.html" />
-    <link rel="prev" title="MemMap" href="../hardware/raw/classes/memMap.html" /> 
+    <link rel="prev" title="PRBS Utilities" href="../utilities/prbs/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -92,6 +92,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -164,13 +165,14 @@
             
   <div class="section" id="logging-in-rogue">
 <span id="logging"></span><h1>Logging In Rogue<a class="headerlink" href="#logging-in-rogue" title="Permalink to this headline">¶</a></h1>
-<p>The following table are the known logging paths for entities within Rogue.</p>
+<p>The following table are the known logging paths for entities within Rogue. Values in brackets
+are dynamic values dervied from the instance.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 9%" />
-<col style="width: 30%" />
-<col style="width: 21%" />
-<col style="width: 39%" />
+<col style="width: 6%" />
+<col style="width: 24%" />
+<col style="width: 20%" />
+<col style="width: 50%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Type</p></th>
@@ -182,28 +184,28 @@
 <tbody>
 <tr class="row-even"><td><p>C++</p></td>
 <td><p>interfaces/stream</p></td>
+<td><p>Slave</p></td>
+<td><p>pyrogue.stream.[name] (passed to setDebug)</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>interfaces/stream</p></td>
 <td><p>Fifo</p></td>
 <td><p>pyrogue.stream.Fifo</p></td>
 </tr>
-<tr class="row-odd"><td><p>C++</p></td>
+<tr class="row-even"><td><p>C++</p></td>
 <td><p>interfaces/stream</p></td>
 <td><p>Filter</p></td>
 <td><p>pyrogue.stream.Filter</p></td>
 </tr>
-<tr class="row-even"><td><p>C++</p></td>
-<td><p>interfaces/stream</p></td>
-<td><p>TcpCore</p></td>
-<td><p>pyrogue.stream.TcpCore</p></td>
-</tr>
 <tr class="row-odd"><td><p>C++</p></td>
 <td><p>interfaces/stream</p></td>
 <td><p>TcpClient</p></td>
-<td><p>pyrogue.stream.TcpCore</p></td>
+<td><p>pyrogue.stream.TcpCore.[addr].Client.[port]</p></td>
 </tr>
 <tr class="row-even"><td><p>C++</p></td>
 <td><p>interfaces/stream</p></td>
 <td><p>TcpServer</p></td>
-<td><p>pyrogue.stream.TcpCore</p></td>
+<td><p>pyrogue.stream.TcpCore.[addr].Server.[port]</p></td>
 </tr>
 <tr class="row-odd"><td><p>C++</p></td>
 <td><p>interfaces/memory</p></td>
@@ -212,28 +214,118 @@
 </tr>
 <tr class="row-even"><td><p>C++</p></td>
 <td><p>interfaces/memory</p></td>
+<td><p>Block</p></td>
+<td><p>pyrogue.memory.Block.path</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>interfaces/memory</p></td>
+<td><p>Transaction</p></td>
+<td><p>pyrogue.memory.Master.Transaction</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>interfaces/memory</p></td>
 <td><p>TcpClient</p></td>
-<td><p>pyrogue.memory.TcpClient</p></td>
+<td><p>pyrogue.memory.TcpClient.[addr].[port]</p></td>
 </tr>
 <tr class="row-odd"><td><p>C++</p></td>
 <td><p>interfaces/memory</p></td>
 <td><p>TcpServer</p></td>
-<td><p>pyrogue.memory.TcpServer</p></td>
+<td><p>pyrogue.memory.TcpServer.[addr].[port]</p></td>
 </tr>
 <tr class="row-even"><td><p>C++</p></td>
+<td><p>hardware</p></td>
+<td><p>MemMap</p></td>
+<td><p>pyrogue.MemMap</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
 <td><p>hardware/axi</p></td>
 <td><p>AxiMemMap</p></td>
 <td><p>pyrogue.axi.AxiMemMap</p></td>
 </tr>
-<tr class="row-odd"><td><p>C++</p></td>
+<tr class="row-even"><td><p>C++</p></td>
 <td><p>hardware/axi</p></td>
 <td><p>AxiStreamDma</p></td>
 <td><p>pyrogue.axi.AxiStreamDma</p></td>
 </tr>
-<tr class="row-even"><td><p>C++</p></td>
+<tr class="row-odd"><td><p>C++</p></td>
 <td><p>hardware/pgp</p></td>
 <td><p>PgpCard</p></td>
 <td><p>pyrogue.hardware.PgpCard</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>utilities</p></td>
+<td><p>PrbsTx</p></td>
+<td><p>pyrogue.prbs.tx</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>utilities</p></td>
+<td><p>PrbsRx</p></td>
+<td><p>pyrogue.prbs.rx</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>utilities/fileio</p></td>
+<td><p>StreamWriter</p></td>
+<td><p>pyrogue.fileio.StreamWriter</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>interfaces</p></td>
+<td><p>ZmqServer</p></td>
+<td><p>pyrogue.ZmqServer</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>interfaces</p></td>
+<td><p>ZmqClient</p></td>
+<td><p>pyrogue.ZmqClient</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>protocols/rssi</p></td>
+<td><p>Controller</p></td>
+<td><p>pyrogue.rssi.Controller</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>protocols/batcher</p></td>
+<td><p>CoreV1</p></td>
+<td><p>pyrogue.batcher.CoreV1</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>protocols/udp</p></td>
+<td><p>Server</p></td>
+<td><p>pyrogue.udp.Server</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>protocols/udp</p></td>
+<td><p>Client</p></td>
+<td><p>pyrogue.udp.Client</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>protocols/srp</p></td>
+<td><p>SrpV0</p></td>
+<td><p>pyrogue.SrpV0</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>protocols/srp</p></td>
+<td><p>SrpV3</p></td>
+<td><p>pyrogue.SrpV3</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>protocols/packetizer</p></td>
+<td><p>Controller</p></td>
+<td><p>pyrogue.packetizer.Controller</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td><p>protocols/epicsV3</p></td>
+<td><p>Value</p></td>
+<td><p>pyrogue.epicsV3.Value</p></td>
+</tr>
+<tr class="row-odd"><td><p>C++</p></td>
+<td><p>protocols/epicsV3</p></td>
+<td><p>Server</p></td>
+<td><p>pyrogue.epicsV3.Server</p></td>
+</tr>
+<tr class="row-even"><td><p>C++</p></td>
+<td></td>
+<td><p>LibraryBase</p></td>
+<td><p>pyrogue.LibraryBase</p></td>
 </tr>
 </tbody>
 </table>
@@ -246,7 +338,7 @@
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="../custom_module/index.html" class="btn btn-neutral float-right" title="Creating Custom Modules" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="../hardware/raw/classes/memMap.html" class="btn btn-neutral float-left" title="MemMap" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../utilities/prbs/index.html" class="btn btn-neutral float-left" title="PRBS Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
