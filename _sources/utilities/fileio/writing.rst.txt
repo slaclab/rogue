@@ -1,4 +1,4 @@
-.. _utilities_filio_writing:
+.. _utilities_fileio_writing:
 
 ========================
 Writing Frames To A File
@@ -121,12 +121,8 @@ The following code shows how to use a StreamWriter in c++.
    streamB >> fwrite->getChannel(1);
 
    // Open the data file
-   fwrite->open("myFile.dat")
+   fwrite->open("myFile.dat");
 
    // Close the data file
-   fwrite->close()
-
-
-
-
+   fwrite->close();
 

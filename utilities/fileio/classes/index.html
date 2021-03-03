@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>File Operation Utilities &mdash; Rogue v5.6.5-20-g88c345a5 documentation</title>
+  <title>File Operation Utilities &mdash; Rogue v5.6.5-21-g5af51fe0 documentation</title>
   
 
   
@@ -37,7 +37,9 @@
 
     
     <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="StreamWriter" href="writer.html" />
+    <link rel="prev" title="Sending Frames" href="../custom.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -87,10 +89,27 @@
             
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../index.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Utilities</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">File I/O Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../writing.html">Writing Frames To A File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reading.html">Reading Frames From A File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../custom.html">Sending Frames</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">File Operation Utilities</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="writer.html">StreamWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="channel.html">StreamWriterChannel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reader.html">StreamReader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="legacy_writer.html">LegacyStreamWriter</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -142,6 +161,10 @@
     
       <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
         
+          <li><a href="../../index.html">Utilities</a> &raquo;</li>
+        
+          <li><a href="../index.html">File I/O Utilities</a> &raquo;</li>
+        
       <li>File Operation Utilities</li>
     
     
@@ -163,7 +186,7 @@
             
   <div class="section" id="file-operation-utilities">
 <span id="utilifies-fileio"></span><h1>File Operation Utilities<a class="headerlink" href="#file-operation-utilities" title="Permalink to this headline">¶</a></h1>
-<p>The following are detailed descriptions of the various C++ classes that make up the Rogue memory interface.</p>
+<p>The following are detailed descriptions of the various C++ classes that make up the Rogue file utilities.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Memory Classes:</span></p>
 <ul>
@@ -180,6 +203,10 @@
            
           </div>
           <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="writer.html" class="btn btn-neutral float-right" title="StreamWriter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../custom.html" class="btn btn-neutral float-left" title="Sending Frames" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

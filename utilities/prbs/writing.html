@@ -1,0 +1,321 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Generating PRBS Frames &mdash; Rogue v5.6.5-21-g5af51fe0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Receiving PRBS Frames" href="reading.html" />
+    <link rel="prev" title="PRBS Utilities" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../fileio/index.html">File I/O Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">PRBS Utilities</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Generating PRBS Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="reading.html">Receiving PRBS Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/index.html">PRBS Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Utilities</a> &raquo;</li>
+        
+          <li><a href="index.html">PRBS Utilities</a> &raquo;</li>
+        
+      <li>Generating PRBS Frames</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/utilities/prbs/writing.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="generating-prbs-frames">
+<span id="utilities-prbs-writing"></span><h1>Generating PRBS Frames<a class="headerlink" href="#generating-prbs-frames" title="Permalink to this headline">¶</a></h1>
+<p>The PRBS object can either be used in its raw form or with either the PrbsTx or PrbsRx
+Rogue Device wrappers. Using the Rogue Device wrapper allows the PRBS transmitter and receiver to
+be controlled and monitor in the Rogue PyDM GUI.</p>
+<p>The following code block describes how to create and connect a PRBS generator to a file writer in python:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">rogue.utilities.fileio</span>
+
+<span class="c1"># Create a file writer, buffer size = 1000, max file size = 1MB</span>
+<span class="n">fwrite</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">()</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">1000000</span><span class="p">)</span>
+
+<span class="c1"># Create a PRBS instance to be used as a generator</span>
+<span class="n">prbs</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
+
+<span class="c1"># Connect the generator to the file writer</span>
+<span class="n">prbs</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Open the data file</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test.dat&quot;</span><span class="p">)</span>
+
+<span class="c1"># Generate 1000 frames of PRBS data, 1000 bytes each</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+   <span class="n">prbs</span><span class="o">.</span><span class="n">genFrame</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Close the data file</span>
+<span class="n">fwrite</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>The following code is an example of connecting a PRBS generator to a file writer for control under
+a Rogue tree.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">pyrogue.utilities</span>
+<span class="kn">import</span> <span class="nn">pyrogue.utilities.fileio</span>
+
+<span class="c1"># First we create a file writer instance, use the python wrapper</span>
+<span class="n">fwrite</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">()</span>
+
+<span class="c1"># Add the file writer to the Rogue tree.</span>
+<span class="n">root</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">fwrite</span><span class="p">)</span>
+
+<span class="c1"># Create a PRBS generator</span>
+<span class="n">prbs</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">PrbsTx</span><span class="p">()</span>
+
+<span class="c1"># Add the prbs generator to the Rogue tree.</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">prbs</span><span class="p">)</span>
+
+<span class="c1"># Connect the generator to the file writer</span>
+<span class="n">prbs</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">.</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The following code shows how to connect a PRBS generator to a StreamWriter in c++.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/Prbs.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;rogue/utilities/fileio/StreamWriterChannel.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// First we create a file writer instance</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriterPtr</span> <span class="n">fwrite</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriterPtr</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="o">:</span>
+
+<span class="c1">// Next we set the buffer size which controls how much data to cache in memory</span>
+<span class="c1">// before forming a burst write to the operating system. Larger writes help</span>
+<span class="c1">// in file operation performance</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
+
+<span class="c1">// We can also set a maximum file size for each file. If this value is non-zero</span>
+<span class="c1">// the passed file name will be appended with a numeric value starting from 1.</span>
+<span class="c1">// As the max size is reached a new file will be opened with the next index value 100MBytes</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">100000000</span><span class="p">);</span>
+
+<span class="c1">// By default all frames are written, even if the incoming error field is set. You</span>
+<span class="c1">// can choose to ignore errored frames using the following call:</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setDropErrors</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
+
+<span class="c1">// Create a PRBS generator</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">PrbsPtr</span> <span class="n">prbs</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">PrbsPtr</span><span class="p">();</span>
+
+<span class="c1">// Connect prbs to file writer</span>
+<span class="n">prbs</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+
+<span class="c1">// Open the data file</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;test.dat&quot;</span><span class="p">)</span><span class="o">:</span>
+
+<span class="cp"># Generate 1000 frames of PRBS data, 1000 bytes each</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span> <span class="p">)</span> <span class="n">prbs</span><span class="o">-&gt;</span><span class="n">genFrame</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">:</span>
+
+<span class="c1">// Close the data file</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">()</span><span class="o">:</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="reading.html" class="btn btn-neutral float-right" title="Receiving PRBS Frames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="PRBS Utilities" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

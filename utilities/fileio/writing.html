@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Writing Frames To A File &mdash; Rogue v5.6.5-20-g88c345a5 documentation</title>
+  <title>Writing Frames To A File &mdash; Rogue v5.6.5-21-g5af51fe0 documentation</title>
   
 
   
@@ -97,6 +97,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">Writing Frames To A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reading.html">Reading Frames From A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="custom.html">Sending Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/index.html">File Operation Utilities</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../prbs/index.html">PRBS Utilities</a></li>
@@ -178,7 +179,7 @@
            <div itemprop="articleBody">
             
   <div class="section" id="writing-frames-to-a-file">
-<span id="utilities-filio-writing"></span><h1>Writing Frames To A File<a class="headerlink" href="#writing-frames-to-a-file" title="Permalink to this headline">¶</a></h1>
+<span id="utilities-fileio-writing"></span><h1>Writing Frames To A File<a class="headerlink" href="#writing-frames-to-a-file" title="Permalink to this headline">¶</a></h1>
 <p>Frames can be written to a data file using the <a class="reference internal" href="classes/writer.html#utilities-fileio-writer"><span class="std std-ref">StreamWriter</span></a> class. This
 file writer supports multiple incoming streams, which are then deliniated in the written
 data file. The Channel 0 interface can be used to write frames which may have a non-zero
@@ -285,10 +286,10 @@ present in the Rogue PyDM GUI, providing an interface for opening and closing fi
 <span class="n">streamB</span> <span class="o">&gt;&gt;</span> <span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
 <span class="c1">// Open the data file</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat&quot;</span><span class="p">)</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;myFile.dat&quot;</span><span class="p">);</span>
 
 <span class="c1">// Close the data file</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">()</span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">();</span>
 </pre></div>
 </div>
 </div>

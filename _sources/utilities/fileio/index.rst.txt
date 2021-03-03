@@ -13,3 +13,4 @@ The following are examples of using the fileio utilities in Rogue to write and r
    writing
    reading
    custom
+   classes/index
