@@ -1,4 +1,4 @@
-.. _utilities_filio_reading:
+.. _utilities_fileio_reading:
 
 ========================
 Reading Frames From A File
@@ -68,14 +68,14 @@ The following code shows how to use a StreamReader in c++.
    #include <rogue/utilities/fileio/StreamReader.h>
 
    // First we create a file reader instance
-   rogue::utilities::fileio::StreamReaderPtr fwrite = rogue::utilities::fileio::StreamReaderPtr::create()
+   rogue::utilities::fileio::StreamReaderPtr fwrite = rogue::utilities::fileio::StreamReaderPtr::create();
 
    // Connect the reader to an existing receiver
-   receiver << fread
+   receiver << fread;
 
    // Open the data file
-   freade->open("myFile.dat.1")
+   fread->open("myFile.dat.1");
 
    // Close the data file after all frames are read
-   fread->closeWait()
+   fread->closeWait();
 

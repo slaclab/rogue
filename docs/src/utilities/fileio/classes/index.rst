@@ -4,7 +4,7 @@
 File Operation Utilities
 ========================
 
-The following are detailed descriptions of the various C++ classes that make up the Rogue memory interface.
+The following are detailed descriptions of the various C++ classes that make up the Rogue file utilities.
 
 .. toctree::
    :maxdepth: 1
