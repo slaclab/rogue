@@ -17,3 +17,4 @@ https://github.com/slaclab/aes-stream-drivers
    axi/index
    pgp/index
 
+   raw/index
