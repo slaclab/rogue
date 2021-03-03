@@ -21,7 +21,7 @@ import rogue
 class StreamReader(pyrogue.Device):
     """Stream Reader Wrapper"""
 
-    def __init__(self, *, **kwargs):
+    def __init__(self, **kwargs):
         pyrogue.Device.__init__(self, **kwargs)
         self._reader = rogue.utilities.fileio.StreamReader()
 
