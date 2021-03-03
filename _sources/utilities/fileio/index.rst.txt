@@ -8,7 +8,7 @@ The following are examples of using the fileio utilities in Rogue to write and r
 
 .. toctree::
    :maxdepth: 1
-   :caption: Using The File I/O:
+   :caption: Using The File I/O Utilities:
 
    writing
    reading
