@@ -78,3 +78,35 @@ The example below shows an example sub-class for writing Frame data to a text fi
    typedef std::shared_ptr<MyDataWriter> MyDataWriterPtr;
 
 
+Once your custom writer is created you may want to use it in the Rogue tree, allowing you to open and write
+files using the Rogue PyDM GUI. You can sub-class the rogue StreamWriter class for use with your custom
+module.
+
+.. code-block:: python
+
+   import pyrogue
+   import pyrogue.utilities.fileio
+
+   # Assume we have to incoming data streams, streamA and streamB coming from a pair
+   # of stream Masters
+   # streamA
+   # streamB
+
+   # Instantiate your custom writer
+   mywrite = MyWriter()
+
+   # Pass the custom writer to the Rogue wrapper
+   fwrite = pyrogue.utilities.fileio.StreamWriter(writer=myWrite)
+
+   # Add the file writer to the Rogue tree.
+   root.add(fwrite)
+
+   # Don't set any other parameters as you will use the Rogue tree to set the
+   # file parameters and open/close files
+
+   # Connect stream A to the file writer channel 0
+   streamA >> fwrite.getChannel(0)
+
+   # Connect stream B to the file writer channel 1
+   streamB >> fwrite.getChannel(1)
+

@@ -53,9 +53,36 @@ The following code block describes how to create and connect a file writer in py
    fwrite.close()
 
 
-Most uses of the StreamWriter class will be used in the larger Rogue tree. Using the StreamWriter as
-a Device in the Rogue tree will provide a Variable and Command interface, including PyDM GUI supports
-for opening and closing files.
+A Rogue Device wrapper is provided for including the StreamWriter class as part of the Rogue tree. This allows the StreamWriter to be
+present in the Rogue PyDM GUI, providing an interface for opening and closing files.
+
+The following code is an example of using the Rogue StreamWriter wrapper in the Rogue tree.
+
+.. code-block:: python
+
+   import pyrogue
+   import pyrogue.utilities.fileio
+
+   # Assume we have to incoming data streams, streamA and streamB coming from a pair
+   # of stream Masters
+   # streamA
+   # streamB
+
+   # First we create a file writer instance, use the python wrapper
+   fwrite = pyrogue.utilities.fileio.StreamWriter()
+
+   # Add the file writer to the Rogue tree.
+   root.add(fwrite)
+
+   # Don't set any other parameters as you will use the Rogue tree to set the
+   # file parameters and open/close files
+
+   # Connect stream A to the file writer channel 0
+   streamA >> fwrite.getChannel(0)
+
+   # Connect stream B to the file writer channel 1
+   streamB >> fwrite.getChannel(1)
+
 
 The following code shows how to use a StreamWriter in c++.
 
@@ -98,4 +125,8 @@ The following code shows how to use a StreamWriter in c++.
 
    // Close the data file
    fwrite->close()
+
+
+
+
 
