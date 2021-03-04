@@ -12,8 +12,7 @@ PyDM based Rogue GUI.
    :maxdepth: 1
    :caption: Interfaces:
 
-   virtual
-   simple
-   pydm
    commandline
+   simple
+   virtual
 
