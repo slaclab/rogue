@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.6.5-26-ga8ebfd6e documentation</title>
+  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.6.5-27-g2069c8d1 documentation</title>
   
 
   
@@ -193,19 +193,11 @@
 <div class="viewcode-block" id="SimpleClient"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient">[docs]</a><span class="k">class</span> <span class="nc">SimpleClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A lightweight client inerface for Rogue</span>
-
-<span class="sd">    Attributes</span>
-<span class="sd">    ----------</span>
-<span class="sd">    addr : str</span>
-<span class="sd">        host address</span>
-<span class="sd">    port : int</span>
-<span class="sd">        host port</span>
-<span class="sd">    cb : function</span>
-<span class="sd">        call back function for variable updates</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span> <span class="n">cb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Simple Client Constructor</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Simple Client Constructor</span>
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
@@ -213,7 +205,7 @@
 <span class="sd">            host address</span>
 <span class="sd">        port : int</span>
 <span class="sd">            host port</span>
-<span class="sd">        cb : function</span>
+<span class="sd">        cb : obj</span>
 <span class="sd">            call back function for variable updates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sport</span> <span class="o">=</span> <span class="n">port</span>
@@ -267,12 +259,13 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            path : str</span>
-<span class="sd">                Path of the variable to return a value for</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to return a value for</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Variable value in native form</span>
+<span class="sd">        obj</span>
+<span class="sd">            Variable value in native form</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">)</span></div>
@@ -283,30 +276,89 @@
 
 <span class="sd">        Parameters</span>
 <span class="sd">        ----------</span>
-<span class="sd">            path : str</span>
-<span class="sd">                Path of the variable to return a value for</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to return a value for</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        Variable value in string form</span>
+<span class="sd">        str</span>
+<span class="sd">            Variable value in string form</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;getDisp&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="SimpleClient.value"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a variable value, without initating a read</span>
 
-    <span class="k">def</span> <span class="nf">valueDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;valueDisp&#39;</span><span class="p">)</span>
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to return a value for</span>
 
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        obj</span>
+<span class="sd">            Variable value</span>
 
-    <span class="k">def</span> <span class="nf">setDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;setDisp&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+<div class="viewcode-block" id="SimpleClient.valueDisp"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.valueDisp">[docs]</a>    <span class="k">def</span> <span class="nf">valueDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a variable value, in string form, without initating a read</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to return a value for</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        str</span>
+<span class="sd">            Variable value in string form</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;valueDisp&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimpleClient.set"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set a variable value, using its native type</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to set</span>
+<span class="sd">        value : obj</span>
+<span class="sd">            Value to set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimpleClient.setDisp"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.setDisp">[docs]</a>    <span class="k">def</span> <span class="nf">setDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set a variable value, using a string representation</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to set</span>
+<span class="sd">        value : str</span>
+<span class="sd">            Value to set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;setDisp&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimpleClient.exec"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.exec">[docs]</a>    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Call a command, with the optional arg</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path : str</span>
+<span class="sd">            Path of the variable to set</span>
+<span class="sd">        arg : obj</span>
+<span class="sd">            Command argument, in native or string form</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
