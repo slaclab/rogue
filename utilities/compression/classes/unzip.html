@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>StreamUnZip &mdash; Rogue v5.6.5-22-g0d7a5eb2 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Logging In Rogue" href="../../../logging/index.html" />
+    <link rel="prev" title="StreamZip" href="zip.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Utilities</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../fileio/index.html">File I/O Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Compression Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../compress.html">Compressing Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../decompress.html">Decompressing Frames</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Compression Utilities</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="zip.html">StreamZip</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">StreamUnZip</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Utilities</a> &raquo;</li>
+        
+          <li><a href="../index.html">Compression Utilities</a> &raquo;</li>
+        
+          <li><a href="index.html">Compression Utilities</a> &raquo;</li>
+        
+      <li>StreamUnZip</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/utilities/compression/classes/unzip.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="streamunzip">
+<span id="utilities-compression-streamunzip"></span><h1>StreamUnZip<a class="headerlink" href="#streamunzip" title="Permalink to this headline">¶</a></h1>
+<p>The StreamUnZip class provides a payload decompression engine for Rogue Frames. This module will receive compressed
+Frames from an external master, de-compress the Frame payload and then pass the compressed frame to a downstream Slave.</p>
+<p>This de-compression module uses the Bzip2 library.</p>
+<p>StreamUnZip objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt id="_CPPv4N5rogue9utilities14StreamUnZipPtrE">
+<span id="_CPPv3N5rogue9utilities14StreamUnZipPtrE"></span><span id="_CPPv2N5rogue9utilities14StreamUnZipPtrE"></span><span id="rogue::utilities::StreamUnZipPtr"></span><span class="target" id="namespacerogue_1_1utilities_1affa92ccee4be8c6b657f6ff1af4d1658"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">utilities</span><span class="pre">::</span><span class="pre">StreamUnZip</span><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">utilities</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">StreamUnZipPtr</span></code><a class="headerlink" href="#_CPPv4N5rogue9utilities14StreamUnZipPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>The class description is shown below:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenclass: Cannot find class “rogue::utilities::fileio::StreamUnZip” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../../logging/index.html" class="btn btn-neutral float-right" title="Logging In Rogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="zip.html" class="btn btn-neutral float-left" title="StreamZip" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

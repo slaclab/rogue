@@ -88,7 +88,7 @@ The following code shows how to connect a PRBS generator to a StreamWriter in c+
    fwrite->setDropErrors(true);
 
    // Create a PRBS generator
-   rogue::utilities::PrbsPtr prbs = rogue::utilities::PrbsPtr();
+   rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
 
    // Connect prbs to file writer
    prbs >> fwrite->getChannel(0);

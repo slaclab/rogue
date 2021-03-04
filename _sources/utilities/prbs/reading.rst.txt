@@ -70,7 +70,7 @@ The following code shows how to connect a PRBS receiver to a StreamReader in c++
    rogue::utilities::fileio::StreamReaderPtr fwrite = rogue::utilities::fileio::StreamReaderPtr::create();
 
    // Create a PRBS receiver
-   rogue::utilities::PrbsPtr prbs = rogue::utilities::PrbsPtr();
+   rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
 
    // Connect prbs to file reader
    prbs << fread;
