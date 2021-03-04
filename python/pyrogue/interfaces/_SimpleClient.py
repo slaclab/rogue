@@ -43,7 +43,7 @@ class SimpleClient(object):
         port : int
             host port
         cb : obj
-            call back function for variable updates
+            call back function for variable updates, in the form func(path,value)
         """
         sport = port
         rport = port + 1
@@ -99,8 +99,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Returns
-        -------
+        Return
+        ------
         obj
             Variable value in native form
 
@@ -116,8 +116,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Returns
-        -------
+        Return
+        ------
         str
             Variable value in string form
 
@@ -133,8 +133,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Returns
-        -------
+        Return
+        ------
         obj
             Variable value
 
@@ -150,8 +150,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Returns
-        -------
+        Return
+        ------
         str
             Variable value in string form
 
@@ -194,6 +194,11 @@ class SimpleClient(object):
             Path of the variable to set
         arg : obj
             Command argument, in native or string form
+
+        Return
+        ------
+        obj
+            Return value of the underlying command
         """
         return self._remoteAttr(path, '__call__', arg)
 

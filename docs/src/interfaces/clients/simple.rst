@@ -60,6 +60,9 @@ of the updated variables reported by the Rogue server.
       # be passed to the myCallBack function
 
 
+SimpleClient Description
+========================
+
 The class description for the SimpleClient class is included below:
 
 .. autoclass:: pyrogue.interfaces.SimpleClient
