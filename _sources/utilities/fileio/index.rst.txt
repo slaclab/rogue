@@ -13,4 +13,5 @@ The following are examples of using the fileio utilities in Rogue to write and r
    writing
    reading
    custom
+   python_reader.rst
    classes/index
