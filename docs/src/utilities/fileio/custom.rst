@@ -1,7 +1,7 @@
 .. _utilities_fileio_custom:
 
 ==============
-Sending Frames
+Custom Writers
 ==============
 
 Rogue provides a standard class :ref:`utilities_fileio_stream_writer` for storing stream data

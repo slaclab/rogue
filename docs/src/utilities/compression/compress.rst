@@ -1,14 +1,10 @@
-.. _utilities_prbs_writing:
+.. _utilities_compression_compression:
 
-======================
-Generating PRBS Frames
-======================
+==================
+Compressing Frames
+==================
 
-The PRBS object can either be used in its raw form or with either the PrbsTx or PrbsRx
-Rogue Device wrappers. Using the Rogue Device wrapper allows the PRBS transmitter and receiver to
-be controlled and monitor in the Rogue PyDM GUI.
-
-The following code block describes how to create and connect a PRBS generator to a file writer in python:
+The following code block describes how to create and connect a PRBS generator to a compression engine and then on to a file writer in python:
 
 .. code-block:: python
 
@@ -20,11 +16,17 @@ The following code block describes how to create and connect a PRBS generator to
    fwrite.setBufferSize(1000)
    fwrite.setMaxSize(1000000)
 
+   # Create a compression instance
+   comp = rogue.utilities.StreamZip()
+
    # Create a PRBS instance to be used as a generator
    prbs = rogue.utilities.Prbs()
 
-   # Connect the generator to the file writer
-   prbs >> fwrite.getChannel(0)
+   # Connect the generator to the compression engine
+   prbs >> comp
+
+   # Connect the compression engine to the file writer
+   comp >> fwrite.getChannel(0)
 
    # Open the data file
    fwrite.open("test.dat")
@@ -36,37 +38,12 @@ The following code block describes how to create and connect a PRBS generator to
    # Close the data file
    fwrite.close()
 
-
-The following code is an example of connecting a PRBS generator to a file writer for control under
-a Rogue tree.
-
-.. code-block:: python
-
-   import pyrogue
-   import pyrogue.utilities
-   import pyrogue.utilities.fileio
-
-   # First we create a file writer instance, use the python wrapper
-   fwrite = pyrogue.utilities.fileio.StreamWriter()
-
-   # Add the file writer to the Rogue tree.
-   root.add(fwrite)
-
-   # Create a PRBS generator
-   prbs = pyrogue.utilities.PrbsTx()
-
-   # Add the prbs generator to the Rogue tree.
-   self.add(prbs)
-
-   # Connect the generator to the file writer
-   prbs >> fwrite.getChannel(0)
-
-
-The following code shows how to connect a PRBS generator to a StreamWriter in c++.
+The following code shows how to connect a PRBS generator to a compression engine and then on to a StreamWriter in c++.
 
 .. code-block:: c
 
    #include <rogue/utilities/Prbs.h>
+   #include <rogue/utilities/StreamZip.h>
    #include <rogue/utilities/fileio/StreamWriter.h>
    #include <rogue/utilities/fileio/StreamWriterChannel.h>
 
@@ -90,8 +67,14 @@ The following code shows how to connect a PRBS generator to a StreamWriter in c+
    // Create a PRBS generator
    rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
 
+   // Create a compression block
+   rogue::utilities::StreamZipPtr comp = rogue::utilities::StreamZip::create();
+
    // Connect prbs to file writer
-   prbs >> fwrite->getChannel(0);
+   prbs >> comp;
+
+   // Connect compression block to the stream writer
+   comp >> fwrite->getChannel(0);
 
    // Open the data file
    fwrite->open("test.dat"):

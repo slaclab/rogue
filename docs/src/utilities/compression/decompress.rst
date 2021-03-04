@@ -1,14 +1,10 @@
-.. _utilities_prbs_writing:
+.. _utilities_compression_decompression:
 
-=====================
-Receiving PRBS Frames
-=====================
+====================
+Decompressing Frames
+====================
 
-The PRBS object can either be used in its raw form or with either the PrbsTx or PrbsRx
-Rogue Device wrappers. Using the Rogue Device wrapper allows the PRBS transmitter and receiver to
-be controlled and monitor in the Rogue PyDM GUI.
-
-The following code block describes how to create and connect a PRBS receiver to a file writer in python:
+The following code block describes how to read data from a file, pass it through a decompress block and then on to a PRBS receiver.
 
 .. code-block:: python
 
@@ -21,8 +17,14 @@ The following code block describes how to create and connect a PRBS receiver to 
    # Create a PRBS instance to be used as a receiver
    prbs = rogue.utilities.Prbs()
 
+   # Create a decompression instance
+   decomp = rogue.utilities.StreamUnZip()
+
+   # Connect the decompression engine to the file writer
+   decomp << fread
+
    # Connect the two together
-   prbs << fread
+   prbs << decomp
 
    # Open the file and push data to the prbs receiver
    fread.open("myFile.dat.1")
@@ -34,32 +36,7 @@ The following code block describes how to create and connect a PRBS receiver to 
    print(f"Got {prbs.getRxCount()} frames")
    print(f"Got {prbs.getRxErrors()} errors")
 
-
-The following code is an example of connecting a PRBS receiver to a file reader for control under
-a Rogue tree.
-
-.. code-block:: python
-
-   import pyrogue
-   import pyrogue.utilities
-   import pyrogue.utilities.fileio
-
-   # First we create a file reader instance, use the python wrapper
-   fread = pyrogue.utilities.fileio.StreamReader()
-
-   # Add the file reader to the Rogue tree.
-   root.add(fread)
-
-   # Create a PRBS receiver
-   prbs = pyrogue.utilities.PrbsRx()
-
-   # Add the prbs receiver to the Rogue tree.
-   self.add(prbs)
-
-   # Connect the receiver to the file reader
-   fread >> prbs
-
-The following code shows how to connect a PRBS receiver to a StreamReader in c++.
+Below is the same code in c++.
 
 .. code-block:: c
 
@@ -72,8 +49,14 @@ The following code shows how to connect a PRBS receiver to a StreamReader in c++
    // Create a PRBS receiver
    rogue::utilities::PrbsPtr prbs = rogue::utilities::Prbs::create();
 
+   // Create a decompression block
+   rogue::utilities::StreamUnZipPtr comp = rogue::utilities::StreamUnZip::create();
+
+   // Connect the decompression engine to the file reader
+   decomp << fread;
+
    // Connect prbs to file reader
-   prbs << fread;
+   prbs << decomp;
 
    // Open the data file
    fread->open("myFile.dat.1");
