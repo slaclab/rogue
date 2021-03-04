@@ -1,4 +1,4 @@
-.. _hardware_axi_classes:
+.. _hardware_raw_classes:
 
 =====================================
 Hardware Interface Class Descriptions

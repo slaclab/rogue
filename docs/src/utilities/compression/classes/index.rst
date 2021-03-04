@@ -1,8 +1,8 @@
 .. _utilities_compression:
 
-=====================
-Compression Utilities
-=====================
+===================
+Compression Classes
+===================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue compression utilities.
 

@@ -62,6 +62,6 @@ of the updated variables reported by the Rogue server.
 
 The class description for the SimpleClient class is included below:
 
-.. automodule:: pyrogue.interfaces.SimpleClient
+.. autoclass:: pyrogue.interfaces.SimpleClient
    :members:
 

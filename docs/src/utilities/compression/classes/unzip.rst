@@ -15,6 +15,6 @@ StreamUnZip objects in C++ are referenced by the following shared pointer typede
 
 The class description is shown below:
 
-.. doxygenclass:: rogue::utilities::fileio::StreamUnZip
+.. doxygenclass:: rogue::utilities::StreamUnZip
    :members:
 

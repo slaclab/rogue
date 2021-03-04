@@ -15,6 +15,6 @@ StreamZip objects in C++ are referenced by the following shared pointer typedef:
 
 The class description is shown below:
 
-.. doxygenclass:: rogue::utilities::fileio::StreamZip
+.. doxygenclass:: rogue::utilities::StreamZip
    :members:
 

@@ -28,8 +28,31 @@ import threading
 
 
 class SimpleClient(object):
+    """
+    A lightweight client inerface for Rogue
+
+    Attributes
+    ----------
+    addr : str
+        host address
+    port : int
+        host port
+    cb : function
+        call back function for variable updates
+    """
 
     def __init__(self, addr="localhost", port=9099, cb=None):
+        """ Simple Client Constructor
+
+        Parameters
+        ----------
+        addr : str
+            host address
+        port : int
+            host port
+        cb : function
+            call back function for variable updates
+        """
         sport = port
         rport = port + 1
         self._ctx = zmq.Context()
@@ -76,9 +99,35 @@ class SimpleClient(object):
         return resp
 
     def get(self,path):
+        """
+        Get a variable value, initating a read
+
+        Parameters
+        ----------
+            path : str
+                Path of the variable to return a value for
+
+        Returns
+        -------
+        Variable value in native form
+
+        """
         return self._remoteAttr(path, 'get')
 
     def getDisp(self,path):
+        """
+        Get a variable value, in string form, initating a read
+
+        Parameters
+        ----------
+            path : str
+                Path of the variable to return a value for
+
+        Returns
+        -------
+        Variable value in string form
+
+        """
         return self._remoteAttr(path, 'getDisp')
 
     def value(self,path):

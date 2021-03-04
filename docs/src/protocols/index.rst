@@ -12,7 +12,9 @@ Protocols
 
    batcher/index
    epicsV3/index
+   epicsV4/index
+   network/index
    packetizer/index
    rssi/index
    srp/index
-   udp/index
+   uart/index

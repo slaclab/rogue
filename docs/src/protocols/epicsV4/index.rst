@@ -1,8 +1,7 @@
-.. _protocols_uart:
+.. _protocols_epicsv4:
 
 ================
-UART Protocol
+EPICSV4 Protocol
 ================
 
 TODO
-

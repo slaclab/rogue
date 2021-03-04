@@ -15,29 +15,31 @@ The following memory transaction types are defined:
 
 .. doxygenvariable:: rogue::interfaces::memory::Write
 
-.. doxygenvariable:: rogue::interfaces::memory::Post 
+.. doxygenvariable:: rogue::interfaces::memory::Post
 
 .. doxygenvariable:: rogue::interfaces::memory::Verify
 
-Transaction Errors
-==================
+Block Process Types
+===================
 
-The following transaction errors are defined:
+The following block processing type ar defined:
 
-.. doxygenvariable:: rogue::interfaces::memory::TimeoutError
+.. doxygenvariable:: rogue::interfaces::memory::PyFunc
 
-.. doxygenvariable:: rogue::interfaces::memory::VerifyError
+.. doxygenvariable:: rogue::interfaces::memory::Bytes
 
-.. doxygenvariable:: rogue::interfaces::memory::AddressError
+.. doxygenvariable:: rogue::interfaces::memory::UInt
 
-.. doxygenvariable:: rogue::interfaces::memory::BusTimeout
+.. doxygenvariable:: rogue::interfaces::memory::Int
 
-.. doxygenvariable:: rogue::interfaces::memory::BusFail
+.. doxygenvariable:: rogue::interfaces::memory::Bool
 
-.. doxygenvariable:: rogue::interfaces::memory::Unsupported
+.. doxygenvariable:: rogue::interfaces::memory::String
 
-.. doxygenvariable:: rogue::interfaces::memory::SizeError
+.. doxygenvariable:: rogue::interfaces::memory::Float
 
-.. doxygenvariable:: rogue::interfaces::memory::ProtocolError
+.. doxygenvariable:: rogue::interfaces::memory::Double
 
+.. doxygenvariable:: rogue::interfaces::memory::Fixed
 
+.. doxygenvariable:: rogue::interfaces::memory::Custom

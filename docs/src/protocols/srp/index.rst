@@ -4,7 +4,5 @@
 SRP Protocol
 ================
 
+TODO
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Using The SRP Protocol:
