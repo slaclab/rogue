@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Reading Frames From A File &mdash; Rogue v5.6.5-27-g2069c8d1 documentation</title>
+  <title>Reading Frames From A File &mdash; Rogue v5.6.5-29-gb77073c9 documentation</title>
   
 
   
@@ -186,7 +186,7 @@
 class will output frames using the standard stream interface, with a Frame object created for
 each data blob in the Frame, with the same format and with the same flags when it was originally
 written. Since multiple “channels” may have been used when writing the file, generated frames will
-be tagged with a channel ID to match the channel value when written. A <span class="xref std std-ref">interfaces_stream_filter’</span>
+be tagged with a channel ID to match the channel value when written. A <a class="reference internal" href="../../interfaces/stream/classes/filter.html#interfaces-stream-filter"><span class="std std-ref">Filter</span></a>
 object can be used to direct the Frames based upon their channel IDs.</p>
 <p>There is also a python utilitiy for reading frames in python using a non-streaming method.</p>
 <p>The following code block describes how to create and connect a file reader in python:</p>

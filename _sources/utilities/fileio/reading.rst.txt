@@ -1,14 +1,14 @@
 .. _utilities_fileio_reading:
 
-========================
+==========================
 Reading Frames From A File
-========================
+==========================
 
 Frames can be read in a streaming fashion using the :ref:`utilities_fileio_reader` class. This
 class will output frames using the standard stream interface, with a Frame object created for
 each data blob in the Frame, with the same format and with the same flags when it was originally
 written. Since multiple "channels" may have been used when writing the file, generated frames will
-be tagged with a channel ID to match the channel value when written. A :ref:`interfaces_stream_filter'`
+be tagged with a channel ID to match the channel value when written. A :ref:`interfaces_stream_filter`
 object can be used to direct the Frames based upon their channel IDs.
 
 There is also a python utilitiy for reading frames in python using a non-streaming method.

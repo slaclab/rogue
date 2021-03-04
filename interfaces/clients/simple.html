@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Simple Client Interface &mdash; Rogue v5.6.5-27-g2069c8d1 documentation</title>
+  <title>Simple Client Interface &mdash; Rogue v5.6.5-29-gb77073c9 documentation</title>
   
 
   
@@ -91,14 +91,17 @@
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Interfaces</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../stream/index.html">Stream Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../memory/index.html">Memory Interface</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Client Interfaces</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="commandline.html">Using The Command Line Interface</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Simple Client Interface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Simple Client Interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#simpleclient-description">SimpleClient Description</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="virtual.html">Virtual Client Interface</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../memory/index.html">Memory Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Interfaces</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../sql.html">SQL Logging Interface</a></li>
 </ul>
@@ -229,33 +232,42 @@ of the updated variables reported by the Rogue server.</p>
    <span class="c1"># be passed to the myCallBack function</span>
 </pre></div>
 </div>
+<div class="section" id="simpleclient-description">
+<h2>SimpleClient Description<a class="headerlink" href="#simpleclient-description" title="Permalink to this headline">¶</a></h2>
 <p>The class description for the SimpleClient class is included below:</p>
 <dl class="py class">
 <dt id="pyrogue.interfaces.SimpleClient">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></code><code class="sig-name descname"><span class="pre">SimpleClient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>A lightweight client inerface for Rogue</p>
-<dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.exec">
-<code class="sig-name descname"><span class="pre">exec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a command, with the optional arg</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to set</p>
-</dd>
-<dt>arg<span class="classifier">obj</span></dt><dd><p>Command argument, in native or string form</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – host address</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – host port</p></li>
+<li><p><strong>cb</strong> (<em>obj</em>) – call back function for variable updates, in the form func(path,value)</p></li>
+</ul>
 </dd>
 </dl>
+<dl class="py method">
+<dt id="pyrogue.interfaces.SimpleClient._stop">
+<code class="sig-name descname"><span class="pre">_stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient._stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient._stop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the SimpleClient interface.
+This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pyrogue.interfaces.SimpleClient.get">
 <code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, initating a read</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to return a value for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to return a value for</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>obj</dt><dd><p>Variable value in native form</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Variable value in native form</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
@@ -264,36 +276,15 @@ of the updated variables reported by the Rogue server.</p>
 <dt id="pyrogue.interfaces.SimpleClient.getDisp">
 <code class="sig-name descname"><span class="pre">getDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, in string form, initating a read</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to return a value for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to return a value for</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>str</dt><dd><p>Variable value in string form</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Variable value in string form</p>
 </dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.set">
-<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a variable value, using its native type</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to set</p>
-</dd>
-<dt>value<span class="classifier">obj</span></dt><dd><p>Value to set</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.setDisp">
-<code class="sig-name descname"><span class="pre">setDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set a variable value, using a string representation</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to set</p>
-</dd>
-<dt>value<span class="classifier">str</span></dt><dd><p>Value to set</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -302,12 +293,15 @@ of the updated variables reported by the Rogue server.</p>
 <dt id="pyrogue.interfaces.SimpleClient.value">
 <code class="sig-name descname"><span class="pre">value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, without initating a read</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to return a value for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to return a value for</p>
 </dd>
-</dl>
-<dl class="simple">
-<dt>obj</dt><dd><p>Variable value</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Variable value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
@@ -316,18 +310,70 @@ of the updated variables reported by the Rogue server.</p>
 <dt id="pyrogue.interfaces.SimpleClient.valueDisp">
 <code class="sig-name descname"><span class="pre">valueDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.valueDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.valueDisp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, in string form, without initating a read</p>
-<dl class="simple">
-<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to return a value for</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to return a value for</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Variable value in string form</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
 </dd>
 </dl>
-<dl class="simple">
-<dt>str</dt><dd><p>Variable value in string form</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.interfaces.SimpleClient.set">
+<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a variable value, using its native type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to set</p></li>
+<li><p><strong>value</strong> (<em>obj</em>) – Value to set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.interfaces.SimpleClient.setDisp">
+<code class="sig-name descname"><span class="pre">setDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a variable value, using a string representation</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to set</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Value to set</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.interfaces.SimpleClient.exec">
+<code class="sig-name descname"><span class="pre">exec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call a command, with the optional arg</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the variable to set</p></li>
+<li><p><strong>arg</strong> (<em>obj</em>) – Command argument, in native or string form</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return value of the underlying command</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
 </dd></dl>
 
 </dd></dl>
 
+</div>
 </div>
 
 

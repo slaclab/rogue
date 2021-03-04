@@ -17,9 +17,9 @@ prototyped in Python and then re-implemented in C++ for performance.
    :maxdepth: 1
    :caption: Interfaces:
 
+   clients/index
    stream/index
    memory/index
-   clients/index
    simulation/index
    sql.rst
 

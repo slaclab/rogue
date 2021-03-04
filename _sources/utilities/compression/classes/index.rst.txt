@@ -1,4 +1,4 @@
-.. _utilities_compression:
+.. _utilities_compression_classes:
 
 ===================
 Compression Classes
