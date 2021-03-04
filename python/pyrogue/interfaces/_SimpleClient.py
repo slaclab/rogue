@@ -30,19 +30,11 @@ import threading
 class SimpleClient(object):
     """
     A lightweight client inerface for Rogue
-
-    Attributes
-    ----------
-    addr : str
-        host address
-    port : int
-        host port
-    cb : function
-        call back function for variable updates
     """
 
     def __init__(self, addr="localhost", port=9099, cb=None):
-        """ Simple Client Constructor
+        """
+        Simple Client Constructor
 
         Parameters
         ----------
@@ -50,7 +42,7 @@ class SimpleClient(object):
             host address
         port : int
             host port
-        cb : function
+        cb : obj
             call back function for variable updates
         """
         sport = port
@@ -104,12 +96,13 @@ class SimpleClient(object):
 
         Parameters
         ----------
-            path : str
-                Path of the variable to return a value for
+        path : str
+            Path of the variable to return a value for
 
         Returns
         -------
-        Variable value in native form
+        obj
+            Variable value in native form
 
         """
         return self._remoteAttr(path, 'get')
@@ -120,29 +113,88 @@ class SimpleClient(object):
 
         Parameters
         ----------
-            path : str
-                Path of the variable to return a value for
+        path : str
+            Path of the variable to return a value for
 
         Returns
         -------
-        Variable value in string form
+        str
+            Variable value in string form
 
         """
         return self._remoteAttr(path, 'getDisp')
 
     def value(self,path):
+        """
+        Get a variable value, without initating a read
+
+        Parameters
+        ----------
+        path : str
+            Path of the variable to return a value for
+
+        Returns
+        -------
+        obj
+            Variable value
+
+        """
         return self._remoteAttr(path, 'value')
 
     def valueDisp(self,path):
+        """
+        Get a variable value, in string form, without initating a read
+
+        Parameters
+        ----------
+        path : str
+            Path of the variable to return a value for
+
+        Returns
+        -------
+        str
+            Variable value in string form
+
+        """
         return self._remoteAttr(path, 'valueDisp')
 
     def set(self,path,value):
+        """
+        Set a variable value, using its native type
+
+        Parameters
+        ----------
+        path : str
+            Path of the variable to set
+        value : obj
+            Value to set
+        """
         return self._remoteAttr(path, 'set', value)
 
     def setDisp(self,path,value):
+        """
+        Set a variable value, using a string representation
+
+        Parameters
+        ----------
+        path : str
+            Path of the variable to set
+        value : str
+            Value to set
+        """
         return self._remoteAttr(path, 'setDisp', value)
 
     def exec(self,path,arg):
+        """
+        Call a command, with the optional arg
+
+        Parameters
+        ----------
+        path : str
+            Path of the variable to set
+        arg : obj
+            Command argument, in native or string form
+        """
         return self._remoteAttr(path, '__call__', arg)
 
     def __enter__(self):
