@@ -67,4 +67,7 @@ The class description for the SimpleClient class is included below:
 
 .. autoclass:: pyrogue.interfaces.SimpleClient
    :members:
+   :member-order: bysource
+
+   .. automethod:: pyrogue.interfaces.SimpleClient._stop
 

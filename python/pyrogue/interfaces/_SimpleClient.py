@@ -30,21 +30,21 @@ import threading
 class SimpleClient(object):
     """
     A lightweight client inerface for Rogue
+
+    Parameters
+    ----------
+    addr : str
+        host address
+
+    port : int
+        host port
+
+    cb : obj
+        call back function for variable updates, in the form func(path,value)
+
     """
 
     def __init__(self, addr="localhost", port=9099, cb=None):
-        """
-        Simple Client Constructor
-
-        Parameters
-        ----------
-        addr : str
-            host address
-        port : int
-            host port
-        cb : obj
-            call back function for variable updates, in the form func(path,value)
-        """
         sport = port
         rport = port + 1
         self._ctx = zmq.Context()
@@ -61,6 +61,11 @@ class SimpleClient(object):
             self._subThread.start()
 
     def _stop(self):
+        """
+        Stop the SimpleClient interface.
+        This must be called if not not using the SimpleClient in a context
+        """
+
         self._runEn = False
 
     def _listen(self):
@@ -99,8 +104,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Return
-        ------
+        Returns
+        -------
         obj
             Variable value in native form
 
@@ -116,8 +121,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Return
-        ------
+        Returns
+        -------
         str
             Variable value in string form
 
@@ -133,8 +138,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Return
-        ------
+        Returns
+        -------
         obj
             Variable value
 
@@ -150,8 +155,8 @@ class SimpleClient(object):
         path : str
             Path of the variable to return a value for
 
-        Return
-        ------
+        Returns
+        -------
         str
             Variable value in string form
 
@@ -166,6 +171,7 @@ class SimpleClient(object):
         ----------
         path : str
             Path of the variable to set
+
         value : obj
             Value to set
         """
@@ -179,6 +185,7 @@ class SimpleClient(object):
         ----------
         path : str
             Path of the variable to set
+
         value : str
             Value to set
         """
@@ -192,11 +199,12 @@ class SimpleClient(object):
         ----------
         path : str
             Path of the variable to set
+
         arg : obj
             Command argument, in native or string form
 
-        Return
-        ------
+        Returns
+        -------
         obj
             Return value of the underlying command
         """

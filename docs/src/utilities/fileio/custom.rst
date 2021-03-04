@@ -4,7 +4,7 @@
 Custom Writers
 ==============
 
-Rogue provides a standard class :ref:`utilities_fileio_stream_writer` for storing stream data
+Rogue provides a standard class :ref:`utilities_fileio_writer` for storing stream data
 in Rogue. In some cases the user may want to implement a custom file format or may need to record
 data in a pre-defined for certain DAQ systems. Rogue provides the ability to sub-class the StreamWriter
 class, while keeping its core features including multiple segmented files and data buffering for burst

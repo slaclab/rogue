@@ -15,7 +15,7 @@ are included in :ref:`custom_wrapper`.
 
 This module is compiled with the :ref:`custom_makefile` described in this section.
 
-.. code:: cmake
+.. code::
 
    // Source for MyModule.cpp
 
@@ -72,14 +72,14 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
 
          // Expose methods to python
          static void setup_python() {
-            boost::python::class_<MyCustomSlave, boost::shared_ptr<MyCustomSlave>, 
-                                                 boost::python::bases<rogue::interfaces::stream::Slave>, 
+            boost::python::class_<MyCustomSlave, boost::shared_ptr<MyCustomSlave>,
+                                                 boost::python::bases<rogue::interfaces::stream::Slave>,
                                                  boost::noncopyable >("MyCustomSlave",
                                                  boost::python::init<>())
                .def("getFrameCount", &MyCustomSlave::getFrameCount)
                .def("getTotalBytes", &MyCustomSlave::getTotalBytes)
             ;
-            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomSlave>, 
+            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomSlave>,
                                                  rogue::interfaces::stream::SlavePtr>();
          };
    };
@@ -159,8 +159,8 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
 
          // Expose methods to python
          static void setup_python() {
-            boost::python::class_<MyCustomMaster, boost::shared_ptr<MyCustomMaster>, 
-                                                  boost::python::bases<rogue::interfaces::stream::Master>, 
+            boost::python::class_<MyCustomMaster, boost::shared_ptr<MyCustomMaster>,
+                                                  boost::python::bases<rogue::interfaces::stream::Master>,
                                                   boost::noncopyable >("MyCustomMaster",
                                                   boost::python::init<>())
                .def("getFrameCount", &MyCustomMaster::getFrameCount)
@@ -169,7 +169,7 @@ This module is compiled with the :ref:`custom_makefile` described in this sectio
                .def("getFrameSize",  &MyCustomMaster::getFrameSize)
                .def("myFrameGen",    &MyCustomMaster::myFrameGen)
             ;
-            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomMaster>, 
+            boost::python::implicitly_convertible<boost::shared_ptr<MyCustomMaster>,
                                                   rogue::interfaces::stream::MasterPtr>();
          };
    };
