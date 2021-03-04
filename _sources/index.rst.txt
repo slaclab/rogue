@@ -17,6 +17,7 @@ branch of Rogue. New documentation is being added incrementally over time.
    interfaces/index
    hardware/index
    utilities/index
+   protocols/index
    logging/index
    custom_module/index
    installing/index

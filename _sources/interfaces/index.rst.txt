@@ -5,7 +5,7 @@ Interfaces
 ==========
 
 Rogue is built around a series of interfaces which serve as the glue
-between many modules within Rogue. The interfaces are designed so that once they are 
+between many modules within Rogue. The interfaces are designed so that once they are
 connected together, they interact directly without requiring interaction with
 the Python layer. For Example two C++ based stream modules can be "glued" together
 with a Python script and then move data at high rates using only low level C++
@@ -19,4 +19,7 @@ prototyped in Python and then re-implemented in C++ for performance.
 
    stream/index
    memory/index
+   clients/index
+   simulation/index
+   sql.rst
 
