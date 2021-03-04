@@ -14,5 +14,5 @@ The following are detailed descriptions of the various C++ classes that make up 
    channel.rst
    reader.rst
    legacy_writer.rst
-   legacy_channel.rst
+   legacy_reader.rst
 

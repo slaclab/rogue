@@ -8,7 +8,7 @@ The following are detailed descriptions of the various C++ classes that make up 
 
 .. toctree::
    :maxdepth: 1
-   :caption: Memory Classes:
+   :caption: PRBS Classes:
 
    prbs.rst
 

@@ -11,8 +11,9 @@ Memory Interface
 
    connecting
    master
-   slave 
-   hub 
+   slave
+   hub
    usingTcp
+   blocks
    classes/index
 

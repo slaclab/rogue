@@ -4,7 +4,5 @@
 UART Protocol
 ================
 
+TODO
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Using The UART Protocol:

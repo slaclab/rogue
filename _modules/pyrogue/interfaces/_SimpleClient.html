@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.6.5-26-ga8ebfd6e documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>pyrogue.interfaces._SimpleClient</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pyrogue.interfaces._SimpleClient</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Title      : PyRogue Simple ZMQ Client for Rogue</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># To use in Matlab first you need the zmq package in your</span>
+<span class="c1"># python installation:</span>
+<span class="c1">#</span>
+<span class="c1"># &gt; pip install zmq</span>
+<span class="c1"># &gt; pip install matlab</span>
+<span class="c1">#</span>
+<span class="c1"># You then need to set the appropriate flags in Matlab to load the zmq module:</span>
+<span class="c1">#</span>
+<span class="c1"># &gt;&gt; py.sys.setdlopenflags(int32(bitor(2, 8)));</span>
+<span class="c1">#</span>
+<span class="c1"># c = py.SimpleClient.SimpleClient(&quot;localhost&quot;,9099);</span>
+<span class="c1"># c.get(&quot;dummyTree.Time&quot;)</span>
+<span class="c1">#</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">threading</span>
+
+
+<div class="viewcode-block" id="SimpleClient"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient">[docs]</a><span class="k">class</span> <span class="nc">SimpleClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A lightweight client inerface for Rogue</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    addr : str</span>
+<span class="sd">        host address</span>
+<span class="sd">    port : int</span>
+<span class="sd">        host port</span>
+<span class="sd">    cb : function</span>
+<span class="sd">        call back function for variable updates</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span> <span class="n">cb</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Simple Client Constructor</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        addr : str</span>
+<span class="sd">            host address</span>
+<span class="sd">        port : int</span>
+<span class="sd">            host port</span>
+<span class="sd">        cb : function</span>
+<span class="sd">            call back function for variable updates</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sport</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="n">rport</span> <span class="o">=</span> <span class="n">port</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span> <span class="o">=</span> <span class="n">zmq</span><span class="o">.</span><span class="n">Context</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_req</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">REQ</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_req</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tcp://</span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">rport</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cb</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cb</span>  <span class="o">=</span> <span class="n">cb</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ctx</span><span class="o">.</span><span class="n">socket</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUB</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;tcp://</span><span class="si">{</span><span class="n">addr</span><span class="si">}</span><span class="s1">:</span><span class="si">{</span><span class="n">sport</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subThread</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_listen</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_subThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">_listen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="o">.</span><span class="n">setsockopt</span><span class="p">(</span><span class="n">zmq</span><span class="o">.</span><span class="n">SUBSCRIBE</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runEn</span><span class="p">:</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sub</span><span class="o">.</span><span class="n">recv_pyobj</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> <span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cb</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">val</span><span class="p">)</span>
+
+
+    <span class="k">def</span> <span class="nf">_remoteAttr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">attr</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;path&#39;</span><span class="p">:</span><span class="n">path</span><span class="p">,</span>
+               <span class="s1">&#39;attr&#39;</span><span class="p">:</span><span class="n">attr</span><span class="p">,</span>
+               <span class="s1">&#39;args&#39;</span><span class="p">:</span><span class="n">args</span><span class="p">,</span>
+               <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span><span class="n">kwargs</span><span class="p">}</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_req</span><span class="o">.</span><span class="n">send_pyobj</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_req</span><span class="o">.</span><span class="n">recv_pyobj</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;ZMQ Interface Exception: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">resp</span><span class="p">,</span><span class="ne">Exception</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">resp</span>
+
+        <span class="k">return</span> <span class="n">resp</span>
+
+<div class="viewcode-block" id="SimpleClient.get"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a variable value, initating a read</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            path : str</span>
+<span class="sd">                Path of the variable to return a value for</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Variable value in native form</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SimpleClient.getDisp"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.getDisp">[docs]</a>    <span class="k">def</span> <span class="nf">getDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get a variable value, in string form, initating a read</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">            path : str</span>
+<span class="sd">                Path of the variable to return a value for</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Variable value in string form</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;getDisp&#39;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">valueDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;valueDisp&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;setDisp&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;__call__&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

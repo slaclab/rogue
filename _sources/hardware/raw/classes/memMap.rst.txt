@@ -4,7 +4,7 @@
 MemMap
 ======
 
-Examples of using the MemMap class are included in :ref:`hardware_memory`.
+Examples of using the MemMap class are included in :ref:`hardware_raw_memory`.
 
 MemMap objects in C++ are referenced by the following shared pointer typedef:
 

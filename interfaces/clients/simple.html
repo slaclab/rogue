@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Simple Client Interface &mdash; Rogue v5.6.5-25-g9d234b72 documentation</title>
+  <title>Simple Client Interface &mdash; Rogue v5.6.5-26-ga8ebfd6e documentation</title>
   
 
   
@@ -230,7 +230,47 @@ of the updated variables reported by the Rogue server.</p>
 </pre></div>
 </div>
 <p>The class description for the SimpleClient class is included below:</p>
-<span class="target" id="module-pyrogue.interfaces.SimpleClient"></span></div>
+<dl class="py class">
+<dt id="pyrogue.interfaces.SimpleClient">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></code><code class="sig-name descname"><span class="pre">SimpleClient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lightweight client inerface for Rogue</p>
+<dl class="simple">
+<dt>addr<span class="classifier">str</span></dt><dd><p>host address</p>
+</dd>
+<dt>port<span class="classifier">int</span></dt><dd><p>host port</p>
+</dd>
+<dt>cb<span class="classifier">function</span></dt><dd><p>call back function for variable updates</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pyrogue.interfaces.SimpleClient.get">
+<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a variable value, initating a read</p>
+<blockquote>
+<div><dl class="simple">
+<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to return a value for</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Variable value in native form</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.interfaces.SimpleClient.getDisp">
+<code class="sig-name descname"><span class="pre">getDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a variable value, in string form, initating a read</p>
+<blockquote>
+<div><dl class="simple">
+<dt>path<span class="classifier">str</span></dt><dd><p>Path of the variable to return a value for</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>Variable value in string form</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 
 
            </div>

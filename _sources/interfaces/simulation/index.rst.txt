@@ -12,6 +12,6 @@ as providing an interface to VHDL and Verilog simulation tools.
    :caption: Interfaces:
 
    mememulate
-   pbp2b
+   pgp2b
    sideband
 
