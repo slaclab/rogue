@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Simple Client Interface &mdash; Rogue v5.6.5-24-ga4f40d29 documentation</title>
+  <title>Simple Client Interface &mdash; Rogue v5.6.5-25-g9d234b72 documentation</title>
   
 
   
@@ -38,8 +38,8 @@
     
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="The PYDM Gui" href="pydm.html" />
-    <link rel="prev" title="Virtual Client Interface" href="virtual.html" /> 
+    <link rel="next" title="Virtual Client Interface" href="virtual.html" />
+    <link rel="prev" title="Using The Command Line Interface" href="commandline.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,10 +94,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../stream/index.html">Stream Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../memory/index.html">Memory Interface</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Client Interfaces</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="virtual.html">Virtual Client Interface</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Simple Client Interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pydm.html">The PYDM Gui</a></li>
 <li class="toctree-l3"><a class="reference internal" href="commandline.html">Using The Command Line Interface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Simple Client Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="virtual.html">Virtual Client Interface</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Interfaces</a></li>
@@ -183,7 +182,55 @@
             
   <div class="section" id="simple-client-interface">
 <span id="interfaces-clients-simple"></span><h1>Simple Client Interface<a class="headerlink" href="#simple-client-interface" title="Permalink to this headline">¶</a></h1>
+<p>The Rogue SimpleClient class is a lightweight python class which can be used on its own
+with minimal dependencies, requiring only the zmq library. This file is fully portable and
+can be used outside of the greater Rogue package.</p>
+<p>The most current file can be downloaded from:</p>
+<p><a class="reference external" href="https://github.com/slaclab/rogue/blob/master/python/pyrogue/interfaces/_SimpleClient.py">https://github.com/slaclab/rogue/blob/master/python/pyrogue/interfaces/_SimpleClient.py</a></p>
+<p>Below is an example of using the SimpleClient in a python script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+   <span class="c1"># Get a variable value with a read, this returns the native value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;root.RogueVersion&quot;</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Get the string representation a variable value with a read</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">getDisp</span><span class="p">(</span><span class="s2">&quot;root.RogueVersion&quot;</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Get a variable value without a read, this returns the native value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;root.RogueVersion&quot;</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Get the string representation a variable value without a read</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">(</span><span class="s2">&quot;root.RogueVersion&quot;</span><span class="p">)</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Set a variable value using the native value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;root.ScratchPad&quot;</span><span class="p">,</span><span class="mh">0x100</span><span class="p">)</span>
+
+   <span class="c1"># Set a variable value using the string representation of the value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;root.ScratchPad&quot;</span><span class="p">,</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Execute a command with an optional argument, passing either the native or string value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;root.SomeCommand&quot;</span><span class="p">,</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
+</pre></div>
 </div>
+<p>The SimpleClient interface also provides a mechanism to provide a callback function which is
+called anytime a Rogue variable is updated. The call back function is called once for each
+of the updated variables reported by the Rogue server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">myCallBack</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Got updated value for </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">with</span> <span class="n">SimpleClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">,</span><span class="n">cb</span><span class="o">=</span><span class="n">myCallBack</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+   <span class="c1"># Any variale updates received while this interface is activate will</span>
+   <span class="c1"># be passed to the myCallBack function</span>
+</pre></div>
+</div>
+<p>The class description for the SimpleClient class is included below:</p>
+<span class="target" id="module-pyrogue.interfaces.SimpleClient"></span></div>
 
 
            </div>
@@ -191,8 +238,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="pydm.html" class="btn btn-neutral float-right" title="The PYDM Gui" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="virtual.html" class="btn btn-neutral float-left" title="Virtual Client Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="virtual.html" class="btn btn-neutral float-right" title="Virtual Client Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="commandline.html" class="btn btn-neutral float-left" title="Using The Command Line Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
