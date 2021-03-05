@@ -26,5 +26,6 @@ into multiple downstream transactions, providing a mechanism for handling comple
    hub
    usingTcp
    blocks
+   blocks_advanced
    classes/index
 
