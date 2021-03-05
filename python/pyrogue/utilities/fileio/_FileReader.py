@@ -40,7 +40,7 @@ class FileReaderException(Exception):
 
 class FileReader(object):
 
-    def __init__(self, files, configChan=None):
+    def __init__(self, files, configChan=None, log=None):
         self._configChan = configChan
         self._currFile   = None
         self._fileSize   = 0
@@ -51,7 +51,10 @@ class FileReader(object):
         self._currCount  = 0
         self._totCount   = 0
 
-        self._log = logging.getLogger('pyrogue.FileReader')
+        if log is None:
+            self._log = logging.getLogger('pyrogue.FileReader')
+        else:
+            self._log = log
 
         if isinstance(files,list):
             self._fileList = files
