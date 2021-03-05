@@ -29,7 +29,24 @@ import threading
 
 class SimpleClient(object):
     """
-    A lightweight client inerface for Rogue
+    A lightweight client inerface for Rogue. This can be used in
+    scripts or as an interface to Rogue in matlab. For a more
+    powerfull, tree access capable client. Please see the
+    VirtualClient class.
+
+    To use in Matlab first you need the zmq package in your  python installation:
+
+    > pip install zmq
+
+    > pip install matlab
+
+    You then need to set the appropriate flags in Matlab to load the zmq module:
+
+    >> py.sys.setdlopenflags(int32(bitor(2, 8)));
+
+    >> c = py.SimpleClient.SimpleClient("localhost",9099);
+
+    >> c.get("dummyTree.Time")
 
     Parameters
     ----------

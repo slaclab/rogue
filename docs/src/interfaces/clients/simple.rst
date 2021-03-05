@@ -8,6 +8,11 @@ The Rogue SimpleClient class is a lightweight python class which can be used on 
 with minimal dependencies, requiring only the zmq library. This file is fully portable and
 can be used outside of the greater Rogue package.
 
+Most client interfaces will make use of the :ref:`interfaces_clients_virtual` which
+provides an exact mirror of the Rogue tree allowing a more powerfull interface to
+a running Rogue core. The SimpleClient is targetted towards clients which require only
+a limited type of access to top level command and variable access.
+
 The most current file can be downloaded from:
 
 https://github.com/slaclab/rogue/blob/master/python/pyrogue/interfaces/_SimpleClient.py
@@ -35,13 +40,13 @@ Below is an example of using the SimpleClient in a python script:
       print(f"Version = {ret}")
 
       # Set a variable value using the native value
-      ret = client.set("root.ScratchPad",0x100)
+      client.set("root.AxiVersion.ScratchPad",0x100)
 
       # Set a variable value using the string representation of the value
-      ret = client.setDisp("root.ScratchPad","0x100")
+      client.setDisp("root.AxiVersion.ScratchPad","0x100")
 
       # Execute a command with an optional argument, passing either the native or string value
-      ret = client.exec("root.SomeCommand","0x100")
+      client.exec("root.SomeCommand","0x100")
 
 
 The SimpleClient interface also provides a mechanism to provide a callback function which is

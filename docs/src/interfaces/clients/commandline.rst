@@ -16,9 +16,9 @@ command:
 The above command will print out the list of available commands and options.
 
 By default the client will attempt to interface to the Rogue server on the localhost interface, using the
-default serverPort value of 9099. Alternatively the --server argument. The values passed to this argument
-can either be a host:port pair or a comman seperated list of host:port values. The host:port list is only
-used when starting the PyDM GUI.
+default serverPort value of 9099. Alternatively the --server argument can be used to specifiy a host.
+The values passed to this argument can either be a host:port pair or a comman seperated list of host:port
+values. The host:port list is only used when starting the PyDM GUI.
 
 .. code::
 
