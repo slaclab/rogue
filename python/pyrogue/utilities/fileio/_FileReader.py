@@ -3,6 +3,7 @@
 #-----------------------------------------------------------------------------
 # Description:
 # Module for reading file data.
+# This is a standalone module and can be used outside of a pyrogue installation.
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -12,13 +13,12 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import pyrogue
-import rogue
-
+from collections import namedtuple
 import os
 import struct
 import numpy
-from collections import namedtuple
+import yaml
+import logging
 
 RogueHeaderSize  = 8
 RogueHeaderPack  = 'IHBB'
@@ -31,6 +31,12 @@ RogueHeader = namedtuple(
     'error'   ,  # 1 bytes, uint8,  B
     'channel' ]  # 1 bytes, uint8,  B
 )
+
+
+class FileReaderException(Exception):
+    """ File reader exception """
+    pass
+
 
 class FileReader(object):
 
@@ -45,7 +51,7 @@ class FileReader(object):
         self._currCount  = 0
         self._totCount   = 0
 
-        self._log = pyrogue.logInit(self)
+        self._log = logging.getLogger('pyrogue.FileReader')
 
         if isinstance(files,list):
             self._fileList = files
@@ -55,7 +61,7 @@ class FileReader(object):
         # Check to make sure all the files are readable
         for fn in self._fileList:
             if not os.access(fn,os.R_OK):
-                raise rogue.GeneralError("filio.FileReader","Failed to read file {}".format(fn))
+                raise FileReaderException("Failed to read file {}".format(fn))
 
     def _nextRecord(self):
         while True:
@@ -82,14 +88,14 @@ class FileReader(object):
 
             # Process meta data
             if self._configChan is not None and self._header.channel == self._configChan:
-                pyrogue.yamlUpdate(self._config, self._currFile.read(payload).decode('utf-8'))
+                self._updateConfig(yaml.load(self._currFile.read(payload).decode('utf-8')))
 
             # This is a data channel
             else:
                 try:
                     self._data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=payload)
                 except Exception:
-                    raise rogue.GeneralError('fileio.FileReader',f'Failed to read data from {self._currFname}')
+                    raise FileReaderException(f'Failed to read data from {self._currFname}')
 
                 self._currCount += 1
                 self._totCount += 1
@@ -119,6 +125,13 @@ class FileReader(object):
 
         self._log.debug(f"Processed a total of {self._totCount} data records")
 
+    @property
+    def currCount(self):
+        return self._currCount
+
+    @property
+    def totCount(self):
+        return self._totCount
 
     @property
     def configDict(self):
@@ -136,9 +149,26 @@ class FileReader(object):
             if a in obj:
                 obj = obj[a]
             else:
-                raise rogue.GeneralError("filio.FileReader","Failed to find path {}".format(path))
+                raise FileReaderException("Failed to find path {}".format(path))
 
         return obj
+
+    def _updateConfig(self, new):
+        # Combination of dictUpdate and keyValueUpdate from pyrogue helpers
+
+        for k,v in new.items():
+            if '.' in k:
+                d = self._config
+                parts = k.split('.')
+                for part in parts[:-1]:
+                    if part not in d:
+                        d[part] = {}
+                    d = d.get(part)
+                d[parts[-1]] = v
+            elif k in self._config:
+                self._config[k].update(v)
+            else:
+                self._config[k] = v
 
     def __enter__(self):
         return self
