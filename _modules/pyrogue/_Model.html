@@ -1,0 +1,659 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>pyrogue._Model &mdash; Rogue v5.6.5-33-g23b07d1f documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pyrogue._Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pyrogue._Model</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Title      : PyRogue base module - Model Class</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+
+<span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span> <span class="k">as</span> <span class="nn">rim</span>
+
+
+<span class="k">def</span> <span class="nf">wordCount</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="n">wordSize</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">//</span> <span class="n">wordSize</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bits</span> <span class="o">%</span> <span class="n">wordSize</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">bits</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">ret</span>
+
+
+<span class="k">def</span> <span class="nf">byteCount</span><span class="p">(</span><span class="n">bits</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">wordCount</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">reverseBits</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">bitSize</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+        <span class="n">result</span> <span class="o">|=</span> <span class="n">value</span> <span class="o">&amp;</span> <span class="mi">1</span>
+        <span class="n">value</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="k">def</span> <span class="nf">twosComplement</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;compute the 2&#39;s complement of int value&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">bitSize</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># if sign bit is set e.g., 8bit: 128-255</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bitSize</span><span class="p">)</span>      <span class="c1"># compute negative value</span>
+    <span class="k">return</span> <span class="n">value</span>                            <span class="c1"># return positive value as is</span>
+
+
+<span class="k">class</span> <span class="nc">ModelMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span><span class="p">:</span>
+            <span class="c1">#print(f&#39;Key: {key}&#39;)</span>
+            <span class="n">inst</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">inst</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">subclasses</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Model"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Model">[docs]</a><span class="k">class</span> <span class="nc">Model</span><span class="p">(</span><span class="nb">object</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">ModelMeta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Class which describes how a data type is represented and accessed</span>
+<span class="sd">    using the Rogue Variables and Blocks</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented</span>
+
+<span class="sd">    binPoint : int</span>
+<span class="sd">        Huh?</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name: str</span>
+<span class="sd">        String representation of the Model type</span>
+
+<span class="sd">    fstring: str</span>
+<span class="sd">        Not sure what this is, Where is it used?</span>
+
+<span class="sd">    encoding: str</span>
+<span class="sd">        Encoding type for converting between string and byte arrays. i.e. UTF-8</span>
+
+<span class="sd">    pytype: int</span>
+<span class="sd">        Python type class.</span>
+
+<span class="sd">    defaultdisp: str</span>
+<span class="sd">        Default display formatting string. May be overriden by the Variable disp parameter.</span>
+
+<span class="sd">    signed: bool</span>
+<span class="sd">        Flag indicating if value is signed. Default=False</span>
+
+<span class="sd">    endianness: str</span>
+<span class="sd">        Endianness indicator. &#39;little&#39; or &#39;big&#39;. Default=&#39;little&#39;</span>
+
+<span class="sd">    bitReverse: bool</span>
+<span class="sd">        Bit reversal flag.</span>
+
+<span class="sd">    modelId: int</span>
+<span class="sd">        Block processing ID. See :ref:`interfaces_memory_constants_ptype`</span>
+
+<span class="sd">    isBigEndian: bool</span>
+<span class="sd">        True if endianness = &#39;big&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fstring</span>     <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">encoding</span>    <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pytype</span>      <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span>
+    <span class="n">signed</span>      <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">endianness</span>  <span class="o">=</span> <span class="s1">&#39;little&#39;</span>
+    <span class="n">bitReverse</span>  <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">,</span> <span class="n">binPoint</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span> <span class="o">=</span> <span class="n">binPoint</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span>  <span class="o">=</span> <span class="n">bitSize</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isBigEndian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span> <span class="o">==</span> <span class="s1">&#39;big&#39;</span>
+
+<div class="viewcode-block" id="Model.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Model.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the python value to byte array.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value: obj</span>
+<span class="sd">            Python value to convert</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        bytearray : Byte array representation of value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
+<div class="viewcode-block" id="Model.fromBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Model.fromBytes">[docs]</a>    <span class="k">def</span> <span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the python value to byte array.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ba: bytearray</span>
+<span class="sd">            Byte array to extract value from</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        obj : Converted python value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Model.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Model.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert the string to a python value.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        string: str</span>
+<span class="sd">            String representation of the value</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        obj : Converted python value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Model.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Model.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the minimum value for the Model type</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        obj: Minimum value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Model.maxValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Model.maxValue">[docs]</a>    <span class="k">def</span> <span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return the maximum value for the Model type</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        obj: Maximum value</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">None</span></div></div>
+
+
+<div class="viewcode-block" id="UInt"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt">[docs]</a><span class="k">class</span> <span class="nc">UInt</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for unsigned integers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">int</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:#x}</span><span class="s1">&#39;</span>
+    <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">UInt</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
+<div class="viewcode-block" id="UInt.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span></div>
+
+    <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
+<div class="viewcode-block" id="UInt.fromBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt.fromBytes">[docs]</a>    <span class="k">def</span> <span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UInt.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UInt.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="UInt.maxValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt.maxValue">[docs]</a>    <span class="k">def</span> <span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="UIntReversed"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UIntReversed">[docs]</a><span class="k">class</span> <span class="nc">UIntReversed</span><span class="p">(</span><span class="n">UInt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for unsigned integers, stored in reverse bit order</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">modelId</span>   <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span> <span class="c1"># Not yet supported</span>
+    <span class="n">bitReverse</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="UIntReversed.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UIntReversed.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">valueReverse</span> <span class="o">=</span> <span class="n">reverseBits</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">valueReverse</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UIntReversed.fromBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UIntReversed.fromBytes">[docs]</a>    <span class="k">def</span> <span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ba</span><span class="p">):</span>
+        <span class="n">valueReverse</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">signed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">reverseBits</span><span class="p">(</span><span class="n">valueReverse</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Int"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int">[docs]</a><span class="k">class</span> <span class="nc">Int</span><span class="p">(</span><span class="n">UInt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for integers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Override these and inherit everything else from UInt</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">&#39;</span>
+    <span class="n">signed</span>      <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Int</span>
+
+    <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
+<div class="viewcode-block" id="Int.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)):</span>
+            <span class="n">newValue</span> <span class="o">=</span> <span class="n">value</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># Strip upper bits</span>
+            <span class="n">ba</span> <span class="o">=</span> <span class="n">newValue</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ba</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">ba</span></div>
+
+    <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
+<div class="viewcode-block" id="Int.fromBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int.fromBytes">[docs]</a>    <span class="k">def</span> <span class="nf">fromBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ba</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">byteCount</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span><span class="o">*</span><span class="mi">8</span><span class="p">)):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">-=</span> <span class="mi">2</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">ba</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endianness</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Int.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># perform twos complement if necessary</span>
+        <span class="k">if</span> <span class="n">i</span><span class="o">&gt;</span><span class="mi">0</span> <span class="ow">and</span> <span class="p">((</span><span class="n">i</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0x1</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">-</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">i</span></div>
+
+<div class="viewcode-block" id="Int.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span> <span class="o">*</span> <span class="p">((</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Int.maxValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int.maxValue">[docs]</a>    <span class="k">def</span> <span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">2</span><span class="o">**</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="UIntBE"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UIntBE">[docs]</a><span class="k">class</span> <span class="nc">UIntBE</span><span class="p">(</span><span class="n">UInt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for big endian unsigned integers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+
+
+<div class="viewcode-block" id="IntBE"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.IntBE">[docs]</a><span class="k">class</span> <span class="nc">IntBE</span><span class="p">(</span><span class="n">Int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for big endian integers</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span></div>
+
+
+<div class="viewcode-block" id="Bool"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Bool">[docs]</a><span class="k">class</span> <span class="nc">Bool</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for booleans</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">bool</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span><span class="p">}</span>
+    <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Bool</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 1&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Bool.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Bool.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span></div>
+
+<div class="viewcode-block" id="Bool.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Bool.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="Bool.maxValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Bool.maxValue">[docs]</a>    <span class="k">def</span> <span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">1</span></div></div>
+
+
+<div class="viewcode-block" id="String"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.String">[docs]</a><span class="k">class</span> <span class="nc">String</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for strings</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">encoding</span>    <span class="o">=</span> <span class="s1">&#39;utf-8&#39;</span>
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span>
+    <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">str</span>
+    <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">String</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">//</span><span class="mi">8</span><span class="si">}</span><span class="s1">)&#39;</span>
+
+<div class="viewcode-block" id="String.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.String.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">string</span></div></div>
+
+
+<div class="viewcode-block" id="Float"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Float">[docs]</a><span class="k">class</span> <span class="nc">Float</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for 32-bit floats</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented, must be 32</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:f}</span><span class="s1">&#39;</span>
+    <span class="n">pytype</span>      <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">fstring</span>     <span class="o">=</span> <span class="s1">&#39;f&#39;</span>
+    <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Float</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">32</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 32&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Float.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Float.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Float.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Float.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">3.4e38</span></div>
+
+<div class="viewcode-block" id="Float.maxValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Float.maxValue">[docs]</a>    <span class="k">def</span> <span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">3.4e38</span></div></div>
+
+
+<div class="viewcode-block" id="Double"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Double">[docs]</a><span class="k">class</span> <span class="nc">Double</span><span class="p">(</span><span class="n">Float</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for 64-bit floats</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented, must be 64</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
+    <span class="n">modelId</span>   <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Double</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">64</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 64&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+
+<div class="viewcode-block" id="Double.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Double.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mf">1.80e308</span></div>
+
+<div class="viewcode-block" id="Double.maxValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Double.maxValue">[docs]</a>    <span class="k">def</span> <span class="nf">maxValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mf">1.80e308</span></div></div>
+
+
+<div class="viewcode-block" id="FloatBE"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.FloatBE">[docs]</a><span class="k">class</span> <span class="nc">FloatBE</span><span class="p">(</span><span class="n">Float</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for 32-bit floats stored as big endian</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;!f&#39;</span></div>
+
+
+<div class="viewcode-block" id="DoubleBE"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.DoubleBE">[docs]</a><span class="k">class</span> <span class="nc">DoubleBE</span><span class="p">(</span><span class="n">Double</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for 64-bit floats stored as big endian</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">endianness</span> <span class="o">=</span> <span class="s1">&#39;big&#39;</span>
+    <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;!d&#39;</span></div>
+
+
+<div class="viewcode-block" id="Fixed"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Fixed">[docs]</a><span class="k">class</span> <span class="nc">Fixed</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for fixed point signed integers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Number of bits being represented</span>
+
+<span class="sd">    binPoint : int</span>
+<span class="sd">        Huh?</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pytype</span> <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">signed</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">modelId</span>   <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Fixed</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">,</span> <span class="n">binPoint</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">,</span><span class="n">binPoint</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Fixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">sign</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

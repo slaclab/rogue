@@ -6,6 +6,8 @@ Constants
 
 The following constants are defined for use with the memory interface.
 
+.. _interface_memory_constants_type:
+
 Transaction Types
 =================
 
@@ -18,6 +20,9 @@ The following memory transaction types are defined:
 .. doxygenvariable:: rogue::interfaces::memory::Post
 
 .. doxygenvariable:: rogue::interfaces::memory::Verify
+
+
+.. _interface_memory_constants_ptype:
 
 Block Process Types
 ===================

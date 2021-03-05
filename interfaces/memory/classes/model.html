@@ -1,0 +1,961 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Model &mdash; Rogue v5.6.5-33-g23b07d1f documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Hub" href="hub.html" />
+    <link rel="prev" title="Block" href="block.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../master.html">Memory Master Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../slave.html">Memory Slave Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hub.html">Memory Hub Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks.html">Blocks &amp; Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks_advanced.html">Advanced Usage Of Blocks</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Memory Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transaction.html">Transaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transactionLock.html">TransactionLock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="block.html">Block</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+        
+          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
+        
+          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
+        
+      <li>Model</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/interfaces/memory/classes/model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="model">
+<span id="interfaces-memory-model"></span><h1>Model<a class="headerlink" href="#model" title="Permalink to this headline">¶</a></h1>
+<p>The Model class define a data type for use with a Block.</p>
+<dl class="py class">
+<dt id="pyrogue.Model">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class which describes how a data type is represented and accessed
+using the Rogue Variables and Blocks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented</p></li>
+<li><p><strong>binPoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Huh?</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.Model.name">
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pyrogue.Model.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>String representation of the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.fstring">
+<code class="sig-name descname"><span class="pre">fstring</span></code><a class="headerlink" href="#pyrogue.Model.fstring" title="Permalink to this definition">¶</a></dt>
+<dd><p>Not sure what this is, Where is it used?</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.encoding">
+<code class="sig-name descname"><span class="pre">encoding</span></code><a class="headerlink" href="#pyrogue.Model.encoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Encoding type for converting between string and byte arrays. i.e. UTF-8</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.pytype">
+<code class="sig-name descname"><span class="pre">pytype</span></code><a class="headerlink" href="#pyrogue.Model.pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Python type class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.defaultdisp">
+<code class="sig-name descname"><span class="pre">defaultdisp</span></code><a class="headerlink" href="#pyrogue.Model.defaultdisp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default display formatting string. May be overriden by the Variable disp parameter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.signed">
+<code class="sig-name descname"><span class="pre">signed</span></code><a class="headerlink" href="#pyrogue.Model.signed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag indicating if value is signed. Default=False</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.endianness">
+<code class="sig-name descname"><span class="pre">endianness</span></code><a class="headerlink" href="#pyrogue.Model.endianness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Endianness indicator. ‘little’ or ‘big’. Default=’little’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.bitReverse">
+<code class="sig-name descname"><span class="pre">bitReverse</span></code><a class="headerlink" href="#pyrogue.Model.bitReverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bit reversal flag.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.modelId">
+<code class="sig-name descname"><span class="pre">modelId</span></code><a class="headerlink" href="#pyrogue.Model.modelId" title="Permalink to this definition">¶</a></dt>
+<dd><p>Block processing ID. See <span class="xref std std-ref">interfaces_memory_constants_ptype</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.Model.isBigEndian">
+<code class="sig-name descname"><span class="pre">isBigEndian</span></code><a class="headerlink" href="#pyrogue.Model.isBigEndian" title="Permalink to this definition">¶</a></dt>
+<dd><p>True if endianness = ‘big’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Model.toBytes">
+<code class="sig-name descname"><span class="pre">toBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.toBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bytearray</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Byte array representation of value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Model.fromBytes">
+<code class="sig-name descname"><span class="pre">fromBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.fromBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.9)"><em>bytearray</em></a>) – Byte array to extract value from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Model.fromString">
+<code class="sig-name descname"><span class="pre">fromString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the string to a python value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String representation of the value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Model.minValue">
+<code class="sig-name descname"><span class="pre">minValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.minValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Model.maxValue">
+<code class="sig-name descname"><span class="pre">maxValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.maxValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<div class="section" id="standard-models">
+<h2>Standard Models<a class="headerlink" href="#standard-models" title="Permalink to this headline">¶</a></h2>
+<p>The following are pre-defined models for various data types.</p>
+<div class="section" id="uint">
+<span id="interfaces-memory-model-uint"></span><h3>UInt<a class="headerlink" href="#uint" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.UInt">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">UInt</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for unsigned integers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.UInt.pytype">
+<code class="sig-name descname"><span class="pre">pytype</span></code><a class="headerlink" href="#pyrogue.UInt.pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.UInt.toBytes">
+<code class="sig-name descname"><span class="pre">toBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.toBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bytearray</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Byte array representation of value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.UInt.fromBytes">
+<code class="sig-name descname"><span class="pre">fromBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.9)"><em>bytearray</em></a>) – Byte array to extract value from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.UInt.fromString">
+<code class="sig-name descname"><span class="pre">fromString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the string to a python value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String representation of the value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.UInt.minValue">
+<code class="sig-name descname"><span class="pre">minValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.minValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.UInt.maxValue">
+<code class="sig-name descname"><span class="pre">maxValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.maxValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="uintbe">
+<span id="interfaces-memory-model-uintbe"></span><h3>UIntBE<a class="headerlink" href="#uintbe" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.UIntBE">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">UIntBE</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntBE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for big endian unsigned integers</p>
+</dd></dl>
+
+</div>
+<div class="section" id="uintreversed">
+<span id="interfaces-memory-model-uintreversed"></span><h3>UIntReversed<a class="headerlink" href="#uintreversed" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.UIntReversed">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">UIntReversed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for unsigned integers, stored in reverse bit order</p>
+<dl class="py method">
+<dt id="pyrogue.UIntReversed.toBytes">
+<code class="sig-name descname"><span class="pre">toBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.toBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bytearray</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Byte array representation of value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.UIntReversed.fromBytes">
+<code class="sig-name descname"><span class="pre">fromBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.fromBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.9)"><em>bytearray</em></a>) – Byte array to extract value from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="int">
+<span id="interfaces-memory-model-int"></span><h3>Int<a class="headerlink" href="#int" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.Int">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">Int</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for integers</p>
+<dl class="py method">
+<dt id="pyrogue.Int.toBytes">
+<code class="sig-name descname"><span class="pre">toBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.toBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bytearray</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Byte array representation of value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Int.fromBytes">
+<code class="sig-name descname"><span class="pre">fromBytes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromBytes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the python value to byte array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.9)"><em>bytearray</em></a>) – Byte array to extract value from</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Int.fromString">
+<code class="sig-name descname"><span class="pre">fromString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the string to a python value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String representation of the value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Int.minValue">
+<code class="sig-name descname"><span class="pre">minValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.minValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Int.maxValue">
+<code class="sig-name descname"><span class="pre">maxValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.maxValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="intbe">
+<span id="interfaces-memory-model-intbe"></span><h3>IntBE<a class="headerlink" href="#intbe" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.IntBE">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">IntBE</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#IntBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.IntBE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for big endian integers</p>
+</dd></dl>
+
+</div>
+<div class="section" id="bool">
+<span id="interfaces-memory-model-bool"></span><h3>Bool<a class="headerlink" href="#bool" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.Bool">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">Bool</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for booleans</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.Bool.pytype">
+<code class="sig-name descname"><span class="pre">pytype</span></code><a class="headerlink" href="#pyrogue.Bool.pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Bool.fromString">
+<code class="sig-name descname"><span class="pre">fromString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the string to a python value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String representation of the value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Bool.minValue">
+<code class="sig-name descname"><span class="pre">minValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.minValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Bool.maxValue">
+<code class="sig-name descname"><span class="pre">maxValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.maxValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="string">
+<span id="interfaces-memory-model-string"></span><h3>String<a class="headerlink" href="#string" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.String">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">String</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for strings</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.String.pytype">
+<code class="sig-name descname"><span class="pre">pytype</span></code><a class="headerlink" href="#pyrogue.String.pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.String.fromString">
+<code class="sig-name descname"><span class="pre">fromString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the string to a python value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String representation of the value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="float">
+<span id="interfaces-memory-model-float"></span><h3>Float<a class="headerlink" href="#float" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.Float">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">Float</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for 32-bit floats</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented, must be 32</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.Float.pytype">
+<code class="sig-name descname"><span class="pre">pytype</span></code><a class="headerlink" href="#pyrogue.Float.pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Float.fromString">
+<code class="sig-name descname"><span class="pre">fromString</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.fromString" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert the string to a python value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – String representation of the value</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Converted python value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Float.minValue">
+<code class="sig-name descname"><span class="pre">minValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.minValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Float.maxValue">
+<code class="sig-name descname"><span class="pre">maxValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.maxValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="floatbe">
+<span id="interfaces-memory-model-floatbe"></span><h3>FloatBE<a class="headerlink" href="#floatbe" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.FloatBE">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">FloatBE</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#FloatBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.FloatBE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for 32-bit floats stored as big endian</p>
+</dd></dl>
+
+</div>
+<div class="section" id="double">
+<span id="interfaces-memory-model-double"></span><h3>Double<a class="headerlink" href="#double" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.Double">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">Double</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for 64-bit floats</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented, must be 64</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="pyrogue.Double.minValue">
+<code class="sig-name descname"><span class="pre">minValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double.minValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the minimum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.Double.maxValue">
+<code class="sig-name descname"><span class="pre">maxValue</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double.maxValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the maximum value for the Model type</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>obj</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="doublebe">
+<span id="interfaces-memory-model-doublebe"></span><h3>DoubleBE<a class="headerlink" href="#doublebe" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.DoubleBE">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">DoubleBE</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#DoubleBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.DoubleBE" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for 64-bit floats stored as big endian</p>
+</dd></dl>
+
+</div>
+<div class="section" id="fixed">
+<span id="interfaces-memory-model-fixed"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="pyrogue.Fixed">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.</span></code><code class="sig-name descname"><span class="pre">Fixed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model class for fixed point signed integers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Number of bits being represented</p></li>
+<li><p><strong>binPoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Huh?</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.Fixed.pytype">
+<code class="sig-name descname"><span class="pre">pytype</span></code><a class="headerlink" href="#pyrogue.Fixed.pytype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="hub.html" class="btn btn-neutral float-right" title="Hub" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="block.html" class="btn btn-neutral float-left" title="Block" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
