@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.6.5-29-gb77073c9 documentation</title>
+  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.6.5-30-g20b62077 documentation</title>
   
 
   
@@ -192,7 +192,24 @@
 
 <div class="viewcode-block" id="SimpleClient"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient">[docs]</a><span class="k">class</span> <span class="nc">SimpleClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    A lightweight client inerface for Rogue</span>
+<span class="sd">    A lightweight client inerface for Rogue. This can be used in</span>
+<span class="sd">    scripts or as an interface to Rogue in matlab. For a more</span>
+<span class="sd">    powerfull, tree access capable client. Please see the</span>
+<span class="sd">    VirtualClient class.</span>
+
+<span class="sd">    To use in Matlab first you need the zmq package in your  python installation:</span>
+
+<span class="sd">    &gt; pip install zmq</span>
+
+<span class="sd">    &gt; pip install matlab</span>
+
+<span class="sd">    You then need to set the appropriate flags in Matlab to load the zmq module:</span>
+
+<span class="sd">    &gt;&gt; py.sys.setdlopenflags(int32(bitor(2, 8)));</span>
+
+<span class="sd">    &gt;&gt; c = py.SimpleClient.SimpleClient(&quot;localhost&quot;,9099);</span>
+
+<span class="sd">    &gt;&gt; c.get(&quot;dummyTree.Time&quot;)</span>
 
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>

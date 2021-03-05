@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Virtual Client Interface &mdash; Rogue v5.6.5-29-gb77073c9 documentation</title>
+  <title>Virtual Client Interface &mdash; Rogue v5.6.5-30-g20b62077 documentation</title>
   
 
   
@@ -94,7 +94,10 @@
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">Client Interfaces</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="commandline.html">Using The Command Line Interface</a></li>
 <li class="toctree-l3"><a class="reference internal" href="simple.html">Simple Client Interface</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Virtual Client Interface</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Virtual Client Interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#virtualclient-description">VirtualClient Description</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../stream/index.html">Stream Interface</a></li>
@@ -182,6 +185,154 @@
             
   <div class="section" id="virtual-client-interface">
 <span id="interfaces-clients-virtual"></span><h1>Virtual Client Interface<a class="headerlink" href="#virtual-client-interface" title="Permalink to this headline">¶</a></h1>
+<p>The Rogue VirtualClient class provides a powerfull client interface to a running Rogue
+tree. The VirtualClient is designed to fully replicate the Rogue tree in the client,
+providing the same level of access to Rogue nodes as is available inside the core Rogue
+python code. Variables, Commands and even the Root classes are fully mirrored in the
+client, supporting access to the same methods and attributes as defined in the Rogue
+tree API.</p>
+<p>This allows functions and other sequences of Rogue operations to exist either in the client
+or core Rogue tree, enabling complex functions to be first developed in a client script
+using the VirtualClient and then inserted into the Rogue core.</p>
+<p>Unlike the <a class="reference internal" href="simple.html#interfaces-clients-simple"><span class="std std-ref">Simple Client Interface</span></a> which operates as a standalone class, the Virtual
+client uses much of the Rogue libraries and requires a full Rogue installation to operate.</p>
+<p>Below is an example of using the VirtualClient in a python script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">VirtualClient</span><span class="p">(</span><span class="n">addr</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="mi">9099</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+
+   <span class="c1"># Get the reference to the root node</span>
+   <span class="n">root</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">root</span>
+
+   <span class="c1"># Get a variable value with a read, this returns the native value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Get the string representation a variable value with a read</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">disp</span><span class="p">()</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Get a variable value without a read, this returns the native value</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Get the string representation a variable value without a read</span>
+   <span class="n">ret</span> <span class="o">=</span> <span class="n">root</span><span class="o">.</span><span class="n">RogueVersion</span><span class="o">.</span><span class="n">valueDisp</span><span class="p">()</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Set a variable value using the native value</span>
+   <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">Scratchpad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
+
+   <span class="c1"># Set a variable value using the string representation of the value</span>
+   <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
+
+   <span class="c1"># Execute a command with an optional argument, passing either the native or string value</span>
+   <span class="n">root</span><span class="o">.</span><span class="n">SomeCommand</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Unlike the SimpleClient the VirtualClient provides access to all of the attributes to the Rogue classes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Type  = </span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">typeStr</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mode  = </span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Units = </span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">units</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Min   = </span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">minimum</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Max   = </span><span class="si">{</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">maximum</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Update callbacks can be attached to a Variable as in the Rogue tree:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">listener</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">varValue</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">varValue</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">root</span><span class="o">.</span><span class="n">UpTime</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="n">listener</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The VariableWait helper function can also be used.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wait for the uptime to be greater than 1000 seconds</span>
+<span class="n">VariableWait</span><span class="p">(</span><span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">UpTime</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">varValues</span><span class="p">:</span> <span class="n">varValues</span><span class="p">[</span><span class="s1">&#39;root.UpTime&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The VirtualClient maintains a connection to the Rogue core. The status of this connection
+can be directly accessed through the linked attribute. Additionally a callback function
+can be added to be called any time the link state changes.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a callback function to be notified of link state changes</span>
+<span class="k">def</span> <span class="nf">linkMonitor</span><span class="p">(</span><span class="n">state</span><span class="p">):</span>
+   <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Link state is now </span><span class="si">{</span><span class="n">state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add a link monitor</span>
+<span class="n">client</span><span class="o">.</span><span class="n">addLinkMonitor</span><span class="p">(</span><span class="n">linkMonitor</span><span class="p">)</span>
+
+<span class="c1"># Remove a link monitor</span>
+<span class="n">client</span><span class="o">.</span><span class="n">remLinkMonitor</span><span class="p">(</span><span class="n">linkMonitor</span><span class="p">)</span>
+
+<span class="c1"># Get the current link state</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current link state is </span><span class="si">{</span><span class="n">client</span><span class="o">.</span><span class="n">linked</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="virtualclient-description">
+<h2>VirtualClient Description<a class="headerlink" href="#virtualclient-description" title="Permalink to this headline">¶</a></h2>
+<p>The class description for the VirtualClient class is included below:</p>
+<dl class="py class">
+<dt id="pyrogue.interfaces.VirtualClient">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></code><code class="sig-name descname"><span class="pre">VirtualClient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient" title="Permalink to this definition">¶</a></dt>
+<dd><p>A full featured client interface for Rogue. This can be used in
+scripts or other clients which require remote access to the running
+Rogue instance.</p>
+<p>This class ues a custom factory ensuring that only one instance of this
+class is created in a python script for a given remote connection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – host address</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – host port</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.interfaces.VirtualClient.linked">
+<code class="sig-name descname"><span class="pre">linked</span></code><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.linked" title="Permalink to this definition">¶</a></dt>
+<dd><p>link state</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.interfaces.VirtualClient.root">
+<code class="sig-name descname"><span class="pre">root</span></code><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.root" title="Permalink to this definition">¶</a></dt>
+<dd><p>root class reference</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.interfaces.VirtualClient.addLinkMonitor">
+<code class="sig-name descname"><span class="pre">addLinkMonitor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.addLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.addLinkMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a link monitor callback function. This function will be called
+any time the link state changes. A single boolean argument will be passed to
+the callback function containing the current link state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>function</strong> (<em>obj</em>) – Call back function with the form function(linkState)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.interfaces.VirtualClient.remLinkMonitor">
+<code class="sig-name descname"><span class="pre">remLinkMonitor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.remLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.remLinkMonitor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a previously added link monitor function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>function</strong> (<em>obj</em>) – Call back function</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Simple Client Interface &mdash; Rogue v5.6.5-29-gb77073c9 documentation</title>
+  <title>Simple Client Interface &mdash; Rogue v5.6.5-30-g20b62077 documentation</title>
   
 
   
@@ -188,6 +188,10 @@
 <p>The Rogue SimpleClient class is a lightweight python class which can be used on its own
 with minimal dependencies, requiring only the zmq library. This file is fully portable and
 can be used outside of the greater Rogue package.</p>
+<p>Most client interfaces will make use of the <a class="reference internal" href="virtual.html#interfaces-clients-virtual"><span class="std std-ref">Virtual Client Interface</span></a> which
+provides an exact mirror of the Rogue tree allowing a more powerfull interface to
+a running Rogue core. The SimpleClient is targetted towards clients which require only
+a limited type of access to top level command and variable access.</p>
 <p>The most current file can be downloaded from:</p>
 <p><a class="reference external" href="https://github.com/slaclab/rogue/blob/master/python/pyrogue/interfaces/_SimpleClient.py">https://github.com/slaclab/rogue/blob/master/python/pyrogue/interfaces/_SimpleClient.py</a></p>
 <p>Below is an example of using the SimpleClient in a python script:</p>
@@ -210,13 +214,13 @@ can be used outside of the greater Rogue package.</p>
    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
    <span class="c1"># Set a variable value using the native value</span>
-   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;root.ScratchPad&quot;</span><span class="p">,</span><span class="mh">0x100</span><span class="p">)</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;root.AxiVersion.ScratchPad&quot;</span><span class="p">,</span><span class="mh">0x100</span><span class="p">)</span>
 
    <span class="c1"># Set a variable value using the string representation of the value</span>
-   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;root.ScratchPad&quot;</span><span class="p">,</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;root.AxiVersion.ScratchPad&quot;</span><span class="p">,</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
 
    <span class="c1"># Execute a command with an optional argument, passing either the native or string value</span>
-   <span class="n">ret</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;root.SomeCommand&quot;</span><span class="p">,</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
+   <span class="n">client</span><span class="o">.</span><span class="n">exec</span><span class="p">(</span><span class="s2">&quot;root.SomeCommand&quot;</span><span class="p">,</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The SimpleClient interface also provides a mechanism to provide a callback function which is
@@ -238,7 +242,17 @@ of the updated variables reported by the Rogue server.</p>
 <dl class="py class">
 <dt id="pyrogue.interfaces.SimpleClient">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></code><code class="sig-name descname"><span class="pre">SimpleClient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition">¶</a></dt>
-<dd><p>A lightweight client inerface for Rogue</p>
+<dd><p>A lightweight client inerface for Rogue. This can be used in
+scripts or as an interface to Rogue in matlab. For a more
+powerfull, tree access capable client. Please see the
+VirtualClient class.</p>
+<p>To use in Matlab first you need the zmq package in your  python installation:</p>
+<p>&gt; pip install zmq</p>
+<p>&gt; pip install matlab</p>
+<p>You then need to set the appropriate flags in Matlab to load the zmq module:</p>
+<p>&gt;&gt; py.sys.setdlopenflags(int32(bitor(2, 8)));</p>
+<p>&gt;&gt; c = py.SimpleClient.SimpleClient(“localhost”,9099);</p>
+<p>&gt;&gt; c.get(“dummyTree.Time”)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

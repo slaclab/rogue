@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Interfaces &mdash; Rogue v5.6.5-29-gb77073c9 documentation</title>
+  <title>Interfaces &mdash; Rogue v5.6.5-30-g20b62077 documentation</title>
   
 
   
@@ -173,13 +173,16 @@
             
   <div class="section" id="interfaces">
 <span id="id1"></span><h1>Interfaces<a class="headerlink" href="#interfaces" title="Permalink to this headline">¶</a></h1>
-<p>Rogue is built around a series of interfaces which serve as the glue
-between many modules within Rogue. The interfaces are designed so that once they are
-connected together, they interact directly without requiring interaction with
-the Python layer. For Example two C++ based stream modules can be “glued” together
+<p>Rogue is defined by a set of interfaces, both external and internal. External
+interfaces include methods to access the Rogue tree from outside elements
+including client scripts, GUIs and higher level DAQ systems.</p>
+<p>The internal Rogue interfaces serve as the glue between many modules within Rogue.
+These internal interfaces are designed so that once they are connected together, they
+interact directly without requiring interaction with the Python layer.</p>
+<p>For Example two C++ based stream modules can be “glued” together
 with a Python script and then move data at high rates using only low level C++
-threads. This of course is not the case when one of the two end points is written in
-Python. The flexibility of this interface allows Stream and Memory modules to be first
+threads.</p>
+<p>The flexibility of this interface allows Stream and Memory modules to be first
 prototyped in Python and then re-implemented in C++ for performance.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Interfaces:</span></p>
