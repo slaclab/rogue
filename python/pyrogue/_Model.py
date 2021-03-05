@@ -56,6 +56,52 @@ class ModelMeta(type):
 
 
 class Model(object, metaclass=ModelMeta):
+    """
+    Class which describes how a data type is represented and accessed
+    using the Rogue Variables and Blocks
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented
+
+    binPoint : int
+        Huh?
+
+    Attributes
+    ----------
+    name: str
+        String representation of the Model type
+
+    fstring: str
+        Not sure what this is, Where is it used?
+
+    encoding: str
+        Encoding type for converting between string and byte arrays. i.e. UTF-8
+
+    pytype: int
+        Python type class.
+
+    defaultdisp: str
+        Default display formatting string. May be overriden by the Variable disp parameter.
+
+    signed: bool
+        Flag indicating if value is signed. Default=False
+
+    endianness: str
+        Endianness indicator. 'little' or 'big'. Default='little'
+
+    bitReverse: bool
+        Bit reversal flag.
+
+    modelId: int
+        Block processing ID. See :ref:`interfaces_memory_constants_ptype`
+
+    isBigEndian: bool
+        True if endianness = 'big'
+
+    """
+
     fstring     = None
     encoding    = None
     pytype      = None
@@ -74,14 +120,83 @@ class Model(object, metaclass=ModelMeta):
     def isBigEndian(self):
         return self.endianness == 'big'
 
+    def toBytes(self, value):
+        """
+        Convert the python value to byte array.
+
+        Parameters
+        ----------
+        value: obj
+            Python value to convert
+
+        Returns
+        -------
+        bytearray : Byte array representation of value
+        """
+        return None
+
+    # Called by raw read/write and when bitsize > 64
+    def fromBytes(self, ba):
+        """
+        Convert the python value to byte array.
+
+        Parameters
+        ----------
+        ba: bytearray
+            Byte array to extract value from
+
+        Returns
+        -------
+        obj : Converted python value
+        """
+        return None
+
+    def fromString(self, string):
+        """
+        Convert the string to a python value.
+
+        Parameters
+        ----------
+        string: str
+            String representation of the value
+
+        Returns
+        -------
+        obj : Converted python value
+        """
+        return None
+
     def minValue(self):
+        """
+        Return the minimum value for the Model type
+
+        Returns
+        -------
+        obj: Minimum value
+        """
         return None
 
     def maxValue(self):
+        """
+        Return the maximum value for the Model type
+
+        Returns
+        -------
+        obj: Maximum value
+        """
         return None
 
 
 class UInt(Model):
+    """
+    Model class for unsigned integers
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented
+    """
+
     pytype      = int
     defaultdisp = '{:#x}'
     modelId     = rim.UInt
@@ -109,7 +224,10 @@ class UInt(Model):
 
 
 class UIntReversed(UInt):
-    """Converts Unsigned Integer to and from bytearray with reserved bit ordering"""
+    """
+    Model class for unsigned integers, stored in reverse bit order
+    """
+
     modelId   = rim.PyFunc # Not yet supported
     bitReverse = True
 
@@ -123,6 +241,9 @@ class UIntReversed(UInt):
 
 
 class Int(UInt):
+    """
+    Model class for integers
+    """
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
@@ -167,14 +288,31 @@ class Int(UInt):
 
 
 class UIntBE(UInt):
+    """
+    Model class for big endian unsigned integers
+    """
+
     endianness = 'big'
 
 
 class IntBE(Int):
+    """
+    Model class for big endian integers
+    """
+
     endianness = 'big'
 
 
 class Bool(Model):
+    """
+    Model class for booleans
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented
+    """
+
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
     modelId     = rim.Bool
@@ -194,6 +332,15 @@ class Bool(Model):
 
 
 class String(Model):
+    """
+    Model class for strings
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented
+    """
+
     encoding    = 'utf-8'
     defaultdisp = '{}'
     pytype      = str
@@ -208,7 +355,14 @@ class String(Model):
 
 
 class Float(Model):
-    """Converter for 32-bit float"""
+    """
+    Model class for 32-bit floats
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented, must be 32
+    """
 
     defaultdisp = '{:f}'
     pytype      = float
@@ -231,6 +385,15 @@ class Float(Model):
 
 
 class Double(Float):
+    """
+    Model class for 64-bit floats
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented, must be 64
+    """
+
     fstring = 'd'
     modelId   = rim.Double
 
@@ -247,16 +410,36 @@ class Double(Float):
 
 
 class FloatBE(Float):
+    """
+    Model class for 32-bit floats stored as big endian
+    """
+
     endianness = 'big'
     fstring = '!f'
 
 
 class DoubleBE(Double):
+    """
+    Model class for 64-bit floats stored as big endian
+    """
+
     endianness = 'big'
     fstring = '!d'
 
 
 class Fixed(Model):
+    """
+    Model class for fixed point signed integers
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented
+
+    binPoint : int
+        Huh?
+    """
+
     pytype = float
     signed = True
     modelId   = rim.Fixed

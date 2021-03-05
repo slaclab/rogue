@@ -37,37 +37,40 @@ with the standard set of Rogue Models.
 
 The following Models are currently supported in Rogue:
 
-+-----------------+-----------------------+-------------------+----------------+------------------------------------------------+
-| Model           | Hardware Type         | Python Type       | Bit Size       | Notes                                          |
-+=================+=======================+===================+================+================================================+
-| UInt            | unsigned integer      | int               | unconstrained  | Little endian                                  |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| UIntBe          | unsigned integer      | int               | unconstrained  | Same as UInt but big endian                    |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| UIntReversed    | unsigned integer      | int               | unconstrained  | Same as UInt but with a reversed bit order.    |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| Int             | signed integer        | int               | unconstrained  | Little endian                                  |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| IntBe           | signed integer        | int               | unconstrained  | Same as Int but big endian                     |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| Bool            | bit                   | bool              | 1-bit          |                                                |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| String          | bytes                 | string            | unconstrained  |                                                |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| Float           | 32-bit float          | float             | 32-bits        |                                                |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| FloatBe         | 32-bit float          | float             | 32-bits        | Same as float but big endian                   |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| Double          | 64-bit float          | float             | 64-bits        |                                                |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| DoubleBe        | 64-bit float          | float             | 64-bits        | Same as float but big endian                   |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
-| Fixed           | fixed point           | float             | unconstrained  | Not fully functional yet                       |
-+-----------------+-----------------------+-------------------+-----------------------------------------------------------------+
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| Model                                       | Hardware Type         | Python Type       | Bit Size       | Notes                                          |
++=============================================+=======================+===================+================+================================================+
+| :ref:`interfaces_memory_model_uint`         | unsigned integer      | int               | unconstrained  | Little endian                                  |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_uintbe`       | unsigned integer      | int               | unconstrained  | Same as UInt but big endian                    |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_uintreversed` | unsigned integer      | int               | unconstrained  | Same as UInt but with a reversed bit order.    |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_int`          | signed integer        | int               | unconstrained  | Little endian                                  |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_intbe`        | signed integer        | int               | unconstrained  | Same as Int but big endian                     |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_bool`         | bit                   | bool              | 1-bit          |                                                |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_string`       | bytes                 | string            | unconstrained  |                                                |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_float`        | 32-bit float          | float             | 32-bits        |                                                |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_floatbe`      | 32-bit float          | float             | 32-bits        | Same as float but big endian                   |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_double`       | 64-bit float          | float             | 64-bits        |                                                |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_doublebe`     | 64-bit float          | float             | 64-bits        | Same as float but big endian                   |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
+| :ref:`interfaces_memory_model_fixed`        | fixed point           | float             | unconstrained  | Not fully functional yet                       |
++---------------------------------------------+-----------------------+-------------------+----------------+------------------------------------------------+
 
 Most of the above types perform the python to byte conversions in low level C++ calls in the Block class for performance reasons.
 An exception to this is UInt and Int types that exceed 64-bits. These conversions are performed in the Model class at the python
 level.
+
+Custom Models
+-------------
 
 The user has the ability to create application specific data types by sub-classing the Model in python and providing the
 toByte and fromBytes functions that are called by the Block to perform the data conversions. This allows for a quick method to
@@ -117,4 +120,53 @@ The user may also want to perform the python type conversion in lower level C++.
 must sub-class the Block class and add it to a user specific library. They can then use a modeId in the
 range 0x80 - 0xFF.  See :ref:`interfaces_memory_blocks_advanced` for more information about the advanced features of the Block class.
 
+
+Using Custom Models
+-------------------
+
+The following shows an example of using the above custom model in Rogue. The code blow is executed during the
+creation of a custom Device class. See xxxx for more details.
+
+.. code-block:: python
+
+   # Create a variable using my custom Model
+   self.add(pyrogue.RemoteVariable(
+      name="MyRegister",
+      description="My register with my model",
+      offset=0x1000,
+      bitSize=32,
+      bitOffset=0,
+      base=MyUInt,
+      mode="RW"))
+
+The custom model is passed to the RemoteVariable base parameter. A Block of the appropriate size will be created
+and assocaited with the above RemoteVariable as approprite.
+
+Pre-Allocating Blocks
+---------------------
+
+In some cases the user may want to pre-create blocks of a specific size to better group Variables that are more
+effeciently accessed in larger burst transactions. With larger blocks the user can initiate transactions
+on a sub-portion of the block by accessing the variable directly, or the user can force larger burst transactions
+of the larger block in operations which require it.
+
+The following shows an example of pre-allocating a block for association with a Variable. The Variables are assigned to
+blocks the overlap their address space. The code blow is executed during the creation of a custom Device class. See xxxx for more details.
+
+.. code-block:: python
+
+   # Pre-Allocate a large block to hold our variables, offset = 0x1000, size = 128
+   self.addCustomBlock(rogue.interfaces.memory.Block(0x1000,128))
+
+   # Create a variable using my custom Model
+   self.add(pyrogue.RemoteVariable(
+      name="MyRegister",
+      description="My register with my model",
+      offset=0x1000,
+      bitSize=32,
+      bitOffset=0,
+      base=MyUInt,
+      mode="RW"))
+
+For more information see the :ref:`interfaces_memory_block` and :ref:`interfaces_memory_model` class descriptions.
 

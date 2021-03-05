@@ -15,6 +15,8 @@ The following are detailed descriptions of the various C++ classes that make up 
    transactionLock
    master
    slave
+   block
+   model
    hub
    tcpClient
    tcpServer
