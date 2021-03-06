@@ -8,10 +8,10 @@ TODO
 
 InverterV1 objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::batcher::CoreV2Ptr
+.. doxygentypedef:: rogue::protocols::batcher::InverterV1Ptr
 
 The InverterV1 class description is shown below:
 
-.. doxygenclass:: rogue::protocols::batcher::CoreV2
+.. doxygenclass:: rogue::protocols::batcher::InverterV1
    :members:
 

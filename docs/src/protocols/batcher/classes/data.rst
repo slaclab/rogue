@@ -8,7 +8,7 @@ TODO
 
 Data objects in C++ are referenced by the following shared pointer typedef:
 
-.. doxygentypedef:: rogue::protocols::batcher:DataPtr
+.. doxygentypedef:: rogue::protocols::batcher::DataPtr
 
 The Data class description is shown below:
 
