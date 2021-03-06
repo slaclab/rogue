@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Index &mdash; Rogue v5.6.5-33-g23b07d1f documentation</title>
+  <title>Index &mdash; Rogue v5.6.5-38-ga5d8c6dc documentation</title>
   
 
   
@@ -88,13 +88,13 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="protocols/index.html">Protocols</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a></li>
 </ul>
 
             
@@ -167,6 +167,7 @@
  <a href="#_"><strong>_</strong></a>
  | <a href="#A"><strong>A</strong></a>
  | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
@@ -211,6 +212,22 @@
   </ul></td>
 </tr></table>
 
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader.channel">channel (pyrogue.utilities.fileio.RogueHeader attribute)</a>
+</li>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.configDig">configDig (pyrogue.utilities.fileio.FileReader attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.configValue">configValue() (pyrogue.utilities.fileio.FileReader method)</a>
+</li>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.currCount">currCount (pyrogue.utilities.fileio.FileReader attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -230,9 +247,11 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="interfaces/memory/classes/model.html#pyrogue.Model.encoding">encoding (pyrogue.Model attribute)</a>
 </li>
+      <li><a href="interfaces/memory/classes/model.html#pyrogue.Model.endianness">endianness (pyrogue.Model attribute)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="interfaces/memory/classes/model.html#pyrogue.Model.endianness">endianness (pyrogue.Model attribute)</a>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader.error">error (pyrogue.utilities.fileio.RogueHeader attribute)</a>
 </li>
       <li><a href="interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.exec">exec() (pyrogue.interfaces.SimpleClient method)</a>
 </li>
@@ -242,7 +261,11 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader">FileReader (class in pyrogue.utilities.fileio)</a>
+</li>
       <li><a href="interfaces/memory/classes/model.html#pyrogue.Fixed">Fixed (class in pyrogue)</a>
+</li>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader.flags">flags (pyrogue.utilities.fileio.RogueHeader attribute)</a>
 </li>
       <li><a href="interfaces/memory/classes/model.html#pyrogue.Float">Float (class in pyrogue)</a>
 </li>
@@ -496,6 +519,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.records">records() (pyrogue.utilities.fileio.FileReader method)</a>
+</li>
       <li><a href="interfaces/clients/virtual.html#pyrogue.interfaces.VirtualClient.remLinkMonitor">remLinkMonitor() (pyrogue.interfaces.VirtualClient method)</a>
 </li>
       <li><a href="hardware/axi/classes/axiMemMap.html#_CPPv4N5rogue8hardware3axi9AxiMemMapE">rogue::hardware::axi::AxiMemMap (C++ class)</a>
@@ -1378,6 +1403,8 @@
 </li>
       <li><a href="utilities/compression/classes/zip.html#_CPPv4N5rogue9utilities12StreamZipPtrE">rogue::utilities::StreamZipPtr (C++ type)</a>
 </li>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader">RogueHeader (class in pyrogue.utilities.fileio)</a>
+</li>
       <li><a href="interfaces/clients/virtual.html#pyrogue.interfaces.VirtualClient.root">root (pyrogue.interfaces.VirtualClient attribute)</a>
 </li>
   </ul></td>
@@ -1390,11 +1417,13 @@
 </li>
       <li><a href="interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.setDisp">setDisp() (pyrogue.interfaces.SimpleClient method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="interfaces/memory/classes/model.html#pyrogue.Model.signed">signed (pyrogue.Model attribute)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient">SimpleClient (class in pyrogue.interfaces)</a>
+</li>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader.size">size (pyrogue.utilities.fileio.RogueHeader attribute)</a>
 </li>
       <li><a href="interfaces/memory/classes/model.html#pyrogue.String">String (class in pyrogue)</a>
 </li>
@@ -1414,6 +1443,10 @@
         <li><a href="interfaces/memory/classes/model.html#pyrogue.UIntReversed.toBytes">(pyrogue.UIntReversed method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.totCount">totCount (pyrogue.utilities.fileio.FileReader attribute)</a>
+</li>
   </ul></td>
 </tr></table>
 

@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Python File Reader &mdash; Rogue v5.6.5-33-g23b07d1f documentation</title>
+  <title>Python File Reader &mdash; Rogue v5.6.5-38-ga5d8c6dc documentation</title>
   
 
   
@@ -90,14 +90,17 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../index.html">Utilities</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="index.html">File I/O Utilities</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="writing.html">Writing Frames To A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="reading.html">Reading Frames From A File</a></li>
 <li class="toctree-l3"><a class="reference internal" href="custom.html">Custom Writers</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Python File Reader</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Python File Reader</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#filereader-description">FileReader Description</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="classes/index.html">File Operation Utilities</a></li>
 </ul>
 </li>
@@ -105,10 +108,10 @@
 <li class="toctree-l2"><a class="reference internal" href="../compression/index.html">Compression Utilities</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 </ul>
 
             
@@ -182,7 +185,168 @@
             
   <div class="section" id="python-file-reader">
 <span id="utilities-fileio-python-reader"></span><h1>Python File Reader<a class="headerlink" href="#python-file-reader" title="Permalink to this headline">¶</a></h1>
-<p>TODO</p>
+<p>The Rogue FileReader class is a lightweight python class which can be used on its own
+with minimal dependencies. The file reader supports processing store data frame by
+frame and supports automatic extraction of configuration and status information which may
+exist in a specificed “config channel”. The passed file parameter can be a single file or
+a list of segemented data files.</p>
+<p>The most current file can be downloaded from:</p>
+<p><a class="reference external" href="https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/fileio/_FileReader.py">https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/fileio/_FileReader.py</a></p>
+<p>Below is an example of using the FileReader in a python script:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s2">&quot;mydata.dat&quot;</span><span class="p">,</span><span class="n">configChan</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+
+   <span class="c1"># Loop through the file data</span>
+   <span class="k">for</span> <span class="n">header</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="n">fd</span><span class="o">.</span><span class="n">records</span><span class="p">():</span>
+
+      <span class="c1"># Look at record header data</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing record. Total=</span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">totCount</span><span class="si">}</span><span class="s2">, Current=</span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">currCount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record size    = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record channel = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record flags   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">flags</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record error   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">error</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+      <span class="c1"># Do something with the data here:</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Byte </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+      <span class="c1"># At any time you can access the current config and status state</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data time = </span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">configValue</span><span class="p">[</span><span class="s1">&#39;root.Time&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="filereader-description">
+<h2>FileReader Description<a class="headerlink" href="#filereader-description" title="Permalink to this headline">¶</a></h2>
+<p>The class description for the SimpleClient class is included below:</p>
+<dl class="py class">
+<dt id="pyrogue.utilities.fileio.FileReader">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></code><code class="sig-name descname"><span class="pre">FileReader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configChan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader" title="Permalink to this definition">¶</a></dt>
+<dd><p>A lightweight file reader for Rogue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – Filename or list of filenams to read data from</p></li>
+<li><p><strong>configChan</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – Channel id of configuration/status stream in the data file. Set to None to disable processing configuration.</p></li>
+<li><p><strong>log</strong> (<em>obj</em>) – Logging object to use. If set to None a new logger will be created with the name “pyrogue.FileReader”.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.FileReader.currCount">
+<code class="sig-name descname"><span class="pre">currCount</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.currCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of data records processed from current file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.FileReader.totCount">
+<code class="sig-name descname"><span class="pre">totCount</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.totCount" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of data records processed from</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.FileReader.configDig">
+<code class="sig-name descname"><span class="pre">configDig</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.configDig" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current configuration/status dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.utilities.fileio.FileReader.records">
+<code class="sig-name descname"><span class="pre">records</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader.records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.records" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator which returns (header, data) tuples</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(header, data) tuple where header is a dictionary and data is a byte array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#pyrogue.utilities.fileio.RogueHeader" title="pyrogue.utilities.fileio.RogueHeader">RogueHeader</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.9)">bytearray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pyrogue.utilities.fileio.FileReader.configValue">
+<code class="sig-name descname"><span class="pre">configValue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader.configValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.configValue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a configuration or status value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – Path of the config/status value to return</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Requested configuration or status value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>obj</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<p>The header data record is described below:</p>
+<dl class="py class">
+<dt id="pyrogue.utilities.fileio.RogueHeader">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></code><code class="sig-name descname"><span class="pre">RogueHeader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Header data</p>
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.RogueHeader.size">
+<code class="sig-name descname"><span class="pre">size</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Size of the record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.RogueHeader.flags">
+<code class="sig-name descname"><span class="pre">flags</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.flags" title="Permalink to this definition">¶</a></dt>
+<dd><p>Frame flags for the record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.RogueHeader.error">
+<code class="sig-name descname"><span class="pre">error</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Error status for the record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pyrogue.utilities.fileio.RogueHeader.channel">
+<code class="sig-name descname"><span class="pre">channel</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Channel id for the record</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 </div>
 
 

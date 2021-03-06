@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Welcome to Rogue’s documentation! &mdash; Rogue v5.6.5-33-g23b07d1f documentation</title>
+  <title>Welcome to Rogue’s documentation! &mdash; Rogue v5.6.5-38-ga5d8c6dc documentation</title>
   
 
   
@@ -38,7 +38,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Interfaces" href="interfaces/index.html" /> 
+    <link rel="next" title="Installing &amp; Compiling Rogue" href="installing/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -89,13 +89,13 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interfaces/index.html">Interfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="protocols/index.html">Protocols</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a></li>
 </ul>
 
             
@@ -170,110 +170,6 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="interfaces/index.html">Interfaces</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="interfaces/clients/index.html">Client Interfaces</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/clients/commandline.html">Using The Command Line Interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/clients/simple.html">Simple Client Interface</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/clients/virtual.html">Virtual Client Interface</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="interfaces/stream/index.html">Stream Interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/connecting.html">Connecting Streams</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/sending.html">Sending Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/receiving.html">Receiving Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingTcp.html">Using The TCP Bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingFifo.html">Using A Fifo</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingFilter.html">Using A Filter</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingRateDrop.html">Using A Rate Drop Object</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/debugStreams.html">Debugging Streams</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/classes/index.html">Stream Interface Class Descriptions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="interfaces/memory/index.html">Memory Interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/connecting.html">Connecting Memory Elements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/master.html">Memory Master Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/slave.html">Memory Slave Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/hub.html">Memory Hub Example</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/usingTcp.html">Using The TCP Bridge</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/blocks.html">Blocks &amp; Models</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/blocks_advanced.html">Advanced Usage Of Blocks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/classes/index.html">Memory Interface Class Descriptions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="interfaces/simulation/index.html">Simulation Interfaces</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/mememulate.html">Memory Space Emulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/pgp2b.html">PGP2B Simulation</a></li>
-<li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/sideband.html">Sideband Simulation</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="interfaces/sql.html">SQL Logging Interface</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="hardware/index.html">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="hardware/axi/index.html">Generic AXI Hardware Interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hardware/axi/stream.html">Using The AxiStreamDma Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hardware/axi/memory.html">Using The AxiMemMap Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hardware/axi/features.html">Additional AxiStreamDma Features</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hardware/axi/classes/index.html">AXI Hardware Interface Class Descriptions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="hardware/pgp/index.html">PGP Card Hardware Interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hardware/pgp/classes/index.html">PGP Hardware Interface Class Descriptions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="hardware/raw/index.html">Raw Hardware Interface</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="hardware/raw/memory.html">Using The MemMap Class</a></li>
-<li class="toctree-l3"><a class="reference internal" href="hardware/raw/classes/index.html">Hardware Interface Class Descriptions</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="utilities/fileio/index.html">File I/O Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/writing.html">Writing Frames To A File</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/reading.html">Reading Frames From A File</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/custom.html">Custom Writers</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/python_reader.html">Python File Reader</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/classes/index.html">File Operation Utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="utilities/prbs/index.html">PRBS Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="utilities/prbs/writing.html">Generating PRBS Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/prbs/reading.html">Receiving PRBS Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/prbs/classes/index.html">PRBS Utilities</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="utilities/compression/index.html">Compression Utilities</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="utilities/compression/compress.html">Compressing Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/compression/decompress.html">Decompressing Frames</a></li>
-<li class="toctree-l3"><a class="reference internal" href="utilities/compression/classes/index.html">Compression Classes</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="protocols/index.html">Protocols</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="protocols/batcher/index.html">Batcher Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/epicsV3/index.html">EPICSV3 Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/epicsV4/index.html">EPICSV4 Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/network/index.html">Network Protocols</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/packetizer/index.html">Packetizer Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/rssi/index.html">RSSI Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/srp/index.html">SRP Protocol</a></li>
-<li class="toctree-l2"><a class="reference internal" href="protocols/uart/index.html">UART Protocol</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="logging/index.html">Logging In Rogue</a></li>
-<li class="toctree-l1"><a class="reference internal" href="custom_module/index.html">Creating Custom Modules</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="custom_module/sourcefile.html">Custom Module Source</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_module/makefile.html">Building The Custom Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_module/wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="custom_module/testing.html">Testing The Custom Module</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="custom_module/testing.html#testing-with-epics">Testing With EPICS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="custom_module/testing.html#testing-with-a-gui">Testing With A GUI</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installing/anaconda.html">Installing Rogue With Anaconda</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="installing/anaconda.html#getting-anaconda">Getting Anaconda</a></li>
@@ -318,6 +214,110 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l2"><a class="reference internal" href="installing/petalinux.html">Setting Up Rogue In Petalinux</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="interfaces/index.html">Interfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/clients/index.html">Client Interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/clients/commandline.html">Using The Command Line Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/clients/simple.html">Simple Client Interface</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/clients/virtual.html">Virtual Client Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/stream/index.html">Stream Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/connecting.html">Connecting Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/sending.html">Sending Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/receiving.html">Receiving Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingFifo.html">Using A Fifo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/usingRateDrop.html">Using A Rate Drop Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/debugStreams.html">Debugging Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/stream/classes/index.html">Stream Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/memory/index.html">Memory Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/master.html">Memory Master Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/slave.html">Memory Slave Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/hub.html">Memory Hub Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/blocks.html">Blocks &amp; Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/blocks_advanced.html">Advanced Usage Of Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/memory/classes/index.html">Memory Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/simulation/index.html">Simulation Interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/mememulate.html">Memory Space Emulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/pgp2b.html">PGP2B Simulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/sideband.html">Sideband Simulation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="utilities/fileio/index.html">File I/O Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/writing.html">Writing Frames To A File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/reading.html">Reading Frames From A File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/custom.html">Custom Writers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/python_reader.html">Python File Reader</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/fileio/classes/index.html">File Operation Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/prbs/index.html">PRBS Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities/prbs/writing.html">Generating PRBS Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/prbs/reading.html">Receiving PRBS Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/prbs/classes/index.html">PRBS Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="utilities/compression/index.html">Compression Utilities</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="utilities/compression/compress.html">Compressing Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/compression/decompress.html">Decompressing Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="utilities/compression/classes/index.html">Compression Classes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware/index.html">Hardware</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="hardware/axi/index.html">Generic AXI Hardware Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hardware/axi/stream.html">Using The AxiStreamDma Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware/axi/memory.html">Using The AxiMemMap Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware/axi/features.html">Additional AxiStreamDma Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware/axi/classes/index.html">AXI Hardware Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hardware/pgp/index.html">PGP Card Hardware Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hardware/pgp/classes/index.html">PGP Hardware Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hardware/raw/index.html">Raw Hardware Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hardware/raw/memory.html">Using The MemMap Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hardware/raw/classes/index.html">Hardware Interface Class Descriptions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="protocols/index.html">Protocols</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="protocols/batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/epicsV3/index.html">EPICSV3 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/epicsV4/index.html">EPICSV4 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/network/index.html">Network Protocols</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/uart/index.html">UART Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_module/index.html">Creating Custom Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom_module/sourcefile.html">Custom Module Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_module/makefile.html">Building The Custom Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_module/wrapper.html">Wrapping Custom Module With PyRogue Device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="custom_module/testing.html">Testing The Custom Module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom_module/testing.html#testing-with-epics">Testing With EPICS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_module/testing.html#testing-with-a-gui">Testing With A GUI</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <p>Please email <a class="reference external" href="mailto:rherbst&#37;&#52;&#48;slac&#46;stanford&#46;edu">rherbst<span>&#64;</span>slac<span>&#46;</span>stanford<span>&#46;</span>edu</a> if you see any errors or have any
@@ -339,7 +339,7 @@ content and flushing out errors and typos.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="interfaces/index.html" class="btn btn-neutral float-right" title="Interfaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="installing/index.html" class="btn btn-neutral float-right" title="Installing &amp; Compiling Rogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
