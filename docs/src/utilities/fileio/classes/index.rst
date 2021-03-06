@@ -1,14 +1,14 @@
 .. _utilifies_fileio:
 
-========================
-File Operation Utilities
-========================
+======================
+File Operation Classes
+======================
 
 The following are detailed descriptions of the various C++ classes that make up the Rogue file utilities.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Memory Classes:
+   :caption: File Operation Classes:
 
    writer.rst
    channel.rst
