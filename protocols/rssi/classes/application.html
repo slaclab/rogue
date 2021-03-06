@@ -1,0 +1,311 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Application &mdash; Rogue v5.6.5-41-gdb87d1ad documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Transport" href="transport.html" />
+    <link rel="prev" title="Controller" href="controller.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">RSSI Protocol</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../client.html">RSSI Protocol Client</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../server.html">RSSI Protocol Server</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">RSSI Protocol Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="client.html">Client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="server.html">Server</a></li>
+<li class="toctree-l4"><a class="reference internal" href="header.html">Header</a></li>
+<li class="toctree-l4"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transport.html">Transport</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV3/index.html">EPICSV3 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uart/index.html">UART Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Protocols</a> &raquo;</li>
+        
+          <li><a href="../index.html">RSSI Protocol</a> &raquo;</li>
+        
+          <li><a href="index.html">RSSI Protocol Class Descriptions</a> &raquo;</li>
+        
+      <li>Application</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/protocols/rssi/classes/application.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="application">
+<span id="protocols-rssi-classes-application"></span><h1>Application<a class="headerlink" href="#application" title="Permalink to this headline">¶</a></h1>
+<p>TODO</p>
+<p>Application objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt id="_CPPv4N5rogue9protocols4rssi14ApplicationPtrE">
+<span id="_CPPv3N5rogue9protocols4rssi14ApplicationPtrE"></span><span id="_CPPv2N5rogue9protocols4rssi14ApplicationPtrE"></span><span id="rogue::protocols::rssi::ApplicationPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1rssi_1a3f35628c60465892f54a7653844e13ce"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">rssi</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi11ApplicationE" title="rogue::protocols::rssi::Application"><span class="pre">Application</span></a><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">rssi</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">ApplicationPtr</span></code><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi14ApplicationPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>The Application class description is shown below:</p>
+<dl class="cpp class">
+<dt id="_CPPv4N5rogue9protocols4rssi11ApplicationE">
+<span id="_CPPv3N5rogue9protocols4rssi11ApplicationE"></span><span id="_CPPv2N5rogue9protocols4rssi11ApplicationE"></span><span id="rogue::protocols::rssi::Application"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application"></span><em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">rssi</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">Application</span></code> <span class="pre">:</span> <em class="property"><span class="pre">public</span></em> <span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="pre">Master</span></a><span class="pre">,</span> <em class="property"><span class="pre">public</span></em> <span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="pre">Slave</span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11ApplicationE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>RSSI <a class="reference internal" href="#classrogue_1_1protocols_1_1rssi_1_1Application"><span class="std std-ref">Application</span></a> Class. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11Application11ApplicationEv">
+<span id="_CPPv3N5rogue9protocols4rssi11Application11ApplicationEv"></span><span id="_CPPv2N5rogue9protocols4rssi11Application11ApplicationEv"></span><span id="rogue::protocols::rssi::Application::Application"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a7d2e94b58722c8d6c30f6e99bd654911"></span><code class="sig-name descname"><span class="pre">Application</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11Application11ApplicationEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11ApplicationD0Ev">
+<span id="_CPPv3N5rogue9protocols4rssi11ApplicationD0Ev"></span><span id="_CPPv2N5rogue9protocols4rssi11ApplicationD0Ev"></span><span id="rogue::protocols::rssi::Application::~Application"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a21c388b552f7cbd5112ddd352bc8e2a6"></span><code class="sig-name descname"><span class="pre">~Application</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11ApplicationD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11Application13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE">
+<span id="_CPPv3N5rogue9protocols4rssi11Application13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE"></span><span id="_CPPv2N5rogue9protocols4rssi11Application13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE"></span><span id="rogue::protocols::rssi::Application::setController__std::shared_ptr:rogue::protocols::rssi::Controller:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a3817755bb70b2ace86c86c58f681cfed"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">setController</span></code><span class="sig-paren">(</span><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">rssi</span><span class="pre">::</span><a class="reference internal" href="controller.html#_CPPv4N5rogue9protocols4rssi10ControllerE" title="rogue::protocols::rssi::Controller"><span class="pre">Controller</span></a><span class="pre">&gt;</span> <em><span class="pre">cntl</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11Application13setControllerENSt10shared_ptrIN5rogue9protocols4rssi10ControllerEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup links. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11Application9acceptReqE8uint32_tb">
+<span id="_CPPv3N5rogue9protocols4rssi11Application9acceptReqE8uint32_tb"></span><span id="_CPPv2N5rogue9protocols4rssi11Application9acceptReqE8uint32_tb"></span><span id="rogue::protocols::rssi::Application::acceptReq__uint32_t.b"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a26272091ed3e4c523aa7d2c75fa651ac"></span><em class="property"><span class="pre">virtual</span></em> <span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="pre">Frame</span></a><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">acceptReq</span></code><span class="sig-paren">(</span><span class="pre">uint32_t</span> <em><span class="pre">size</span></em>, <span class="pre">bool</span> <em><span class="pre">zeroCopyEn</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11Application9acceptReqE8uint32_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Generate a Frame. Called from master. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue9protocols4rssi11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols4rssi11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::rssi::Application::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a0fa38117ea451236409427b7db6c474b"></span><em class="property"><span class="pre">virtual</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">acceptFrame</span></code><span class="sig-paren">(</span><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="pre">Frame</span></a><span class="pre">&gt;</span> <em><span class="pre">frame</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11Application11acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Accept a frame from master. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11Application6createEv">
+<span id="_CPPv3N5rogue9protocols4rssi11Application6createEv"></span><span id="_CPPv2N5rogue9protocols4rssi11Application6createEv"></span><span id="rogue::protocols::rssi::Application::create"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a6ac3f6b8bac252c12f4400cd59927925"></span><em class="property"><span class="pre">static</span></em> <span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">rssi</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue9protocols4rssi11ApplicationE" title="rogue::protocols::rssi::Application"><span class="pre">Application</span></a><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11Application6createEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class creation. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols4rssi11Application12setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols4rssi11Application12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols4rssi11Application12setup_pythonEv"></span><span id="rogue::protocols::rssi::Application::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a4d6f8b59ddf939d960718bbb327231d8"></span><em class="property"><span class="pre">static</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">setup_python</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols4rssi11Application12setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="transport.html" class="btn btn-neutral float-right" title="Transport" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="controller.html" class="btn btn-neutral float-left" title="Controller" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
