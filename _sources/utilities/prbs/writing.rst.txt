@@ -40,6 +40,8 @@ The following code block describes how to create and connect a PRBS generator to
 The following code is an example of connecting a PRBS generator to a file writer for control under
 a Rogue tree.
 
+TODO python class reference
+
 .. code-block:: python
 
    import pyrogue

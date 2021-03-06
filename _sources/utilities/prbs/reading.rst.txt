@@ -38,6 +38,8 @@ The following code block describes how to create and connect a PRBS receiver to 
 The following code is an example of connecting a PRBS receiver to a file reader for control under
 a Rogue tree.
 
+TODO python class reference
+
 .. code-block:: python
 
    import pyrogue

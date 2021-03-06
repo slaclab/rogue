@@ -45,6 +45,8 @@ present in the Rogue PyDM GUI, providing an interface for opening and closing fi
 
 The following code is an example of using the Rogue StreamReader wrapper in the Rogue tree.
 
+TODO python class reference
+
 .. code-block:: python
 
    import pyrogue
