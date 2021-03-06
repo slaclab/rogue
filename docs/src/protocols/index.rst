@@ -10,11 +10,12 @@ Protocols
    :maxdepth: 1
    :caption: Protocols:
 
+   udp/index
+   rssi/index
+   packetizer/index
+   network
    batcher/index
    epicsV3/index
    epicsV4/index
-   network/index
-   packetizer/index
-   rssi/index
    srp/index
    uart/index
