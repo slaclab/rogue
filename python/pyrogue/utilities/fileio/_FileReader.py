@@ -31,6 +31,23 @@ RogueHeader = namedtuple(
     'error'   ,  # 1 bytes, uint8,  B
     'channel' ]  # 1 bytes, uint8,  B
 )
+""" Header data
+
+    Attributes
+    ----------
+    size : int
+        Size of the record
+
+    flags : int
+        Frame flags for the record
+
+    error : int
+        Error status for the record
+
+    channel : int
+        Channel id for the record
+
+"""
 
 
 class FileReaderException(Exception):
@@ -39,6 +56,31 @@ class FileReaderException(Exception):
 
 
 class FileReader(object):
+    """
+    A lightweight file reader for Rogue.
+
+    Parameters
+    ----------
+    files : str or list
+        Filename or list of filenams to read data from
+
+    configChan : int
+        Channel id of configuration/status stream in the data file. Set to None to disable processing configuration.
+
+    log : obj
+        Logging object to use. If set to None a new logger will be created with the name "pyrogue.FileReader".
+
+    Attributes
+    ----------
+    currCount: int
+        Number of data records processed from current file
+
+    totCount: int
+        Total number of data records processed from
+
+    configDig: obj
+        Current configuration/status dictionary
+    """
 
     def __init__(self, files, configChan=None, log=None):
         self._configChan = configChan
@@ -107,6 +149,12 @@ class FileReader(object):
     def records(self):
         """
         Generator which returns (header, data) tuples
+
+        Returns
+        -------
+        RogueHeader, bytearray
+            (header, data) tuple where header is a dictionary and data is a byte array.
+
         """
         self._config = {}
         self._currCount = 0
@@ -141,6 +189,21 @@ class FileReader(object):
         return self._config
 
     def configValue(self, path):
+        """
+        Get a configuration or status value
+
+        Parameters
+        ----------
+        path : str
+            Path of the config/status value to return
+
+        Returns
+        -------
+        obj
+            Requested configuration or status value
+
+        """
+
         obj = self._config
 
         if '.' in path:
