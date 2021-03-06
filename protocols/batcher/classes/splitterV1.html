@@ -1,0 +1,297 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>SplitterV1 &mdash; Rogue v5.6.5-44-g365de97f documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="EPICSV3 Protocol" href="../../epicsV3/index.html" />
+    <link rel="prev" title="InverterV1" href="inverterV1.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                v5.6.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Batcher Protocol</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../inverterV1.html">Batcher Protocol InverterV1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../splitterV1.html">Batcher Protocol SplitterV1</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Batcher Protocol Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">SplitterV1</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV3/index.html">EPICSV3 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uart/index.html">UART Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../../index.html">Protocols</a> &raquo;</li>
+        
+          <li><a href="../index.html">Batcher Protocol</a> &raquo;</li>
+        
+          <li><a href="index.html">Batcher Protocol Class Descriptions</a> &raquo;</li>
+        
+      <li>SplitterV1</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../../_sources/protocols/batcher/classes/splitterV1.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="splitterv1">
+<span id="protocols-batcher-classes-splitterv1"></span><h1>SplitterV1<a class="headerlink" href="#splitterv1" title="Permalink to this headline">¶</a></h1>
+<p>TODO</p>
+<p>SplitterV1 objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt id="_CPPv4N5rogue9protocols7batcher13SplitterV1PtrE">
+<span id="_CPPv3N5rogue9protocols7batcher13SplitterV1PtrE"></span><span id="_CPPv2N5rogue9protocols7batcher13SplitterV1PtrE"></span><span id="rogue::protocols::batcher::SplitterV1Ptr"></span><span class="target" id="namespacerogue_1_1protocols_1_1batcher_1adb5eff9a4e9e87b8898de499086a4f55"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">batcher</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10SplitterV1E" title="rogue::protocols::batcher::SplitterV1"><span class="pre">SplitterV1</span></a><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">batcher</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">SplitterV1Ptr</span></code><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher13SplitterV1PtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<p>The SplitterV1 class description is shown below:</p>
+<dl class="cpp class">
+<dt id="_CPPv4N5rogue9protocols7batcher10SplitterV1E">
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV1E"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV1E"></span><span id="rogue::protocols::batcher::SplitterV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV1"></span><em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">batcher</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">SplitterV1</span></code> <span class="pre">:</span> <em class="property"><span class="pre">public</span></em> <span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="pre">Master</span></a><span class="pre">,</span> <em class="property"><span class="pre">public</span></em> <span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="pre">Slave</span></a><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV1E" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>AXI Stream FIFO. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols7batcher10SplitterV110SplitterV1Ev">
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV110SplitterV1Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV110SplitterV1Ev"></span><span id="rogue::protocols::batcher::SplitterV1::SplitterV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV1_1a61026f76546d2a910f833958575afa35"></span><code class="sig-name descname"><span class="pre">SplitterV1</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV110SplitterV1Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols7batcher10SplitterV1D0Ev">
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV1D0Ev"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV1D0Ev"></span><span id="rogue::protocols::batcher::SplitterV1::~SplitterV1"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV1_1a54f8c6b285019c2551494ca19854e10a"></span><code class="sig-name descname"><span class="pre">~SplitterV1</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV1D0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Deconstructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols7batcher10SplitterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::batcher::SplitterV1::acceptFrame__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV1_1af671c15df4a9c5bd4e4a201cc97e4064"></span><em class="property"><span class="pre">virtual</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">acceptFrame</span></code><span class="sig-paren">(</span><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="pre">Frame</span></a><span class="pre">&gt;</span> <em><span class="pre">frame</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV111acceptFrameENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Accept a frame from master. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols7batcher10SplitterV16createEv">
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV16createEv"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV16createEv"></span><span id="rogue::protocols::batcher::SplitterV1::create"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV1_1a1d3f32d35748f26393a03f9bcf7c97ed"></span><em class="property"><span class="pre">static</span></em> <span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">protocols</span><span class="pre">::</span><span class="pre">batcher</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher10SplitterV1E" title="rogue::protocols::batcher::SplitterV1"><span class="pre">SplitterV1</span></a><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV16createEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Class creation. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N5rogue9protocols7batcher10SplitterV112setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols7batcher10SplitterV112setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols7batcher10SplitterV112setup_pythonEv"></span><span id="rogue::protocols::batcher::SplitterV1::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1SplitterV1_1a198105efc637c97cc92e1bcfbc2271b6"></span><em class="property"><span class="pre">static</span></em> <span class="pre">void</span> <code class="sig-name descname"><span class="pre">setup_python</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher10SplitterV112setup_pythonEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="../../epicsV3/index.html" class="btn btn-neutral float-right" title="EPICSV3 Protocol" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="inverterV1.html" class="btn btn-neutral float-left" title="InverterV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

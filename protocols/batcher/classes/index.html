@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>CRC &mdash; Rogue v5.6.5-41-gdb87d1ad documentation</title>
+  <title>Batcher Protocol Class Descriptions &mdash; Rogue v5.6.5-44-g365de97f documentation</title>
   
 
   
@@ -38,8 +38,8 @@
     
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Controller" href="controller.html" />
-    <link rel="prev" title="CoreV2" href="coreV2.html" /> 
+    <link rel="next" title="CoreV1" href="coreV1.html" />
+    <link rel="prev" title="Batcher Protocol SplitterV1" href="../splitterV1.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,24 +97,20 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../rssi/index.html">RSSI Protocol</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Packetizer Protocol</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="../core.html">Packetizer Protocol Core</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../coreV2.html">Packetizer Protocol CoreV2</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="index.html">Packetizer Protocol Class Descriptions</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="core.html">Core</a></li>
-<li class="toctree-l4"><a class="reference internal" href="coreV2.html">CoreV2</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">CRC</a></li>
-<li class="toctree-l4"><a class="reference internal" href="controller.html">Controller</a></li>
-<li class="toctree-l4"><a class="reference internal" href="controllerV1.html">ControllerV1</a></li>
-<li class="toctree-l4"><a class="reference internal" href="controllerV2.html">ControllerV2</a></li>
-<li class="toctree-l4"><a class="reference internal" href="application.html">Application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="transport.html">Transport</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Batcher Protocol</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../inverterV1.html">Batcher Protocol InverterV1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../splitterV1.html">Batcher Protocol SplitterV1</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Batcher Protocol Class Descriptions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV3/index.html">EPICSV3 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
@@ -173,17 +169,15 @@
         
           <li><a href="../../index.html">Protocols</a> &raquo;</li>
         
-          <li><a href="../index.html">Packetizer Protocol</a> &raquo;</li>
+          <li><a href="../index.html">Batcher Protocol</a> &raquo;</li>
         
-          <li><a href="index.html">Packetizer Protocol Class Descriptions</a> &raquo;</li>
-        
-      <li>CRC</li>
+      <li>Batcher Protocol Class Descriptions</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../../_sources/protocols/packetizer/classes/crc.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../../_sources/protocols/batcher/classes/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -196,13 +190,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="crc">
-<span id="protocols-packetizer-classes-crc"></span><h1>CRC<a class="headerlink" href="#crc" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="batcher-protocol-class-descriptions">
+<span id="protocols-batcher-classes"></span><h1>Batcher Protocol Class Descriptions<a class="headerlink" href="#batcher-protocol-class-descriptions" title="Permalink to this headline">¶</a></h1>
 <p>TODO</p>
-<p>The Crc class description is shown below:</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>doxygenclass: Cannot find class “rogue::protocols::packetizer::Crc” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
+<p>The following are detailed descriptions of the various C++ classes that make up the Rogue Batcher protocol.</p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">UDP Classes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+</ul>
 </div>
 </div>
 
@@ -212,8 +211,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="controller.html" class="btn btn-neutral float-right" title="Controller" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="coreV2.html" class="btn btn-neutral float-left" title="CoreV2" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="coreV1.html" class="btn btn-neutral float-right" title="CoreV1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../splitterV1.html" class="btn btn-neutral float-left" title="Batcher Protocol SplitterV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

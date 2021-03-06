@@ -14,7 +14,6 @@ The following are detailed descriptions of the various C++ classes that make up 
 
    core
    coreV2
-   crc
    controller
    controllerV1
    controllerV2
