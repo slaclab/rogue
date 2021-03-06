@@ -18,4 +18,4 @@ Protocols
    epicsV3/index
    epicsV4/index
    srp/index
-   uart/index
+   uart
