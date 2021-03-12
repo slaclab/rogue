@@ -21,10 +21,14 @@ import rogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, *, configEn=False, **kwargs):
+    def __init__(self, *, configEn=False, writer=None, **kwargs):
         pyrogue.DataWriter.__init__(self, **kwargs)
-        self._writer   = rogue.utilities.fileio.StreamWriter()
         self._configEn = configEn
+
+        if writer is None:
+            self._writer = rogue.utilities.fileio.StreamWriter()
+        else:
+            self._writer = writer
 
     def _open(self):
         self._writer.open(self.DataFile.value())
@@ -74,10 +78,8 @@ class StreamWriter(pyrogue.DataWriter):
 
 
 class LegacyStreamWriter(StreamWriter):
-    def __init__(self, *, configEn=False, **kwargs):
-        pyrogue.DataWriter.__init__(self, **kwargs)
-        self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
-        self._configEn = configEn
+    def __init__(self, **kwargs):
+        super().__init__(self, writer=rogue.utilities.fileio.LegacyStreamWriter(), **kwargs)
 
     def getDataChannel(self):
         return self._writer.getDataChannel()
