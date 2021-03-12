@@ -11,3 +11,4 @@ and out of a :ref:`interfaces_stream_frame` using a :ref:`interfaces_stream_fram
 
 .. doxygenfunction:: rogue::interfaces::stream::fromFrame
 
+.. doxygenfunction:: rogue::interfaces::stream::copyFrame

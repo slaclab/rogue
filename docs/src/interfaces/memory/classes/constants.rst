@@ -6,6 +6,8 @@ Constants
 
 The following constants are defined for use with the memory interface.
 
+.. _interface_memory_constants_type:
+
 Transaction Types
 =================
 
@@ -15,29 +17,34 @@ The following memory transaction types are defined:
 
 .. doxygenvariable:: rogue::interfaces::memory::Write
 
-.. doxygenvariable:: rogue::interfaces::memory::Post 
+.. doxygenvariable:: rogue::interfaces::memory::Post
 
 .. doxygenvariable:: rogue::interfaces::memory::Verify
 
-Transaction Errors
-==================
 
-The following transaction errors are defined:
+.. _interface_memory_constants_ptype:
 
-.. doxygenvariable:: rogue::interfaces::memory::TimeoutError
+Block Process Types
+===================
 
-.. doxygenvariable:: rogue::interfaces::memory::VerifyError
+The following block processing type ar defined:
 
-.. doxygenvariable:: rogue::interfaces::memory::AddressError
+.. doxygenvariable:: rogue::interfaces::memory::PyFunc
 
-.. doxygenvariable:: rogue::interfaces::memory::BusTimeout
+.. doxygenvariable:: rogue::interfaces::memory::Bytes
 
-.. doxygenvariable:: rogue::interfaces::memory::BusFail
+.. doxygenvariable:: rogue::interfaces::memory::UInt
 
-.. doxygenvariable:: rogue::interfaces::memory::Unsupported
+.. doxygenvariable:: rogue::interfaces::memory::Int
 
-.. doxygenvariable:: rogue::interfaces::memory::SizeError
+.. doxygenvariable:: rogue::interfaces::memory::Bool
 
-.. doxygenvariable:: rogue::interfaces::memory::ProtocolError
+.. doxygenvariable:: rogue::interfaces::memory::String
 
+.. doxygenvariable:: rogue::interfaces::memory::Float
 
+.. doxygenvariable:: rogue::interfaces::memory::Double
+
+.. doxygenvariable:: rogue::interfaces::memory::Fixed
+
+.. doxygenvariable:: rogue::interfaces::memory::Custom

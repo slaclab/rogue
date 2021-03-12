@@ -191,6 +191,31 @@ class VirtualNode(pr.Node):
 
 
 class VirtualClient(rogue.interfaces.ZmqClient):
+    """
+    A full featured client interface for Rogue. This can be used in
+    scripts or other clients which require remote access to the running
+    Rogue instance.
+
+    This class ues a custom factory ensuring that only one instance of this
+    class is created in a python script for a given remote connection.
+
+    Parameters
+    ----------
+    addr : str
+        host address
+
+    port : int
+        host port
+
+    Attributes
+    ----------
+    linked: bool
+        link state
+
+    root: obj
+        root class reference
+
+    """
     ClientCache = {}
 
     def __new__(cls, addr="localhost", port=9099):
@@ -241,10 +266,28 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monThread.start()
 
     def addLinkMonitor(self, function):
+        """
+        Add a link monitor callback function. This function will be called
+        any time the link state changes. A single boolean argument will be passed to
+        the callback function containing the current link state.
+
+        Parameters
+        ----------
+        function : obj
+            Call back function with the form function(linkState)
+        """
         if function not in self._monitors:
             self._monitors.append(function)
 
     def remLinkMonitor(self, function):
+        """
+        Remove a previously added link monitor function.
+
+        Parameters
+        ----------
+        function : obj
+            Call back function
+        """
         if function in self._monitors:
             self._monitors.remove(function)
 

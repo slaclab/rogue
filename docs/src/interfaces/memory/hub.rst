@@ -5,13 +5,17 @@ Memory Hub Example
 ==================
 
 The memory Hub interfaces between an upstream memory Master object and a downstream Memory
-slave object. The Hub can be used to group Masters together with a common offset, as is done 
+slave object. The Hub can be used to group Masters together with a common offset, as is done
 in the pyrogue.Device class. It can also be used to manipulate a memory bus transaction.
 
+Most users will not need to modify or sub-class a memory hub. Instead the Device python class,
+which is a sub-class of the Hub, will be used to organize the memory map. In some special cases
+complicated hardware interface layers will need to be supported and a special Hub will need to be created.
+
 In this example we service incoming read and write requests and forward them to a memory
-slave which implements a paged memory space. This means there is a write register for the 
-address (0x100), a write register for the write data (0x104), and a read register for 
-read data (0x108). This example is not very efficient in that it only allows a single 
+slave which implements a paged memory space. This means there is a write register for the
+address (0x100), a write register for the write data (0x104), and a read register for
+read data (0x108). This example is not very efficient in that it only allows a single
 transaction to be executed at a time.
 
 See :ref:`interfaces_memory_hub` for more detail on the Hub class.
@@ -20,7 +24,7 @@ Python Raw Hub Example
 ======================
 
 Below is an example of creating a raw Hub device which translates memory
-transactions in Python. 
+transactions in Python.
 
 .. code-block:: python
 
@@ -34,7 +38,7 @@ transactions in Python.
         # Init method must call the parent class init
         def __init__(self):
 
-            # Here we set the offset and a new root min and 
+            # Here we set the offset and a new root min and
             # max transaction size
             super().__init__(0,4,4)
 
@@ -48,8 +52,8 @@ transactions in Python.
             # overlapping paged transactions
             with self._lock:
 
-               # Next we lock the transaction data 
-               # Here it is held until the downstream transaction completes. 
+               # Next we lock the transaction data
+               # Here it is held until the downstream transaction completes.
                with transaction.lock():
 
                    # Put address into byte array, we do this because we will
@@ -118,7 +122,7 @@ transactions in Python.
 Python Device Hub Example
 =========================
 
-Below is an example of implementing the above example in a Device subclass. This allows 
+Below is an example of implementing the above example in a Device subclass. This allows
 the Hub to interact in a standard PyRogue tree. It will have its own base address and
 size in the downstream address map, but expose a separate upstream address map for
 translated transactions. More information about the Device class is included at TBD.
@@ -145,7 +149,7 @@ translated transactions. More information about the Device class is included at 
             # Setup base class with size of 3*8 bytes for our local 3 registers and a
             # upstream min and max transaction size of 4 bytes.
             super().__init__(name=name, description=description, memBase=memBase,
-                             offset=offset, hidden=hidden, expand=expand, enabled=enabled, 
+                             offset=offset, hidden=hidden, expand=expand, enabled=enabled,
                              enableDeps=enableDeps, size=12, hubMin=4, hubMax=4)
 
         # Same code from previous section with the exception that the existing Device
@@ -173,7 +177,7 @@ More information about the PyRogue Root class is included at TBD.
 
             # Add FPGA device at 0x1000 which hosts paged master
             self.add(SomeFpgaDevice(name="Fpga", offset=0x1000))
-            
+
             # Add our translation device to the FPGA with relative offset 0x10
             # its new address becomes 0x1010 and it owns a new address space
             self.Fpga.add(MyTranslationDevice(name="TranBase", offset=0x10))
@@ -211,7 +215,7 @@ transactions in C++.
             return(ret);
          }
 
-         // Standard class creator which is called by create 
+         // Standard class creator which is called by create
          // Here we set offset
          MyHub() : rogue::interfaces::memory::Hub(0) {}
 
@@ -233,7 +237,7 @@ transactions in C++.
             id = this->reqTransaction(this->getAddress() | 0x100, 4, transaction->address(),
                                       rogue::interfaces::memory::Write);
 
-            // Wait for transaction to complete 
+            // Wait for transaction to complete
             this->waitTransaction(id);
 
             // Check transaction result, forward error to incoming transaction
@@ -251,7 +255,7 @@ transactions in C++.
                id = this->reqTransaction(this->getAddress() | 0x104, 4, transaction->begin(),
                                          rogue::interfaces::memory::Write);
 
-               // Wait for transaction to complete 
+               // Wait for transaction to complete
                this->waitTransaction(id);
 
                // Check transaction result, forward error to incoming transaction
@@ -270,7 +274,7 @@ transactions in C++.
                id = this->reqTransaction(this->getAddress() | 0x104, 4, transaction->begin(),
                                          rogue::interfaces::memory::Write);
 
-               // Wait for transaction to complete 
+               // Wait for transaction to complete
                this->waitTransaction(id);
 
                // Check transaction result, forward error to incoming transaction
@@ -283,7 +287,7 @@ transactions in C++.
 
    };
 
-A few notes on the above examples. 
+A few notes on the above examples.
 
 The incoming transaction source thread will be stalled as we wait
 on the downstream transaction to complete. It may be better to queue the transaction and service
