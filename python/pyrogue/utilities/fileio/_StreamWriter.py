@@ -79,10 +79,8 @@ class StreamWriter(pyrogue.DataWriter):
 
 class LegacyStreamWriter(StreamWriter):
     def __init__(self, *, configEn=False, **kwargs):
-        pyrogue.DataWriter.__init__(self, **kwargs)
-        self._writer   = rogue.utilities.fileio.LegacyStreamWriter()
-        self._configEn = configEn
-
+        super().__init__(self, writer=rogue.utilities.fileio.LegacyStreamWriter(), **kwargs)
+        
     def getDataChannel(self):
         return self._writer.getDataChannel()
 
