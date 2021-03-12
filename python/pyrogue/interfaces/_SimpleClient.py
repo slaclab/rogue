@@ -93,7 +93,7 @@ class SimpleClient(object):
     def setDisp(self,path,value):
         return self._remoteAttr(path, 'setDisp', value)
 
-    def exec(self,path,arg):
+    def exec(self,path,arg=None):
         return self._remoteAttr(path, '__call__', arg)
 
     def __enter__(self):
