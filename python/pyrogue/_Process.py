@@ -16,7 +16,7 @@ import pyrogue as pr
 class Process(pr.Device):
     """Special base class to execute processes."""
 
-    def __init__(self, *, argVariable=None, **kwargs):
+    def __init__(self, *, argVariable=None, returnVariable=None, function=None, **kwargs):
 
         pr.Device.__init__(self, **kwargs)
 
@@ -24,6 +24,8 @@ class Process(pr.Device):
         self._thread = None
         self._runEn  = False
         self._argVar = argVariable
+        self._retVar = returnVariable
+        self._func   = function
 
         self.add(pr.LocalCommand(
             name='Start',
@@ -59,6 +61,15 @@ class Process(pr.Device):
             value='',
             pollInterval=1.0,
             description='Process status message. Prefix with Error: if an error occurred.'))
+
+        # Add arg variable if not already added
+        if self._argVar is not None and self._argVar not in self:
+            self.add(self._argVar)
+
+        # Add return variable if not already added
+        if self._retVar is not None and self._retVar not in self:
+            self.add(self._retVar)
+
 
     def _startProcess(self):
         with self._lock:
@@ -102,11 +113,35 @@ class Process(pr.Device):
         self.Running.set(False)
 
     def _process(self):
-        self.Message.setDisp("Started")
-        for i in range(101):
-            if self._runEn is False:
-                break
-            time.sleep(1)
-            self.Progress.set(i/100)
-            self.Message.setDisp(f"Running for {i} seconds.")
-        self.Message.setDisp("Done")
+
+        # User has provided a function Update status at start and end and call their function
+        if self._func is not None:
+            self.Message.setDisp("Running")
+            self.Progress.set(0.0)
+
+            if self._argVar is not None:
+                arg = self._argVar.get()
+            else:
+                arg = None
+
+            # Possible args
+            pargs = {'root' : self.root, 'dev' : self, 'arg' : arg}
+
+            ret = pr.functionHelper(self._func, pargs, self._log, self.path)
+
+            if self._retVar is not None:
+                self._retVar.set(ret)
+
+            self.Message.setDisp("Done")
+            self.Progress.set(1.0)
+
+        # No function run example process
+        else:
+            self.Message.setDisp("Started")
+            for i in range(101):
+                if self._runEn is False:
+                    break
+                time.sleep(1)
+                self.Progress.set(i/100)
+                self.Message.setDisp(f"Running for {i} seconds.")
+            self.Message.setDisp("Done")

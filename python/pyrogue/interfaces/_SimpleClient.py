@@ -208,7 +208,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'setDisp', value)
 
-    def exec(self,path,arg):
+    def exec(self,path,arg=None):
         """
         Call a command, with the optional arg
 
