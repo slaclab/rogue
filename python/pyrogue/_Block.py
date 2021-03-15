@@ -89,7 +89,7 @@ class LocalBlock(object):
     def variables(self):
         return self._variables
 
-    def set(self, var, value, index):
+    def set(self, var, value, index=-1):
         with self._lock:
 
             if index < 0 and (isinstance(value, list) or isinstance(value,dict)):
@@ -112,7 +112,7 @@ class LocalBlock(object):
 
                 pr.functionHelper(self._localSet, pargs, self._log, self._variable.path)
 
-    def get(self, var, index):
+    def get(self, var, index=-1):
         if self._enable and self._localGet is not None:
             with self._lock:
 
