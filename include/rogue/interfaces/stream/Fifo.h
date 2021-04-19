@@ -64,6 +64,9 @@ namespace rogue {
                // Thread background
                void runThread();
 
+               // Drop frame counter
+               std::size_t dropFrameCnt_;
+
             public:
 
                //! Create a Fifo object and return as a FifoPtr
@@ -87,6 +90,12 @@ namespace rogue {
 
                // Return the number of elements in the fifo
                std::size_t size() { return queue_.size(); };
+
+               // Return the number of dropped frames
+               std::size_t dropCnt() const;
+
+               // Clear counters
+               void clearCnt();
 
                // Receive frame from Master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );

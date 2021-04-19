@@ -56,6 +56,7 @@ ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Maste
    maxDepth_ = maxDepth;
    trimSize_ = trimSize;
    noCopy_   = noCopy;
+   dropFrameCnt_ = 0;
 
    queue_.setThold(maxDepth);
 
@@ -79,6 +80,16 @@ ris::Fifo::~Fifo() {
    thread_->join();
 }
 
+//! Return the number of dropped frames
+std::size_t ris::Fifo::dropCnt() const {
+   return dropFrameCnt_;
+}
+
+//! Clear counters
+void ris::Fifo::clearCnt() {
+   dropFrameCnt_ = 0;
+}
+
 //! Accept a frame from master
 void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    uint32_t       size;
@@ -87,7 +98,10 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameIterator dst;
 
    // FIFO is full, drop frame
-   if ( queue_.busy() ) return;
+   if ( queue_.busy() ) {
+      ++dropFrameCnt_;
+      return;
+   }
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();
