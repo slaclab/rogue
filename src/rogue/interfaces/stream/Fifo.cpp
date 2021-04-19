@@ -80,6 +80,11 @@ ris::Fifo::~Fifo() {
    thread_->join();
 }
 
+//! Return the number of elements in the Fifo
+std::size_t ris::Fifo::size() {
+   return queue_.size();
+};
+
 //! Return the number of dropped frames
 std::size_t ris::Fifo::dropCnt() const {
    return dropFrameCnt_;
