@@ -63,7 +63,7 @@ namespace rogue {
                 pushCond_.wait(lock);
 
              if ( run_ ) queue_.push(data);
-             busy_ = ( thold_ > 0 && queue_.size() > thold_ );
+             busy_ = ( thold_ > 0 && queue_.size() >= thold_ );
              popCond_.notify_all();
           }
 
@@ -95,7 +95,7 @@ namespace rogue {
                 ret=queue_.front();
                 queue_.pop();
              }
-             busy_ = ( thold_ > 0 && queue_.size() > thold_ );
+             busy_ = ( thold_ > 0 && queue_.size() >= thold_ );
              pushCond_.notify_all();
              return(ret);
           }
