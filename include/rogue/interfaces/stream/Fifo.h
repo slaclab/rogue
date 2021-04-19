@@ -85,6 +85,9 @@ namespace rogue {
                // Destroy the Fifo
                ~Fifo();
 
+               // Return the number of elements in the fifo
+               std::size_t size() { return queue_.size(); };
+
                // Receive frame from Master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
