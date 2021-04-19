@@ -88,8 +88,8 @@ namespace rogue {
                // Destroy the Fifo
                ~Fifo();
 
-               // Return the number of elements in the fifo
-               std::size_t size() { return queue_.size(); };
+               // Return the number of elements in the Fifo
+               std::size_t size();
 
                // Return the number of dropped frames
                std::size_t dropCnt() const;
