@@ -47,7 +47,11 @@ ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize, bool noCopy
 //! Setup class in python
 void ris::Fifo::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>());
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>())
+      .def("size",     &Fifo::size)
+      .def("dropCnt",  &Fifo::dropCnt)
+      .def("clearCnt", &Fifo::clearCnt)
+   ;
 #endif
 }
 
