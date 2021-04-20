@@ -56,19 +56,19 @@ void ris::Fifo::setup_python() {
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() {
-   maxDepth_ = maxDepth;
-   trimSize_ = trimSize;
-   noCopy_   = noCopy;
-   dropFrameCnt_ = 0;
-
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy )
+:
+   ris::Master   ( ),
+   ris::Slave    ( ),
+   log_          ( rogue::Logging::create("stream.Fifo") ),
+   maxDepth_     ( maxDepth ),
+   trimSize_     ( trimSize ),
+   noCopy_       ( noCopy ),
+   dropFrameCnt_ ( 0 ),
+   threadEn_     ( true ),
+   thread_       ( new std::thread(&ris::Fifo::runThread, this) )
+{
    queue_.setThold(maxDepth);
-
-   log_ = rogue::Logging::create("stream.Fifo");
-
-   // Start read thread
-   threadEn_ = true;
-   thread_ = new std::thread(&ris::Fifo::runThread, this);
 
    // Set a thread name
 #ifndef __MACH__

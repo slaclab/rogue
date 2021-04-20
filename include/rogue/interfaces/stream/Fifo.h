@@ -50,22 +50,22 @@ namespace rogue {
                std::shared_ptr<rogue::Logging> log_;
 
                // Configurations
-               uint32_t trimSize_;
                uint32_t maxDepth_;
+               uint32_t trimSize_;
                bool     noCopy_;
+
+               // Drop frame counter
+               std::size_t dropFrameCnt_;
 
                // Queue
                rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
                // Transmission thread
-               std::thread* thread_;
                bool threadEn_;
+               std::thread* thread_;
 
                // Thread background
                void runThread();
-
-               // Drop frame counter
-               std::size_t dropFrameCnt_;
 
             public:
 
