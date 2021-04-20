@@ -21,6 +21,13 @@ class Fifo(pyrogue.Device):
         pyrogue.Device.__init__(self, name=name, description=description, **kwargs)
         self._fifo = rogue.interfaces.stream.Fifo(maxDepth, trimSize, noCopy)
 
+        # Maximum Depth
+        self.add(pyrogue.LocalVariable(
+            name='MaxDepth',
+            description='Maximum depth of the Fifo',
+            mode='RO',
+            value=maxDepth))
+
         # Number of elements in the Fifo
         self.add(pyrogue.LocalVariable(
             name='Size',
