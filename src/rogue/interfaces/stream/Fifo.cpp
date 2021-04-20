@@ -83,6 +83,7 @@ ris::Fifo::~Fifo() {
    rogue::GilRelease noGil;
    queue_.stop();
    thread_->join();
+   delete thread_;
 }
 
 //! Return the number of elements in the Fifo
