@@ -336,7 +336,7 @@ class BaseVariable(pr.Node):
             self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value, write=True, index=-1):
+    def set(self, value, *, index=-1, write=True, verify=True, check=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -344,7 +344,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def post(self,value, index=-1):
+    def post(self, value, *, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -353,7 +353,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def get(self,read=True, index=-1):
+    def get(self, *, index=-1, read=True, check=True):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -362,7 +362,7 @@ class BaseVariable(pr.Node):
         return None
 
     @pr.expose
-    def write(self):
+    def write(self, *, verify=True, check=True):
         """
         Force a write of the variable.
         """
@@ -715,10 +715,13 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value, write=True, index=-1):
+    def set(self, value, *, index=-1, write=True, verify=True, check=True):
         """
         Set the value and write to hardware if applicable
-        Writes to hardware are blocking. An error will result in a logged exception.
+        Writes to hardware are blocking if check=True, otherwise non-blocking.
+        A verify will be performed according to self.verify if verify=True
+        A verify will not be performed if verify=False
+        An error will result in a logged exception.
         """
         try:
 
@@ -727,8 +730,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
             if write:
                 self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
-                self._parent.verifyBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(recurse=False, variable=self)
+                if verify:
+                    self._parent.verifyBlocks(recurse=False, variable=self)
+                if check:
+                    self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -736,7 +741,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def post(self,value, index=-1):
+    def post(self, value, *, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -755,16 +760,18 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def get(self,read=True, index=-1):
+    def get(self, *, index=-1, read=True, check=True):
         """
         Return the value after performing a read from hardware if applicable.
-        Hardware read is blocking. An error will result in a logged exception.
+        Hardware read is blocking if check=True, otherwise non-blocking. 
+        An error will result in a logged exception.
         Listeners will be informed of the update.
         """
         try:
             if read:
                 self._parent.readBlocks(recurse=False, variable=self, index=index)
-                self._parent.checkBlocks(recurse=False, variable=self)
+                if check:
+                    self._parent.checkBlocks(recurse=False, variable=self)
 
             return self._get(index)
 
@@ -774,14 +781,20 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def write(self):
+    def write(self, *, verify=True, check=True):
         """
         Force a write of the variable.
+        Hardware write is blocking if check=True.
+        A verify will be performed according to self.verify if verify=True
+        A verify will not be performed if verify=False
+        An error will result in a logged exception
         """
         try:
             self._parent.writeBlocks(force=True, recurse=False, variable=self)
-            self._parent.verifyBlocks(recurse=False, variable=self)
-            self._parent.checkBlocks(recurse=False, variable=self)
+            if verify:
+                self._parent.verifyBlocks(recurse=False, variable=self)
+            if check:
+                self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
             pr.logException(self._log,e)
