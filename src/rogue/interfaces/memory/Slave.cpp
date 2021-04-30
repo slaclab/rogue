@@ -41,13 +41,13 @@ uint32_t rim::Slave::classIdx_ = 0;
 std::mutex rim::Slave::classMtx_;
 
 //! Create a slave container
-rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max) {
-   rim::SlavePtr s = std::make_shared<rim::Slave>(min,max);
+rim::SlavePtr rim::Slave::create (uint32_t min, uint32_t max, std::string name) {
+   rim::SlavePtr s = std::make_shared<rim::Slave>(min,max,name);
    return(s);
 }
 
 //! Create object
-rim::Slave::Slave(uint32_t min, uint32_t max) {
+rim::Slave::Slave(uint32_t min, uint32_t max, std::string name) {
    min_ = min;
    max_ = max;
 
@@ -57,7 +57,11 @@ rim::Slave::Slave(uint32_t min, uint32_t max) {
    classIdx_++;
    classMtx_.unlock();
 
-   name_ = std::string("Unnamed_") + std::to_string(id_);
+   if (name == "Unnamed_") {
+     name_ = std::string("Unnamed_") + std::to_string(id_);
+   } else {
+     name_ = name;
+   }
 }
 
 //! Destroy object
@@ -163,7 +167,7 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 
 void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t>())
+  bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t,std::string>())
       .def("setName",         &rim::Slave::setName)
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
@@ -180,7 +184,7 @@ void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
 
 //! Constructor
-rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max) : rim::Slave(min,max) {}
+rim::SlaveWrap::SlaveWrap(uint32_t min, uint32_t max, std::string name) : rim::Slave(min,max,name) {}
 
 //! Return min access size to requesting master
 uint32_t rim::SlaveWrap::doMinAccess() {

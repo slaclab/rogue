@@ -70,7 +70,8 @@ namespace rogue {
 
                // Max access
                uint32_t max_;
-
+           
+          protected:
                // Slave Name
                std::string name_;
 
@@ -82,13 +83,13 @@ namespace rogue {
                 * @param min Minimum transaction this Slave can accept.
                 * @param max Maximum transaction this Slave can accept.
                 */
-               static std::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max);
+               static std::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max, std::string name="Unnamed_");
 
                // Setup class for use in python
                static void setup_python();
 
                // Create Slave object
-               Slave(uint32_t min, uint32_t max);
+               Slave(uint32_t min, uint32_t max, std::string name="Unnamed_");
 
                // Destroy the Slave
                virtual ~Slave();
@@ -231,7 +232,7 @@ namespace rogue {
             public:
 
                // Constructor
-               SlaveWrap(uint32_t min, uint32_t max);
+               SlaveWrap(uint32_t min, uint32_t max, std::string name="Unnamed_");
 
                // Return min access size to requesting master
                uint32_t doMinAccess();
