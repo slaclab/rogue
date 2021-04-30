@@ -71,7 +71,6 @@ namespace rogue {
                // Max access
                uint32_t max_;
            
-          protected:
                // Slave Name
                std::string name_;
 
