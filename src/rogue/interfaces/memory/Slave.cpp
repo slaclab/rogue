@@ -130,11 +130,6 @@ std::string rim::Slave::name() {
    return name_;
 }
 
-//! Set name
-void rim::Slave::setName(std::string name) {
-   name_ = name;
-}
-
 //! Return id to requesting master
 uint32_t rim::Slave::doSlaveId() {
    return(id());
@@ -167,8 +162,8 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 
 void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
-  bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::init<uint32_t,uint32_t,std::string>())
-      .def("setName",         &rim::Slave::setName)
+  bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::no_init)
+      .def("__init__",        &rim::Slave::create, bp::default_call_policies(), (bp::arg("min"), bp::arg("max"), bp::arg("name")="Unnamed_"))
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
       .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
