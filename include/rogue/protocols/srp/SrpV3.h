@@ -49,13 +49,13 @@ namespace rogue {
             public:
 
                //! Class creation
-               static std::shared_ptr<rogue::protocols::srp::SrpV3> create ();
+              static std::shared_ptr<rogue::protocols::srp::SrpV3> create (std::string name="Unnamed_");
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               SrpV3();
+              SrpV3(std::string name="Unnamed_");
 
                //! Deconstructor
                ~SrpV3();

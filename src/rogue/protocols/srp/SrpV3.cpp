@@ -47,8 +47,8 @@ namespace bp  = boost::python;
 #endif
 
 //! Class creation
-rps::SrpV3Ptr rps::SrpV3::create () {
-   rps::SrpV3Ptr p = std::make_shared<rps::SrpV3>();
+rps::SrpV3Ptr rps::SrpV3::create (std::string name) {
+   rps::SrpV3Ptr p = std::make_shared<rps::SrpV3>(name);
    return(p);
 }
 
@@ -56,7 +56,8 @@ rps::SrpV3Ptr rps::SrpV3::create () {
 void rps::SrpV3::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>());
+  bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::no_init)
+      .def("__init__", bp::make_constructor(&create, bp::default_call_policies(), (bp::arg("name")="Unnamed_")));
 
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::MasterPtr>();
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::SlavePtr>();
@@ -65,8 +66,12 @@ void rps::SrpV3::setup_python() {
 }
 
 //! Creator with version constant
-rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) {
-   log_ = rogue::Logging::create("SrpV3");
+rps::SrpV3::SrpV3(std::string name) : ris::Master(), ris::Slave(), rim::Slave(4,4096,name) {
+   std::string logstr;
+   
+   logstr = "SrpV3.";
+   logstr.append(name);
+   log_ = rogue::Logging::create(logstr);
 }
 
 //! Deconstructor
