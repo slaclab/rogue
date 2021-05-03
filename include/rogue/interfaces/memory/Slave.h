@@ -231,7 +231,7 @@ namespace rogue {
             public:
 
                // Constructor
-               SlaveWrap(uint32_t min, uint32_t max, std::string name="Unnamed_");
+               SlaveWrap(uint32_t min, uint32_t max, std::string name="");
 
                // Return min access size to requesting master
                uint32_t doMinAccess();
