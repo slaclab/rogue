@@ -763,7 +763,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def get(self, *, index=-1, read=True, check=True):
         """
         Return the value after performing a read from hardware if applicable.
-        Hardware read is blocking if check=True, otherwise non-blocking. 
+        Hardware read is blocking if check=True, otherwise non-blocking.
         An error will result in a logged exception.
         Listeners will be informed of the update.
         """
