@@ -38,14 +38,15 @@ namespace bp  = boost::python;
 #endif
 
 //! Create a master container
-rim::MasterPtr rim::Master::create () {
-   rim::MasterPtr m = std::make_shared<rim::Master>();
+rim::MasterPtr rim::Master::create (std::string name) {
+   rim::MasterPtr m = std::make_shared<rim::Master>(name);
    return(m);
 }
 
 void rim::Master::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::init<>())
+   bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::no_init)
+      .def("__init__",           &rim::Master::create, bp::default_call_policies(), (bp::arg("name")=""))
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqSlaveId",         &rim::Master::reqSlaveId)
@@ -71,13 +72,19 @@ void rim::Master::setup_python() {
 }
 
 //! Create object
-rim::Master::Master() {
+rim::Master::Master(std::string name) {
    error_   = "";
    slave_   = rim::Slave::create(4,0); // Empty placeholder
 
    rogue::defaultTimeout(sumTime_);
 
-   log_ = rogue::Logging::create("memory.Master");
+   if (name == "") {
+     name_ = "Unnamed";
+   } else {
+     name_ = name;
+   }
+
+   log_ = rogue::Logging::create("memory.Master." + name_);
 }
 
 //! Destroy object

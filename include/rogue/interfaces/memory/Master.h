@@ -70,18 +70,21 @@ namespace rogue {
                //! Log
                std::shared_ptr<rogue::Logging> log_;
 
+              //! Instance name
+              std::string name_;
+
             public:
 
                //! Class factory which returns a pointer to a Master (MasterPtr)
                /** Exposed as rogue.interfaces.memory.Master() to Python
                 */
-               static std::shared_ptr<rogue::interfaces::memory::Master> create ();
+               static std::shared_ptr<rogue::interfaces::memory::Master> create (std::string name="");
 
                // Setup class for use in python
                static void setup_python();
 
                // Create a Master instance
-               Master();
+               Master(std::string name="");
 
                // Destroy the Master
                virtual ~Master();

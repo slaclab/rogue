@@ -82,13 +82,13 @@ namespace rogue {
                 * @param min Minimum transaction this Slave can accept.
                 * @param max Maximum transaction this Slave can accept.
                 */
-               static std::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max, std::string name="Unnamed_");
+               static std::shared_ptr<rogue::interfaces::memory::Slave> create (uint32_t min, uint32_t max, std::string name="");
 
                // Setup class for use in python
                static void setup_python();
 
                // Create Slave object
-               Slave(uint32_t min, uint32_t max, std::string name="Unnamed_");
+               Slave(uint32_t min, uint32_t max, std::string name="");
 
                // Destroy the Slave
                virtual ~Slave();

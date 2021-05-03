@@ -57,7 +57,7 @@ rim::Slave::Slave(uint32_t min, uint32_t max, std::string name) {
    classIdx_++;
    classMtx_.unlock();
 
-   if (name == "Unnamed_") {
+   if (name == "") {
      name_ = std::string("Unnamed_") + std::to_string(id_);
    } else {
      name_ = name;
@@ -163,7 +163,7 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
   bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::no_init)
-      .def("__init__",        &rim::Slave::create, bp::default_call_policies(), (bp::arg("min"), bp::arg("max"), bp::arg("name")="Unnamed_"))
+      .def("__init__",        &rim::Slave::create, bp::default_call_policies(), (bp::arg("min"), bp::arg("max"), bp::arg("name")=""))
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
       .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)
