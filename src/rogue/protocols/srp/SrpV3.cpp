@@ -57,7 +57,7 @@ void rps::SrpV3::setup_python() {
 #ifndef NO_PYTHON
 
   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::no_init)
-      .def("__init__", bp::make_constructor(&create, bp::default_call_policies(), (bp::arg("name")="Unnamed_")));
+      .def("__init__", bp::make_constructor(&rps::SrpV3::create, bp::default_call_policies(), (bp::arg("name")="")));
 
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::MasterPtr>();
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::SlavePtr>();
