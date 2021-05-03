@@ -654,10 +654,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
 
             if valueBits > valueStride:
-                raise VariableError('ValueBits {valueBits} is greater than valueStrude {valueStride}')
+                raise VariableError(f'ValueBits {valueBits} is greater than valueStrude {valueStride}')
 
             if (numValues * valueStride) != sum(bitSize):
-                raise VariableError('Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
+                raise VariableError(f'Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
 
         else:
             self._typeStr = self._base.name
