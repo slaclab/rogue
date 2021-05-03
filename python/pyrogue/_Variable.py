@@ -848,7 +848,7 @@ class LocalVariable(BaseVariable):
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
     @pr.expose
-    def set(self, value, write=True, index=-1):
+    def set(self, value, *, index=-1, write=True, verify=True, check=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
