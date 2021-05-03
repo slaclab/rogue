@@ -163,7 +163,7 @@ void rim::Slave::doTransaction(rim::TransactionPtr transaction) {
 void rim::Slave::setup_python() {
 #ifndef NO_PYTHON
   bp::class_<rim::SlaveWrap, rim::SlaveWrapPtr, boost::noncopyable>("Slave",bp::no_init)
-      .def("__init__",        &rim::Slave::create, bp::default_call_policies(), (bp::arg("min"), bp::arg("max"), bp::arg("name")=""))
+      .def("__init__",        bp::make_constructor(&rim::Slave::create, bp::default_call_policies(), (bp::arg("min"), bp::arg("max"), bp::arg("name")="")))
       .def("_addTransaction", &rim::Slave::addTransaction)
       .def("_getTransaction", &rim::Slave::getTransaction)
       .def("_doMinAccess",    &rim::Slave::doMinAccess,   &rim::SlaveWrap::defDoMinAccess)

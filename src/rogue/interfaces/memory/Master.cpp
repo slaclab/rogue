@@ -46,7 +46,7 @@ rim::MasterPtr rim::Master::create (std::string name) {
 void rim::Master::setup_python() {
 #ifndef NO_PYTHON
    bp::class_<rim::Master, rim::MasterPtr, boost::noncopyable>("Master",bp::no_init)
-      .def("__init__",           &rim::Master::create, bp::default_call_policies(), (bp::arg("name")=""))
+      .def("__init__",            bp::make_constructor(&rim::Master::create, bp::default_call_policies(), (bp::arg("name")="")))
       .def("_setSlave",           &rim::Master::setSlave)
       .def("_getSlave",           &rim::Master::getSlave)
       .def("_reqSlaveId",         &rim::Master::reqSlaveId)
