@@ -214,7 +214,7 @@ class Device(pr.Node,rim.Hub):
             # Device does not have a membase
             if node._memBase is None:
                 node._setSlave(self)
-                
+
     def addInterface(self, *interfaces):
         """Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
         Also accepts iterables for adding multiple at once"""
@@ -227,7 +227,7 @@ class Device(pr.Node,rim.Hub):
     def addProtocol(self, *protocols):
         """Add a protocol entity.
         Also accepts iterables for adding multiple at once"""
-        for protocol in protocols:        
+        for protocol in protocols:
             if isinstance(protocol, collections.abc.Iterable):
                 self._ifAndProto.extend(protocol)
             else:
