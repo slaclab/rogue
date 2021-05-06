@@ -214,14 +214,21 @@ class Device(pr.Node,rim.Hub):
             # Device does not have a membase
             if node._memBase is None:
                 node._setSlave(self)
-
+                
     def addInterface(self, interface):
-        """Add a rogue.interfaces.stream.Master or rogue.interfaces.memory.Master"""
-        self._ifAndProto.append(interface)
+        """Add a rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
+        Also accepts an iterable for adding multiple at once"""
+        if isinstance(interface, collections.abc.Iterable):
+            self._ifAndProto.extend(interface)
+        else:
+            self._ifAndProto.append(interface)
 
     def addProtocol(self, protocol):
         """Add a protocol entity"""
-        self._ifAndProto.append(protocol)
+        if isinstance(protocol, collections.abc.Iterable):
+            self._ifAndProto.extend(protocol)
+        else:
+            self._ifAndProto.append(protocol)
 
     def _start(self):
         """ Called recursively from Root.stop when starting """
@@ -238,6 +245,7 @@ class Device(pr.Node,rim.Hub):
                 intf._stop()
         for d in self.deviceList:
             d._stop()
+
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         if pack:
