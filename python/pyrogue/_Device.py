@@ -215,20 +215,23 @@ class Device(pr.Node,rim.Hub):
             if node._memBase is None:
                 node._setSlave(self)
                 
-    def addInterface(self, interface):
-        """Add a rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
-        Also accepts an iterable for adding multiple at once"""
-        if isinstance(interface, collections.abc.Iterable):
-            self._ifAndProto.extend(interface)
-        else:
-            self._ifAndProto.append(interface)
+    def addInterface(self, *interfaces):
+        """Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
+        Also accepts iterables for adding multiple at once"""
+        for interface in interfaces:
+            if isinstance(interface, collections.abc.Iterable):
+                self._ifAndProto.extend(interface)
+            else:
+                self._ifAndProto.append(interface)
 
-    def addProtocol(self, protocol):
-        """Add a protocol entity"""
-        if isinstance(protocol, collections.abc.Iterable):
-            self._ifAndProto.extend(protocol)
-        else:
-            self._ifAndProto.append(protocol)
+    def addProtocol(self, *protocols):
+        """Add a protocol entity.
+        Also accepts iterables for adding multiple at once"""
+        for protocol in protocols:        
+            if isinstance(protocol, collections.abc.Iterable):
+                self._ifAndProto.extend(protocol)
+            else:
+                self._ifAndProto.append(protocol)
 
     def _start(self):
         """ Called recursively from Root.stop when starting """
