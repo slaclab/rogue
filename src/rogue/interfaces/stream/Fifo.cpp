@@ -48,23 +48,28 @@ ris::FifoPtr ris::Fifo::create(uint32_t maxDepth, uint32_t trimSize, bool noCopy
 //! Setup class in python
 void ris::Fifo::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>());
+   bp::class_<ris::Fifo, ris::FifoPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Fifo",bp::init<uint32_t,uint32_t,bool>())
+      .def("size",     &Fifo::size)
+      .def("dropCnt",  &Fifo::dropCnt)
+      .def("clearCnt", &Fifo::clearCnt)
+   ;
 #endif
 }
 
 //! Creator with version constant
-ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy ) : ris::Master(), ris::Slave() {
-   maxDepth_ = maxDepth;
-   trimSize_ = trimSize;
-   noCopy_   = noCopy;
-
+ris::Fifo::Fifo(uint32_t maxDepth, uint32_t trimSize, bool noCopy )
+:
+   ris::Master   ( ),
+   ris::Slave    ( ),
+   log_          ( rogue::Logging::create("stream.Fifo") ),
+   maxDepth_     ( maxDepth ),
+   trimSize_     ( trimSize ),
+   noCopy_       ( noCopy ),
+   dropFrameCnt_ ( 0 ),
+   threadEn_     ( true ),
+   thread_       ( new std::thread(&ris::Fifo::runThread, this) )
+{
    queue_.setThold(maxDepth);
-
-   log_ = rogue::Logging::create("stream.Fifo");
-
-   // Start read thread
-   threadEn_ = true;
-   thread_ = new std::thread(&ris::Fifo::runThread, this);
 
    // Set a thread name
 #ifndef __MACH__
@@ -78,6 +83,22 @@ ris::Fifo::~Fifo() {
    rogue::GilRelease noGil;
    queue_.stop();
    thread_->join();
+   delete thread_;
+}
+
+//! Return the number of elements in the Fifo
+std::size_t ris::Fifo::size() {
+   return queue_.size();
+};
+
+//! Return the number of dropped frames
+std::size_t ris::Fifo::dropCnt() const {
+   return dropFrameCnt_;
+}
+
+//! Clear counters
+void ris::Fifo::clearCnt() {
+   dropFrameCnt_ = 0;
 }
 
 //! Accept a frame from master
@@ -88,7 +109,10 @@ void ris::Fifo::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameIterator dst;
 
    // FIFO is full, drop frame
-   if ( queue_.busy() ) return;
+   if ( queue_.busy() ) {
+      ++dropFrameCnt_;
+      return;
+   }
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr lock = frame->lock();

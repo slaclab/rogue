@@ -50,16 +50,19 @@ namespace rogue {
                std::shared_ptr<rogue::Logging> log_;
 
                // Configurations
-               uint32_t trimSize_;
                uint32_t maxDepth_;
+               uint32_t trimSize_;
                bool     noCopy_;
+
+               // Drop frame counter
+               std::size_t dropFrameCnt_;
 
                // Queue
                rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
                // Transmission thread
-               std::thread* thread_;
                bool threadEn_;
+               std::thread* thread_;
 
                // Thread background
                void runThread();
@@ -84,6 +87,15 @@ namespace rogue {
 
                // Destroy the Fifo
                ~Fifo();
+
+               // Return the number of elements in the Fifo
+               std::size_t size();
+
+               // Return the number of dropped frames
+               std::size_t dropCnt() const;
+
+               // Clear counters
+               void clearCnt();
 
                // Receive frame from Master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
