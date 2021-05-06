@@ -17,7 +17,7 @@ import rogue
 import pyrogue
 
 class Fifo(pyrogue.Device):
-    def __init__(self, name, description, maxDepth, trimSize, noCopy, **kwargs):
+    def __init__(self, *, name, description, maxDepth=0, trimSize=0, noCopy=False, **kwargs):
         pyrogue.Device.__init__(self, name=name, description=description, **kwargs)
         self._fifo = rogue.interfaces.stream.Fifo(maxDepth, trimSize, noCopy)
 
@@ -59,3 +59,12 @@ class Fifo(pyrogue.Device):
 
     def _getStreamMaster(self):
         return self._fifo
+
+    def __lshift__(self,other):
+        pyrogue.streamConnect(other,self)
+        return other
+
+    def __rshift__(self,other):
+        pyrogue.streamConnect(self,other)
+        return other
+
