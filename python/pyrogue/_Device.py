@@ -228,10 +228,11 @@ class Device(pr.Node,rim.Hub):
         """Add a protocol entity.
         Also accepts iterables for adding multiple at once"""
         for protocol in protocols:
-            if isinstance(protocol, collections.abc.Iterable):
+            if isintance(protocol, collections.abc.Iterable):
                 self._ifAndProto.extend(protocol)
             else:
                 self._ifAndProto.append(protocol)
+
 
     def _start(self):
         """ Called recursively from Root.stop when starting """
@@ -420,7 +421,7 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.abc.Iterable):
-                ldata = b''.join(base.toBytes(word).rjust(stride, b'\0') for word in data)
+                ldata = b''.join(base.toBytes(word).ljust(stride, b'\0') for word in data)
             else:
                 ldata = base.toBytes(data)
 
