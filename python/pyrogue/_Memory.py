@@ -65,7 +65,6 @@ class MemoryDevice(pr.Device):
 
     @pr.expose
     def set(self, offset, values, write=False):
-        print(f'{self.path}.set({offset}, {values}, {write}')
         with self._txnLock:
             self._setValues[offset] = values
             if write:
