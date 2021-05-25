@@ -67,4 +67,3 @@ class Fifo(pyrogue.Device):
     def __rshift__(self,other):
         pyrogue.streamConnect(self,other)
         return other
-
