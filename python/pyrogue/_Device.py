@@ -420,7 +420,7 @@ class Device(pr.Node,rim.Hub):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.abc.Iterable):
-                ldata = b''.join(base.toBytes(word).rjust(stride, b'\0') for word in data)
+                ldata = b''.join(base.toBytes(word).ljust(stride, b'\0') for word in data)
             else:
                 ldata = base.toBytes(data)
 
