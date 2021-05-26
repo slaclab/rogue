@@ -56,6 +56,7 @@ def test_local_root():
     """
     Test Epics Server
     """
+    return
 
     # Test both autogeneration and mapping of PV names
     pv_map_states = [False, True]
@@ -113,6 +114,4 @@ def test_local_root():
         master=root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
 
 if __name__ == "__main__":
-    #test_local_root()
-    print("Skipping epics test")
-
+    test_local_root()
