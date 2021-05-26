@@ -113,5 +113,6 @@ def test_local_root():
         master=root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
 
 if __name__ == "__main__":
-    test_local_root()
+    #test_local_root()
+    print("Skipping epics test")
 
