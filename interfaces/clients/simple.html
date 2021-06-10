@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Simple Client Interface &mdash; Rogue v5.7.0-1-g825a9ee7 documentation</title>
+  <title>Simple Client Interface &mdash; Rogue v5.8.0-4-gb830f660 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                v5.7.0
+                v5.8.0
               </div>
             
           
@@ -240,8 +243,8 @@ of the updated variables reported by the Rogue server.</p>
 <h2>SimpleClient Description<a class="headerlink" href="#simpleclient-description" title="Permalink to this headline">¶</a></h2>
 <p>The class description for the SimpleClient class is included below:</p>
 <dl class="py class">
-<dt id="pyrogue.interfaces.SimpleClient">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></code><code class="sig-name descname"><span class="pre">SimpleClient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">SimpleClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>A lightweight client inerface for Rogue. This can be used in
 scripts or as an interface to Rogue in matlab. For a more
 powerfull, tree access capable client. Please see the
@@ -263,15 +266,15 @@ VirtualClient class.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient._stop">
-<code class="sig-name descname"><span class="pre">_stop</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient._stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient._stop" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient._stop">
+<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient._stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient._stop" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop the SimpleClient interface.
 This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.get">
-<code class="sig-name descname"><span class="pre">get</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -287,8 +290,8 @@ This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.getDisp">
-<code class="sig-name descname"><span class="pre">getDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.getDisp">
+<span class="sig-name descname"><span class="pre">getDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, in string form, initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -304,8 +307,8 @@ This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.value">
-<code class="sig-name descname"><span class="pre">value</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.value" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.value">
+<span class="sig-name descname"><span class="pre">value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.value" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, without initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -321,8 +324,8 @@ This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.valueDisp">
-<code class="sig-name descname"><span class="pre">valueDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.valueDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.valueDisp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.valueDisp">
+<span class="sig-name descname"><span class="pre">valueDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.valueDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.valueDisp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a variable value, in string form, without initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -338,8 +341,8 @@ This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.set">
-<code class="sig-name descname"><span class="pre">set</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a variable value, using its native type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -352,8 +355,8 @@ This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.setDisp">
-<code class="sig-name descname"><span class="pre">setDisp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.setDisp">
+<span class="sig-name descname"><span class="pre">setDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a variable value, using a string representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -366,8 +369,8 @@ This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.SimpleClient.exec">
-<code class="sig-name descname"><span class="pre">exec</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.exec">
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call a command, with the optional arg</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

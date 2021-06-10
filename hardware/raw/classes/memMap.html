@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>MemMap &mdash; Rogue v5.7.0-1-g825a9ee7 documentation</title>
+  <title>MemMap &mdash; Rogue v5.8.0-4-gb830f660 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                v5.7.0
+                v5.8.0
               </div>
             
           
@@ -187,33 +190,35 @@
 <p>Examples of using the MemMap class are included in <a class="reference internal" href="../memory.html#hardware-raw-memory"><span class="std std-ref">Using The MemMap Class</span></a>.</p>
 <p>MemMap objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
-<dt id="_CPPv4N5rogue8hardware9MemMapPtrE">
-<span id="_CPPv3N5rogue8hardware9MemMapPtrE"></span><span id="_CPPv2N5rogue8hardware9MemMapPtrE"></span><span id="rogue::hardware::MemMapPtr"></span><span class="target" id="namespacerogue_1_1hardware_1aae0f893068bc24dd502a7b4877dc0804"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">hardware</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue8hardware6MemMapE" title="rogue::hardware::MemMap"><span class="pre">MemMap</span></a><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">hardware</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">MemMapPtr</span></code><a class="headerlink" href="#_CPPv4N5rogue8hardware9MemMapPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware9MemMapPtrE">
+<span id="_CPPv3N5rogue8hardware9MemMapPtrE"></span><span id="_CPPv2N5rogue8hardware9MemMapPtrE"></span><span id="rogue::hardware::MemMapPtr"></span><span class="target" id="namespacerogue_1_1hardware_1aae0f893068bc24dd502a7b4877dc0804"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware6MemMapE" title="rogue::hardware::MemMap"><span class="n"><span class="pre">MemMap</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">MemMapPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue8hardware9MemMapPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as TcpClientPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
-<dt id="_CPPv4N5rogue8hardware6MemMapE">
-<span id="_CPPv3N5rogue8hardware6MemMapE"></span><span id="_CPPv2N5rogue8hardware6MemMapE"></span><span id="rogue::hardware::MemMap"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap"></span><em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">hardware</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">MemMap</span></code> <span class="pre">:</span> <em class="property"><span class="pre">public</span></em> <span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">memory</span><span class="pre">::</span><a class="reference internal" href="../../../interfaces/memory/classes/slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="pre">Slave</span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMapE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMapE">
+<span id="_CPPv3N5rogue8hardware6MemMapE"></span><span id="_CPPv2N5rogue8hardware6MemMapE"></span><span id="rogue::hardware::MemMap"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">MemMap</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/memory/classes/slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMapE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Raw Memory Map Class. </p>
 <p>This class provides a bridge between the Rogue memory interface and a standard Linux /dev/map interface. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue8hardware6MemMap6createE8uint64_t8uint32_t">
-<span id="_CPPv3N5rogue8hardware6MemMap6createE8uint64_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware6MemMap6createE8uint64_t8uint32_t"></span><span id="rogue::hardware::MemMap::create__uint64_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1aad75cd246f3d0a31178187375f011943"></span><em class="property"><span class="pre">static</span></em> <span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">hardware</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue8hardware6MemMapE" title="rogue::hardware::MemMap"><span class="pre">MemMap</span></a><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><span class="pre">uint64_t</span> <em><span class="pre">base</span></em>, <span class="pre">uint32_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap6createE8uint64_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware6MemMap6createE8uint64_t8uint32_t">
+<span id="_CPPv3N5rogue8hardware6MemMap6createE8uint64_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware6MemMap6createE8uint64_t8uint32_t"></span><span id="rogue::hardware::MemMap::create__uint64_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1MemMap_1aad75cd246f3d0a31178187375f011943"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware6MemMapE" title="rogue::hardware::MemMap"><span class="n"><span class="pre">MemMap</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">base</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware6MemMap6createE8uint64_t8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Class factory which returns a MemMapPtr to a newly created <a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">MemMap</span></a> object. </p>
-<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">rogue.hardware.MemMap()</span></a> <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">MemMap</span></a> pointer (MemMapPtr) </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">base</span></code>: Base address to map </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: Size of address space to map </p></li>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">rogue.hardware.MemMap()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> – Base address to map </p></li>
+<li><p><strong>size</strong> – Size of address space to map </p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#classrogue_1_1hardware_1_1MemMap"><span class="std std-ref">MemMap</span></a> pointer (MemMapPtr) </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 </div>

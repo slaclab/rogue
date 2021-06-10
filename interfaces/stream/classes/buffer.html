@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Buffer &mdash; Rogue v5.7.0-1-g825a9ee7 documentation</title>
+  <title>Buffer &mdash; Rogue v5.8.0-4-gb830f660 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                v5.7.0
+                v5.8.0
               </div>
             
           
@@ -217,212 +220,211 @@
 </div></blockquote>
 <p>Buffer objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
-<dt id="_CPPv4N5rogue10interfaces6stream9BufferPtrE">
-<span id="_CPPv3N5rogue10interfaces6stream9BufferPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream9BufferPtrE"></span><span id="rogue::interfaces::stream::BufferPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a824a61cf20fd9ff702587cafaeb7c15f"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="pre">Buffer</span></a><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">BufferPtr</span></code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9BufferPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9BufferPtrE">
+<span id="_CPPv3N5rogue10interfaces6stream9BufferPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream9BufferPtrE"></span><span id="rogue::interfaces::stream::BufferPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a824a61cf20fd9ff702587cafaeb7c15f"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="rogue::interfaces::stream::Buffer"><span class="n"><span class="pre">Buffer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">BufferPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9BufferPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as BufferPtr. </p>
 </dd></dl>
 
 <p>The Buffer class description is shown below:</p>
 <dl class="cpp class">
-<dt id="_CPPv4N5rogue10interfaces6stream6BufferE">
-<span id="_CPPv3N5rogue10interfaces6stream6BufferE"></span><span id="_CPPv2N5rogue10interfaces6stream6BufferE"></span><span id="rogue::interfaces::stream::Buffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer"></span><em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">stream</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">Buffer</span></code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6BufferE">
+<span id="_CPPv3N5rogue10interfaces6stream6BufferE"></span><span id="_CPPv2N5rogue10interfaces6stream6BufferE"></span><span id="rogue::interfaces::stream::Buffer"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Buffer</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6BufferE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> buffer. </p>
 <p>This class is a container for buffers which make up a frame. Each buffer is associated with a contiguous block of memory allocated by an instance of the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class. Each buffer within the frame has a reserved header and tail area to pre-reserve space which may be required by protocol layers. Direct interaction with the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is an advanced topic, most users will simply use a <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> to access <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> data. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> class is not available in Python. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Types</p>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
 <dl class="cpp type">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="rogue::interfaces::stream::Buffer::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">uint8_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">iterator</span></code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8iteratorE"></span><span id="rogue::interfaces::stream::Buffer::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">iterator</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer8iteratorE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using uint8_t * as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c"><span class="std std-ref">Buffer::iterator</span></a>. </p>
 </dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer7getMetaEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7getMetaEv"></span><span id="rogue::interfaces::stream::Buffer::getMeta"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5c58ff0316038b86e7d84140c0a16ec8"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">getMeta</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer7getMetaEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7getMetaEv"></span><span id="rogue::interfaces::stream::Buffer::getMeta"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5c58ff0316038b86e7d84140c0a16ec8"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMeta</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7getMetaEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get meta data. </p>
-<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Meta data value </p>
+<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Meta data value </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::setMeta__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae00087e5ad6c7f0ea382bd930a9c3d7d"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">setMeta</span></code><span class="sig-paren">(</span><span class="pre">uint32_t</span> <em><span class="pre">meta</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::setMeta__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae00087e5ad6c7f0ea382bd930a9c3d7d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setMeta</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">meta</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7setMetaE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set meta data. </p>
-<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. <dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">meta</span></code>: Meta data value </p></li>
-</ul>
+<p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>meta</strong> – Meta data value </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustHeader__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a0d894947e2006509b5e7b1216395be35"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">adjustHeader</span></code><span class="sig-paren">(</span><span class="pre">int32_t</span> <em><span class="pre">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustHeader__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a0d894947e2006509b5e7b1216395be35"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustHeader</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Adjust header by passed value. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Head adjustment amount </p></li>
-</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – Head adjustment amount </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer10zeroHeaderEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer10zeroHeaderEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10zeroHeaderEv"></span><span id="rogue::interfaces::stream::Buffer::zeroHeader"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a760e05b1bfc0ddcef2d9c495c8355eac"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">zeroHeader</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10zeroHeaderEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer10zeroHeaderEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer10zeroHeaderEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10zeroHeaderEv"></span><span id="rogue::interfaces::stream::Buffer::zeroHeader"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a760e05b1bfc0ddcef2d9c495c8355eac"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zeroHeader</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10zeroHeaderEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear the header reservation. </p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustTail__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad3b1a80aa1d347a11b9cecf1b5246365"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">adjustTail</span></code><span class="sig-paren">(</span><span class="pre">int32_t</span> <em><span class="pre">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustTail__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad3b1a80aa1d347a11b9cecf1b5246365"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustTail</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Adjust tail reservation by passed value. </p>
-<p><dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Tail adjustment amount </p></li>
-</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – Tail adjustment amount </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer8zeroTailEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer8zeroTailEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8zeroTailEv"></span><span id="rogue::interfaces::stream::Buffer::zeroTail"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afc6fc6858e801c86807ce06c293d777a"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">zeroTail</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer8zeroTailEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer8zeroTailEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer8zeroTailEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer8zeroTailEv"></span><span id="rogue::interfaces::stream::Buffer::zeroTail"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afc6fc6858e801c86807ce06c293d777a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">zeroTail</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer8zeroTailEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear the tail reservation. </p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer5beginEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="rogue::interfaces::stream::Buffer::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4947ecae5309f8856af71f858f9c6027"></span><span class="pre">uint8_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">begin</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer5beginEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer5beginEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer5beginEv"></span><span id="rogue::interfaces::stream::Buffer::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4947ecae5309f8856af71f858f9c6027"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer5beginEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get beginning buffer iterator. </p>
-<p>Get an iterator which indicates the start of the buffer space, not including the header reservation. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Begin buffer iterator </p>
+<p>Get an iterator which indicates the start of the buffer space, not including the header reservation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Begin buffer iterator </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer3endEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer3endEv"></span><span id="rogue::interfaces::stream::Buffer::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ac9673e236ed535ed34f8b62a49bed18f"></span><span class="pre">uint8_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">end</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer3endEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer3endEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer3endEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer3endEv"></span><span id="rogue::interfaces::stream::Buffer::end"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ac9673e236ed535ed34f8b62a49bed18f"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer3endEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get end buffer iterator. </p>
-<p>Get an iterator which indicates the end of the the buffer minus the tail reservation. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>End buffer iterator </p>
+<p>Get an iterator which indicates the end of the the buffer minus the tail reservation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>End buffer iterator </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::endPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7b8bdb8a036cd07a37abdc264062674e"></span><span class="pre">uint8_t</span> <span class="pre">*</span><code class="sig-name descname"><span class="pre">endPayload</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10endPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::endPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7b8bdb8a036cd07a37abdc264062674e"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">endPayload</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10endPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get end payload iterator. </p>
-<p>Get an iterator which indicates the end of the the payload space. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>End payload iterator </p>
+<p>Get an iterator which indicates the end of the the payload space. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>End payload iterator </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer7getSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7getSizeEv"></span><span id="rogue::interfaces::stream::Buffer::getSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad1ec48abd5130b0a27ca29b0531f3056"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">getSize</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer7getSizeEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer7getSizeEv"></span><span id="rogue::interfaces::stream::Buffer::getSize"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad1ec48abd5130b0a27ca29b0531f3056"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer7getSizeEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size. </p>
-<p>Get size of buffer that can hold payload data. This function returns the full buffer size minus the head and tail reservation. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size in bytes </p>
+<p>Get size of buffer that can hold payload data. This function returns the full buffer size minus the head and tail reservation. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size in bytes </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer12getAvailableEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12getAvailableEv"></span><span id="rogue::interfaces::stream::Buffer::getAvailable"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe0695dfc15bfb9aa9ec56422d9ec8d4"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">getAvailable</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer12getAvailableEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12getAvailableEv"></span><span id="rogue::interfaces::stream::Buffer::getAvailable"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe0695dfc15bfb9aa9ec56422d9ec8d4"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getAvailable</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12getAvailableEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the available space for payload. </p>
-<p>Get the remaining data available for payload. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>The amount of available space for payload in bytes. </p>
+<p>Get the remaining data available for payload. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The amount of available space for payload in bytes. </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer10getPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10getPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::getPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6611f5eb03f917084fb8126dd8e8cdab"></span><span class="pre">uint32_t</span> <code class="sig-name descname"><span class="pre">getPayload</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer10getPayloadEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10getPayloadEv"></span><span id="rogue::interfaces::stream::Buffer::getPayload"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6611f5eb03f917084fb8126dd8e8cdab"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getPayload</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10getPayloadEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the payload size. </p>
-<p>This method will return the amount of payload data in the buffer. <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>Payload size in bytes </p>
+<p>This method will return the amount of payload data in the buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Payload size in bytes </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::setPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a80cff5ea63a8b59613ecdabb6d530284"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">setPayload</span></code><span class="sig-paren">(</span><span class="pre">uint32_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::setPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a80cff5ea63a8b59613ecdabb6d530284"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPayload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10setPayloadE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the payload size. </p>
-<p>Set the payload size to the passed value. <dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: New payload size in bytes </p></li>
-</ul>
+<p>Set the payload size to the passed value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – New payload size in bytes </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::minPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6af037726f7e21711076f5d88f7fd1eb"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">minPayload</span></code><span class="sig-paren">(</span><span class="pre">uint32_t</span> <em><span class="pre">size</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::minPayload__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6af037726f7e21711076f5d88f7fd1eb"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">minPayload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10minPayloadE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set minimum payload size. </p>
-<p>This method sets the payload size to be at least the passed value. If the current payload size exceeds the passed value, the size is unchanged. <dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">size</span></code>: Min payload size in bytes </p></li>
-</ul>
+<p>This method sets the payload size to be at least the passed value. If the current payload size exceeds the passed value, the size is unchanged. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>size</strong> – Min payload size in bytes </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustPayload__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a1044d049468871e51ff4410a8f4a731c"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">adjustPayload</span></code><span class="sig-paren">(</span><span class="pre">int32_t</span> <em><span class="pre">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustPayload__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a1044d049468871e51ff4410a8f4a731c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustPayload</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer13adjustPayloadE7int32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Adjust the payload size. </p>
-<p>This method adjusts the payload size by the passed positive or negative value. <dl class="simple">
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: Value to adjust payload by in bytes </p></li>
-</ul>
+<p>This method adjusts the payload size by the passed positive or negative value. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> – Value to adjust payload by in bytes </p>
 </dd>
 </dl>
-</p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer14setPayloadFullEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer14setPayloadFullEv"></span><span id="rogue::interfaces::stream::Buffer::setPayloadFull"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1af635d4907cefd01f9f3b259ffa7f94bf"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">setPayloadFull</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer14setPayloadFullEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer14setPayloadFullEv"></span><span id="rogue::interfaces::stream::Buffer::setPayloadFull"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1af635d4907cefd01f9f3b259ffa7f94bf"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPayloadFull</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer14setPayloadFullEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the payload size to fill the buffer. </p>
 <p>This method sets the buffer payload size to fill the buffer, minus the header and tail reservation. </p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv"></span><span id="rogue::interfaces::stream::Buffer::setPayloadEmpty"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae7917be9fec791c2df18b57e624d91f2"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">setPayloadEmpty</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv"></span><span id="rogue::interfaces::stream::Buffer::setPayloadEmpty"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae7917be9fec791c2df18b57e624d91f2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setPayloadEmpty</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer15setPayloadEmptyEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set the buffer as empty. </p>
 <p>This method sets the buffer payload size as empty. </p>
 </dd></dl>
 
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6stream6Buffer5debugE8uint32_t">
-<span id="_CPPv3N5rogue10interfaces6stream6Buffer5debugE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer5debugE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::debug__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4270427c65bb0570494adc8c0455fc7e"></span><span class="pre">void</span> <code class="sig-name descname"><span class="pre">debug</span></code><span class="sig-paren">(</span><span class="pre">uint32_t</span> <em><span class="pre">idx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer5debugE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream6Buffer5debugE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream6Buffer5debugE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer5debugE8uint32_t"></span><span id="rogue::interfaces::stream::Buffer::debug__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4270427c65bb0570494adc8c0455fc7e"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">debug</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">idx</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer5debugE8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Debug <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a>. </p>
 </dd></dl>
 

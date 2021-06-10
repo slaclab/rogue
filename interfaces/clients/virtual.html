@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Virtual Client Interface &mdash; Rogue v5.7.0-1-g825a9ee7 documentation</title>
+  <title>Virtual Client Interface &mdash; Rogue v5.8.0-4-gb830f660 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                v5.7.0
+                v5.8.0
               </div>
             
           
@@ -269,8 +272,8 @@ can be added to be called any time the link state changes.</p>
 <h2>VirtualClient Description<a class="headerlink" href="#virtualclient-description" title="Permalink to this headline">¶</a></h2>
 <p>The class description for the VirtualClient class is included below:</p>
 <dl class="py class">
-<dt id="pyrogue.interfaces.VirtualClient">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></code><code class="sig-name descname"><span class="pre">VirtualClient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">VirtualClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient" title="Permalink to this definition">¶</a></dt>
 <dd><p>A full featured client interface for Rogue. This can be used in
 scripts or other clients which require remote access to the running
 Rogue instance.</p>
@@ -285,8 +288,8 @@ class is created in a python script for a given remote connection.</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="pyrogue.interfaces.VirtualClient.linked">
-<code class="sig-name descname"><span class="pre">linked</span></code><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.linked" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient.linked">
+<span class="sig-name descname"><span class="pre">linked</span></span><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.linked" title="Permalink to this definition">¶</a></dt>
 <dd><p>link state</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -296,8 +299,8 @@ class is created in a python script for a given remote connection.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyrogue.interfaces.VirtualClient.root">
-<code class="sig-name descname"><span class="pre">root</span></code><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.root" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient.root">
+<span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.root" title="Permalink to this definition">¶</a></dt>
 <dd><p>root class reference</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -307,8 +310,8 @@ class is created in a python script for a given remote connection.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.VirtualClient.addLinkMonitor">
-<code class="sig-name descname"><span class="pre">addLinkMonitor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.addLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.addLinkMonitor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient.addLinkMonitor">
+<span class="sig-name descname"><span class="pre">addLinkMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.addLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.addLinkMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a link monitor callback function. This function will be called
 any time the link state changes. A single boolean argument will be passed to
 the callback function containing the current link state.</p>
@@ -320,8 +323,8 @@ the callback function containing the current link state.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.interfaces.VirtualClient.remLinkMonitor">
-<code class="sig-name descname"><span class="pre">remLinkMonitor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.remLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.remLinkMonitor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.interfaces.VirtualClient.remLinkMonitor">
+<span class="sig-name descname"><span class="pre">remLinkMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.remLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.remLinkMonitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a previously added link monitor function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

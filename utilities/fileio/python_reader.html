@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Python File Reader &mdash; Rogue v5.7.0-1-g825a9ee7 documentation</title>
+  <title>Python File Reader &mdash; Rogue v5.8.0-4-gb830f660 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                v5.7.0
+                v5.8.0
               </div>
             
           
@@ -217,8 +220,8 @@ a list of segemented data files.</p>
 <h2>FileReader Description<a class="headerlink" href="#filereader-description" title="Permalink to this headline">¶</a></h2>
 <p>The class description for the SimpleClient class is included below:</p>
 <dl class="py class">
-<dt id="pyrogue.utilities.fileio.FileReader">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></code><code class="sig-name descname"><span class="pre">FileReader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configChan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></span><span class="sig-name descname"><span class="pre">FileReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configChan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>A lightweight file reader for Rogue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -230,8 +233,8 @@ a list of segemented data files.</p>
 </dd>
 </dl>
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.FileReader.currCount">
-<code class="sig-name descname"><span class="pre">currCount</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.currCount" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader.currCount">
+<span class="sig-name descname"><span class="pre">currCount</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.currCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of data records processed from current file</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -241,8 +244,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.FileReader.totCount">
-<code class="sig-name descname"><span class="pre">totCount</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.totCount" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader.totCount">
+<span class="sig-name descname"><span class="pre">totCount</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.totCount" title="Permalink to this definition">¶</a></dt>
 <dd><p>Total number of data records processed from</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -252,8 +255,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.FileReader.configDig">
-<code class="sig-name descname"><span class="pre">configDig</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.configDig" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader.configDig">
+<span class="sig-name descname"><span class="pre">configDig</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.configDig" title="Permalink to this definition">¶</a></dt>
 <dd><p>Current configuration/status dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -263,8 +266,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.utilities.fileio.FileReader.records">
-<code class="sig-name descname"><span class="pre">records</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader.records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.records" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader.records">
+<span class="sig-name descname"><span class="pre">records</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader.records"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.records" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator which returns (header, data) tuples</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -277,8 +280,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pyrogue.utilities.fileio.FileReader.configValue">
-<code class="sig-name descname"><span class="pre">configValue</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader.configValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.configValue" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader.configValue">
+<span class="sig-name descname"><span class="pre">configValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader.configValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader.configValue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a configuration or status value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -297,12 +300,12 @@ a list of segemented data files.</p>
 
 <p>The header data record is described below:</p>
 <dl class="py class">
-<dt id="pyrogue.utilities.fileio.RogueHeader">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></code><code class="sig-name descname"><span class="pre">RogueHeader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></span><span class="sig-name descname"><span class="pre">RogueHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Header data</p>
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.RogueHeader.size">
-<code class="sig-name descname"><span class="pre">size</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.size" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader.size">
+<span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Size of the record</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -312,8 +315,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.RogueHeader.flags">
-<code class="sig-name descname"><span class="pre">flags</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.flags" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader.flags">
+<span class="sig-name descname"><span class="pre">flags</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frame flags for the record</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -323,8 +326,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.RogueHeader.error">
-<code class="sig-name descname"><span class="pre">error</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.error" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader.error">
+<span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.error" title="Permalink to this definition">¶</a></dt>
 <dd><p>Error status for the record</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -334,8 +337,8 @@ a list of segemented data files.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pyrogue.utilities.fileio.RogueHeader.channel">
-<code class="sig-name descname"><span class="pre">channel</span></code><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.channel" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader.channel">
+<span class="sig-name descname"><span class="pre">channel</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.channel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Channel id for the record</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>

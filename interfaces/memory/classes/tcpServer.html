@@ -7,12 +7,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>TcpServer &mdash; Rogue v5.7.0-1-g825a9ee7 documentation</title>
+  <title>TcpServer &mdash; Rogue v5.8.0-4-gb830f660 documentation</title>
   
 
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
 
   
   
@@ -29,6 +31,7 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
@@ -63,7 +66,7 @@
             
             
               <div class="version">
-                v5.7.0
+                v5.8.0
               </div>
             
           
@@ -203,34 +206,36 @@
 <span id="interfaces-memory-tcp-server"></span><h1>TcpServer<a class="headerlink" href="#tcpserver" title="Permalink to this headline">¶</a></h1>
 <p>TcpServer objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
-<dt id="_CPPv4N5rogue10interfaces6memory12TcpServerPtrE">
-<span id="_CPPv3N5rogue10interfaces6memory12TcpServerPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory12TcpServerPtrE"></span><span id="rogue::interfaces::memory::TcpServerPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a062fc93e42a8b365e7b7ec77cc396051"></span><em class="property"><span class="pre">typedef</span> </em><span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">memory</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpServerE" title="rogue::interfaces::memory::TcpServer"><span class="pre">TcpServer</span></a><span class="pre">&gt;</span> <code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">memory</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">TcpServerPtr</span></code><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory12TcpServerPtrE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory12TcpServerPtrE">
+<span id="_CPPv3N5rogue10interfaces6memory12TcpServerPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory12TcpServerPtrE"></span><span id="rogue::interfaces::memory::TcpServerPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a062fc93e42a8b365e7b7ec77cc396051"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpServerE" title="rogue::interfaces::memory::TcpServer"><span class="n"><span class="pre">TcpServer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TcpServerPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory12TcpServerPtrE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Alias for using shared pointer as TcpServerPtr. </p>
 </dd></dl>
 
 <p>The class description is shown below:</p>
 <dl class="cpp class">
-<dt id="_CPPv4N5rogue10interfaces6memory9TcpServerE">
-<span id="_CPPv3N5rogue10interfaces6memory9TcpServerE"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpServerE"></span><span id="rogue::interfaces::memory::TcpServer"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpServer"></span><em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">memory</span><code class="sig-prename descclassname"><span class="pre">::</span></code></code><code class="sig-name descname"><span class="pre">TcpServer</span></code> <span class="pre">:</span> <em class="property"><span class="pre">public</span></em> <span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">memory</span><span class="pre">::</span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="pre">Master</span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpServerE" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpServerE">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpServerE"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpServerE"></span><span id="rogue::interfaces::memory::TcpServer"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpServer"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TcpServer</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpServerE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Memory TCP Bridge Server. </p>
 <p>This class implements a TCP bridge between a memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and a memory <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>. The server side of the TCP bridge implements a memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> device which executes the memory <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to an attached <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>. On the other end of the link a <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1memory_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> accepts a memory <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> from an attached <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and forwards it to this TcpSver. </p>
 <div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
 <dl class="cpp function">
-<dt id="_CPPv4N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t">
-<span id="_CPPv3N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::memory::TcpServer::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpServer_1a9f1d11524848503266aec3e200aba777"></span><em class="property"><span class="pre">static</span></em> <span class="pre">std</span><span class="pre">::</span><span class="pre">shared_ptr</span><span class="pre">&lt;</span><span class="pre">rogue</span><span class="pre">::</span><span class="pre">interfaces</span><span class="pre">::</span><span class="pre">memory</span><span class="pre">::</span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpServerE" title="rogue::interfaces::memory::TcpServer"><span class="pre">TcpServer</span></a><span class="pre">&gt;</span> <code class="sig-name descname"><span class="pre">create</span></code><span class="sig-paren">(</span><span class="pre">std</span><span class="pre">::</span><span class="pre">string</span> <em><span class="pre">addr</span></em>, <span class="pre">uint16_t</span> <em><span class="pre">port</span></em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t">
+<span id="_CPPv3N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t"></span><span id="_CPPv2N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t"></span><span id="rogue::interfaces::memory::TcpServer::create__ss.uint16_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1TcpServer_1a9f1d11524848503266aec3e200aba777"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory9TcpServerE" title="rogue::interfaces::memory::TcpServer"><span class="n"><span class="pre">TcpServer</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">addr</span></span>, <span class="n"><span class="pre">uint16_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">port</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9TcpServer6createENSt6stringE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Create a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object and return as a TcpServerPtr. </p>
 <p>The creator takes an address and port. The passed address can either be an IP address or hostname. The address string defines which network interface the socket server will listen on. A string of “*” results in all network interfaces being listened on. The memory bridge requires two TCP ports. The passed port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">rogue.interfaces.memory.TcpServer()</span></a> to Python <dl class="simple">
-<dt><strong>Return</strong></dt><dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object as a TcpServerPtr </p>
-</dd>
-<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">addr</span></code>: Interface address </p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">port</span></code>: Base port number to use for connection. </p></li>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">rogue.interfaces.memory.TcpServer()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>addr</strong> – Interface address </p></li>
+<li><p><strong>port</strong> – Base port number to use for connection. </p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> object as a TcpServerPtr </p>
+</dd>
 </dl>
-</p>
 </dd></dl>
 
 </div>
