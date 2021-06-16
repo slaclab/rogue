@@ -53,6 +53,9 @@ class ZmqServer(rogue.interfaces.ZmqServer):
 
     def _doString(self,data):
         try:
-            return str(self._doOperation(json.loads(data)))
+            d = json.loads(data)
+            if 'args' in d:
+                d['args'] = tuple(d['args'])
+            return str(self._doOperation(d))
         except Exception as msg:
             return "EXCEPTION: " + str(msg)

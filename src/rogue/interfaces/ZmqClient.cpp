@@ -169,7 +169,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
    snd += "\"path\": \"" + path + "\"";
 
    if (arg != "")
-      snd += ",\"args\": {\"py/tuple\": [\"" + arg + "\"]}";
+      snd += ",\"args\": [\"" + arg + "\"]";
 
    snd += "}";
 
