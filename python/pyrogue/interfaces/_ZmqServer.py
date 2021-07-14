@@ -56,4 +56,3 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             return str(self._doOperation(json.loads(data)))
         except Exception as msg:
             return "EXCEPTION: " + str(msg)
-
