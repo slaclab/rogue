@@ -1004,19 +1004,32 @@ class LinkVariable(BaseVariable):
     @pr.expose
     def set(self, value, write=True, index=-1):
         if self._linkedSet is not None:
+            try:
 
-            # Possible args
-            pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write, 'index' : index}
+                # Possible args
+                pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write, 'index' : index}
 
-            pr.functionHelper(self._linkedSet,pargs,self._log,self.path)
+                pr.functionHelper(self._linkedSet,pargs,self._log,self.path)
+
+            except Exception as e:
+                pr.logException(self._log,e)
+                self._log.error("Error setting link variable '{}'".format(self.path))
+                raise e
 
     @pr.expose
     def get(self, read=True, index=-1):
         if self._linkedGet is not None:
+            try:
 
-            # Possible args
-            pargs = {'dev' : self.parent, 'var' : self, 'read' : read, 'index' : index}
+                # Possible args
+                pargs = {'dev' : self.parent, 'var' : self, 'read' : read, 'index' : index}
 
-            return pr.functionHelper(self._linkedGet,pargs,self._log,self.path)
+                return pr.functionHelper(self._linkedGet,pargs,self._log,self.path)
+
+            except Exception as e:
+                pr.logException(self._log,e)
+                self._log.error("Error getting link variable '{}'".format(self.path))
+                raise e
+
         else:
             return None
