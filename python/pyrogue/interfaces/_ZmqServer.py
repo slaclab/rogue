@@ -13,6 +13,7 @@
 import rogue.interfaces
 import pickle
 import json
+import traceback
 
 
 class ZmqServer(rogue.interfaces.ZmqServer):
@@ -49,10 +50,22 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         try:
             return pickle.dumps(self._doOperation(pickle.loads(data)))
         except Exception as msg:
+            tb = traceback.format_exc()
+            print("----------------- ZMQ Server Exception ------------------")
+            print(msg)
+            print("----------------- ZMQ Server Traceback ------------------")
+            print(tb)
+            print("---------------------------------------------------------")
             return pickle.dumps(msg)
 
     def _doString(self,data):
         try:
             return str(self._doOperation(json.loads(data)))
         except Exception as msg:
+            print("----------------- ZMQ Server Exception ------------------")
+            print(msg)
+            print("----------------- ZMQ Server Traceback ------------------")
+            print(tb)
+            print("---------------------------------------------------------")
             return "EXCEPTION: " + str(msg)
+
