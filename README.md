@@ -37,4 +37,3 @@ The following is how you install the development version (pre-release) or Rogue 
    $ conda create -n rogue_pre -c tidair-dev -c tidair-packages -c conda-forge rogue
 
 ```
-
