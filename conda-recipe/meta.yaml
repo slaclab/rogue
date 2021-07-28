@@ -11,7 +11,7 @@ build:
 requirements:
    build:
      - python<3.8
-     - boost
+     - boost=1.74
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
      - git
@@ -33,7 +33,7 @@ requirements:
    run:
      - python<3.8
      - {{ pin_compatible('boost', min_pin='x.x', max_pin='x.x')}}
-     - boost
+     - boost=1.74
      - bzip2
      - zeromq
      - epics-base
