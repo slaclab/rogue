@@ -11,7 +11,7 @@ build:
 requirements:
    build:
      - python<3.8
-     - boost=1.74
+     - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
      - git
@@ -24,7 +24,7 @@ requirements:
      - numpy
    host:
      - python<3.8
-     - boost=1.74
+     - boost
      - bzip2
      - zeromq
      - epics-base
@@ -32,8 +32,7 @@ requirements:
      - numpy
    run:
      - python<3.8
-     - {{ pin_compatible('boost', min_pin='x.x', max_pin='x.x')}}
-     - boost=1.74
+     - boost
      - bzip2
      - zeromq
      - epics-base
