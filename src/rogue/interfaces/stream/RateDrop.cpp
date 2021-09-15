@@ -19,6 +19,7 @@
  *-----------------------------------------------------------------------------
 **/
 #include <stdint.h>
+#include <sys/time.h>
 #include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
