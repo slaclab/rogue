@@ -31,12 +31,12 @@ RogueHeader = namedtuple(
     'error'   ,  # 1 bytes, uint8,  B
     'channel' ]  # 1 bytes, uint8,  B
 )
-""" Header data
+""" Rogue Header data
 
     Attributes
     ----------
     size : int
-        Size of the record
+        Size of the record, minus the header
 
     flags : int
         Frame flags for the record
@@ -49,6 +49,39 @@ RogueHeader = namedtuple(
 
 """
 
+BatchHeaderSize  = 8
+BatchHeaderPack  = 'IBBBB'
+
+# Batcher Header
+BatchHeader = namedtuple(
+    'BatchHeader',
+    ['size',   # 4 Bytes, uint32, I
+    'tdest',   # 1 Byte, uint8, B
+    'fUser',   # 1 Byte, uint8, B
+    'lUser',   # 1 Byte, uint8, B
+    'width']   # 1 Byte, uint8, B
+)
+
+""" Batcher Header data
+
+    Attributes
+    ----------
+    size: int
+        Sub frame size in bytes
+
+    tdest: int
+        TDEST value from AXI Stream Frame
+
+    fUser: int
+        First USER value from AXI Stream Frame
+
+    lUser: int
+        Last USER value from AXI Stream Frame
+
+    width : int
+        Width of the batched data in bytes
+
+"""
 
 class FileReaderException(Exception):
     """ File reader exception """
@@ -70,6 +103,9 @@ class FileReader(object):
     log : obj
         Logging object to use. If set to None a new logger will be created with the name "pyrogue.FileReader".
 
+    batched : bool
+        Flag to indicate if data file contains batched data
+
     Attributes
     ----------
     currCount: int
@@ -82,16 +118,16 @@ class FileReader(object):
         Current configuration/status dictionary
     """
 
-    def __init__(self, files, configChan=None, log=None):
+    def __init__(self, files, configChan=None, log=None, batched=False):
         self._configChan = configChan
         self._currFile   = None
         self._fileSize   = 0
         self._header     = None
-        self._data       = None
         self._config     = {}
         self._currFName  = ""
         self._currCount  = 0
         self._totCount   = 0
+        self._batched    = batched
 
         if log is None:
             self._log = logging.getLogger('pyrogue.FileReader')
@@ -121,10 +157,10 @@ class FileReader(object):
                 return False
 
             self._header = RogueHeader._make(struct.Struct(RogueHeaderPack).unpack(self._currFile.read(RogueHeaderSize)))
-            payload = self._header.size - 4
+            self._header.size -= 4
 
             # Set next frame position
-            recEnd = self._currFile.tell() + payload
+            recEnd = self._currFile.tell() + self._header.size
 
             # Sanity check
             if recEnd > self._fileSize:
@@ -133,14 +169,10 @@ class FileReader(object):
 
             # Process meta data
             if self._configChan is not None and self._header.channel == self._configChan:
-                self._updateConfig(yaml.load(self._currFile.read(payload).decode('utf-8')))
+                self._updateConfig(yaml.load(self._currFile.read(self._header.size).decode('utf-8')))
 
             # This is a data channel
             else:
-                try:
-                    self._data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=payload)
-                except Exception:
-                    raise FileReaderException(f'Failed to read data from {self._currFname}')
 
                 self._currCount += 1
                 self._totCount += 1
@@ -153,7 +185,10 @@ class FileReader(object):
         Returns
         -------
         RogueHeader, bytearray
-            (header, data) tuple where header is a dictionary and data is a byte array.
+            (header, data) tuple where header is a dictionary and data is a byte array, for batched = False.
+
+        RogueHeader, BatchHeader, bytearray
+            (header, header, data) tuple where header are dictionaried and data is a byte array, for batched = True.
 
         """
         self._config = {}
@@ -170,7 +205,53 @@ class FileReader(object):
                 self._currFile = f
 
                 while self._nextRecord():
-                    yield (self._header, self._data)
+
+                    # Batch Mode
+                    if self._batched:
+
+                        curIdx = 0
+
+                        while True:
+
+                            # Check header size
+                            if curIdx + 8 > self._header.size:
+                                raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
+
+                            # Read in header data
+                            bHead = BatchHeader._make(struct.Struct(BatchHeaderPack).unpack(self._currFile.read(BatchHeaderSize)))
+                            curIdx += 8
+
+                            # Fix header width
+                            bHead.width = [2, 4, 8, 16][bHead.width]
+
+                            # Skip rest of header if more than 64-bits
+                            if bHead.width > 8:
+
+                                if curIdx + (bHead.width-8) > self._header.size:
+                                    raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
+
+                                self._currFile.seek(bHead.width-8)
+
+                            # Check payload size
+                            if curIdx + bHead.size > self._header.size:
+                                raise FileReaderException(f'Batch frame data underrun in {self._currFname}')
+
+                            # Get data
+                            data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=bHead.size)
+                            curIdx += bHead.size
+
+                            yield (self._header, bHead, data)
+
+                            if self._header.size == curIdx:
+                                break
+
+                    else:
+                        try:
+                            data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=self._header.size)
+                        except Exception:
+                            raise FileReaderException(f'Failed to read data from {self._currFname}')
+
+                        yield (self._header, data)
 
             self._log.debug(f"Processed {self._currCount} data records from {self._currFName}")
 
