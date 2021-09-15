@@ -37,6 +37,35 @@ Below is an example of using the FileReader in a python script:
          # At any time you can access the current config and status state
          print(f"Data time = {fd.configValue['root.Time']}")
 
+In some cases the data file contains frames that are "batched" using the BatcherV1 protocol:
+
+.. code-block:: python
+
+   with FileReader(files="mydata.dat",configChan=1,batched=True) as fd:
+
+      # Loop through the file data
+      for header,bHeader,data in fd.records():
+
+         # Look at record header data
+         print(f"Processing record. Total={fd.totCount}, Current={fd.currCount}")
+         print(f"Record size    = {header.size}")
+         print(f"Record channel = {header.channel}")
+         print(f"Record flags   = {header.flags:#x}")
+         print(f"Record error   = {header.error:#x}")
+         print(f"Batcher size   = {bHeader.size}")
+         print(f"Batcher tdest  = {bHeader.tdest:#x}")
+         print(f"Batcher fUser  = {bHeader.fUser:#x}")
+         print(f"Batcher lUser  = {bHeader.lUser:#x}")
+
+         # Do something with the data here:
+         for i in range(header.size):
+            print(f" Byte {i} = {data[i]:#x}")
+
+         # At any time you can access the current config and status state
+         print(f"Data time = {fd.configValue['root.Time']}")
+
+
+
 FileReader Description
 ======================
 
