@@ -27,11 +27,14 @@ namespace rogue {
    namespace protocols {
       namespace udp {
 
-         const uint32_t MaxJumboPayload = 8900;
-         const uint32_t MaxStdPayload   = 1400;
-
          const uint32_t JumboMTU = 9000;
          const uint32_t StdMTU   = 1500;
+
+          // IPv4 Header = 20B, UDP Header = 8B
+         const uint32_t HdrSize  = 20+8;
+
+         const uint32_t MaxJumboPayload = JumboMTU-HdrSize;
+         const uint32_t MaxStdPayload   = StdMTU-HdrSize;
 
          //! UDP Core
          class Core {
@@ -89,4 +92,3 @@ namespace rogue {
 };
 
 #endif
-
