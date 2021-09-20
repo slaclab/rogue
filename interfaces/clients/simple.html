@@ -1,77 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Simple Client Interface &mdash; Rogue v5.9.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Simple Client Interface &mdash; Rogue v5.9.3-16-g398a1fe5 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Virtual Client Interface" href="virtual.html" />
     <link rel="prev" title="Using The Command Line Interface" href="commandline.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Rogue
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                v5.9.0
+                v5.9.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -79,18 +39,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -117,77 +66,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Rogue</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">Interfaces</a> &raquo;</li>
-        
           <li><a href="index.html">Client Interfaces</a> &raquo;</li>
-        
       <li>Simple Client Interface</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/interfaces/clients/simple.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="simple-client-interface">
-<span id="interfaces-clients-simple"></span><h1>Simple Client Interface<a class="headerlink" href="#simple-client-interface" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="simple-client-interface">
+<span id="interfaces-clients-simple"></span><h1>Simple Client Interface<a class="headerlink" href="#simple-client-interface" title="Permalink to this headline"></a></h1>
 <p>The Rogue SimpleClient class is a lightweight python class which can be used on its own
 with minimal dependencies, requiring only the zmq library. This file is fully portable and
 can be used outside of the greater Rogue package.</p>
@@ -239,12 +145,12 @@ of the updated variables reported by the Rogue server.</p>
    <span class="c1"># be passed to the myCallBack function</span>
 </pre></div>
 </div>
-<div class="section" id="simpleclient-description">
-<h2>SimpleClient Description<a class="headerlink" href="#simpleclient-description" title="Permalink to this headline">¶</a></h2>
+<section id="simpleclient-description">
+<h2>SimpleClient Description<a class="headerlink" href="#simpleclient-description" title="Permalink to this headline"></a></h2>
 <p>The class description for the SimpleClient class is included below:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">SimpleClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.interfaces.</span></span><span class="sig-name descname"><span class="pre">SimpleClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">addr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'localhost'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">9099</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient" title="Permalink to this definition"></a></dt>
 <dd><p>A lightweight client inerface for Rogue. This can be used in
 scripts or as an interface to Rogue in matlab. For a more
 powerfull, tree access capable client. Please see the
@@ -267,14 +173,14 @@ VirtualClient class.</p>
 </dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient._stop">
-<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient._stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient._stop" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">_stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient._stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient._stop" title="Permalink to this definition"></a></dt>
 <dd><p>Stop the SimpleClient interface.
 This must be called if not not using the SimpleClient in a context</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.get">
-<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.get" title="Permalink to this definition"></a></dt>
 <dd><p>Get a variable value, initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -291,7 +197,7 @@ This must be called if not not using the SimpleClient in a context</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.getDisp">
-<span class="sig-name descname"><span class="pre">getDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">getDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.getDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.getDisp" title="Permalink to this definition"></a></dt>
 <dd><p>Get a variable value, in string form, initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -308,7 +214,7 @@ This must be called if not not using the SimpleClient in a context</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.value">
-<span class="sig-name descname"><span class="pre">value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.value" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.value"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.value" title="Permalink to this definition"></a></dt>
 <dd><p>Get a variable value, without initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -325,7 +231,7 @@ This must be called if not not using the SimpleClient in a context</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.valueDisp">
-<span class="sig-name descname"><span class="pre">valueDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.valueDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.valueDisp" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">valueDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.valueDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.valueDisp" title="Permalink to this definition"></a></dt>
 <dd><p>Get a variable value, in string form, without initating a read</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -342,7 +248,7 @@ This must be called if not not using the SimpleClient in a context</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.set">
-<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.set"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.set" title="Permalink to this definition"></a></dt>
 <dd><p>Set a variable value, using its native type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -356,7 +262,7 @@ This must be called if not not using the SimpleClient in a context</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.setDisp">
-<span class="sig-name descname"><span class="pre">setDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">setDisp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.setDisp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.setDisp" title="Permalink to this definition"></a></dt>
 <dd><p>Set a variable value, using a string representation</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -370,7 +276,7 @@ This must be called if not not using the SimpleClient in a context</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.interfaces.SimpleClient.exec">
-<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">exec</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_SimpleClient.html#SimpleClient.exec"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.SimpleClient.exec" title="Permalink to this definition"></a></dt>
 <dd><p>Call a command, with the optional arg</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -390,55 +296,38 @@ This must be called if not not using the SimpleClient in a context</p>
 
 </dd></dl>
 
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="virtual.html" class="btn btn-neutral float-right" title="Virtual Client Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="commandline.html" class="btn btn-neutral float-left" title="Using The Command Line Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="virtual.html" class="btn btn-neutral float-right" title="Virtual Client Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
-
-    </p>
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

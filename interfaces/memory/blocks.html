@@ -1,77 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Blocks &amp; Models &mdash; Rogue v5.9.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Blocks &amp; Models &mdash; Rogue v5.9.3-16-g398a1fe5 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Advanced Usage Of Blocks" href="blocks_advanced.html" />
     <link rel="prev" title="Using The TCP Bridge" href="usingTcp.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Rogue
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                v5.9.0
+                v5.9.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -79,18 +39,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -124,77 +73,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Rogue</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">Interfaces</a> &raquo;</li>
-        
           <li><a href="index.html">Memory Interface</a> &raquo;</li>
-        
       <li>Blocks &amp; Models</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/interfaces/memory/blocks.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="blocks-models">
-<span id="interfaces-memory-blocks"></span><h1>Blocks &amp; Models<a class="headerlink" href="#blocks-models" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="blocks-models">
+<span id="interfaces-memory-blocks"></span><h1>Blocks &amp; Models<a class="headerlink" href="#blocks-models" title="Permalink to this headline"></a></h1>
 <p>In the Rogue memory interface, the block provides a representation of the underlying hardware memory
 space, hosting one or more Variable objects. It is in the Block where native python types are converted
 into the bits and byte that are ultimately written to the hardware devices.</p>
@@ -315,8 +221,8 @@ with the standard set of Rogue Models.</p>
 <p>Most of the above types perform the python to byte conversions in low level C++ calls in the Block class for performance reasons.
 An exception to this is UInt and Int types that exceed 64-bits. These conversions are performed in the Model class at the python
 level.</p>
-<div class="section" id="custom-models">
-<h2>Custom Models<a class="headerlink" href="#custom-models" title="Permalink to this headline">¶</a></h2>
+<section id="custom-models">
+<h2>Custom Models<a class="headerlink" href="#custom-models" title="Permalink to this headline"></a></h2>
 <p>The user has the ability to create application specific data types by sub-classing the Model in python and providing the
 toByte and fromBytes functions that are called by the Block to perform the data conversions. This allows for a quick method to
 support odd data types.</p>
@@ -360,9 +266,9 @@ support odd data types.</p>
 <p>The user may also want to perform the python type conversion in lower level C++. In order to do this they
 must sub-class the Block class and add it to a user specific library. They can then use a modeId in the
 range 0x80 - 0xFF.  See <a class="reference internal" href="blocks_advanced.html#interfaces-memory-blocks-advanced"><span class="std std-ref">Advanced Usage Of Blocks</span></a> for more information about the advanced features of the Block class.</p>
-</div>
-<div class="section" id="using-custom-models">
-<h2>Using Custom Models<a class="headerlink" href="#using-custom-models" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="using-custom-models">
+<h2>Using Custom Models<a class="headerlink" href="#using-custom-models" title="Permalink to this headline"></a></h2>
 <p>The following shows an example of using the above custom model in Rogue. The code blow is executed during the
 creation of a custom Device class. See xxxx for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a variable using my custom Model</span>
@@ -378,9 +284,9 @@ creation of a custom Device class. See xxxx for more details.</p>
 </div>
 <p>The custom model is passed to the RemoteVariable base parameter. A Block of the appropriate size will be created
 and assocaited with the above RemoteVariable as approprite.</p>
-</div>
-<div class="section" id="pre-allocating-blocks">
-<h2>Pre-Allocating Blocks<a class="headerlink" href="#pre-allocating-blocks" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="pre-allocating-blocks">
+<h2>Pre-Allocating Blocks<a class="headerlink" href="#pre-allocating-blocks" title="Permalink to this headline"></a></h2>
 <p>In some cases the user may want to pre-create blocks of a specific size to better group Variables that are more
 effeciently accessed in larger burst transactions. With larger blocks the user can initiate transactions
 on a sub-portion of the block by accessing the variable directly, or the user can force larger burst transactions
@@ -402,55 +308,38 @@ blocks the overlap their address space. The code blow is executed during the cre
 </pre></div>
 </div>
 <p>For more information see the <a class="reference internal" href="classes/block.html#interfaces-memory-block"><span class="std std-ref">Block</span></a> and <a class="reference internal" href="classes/model.html#interfaces-memory-model"><span class="std std-ref">Model</span></a> class descriptions.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="blocks_advanced.html" class="btn btn-neutral float-right" title="Advanced Usage Of Blocks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="usingTcp.html" class="btn btn-neutral float-left" title="Using The TCP Bridge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="blocks_advanced.html" class="btn btn-neutral float-right" title="Advanced Usage Of Blocks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
-
-    </p>
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

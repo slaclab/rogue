@@ -1,77 +1,37 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <title>Sending Frames &mdash; Rogue v5.9.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+  <title>Sending Frames &mdash; Rogue v5.9.3-16-g398a1fe5 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Receiving Frames" href="receiving.html" />
     <link rel="prev" title="Connecting Streams" href="connecting.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="../../index.html" class="icon icon-home"> Rogue
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
-                v5.9.0
+                v5.9.3
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -79,18 +39,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
@@ -124,77 +73,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">Rogue</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-        
           <li><a href="../index.html">Interfaces</a> &raquo;</li>
-        
           <li><a href="index.html">Stream Interface</a> &raquo;</li>
-        
       <li>Sending Frames</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="../../_sources/interfaces/stream/sending.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="sending-frames">
-<span id="interfaces-stream-sending"></span><h1>Sending Frames<a class="headerlink" href="#sending-frames" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="sending-frames">
+<span id="interfaces-stream-sending"></span><h1>Sending Frames<a class="headerlink" href="#sending-frames" title="Permalink to this headline"></a></h1>
 <p>Frames are transmitted by a subclass of the <a class="reference internal" href="classes/master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a> class in rogue.
 This subclass can be created either in python or in c++. In order to send a Frame, the
 master sub-class must first request the creation of a new Frame with enough space available for
@@ -207,8 +113,8 @@ zero copy buffers is usually emptied when it is passed to the primary slave and 
 reused.</p>
 <p>Python and C++ subclasses of the Master class can be used interchangeably, allowing c++ subclasses
 to receive Frames from python masters and python subclasses to receive Frames from c++ masters.</p>
-<div class="section" id="python-master-subclass">
-<h2>Python Master Subclass<a class="headerlink" href="#python-master-subclass" title="Permalink to this headline">¶</a></h2>
+<section id="python-master-subclass">
+<h2>Python Master Subclass<a class="headerlink" href="#python-master-subclass" title="Permalink to this headline"></a></h2>
 <p>Implementing a Master subclass in python is easy, but may result in a lower level of performance.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
 
@@ -257,9 +163,9 @@ to receive Frames from python masters and python subclasses to receive Frames fr
         <span class="bp">self</span><span class="o">.</span><span class="n">_sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="c-master-subclass">
-<h2>C++ Master Subclass<a class="headerlink" href="#c-master-subclass" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="c-master-subclass">
+<h2>C++ Master Subclass<a class="headerlink" href="#c-master-subclass" title="Permalink to this headline"></a></h2>
 <p>Creating a Master sub-class in c++ is done in a similar fashion. A new frame is
 requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame
@@ -273,56 +179,56 @@ and we use std::copy to move data from data buffer into the Frame.</p>
 <span class="cp">#import &lt;rogue/interfaces/stream/Frame.h&gt;</span>
 <span class="cp">#import &lt;rogue/interfaces/stream/FrameIterator.h&gt;</span>
 
-<span class="n">class</span> <span class="nl">MyCustomMaster</span> <span class="p">:</span> <span class="n">public</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span> <span class="p">{</span>
-   <span class="nl">public</span><span class="p">:</span>
+<span class="n">class</span><span class="w"> </span><span class="nl">MyCustomMaster</span> <span class="p">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="nl">public</span><span class="p">:</span><span class="w"></span>
 
-      <span class="c1">// Create a static class creator to return our custom class</span>
-      <span class="c1">// wrapped with a shared pointer</span>
-      <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
-         <span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span>
-            <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">();</span>
-         <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
-      <span class="p">}</span>
+<span class="w">      </span><span class="c1">// Create a static class creator to return our custom class</span>
+<span class="w">      </span><span class="c1">// wrapped with a shared pointer</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
 
-      <span class="c1">// Standard class creator which is called by create</span>
-      <span class="n">MyCustomMaster</span><span class="p">()</span> <span class="o">:</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+<span class="w">      </span><span class="c1">// Standard class creator which is called by create</span>
+<span class="w">      </span><span class="n">MyCustomMaster</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Master</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
 
-      <span class="kt">void</span> <span class="n">myFrameGen</span><span class="p">()</span> <span class="p">{</span>
-         <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FramePtr</span> <span class="n">frame</span><span class="p">;</span>
-         <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameIterator</span> <span class="n">it</span><span class="p">;</span>
-         <span class="kt">uint32_t</span> <span class="n">x</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">myFrameGen</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FramePtr</span><span class="w"> </span><span class="n">frame</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameIterator</span><span class="w"> </span><span class="n">it</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
 
-         <span class="c1">// First request an empty from from the primary slave</span>
-         <span class="c1">// The first arg is the size, the second arg is a boolean</span>
-         <span class="c1">// indicating if we can allow zero copy buffers, usually set to true</span>
+<span class="w">         </span><span class="c1">// First request an empty from from the primary slave</span>
+<span class="w">         </span><span class="c1">// The first arg is the size, the second arg is a boolean</span>
+<span class="w">         </span><span class="c1">// indicating if we can allow zero copy buffers, usually set to true</span>
 
-         <span class="c1">// Here we request a frame capable of holding 100 bytes</span>
-         <span class="n">frame</span> <span class="o">=</span> <span class="n">reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="w">         </span><span class="c1">// Here we request a frame capable of holding 100 bytes</span>
+<span class="w">         </span><span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
 
-         <span class="c1">// Unlike the python API we must now specify the new payload size</span>
-         <span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span>
+<span class="w">         </span><span class="c1">// Unlike the python API we must now specify the new payload size</span>
+<span class="w">         </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">20</span><span class="p">);</span><span class="w"></span>
 
-         <span class="c1">// Here we get an iterator to the frame data</span>
-         <span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="w">         </span><span class="c1">// Here we get an iterator to the frame data</span>
+<span class="w">         </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
 
-         <span class="c1">// Set an incrementing value to the first 10 locations</span>
-         <span class="k">for</span> <span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="n">x</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-            <span class="o">*</span><span class="n">it</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
-            <span class="n">it</span><span class="o">++</span><span class="p">;</span>
-         <span class="p">}</span>
+<span class="w">         </span><span class="c1">// Set an incrementing value to the first 10 locations</span>
+<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="o">*</span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+<span class="w">            </span><span class="n">it</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
 
-         <span class="c1">// Use std::copy to copy data from a data buffer</span>
-         <span class="c1">// Here we copy 10 bytes starting a the current position of 10</span>
-         <span class="c1">// Update the iterator</span>
-         <span class="n">it</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">data</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span> <span class="n">it</span><span class="p">);</span>
+<span class="w">         </span><span class="c1">// Use std::copy to copy data from a data buffer</span>
+<span class="w">         </span><span class="c1">// Here we copy 10 bytes starting a the current position of 10</span>
+<span class="w">         </span><span class="c1">// Update the iterator</span>
+<span class="w">         </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="o">+</span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="p">);</span><span class="w"></span>
 
-         <span class="c1">//Send frame</span>
-         <span class="n">sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span>
-      <span class="p">}</span>
-<span class="p">};</span>
+<span class="w">         </span><span class="c1">//Send frame</span>
+<span class="w">         </span><span class="n">sendFrame</span><span class="p">(</span><span class="n">frame</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 
 <span class="c1">// Shared pointer alias</span>
-<span class="k">typedef</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span> <span class="n">MyCustomMasterPtr</span><span class="p">;</span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyCustomMasterPtr</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>The std::copy call is the safest method for moving frame data round using The FrameIterator class. It will
@@ -335,52 +241,52 @@ order to move data in the most effecient way, it is best to use std::memcpy with
 provided by the Buffer class.  The Rogue <a class="reference internal" href="classes/frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a> provides
 mechanisms for iterating through each contiguous buffer. The following example performs a data copy from
 a passed data buffer into the Rogue frame, ensuring that the most efficient copy methods are used:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span>  <span class="n">size</span><span class="p">;</span>
-<span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">data</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint32_t</span><span class="w">  </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">data</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// Request a new buffer with 100 bytes</span>
-<span class="n">frame</span> <span class="o">=</span> <span class="n">reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span>
+<span class="n">frame</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">reqFrame</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Update the new payload size</span>
-<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span>
+<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Get an iterator to the start of the Frame</span>
-<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// Keep going until we get to the end of the Frame, assume the passed data pointer has 100 bytes</span>
-<span class="k">while</span> <span class="p">(</span> <span class="n">it</span> <span class="o">!=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">()</span> <span class="p">)</span> <span class="p">{</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-   <span class="c1">// The rem buffer method returns the number of bytes left in the current contiguous buffer</span>
-   <span class="n">size</span> <span class="o">=</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">remBuffer</span><span class="p">();</span>
+<span class="w">   </span><span class="c1">// The rem buffer method returns the number of bytes left in the current contiguous buffer</span>
+<span class="w">   </span><span class="n">size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">it</span><span class="o">-&gt;</span><span class="n">remBuffer</span><span class="p">();</span><span class="w"></span>
 
-   <span class="c1">// Copy the data using the iterator ptr method</span>
-   <span class="n">std</span><span class="o">::</span><span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">it</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="p">(),</span> <span class="n">size</span><span class="p">);</span>
+<span class="w">   </span><span class="c1">// Copy the data using the iterator ptr method</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">memcpy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">it</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="p">(),</span><span class="w"> </span><span class="n">size</span><span class="p">);</span><span class="w"></span>
 
-   <span class="c1">// Update the pointer and the iterator</span>
-   <span class="n">data</span> <span class="o">+=</span> <span class="n">size</span><span class="p">;</span>
-   <span class="n">it</span> <span class="o">+=</span> <span class="n">size</span><span class="p">;</span>
-<span class="p">}</span>
+<span class="w">   </span><span class="c1">// Update the pointer and the iterator</span>
+<span class="w">   </span><span class="n">data</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">it</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Alternatively if the user wishes to access individual values in the data frame at various offsets,
 they can make use of the toFrame helper function defined in <a class="reference internal" href="classes/helpers.html#interfaces-stream-helpers"><span class="std std-ref">Frame Helpers</span></a>.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint64_t</span> <span class="n">data64</span><span class="p">;</span>
-<span class="kt">uint32_t</span> <span class="n">data32</span><span class="p">;</span>
-<span class="kt">uint8_t</span>  <span class="n">data8</span><span class="p">;</span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">data64</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">data32</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint8_t</span><span class="w">  </span><span class="n">data8</span><span class="p">;</span><span class="w"></span>
 
 <span class="c1">// Update frame payload size</span>
-<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">13</span><span class="p">);</span>
+<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">13</span><span class="p">);</span><span class="w"></span>
 
-<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// Write 64-bits and advance iterator 8 bytes</span>
-<span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data64</span><span class="p">);</span>
+<span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data64</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Write 32-bits and advance iterator 4 bytes</span>
-<span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data32</span><span class="p">);</span>
+<span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data32</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Write 8-bits and advance iterator 1 byte</span>
-<span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data8</span><span class="p">);</span>
+<span class="n">toFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data8</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>In some cases the user will need high performance element level access to the frame data. The <a class="reference internal" href="classes/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a>
@@ -395,74 +301,57 @@ received frames.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// First lets make sure the frame is made up of a single buffer</span>
 <span class="c1">// Set the request enable flag to true, allowing a new frame to</span>
 <span class="c1">// be created. (be carefull with this call, see note above)</span>
-<span class="n">self</span><span class="o">-&gt;</span><span class="n">ensureSingleBuffer</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">True</span><span class="p">);</span>
+<span class="n">self</span><span class="o">-&gt;</span><span class="n">ensureSingleBuffer</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">True</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Update frame payload size</span>
-<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">800</span><span class="p">);</span>
+<span class="n">frame</span><span class="o">-&gt;</span><span class="n">setPayload</span><span class="p">(</span><span class="mi">800</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// Get the iterator</span>
-<span class="n">it</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span>
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// Create accessor at current iterator position</span>
 <span class="c1">// We want to access 100 64-bit values</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameAccessor</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span> <span class="n">acc</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameAccessor</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameAccessor</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">acc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameAccessor</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
 
 <span class="c1">// We can now access the values as an array:</span>
-<span class="n">acc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value1</span><span class="p">;</span>
-<span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value2</span><span class="p">;</span>
+<span class="n">acc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value1</span><span class="p">;</span><span class="w"></span>
+<span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value2</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Further study of the <a class="reference internal" href="classes/frame.html#interfaces-stream-frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="classes/buffer.html#interfaces-stream-buffer"><span class="std std-ref">Buffer</span></a> APIs will reveal more
 advanced methods of access frame and buffer data.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="receiving.html" class="btn btn-neutral float-right" title="Receiving Frames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="connecting.html" class="btn btn-neutral float-left" title="Connecting Streams" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="receiving.html" class="btn btn-neutral float-right" title="Receiving Frames" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2019, SLAC National Accelerator Laboratory.
-
-    </p>
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
