@@ -21,6 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #include <stdint.h>
 #include <thread>
+#include <memory>
 
 namespace rogue {
    namespace interfaces {

@@ -30,6 +30,34 @@ from contextlib import contextmanager
 
 SystemLogInit = '[]'
 
+class UpdateTracker(object):
+    def __init__(self,period,q):
+        self._count = 0
+        self._list = {}
+        self._period = period
+        self._last = time.time()
+        self._q = q
+
+    def increment(self, period):
+        if self._count == 0 or self._period < period:
+            self._period = period
+        self._count +=1
+
+    def decrement(self):
+        if self._count != 0:
+            self._count -= 1
+
+        self._check()
+
+    def _check(self):
+        if len(self._list) != 0 and (self._count == 0 or (time.time() - self._last) > self._period):
+            self._last = time.time()
+            self._q.put(self._list)
+            self._list = {}
+
+    def update(self,var):
+        self._list[var.path] = var
+        self._check()
 
 class RootLogHandler(logging.Handler):
     """ Class to listen to log entries and add them to syslog variable"""
@@ -155,8 +183,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateQueue = queue.Queue()
         self._updateThread = None
         self._updateLock   = threading.Lock()
-        self._updateCount  = {}
-        self._updateList   = {}
+        self._updateTrack  = {}
 
         # SQL URL
         self._sqlLog = None
@@ -456,16 +483,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return obj(arg)
 
     @contextmanager
-    def updateGroup(self):
+    def updateGroup(self, period=0):
         tid = threading.get_ident()
 
         # At with call
         with self._updateLock:
-            if tid not in self._updateCount:
-                self._updateList[tid] = {}
-                self._updateCount[tid] = 0
+            if tid not in self._updateTrack:
+                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
 
-            self._updateCount[tid] += 1
+            self._updateTrack[tid].increment(period)
 
         try:
             yield
@@ -473,12 +499,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # After with is done
             with self._updateLock:
-                if self._updateCount[tid] == 1:
-                    self._updateCount[tid] = 0
-                    self._updateQueue.put(self._updateList[tid])
-                    self._updateList[tid] = {}
-                else:
-                    self._updateCount[tid] -= 1
+                self._updateTrack[tid].decrement()
 
     @contextmanager
     def pollBlock(self):
@@ -897,15 +918,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         tid = threading.get_ident()
 
         with self._updateLock:
-            if tid not in self._updateCount:
-                self._updateList[tid] = {}
-                self._updateCount[tid] = 0
-
-            self._updateList[tid][var.path] = var
-
-            if self._updateCount[tid] == 0:
-                self._updateQueue.put(self._updateList[tid])
-                self._updateList[tid] = {}
+            if tid not in self._updateTrack:
+                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+            self._updateTrack[tid].update(var)
 
     # Worker thread
     def _updateWorker(self):

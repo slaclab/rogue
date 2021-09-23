@@ -18,6 +18,7 @@
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #include <thread>
 #include <stdint.h>
+#include <memory>
 
 namespace rogue {
    namespace protocols {

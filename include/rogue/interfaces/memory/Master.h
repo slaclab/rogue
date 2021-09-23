@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include <thread>
+#include <memory>
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON

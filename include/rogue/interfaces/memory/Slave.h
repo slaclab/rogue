@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include <vector>
 #include <map>
+#include <memory>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/EnableSharedFromThis.h>
 

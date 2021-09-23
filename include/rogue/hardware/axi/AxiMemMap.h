@@ -19,6 +19,7 @@
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <thread>
+#include <memory>
 #include <mutex>
 #include <stdint.h>
 #include <rogue/Queue.h>
