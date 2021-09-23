@@ -177,6 +177,10 @@ class EpicsPvHolder(object):
 
         # Get initial value
         varVal = var.getVariableValue(read=False)
+        
+        # Override LinkerVariables with init=None
+        if varVal.valueDisp is None:
+            varVal.valueDisp = ''
 
         # Detect array
         if self._var.isList:
