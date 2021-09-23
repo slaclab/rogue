@@ -31,10 +31,10 @@ from contextlib import contextmanager
 SystemLogInit = '[]'
 
 class UpdateTracker(object):
-    def __init__(self,period,q):
+    def __init__(self,q):
         self._count = 0
         self._list = {}
-        self._period = period
+        self._period = 0
         self._last = time.time()
         self._q = q
 
@@ -50,7 +50,8 @@ class UpdateTracker(object):
         self._check()
 
     def _check(self):
-        if len(self._list) != 0 and (self._count == 0 or (time.time() - self._last) > self._period):
+        if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
+            #print(f"Update fired {time.time()}")
             self._last = time.time()
             self._q.put(self._list)
             self._list = {}
