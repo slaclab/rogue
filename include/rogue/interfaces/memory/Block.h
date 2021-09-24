@@ -23,6 +23,7 @@
 
 #include <rogue/interfaces/memory/Master.h>
 #include <thread>
+#include <memory>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

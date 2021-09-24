@@ -19,6 +19,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <stdint.h>
+#include <memory>
 #include <rogue/Queue.h>
 
 namespace rogue {

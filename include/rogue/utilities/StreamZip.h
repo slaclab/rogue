@@ -23,6 +23,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 
+#include <memory>
 namespace rogue {
    namespace utilities {
 

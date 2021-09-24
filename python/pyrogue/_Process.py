@@ -109,6 +109,7 @@ class Process(pr.Device):
             self._process()
         except Exception as e:
             pr.logException(self._log,e)
+            self.Message.setDisp("Stopped after error!")
 
         self.Running.set(False)
 
