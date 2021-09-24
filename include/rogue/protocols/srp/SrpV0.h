@@ -22,6 +22,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/Logging.h>
+#include <memory>
 
 namespace rogue {
    namespace protocols {

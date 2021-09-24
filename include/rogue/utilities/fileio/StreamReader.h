@@ -22,6 +22,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <map>
+#include <memory>
 
 namespace rogue {
    namespace utilities {

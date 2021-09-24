@@ -20,6 +20,7 @@
 #include <rogue/interfaces/memory/Transaction.h>
 #include <thread>
 #include <mutex>
+#include <memory>
 #include <stdint.h>
 #include <rogue/Logging.h>
 #include <rogue/Queue.h>

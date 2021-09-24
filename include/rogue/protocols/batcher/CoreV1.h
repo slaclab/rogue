@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_BATCHER_CORE_V1_H__
 #include <stdint.h>
 #include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/Logging.h>
 

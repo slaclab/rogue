@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <map>
 #include <condition_variable>
+#include <memory>
 
 namespace rogue {
    namespace utilities {

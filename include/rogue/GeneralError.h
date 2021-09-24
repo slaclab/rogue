@@ -22,6 +22,7 @@
 #include <exception>
 #include <stdint.h>
 #include <string>
+#include <memory>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

@@ -20,6 +20,7 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <stdint.h>
 #include <rogue/Queue.h>
+#include <memory>
 
 namespace rogue {
    namespace protocols {

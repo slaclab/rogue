@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <thread>
 #include <rogue/interfaces/stream/Slave.h>
+#include <memory>
 
 namespace rogue {
    namespace utilities {

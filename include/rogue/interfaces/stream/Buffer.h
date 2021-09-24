@@ -21,6 +21,7 @@
 #ifndef __ROGUE_INTERFACES_STREAM_BUFFER_H__
 #define __ROGUE_INTERFACES_STREAM_BUFFER_H__
 #include <stdint.h>
+#include <memory>
 
 #include <rogue/interfaces/stream/Frame.h>
 

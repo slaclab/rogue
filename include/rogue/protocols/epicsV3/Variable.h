@@ -24,6 +24,7 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <thread>
+#include <memory>
 #include <casdef.h>
 #include <gdd.h>
 #include <gddApps.h>

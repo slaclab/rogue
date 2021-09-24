@@ -22,6 +22,7 @@
 #define __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
 #include <stdint.h>
 #include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/Logging.h>

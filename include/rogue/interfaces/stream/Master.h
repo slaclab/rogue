@@ -26,6 +26,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <memory>
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
@@ -141,7 +142,7 @@ namespace rogue {
                 *  Subclasses should override this method
                 */
                virtual void stop();
-    
+
 #ifndef NO_PYTHON
 
                //! Support == operator in python

@@ -16,6 +16,7 @@
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <thread>
+#include <memory>
 #include <stdint.h>
 #include <rogue/Logging.h>
 

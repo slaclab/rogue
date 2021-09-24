@@ -18,6 +18,7 @@
 #define __ROGUE_PROTOCOLS_SRP_CMD_H__
 #include <stdint.h>
 #include <thread>
+#include <memory>
 #include <rogue/interfaces/stream/Master.h>
 
 namespace rogue {
