@@ -11,10 +11,11 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMPushButton
+from pydm.widgets import PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Slot
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox, QLineEdit
+from qtpy.QtCore import Slot, Qt
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QFileDialog, QGroupBox, QLineEdit, QFormLayout
+from pyrogue.pydm.widgets import PyRogueLineEdit
 import datetime
 
 
@@ -41,6 +42,42 @@ class RootControl(PyDMFrame):
 
         vb = QVBoxLayout()
         gb.setLayout(vb)
+
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        hb.addLayout(fl)
+
+        w = PyDMEnumComboBox(parent=None, init_channel=self._path + '.PollEn')
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
+        fl.addRow('Poll Enable:',w)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        hb.addLayout(fl)
+
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.LocalTime')
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
+        fl.addRow('Local Time:',w)
+
+        fl = QFormLayout()
+        fl.setRowWrapPolicy(QFormLayout.DontWrapRows)
+        fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
+        fl.setLabelAlignment(Qt.AlignRight)
+        hb.addLayout(fl)
+
+        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.RogueVersion')
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
+        fl.addRow('Rogue Version:',w)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
