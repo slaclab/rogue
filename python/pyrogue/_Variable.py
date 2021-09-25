@@ -142,8 +142,6 @@ class BaseVariable(pr.Node):
         self._typeStr       = typeStr
         self._block         = None
         self._pollInterval  = pollInterval
-        self._nativeType    = None
-        self._isList        = False
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
@@ -151,32 +149,29 @@ class BaseVariable(pr.Node):
         # Build enum if specified
         self._disp = disp
         self._enum = enum
+
         if isinstance(disp, dict):
-            self._disp = 'enum'
             self._enum = disp
         elif isinstance(disp, list):
-            self._disp = 'enum'
             self._enum = {k:str(k) for k in disp}
         elif type(value) == bool and enum is None:
-            self._disp = 'enum'
             self._enum = {False: 'False', True: 'True'}
 
-        if enum is not None:
+        if self._enum is not None:
             self._disp = 'enum'
 
-        if value is not None and (isinstance(value, list) or isinstance(value, np.ndarray)):
-            self._isList = True
-
-        # Determine typeStr from value type
-        if typeStr == 'Unknown' and value is not None:
-            if isinstance(value, list):
-                self._typeStr = f'{value[0].__class__.__name__}[]'
-            elif isinstance(value, np.ndarray):
-                self._typeStr = str(value.dtype).capitalize() + '[np]'
-            else:
-                self._typeStr = value.__class__.__name__
-        else:
+        if isinstance(value, np.ndarray):
+            self._nativeType = np.ndarray
+            self._ndType = value.dtype
+            self._typeStr = f'{value.dtype}{value.shape}'
+        elif value is None:
+            self._nativeType = None
+            self._ndType = None
             self._typeStr = typeStr
+        else:
+            self._nativeType = type(value)
+            self._ndType = None
+            self._typeStr = value.__class__.__name__
 
         # Create inverted enum
         self._revEnum = None
@@ -231,7 +226,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if self.nativeType is float or self.nativeType is np.ndarray:
+        if self.nativeType == float or self.nativeType == np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
@@ -247,8 +242,8 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def isList(self):
-        return self._isList
+    def ndType(self):
+        return self._ndType
 
     @pr.expose
     @property
@@ -615,6 +610,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  bitOffset=0,
                  pollInterval=0,
                  updateNotify=True,
+                 typeStr='Unknown',
                  overlapEn=False,
                  bulkOpEn=True,
                  verify=True,
@@ -669,12 +665,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               pollInterval=pollInterval,updateNotify=updateNotify,
                               guiGroup=guiGroup)
 
-        self._typeStr = self._base.name
-
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
-            self._typeStr = f'{self._base.name}[{numValues}]'
-            self._isList = True
+            self._nativeType = np.ndarray
+            self._ndType = self._base.ndtype
+            self._typeStr = f'{self.ndtype}({numValues})'
 
             if len(bitSize) != 1:
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
@@ -824,9 +819,9 @@ class LocalVariable(BaseVariable):
 
     def __init__(self, *,
                  name,
+                 value=None,
                  description='',
                  mode='RW',
-                 value=None,
                  disp='{}',
                  enum=None,
                  units=None,
@@ -840,9 +835,9 @@ class LocalVariable(BaseVariable):
                  highAlarm=None,
                  localSet=None,
                  localGet=None,
-                 typeStr='Unknown',
                  pollInterval=0,
                  updateNotify=True,
+                 typeStr='Unknown',
                  bulkOpEn=True,
                  guiGroup=None):
 
@@ -852,7 +847,7 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description,
                               mode=mode, value=value, disp=disp,
                               enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum, typeStr=typeStr,
+                              minimum=minimum, maximum=maximum,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
@@ -981,6 +976,7 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name,
+                 value,
                  variable=None,
                  dependencies=None,
                  linkedSet=None,
@@ -1007,8 +1003,6 @@ class LinkVariable(BaseVariable):
             kwargs['mode'] = 'RO'
         if not self._linkedGet:
             kwargs['mode'] = 'WO'
-
-        # Need to have at least 1 of linkedSet or linkedGet, otherwise error
 
         # Call super constructor
         BaseVariable.__init__(self, name=name, **kwargs)

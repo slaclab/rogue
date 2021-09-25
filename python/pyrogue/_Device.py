@@ -40,6 +40,8 @@ class EnableVariable(pr.BaseVariable):
         self._value  = enabled
         self._lock   = threading.Lock()
 
+    @pr.expose
+    @property
     def nativeType(self):
         return bool
 
