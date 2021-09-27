@@ -33,17 +33,6 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Setup Environment
-        run: |
-          EPICS_BASE=${HOME}/packages/epics/base-7.0.3
-          EPICS_PCAS_ROOT=${HOME}/packages/pcas/pcas-4.13.2
-          LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
-          PATH=${EPICS_BASE}/bin/linux-x86_64:${PATH}
-          echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
-          echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
-          echo "PATH=$PATH" >> $GITHUB_ENV
-
       - name: Install dependencies
         run: |
           sudo apt-get update
@@ -51,24 +40,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install setuptools
           pip install -r pip_requirements.txt
-
-      - name: Install EPICS Base
-        run: |
-          mkdir -p ${EPICS_BASE}
-          cd ${EPICS_BASE}
-          pwd
-          wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
-          tar xzf base-7.0.3.tar.gz --strip 1
-          make clean && make && make install
-
-      - name: Install EPICS PCAS
-        run: |
-          mkdir -p ${EPICS_PCAS_ROOT}
-          cd ${EPICS_PCAS_ROOT}
-          wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
-          tar xzf pcas-4.13.2.tar.gz --strip 1
-          echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
-          make clean && make && make install
 
       # Rogue
       - name: Build Rogue
