@@ -32,10 +32,6 @@
 #include <rogue/protocols/udp/module.h>
 #include <rogue/protocols/batcher/module.h>
 
-#if DO_EPICS_V3
-   #include <rogue/protocols/epicsV3/module.h>
-#endif
-
 namespace bp  = boost::python;
 
 void rogue::protocols::setup_module() {
@@ -54,10 +50,5 @@ void rogue::protocols::setup_module() {
    rogue::protocols::srp::setup_module();
    rogue::protocols::udp::setup_module();
    rogue::protocols::batcher::setup_module();
-
-#if DO_EPICS_V3
-   rogue::protocols::epicsV3::setup_module();
-#endif
-
 }
 
