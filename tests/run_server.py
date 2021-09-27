@@ -46,14 +46,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--epics3",
-    action   = 'store_true',
-    required = False,
-    default  = False,
-    help     = "Enable EPICS 3",
-)
-
-parser.add_argument(
     "--epics4",
     action   = 'store_true',
     required = False,
@@ -64,14 +56,8 @@ parser.add_argument(
 # Get the arguments
 args = parser.parse_args()
 
-if args.epics3:
-    import pyrogue.protocols.epics
-
 if args.epics4:
     import pyrogue.protocols.epicsV4
-
-#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
-#rogue.Logging.setLevel(rogue.Logging.Debug)
 
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
@@ -192,10 +178,6 @@ class DummyTree(pyrogue.Root):
         #self.add(self.prbsTx)
 
         #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
-
-        if args.epics3:
-            self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-            self.addProtocol(self._epics)
 
         if args.epics4:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)

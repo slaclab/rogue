@@ -162,63 +162,6 @@ if (NOT ZeroMQ_FOUND)
 
 endif()
 
-
-#####################################
-# EPICS V3
-#####################################
-if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
-   set(DO_EPICS_V3 1)
-   set(EPICS_BASE_DIR $ENV{EPICS_BASE})
-   if(DEFINED ENV{EPICS_HOST_ARCH})
-       set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
-   else()
-       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch
-                       OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
-       string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
-   endif()
-
-   # PCAS is part of epics before version 4
-   if(EPICS_PCAS_ROOT)
-      set(EPICS_PCAS_DIR ${EPICS_PCAS_ROOT})
-   elseif(DEFINED ENV{EPICS_PCAS_ROOT})
-      set(EPICS_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
-   else()
-      set(EPICS_PCAS_DIR $ENV{EPICS_BASE})
-   endif()
-
-   # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
-   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICS_PCAS_DIR}/include)
-   if (NOT E3_TEST_INCLUDE_DIR)
-      set(DO_EPICS_V3 0)
-   elseif(APPLE)
-
-      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
-                            ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/clang
-                            ${EPICS_BASE_DIR}/include/os/Darwin)
-
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib
-                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
-   else()
-
-      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
-                            ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc
-                            ${EPICS_BASE_DIR}/include/os/Linux)
-
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so
-                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
-   endif()
-
-else()
-   set(DO_EPICS_V3 0)
-endif()
-
-
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION
 ##########################################################
@@ -294,7 +237,6 @@ include_directories(system ${PYTHON_INCLUDE_DIRS})
 include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
-include_directories(system ${EPICS_INCLUDES})
 
 if (APPLE)
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
@@ -317,7 +259,6 @@ set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVE
 
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${EPICS_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
@@ -336,7 +277,6 @@ if(STATIC_LIB)
     # Link rogue core to boost, python and bzip
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Boost_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${EPICS_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${PYTHON_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
@@ -483,14 +423,6 @@ else()
 endif()
 
 message("")
-
-if (DO_EPICS_V3)
-   message("-- Found EPICS: ${EPICS_BASE_DIR}")
-   message("")
-   message("-- Found PCAS:  ${EPICS_PCAS_DIR}")
-else()
-   message("-- EPICS V3 not included!")
-endif()
 
 message("")
 message("-- Found ZeroMq: ${ZeroMQ_INCLUDE_DIR}")
