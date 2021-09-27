@@ -66,9 +66,6 @@ Information on the homebrew package manager can be found at: `<https://brew.sh/>
    $ brew install zeromq
    $ brew install pyqt5
 
-Epics V3 support is and optional module that will be included in the rogue build
-if the EPICS_BASE directory is set in the user's environment.
-
 Building & Installing Rogue
 ===========================
 
