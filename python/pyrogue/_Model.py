@@ -11,7 +11,7 @@
 #-----------------------------------------------------------------------------
 
 import rogue.interfaces.memory as rim
-
+import numpy as np
 
 def wordCount(bits, wordSize):
     ret = bits // wordSize
@@ -110,6 +110,7 @@ class Model(object, metaclass=ModelMeta):
     endianness  = 'little'
     bitReverse  = False
     modelId     = rim.PyFunc
+    ndType      = None
 
     def __init__(self, bitSize, binPoint=0):
         self.binPoint = binPoint
@@ -200,6 +201,7 @@ class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
     modelId     = rim.UInt
+    ndType = np.dtype(np.uint)
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -228,7 +230,8 @@ class UIntReversed(UInt):
     Model class for unsigned integers, stored in reverse bit order
     """
 
-    modelId   = rim.PyFunc # Not yet supported
+    modelId    = rim.PyFunc # Not yet supported
+    ndType     = None
     bitReverse = True
 
     def toBytes(self, value):
@@ -345,6 +348,7 @@ class String(Model):
     defaultdisp = '{}'
     pytype      = str
     modelId     = rim.String
+    ndType      = None
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -368,6 +372,7 @@ class Float(Model):
     pytype      = float
     fstring     = 'f'
     modelId     = rim.Float
+    ndType      = np.dtype(np.float32)
 
     def __init__(self, bitSize):
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
@@ -395,7 +400,8 @@ class Double(Float):
     """
 
     fstring = 'd'
-    modelId   = rim.Double
+    modelId = rim.Double
+    ndType  = np.dtype(np.float64)
 
     def __init__(self, bitSize):
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
@@ -440,9 +446,10 @@ class Fixed(Model):
         Huh?
     """
 
-    pytype = float
-    signed = True
-    modelId   = rim.Fixed
+    pytype  = float
+    signed  = True
+    modelId = rim.Fixed
+    ndType  = np.dtype(np.float64)
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)

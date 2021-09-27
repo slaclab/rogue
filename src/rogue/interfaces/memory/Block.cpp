@@ -33,8 +33,11 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+#include <numpy/arrayobject.h>
+#include <numpy/ndarraytypes.h>
 namespace bp  = boost::python;
 #endif
 
@@ -621,84 +624,38 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t index ) {
 void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    Py_buffer valueBuf;
-   bp::list vl;
-   bp::object tmp;
 
    // Unindexed with a list variable
-   if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
-
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setPyFunc","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
-
-      for (x=0; x < var->numValues_; x++) {
-         tmp = vl[x];
-         bp::object ret = ((rim::VariableWrap*)var)->toBytes(tmp);
-
-         if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-            throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
-
-         setBytes((uint8_t *)valueBuf.buf,var,x);
-
-         PyBuffer_Release(&valueBuf);
-      }
-   }
+   if ( index < 0 && var->numValues_ > 0 )
+      throw(rogue::GeneralError::create("Block::setPyFunc","Using ndarry not supported for %s",var->name_.c_str()));
 
    // Single value
-   else {
+   bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
 
-       bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
+   if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
 
-       if ( PyObject_GetBuffer(ret.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-          throw(rogue::GeneralError::create("Block::setPyFunc","Failed to extract byte array for %s",var->name_.c_str()));
-
-       setBytes((uint8_t *)valueBuf.buf,var,index);
-
-       PyBuffer_Release(&valueBuf);
-   }
+   setBytes((uint8_t *)valueBuf.buf,var,index);
+   PyBuffer_Release(&valueBuf);
 }
 
 // Get data using python function
 bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
-   bp::object ret;
-   bp::list retList;
-   uint32_t x;
-
    uint8_t getBuffer[var->valueBytes_];
 
-   // Unindexed with a list variable
-   if ( index < 0 && var->numValues_ > 0 ) {
+   // Unindexed with a list variable not supported
+   if ( index < 0 && var->numValues_ > 0 )
+      throw(rogue::GeneralError::create("Block::getPyFunc","Using ndarry not supported for %s",var->name_.c_str()));
 
-      for (x=0; x < var->numValues_; x++) {
-         memset(getBuffer,0,var->valueBytes_);
+   memset(getBuffer,0,var->valueBytes_);
 
-         getBytes(getBuffer, var, x);
-         PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+   getBytes(getBuffer, var, index);
+   PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
 
-         bp::handle<> handle(val);
-         bp::object pass = bp::object(handle);
+   bp::handle<> handle(val);
+   bp::object pass = bp::object(handle);
 
-         retList.append(((rim::VariableWrap*)var)->fromBytes(pass));
-      }
-
-      ret = retList;
-   }
-
-   // Single value
-   else {
-
-      memset(getBuffer,0,var->valueBytes_);
-
-      getBytes(getBuffer, var, index);
-      PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
-
-      bp::handle<> handle(val);
-      bp::object pass = bp::object(handle);
-
-      ret = ((rim::VariableWrap*)var)->fromBytes(pass);
-   }
-
-   return ret;
+   return ((rim::VariableWrap*)var)->fromBytes(pass);
 }
 
 #endif
@@ -711,78 +668,35 @@ bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
 
 // Set data using byte array
 void rim::Block::setByteArrayPy ( bp::object &value, rim::Variable *var, int32_t index ) {
-   uint32_t x;
    Py_buffer valueBuf;
-   bp::list vl;
-   bp::object tmp;
 
    // Unindexed with a list variable
-   if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
+   if ( index < 0 && var->numValues_ > 0 )
+      throw(rogue::GeneralError::create("Block::setByteArrayPy","Using ndarry not supported for %s",var->name_.c_str()));
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setByteArrayPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+   if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
 
-      for (x=0; x < var->numValues_; x++) {
-         tmp = vl[x];
+   setBytes((uint8_t *)valueBuf.buf,var,index);
 
-         if ( PyObject_GetBuffer(tmp.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-            throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
-
-         setBytes((uint8_t *)valueBuf.buf,var,x);
-
-         PyBuffer_Release(&valueBuf);
-      }
-   }
-
-   else {
-
-      if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
-         throw(rogue::GeneralError::create("Block::setByteArray","Failed to extract byte array for %s",var->name_.c_str()));
-
-      setBytes((uint8_t *)valueBuf.buf,var,index);
-
-      PyBuffer_Release(&valueBuf);
-   }
+   PyBuffer_Release(&valueBuf);
 }
 
 // Get data using byte array
 bp::object rim::Block::getByteArrayPy ( rim::Variable *var, int32_t index ) {
-   bp::object ret;
-   bp::list retList;
-   uint32_t x;
-
    uint8_t getBuffer[var->valueBytes_];
 
    // Unindexed with a list variable
-   if ( index < 0 && var->numValues_ > 0 ) {
+   if ( index < 0 && var->numValues_ > 0 )
+      throw(rogue::GeneralError::create("Block::getByteArrayPy","Using ndarry not supported for %s",var->name_.c_str()));
 
-      for (x=0; x < var->numValues_; x++) {
-         memset(getBuffer,0,var->valueBytes_);
+   memset(getBuffer,0,var->valueBytes_);
 
-         getBytes(getBuffer, var,x);
-         PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+   getBytes(getBuffer, var,index);
+   PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
 
-         bp::handle<> handle(val);
-         bp::object pass = bp::object(handle);
-
-         retList.append(pass);
-      }
-
-      ret = retList;
-   }
-
-   else {
-      memset(getBuffer,0,var->valueBytes_);
-
-      getBytes(getBuffer, var,index);
-      PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
-
-      bp::handle<> handle(val);
-      ret = bp::object(handle);
-   }
-
-   return ret;
+   bp::handle<> handle(val);
+   return bp::object(handle);
 }
 
 #endif
@@ -807,24 +721,20 @@ void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var, int32_t inde
 void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    uint64_t val;
-   bp::list vl;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
+      uint32_t count = PyArray_NBYTES(arr);
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<uint64_t> tmp(vl[x]);
+      if ( count != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setUIntPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",var->name_.c_str()));
+      uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
 
-         val = tmp;
-         setUInt (val, var, x);
-      }
+      for (x=0; x < var->numValues_; x++) setUInt (src[x], var, x);
    }
 
    else {
@@ -841,17 +751,21 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
 // Get data using unsigned int
 bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         PyObject *val = Py_BuildValue("K",getUInt(var,x));
-         bp::handle<> handle(val);
-         retList.append(bp::object(handle));
-      }
-      ret = retList;
+
+      // Create a numpy array to receive it and locate the destination data buffer
+      npy_intp   dims[1] = { var->numValues_ };
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_UINT64);
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      uint64_t      *dst = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
+
+      for (x=0; x < var->numValues_; x++) dst[x] = getUInt(var,x);
+
+      boost::python::handle<> handle (obj);
+      ret = bp::object(handle);
    }
    else {
       PyObject *val = Py_BuildValue("K",getUInt(var,index));
@@ -892,25 +806,21 @@ uint64_t rim::Block::getUInt (rim::Variable *var, int32_t index ) {
 // Set data using int
 void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
-   uint64_t val;
-   bp::list vl;
+   int64_t val;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setIntPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
+      uint32_t count = PyArray_NBYTES(arr);
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<int64_t> tmp(vl[x]);
+      if ( count != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setIntPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
+      int64_t *src = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
 
-         val = tmp;
-         setInt (val, var, x);
-      }
+      for (x=0; x < var->numValues_; x++) setInt (src[x], var, x);
    }
    else {
       bp::extract<int64_t> tmp(value);
@@ -926,17 +836,21 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
 // Get data using int
 bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         PyObject *val = Py_BuildValue("L",getInt(var,x));
-         bp::handle<> handle(val);
-         retList.append(bp::object(handle));
-      }
-      ret = retList;
+
+      // Create a numpy array to receive it and locate the destination data buffer
+      npy_intp   dims[1] = { var->numValues_ };
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_INT64);
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      int64_t       *dst = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
+
+      for (x=0; x < var->numValues_; x++) dst[x] = getInt(var,x);
+
+      boost::python::handle<> handle (obj);
+      ret = bp::object(handle);
    }
 
    else {
@@ -984,24 +898,20 @@ int64_t rim::Block::getInt ( rim::Variable *var, int32_t index ) {
 void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    bool val;
-   bp::list vl;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setBoolPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
+      uint32_t count = PyArray_NBYTES(arr);
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<bool> tmp(vl[x]);
+      if ( count != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setBoolPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
+      bool *src = reinterpret_cast<bool *>(PyArray_DATA (arr));
 
-         val = (tmp != 0);
-         setBool(val,var,x);
-      }
+      for (x=0; x < var->numValues_; x++) setBool (src[x], var, x);
    }
 
    else {
@@ -1018,16 +928,21 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t inde
 // Get data using bool
 bp::object rim::Block::getBoolPy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         bp::handle<> handle(bp::borrowed(getBool(var,x)?Py_True:Py_False));
-         retList.append(bp::object(handle));
-      }
-      ret = retList;
+
+      // Create a numpy array to receive it and locate the destination data buffer
+      npy_intp   dims[1] = { var->numValues_ };
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_BOOL);
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      bool          *dst = reinterpret_cast<bool *>(PyArray_DATA (arr));
+
+      for (x=0; x < var->numValues_; x++) dst[x] = getBool(var,x);
+
+      boost::python::handle<> handle (obj);
+      ret = bp::object(handle);
    }
 
    else {
@@ -1064,62 +979,34 @@ bool rim::Block::getBool ( rim::Variable *var, int32_t index ) {
 void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    std::string strVal;
-   bp::list vl;
 
    // Unindexed with a list variable
-   if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
+   if ( index < 0 && var->numValues_ > 0 )
+      throw(rogue::GeneralError::create("Block::setStringPy","Using ndarry not supported for %s",var->name_.c_str()));
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setString","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+   bp::extract<char *> tmp(value);
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<char *> tmp(vl[x]);
+   if ( !tmp.check() )
+      throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
-
-         strVal = tmp;
-         setString(strVal,var,x);
-      }
-   }
-
-   else {
-      bp::extract<char *> tmp(value);
-
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
-
-      strVal = tmp;
-      setString(strVal,var,index);
-   }
+   strVal = tmp;
+   setString(strVal,var,index);
 }
 
 // Get data using string
 bp::object rim::Block::getStringPy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    std::string strVal;
    uint32_t x;
 
    // Unindexed with a list variable
-   if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         getString(var,strVal,x);
-         PyObject *val = Py_BuildValue("s",strVal.c_str());
-         bp::handle<> handle(val);
-         retList.append(bp::object(handle));
-      }
-      ret = retList;
-   }
+   if ( index < 0 && var->numValues_ > 0 )
+      throw(rogue::GeneralError::create("Block::getStringPy","Using ndarry not supported for %s",var->name_.c_str()));
 
-   else {
-      getString(var,strVal,index);
-      PyObject *val = Py_BuildValue("s",strVal.c_str());
-      bp::handle<> handle(val);
-      ret = bp::object(handle);
-   }
-   return ret;
+   getString(var,strVal,index);
+   PyObject *val = Py_BuildValue("s",strVal.c_str());
+   bp::handle<> handle(val);
+   return bp::object(handle);
 }
 
 #endif
@@ -1164,24 +1051,20 @@ void rim::Block::getString ( rim::Variable *var, std::string & retString, int32_
 void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    float val;
-   bp::list vl;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFloatPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
+      uint32_t count = PyArray_NBYTES(arr);
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<float> tmp(vl[x]);
+      if ( count != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setFloatPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",var->name_.c_str()));
+      float *src = reinterpret_cast<float *>(PyArray_DATA (arr));
 
-         val = tmp;
-         setFloat(val,var,x);
-      }
+      for (x=0; x < var->numValues_; x++) setFloat (src[x], var, x);
    }
 
    else {
@@ -1198,17 +1081,21 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t ind
 // Get data using float
 bp::object rim::Block::getFloatPy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         PyObject *val = Py_BuildValue("f",getFloat(var,x));
-         bp::handle<> handle(val);
-         retList.append(bp::object(handle));
-      }
-      ret = retList;
+
+      // Create a numpy array to receive it and locate the destination data buffer
+      npy_intp   dims[1] = { var->numValues_ };
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT32);
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      float         *dst = reinterpret_cast<float *>(PyArray_DATA (arr));
+
+      for (x=0; x < var->numValues_; x++) dst[x] = getFloat(var,x);
+
+      boost::python::handle<> handle (obj);
+      ret = bp::object(handle);
    }
 
    else {
@@ -1252,24 +1139,20 @@ float rim::Block::getFloat ( rim::Variable *var, int32_t index ) {
 void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    double val;
-   bp::list vl;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setDoublePy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
+      uint32_t count = PyArray_NBYTES(arr);
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<double> tmp(vl[x]);
+      if ( count != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setDoublePy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",var->name_.c_str()));
+      double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
 
-         val = tmp;
-         setDouble(val,var,x);
-      }
+      for (x=0; x < var->numValues_; x++) setDouble (src[x], var, x);
    }
 
    else {
@@ -1286,17 +1169,21 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t in
 // Get data using double
 bp::object rim::Block::getDoublePy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         PyObject *val = Py_BuildValue("d",getDouble(var,x));
-         bp::handle<> handle(val);
-         ret = bp::object(handle);
-      }
-      ret = retList;
+
+      // Create a numpy array to receive it and locate the destination data buffer
+      npy_intp   dims[1] = { var->numValues_ };
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT32);
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      double        *dst = reinterpret_cast<double *>(PyArray_DATA (arr));
+
+      for (x=0; x < var->numValues_; x++) dst[x] = getDouble(var,x);
+
+      boost::python::handle<> handle (obj);
+      ret = bp::object(handle);
    }
 
    else {
@@ -1339,24 +1226,19 @@ double rim::Block::getDouble ( rim::Variable *var, int32_t index ) {
 void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    double val;
-   bp::list vl;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      vl = bp::extract<bp::list>(value);
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
+      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( len(vl) != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFixedPy","Passed list length %i does not match variable length %i for %s",len(vl),var->numValues_,var->name_.c_str()));
+      if ( count != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setFixedPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
 
-      for (x=0; x < var->numValues_; x++) {
-         bp::extract<double> tmp(vl[x]);
+      double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
 
-         if ( !tmp.check() )
-            throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",var->name_.c_str()));
-
-         val = tmp;
-         setFixed(val,var,x);
-      }
+      for (x=0; x < var->numValues_; x++) setDouble (src[x], var, x);
    }
 
    else {
@@ -1373,17 +1255,21 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
 // Get data using fixed point
 bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
-   bp::list retList;
    uint32_t x;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
-      for (x=0; x < var->numValues_; x++) {
-         PyObject *val = Py_BuildValue("d",getFixed(var,x));
-         bp::handle<> handle(val);
-         ret = bp::object(handle);
-      }
-      ret = retList;
+
+      // Create a numpy array to receive it and locate the destination data buffer
+      npy_intp   dims[1] = { var->numValues_ };
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT32);
+      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+      double        *dst = reinterpret_cast<double *>(PyArray_DATA (arr));
+
+      for (x=0; x < var->numValues_; x++) dst[x] = getDouble(var,x);
+
+      boost::python::handle<> handle (obj);
+      ret = bp::object(handle);
    }
 
    else {

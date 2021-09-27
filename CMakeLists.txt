@@ -478,7 +478,6 @@ else()
    message("-- Found boost: ${Boost_LIBRARIES}")
    message("")
    message("-- Found python: ${PYTHON_LIBRARIES}")
-   message("")
    message("-- Found numpy: ${Python3_NumPy_INCLUDE_DIRS}")
 endif()
 
