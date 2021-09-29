@@ -81,7 +81,7 @@ class DummyTree(pyrogue.Root):
 
     def __init__(self):
         self._scnt = 0
-        self._sdata = np.array(0)
+        self._sdata = np.zeros(100,dtype=np.float64)
 
         pyrogue.Root.__init__(self,
                               name='dummyTree',
@@ -146,8 +146,8 @@ class DummyTree(pyrogue.Root):
             mode = 'RO',
             pollInterval=1.0,
             localGet = self._myArray,
-            disp='{:1.2f}',
-            value = np.zeros(100,dtype=np.float64)))
+            disp='{:1.2f}'))
+            #value = np.zeros(100,dtype=np.float64)))
 
         #self.add(pyrogue.LocalVariable(
         #    name = 'Test/Slash',

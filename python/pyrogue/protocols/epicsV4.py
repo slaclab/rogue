@@ -117,9 +117,11 @@ class EpicsPvHolder(object):
             typeStr = self._var.typeStr
 
         # Convert valType
-        if self._var.disp == 'enum':
+        if var.nativeType is np.ndarray:
+            self._valType = 's'  # For now
+        elif self._var.disp == 'enum':
             self._valType = 'enum'
-        elif typeStr is None:
+        elif typeStr is None or var.nativeType is list or var.nativeTpe is dict:
             self._valType = 's'
         else:
 

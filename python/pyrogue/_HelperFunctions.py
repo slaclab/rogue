@@ -303,9 +303,3 @@ def functionHelper(func,pargs,log,path):
 
     return func(**args)
 
-# Quote commas
-def quoteComma(value):
-    if ',' in value:
-        return f"'{value}'"
-    else:
-        return value

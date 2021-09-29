@@ -16,6 +16,7 @@ import re
 import time
 import shlex
 import numpy as np
+import ast
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -138,6 +139,7 @@ class BaseVariable(pr.Node):
         self._highWarning   = highWarning
         self._highAlarm     = highAlarm
         self._default       = value
+        self._typeStr       = typeStr
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
@@ -181,6 +183,17 @@ class BaseVariable(pr.Node):
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
 
+        # Auto determine types
+        if value is not None:
+            self._nativeType = type(value)
+
+            if self._nativeType is np.ndarray:
+                self._ndType = value.dtype
+                self._typeStr = f'{value.dtype}{value.shape}'
+
+            elif self._typeStr == 'Unknown':
+                self._typeStr = value.__class__.__name__
+
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
            (self._mode != 'WO'):
@@ -202,6 +215,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def typeStr(self):
+        if self._typeStr == 'Unknown':
+            v = self.value()
+            if self.nativeType is np.ndarray:
+                self._typeStr = f'{v.dtype}{v.shape}'
+            else:
+                self._typeStr = v.__class__.__name__
         return self._typeStr
 
     @pr.expose
@@ -212,12 +231,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
+        if self.nativeType is float or self.nativeType is np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
             except Exception:
-                return 3
+                return 8
         else:
             return 0
 
@@ -384,16 +403,39 @@ class BaseVariable(pr.Node):
     @pr.expose
     def genDisp(self, value):
         try:
-            if self.typeStr == 'ndarray':
-                return str(value)
-            elif self._isList:
-                return "[" + ", ".join([pr.quoteComma(self._genDispValue(v)) for v in value]) + "]"
+
+            if isinstance(value,list):
+                if self.disp == 'enum':
+
+                    # Generate quotes for enum values in string
+                    return "['" + "', '".join([self.enum[v] for v in value]) + "']"
+                else:
+
+                    # Apply formatting to each entry
+                    return "[" + ", ".join([v if v is str else self.genDisp(v) for v in value]) + "]"
+
+            # There may be a better way to do this with numpy formatting
+            elif isinstance(value,np.ndarray):
+                return "[" + ", ".join([v if v is str else self.genDisp(v) for v in value]) + "]"
+
+            elif self.disp == 'enum':
+                if value in self.enum:
+                    return self.enum[value]
+                else:
+                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    return f'INVALID: {value}'
             else:
-                return self._genDispValue(value)
+                v = self.disp.format(value)
+
+                # Quote commas
+                if ',' in v:
+                    return f"'{v}'"
+                else:
+                    return v
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error(f"Error generating disp for value {value} in variable {self.path}")
+            self._log.error(f"Error generating disp for value {value} with type {type(value)} in variable {self.path}")
             raise e
 
     @pr.expose
@@ -407,18 +449,27 @@ class BaseVariable(pr.Node):
     @pr.expose
     def parseDisp(self, sValue):
         try:
-            if self._isList and isinstance(sValue,str) and '[' in sValue and ']' in sValue:
-                s = shlex.shlex(" " + sValue.lstrip('[').rstrip(']') + " ",posix=True)
-                s.whitespace_split=True
-                s.whitespace=','
-                return [self._parseDispValue(v.strip()) for v in s]
-            elif sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
+            if not isinstance(sValue,str):
+                return sValue
+            elif self.nativeType is np.ndarray:
+                return np.array(ast.literal_eval(sValue),self._ndType)
+            elif self.nativeType is list:
+                lst = ast.literal_eval(sValue)
+
+                # Special case for list of enums
+                if self.disp == 'enum':
+                    return [self.revEnum[i] for i in lst]
+                else:
+                    return lst
+            elif self.disp == 'enum':
+                return self.revEnum[sValue]
+            elif self.nativeType is str:
                 return sValue
             else:
-                return self._parseDispValue(sValue)
+                return ast.literal_eval(sValue)
 
-        except Exception:
-            msg = "Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType())
+        except Exception as e:
+            msg = "Invalid value {} for variable {} with type {}: {}".format(sValue,self.name,self.nativeType,e)
             self._log.error(msg)
             raise VariableError(msg)
 
@@ -426,47 +477,22 @@ class BaseVariable(pr.Node):
     def setDisp(self, sValue, write=True, index=-1):
         self.set(self.parseDisp(sValue), write=write, index=index)
 
-    @pr.expose
+    @property
     def nativeType(self):
         if self._nativeType is None:
             v = self.value()
-            if isinstance(v,list):
-                self._nativeType = type(v[0])
-            else:
-                self._nativeType = type(v)
+            self._nativeType = type(v)
+
+            if self._nativeType is np.ndarray:
+                self._ndType = v.dtype
+
         return self._nativeType
 
-    def _genDispValue(self,value):
-        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
-        if self.disp == 'enum':
-            if value in self.enum:
-                return self.enum[value]
-            else:
-                self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
-                return f'INVALID: {value}'
-
-        elif (value == '' or value is None):
-            return value
-        else:
-            return self.disp.format(value)
-
-    def _parseDispValue(self, sValue):
-        if sValue == '':
-            return ''
-        elif self.disp == 'enum':
-            return self.revEnum[sValue]
-        else:
-            t = self.nativeType()
-            if t == int:
-                return int(sValue, 0)
-            elif t == float:
-                return float(sValue)
-            elif t == bool:
-                return str.lower(sValue) == "true"
-            elif t == dict:
-                return eval(sValue)
-            else:
-                return sValue
+    @property
+    def ndType(self):
+        if self._ndType is None:
+            _ = self.nativeType
+        return self._ndType
 
     def _setDefault(self):
         if self._default is not None:
@@ -487,7 +513,7 @@ class BaseVariable(pr.Node):
         # and the variable should be a list variable
         if keys is not None:
 
-            if len(keys) != 1 or not self._isList:
+            if len(keys) != 1 or (self.nativeType is not list and self.nativeType is not np.ndarray):
                 self._log.error(f"Entry {self.name} with key {keys} not found")
 
             elif self._mode in modes:
@@ -957,7 +983,6 @@ class LinkVariable(BaseVariable):
                  name,
                  variable=None,
                  dependencies=None,
-                 typeStr='Linked',
                  linkedSet=None,
                  linkedGet=None,
                  **kwargs): # Args passed to BaseVariable
@@ -986,7 +1011,7 @@ class LinkVariable(BaseVariable):
         # Need to have at least 1 of linkedSet or linkedGet, otherwise error
 
         # Call super constructor
-        BaseVariable.__init__(self, name=name, typeStr=typeStr, **kwargs)
+        BaseVariable.__init__(self, name=name, **kwargs)
 
         # Dependency tracking
         if variable is not None:

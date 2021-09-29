@@ -189,7 +189,7 @@ class VariableHolder(QTreeWidgetItem):
 
         self.setToolTip(0,self._var.description)
 
-        if self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
+        if self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO' and self._var.typeStr != 'list':
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True

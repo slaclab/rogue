@@ -332,9 +332,19 @@ class AxiVersion(pr.Device):
             value = np.array([1,2,3,4])))
 
         self.add(pr.LocalVariable(
+            name = 'TestReal2dArray',
+            mode = 'RW',
+            value = np.array([[1,2,3,4],[5,6,7,8],[9,10,11,12]],np.float32)))
+
+        self.add(pr.LocalVariable(
             name = 'TestListA',
             mode = 'RW',
             value = [1,2,3,4,5,6,7,8,9,10]))
+
+        self.add(pr.LocalVariable(
+            name = 'TestList2',
+            mode = 'RW',
+            value = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]))
 
         self.add(pr.LocalVariable(
             name = 'TestListB',
@@ -345,6 +355,17 @@ class AxiVersion(pr.Device):
             name = 'TestBool',
             mode = 'RW',
             value = False))
+
+        self.add(pr.LocalVariable(
+            name = 'TestBoolArray',
+            mode = 'RW',
+            value = [False] * 10))
+
+        self.add(pr.LocalVariable(
+            name = 'TestEnumArray',
+            mode = 'RW',
+            enum = {0: 'zero', 1: 'one'},
+            value = [1] * 10))
 
         self.add(pr.LocalVariable(
             name = 'TestBadArray[x]',
