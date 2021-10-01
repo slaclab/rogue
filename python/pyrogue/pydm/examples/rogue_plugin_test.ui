@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="VariableTree" name="VariableTree">
+      <widget class="DebugTree" name="DebugTree">
        <property name="toolTip">
         <string/>
        </property>
@@ -123,7 +123,7 @@
       </layout>
      </item>
      <item>
-      <widget class="VariableTree" name="VariableTree_2">
+      <widget class="DebugTree" name="DebugTree_2">
        <property name="toolTip">
         <string/>
        </property>
@@ -141,7 +141,7 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>VariableTree</class>
+   <class>DebugTree</class>
    <extends>PyDMFrame</extends>
    <header>pyrogue.pydm.widgets.variable_tree</header>
   </customwidget>

@@ -14,7 +14,7 @@ import os
 from pydm import Display
 from qtpy.QtWidgets import (QVBoxLayout, QTabWidget)
 
-from pyrogue.pydm.widgets import VariableTree
+from pyrogue.pydm.widgets import DebugTree
 from pyrogue.pydm.widgets import SystemWindow
 
 Channel = 'rogue://0/root'
@@ -58,7 +58,7 @@ class DefaultTop(Display):
         sys = SystemWindow(parent=None, init_channel=Channel)
         self.tab.addTab(sys,'System')
 
-        var = VariableTree(parent=None, init_channel=Channel)
+        var = DebugTree(parent=None, init_channel=Channel)
         self.tab.addTab(var,'Debug Tree')
 
         self.resize(self.sizeX, self.sizeY)
