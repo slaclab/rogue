@@ -15,7 +15,6 @@ from pydm.widgets import PyDMPushButton, PyDMScaleIndicator
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
-from pyrogue.pydm.widgets.command import Command
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QFormLayout, QGroupBox
 

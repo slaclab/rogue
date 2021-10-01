@@ -84,4 +84,3 @@ class OpenFileBrowse(ExternalTool):
 class SaveFileBrowse(OpenFileBrowse):
     def __init__(self):
         OpenFileBrowse.__init__(self, save=True)
-
