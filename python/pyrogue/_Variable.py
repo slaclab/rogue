@@ -594,7 +594,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  bitOffset=0,
                  pollInterval=0,
                  updateNotify=True,
-                 typeStr='Unknown',
                  overlapEn=False,
                  bulkOpEn=True,
                  verify=True,
@@ -960,7 +959,6 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name,
-                 value,
                  variable=None,
                  dependencies=None,
                  linkedSet=None,
