@@ -19,6 +19,7 @@ import pyrogue
 import time
 import warnings
 import re
+import numpy as np
 
 try:
     import p4p.server.thread
@@ -183,10 +184,6 @@ class EpicsPvHolder(object):
         # Override LinkerVariables with init=None
         if varVal.valueDisp is None:
             varVal.valueDisp = ''
-
-        # Detect array
-        if self._var.isList:
-            self._valType = 'a' + self._valType
 
         self._log.info("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
         try:
