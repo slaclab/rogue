@@ -198,6 +198,7 @@ class VariableHolder(QTreeWidgetItem):
         if self._var.isCommand and not self._var.arg:
 
             w = PyDMPushButton(label='Exec',
+                               pressValue=1,
                                init_channel=self._path + '/disp')
 
         elif self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
