@@ -51,6 +51,8 @@ rim::BlockPtr rim::Block::create (uint64_t offset, uint32_t size) {
 // Setup class for use in python
 void rim::Block::setup_python() {
 
+   _import_array ();
+
    bp::class_<rim::Block, rim::BlockPtr, bp::bases<rim::Master>, boost::noncopyable>("Block",bp::init<uint64_t,uint32_t>())
        .add_property("path",      &rim::Block::path)
        .add_property("mode",      &rim::Block::mode)
@@ -727,23 +729,32 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
 
       // Cast to an array object and check that the numpy array
       PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
-      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( count != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+
+      if ( PyArray_TYPE(arr) != NPY_UINT64 )
+         throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray is not of type (uint64) for %s",var->name_.c_str()));
 
       uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
-
       for (x=0; x < var->numValues_; x++) setUInt (src[x], var, x);
    }
 
    else {
       bp::extract<uint64_t> tmp(value);
 
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setUInt","Failed to extract value for %s.",var->name_.c_str()));
+      if ( !tmp.check() ) {
 
-      val = tmp;
+         // Attempt numpy entity conversation
+         if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_UINT64 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else
+            throw(rogue::GeneralError::create("Block::setUIntPy","Failed to extract value for %s.",var->name_.c_str()));
+      }
+      else val = tmp;
       setUInt (val, var, index);
    }
 }
@@ -757,8 +768,11 @@ bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
    if ( index < 0 && var->numValues_ > 0 ) {
 
       // Create a numpy array to receive it and locate the destination data buffer
-      npy_intp   dims[1] = { var->numValues_ };
-      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_UINT64);
+      npy_intp dims[1] = { var->numValues_ };
+      PyObject    *obj = PyArray_SimpleNew (1, dims, NPY_UINT64);
+
+      if ( obj == NULL )
+         throw(rogue::GeneralError::create("Block::getUIntPy","Failed to create nparray for %s.",var->name_.c_str()));
       PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
       uint64_t      *dst = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
 
@@ -813,22 +827,32 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
 
       // Cast to an array object and check that the numpy array
       PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
-      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( count != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setIntPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setIntPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+
+      if ( PyArray_TYPE(arr) != NPY_INT64 )
+         throw(rogue::GeneralError::create("Block::setIntPy","Passed nparray is not of type (int64) for %s",var->name_.c_str()));
 
       int64_t *src = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
-
       for (x=0; x < var->numValues_; x++) setInt (src[x], var, x);
    }
    else {
       bp::extract<int64_t> tmp(value);
 
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setInt","Failed to extract value for %s.",var->name_.c_str()));
+      if ( !tmp.check() ) {
 
-      val = tmp;
+         // Attempt numpy entity conversation
+         if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT64 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else
+            throw(rogue::GeneralError::create("Block::setIntPy","Failed to extract value for %s.",var->name_.c_str()));
+      }
+      else val = tmp;
+
       setInt (val, var, index);
    }
 }
@@ -904,23 +928,32 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t inde
 
       // Cast to an array object and check that the numpy array
       PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
-      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( count != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setBoolPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setBoolPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+
+      if ( PyArray_TYPE(arr) != NPY_BOOL )
+         throw(rogue::GeneralError::create("Block::setBoolPy","Passed nparray is not of type (bool) for %s",var->name_.c_str()));
 
       bool *src = reinterpret_cast<bool *>(PyArray_DATA (arr));
-
       for (x=0; x < var->numValues_; x++) setBool (src[x], var, x);
    }
 
    else {
       bp::extract<bool> tmp(value);
 
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setBool","Failed to extract value for %s.",var->name_.c_str()));
+      if ( !tmp.check() ) {
 
-      val = (tmp != 0);
+         // Attempt numpy entity conversation
+         if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_BOOL ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else
+            throw(rogue::GeneralError::create("Block::setBoolPy","Failed to extract value for %s.",var->name_.c_str()));
+      }
+      else val = tmp;
       setBool(val,var,index);
    }
 }
@@ -982,12 +1015,12 @@ void rim::Block::setStringPy ( bp::object &value, rim::Variable *var, int32_t in
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 )
-      throw(rogue::GeneralError::create("Block::setStringPy","Using ndarry not supported for %s",var->name_.c_str()));
+      throw(rogue::GeneralError::create("Block::setStringPy","Using nparray not supported for %s",var->name_.c_str()));
 
    bp::extract<char *> tmp(value);
 
    if ( !tmp.check() )
-      throw(rogue::GeneralError::create("Block::setString","Failed to extract value for %s.",var->name_.c_str()));
+      throw(rogue::GeneralError::create("Block::setStringPy","Failed to extract value for %s.",var->name_.c_str()));
 
    strVal = tmp;
    setString(strVal,var,index);
@@ -1057,23 +1090,32 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t ind
 
       // Cast to an array object and check that the numpy array
       PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
-      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( count != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFloatPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setFloatPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+
+      if ( PyArray_TYPE(arr) != NPY_FLOAT32 )
+         throw(rogue::GeneralError::create("Block::setFloatPy","Passed nparray is not of type (float32) for %s",var->name_.c_str()));
 
       float *src = reinterpret_cast<float *>(PyArray_DATA (arr));
-
       for (x=0; x < var->numValues_; x++) setFloat (src[x], var, x);
    }
 
    else {
       bp::extract<float> tmp(value);
 
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setFloat","Failed to extract value for %s.",var->name_.c_str()));
+      if ( !tmp.check() ) {
 
-      val = tmp;
+         // Attempt numpy entity conversation
+         if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT32 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else
+            throw(rogue::GeneralError::create("Block::setFloatPy","Failed to extract value for %s.",var->name_.c_str()));
+      }
+      else val = tmp;
       setFloat(val,var,index);
    }
 }
@@ -1145,23 +1187,32 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t in
 
       // Cast to an array object and check that the numpy array
       PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
-      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( count != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setDoublePy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setDoublePy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+
+      if ( PyArray_TYPE(arr) != NPY_FLOAT64 )
+         throw(rogue::GeneralError::create("Block::setDoublePy","Passed nparray is not of type (float64) for %s",var->name_.c_str()));
 
       double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
-
       for (x=0; x < var->numValues_; x++) setDouble (src[x], var, x);
    }
 
    else {
       bp::extract<double> tmp(value);
 
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setDouble","Failed to extract value for %s.",var->name_.c_str()));
+      if ( !tmp.check() ) {
 
-      val = tmp;
+         // Attempt numpy entity conversation
+         if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else
+            throw(rogue::GeneralError::create("Block::setDoublePy","Failed to extract value for %s.",var->name_.c_str()));
+      }
+      else val = tmp;
       setDouble(val,var,index);
    }
 }
@@ -1229,25 +1280,35 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
+
       // Cast to an array object and check that the numpy array
       PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
-      uint32_t count = PyArray_NBYTES(arr);
 
-      if ( count != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFixedPy","Passed list length %i does not match variable length %i for %s",count,var->numValues_,var->name_.c_str()));
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] != var->numValues_ )
+         throw(rogue::GeneralError::create("Block::setFixedPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+
+      if ( PyArray_TYPE(arr) != NPY_FLOAT64 )
+         throw(rogue::GeneralError::create("Block::setFixedPy","Passed nparray is not of type (float64) for %s",var->name_.c_str()));
 
       double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
-
-      for (x=0; x < var->numValues_; x++) setDouble (src[x], var, x);
+      for (x=0; x < var->numValues_; x++) setFixed (src[x], var, x);
    }
 
    else {
       bp::extract<double> tmp(value);
 
-      if ( !tmp.check() )
-         throw(rogue::GeneralError::create("Block::setFixed","Failed to extract value for %s.",var->name_.c_str()));
+      if ( !tmp.check() ) {
 
-      val = tmp;
+         // Attempt numpy entity conversation
+         if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else
+            throw(rogue::GeneralError::create("Block::setFixedPy","Failed to extract value for %s.",var->name_.c_str()));
+      }
+      else val = tmp;
       setFixed(val,var,index);
    }
 }
@@ -1262,7 +1323,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
 
       // Create a numpy array to receive it and locate the destination data buffer
       npy_intp   dims[1] = { var->numValues_ };
-      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT32);
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT64);
       PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
       double        *dst = reinterpret_cast<double *>(PyArray_DATA (arr));
 
