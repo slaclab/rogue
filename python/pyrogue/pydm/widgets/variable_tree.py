@@ -200,13 +200,13 @@ class VariableHolder(QTreeWidgetItem):
             w = PyDMPushButton(label='Exec',
                                init_channel=self._path + '/disp')
 
-        elif self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
+        elif self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
             w.installEventFilter(self._top)
 
-        elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and self._var.mode != 'RO':
+        elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and (self._var.mode != 'RO' or self._var.isCommand):
             w = PyDMSpinbox(parent=None, init_channel=self._path)
             w.precision             = 0
             w.showUnits             = False
@@ -214,6 +214,7 @@ class VariableHolder(QTreeWidgetItem):
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
             w.showStepExponent      = False
+            w.writeOnPress          = True
             w.installEventFilter(self._top)
 
         elif self._var.mode == 'RO' and not self._var.isCommand:
