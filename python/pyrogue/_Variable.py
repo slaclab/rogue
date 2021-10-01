@@ -651,8 +651,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
             self._nativeType = np.ndarray
-            self._ndType = self._base.ndtype
-            self._typeStr = f'{self.ndtype}({numValues},)'
+            self._ndType = self._base.ndType
+            self._typeStr = f'{self.ndType}({numValues},)'
 
             if len(bitSize) != 1:
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
