@@ -62,9 +62,10 @@ class VariableDev(QTreeWidgetItem):
 
     def _setup(self,noExpand):
 
-        # First create variables
-        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups,
-                                                  excGroups=self._top._excGroups).items():
+        # First create variables/commands
+        for key,val in self._dev.getNodes(typ=pyrogue.BaseVariable,
+                                          incGroups=self._top._incGroups,
+                                          excGroups=self._top._excGroups).items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
@@ -139,7 +140,7 @@ class VariableGroup(QTreeWidgetItem):
                             dev=n,
                             noExpand=True)
 
-            elif n.isVariable:
+            elif n.isVariable or n.isCommand:
                 VariableHolder(path=self._path + '.' + n.name,
                                top=self._top,
                                parent=self,
@@ -187,9 +188,19 @@ class VariableHolder(QTreeWidgetItem):
         self.setText(1,self._var.mode)
         self.setText(2,self._var.typeStr)
 
+        if self._var.isCommand:
+            self.setText(3,'cmd')
+        else:
+            self.setText(3,'var')
+
         self.setToolTip(0,self._var.description)
 
-        if self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
+        if self._var.isCommand and not self._var.arg:
+
+            w = PyDMPushButton(label='Exec',
+                               init_channel=self._path + '/disp')
+
+        elif self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
@@ -205,7 +216,7 @@ class VariableHolder(QTreeWidgetItem):
             w.showStepExponent      = False
             w.installEventFilter(self._top)
 
-        elif self._var.mode == 'RO':
+        elif self._var.mode == 'RO' and not self._var.isCommand:
             w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
             w.precisionFromPV       = True
@@ -219,15 +230,15 @@ class VariableHolder(QTreeWidgetItem):
             w.alarmSensitiveBorder  = True
             #w.displayFormat         = 'String'
 
-        self._top._tree.setItemWidget(self,3,w)
+        self._top._tree.setItemWidget(self,4,w)
 
         width = fm.width('0xAAAAAAAA    ')
 
-        if width > self._top._colWidths[3]:
-            self._top._colWidths[3] = width
+        if width > self._top._colWidths[4]:
+            self._top._colWidths[4] = width
 
         if self._var.units:
-            self.setText(4,str(self._var.units))
+            self.setText(5,str(self._var.units))
 
 
 class VariableTree(PyDMFrame):
@@ -241,7 +252,7 @@ class VariableTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [250,50,75,200,50]
+        self._colWidths = [250,50,75,50,200,50]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -260,7 +271,7 @@ class VariableTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(5)
-        self._tree.setHeaderLabels(['Variable','Mode','Type','Value','Units'])
+        self._tree.setHeaderLabels(['Variable','Mode','Type','','Value','Units'])
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -289,8 +300,9 @@ class VariableTree(PyDMFrame):
         self._tree.setColumnWidth(0,self._colWidths[0])
         self._tree.resizeColumnToContents(1)
         self._tree.resizeColumnToContents(2)
-        self._tree.setColumnWidth(3,self._colWidths[3])
-        self._tree.resizeColumnToContents(4)
+        self._tree.resizeColumnToContents(3)
+        self._tree.setColumnWidth(4,self._colWidths[4])
+        self._tree.resizeColumnToContents(5)
 
         self.setUpdatesEnabled(True)
 
