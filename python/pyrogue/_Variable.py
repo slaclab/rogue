@@ -142,6 +142,8 @@ class BaseVariable(pr.Node):
         self._typeStr       = typeStr
         self._block         = None
         self._pollInterval  = pollInterval
+        self._nativeType    = None
+        self._ndType        = None
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
@@ -159,19 +161,6 @@ class BaseVariable(pr.Node):
 
         if self._enum is not None:
             self._disp = 'enum'
-
-        if isinstance(value, np.ndarray):
-            self._nativeType = np.ndarray
-            self._ndType = value.dtype
-            self._typeStr = f'{value.dtype}{value.shape}'
-        elif value is None:
-            self._nativeType = None
-            self._ndType = None
-            self._typeStr = typeStr
-        else:
-            self._nativeType = type(value)
-            self._ndType = None
-            self._typeStr = value.__class__.__name__
 
         # Create inverted enum
         self._revEnum = None
@@ -226,7 +215,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if self.nativeType == float or self.nativeType == np.ndarray:
+        if self.nativeType is float or self.nativeType is np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
@@ -239,11 +228,6 @@ class BaseVariable(pr.Node):
     @property
     def mode(self):
         return self._mode
-
-    @pr.expose
-    @property
-    def ndType(self):
-        return self._ndType
 
     @pr.expose
     @property

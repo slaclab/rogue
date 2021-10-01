@@ -255,6 +255,7 @@ class Int(UInt):
     defaultdisp = '{:d}'
     signed      = True
     modelId     = rim.Int
+    ndType      = np.dtype(int)
 
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
