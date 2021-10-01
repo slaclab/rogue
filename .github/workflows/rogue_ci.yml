@@ -75,7 +75,7 @@ jobs:
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local -DDO_EPICS
+          cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
           make -j4 install
 
       # Run Tests
