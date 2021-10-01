@@ -5,7 +5,6 @@ coverage
 codecov
 pytest>=3.6
 pytest-cov
-pyepics
 sphinx
 sphinx_rtd_theme
 sphinxcontrib-napoleon

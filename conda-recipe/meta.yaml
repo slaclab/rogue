@@ -19,24 +19,18 @@ requirements:
      - make
      - bzip2
      - zeromq
-     - epics-base
-     - pcas
      - numpy
    host:
      - python<3.8
      - boost
      - bzip2
      - zeromq
-     - epics-base
-     - pcas
      - numpy
    run:
      - python<3.8
      - boost
      - bzip2
      - zeromq
-     - epics-base
-     - pcas
      - numpy
      - ipython
      - p4p
@@ -46,7 +40,6 @@ requirements:
      - parse
      - click
      - pyqt
-     - pyepics
      - sqlalchemy
      - pydm
      - pyserial
