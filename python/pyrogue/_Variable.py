@@ -215,7 +215,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if self.nativeType is float or self.nativeType is np.ndarray:
+        if self.nativeType is float or self.nativeType is np.ndarray or self.nativeType is list:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
@@ -652,7 +652,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         if numValues != 0:
             self._nativeType = np.ndarray
             self._ndType = self._base.ndtype
-            self._typeStr = f'{self.ndtype}({numValues})'
+            self._typeStr = f'{self.ndtype}({numValues},)'
 
             if len(bitSize) != 1:
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
@@ -830,7 +830,7 @@ class LocalVariable(BaseVariable):
         BaseVariable.__init__(self, name=name, description=description,
                               mode=mode, value=value, disp=disp,
                               enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum,
+                              minimum=minimum, maximum=maximum, typeStr=typeStr,
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
