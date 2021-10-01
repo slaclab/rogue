@@ -41,11 +41,6 @@ class EnableVariable(pr.BaseVariable):
         self._lock   = threading.Lock()
 
     @pr.expose
-    @property
-    def nativeType(self):
-        return bool
-
-    @pr.expose
     def get(self, read=False, index=-1):
         ret = self._value
 
