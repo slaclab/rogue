@@ -302,4 +302,3 @@ def functionHelper(func,pargs,log,path):
         args = {}
 
     return func(**args)
-
