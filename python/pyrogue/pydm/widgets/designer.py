@@ -29,4 +29,3 @@ RunControl   = qtplugin_factory(RunControl,      group="Rogue Widgets")
 DataWriter   = qtplugin_factory(DataWriter,      group="Rogue Widgets")
 SystemWindow = qtplugin_factory(SystemWindow,    group="Rogue Widgets")
 Procsss      = qtplugin_factory(Process,         group="Rogue Widgets")
-
