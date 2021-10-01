@@ -45,9 +45,9 @@ class OpenFileBrowse(ExternalTool):
         dlg = QFileDialog()
 
         if self.save:
-            dataFile = dlg.getSaveFileName(caption='Select Save File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;All Files(*.*)')
+            dataFile = dlg.getSaveFileName(caption='Select Save File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;Numpy Files(*.npy);;All Files(*.*)')
         else:
-            dataFile = dlg.getOpenFileName(caption='Select Open File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;All Files(*.*)')
+            dataFile = dlg.getOpenFileName(caption='Select Open File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;Numpy Files(*.npy);;All Files(*.*)')
 
         # Detect QT5 return
         if isinstance(dataFile,tuple):
