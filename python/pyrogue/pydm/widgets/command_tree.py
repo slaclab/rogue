@@ -11,8 +11,9 @@
 #-----------------------------------------------------------------------------
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLabel, PyDMPushButton
+from pydm.widgets import PyDMLabel, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
+from pyrogue.pydm.widgets import PyRogueLineEdit
 from qtpy.QtCore import Qt, Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QComboBox, QLabel
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit
@@ -200,7 +201,7 @@ class CommandHolder(QTreeWidgetItem):
         if self._cmd.arg:
 
             if self._cmd.disp == 'enum' and self._cmd.enum is not None:
-                self._widget = QComboBox()
+                self._widget = PyDmComboBox(init_channel=self._path + '/cmdvalue')
                 for i in self._cmd.enum:
                     self._widget.addItem(self._cmd.enum[i])
 
@@ -212,7 +213,7 @@ class CommandHolder(QTreeWidgetItem):
                 self._widget.installEventFilter(self._top)
 
             else:
-                self._widget = QLineEdit()
+                self._widget = PyRogueLineEdit(init_channel=self._path + '/cmdvalue')
 
                 self._value = self._cmd.valueDisp()
                 self._widget.setText(self._value)

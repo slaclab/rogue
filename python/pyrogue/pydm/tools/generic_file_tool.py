@@ -22,11 +22,17 @@ from pyrogue.pydm.data_plugins.rogue_plugin import parseAddress
 logger = logging.getLogger(__name__)
 
 
-class GenericFileBrowse(ExternalTool):
+class OpenFileBrowse(ExternalTool):
 
-    def __init__(self):
+    def __init__(self,save=False):
         icon = IconFont().icon("cogs")
-        name = "File Browser"
+        self.save = save
+
+        if self.save:
+            name = "File Save Browser"
+        else:
+            name = "File Open Browser"
+
         group = "Rogue"
         use_with_widgets = True
         ExternalTool.__init__(self, icon=icon, name=name, group=group, use_with_widgets=use_with_widgets)
@@ -38,7 +44,11 @@ class GenericFileBrowse(ExternalTool):
 
         dlg = QFileDialog()
 
-        dataFile = dlg.getOpenFileName(caption='Select File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;All Files(*.*)')
+        if self.save:
+            dataFile = dlg.getSaveFileName(caption='Select Save File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;All Files(*.*)')
+        else:
+            dataFile = dlg.getOpenFileName(caption='Select Open File', filter='YAML Files(*.yml);;Data Files(*.dat);;CSV Files(*.csv);;All Files(*.*)')
+
         # Detect QT5 return
         if isinstance(dataFile,tuple):
             dataFile = dataFile[0]
@@ -55,6 +65,7 @@ class GenericFileBrowse(ExternalTool):
 
             else:
                 node.set(dataFile)
+                node.get()
 
         else:
             logger.warning(f"File browser used with invalid node: {node.name}")
@@ -69,3 +80,8 @@ class GenericFileBrowse(ExternalTool):
         ret = ExternalTool.get_info(self)
         ret.update({'file': __file__})
         return ret
+
+class SaveFileBrowse(OpenFileBrowse):
+    def __init__(self):
+        OpenFileBrowse.__init__(self, save=True)
+

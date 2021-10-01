@@ -69,6 +69,9 @@ class RogueConnection(PyDMConnection):
     def __init__(self, channel, address, protocol=None, parent=None):
         super(RogueConnection, self).__init__(channel, address, protocol, parent)
 
+        if 'SavePlotData' in address:
+            print(f'Creating channel for {address}')
+
         self.app = QApplication.instance()
 
         self._host, self._port, self._path, self._mode = parseAddress(address)
