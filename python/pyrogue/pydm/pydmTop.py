@@ -15,7 +15,6 @@ from pydm import Display
 from qtpy.QtWidgets import (QVBoxLayout, QTabWidget)
 
 from pyrogue.pydm.widgets import VariableTree
-from pyrogue.pydm.widgets import CommandTree
 from pyrogue.pydm.widgets import SystemWindow
 
 Channel = 'rogue://0/root'
