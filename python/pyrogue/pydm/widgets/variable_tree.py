@@ -189,9 +189,9 @@ class VariableHolder(QTreeWidgetItem):
         self.setText(2,self._var.typeStr)
 
         if self._var.isCommand:
-            self.setText(3,'cmd')
+            self.setText(3,'Cmd')
         else:
-            self.setText(3,'var')
+            self.setText(3,'Var')
 
         self.setToolTip(0,self._var.description)
 
@@ -273,7 +273,7 @@ class VariableTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(5)
-        self._tree.setHeaderLabels(['Variable','Mode','Type','','Value','Units'])
+        self._tree.setHeaderLabels(['Variable','Mode','Type','Var/Cmd','Value','Units'])
 
         self._tree.itemExpanded.connect(self._expandCb)
 
