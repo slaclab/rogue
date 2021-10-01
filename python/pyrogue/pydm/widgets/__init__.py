@@ -17,5 +17,5 @@ from pyrogue.pydm.widgets.root_control  import RootControl
 from pyrogue.pydm.widgets.run_control   import RunControl
 from pyrogue.pydm.widgets.system_log    import SystemLog
 from pyrogue.pydm.widgets.system_window import SystemWindow
-from pyrogue.pydm.widgets.variable_tree import VariableTree
+from pyrogue.pydm.widgets.debug_tree    import DebugTree
 from pyrogue.pydm.widgets.process       import Process
