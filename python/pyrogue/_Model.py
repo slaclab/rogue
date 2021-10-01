@@ -100,6 +100,9 @@ class Model(object, metaclass=ModelMeta):
     isBigEndian: bool
         True if endianness = 'big'
 
+    ndType: np.dtype
+        numpy type value
+
     """
 
     fstring     = None
@@ -201,7 +204,7 @@ class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
     modelId     = rim.UInt
-    ndType = np.dtype(np.uint)
+    ndType      = np.dtype(np.uint)
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -319,6 +322,7 @@ class Bool(Model):
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
     modelId     = rim.Bool
+    ndType      = np.dtype(bool)
 
     def __init__(self, bitSize):
         assert bitSize == 1, f"The bitSize param of Model {self.__class__.__name__} must be 1"
