@@ -69,37 +69,24 @@ class DebugDev(QTreeWidgetItem):
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = DebugGroup(path=self._path,
-                                                               top=self._top,
-                                                               parent=self,
-                                                               name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
             else:
-                DebugHolder(path=self._path + '.' + val.name,
-                               top=self._top,
-                               parent=self,
-                               variable=val)
+                DebugHolder(path=self._path + '.' + val.name, top=self._top, parent=self, variable=val)
 
         # Then create devices
-        for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
-                                                excGroups=self._top._excGroups).items():
+        for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = DebugGroup(path=self._path,
-                                                               top=self._top,
-                                                               parent=self,
-                                                               name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
             else:
-                DebugDev(path=self._path + '.' + val.name,
-                            top=self._top, parent=self,
-                            dev=val,
-                            noExpand=noExpand)
+                DebugDev(path=self._path + '.' + val.name, top=self._top, parent=self, dev=val, noExpand=noExpand)
 
     def _expand(self):
         if self._dummy is None:
