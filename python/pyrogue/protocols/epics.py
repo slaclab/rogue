@@ -32,16 +32,6 @@ class EpicsCaServer(object):
         self._excGroups = excGroups
         self._started   = False
 
-    def createSlave(self, name, maxSize, type):
-        slave = rogue.protocols.epicsV3.Slave(self._base + ':' + name,maxSize,type)
-        self._srv._addValue(slave)
-        return slave
-
-    def createMaster(self, name, maxSize, type):
-        mast = rogue.protocols.epicsV3.Master(self._base + ':' + name,maxSize,type)
-        self._srv._addValue(mast)
-        return mast
-
     def stop(self):
         # Add deprecration warning in the future
         self._stop()
