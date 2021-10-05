@@ -362,12 +362,6 @@ class AxiVersion(pr.Device):
             value = [False] * 10))
 
         self.add(pr.LocalVariable(
-            name = 'TestEnumArray',
-            mode = 'RW',
-            enum = {0: 'zero', 1: 'one'},
-            value = [1] * 10))
-
-        self.add(pr.LocalVariable(
             name = 'TestBadArray[x]',
             mode = 'RW',
             value = ''))

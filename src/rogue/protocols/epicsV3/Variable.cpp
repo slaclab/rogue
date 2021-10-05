@@ -34,12 +34,16 @@
 
 namespace rpe = rogue::protocols::epicsV3;
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+#include <numpy/arrayobject.h>
+#include <numpy/ndarraytypes.h>
 namespace bp  = boost::python;
 
 //! Setup class in python
 void rpe::Variable::setup_python() {
+   _import_array ();
 
    bp::class_<rpe::Variable, rpe::VariablePtr, bp::bases<rpe::Value>, boost::noncopyable >("Variable",bp::init<std::string, bp::object, bool>())
       .def("varUpdated", &rpe::Variable::varUpdated)
@@ -57,6 +61,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    bp::dict    ed;
    bp::list    el;
    std::string val;
+   std::string ndtype;
    uint32_t    count;
    bool        forceStr;
 
@@ -68,27 +73,30 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    // Get type and determine if this is an enum
    type = std::string(bp::extract<char *>(var_.attr("typeStr")));
    isEnum = std::string(bp::extract<char *>(var_.attr("disp"))) == "enum";
-   isList = bp::extract<bool>(var_.attr("isList"));
+   ndtype = std::string(bp::extract<char *>(var_.attr("ndTypeStr")));
    count = 0;
 
-   // Detect list type
-   if ( isList ) {
-      type = type.substr(0,type.find("["));
+   // Detect np array
+   if ( ndtype != "None" ) {
+      bp::object value = var_.attr("value")();
 
-      // First try native list
-      bp::extract<bp::list> ldata(var_.attr("value")());
+      // Cast to an array object and check that the numpy array
+      PyArrayObject *arr = reinterpret_cast<decltype(arr)>(value.ptr());
 
-      if ( ldata.check() ) {
-         count = len(ldata);
-
-         // Get initial element count
-         log_->info("Detected list for %s with type = %s and count = %i", epicsName.c_str(),type.c_str(),count);
+      npy_intp ndims = PyArray_NDIM(arr);
+      npy_intp * dims = PyArray_SHAPE(arr);
+      if ( ndims != 1 || dims[0] == 0 ) {
+         forceStr = true;
+         count = 0;
+         log_->info("Unsupported ndarray for %s with ndtype = %s. Forcing to string\n", epicsName.c_str(),ndtype.c_str());
       }
 
       else {
-         forceStr = true;
-         count = 0;
-         log_->info("Unsupported list for %s with type = %s. Forcing to string\n", epicsName.c_str(),type.c_str());
+         count = dims[0];
+         type = ndtype;
+
+         // Get initial element count
+         log_->info("Detected ndarray for %s with ndtype = %s and count = %i", epicsName.c_str(),ndtype.c_str(),count);
       }
    }
 

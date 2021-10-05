@@ -17,6 +17,7 @@ import time
 import shlex
 import numpy as np
 import ast
+import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -171,6 +172,9 @@ class BaseVariable(pr.Node):
         if value is not None:
             self._nativeType = type(value)
 
+            if self._enum is not None and (self._nativeType is np.ndarray or self._nativeType is list or self._nativeType is dict):
+                raise VariableError(f"Invalid use of enum with value of type {self._nativeType}")
+
             if self._nativeType is np.ndarray:
                 self._ndType = value.dtype
                 self._typeStr = f'{value.dtype}{value.shape}'
@@ -215,7 +219,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if self.nativeType is float or self.nativeType is np.ndarray or self.nativeType is list:
+        if self.nativeType is float or self.nativeType is np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
@@ -383,19 +387,9 @@ class BaseVariable(pr.Node):
     def genDisp(self, value):
         try:
 
-            if isinstance(value,list):
-                if self.disp == 'enum':
-
-                    # Generate quotes for enum values in string
-                    return "['" + "', '".join([self.enum[v] for v in value]) + "']"
-                else:
-
-                    # Apply formatting to each entry
-                    return "[" + ", ".join([v if v is str else self.genDisp(v) for v in value]) + "]"
-
-            # There may be a better way to do this with numpy formatting
-            elif isinstance(value,np.ndarray):
-                return "[" + ", ".join([v if v is str else self.genDisp(v) for v in value]) + "]"
+            if isinstance(value,np.ndarray):
+                np.set_printoptions(formatter={'all':self.disp.format},threshold=sys.maxsize)
+                return np.array2string(value, separator=', ')
 
             elif self.disp == 'enum':
                 if value in self.enum:
@@ -404,13 +398,7 @@ class BaseVariable(pr.Node):
                     self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
                     return f'INVALID: {value}'
             else:
-                v = self.disp.format(value)
-
-                # Quote commas
-                if ',' in v:
-                    return f"'{v}'"
-                else:
-                    return v
+                return self.disp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -432,14 +420,6 @@ class BaseVariable(pr.Node):
                 return sValue
             elif self.nativeType is np.ndarray:
                 return np.array(ast.literal_eval(sValue),self._ndType)
-            elif self.nativeType is list:
-                lst = ast.literal_eval(sValue)
-
-                # Special case for list of enums
-                if self.disp == 'enum':
-                    return [self.revEnum[i] for i in lst]
-                else:
-                    return lst
             elif self.disp == 'enum':
                 return self.revEnum[sValue]
             elif self.nativeType is str:
@@ -472,6 +452,10 @@ class BaseVariable(pr.Node):
         if self._ndType is None:
             _ = self.nativeType
         return self._ndType
+
+    @property
+    def ndTypeStr(self):
+        return str(self.ndType)
 
     def _setDefault(self):
         if self._default is not None:

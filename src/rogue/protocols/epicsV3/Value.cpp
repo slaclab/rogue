@@ -38,6 +38,7 @@ namespace bp  = boost::python;
 
 //! Setup class in python
 void rpe::Value::setup_python() {
+
    bp::class_<rpe::Value, rpe::ValuePtr, boost::noncopyable >("Value",bp::no_init)
       .def("epicsName", &rpe::Value::epicsName)
    ;
@@ -143,8 +144,8 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
             bitSize, epicsName_.c_str(),typeStr.c_str());
    }
 
-   // Python int
-   else if ( typeStr.find("int") == 0 ) {
+   // Python int, but not int64
+   else if ( typeStr.find("int") == 0 && typeStr != "int64" ) {
       fSize_ = 4;
       epicsType_ = aitEnumInt32;
       log_->info("Detected python int with size %i for %s typeStr=%s",
