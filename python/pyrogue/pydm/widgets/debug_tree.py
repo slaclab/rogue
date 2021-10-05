@@ -174,12 +174,6 @@ class DebugHolder(QTreeWidgetItem):
 
         self.setText(1,self._var.mode)
         self.setText(2,self._var.typeStr)
-
-        if self._var.isCommand:
-            self.setText(3,'Cmd')
-        else:
-            self.setText(3,'Var')
-
         self.setToolTip(0,self._var.description)
 
         if self._var.isCommand and not self._var.arg:
@@ -219,12 +213,21 @@ class DebugHolder(QTreeWidgetItem):
             w.alarmSensitiveBorder  = True
             #w.displayFormat         = 'String'
 
-        self._top._tree.setItemWidget(self,4,w)
+        if self._var.isCommand:
+            self._top._tree.setItemWidget(self,4,w)
+            width = fm.width('0xAAAAAAAA    ')
 
-        width = fm.width('0xAAAAAAAA    ')
+            if width > self._top._colWidths[4]:
+                self._top._colWidths[4] = width
 
-        if width > self._top._colWidths[4]:
-            self._top._colWidths[4] = width
+
+
+        else:
+            self._top._tree.setItemWidget(self,3,w)
+            width = fm.width('0xAAAAAAAA    ')
+
+            if width > self._top._colWidths[3]:
+                self._top._colWidths[3] = width
 
         if self._var.units:
             self.setText(5,str(self._var.units))
@@ -241,7 +244,7 @@ class DebugTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [250,50,75,50,200,50]
+        self._colWidths = [250,50,75,200,200,50]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -260,7 +263,7 @@ class DebugTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(5)
-        self._tree.setHeaderLabels(['Node','Mode','Type','Var/Cmd','Value','Units'])
+        self._tree.setHeaderLabels(['Node','Mode','Type','Variable','Command','Units'])
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -289,7 +292,7 @@ class DebugTree(PyDMFrame):
         self._tree.setColumnWidth(0,self._colWidths[0])
         self._tree.resizeColumnToContents(1)
         self._tree.resizeColumnToContents(2)
-        self._tree.resizeColumnToContents(3)
+        self._tree.setColumnWidth(3,self._colWidths[3])
         self._tree.setColumnWidth(4,self._colWidths[4])
         self._tree.resizeColumnToContents(5)
 

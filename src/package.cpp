@@ -27,7 +27,7 @@
 
 BOOST_PYTHON_MODULE(rogue) {
 
-   PyEval_InitThreads();
+   //PyEval_InitThreads();
 
    rogue::setup_module();
 
