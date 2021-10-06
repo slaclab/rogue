@@ -78,7 +78,7 @@ rim::Block::Block (uint64_t offset, uint32_t size) {
    path_       = "Undefined";
    mode_       = "RW";
    bulkOpEn_   = false;
-   updateEn_     = false;
+   updateEn_   = false;
    offset_     = offset;
    size_       = size;
    verifyEn_   = false;

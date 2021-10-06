@@ -517,7 +517,7 @@ void rpe::Variable::fromPython(bp::object value) {
 // Lock already held
 bool rpe::Variable::valueSet() {
    rogue::ScopedGil gil;
-   bp::list pl;
+   PyObject *obj;
    uint32_t i;
 
    log_->info("Variable set for %s",epicsName_.c_str());
@@ -531,57 +531,91 @@ bool rpe::Variable::valueSet() {
          var_.attr(setAttr_.c_str())(std::string((char*)pF));
 
       } else if ( array_ ) {
+         npy_intp dims[1] = { size_ };
 
          // Create vector of appropriate type
          if ( epicsType_ == aitEnumUint8 ) {
             aitUint8 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_UINT8);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            uint8_t       *dst = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumUint16 ) {
             aitUint16 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_UINT16);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            uint16_t      *dst = reinterpret_cast<uint16_t *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumUint32 ) {
             aitUint32 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_UINT32);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            uint32_t      *dst = reinterpret_cast<uint32_t *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumInt8 ) {
             aitInt8 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_INT8);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            int8_t        *dst = reinterpret_cast<int8_t *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumInt16 ) {
             aitInt16 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_INT16);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            int16_t       *dst = reinterpret_cast<int16_t *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumInt32 ) {
             aitInt32 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_INT32);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            int32_t       *dst = reinterpret_cast<int32_t *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumFloat32 ) {
             aitFloat32 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_FLOAT32);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            float         *dst = reinterpret_cast<float *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
          else if ( epicsType_ == aitEnumFloat64 ) {
             aitFloat64 * pF;
+            obj = PyArray_SimpleNew (1, dims, NPY_FLOAT64);
+            PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+            double        *dst = reinterpret_cast<double *>(PyArray_DATA (arr));
+
             pValue_->getRef(pF);
-            for ( i = 0; i < size_; i++ ) pl.append(pF[i]);
+            for ( i = 0; i < size_; i++ ) dst[i] = pF[i];
          }
 
-         var_.attr(setAttr_.c_str())(pl);
+         boost::python::handle<> handle (obj);
+         var_.attr(setAttr_.c_str())(bp::object(handle));
       }
       else {
 
