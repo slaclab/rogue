@@ -62,10 +62,16 @@ class DebugDev(QTreeWidgetItem):
 
     def _setup(self,noExpand):
 
+        # Get dictionary of variables followed by commands
+        lst = self._dev.variablesByGroup(incGroups=self._top._incGroups,
+                                         excGroups=self._top._excGroups)
+
+
+        lst.update(self._dev.commandsByGroup(incGroups=self._top._incGroups,
+                                             excGroups=self._top._excGroups))
+
         # First create variables/commands
-        for key,val in self._dev.getNodes(typ=pyrogue.BaseVariable,
-                                          incGroups=self._top._incGroups,
-                                          excGroups=self._top._excGroups).items():
+        for key,val in lst.items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
