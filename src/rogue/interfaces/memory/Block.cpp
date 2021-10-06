@@ -630,6 +630,7 @@ void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var, int32_t inde
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 )
       throw(rogue::GeneralError::create("Block::setPyFunc","Using ndarry not supported for %s",var->name_.c_str()));
+      //numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
 
    // Single value
    bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
@@ -648,6 +649,7 @@ bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
    // Unindexed with a list variable not supported
    if ( index < 0 && var->numValues_ > 0 )
       throw(rogue::GeneralError::create("Block::getPyFunc","Using ndarry not supported for %s",var->name_.c_str()));
+      //numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
 
    memset(getBuffer,0,var->valueBytes_);
 
@@ -723,6 +725,7 @@ void rim::Block::getByteArray ( uint8_t *value, rim::Variable *var, int32_t inde
 void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    uint64_t val;
+   uint32_t val32;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
@@ -735,11 +738,20 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
       if ( ndims != 1 || dims[0] != var->numValues_ )
          throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
 
-      if ( PyArray_TYPE(arr) != NPY_UINT64 )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray is not of type (uint64) for %s",var->name_.c_str()));
+      if ( PyArray_TYPE(arr) != NPY_UINT64 && PyArray_TYPE(arr) != NPY_UINT32 )
+         throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray is not of type (uint64 or uint32) for %s",var->name_.c_str()));
 
-      uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
-      for (x=0; x < var->numValues_; x++) setUInt (src[x], var, x);
+      if ( PyArray_TYPE(arr) == NPY_UINT64 ) {
+          uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
+          for (x=0; x < var->numValues_; x++) setUInt (src[x], var, x);
+      } else {
+          uint32_t *src = reinterpret_cast<uint32_t *>(PyArray_DATA (arr));
+          uint64_t tmp;
+          for (x=0; x < var->numValues_; x++) {
+              tmp = (uint64_t)src[x];
+              setUInt (tmp, var, x);
+          }
+      }
    }
 
    else {
@@ -750,6 +762,10 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
          // Attempt numpy entity conversation
          if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_UINT64 ) {
             PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_UINT32 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val32);
+            val = (uint64_t)val32;
          }
          else
             throw(rogue::GeneralError::create("Block::setUIntPy","Failed to extract value for %s.",var->name_.c_str()));
@@ -763,21 +779,32 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
 bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
    bp::object ret;
    uint32_t x;
+   PyObject *obj;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
 
       // Create a numpy array to receive it and locate the destination data buffer
       npy_intp dims[1] = { var->numValues_ };
-      PyObject    *obj = PyArray_SimpleNew (1, dims, NPY_UINT64);
 
-      if ( obj == NULL )
-         throw(rogue::GeneralError::create("Block::getUIntPy","Failed to create nparray for %s.",var->name_.c_str()));
-      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
-      uint64_t      *dst = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
+      if ( var->bitTotal_ > 32 ) {
+          obj = PyArray_SimpleNew (1, dims, NPY_UINT64);
+          PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+          uint64_t      *dst = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
 
-      for (x=0; x < var->numValues_; x++) dst[x] = getUInt(var,x);
+          for (x=0; x < var->numValues_; x++) dst[x] = getUInt(var,x);
+      }
+      else {
+          obj = PyArray_SimpleNew (1, dims, NPY_UINT32);
+          PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+          uint32_t      *dst = reinterpret_cast<uint32_t *>(PyArray_DATA (arr));
+          uint64_t tmp;
 
+          for (x=0; x < var->numValues_; x++) {
+              tmp = getUInt(var,x);
+              dst[x] = (uint32_t)tmp;
+          }
+      }
       boost::python::handle<> handle (obj);
       ret = bp::object(handle);
    }
@@ -821,6 +848,7 @@ uint64_t rim::Block::getUInt (rim::Variable *var, int32_t index ) {
 void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index ) {
    uint32_t x;
    int64_t val;
+   int32_t val32;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
@@ -833,11 +861,20 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
       if ( ndims != 1 || dims[0] != var->numValues_ )
          throw(rogue::GeneralError::create("Block::setIntPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
 
-      if ( PyArray_TYPE(arr) != NPY_INT64 )
-         throw(rogue::GeneralError::create("Block::setIntPy","Passed nparray is not of type (int64) for %s",var->name_.c_str()));
+      if ( PyArray_TYPE(arr) != NPY_INT64 && PyArray_TYPE(arr) != NPY_INT32 )
+         throw(rogue::GeneralError::create("Block::setIntPy","Passed nparray is not of type (int64 or int32) for %s",var->name_.c_str()));
 
-      int64_t *src = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
-      for (x=0; x < var->numValues_; x++) setInt (src[x], var, x);
+      if ( PyArray_TYPE(arr) == NPY_UINT64 ) {
+          int64_t *src = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
+          for (x=0; x < var->numValues_; x++) setInt (src[x], var, x);
+      } else {
+          int32_t *src = reinterpret_cast<int32_t *>(PyArray_DATA (arr));
+          int64_t tmp;
+          for (x=0; x < var->numValues_; x++) {
+              tmp = (int64_t)src[x];
+              setInt (tmp, var, x);
+          }
+      }
    }
    else {
       bp::extract<int64_t> tmp(value);
@@ -847,6 +884,10 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
          // Attempt numpy entity conversation
          if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT64 ) {
             PyArray_ScalarAsCtype(value.ptr(), &val);
+         }
+         else if ( PyArray_CheckScalar (value.ptr()) && PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT32 ) {
+            PyArray_ScalarAsCtype(value.ptr(), &val32);
+            val = (int64_t)val32;
          }
          else
             throw(rogue::GeneralError::create("Block::setIntPy","Failed to extract value for %s.",var->name_.c_str()));
@@ -861,22 +902,35 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
 bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
    bp::object ret;
    uint32_t x;
+   PyObject *obj;
 
    // Unindexed with a list variable
    if ( index < 0 && var->numValues_ > 0 ) {
 
       // Create a numpy array to receive it and locate the destination data buffer
       npy_intp   dims[1] = { var->numValues_ };
-      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_INT64);
-      PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
-      int64_t       *dst = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
 
-      for (x=0; x < var->numValues_; x++) dst[x] = getInt(var,x);
+      if ( var->bitTotal_ > 32 ) {
+          obj = PyArray_SimpleNew (1, dims, NPY_INT64);
+          PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+          int64_t       *dst = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
 
+          for (x=0; x < var->numValues_; x++) dst[x] = getInt(var,x);
+      }
+      else {
+          obj = PyArray_SimpleNew (1, dims, NPY_INT32);
+          PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
+          int32_t       *dst = reinterpret_cast<int32_t *>(PyArray_DATA (arr));
+          int64_t tmp;
+
+          for (x=0; x < var->numValues_; x++) {
+              tmp = getInt(var,x);
+              dst[x] = (int32_t)tmp;
+          }
+      }
       boost::python::handle<> handle (obj);
       ret = bp::object(handle);
    }
-
    else {
       PyObject *val = Py_BuildValue("L",getInt(var,index));
       bp::handle<> handle(val);
@@ -1227,7 +1281,7 @@ bp::object rim::Block::getDoublePy ( rim::Variable *var, int32_t index ) {
 
       // Create a numpy array to receive it and locate the destination data buffer
       npy_intp   dims[1] = { var->numValues_ };
-      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT32);
+      PyObject      *obj = PyArray_SimpleNew (1, dims, NPY_FLOAT64);
       PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
       double        *dst = reinterpret_cast<double *>(PyArray_DATA (arr));
 

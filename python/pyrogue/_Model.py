@@ -101,7 +101,7 @@ class Model(object, metaclass=ModelMeta):
         True if endianness = 'big'
 
     ndType: np.dtype
-        numpy type value
+        numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
 
     """
 
@@ -113,12 +113,12 @@ class Model(object, metaclass=ModelMeta):
     endianness  = 'little'
     bitReverse  = False
     modelId     = rim.PyFunc
-    ndType      = None
 
     def __init__(self, bitSize, binPoint=0):
         self.binPoint = binPoint
         self.bitSize  = bitSize
         self.name     = self.__class__.__name__
+        self.ndType   = None
 
     @property
     def isBigEndian(self):
@@ -204,11 +204,11 @@ class UInt(Model):
     pytype      = int
     defaultdisp = '{:#x}'
     modelId     = rim.UInt
-    ndType      = np.dtype(np.uint)
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
+        self.ndType = np.dtype(np.uint32) if bitSize <= 32 else np.dtype(np.uint64)
 
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
@@ -234,8 +234,11 @@ class UIntReversed(UInt):
     """
 
     modelId    = rim.PyFunc # Not yet supported
-    ndType     = None
     bitReverse = True
+
+    def __init__(self, bitSize):
+        super().__init__(bitSize)
+        self.ndType = None
 
     def toBytes(self, value):
         valueReverse = reverseBits(value, self.bitSize)
@@ -255,7 +258,10 @@ class Int(UInt):
     defaultdisp = '{:d}'
     signed      = True
     modelId     = rim.Int
-    ndType      = np.dtype(int)
+
+    def __init__(self, bitSize):
+        super().__init__(bitSize)
+        self.ndType = np.dtype(np.int32) if bitSize <= 32 else np.dtype(np.int64)
 
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
@@ -323,11 +329,11 @@ class Bool(Model):
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
     modelId     = rim.Bool
-    ndType      = np.dtype(bool)
 
     def __init__(self, bitSize):
         assert bitSize == 1, f"The bitSize param of Model {self.__class__.__name__} must be 1"
         super().__init__(bitSize)
+        self.ndType = np.dtype(bool)
 
     def fromString(self, string):
         return str.lower(string) == "true"
@@ -353,7 +359,6 @@ class String(Model):
     defaultdisp = '{}'
     pytype      = str
     modelId     = rim.String
-    ndType      = None
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -377,12 +382,12 @@ class Float(Model):
     pytype      = float
     fstring     = 'f'
     modelId     = rim.Float
-    ndType      = np.dtype(np.float32)
 
     def __init__(self, bitSize):
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
+        self.ndType = np.dtype(np.float32)
 
     def fromString(self, string):
         return float(string)
@@ -406,12 +411,12 @@ class Double(Float):
 
     fstring = 'd'
     modelId = rim.Double
-    ndType  = np.dtype(np.float64)
 
     def __init__(self, bitSize):
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
-        super().__init__(bitSize)
+        Model.__init__(self,bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
+        self.ndType = np.dtype(np.float64)
 
     def minValue(self):
         return -1.80e308
@@ -454,9 +459,8 @@ class Fixed(Model):
     pytype  = float
     signed  = True
     modelId = rim.Fixed
-    ndType  = np.dtype(np.float64)
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
-
         self.name = f'Fixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
+        self.ndType = np.dtype(np.float64)

@@ -378,7 +378,7 @@ rim::Variable::Variable ( std::string name,
          break;
 
       case rim::Double :
-         getFuncPy_ = &rim::Block::getFloatPy;
+         getFuncPy_ = &rim::Block::getDoublePy;
          break;
 
       case rim::Fixed :

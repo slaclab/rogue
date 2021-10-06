@@ -51,8 +51,21 @@ class ListDevice(pr.Device):
         ))
 
         self.add(pr.RemoteVariable(
+            name         = 'UInt48List',
+            offset       = 0x1000,
+            bitSize      = 48 * 32,
+            bitOffset    = 0x0000,
+            base         = pr.UInt,
+            mode         = 'RW',
+            disp         = '{}',
+            numValues    = 32,
+            valueBits    = 48,
+            valueStride  = 48
+        ))
+
+        self.add(pr.RemoteVariable(
             name         = 'FloatList',
-            offset       = 0x0100,
+            offset       = 0x2000,
             bitSize      = 32 * 32,
             bitOffset    = 0x0000,
             base         = pr.Float,
@@ -64,8 +77,21 @@ class ListDevice(pr.Device):
         ))
 
         self.add(pr.RemoteVariable(
+            name         = 'DoubleList',
+            offset       = 0x3000,
+            bitSize      = 64 * 32,
+            bitOffset    = 0x0000,
+            base         = pr.Double,
+            mode         = 'RW',
+            disp         = '{}',
+            numValues    = 32,
+            valueBits    = 64,
+            valueStride  = 64
+        ))
+
+        self.add(pr.RemoteVariable(
             name         = 'UInt16List',
-            offset       = 0x0200,
+            offset       = 0x4000,
             bitSize      = 16 * 32,
             bitOffset    = 0x0000,
             base         = pr.UInt,
@@ -78,7 +104,7 @@ class ListDevice(pr.Device):
 
         self.add(pr.RemoteVariable(
             name         = 'UInt21List',
-            offset       = 0x0300,
+            offset       = 0x5000,
             bitSize      = 32 * 32,
             bitOffset    = 0x0000,
             base         = pr.UInt,
@@ -91,7 +117,7 @@ class ListDevice(pr.Device):
 
         self.add(pr.RemoteVariable(
             name         = 'BoolList',
-            offset       = 0x0400,
+            offset       = 0x6000,
             bitSize      = 32,
             bitOffset    = 0x0000,
             base         = pr.Bool,
@@ -123,41 +149,53 @@ class DummyTree(pr.Root):
 
 def test_memory():
 
-    UInt32ListA = np.array([i for i in range(32)],np.uint64)
+    UInt32ListA = np.array([i for i in range(32)],np.uint32)
+    UInt48ListA = np.array([i for i in range(32)],np.uint64)
     FloatListA  = np.array([i/2 for i in range(32)],np.float32)
-    UInt16ListA = np.array([i for i in range(32)],np.uint64)
-    UInt21ListA = np.array([i for i in range(32)],np.uint64)
-    BoolListA   = np.array([i%2==0 for i in range(32)],np.bool)
+    DoubleListA = np.array([i/2 for i in range(32)],np.float64)
+    UInt16ListA = np.array([i for i in range(32)],np.uint32)
+    UInt21ListA = np.array([i for i in range(32)],np.uint32)
+    BoolListA   = np.array([i%2==0 for i in range(32)],bool)
 
-    UInt32ListB = np.array([i+1 for i in range(32)],np.uint64)
+    UInt32ListB = np.array([i+1 for i in range(32)],np.uint32)
+    UInt48ListB = np.array([i+1 for i in range(32)],np.uint64)
     FloatListB  = np.array([(i+1)/2 for i in range(32)],np.float32)
-    UInt16ListB = np.array([i+1 for i in range(32)],np.uint64)
-    UInt21ListB = np.array([i+1 for i in range(32)],np.uint64)
-    BoolListB   = np.array([(i+1)%2==0 for i in range(32)],np.bool)
+    DoubleListB = np.array([(i+1)/2 for i in range(32)],np.float64)
+    UInt16ListB = np.array([i+1 for i in range(32)],np.uint32)
+    UInt21ListB = np.array([i+1 for i in range(32)],np.uint32)
+    BoolListB   = np.array([(i+1)%2==0 for i in range(32)],bool)
 
     with DummyTree() as root:
 
         root.ListDevice.UInt32List.set(UInt32ListA)
+        root.ListDevice.UInt48List.set(UInt48ListA)
         root.ListDevice.FloatList.set(FloatListA)
+        root.ListDevice.DoubleList.set(DoubleListA)
         root.ListDevice.UInt16List.set(UInt16ListA)
         root.ListDevice.UInt21List.set(UInt21ListA)
         root.ListDevice.BoolList.set(BoolListA)
 
         UInt32ListAA = root.ListDevice.UInt32List.get()
+        UInt48ListAA = root.ListDevice.UInt48List.get()
         FloatListAA  = root.ListDevice.FloatList.get()
+        DoubleListAA = root.ListDevice.DoubleList.get()
         UInt16ListAA = root.ListDevice.UInt16List.get()
         UInt21ListAA = root.ListDevice.UInt21List.get()
         BoolListAA   = root.ListDevice.BoolList.get()
 
-        UInt32ListAB = np.array([0] * 32,np.int64)
+        UInt32ListAB = np.array([0] * 32,np.uint32)
+        UInt48ListAB = np.array([0] * 32,np.uint64)
         FloatListAB  = np.array([0] * 32,np.float32)
-        UInt16ListAB = np.array([0] * 32,np.int64)
-        UInt21ListAB = np.array([0] * 32,np.int64)
-        BoolListAB   = np.array([0] * 32,np.bool)
+        DoubleListAB = np.array([0] * 32,np.float64)
+        UInt16ListAB = np.array([0] * 32,np.uint32)
+        UInt21ListAB = np.array([0] * 32,np.uint32)
+        BoolListAB   = np.array([0] * 32,bool)
 
         for i in range(32):
             UInt32ListAB[i] = root.ListDevice.UInt32List.get(index=i)
+            UInt48ListAB[i] = root.ListDevice.UInt48List.get(index=i)
             FloatListAB[i]  = root.ListDevice.FloatList.get(index=i)
+            DoubleListAB[i] = root.ListDevice.DoubleList.get(index=i)
             UInt16ListAB[i] = root.ListDevice.UInt16List.get(index=i)
             UInt21ListAB[i] = root.ListDevice.UInt21List.get(index=i)
             BoolListAB[i]   = root.ListDevice.BoolList.get(index=i)
@@ -166,8 +204,14 @@ def test_memory():
             if UInt32ListAA[i] != UInt32ListA[i]:
                 raise AssertionError(f'Verification Failure for UInt32ListAA at position {i}')
 
+            if UInt48ListAA[i] != UInt48ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt48ListAA at position {i}')
+
             if FloatListAA[i] != FloatListA[i]:
                 raise AssertionError(f'Verification Failure for FloatListAA at position {i}')
+
+            if DoubleListAA[i] != DoubleListA[i]:
+                raise AssertionError(f'Verification Failure for DoubleListAA at position {i}')
 
             if UInt16ListAA[i] != UInt16ListA[i]:
                 raise AssertionError(f'Verification Failure for UInt16ListAA at position {i}')
@@ -181,8 +225,14 @@ def test_memory():
             if UInt32ListAB[i] != UInt32ListA[i]:
                 raise AssertionError(f'Verification Failure for UInt32ListAB at position {i}')
 
+            if UInt48ListAB[i] != UInt48ListA[i]:
+                raise AssertionError(f'Verification Failure for UInt48ListAB at position {i}')
+
             if FloatListAB[i] != FloatListA[i]:
                 raise AssertionError(f'Verification Failure for FloatListAB at position {i}')
+
+            if DoubleListAB[i] != DoubleListA[i]:
+                raise AssertionError(f'Verification Failure for DoubleListAB at position {i}')
 
             if UInt16ListAB[i] != UInt16ListA[i]:
                 raise AssertionError(f'Verification Failure for UInt16ListAB at position {i}')
@@ -195,26 +245,34 @@ def test_memory():
 
         for i in range(32):
             root.ListDevice.UInt32List.set(UInt32ListB[i],index=i)
+            root.ListDevice.UInt48List.set(UInt48ListB[i],index=i)
             root.ListDevice.FloatList.set(FloatListB[i],index=i)
+            root.ListDevice.DoubleList.set(DoubleListB[i],index=i)
             root.ListDevice.UInt16List.set(UInt16ListB[i],index=i)
             root.ListDevice.UInt21List.set(UInt21ListB[i],index=i)
             root.ListDevice.BoolList.set(BoolListB[i],index=i)
 
         UInt32ListBA = root.ListDevice.UInt32List.get()
+        UInt48ListBA = root.ListDevice.UInt48List.get()
         FloatListBA  = root.ListDevice.FloatList.get()
+        DoubleListBA = root.ListDevice.DoubleList.get()
         UInt16ListBA = root.ListDevice.UInt16List.get()
         UInt21ListBA = root.ListDevice.UInt21List.get()
         BoolListBA   = root.ListDevice.BoolList.get()
 
-        UInt32ListBB = np.array([0] * 32,np.int64)
+        UInt32ListBB = np.array([0] * 32,np.uint32)
+        UInt48ListBB = np.array([0] * 32,np.uint64)
         FloatListBB  = np.array([0] * 32,np.float32)
-        UInt16ListBB = np.array([0] * 32,np.int64)
-        UInt21ListBB = np.array([0] * 32,np.int64)
-        BoolListBB   = np.array([0] * 32,np.bool)
+        DoubleListBB = np.array([0] * 32,np.float64)
+        UInt16ListBB = np.array([0] * 32,np.uint32)
+        UInt21ListBB = np.array([0] * 32,np.uint32)
+        BoolListBB   = np.array([0] * 32,bool)
 
         for i in range(32):
             UInt32ListBB[i] = root.ListDevice.UInt32List.get(index=i)
+            UInt48ListBB[i] = root.ListDevice.UInt48List.get(index=i)
             FloatListBB[i]  = root.ListDevice.FloatList.get(index=i)
+            DoubleListBB[i] = root.ListDevice.DoubleList.get(index=i)
             UInt16ListBB[i] = root.ListDevice.UInt16List.get(index=i)
             UInt21ListBB[i] = root.ListDevice.UInt21List.get(index=i)
             BoolListBB[i]   = root.ListDevice.BoolList.get(index=i)
@@ -223,8 +281,14 @@ def test_memory():
             if UInt32ListBA[i] != UInt32ListB[i]:
                 raise AssertionError(f'Verification Failure for UInt32ListBA at position {i}')
 
+            if UInt48ListBA[i] != UInt48ListB[i]:
+                raise AssertionError(f'Verification Failure for UInt48ListBA at position {i}')
+
             if FloatListBA[i] != FloatListB[i]:
                 raise AssertionError(f'Verification Failure for FloatListBA at position {i}')
+
+            if DoubleListBA[i] != DoubleListB[i]:
+                raise AssertionError(f'Verification Failure for DoubleListBA at position {i}')
 
             if UInt16ListBA[i] != UInt16ListB[i]:
                 raise AssertionError(f'Verification Failure for UInt16ListBA at position {i}')
@@ -240,6 +304,9 @@ def test_memory():
 
             if FloatListBB[i] != FloatListB[i]:
                 raise AssertionError(f'Verification Failure for FloatListBB at position {i}')
+
+            if DoubleListBB[i] != DoubleListB[i]:
+                raise AssertionError(f'Verification Failure for DoubleListBB at position {i}')
 
             if UInt16ListBB[i] != UInt16ListB[i]:
                 raise AssertionError(f'Verification Failure for UInt16ListBB at position {i}')

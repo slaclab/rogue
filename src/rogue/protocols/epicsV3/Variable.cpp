@@ -96,7 +96,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
          type = ndtype;
 
          // Get initial element count
-         log_->info("Detected ndarray for %s with ndtype = %s and count = %i", epicsName.c_str(),ndtype.c_str(),count);
+         log_->info("Detected ndarray for %s with ndtype = %s (%i) and count = %i", epicsName.c_str(),ndtype.c_str(),PyArray_TYPE(arr),count);
       }
    }
 
@@ -329,17 +329,29 @@ void rpe::Variable::fromPython(bp::object value) {
    bp::list pl;
    std::string ps;
    uint32_t i;
+   PyArrayObject *arr;
 
    log_->debug("Python set for %s", epicsName_.c_str());
 
    if ( array_ ) {
+      log_->debug("Handling array for %s", epicsName_.c_str());
 
       if ( isString_ ) {
          ps    = bp::extract<std::string>(value);
          size_ = ps.size();
       } else {
-         pl    = bp::extract<bp::list>(value);
-         size_ = len(pl);
+
+         // Cast to an array object and check that the numpy array
+         arr = reinterpret_cast<decltype(arr)>(value.ptr());
+
+         npy_intp ndims = PyArray_NDIM(arr);
+         npy_intp * dims = PyArray_SHAPE(arr);
+         if ( ndims != 1 || dims[0] == 0 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray has bad length for %s",epicsName_.c_str()));
+
+         size_ = dims[0];
+
+         log_->debug("Found array of type %i with size %i for %s", PyArray_TYPE(arr), size_, epicsName_.c_str());
       }
 
       // Limit size
@@ -353,54 +365,93 @@ void rpe::Variable::fromPython(bp::object value) {
       if ( epicsType_ == aitEnumUint8 ) {
          aitUint8 * pF = new aitUint8[size_];
 
-         if ( isString_ ) {
-            ps.copy((char *)pF, size_);
-         } else {
-            for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint8_t>(pl[i]);
+         if ( isString_ ) ps.copy((char *)pF, size_);
+         else {
+
+            if ( PyArray_TYPE(arr) != NPY_UINT8 )
+               throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (uint8) for %s",epicsName_.c_str()));
+
+            uint8_t *pl = reinterpret_cast<uint8_t *>(PyArray_DATA (arr));
+            for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          }
 
          pValue_->putRef(pF, new rpe::Destructor<aitUint8 *>);
       }
 
       else if ( epicsType_ == aitEnumUint16 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_UINT16 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (uint16) for %s",epicsName_.c_str()));
+
+         uint16_t *pl = reinterpret_cast<uint16_t *>(PyArray_DATA (arr));
          aitUint16 * pF = new aitUint16[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint16_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitUint16 *>);
       }
 
       else if ( epicsType_ == aitEnumUint32 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_UINT32 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (uint32) for %s",epicsName_.c_str()));
+
+         uint32_t *pl = reinterpret_cast<uint32_t *>(PyArray_DATA (arr));
          aitUint32 * pF = new aitUint32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<uint32_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitUint32 *>);
       }
 
       else if ( epicsType_ == aitEnumInt8 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_INT8 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (int8) for %s",epicsName_.c_str()));
+
+         int8_t *pl = reinterpret_cast<int8_t *>(PyArray_DATA (arr));
          aitInt8 * pF = new aitInt8[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int8_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitInt8 *>);
       }
 
       else if ( epicsType_ == aitEnumInt16 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_INT16 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (int16) for %s",epicsName_.c_str()));
+
+         int16_t *pl = reinterpret_cast<int16_t *>(PyArray_DATA (arr));
          aitInt16 * pF = new aitInt16[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int16_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitInt16 *>);
       }
 
       else if ( epicsType_ == aitEnumInt32 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_INT32 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (int32) for %s",epicsName_.c_str()));
+
+         int32_t *pl = reinterpret_cast<int32_t *>(PyArray_DATA (arr));
          aitInt32 * pF = new aitInt32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<int32_t>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitInt32 *>);
       }
 
       else if ( epicsType_ == aitEnumFloat32 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_FLOAT32 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (float32) for %s",epicsName_.c_str()));
+
+         float *pl = reinterpret_cast<float *>(PyArray_DATA (arr));
          aitFloat32 * pF = new aitFloat32[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitFloat32 *>);
       }
 
       else if ( epicsType_ == aitEnumFloat64 ) {
+
+         if ( PyArray_TYPE(arr) != NPY_FLOAT64 )
+            throw(rogue::GeneralError::create("Variable::fromPython","Passed nparray is not of type (float64) for %s",epicsName_.c_str()));
+
+         double *pl = reinterpret_cast<double *>(PyArray_DATA (arr));
          aitFloat64 * pF = new aitFloat64[size_];
-         for ( i = 0; i < size_; i++ ) pF[i] = extractValue<double>(pl[i]);
+         for ( i = 0; i < size_; i++ ) pF[i] = pl[i];
          pValue_->putRef(pF, new rpe::Destructor<aitFloat64 *>);
       }
       else throw rogue::GeneralError::create("Variable::fromPython","Invalid Variable Type For %s",epicsName_.c_str());
