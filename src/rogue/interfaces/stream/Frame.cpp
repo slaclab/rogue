@@ -346,7 +346,7 @@ ris::FrameIterator ris::Frame::endWrite() {
 void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
    Py_buffer pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Frame::readPy","Python Buffer Error In Frame"));
 
    uint32_t size = getPayload();
@@ -369,7 +369,7 @@ void ris::Frame::readPy ( boost::python::object p, uint32_t offset ) {
 void ris::Frame::writePy ( boost::python::object p, uint32_t offset ) {
    Py_buffer pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError("Frame::writePy","Python Buffer Error In Frame"));
 
    uint32_t size = getSize();
