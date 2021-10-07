@@ -27,6 +27,7 @@
 #include <condition_variable>
 #include <rogue/EnableSharedFromThis.h>
 #include <rogue/Logging.h>
+#include <memory>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
