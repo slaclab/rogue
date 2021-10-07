@@ -232,8 +232,8 @@ rim::Transaction::iterator rim::Transaction::end() {
 void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
-      throw(rogue::GeneralError("Transaction::writePy","Python Buffer Error In Frame"));
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
+      throw(rogue::GeneralError("Transaction::setData","Python Buffer Error In Frame"));
 
    uint32_t count = pyBuf.len;
 
@@ -252,8 +252,8 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
 void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    Py_buffer  pyBuf;
 
-   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Transaction::readPy","Python Buffer Error In Frame"));
+   if ( PyObject_GetBuffer(p.ptr(),&pyBuf,PyBUF_CONTIG) < 0 )
+      throw(rogue::GeneralError("Transaction::getData","Python Buffer Error In Frame"));
 
    uint32_t count = pyBuf.len;
 

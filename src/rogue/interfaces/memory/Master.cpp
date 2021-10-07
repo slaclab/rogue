@@ -153,8 +153,13 @@ uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void *data
 uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type) {
    rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
 
-   if ( PyObject_GetBuffer(p.ptr(),&(tran->pyBuf_),PyBUF_SIMPLE) < 0 )
-      throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Error"));
+   if ( (type == rim::Read) || (type == rim::Verify) ) {
+      if ( PyObject_GetBuffer(p.ptr(),&(tran->pyBuf_),PyBUF_CONTIG) < 0 )
+         throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer Contig Error"));
+   } else {
+      if ( PyObject_GetBuffer(p.ptr(),&(tran->pyBuf_),PyBUF_SIMPLE) < 0 )
+         throw(rogue::GeneralError("Master::reqTransactionPy","Python Buffer SImple Error"));
+   }
 
    if ( size == 0 ) tran->size_ = tran->pyBuf_.len;
    else tran->size_ = size;
@@ -238,7 +243,7 @@ void rim::Master::copyBits(boost::python::object dst, uint32_t dstLsb, boost::py
    uint32_t  rem;
    uint32_t  bytes;
 
-   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
+   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Master::copyBits","Python Buffer Error"));
 
    if ( (dstLsb + size) > (dstBuf.len*8) ) {
@@ -305,7 +310,7 @@ void rim::Master::setBits(boost::python::object dst, uint32_t lsb, uint32_t size
    uint32_t  rem;
    uint32_t  bytes;
 
-   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_SIMPLE) < 0 )
+   if ( PyObject_GetBuffer(dst.ptr(),&dstBuf,PyBUF_CONTIG) < 0 )
       throw(rogue::GeneralError("Master::setBits","Python Buffer Error"));
 
    if ( (lsb + size) > (dstBuf.len*8) ) {
