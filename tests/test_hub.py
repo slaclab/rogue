@@ -9,20 +9,181 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-# Comment added by rherbst for demonstration purposes.
-import datetime
-import parse
+# This test file tests and demonstrates the ability to have virtual address space
+# directly in a device using the hub override calls. In this example the real address
+# space contains two registers, one to issue commands over SPI. The data field for these
+# commands are:
+# Bit 31 = read/write bit. Set to '1' for reads
+# bits 30:20 = address field
+# bits 19:00 = data field, ignored on read
+#
+# The second register is a read back register to get the results of the previous
+# read command.
+#
+# The remaining registers in this device are virtual and read or write accesses to them
+# are converted to multiple transactions using the above two handshake registers.
+
 import pyrogue as pr
 import rogue.interfaces.memory
 import threading
 import random
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
-#import logging
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
+class HubTestDev(pr.Device):
+
+    # Read address space of the device.
+    WRITE_ADDR  = 0x000
+    READ_ADDR   = 0x004
+
+    # Any addresses above this value are treated as vritual
+    OFFSET_ADDR = 0x100
+    MAX_RETRIES = 5
+
+    def __init__(self,**kwargs):
+        super().__init__(**kwargs)
+
+        self._lock = threading.Lock()
+
+        # Write register to initiating commands. The data field takes the following
+        # Format:
+        #    Bit 31 = read/write bit. Set to '1' for reads
+        #    bits 30:20 = address field
+        #    bits 19:00 = data field, ignored on read
+        self.add(pr.RemoteVariable(
+            name         = "Write",
+            offset       =  self.WRITE_ADDR,
+            bitSize      =  32,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
+        # Read register to get read command results. The data returned will contain
+        # the following data:
+        #    Bit 31 = read/write bit. Set to '1' for reads
+        #    bits 30:20 = address field
+        #    bits 19:00 = data field
+        self.add(pr.RemoteVariable(
+            name         = "Read",
+            offset       =  self.READ_ADDR,
+            bitSize      =  32,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RO",
+        ))
+
+        # Virtual registers
+        for i in range(10):
+            self.add(pr.RemoteVariable(
+                name         = f"Reg[{i}]",
+                offset       =  self.OFFSET_ADDR + (4 * i),
+                bitSize      =  32,
+                bitOffset    =  0x00,
+                base         = pr.UInt,
+                mode         = "RW",
+            ))
+
+    # Return the command field from the read data
+    @classmethod
+    def cmd_address(cls, data): # returns address data
+        return((data & 0x7FFF0000) >> 20)
+
+    # Return the data field from the read data
+    @classmethod
+    def cmd_data(cls, data):  # returns data
+        return(data & 0xFFFFF)
+
+    # Build the data field for a write command
+    @classmethod
+    def cmd_make(cls, read, address, data):
+        return((read << 31) | ((address << 20) & 0x7FF00000) | (data & 0xFFFFF))
+
+    # Helper function to initiate outbound write transactions and wait for the result
+    # Returns error string or "" for no error
+    def _wrapWriteTransaction(self, data):
+        self._clearError()
+        dataBytes = data.to_bytes(4,'little',signed=False)
+        id = self._reqTransaction(self.WRITE_ADDR, dataBytes, 4, 0, rogue.interfaces.memory.Write)
+        self._waitTransaction(id)
+        return self._getError()
+
+    # Helper function to initiate outbound read transactions and wait for the result
+    # Returns data,error where error is "" for no error
+    def _wrapReadTransaction(self):
+        self._clearError()
+        dataBytes = bytearray(4)
+        id = self._reqTransaction(self.READ_ADDR, dataBytes, 4, 0, rogue.interfaces.memory.Read)
+        self._waitTransaction(id)
+
+        return int.from_bytes(dataBytes, 'little', signed=False), self._getError()
+
+    # Execute write to the passed virtual address
+    def _doVirtualWrite(self,address,data):
+        return self._wrapWriteTransaction(self.cmd_make(read=0,  address=(address - self.OFFSET_ADDR), data=data))
+
+    # Execute read from the passed virtual address, retry until data is ready
+    def _doVirtualRead(self,address):
+        writeData = self.cmd_make(read=1, address=(address - self.OFFSET_ADDR), data=0)
+
+        rsp = self._wrapWriteTransaction(writeData)
+
+        if rsp != "":
+            return None, rsp
+
+        for _ in range(self.MAX_RETRIES):
+            rsp = self._wrapWriteTransaction(writeData)
+
+            if rsp != "":
+                return None, rsp
+
+            data, rsp = self._wrapReadTransaction()
+
+            if rsp != "":
+                return None, rsp
+
+            if self.cmd_address(data) == (address - self.OFFSET_ADDR):
+                return self.cmd_data(data), ""
+
+        return None,"Indirect Read Timeout"
+
+    # Intercept transactions
+    def _doTransaction(self,transaction):
+        with self._lock:
+
+            addr = transaction.address()
+
+            # Read transactions to non virtual space are passed through
+            if addr < self.OFFSET_ADDR:
+                super()._doTransaction(transaction)
+            else:
+
+                with transaction.lock():
+
+                    # Write transaction
+                    if transaction.type() == rogue.interfaces.memory.Write or \
+                       transaction.type() == rogue.interfaces.memory.Post:
+
+                        cmdDataBytes = bytearray(transaction.size())
+                        transaction.getData(cmdDataBytes,0)
+                        rsp = self._doWrite(addr,int.from_bytes(cmdDataBytes,byteorder='little', signed=False))
+
+                        if rsp != "":
+                            transaction.error(rsp)
+                        else:
+                            transaction.done()
+
+                    # Read or read/verity transaction
+                    else:
+
+                        data, error = self._doRead(addr)
+
+                        if error != "":
+                            transaction.error(error)
+                        else:
+                            transaction.setData(data.to_bytes(4,'little',signed=False),0)
+                            transaction.done()
 
 
+# Device which emulates the SPI interface under tests.
 class TestEmulate(rogue.interfaces.memory.Slave):
 
     def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF):
@@ -86,132 +247,6 @@ class TestEmulate(rogue.interfaces.memory.Slave):
 
         else:
             transaction.error(f"Invalid transaction. Addr:{address:#x}, size:{size}, type:{type}")
-
-class HubTestDev(pr.Device):
-
-    WRITE_ADDR  = 0x000
-    READ_ADDR   = 0x004
-    OFFSET_ADDR = 0x100
-    MAX_RETRIES = 5
-
-    def __init__(self,**kwargs):
-        super().__init__(**kwargs)
-
-        self._lock = threading.Lock()
-
-        self.add(pr.RemoteVariable(
-            name         = "Write",
-            offset       =  self.WRITE_ADDR,
-            bitSize      =  32,
-            bitOffset    =  0x00,
-            base         = pr.UInt,
-            mode         = "RW",
-        ))
-
-        self.add(pr.RemoteVariable(
-            name         = "Read",
-            offset       =  self.READ_ADDR,
-            bitSize      =  32,
-            bitOffset    =  0x00,
-            base         = pr.UInt,
-            mode         = "RO",
-        ))
-
-        for i in range(10):
-            self.add(pr.RemoteVariable(
-                name         = f"Reg[{i}]",
-                offset       =  self.OFFSET_ADDR + (4 * i),
-                bitSize      =  32,
-                bitOffset    =  0x00,
-                base         = pr.UInt,
-                mode         = "RW",
-            ))
-
-    def cmd_address(self, data): # returns address data
-        return((data & 0x7FFF0000) >> 20)
-
-    def cmd_data(self, data):  # returns data
-        return(data & 0xFFFFF)
-
-    def cmd_make(self, read, address, data):
-        return((read << 31) | ((address << 20) & 0x7FF00000) | (data & 0xFFFFF))
-
-    def _wrapWriteTransaction(self, data):
-        self._clearError()
-        dataBytes = data.to_bytes(4,'little',signed=False)
-        id = self._reqTransaction(self.WRITE_ADDR, dataBytes, 4, 0, rogue.interfaces.memory.Write)
-        self._waitTransaction(id)
-        return self._getError()
-
-    def _wrapReadTransaction(self):
-        self._clearError()
-        dataBytes = bytearray(4)
-        id = self._reqTransaction(self.READ_ADDR, dataBytes, 4, 0, rogue.interfaces.memory.Read)
-        self._waitTransaction(id)
-
-        return int.from_bytes(dataBytes, 'little', signed=False), self._getError()
-
-    def _doWrite(self,address,data):
-        return self._wrapWriteTransaction(self.cmd_make(read=0,  address=(address - self.OFFSET_ADDR), data=data))
-
-    def _doRead(self,address):
-        writeData = self.cmd_make(read=1, address=(address - self.OFFSET_ADDR), data=0)
-
-        rsp = self._wrapWriteTransaction(writeData)
-
-        if rsp != "":
-            return None, rsp
-
-        for _ in range(self.MAX_RETRIES):
-            rsp = self._wrapWriteTransaction(writeData)
-
-            if rsp != "":
-                return None, rsp
-
-            data, rsp = self._wrapReadTransaction()
-
-            if rsp != "":
-                return None, rsp
-
-            if self.cmd_address(data) == (address - self.OFFSET_ADDR):
-                return self.cmd_data(data), ""
-
-        return None,"Indirect Read Timeout"
-
-    def _doTransaction(self,transaction):
-        with self._lock:
-
-            addr = transaction.address()
-
-            if addr < self.OFFSET_ADDR:
-                super()._doTransaction(transaction)
-            else:
-
-                with transaction.lock():
-
-                    # Write transaction
-                    if transaction.type() == rogue.interfaces.memory.Write or \
-                       transaction.type() == rogue.interfaces.memory.Post:
-
-                        cmdDataBytes = bytearray(transaction.size())
-                        transaction.getData(cmdDataBytes,0)
-                        rsp = self._doWrite(addr,int.from_bytes(cmdDataBytes,byteorder='little', signed=False))
-
-                        if rsp != "":
-                            transaction.error(rsp)
-                        else:
-                            transaction.done()
-
-                    # Read or read/verity transaction
-                    else:
-
-                        data, error = self._doRead(addr)
-
-                        if error != "":
-                            transaction.error(error)
-                        else:
-                            transaction.setData(data.to_bytes(4,'little',signed=False),0)
-                            transaction.done()
 
 class DummyTree(pr.Root):
 
