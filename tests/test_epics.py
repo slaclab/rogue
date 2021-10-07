@@ -73,11 +73,13 @@ def test_local_root():
 
             # Test list method
             root.epics.list()
+            time.sleep(1)
 
             # Test RW a variable holding an scalar value
             pv_name=device_epics_prefix+':var'
             test_value=314
             caput(pv_name, test_value)
+            time.sleep(1)
             test_result=caget(pv_name)
             if test_result != test_value:
                raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(\
@@ -87,6 +89,7 @@ def test_local_root():
             pv_name=device_epics_prefix+':var_float'
             test_value=5.67
             caput(pv_name, test_value)
+            time.sleep(1)
             test_result=round(caget(pv_name),2)
             if test_result != test_value:
                raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(\
