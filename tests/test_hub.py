@@ -164,7 +164,7 @@ class HubTestDev(pr.Device):
 
                         cmdDataBytes = bytearray(transaction.size())
                         transaction.getData(cmdDataBytes,0)
-                        rsp = self._doWrite(addr,int.from_bytes(cmdDataBytes,byteorder='little', signed=False))
+                        rsp = self._doVirtualWrite(addr,int.from_bytes(cmdDataBytes,byteorder='little', signed=False))
 
                         if rsp != "":
                             transaction.error(rsp)
@@ -174,7 +174,7 @@ class HubTestDev(pr.Device):
                     # Read or read/verity transaction
                     else:
 
-                        data, error = self._doRead(addr)
+                        data, error = self._doVirtualRead(addr)
 
                         if error != "":
                             transaction.error(error)
