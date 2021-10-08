@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM Variable Tree Widget
+# Title      : PyRogue PyDM Debug Tree Widget
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -22,7 +22,7 @@ from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
 
 
-class VariableDev(QTreeWidgetItem):
+class DebugDev(QTreeWidgetItem):
 
     def __init__(self,*, path, top, parent, dev, noExpand):
         QTreeWidgetItem.__init__(self,parent)
@@ -33,7 +33,7 @@ class VariableDev(QTreeWidgetItem):
         self._path     = path
         self._groups   = {}
 
-        if isinstance(parent,VariableDev):
+        if isinstance(parent,DebugDev):
             self._depth = parent._depth+1
         else:
             self._depth = 1
@@ -62,43 +62,37 @@ class VariableDev(QTreeWidgetItem):
 
     def _setup(self,noExpand):
 
-        # First create variables
-        for key,val in self._dev.variablesByGroup(incGroups=self._top._incGroups,
-                                                  excGroups=self._top._excGroups).items():
+        # Get dictionary of variables followed by commands
+        lst = self._dev.variablesByGroup(incGroups=self._top._incGroups,
+                                         excGroups=self._top._excGroups)
+
+
+        lst.update(self._dev.commandsByGroup(incGroups=self._top._incGroups,
+                                             excGroups=self._top._excGroups))
+
+        # First create variables/commands
+        for key,val in lst.items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = VariableGroup(path=self._path,
-                                                               top=self._top,
-                                                               parent=self,
-                                                               name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
             else:
-                VariableHolder(path=self._path + '.' + val.name,
-                               top=self._top,
-                               parent=self,
-                               variable=val)
+                DebugHolder(path=self._path + '.' + val.name, top=self._top, parent=self, variable=val)
 
         # Then create devices
-        for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
-                                                excGroups=self._top._excGroups).items():
+        for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = VariableGroup(path=self._path,
-                                                               top=self._top,
-                                                               parent=self,
-                                                               name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
             else:
-                VariableDev(path=self._path + '.' + val.name,
-                            top=self._top, parent=self,
-                            dev=val,
-                            noExpand=noExpand)
+                DebugDev(path=self._path + '.' + val.name, top=self._top, parent=self, dev=val, noExpand=noExpand)
 
     def _expand(self):
         if self._dummy is None:
@@ -109,7 +103,7 @@ class VariableDev(QTreeWidgetItem):
         self._setup(True)
 
 
-class VariableGroup(QTreeWidgetItem):
+class DebugGroup(QTreeWidgetItem):
 
     def __init__(self,*, path, top, parent, name):
         QTreeWidgetItem.__init__(self,parent)
@@ -133,17 +127,17 @@ class VariableGroup(QTreeWidgetItem):
         for n in self._list:
 
             if n.isDevice:
-                VariableDev(path=self._path + '.' + n.name,
+                DebugDev(path=self._path + '.' + n.name,
+                         top=self._top,
+                         parent=self,
+                         dev=n,
+                         noExpand=True)
+
+            elif n.isVariable or n.isCommand:
+                DebugHolder(path=self._path + '.' + n.name,
                             top=self._top,
                             parent=self,
-                            dev=n,
-                            noExpand=True)
-
-            elif n.isVariable:
-                VariableHolder(path=self._path + '.' + n.name,
-                               top=self._top,
-                               parent=self,
-                               variable=n)
+                            variable=n)
 
     def _expand(self):
         if self._dummy is None:
@@ -157,7 +151,7 @@ class VariableGroup(QTreeWidgetItem):
         self._list.append(node)
 
 
-class VariableHolder(QTreeWidgetItem):
+class DebugHolder(QTreeWidgetItem):
 
     def __init__(self,*,path,top,parent,variable):
         QTreeWidgetItem.__init__(self,parent)
@@ -186,16 +180,21 @@ class VariableHolder(QTreeWidgetItem):
 
         self.setText(1,self._var.mode)
         self.setText(2,self._var.typeStr)
-
         self.setToolTip(0,self._var.description)
 
-        if self._var.disp == 'enum' and self._var.enum is not None and self._var.mode != 'RO':
+        if self._var.isCommand and not self._var.arg:
+
+            w = PyDMPushButton(label='Exec',
+                               pressValue=1,
+                               init_channel=self._path + '/disp')
+
+        elif self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
             w.installEventFilter(self._top)
 
-        elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and self._var.mode != 'RO':
+        elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and (self._var.mode != 'RO' or self._var.isCommand):
             w = PyDMSpinbox(parent=None, init_channel=self._path)
             w.precision             = 0
             w.showUnits             = False
@@ -203,9 +202,10 @@ class VariableHolder(QTreeWidgetItem):
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
             w.showStepExponent      = False
+            w.writeOnPress          = True
             w.installEventFilter(self._top)
 
-        elif self._var.mode == 'RO':
+        elif self._var.mode == 'RO' and not self._var.isCommand:
             w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
             w.showUnits             = False
             w.precisionFromPV       = True
@@ -219,18 +219,27 @@ class VariableHolder(QTreeWidgetItem):
             w.alarmSensitiveBorder  = True
             #w.displayFormat         = 'String'
 
-        self._top._tree.setItemWidget(self,3,w)
+        if self._var.isCommand:
+            self._top._tree.setItemWidget(self,4,w)
+            width = fm.width('0xAAAAAAAA    ')
 
-        width = fm.width('0xAAAAAAAA    ')
+            if width > self._top._colWidths[4]:
+                self._top._colWidths[4] = width
 
-        if width > self._top._colWidths[3]:
-            self._top._colWidths[3] = width
+
+
+        else:
+            self._top._tree.setItemWidget(self,3,w)
+            width = fm.width('0xAAAAAAAA    ')
+
+            if width > self._top._colWidths[3]:
+                self._top._colWidths[3] = width
 
         if self._var.units:
-            self.setText(4,str(self._var.units))
+            self.setText(5,str(self._var.units))
 
 
-class VariableTree(PyDMFrame):
+class DebugTree(PyDMFrame):
     def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
@@ -241,11 +250,11 @@ class VariableTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [250,50,75,200,50]
+        self._colWidths = [250,50,75,200,200,50]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
-        super(VariableTree, self).connection_changed(connected)
+        super(DebugTree, self).connection_changed(connected)
 
         if not build:
             return
@@ -260,7 +269,7 @@ class VariableTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(5)
-        self._tree.setHeaderLabels(['Variable','Mode','Type','Value','Units'])
+        self._tree.setHeaderLabels(['Node','Mode','Type','Variable','Command','Units'])
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -278,7 +287,7 @@ class VariableTree(PyDMFrame):
 
 
         self.setUpdatesEnabled(False)
-        VariableDev(path = self._path, top=self, parent=self._tree, dev=self._node, noExpand=False)
+        DebugDev(path = self._path, top=self, parent=self._tree, dev=self._node, noExpand=False)
         self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
@@ -290,7 +299,8 @@ class VariableTree(PyDMFrame):
         self._tree.resizeColumnToContents(1)
         self._tree.resizeColumnToContents(2)
         self._tree.setColumnWidth(3,self._colWidths[3])
-        self._tree.resizeColumnToContents(4)
+        self._tree.setColumnWidth(4,self._colWidths[4])
+        self._tree.resizeColumnToContents(5)
 
         self.setUpdatesEnabled(True)
 
