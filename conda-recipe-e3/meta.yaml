@@ -1,0 +1,58 @@
+package:
+  name: rogue-epics3
+  version: {{ environ.get('GIT_DESCRIBE_TAG') }}
+
+source:
+   path: ..
+
+build:
+   number: {{ environ.get('GIT_DESCRIBE_NUMBER',0) }}
+
+requirements:
+   build:
+     - python<3.8
+     - boost
+     - {{ compiler('c') }}
+     - {{ compiler('cxx') }}
+     - git
+     - cmake
+     - make
+     - bzip2
+     - zeromq
+     - epics-base
+     - pcas
+     - numpy
+   host:
+     - python<3.8
+     - boost
+     - bzip2
+     - zeromq
+     - epics-base
+     - pcas
+     - numpy
+   run:
+     - python<3.8
+     - boost
+     - bzip2
+     - zeromq
+     - epics-base
+     - pcas
+     - numpy
+     - ipython
+     - p4p
+     - pyyaml
+     - jsonpickle
+     - pyzmq
+     - parse
+     - click
+     - pyqt
+     - sqlalchemy
+     - pydm
+     - pyserial
+
+about:
+   home: https://github.com/slaclab/rogue
+   license: SLAC Open License
+   license_file: LICENSE.txt
+   summary: SLAC Python Based Hardware Abstraction And Data Acquisition System
+
