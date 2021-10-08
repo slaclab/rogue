@@ -38,9 +38,11 @@ jobs:
           EPICS_BASE=${HOME}/packages/epics/base-7.0.3
           EPICS_PCAS_ROOT=${HOME}/packages/pcas/pcas-4.13.2
           LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
+          PATH=${EPICS_BASE}/bin/linux-x86_64:${PATH}
           echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
           echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" >> $GITHUB_ENV
           echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          echo "PATH=$PATH" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |

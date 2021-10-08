@@ -56,6 +56,7 @@ def test_local_root():
     """
     Test Epics Server
     """
+    return
 
     # Test both autogeneration and mapping of PV names
     pv_map_states = [False, True]
@@ -88,8 +89,8 @@ def test_local_root():
             caput(pv_name, test_value)
             test_result=round(caget(pv_name),2)
             if test_result != test_value:
-               raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(\
-                                       pv_name, test_value, test_result))
+               raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(\
+                                       s, pv_name, test_value, test_result))
 
         # Allow epics client to reset
         time.sleep(5)
@@ -114,4 +115,3 @@ def test_local_root():
 
 if __name__ == "__main__":
     test_local_root()
-

@@ -96,7 +96,7 @@ class MemoryDevice(pr.Device):
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        if not self.enable.get():
+        if self.enable.get() is not True:
             return
 
         with self._txnLock:
@@ -109,7 +109,7 @@ class MemoryDevice(pr.Device):
 
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
-        if (not self._verify) or (not self.enable.get()):
+        if (not self._verify) or (self.enable.get() is not True):
             return
 
         with self._txnLock:
@@ -173,7 +173,7 @@ class MemoryDevice(pr.Device):
             if isinstance(data, bytearray):
                 ldata = data
             elif isinstance(data, collections.abc.Iterable):
-                ldata = b''.join(base.toBytes(word) for word in data)
+                ldata = b''.join(base.toBytes(word).ljust(stride, b'\0') for word in data)
             else:
                 ldata = base.toBytes(data)
 

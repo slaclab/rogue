@@ -632,7 +632,7 @@ std::string rim::Variable::getDumpValue(bool read) {
    if ( numValues_ == 0 ) index = -1;
    else index = 0;
 
-   while ( index < numValues_ ) {
+   while ( index < (int32_t) numValues_ ) {
        ret << " ";
 
        switch (modelId_) {

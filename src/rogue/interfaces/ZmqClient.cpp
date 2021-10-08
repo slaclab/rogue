@@ -29,8 +29,8 @@
 namespace bp = boost::python;
 #endif
 
-rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(std::string addr, uint16_t port) {
-   rogue::interfaces::ZmqClientPtr ret = std::make_shared<rogue::interfaces::ZmqClient>(addr,port,false);
+rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(std::string addr, uint16_t port, bool doString) {
+   rogue::interfaces::ZmqClientPtr ret = std::make_shared<rogue::interfaces::ZmqClient>(addr,port,doString);
    return(ret);
 }
 
@@ -169,7 +169,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
    snd += "\"path\": \"" + path + "\"";
 
    if (arg != "")
-      snd += ",\"args\": {\"py/tuple\": [\"" + arg + "\"]}";
+      snd += ",\"args\": [\"" + arg + "\"]";
 
    snd += "}";
 

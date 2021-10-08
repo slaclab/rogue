@@ -18,3 +18,7 @@ build/*
 .pytest_cache*
 setup_rogue.*
 bld-dir/*
+/buildroot-2019.08-x86_64
+/linuxRT-x86_64
+/rhel6-x86_64
+/rhel7-x86_64
