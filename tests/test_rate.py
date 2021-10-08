@@ -60,10 +60,10 @@ class TestDev(pr.Device):
         return self._localValue
 
     def _linkedSet(self, dev, var, value, write, index):
-        self.TestRemote.set(value,write,index)
+        self.TestRemote.set(value,write=write,index=index)
 
     def _linkedGet(self, dev, read, index):
-        return self.TestRemote.get(read,index)
+        return self.TestRemote.get(read=read,index=index)
 
 
 class DummyTree(pr.Root):
@@ -100,7 +100,7 @@ def test_rate():
         stime = time.time()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestRemote.get(i)
+                root.TestDev.TestRemote.get()
         remoteGetRate = 1/((time.time()-stime) / count)
 
         stime = time.time()
@@ -112,7 +112,7 @@ def test_rate():
         stime = time.time()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestLocal.get(i)
+                root.TestDev.TestLocal.get()
         localGetRate = 1/((time.time()-stime) / count)
 
         stime = time.time()
