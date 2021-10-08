@@ -75,7 +75,7 @@ jobs:
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local
+          cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
           make -j4 install
 
       # Run Tests
@@ -178,6 +178,9 @@ jobs:
         os:
           - ubuntu-latest
           - macos-10.15
+        src:
+          - conda-recipe
+          - conda-recipe-e3
     runs-on: ${{ matrix.os }}
     steps:
 
@@ -247,10 +250,12 @@ jobs:
           fi
 
       - name: Build And Upload
+        env:
+          CONDA_SRC: ${{ matrix.src }}
         run: |
           export PATH="${HOME}/miniconda/bin:$PATH"
           source ${HOME}/miniconda/etc/profile.d/conda.sh
-          conda build conda-recipe --debug --output-folder bld-dir -c tidair-packages -c conda-forge
+          conda build $CONDA_SRC --debug --output-folder bld-dir -c tidair-packages -c conda-forge
           anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/${{ steps.get_image_info.outputs.os }}/*.tar.bz2
 
   docker_build:

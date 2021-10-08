@@ -5,12 +5,12 @@ coverage
 codecov
 pytest>=3.6
 pytest-cov
-pyepics
 sphinx
 sphinx_rtd_theme
 sphinxcontrib-napoleon
 breathe
 pyzmq
+pyepics
 p4p
 sqlalchemy
 pyserial

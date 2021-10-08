@@ -7,5 +7,5 @@ RUN git clone https://github.com/slaclab/rogue.git -b $branch
 WORKDIR rogue
 RUN mkdir build
 WORKDIR build
-RUN cmake .. -DROGUE_INSTALL=system
+RUN cmake .. -DROGUE_INSTALL=system -DDO_EPICS=1
 RUN make -j4 install
