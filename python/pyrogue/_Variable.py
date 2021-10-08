@@ -871,7 +871,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def post(self,value,index=-1):
+    def post(self,value, *, index=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -890,7 +890,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self,read=True, index=-1):
+    def get(self, *, index=-1, read=True, check=True):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -899,7 +899,8 @@ class LocalVariable(BaseVariable):
         try:
             if read:
                 self._parent.readBlocks(recurse=False, variable=self, index=index)
-                self._parent.checkBlocks(recurse=False, variable=self)
+                if check:
+                    self._parent.checkBlocks(recurse=False, variable=self)
 
             return self._block.get(self,index)
 
