@@ -1,5 +1,5 @@
 package:
-  name: rogue
+  name: rogue-epics3
   version: {{ environ.get('GIT_DESCRIBE_TAG') }}
 
 source:
@@ -10,7 +10,7 @@ build:
 
 requirements:
    build:
-     - python
+     - python<3.8
      - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
@@ -19,18 +19,24 @@ requirements:
      - make
      - bzip2
      - zeromq
+     - epics-base
+     - pcas
      - numpy
    host:
-     - python
+     - python<3.8
      - boost
      - bzip2
      - zeromq
+     - epics-base
+     - pcas
      - numpy
    run:
-     - python
+     - python<3.8
      - boost
      - bzip2
      - zeromq
+     - epics-base
+     - pcas
      - numpy
      - ipython
      - p4p

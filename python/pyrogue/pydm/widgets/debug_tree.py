@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM Command Tree Widget
+# Title      : PyRogue PyDM Debug Tree Widget
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -10,15 +10,19 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import pyrogue
+import pyrogue.pydm.widgets
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLabel, PyDMPushButton
+from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Qt, Property, Slot, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QComboBox, QLabel
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLineEdit
+from pyrogue.pydm.widgets import PyRogueLineEdit
+from qtpy.QtCore import Property, Slot, QEvent
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
 
-class CommandDev(QTreeWidgetItem):
+
+class DebugDev(QTreeWidgetItem):
 
     def __init__(self,*, path, top, parent, dev, noExpand):
         QTreeWidgetItem.__init__(self,parent)
@@ -29,7 +33,7 @@ class CommandDev(QTreeWidgetItem):
         self._path     = path
         self._groups   = {}
 
-        if isinstance(parent,CommandDev):
+        if isinstance(parent,DebugDev):
             self._depth = parent._depth+1
         else:
             self._depth = 1
@@ -49,6 +53,7 @@ class CommandDev(QTreeWidgetItem):
             self._setup(False)
 
         elif (not noExpand) and self._dev.expand:
+            self._dummy = None
             self.setExpanded(True)
             self._setup(False)
         else:
@@ -57,44 +62,37 @@ class CommandDev(QTreeWidgetItem):
 
     def _setup(self,noExpand):
 
-        # First create commands
-        for key,val in self._dev.commandsByGroup(incGroups=self._top._incGroups,
-                                                 excGroups=self._top._excGroups).items():
+        # Get dictionary of variables followed by commands
+        lst = self._dev.variablesByGroup(incGroups=self._top._incGroups,
+                                         excGroups=self._top._excGroups)
+
+
+        lst.update(self._dev.commandsByGroup(incGroups=self._top._incGroups,
+                                             excGroups=self._top._excGroups))
+
+        # First create variables/commands
+        for key,val in lst.items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = CommandGroup(path=self._path,
-                                                              top=self._top,
-                                                              parent=self,
-                                                              name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
             else:
-                CommandHolder(path=self._path + '.' + val.name,
-                              top=self._top,
-                              parent=self,
-                              command=val)
+                DebugHolder(path=self._path + '.' + val.name, top=self._top, parent=self, variable=val)
 
         # Then create devices
-        for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups,
-                                                excGroups=self._top._excGroups).items():
+        for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = CommandGroup(path=self._path,
-                                                              top=self._top,
-                                                              parent=self,
-                                                              name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
             else:
-                CommandDev(path=self._path + '.' + val.name,
-                           top=self._top,
-                           parent=self,
-                           dev=val,
-                           noExpand=noExpand)
+                DebugDev(path=self._path + '.' + val.name, top=self._top, parent=self, dev=val, noExpand=noExpand)
 
     def _expand(self):
         if self._dummy is None:
@@ -105,7 +103,7 @@ class CommandDev(QTreeWidgetItem):
         self._setup(True)
 
 
-class CommandGroup(QTreeWidgetItem):
+class DebugGroup(QTreeWidgetItem):
 
     def __init__(self,*, path, top, parent, name):
         QTreeWidgetItem.__init__(self,parent)
@@ -129,17 +127,17 @@ class CommandGroup(QTreeWidgetItem):
         for n in self._list:
 
             if n.isDevice:
-                CommandDev(path=self._path + '.' + n.name,
-                           top=self._top,
-                           parent=self,
-                           dev=n,
-                           noExpand=True)
+                DebugDev(path=self._path + '.' + n.name,
+                         top=self._top,
+                         parent=self,
+                         dev=n,
+                         noExpand=True)
 
-            elif n.isVariable:
-                CommandHolder(path=self._path + '.' + n.name,
-                              top=self._top,
-                              parent=self,
-                              command=n)
+            elif n.isVariable or n.isCommand:
+                DebugHolder(path=self._path + '.' + n.name,
+                            top=self._top,
+                            parent=self,
+                            variable=n)
 
     def _expand(self):
         if self._dummy is None:
@@ -153,20 +151,15 @@ class CommandGroup(QTreeWidgetItem):
         self._list.append(node)
 
 
-class CommandHolder(QTreeWidgetItem):
+class DebugHolder(QTreeWidgetItem):
 
-    def __init__(self,*,path,top,parent,command):
+    def __init__(self,*,path,top,parent,variable):
         QTreeWidgetItem.__init__(self,parent)
         self._top    = top
         self._parent = parent
-        self._cmd    = command
+        self._var    = variable
         self._path   = path
-        self._widget = None
-        self._value  = self._cmd.valueDisp()
         self._depth  = parent._depth+1
-
-        if self._value is None:
-            self._value = ''
 
         w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         w.showUnits             = False
@@ -183,56 +176,70 @@ class CommandHolder(QTreeWidgetItem):
             self._top._colWidths[0] = rightEdge
 
         self._top._tree.setItemWidget(self,0,w)
-        self.setToolTip(0,self._cmd.description)
+        self.setToolTip(0,self._var.description)
 
-        self.setText(1,self._cmd.typeStr)
+        self.setText(1,self._var.mode)
+        self.setText(2,self._var.typeStr)
+        self.setToolTip(0,self._var.description)
 
-        # This needs to be changed when pydm is updated. In the future the primary
-        # channel interface will be the input widget, with the button generating a
-        # update of the channel.
-        self._btn = PyDMPushButton(label='Exec',
-                                   pressValue=self._value,
-                                   init_channel=self._path + '/disp')
-        self._btn.setToolTip(self._cmd.description)
+        if self._var.isCommand and not self._var.arg:
 
-        self._top._tree.setItemWidget(self,2,self._btn)
+            w = PyDMPushButton(label='Exec',
+                               pressValue=1,
+                               init_channel=self._path + '/disp')
 
-        if self._cmd.arg:
+        elif self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
+            w = PyDMEnumComboBox(parent=None, init_channel=self._path)
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
+            w.installEventFilter(self._top)
 
-            if self._cmd.disp == 'enum' and self._cmd.enum is not None:
-                self._widget = QComboBox()
-                for i in self._cmd.enum:
-                    self._widget.addItem(self._cmd.enum[i])
+        elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and (self._var.mode != 'RO' or self._var.isCommand):
+            w = PyDMSpinbox(parent=None, init_channel=self._path)
+            w.precision             = 0
+            w.showUnits             = False
+            w.precisionFromPV       = False
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
+            w.showStepExponent      = False
+            w.writeOnPress          = True
+            w.installEventFilter(self._top)
 
-                self._value = self._cmd.valueDisp()
-                self._widget.setCurrentIndex(self._widget.findText(self._value))
-                self._widget.setToolTip(self._cmd.description)
+        elif self._var.mode == 'RO' and not self._var.isCommand:
+            w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
+        else:
+            w = PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
+            #w.displayFormat         = 'String'
 
-                self._widget.currentTextChanged.connect(self._argChanged)
-                self._widget.installEventFilter(self._top)
+        if self._var.isCommand:
+            self._top._tree.setItemWidget(self,4,w)
+            width = fm.width('0xAAAAAAAA    ')
 
-            else:
-                self._widget = QLineEdit()
+            if width > self._top._colWidths[4]:
+                self._top._colWidths[4] = width
 
-                self._value = self._cmd.valueDisp()
-                self._widget.setText(self._value)
-                self._widget.setToolTip(self._cmd.description)
 
-                self._widget.textChanged.connect(self._argChanged)
 
-            self._top._tree.setItemWidget(self,3,self._widget)
-
+        else:
+            self._top._tree.setItemWidget(self,3,w)
             width = fm.width('0xAAAAAAAA    ')
 
             if width > self._top._colWidths[3]:
                 self._top._colWidths[3] = width
 
+        if self._var.units:
+            self.setText(5,str(self._var.units))
 
-    def _argChanged(self,value):
-        self._btn.pressValue = value
 
-
-class CommandTree(PyDMFrame):
+class DebugTree(PyDMFrame):
     def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
@@ -242,13 +249,12 @@ class CommandTree(PyDMFrame):
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._tree      = None
-        self._children  = []
 
-        self._colWidths = [250,50,50,200]
+        self._colWidths = [250,50,75,200,200,50]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
-        super(CommandTree, self).connection_changed(connected)
+        super(DebugTree, self).connection_changed(connected)
 
         if not build:
             return
@@ -262,20 +268,26 @@ class CommandTree(PyDMFrame):
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 
-        self._tree.setColumnCount(3)
-        self._tree.setHeaderLabels(['Command','Base','Execute','Arg'])
-
-        self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
-        self._tree.customContextMenuRequested.connect(self._openMenu)
+        self._tree.setColumnCount(5)
+        self._tree.setHeaderLabels(['Node','Mode','Type','Variable','Command','Units'])
 
         self._tree.itemExpanded.connect(self._expandCb)
 
+        hb = QHBoxLayout()
+        vb.addLayout(hb)
+
+        if self._node.isinstance(pyrogue.Root):
+            hb.addWidget(PyDMPushButton(label='Read All',
+                                        pressValue=True,
+                                        init_channel=self._path + '.ReadAll'))
+        else:
+            hb.addWidget(PyDMPushButton(label='Read Recursive',
+                                        pressValue=True,
+                                        init_channel=self._path + '.ReadDevice'))
+
+
         self.setUpdatesEnabled(False)
-        CommandDev(path=self._path,
-                   top=self,
-                   parent=self._tree,
-                   dev=self._node,
-                   noExpand=False)
+        DebugDev(path = self._path, top=self, parent=self._tree, dev=self._node, noExpand=False)
         self.setUpdatesEnabled(True)
 
     @Slot(QTreeWidgetItem)
@@ -287,12 +299,10 @@ class CommandTree(PyDMFrame):
         self._tree.resizeColumnToContents(1)
         self._tree.resizeColumnToContents(2)
         self._tree.setColumnWidth(3,self._colWidths[3])
+        self._tree.setColumnWidth(4,self._colWidths[4])
+        self._tree.resizeColumnToContents(5)
 
         self.setUpdatesEnabled(True)
-
-    def _openMenu(self, pos):
-        item = self._tree.itemAt(pos)
-        item._menu(pos)
 
     @Property(str)
     def incGroups(self):

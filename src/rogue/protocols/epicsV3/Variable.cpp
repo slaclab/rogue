@@ -57,7 +57,6 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
    std::string type;
    uint32_t    i;
    bool        isEnum;
-   bool        isList;
    bp::dict    ed;
    bp::list    el;
    std::string val;

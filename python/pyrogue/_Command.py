@@ -113,7 +113,14 @@ class BaseCommand(pr.BaseVariable):
             # Possible args
             pargs = {'root' : self.root, 'dev' : self.parent, 'cmd' : self, 'arg' : arg}
 
-            return pr.functionHelper(self._function,pargs, self._log,self.path)
+            ret = pr.functionHelper(self._function,pargs, self._log,self.path)
+
+            # Set arg to local variable if not a remote variable
+            if self._arg and not isinstance(self,RemoteCommand):
+                self._default = arg
+                self._queueUpdate()
+
+            return ret
 
         except Exception as e:
             pr.logException(self._log,e)
