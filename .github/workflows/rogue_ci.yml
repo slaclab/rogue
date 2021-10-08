@@ -249,13 +249,16 @@ jobs:
               echo ::set-output name=os::linux-64
           fi
 
-      - name: Build And Upload
+      - name: Build
         env:
           CONDA_SRC: ${{ matrix.src }}
         run: |
           export PATH="${HOME}/miniconda/bin:$PATH"
           source ${HOME}/miniconda/etc/profile.d/conda.sh
           conda build $CONDA_SRC --debug --output-folder bld-dir -c tidair-packages -c conda-forge
+
+      - name: Upload
+        run: |
           anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/${{ steps.get_image_info.outputs.os }}/*.tar.bz2
 
   docker_build:
