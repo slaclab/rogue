@@ -10,7 +10,7 @@ build:
 
 requirements:
    build:
-     - python<3.8
+     - python
      - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
@@ -21,13 +21,13 @@ requirements:
      - zeromq
      - numpy
    host:
-     - python<3.8
+     - python
      - boost
      - bzip2
      - zeromq
      - numpy
    run:
-     - python<3.8
+     - python
      - boost
      - bzip2
      - zeromq
