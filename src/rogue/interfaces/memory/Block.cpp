@@ -736,7 +736,7 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
       npy_intp ndims = PyArray_NDIM(arr);
       npy_intp * dims = PyArray_SHAPE(arr);
       if ( ndims != 1 || dims[0] != var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray length does not match variable length %i for %s",var->numValues_,var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray length %i does not match variable length %i for %s", dims[0], var->numValues_,var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) != NPY_UINT64 && PyArray_TYPE(arr) != NPY_UINT32 )
          throw(rogue::GeneralError::create("Block::setUIntPy","Passed nparray is not of type (uint64 or uint32) for %s",var->name_.c_str()));
