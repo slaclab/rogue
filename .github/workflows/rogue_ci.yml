@@ -259,6 +259,8 @@ jobs:
 
       - name: Upload
         run: |
+          export PATH="${HOME}/miniconda/bin:$PATH"
+          source ${HOME}/miniconda/etc/profile.d/conda.sh
           anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/${{ steps.get_image_info.outputs.os }}/*.tar.bz2
 
   docker_build:
