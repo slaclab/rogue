@@ -10,9 +10,13 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue
-import pyrogue.protocols.epics
-from epics import caget, caput
 import time
+
+try:
+    import pyrogue.protocols.epics
+    from epics import caget, caput
+except Exception:
+    print("Epics not installed, skipping test")
 
 epics_prefix='test_ioc'
 

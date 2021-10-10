@@ -924,11 +924,11 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
          throw(rogue::GeneralError::create("Block::setIntPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_INT64 ) {
-          uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
+          int64_t *src = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
           for (x=0; x < dims[0]; x++) setInt (src[x], var, index+x);
       }
       else if ( PyArray_TYPE(arr) == NPY_INT32 ) {
-          uint32_t *src = reinterpret_cast<uint32_t *>(PyArray_DATA (arr));
+          int32_t *src = reinterpret_cast<int32_t *>(PyArray_DATA (arr));
           for (x=0; x < dims[0]; x++) setInt (src[x], var, index+x);
       }
       else
@@ -950,20 +950,19 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
          if ( !tmp.check() )
             throw(rogue::GeneralError::create("Block::setIntPy","Failed to extract value for %s.",var->name_.c_str()));
 
-         uint64_t val = tmp;
-         setInt (val, var, index+x);
+         setInt (tmp, var, index+x);
       }
    }
 
    // Passed scalar numpy value
    else if ( PyArray_CheckScalar(value.ptr()) ) {
       if (  PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT64 ) {
-         uint64_t val;
+         int64_t val;
          PyArray_ScalarAsCtype(value.ptr(), &val);
          setInt (val, var, index);
       }
       else if ( PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT32 ) {
-         uint32_t val;
+         int32_t val;
          PyArray_ScalarAsCtype(value.ptr(), &val);
          setInt (val, var, index);
       }
@@ -971,12 +970,12 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
          throw(rogue::GeneralError::create("Block::setIntPy","Failed to extract value for %s.",var->name_.c_str()));
    }
    else {
-      bp::extract<uint64_t> tmp(value);
+      bp::extract<int64_t> tmp(value);
 
       if ( !tmp.check() )
          throw(rogue::GeneralError::create("Block::setIntPy","Failed to extract value for %s.",var->name_.c_str()));
 
-      setUInt (tmp, var, index);
+      setInt (tmp, var, index);
    }
 }
 

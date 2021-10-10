@@ -15,6 +15,7 @@ import pyrogue.interfaces.simulation
 import pyrogue.utilities.fileio
 import pyrogue.utilities.prbs
 import rogue.interfaces.stream
+import rogue.interfaces.memory
 import test_device
 import time
 import rogue
@@ -91,7 +92,7 @@ class DummyTree(pyrogue.Root):
                               serverPort=0)
 
         # Use a memory space emulator
-        sim = pyrogue.interfaces.simulation.MemEmulate()
+        sim = rogue.interfaces.memory.Emulate(4,0x1000)
         sim.setName("SimSlave")
         self.addInterface(sim)
 

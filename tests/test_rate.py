@@ -87,7 +87,8 @@ class DummyTree(pr.Root):
                          serverPort=None)
 
         # Use a memory space emulator
-        sim = pr.interfaces.simulation.MemEmulate()
+        sim = rogue.interfaces.memory.Emulate(4,0x1000)
+        #sim = pr.interfaces.simulation.MemEmulate()
         self.addInterface(sim)
 
         self.add(TestDev(

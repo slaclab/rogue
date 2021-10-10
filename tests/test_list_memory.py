@@ -12,6 +12,7 @@
 # Comment added by rherbst for demonstration purposes.
 import pyrogue as pr
 import pyrogue.interfaces.simulation
+import rogue.interfaces.memory
 import numpy as np
 import random
 import time
@@ -154,7 +155,7 @@ class DummyTree(pr.Root):
                          #serverPort=None)
 
         # Use a memory space emulator
-        sim = pr.interfaces.simulation.MemEmulate()
+        sim = rogue.interfaces.memory.Emulate(4,0x1000)
         self.addInterface(sim)
 
         self.add(ListDevice(
@@ -363,13 +364,13 @@ def test_memory():
             root.ListDevice.Int32List.set(Int32ListA)
 
             root.ListDevice.UInt32List.set(np.array([1,2,3],np.uint32),index=7)
-            root.ListDevice.Int32List.set([1,2,3],index=5)
+            root.ListDevice.Int32List.set([1,-2,-33],index=5)
 
             resA = root.ListDevice.UInt32List.get()
             resB = root.ListDevice.Int32List.get()
 
             UInt32ListA[7:10] = [1,2,3]
-            Int32ListA[5:8] = [1,2,3]
+            Int32ListA[5:8] = [1,-22,-33]
 
             for i in range(32):
 
