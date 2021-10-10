@@ -378,7 +378,6 @@ def test_memory():
                     raise AssertionError(f'Stripe Verification Failure for UInt32ListA at position {i}')
 
                 if resB[i] != Int32ListA[i]:
-                    print(f"Compare failed: {resB} {Int32ListA}")
                     raise AssertionError(f'Stripe Verification Failure for Int32ListA at position {i}')
 
 def run_gui():
