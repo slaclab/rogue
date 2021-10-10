@@ -134,7 +134,6 @@ rim::Variable::Variable ( std::string name,
    numValues_    = numValues;
    valueBits_    = valueBits;
    valueStride_  = valueStride;
-   stale_        = false;
    retryCount_   = retryCount;
 
    // Compute bit total
@@ -152,6 +151,11 @@ rim::Variable::Variable ( std::string name,
 
    // Compute the highest byte
    highTranByte_ = varBytes_ - 1;
+
+   // Init stale
+   stale_         = false;
+   staleLowByte_  = lowTranByte_;
+   staleHighByte_ = highTranByte_;
 
    // Variable can use fast copies
    fastByte_  = NULL;
