@@ -24,6 +24,7 @@
 #include <rogue/interfaces/memory/TransactionLock.h>
 #include <rogue/GilRelease.h>
 #include <memory>
+#include <string.h>
 
 namespace rim = rogue::interfaces::memory;
 
