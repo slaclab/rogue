@@ -51,6 +51,19 @@ class ListDevice(pr.Device):
         ))
 
         self.add(pr.RemoteVariable(
+            name         = 'Int32List',
+            offset       = 0x0800,
+            bitSize      = 32 * 32,
+            bitOffset    = 0x0000,
+            base         = pr.Int,
+            mode         = 'RW',
+            disp         = '{}',
+            numValues    = 32,
+            valueBits    = 32,
+            valueStride  = 32
+        ))
+
+        self.add(pr.RemoteVariable(
             name         = 'UInt48List',
             offset       = 0x1000,
             bitSize      = 48 * 32,
@@ -149,15 +162,26 @@ class DummyTree(pr.Root):
 
 def test_memory():
 
-    UInt32ListA = np.array([i for i in range(32)],np.uint32)
-    UInt48ListA = np.array([i for i in range(32)],np.uint64)
-    FloatListA  = np.array([i/2 for i in range(32)],np.float32)
-    DoubleListA = np.array([i/2 for i in range(32)],np.float64)
-    UInt16ListA = np.array([i for i in range(32)],np.uint32)
-    UInt21ListA = np.array([i for i in range(32)],np.uint32)
-    BoolListA   = np.array([i%2==0 for i in range(32)],bool)
+    UInt32ListARaw = [i for i in range(32)]
+    Int32ListARaw  = [i for i in range(32)]
+    UInt48ListARaw = [i for i in range(32)]
+    FloatListARaw  = [i/2 for i in range(32)]
+    DoubleListARaw = [i/2 for i in range(32)]
+    UInt16ListARaw = [i for i in range(32)]
+    UInt21ListARaw = [i for i in range(32)]
+    BoolListARaw   = [i%2==0 for i in range(32)]
+
+    UInt32ListA = np.array(UInt32ListARaw,np.uint32)
+    Int32ListA  = np.array(Int32ListARaw,np.int32)
+    UInt48ListA = np.array(UInt48ListARaw,np.uint64)
+    FloatListA  = np.array(FloatListARaw,np.float32)
+    DoubleListA = np.array(DoubleListARaw,np.float64)
+    UInt16ListA = np.array(UInt16ListARaw,np.uint32)
+    UInt21ListA = np.array(UInt21ListARaw,np.uint32)
+    BoolListA   = np.array(BoolListARaw,bool)
 
     UInt32ListB = np.array([i+1 for i in range(32)],np.uint32)
+    Int32ListB  = np.array([i+1 for i in range(32)],np.int32)
     UInt48ListB = np.array([i+1 for i in range(32)],np.uint64)
     FloatListB  = np.array([(i+1)/2 for i in range(32)],np.float32)
     DoubleListB = np.array([(i+1)/2 for i in range(32)],np.float64)
@@ -167,15 +191,17 @@ def test_memory():
 
     with DummyTree() as root:
 
-        root.ListDevice.UInt32List.set(UInt32ListA)
-        root.ListDevice.UInt48List.set(UInt48ListA)
-        root.ListDevice.FloatList.set(FloatListA)
-        root.ListDevice.DoubleList.set(DoubleListA)
-        root.ListDevice.UInt16List.set(UInt16ListA)
-        root.ListDevice.UInt21List.set(UInt21ListA)
-        root.ListDevice.BoolList.set(BoolListA)
+        root.ListDevice.UInt32List.set(UInt32ListARaw)
+        root.ListDevice.Int32List.set(Int32ListARaw)
+        root.ListDevice.UInt48List.set(UInt48ListARaw)
+        root.ListDevice.FloatList.set(FloatListARaw)
+        root.ListDevice.DoubleList.set(DoubleListARaw)
+        root.ListDevice.UInt16List.set(UInt16ListARaw)
+        root.ListDevice.UInt21List.set(UInt21ListARaw)
+        root.ListDevice.BoolList.set(BoolListARaw)
 
         UInt32ListAA = root.ListDevice.UInt32List.get()
+        Int32ListAA  = root.ListDevice.Int32List.get()
         UInt48ListAA = root.ListDevice.UInt48List.get()
         FloatListAA  = root.ListDevice.FloatList.get()
         DoubleListAA = root.ListDevice.DoubleList.get()
@@ -184,6 +210,7 @@ def test_memory():
         BoolListAA   = root.ListDevice.BoolList.get()
 
         UInt32ListAB = np.array([0] * 32,np.uint32)
+        Int32ListAB  = np.array([0] * 32,np.int32)
         UInt48ListAB = np.array([0] * 32,np.uint64)
         FloatListAB  = np.array([0] * 32,np.float32)
         DoubleListAB = np.array([0] * 32,np.float64)
@@ -193,6 +220,7 @@ def test_memory():
 
         for i in range(32):
             UInt32ListAB[i] = root.ListDevice.UInt32List.get(index=i)
+            Int32ListAB[i]  = root.ListDevice.Int32List.get(index=i)
             UInt48ListAB[i] = root.ListDevice.UInt48List.get(index=i)
             FloatListAB[i]  = root.ListDevice.FloatList.get(index=i)
             DoubleListAB[i] = root.ListDevice.DoubleList.get(index=i)
@@ -203,6 +231,9 @@ def test_memory():
         for i in range(32):
             if UInt32ListAA[i] != UInt32ListA[i]:
                 raise AssertionError(f'Verification Failure for UInt32ListAA at position {i}')
+
+            if Int32ListAA[i] != Int32ListA[i]:
+                raise AssertionError(f'Verification Failure for Int32ListAA at position {i}')
 
             if UInt48ListAA[i] != UInt48ListA[i]:
                 raise AssertionError(f'Verification Failure for UInt48ListAA at position {i}')
@@ -245,6 +276,7 @@ def test_memory():
 
         for i in range(32):
             root.ListDevice.UInt32List.set(UInt32ListB[i],index=i)
+            root.ListDevice.Int32List.set(Int32ListB[i],index=i)
             root.ListDevice.UInt48List.set(UInt48ListB[i],index=i)
             root.ListDevice.FloatList.set(FloatListB[i],index=i)
             root.ListDevice.DoubleList.set(DoubleListB[i],index=i)
@@ -253,6 +285,7 @@ def test_memory():
             root.ListDevice.BoolList.set(BoolListB[i],index=i)
 
         UInt32ListBA = root.ListDevice.UInt32List.get()
+        Int32ListBA  = root.ListDevice.Int32List.get()
         UInt48ListBA = root.ListDevice.UInt48List.get()
         FloatListBA  = root.ListDevice.FloatList.get()
         DoubleListBA = root.ListDevice.DoubleList.get()
@@ -261,6 +294,7 @@ def test_memory():
         BoolListBA   = root.ListDevice.BoolList.get()
 
         UInt32ListBB = np.array([0] * 32,np.uint32)
+        Int32ListBB  = np.array([0] * 32,np.int32)
         UInt48ListBB = np.array([0] * 32,np.uint64)
         FloatListBB  = np.array([0] * 32,np.float32)
         DoubleListBB = np.array([0] * 32,np.float64)
@@ -270,6 +304,7 @@ def test_memory():
 
         for i in range(32):
             UInt32ListBB[i] = root.ListDevice.UInt32List.get(index=i)
+            Int32ListBB[i]  = root.ListDevice.Int32List.get(index=i)
             UInt48ListBB[i] = root.ListDevice.UInt48List.get(index=i)
             FloatListBB[i]  = root.ListDevice.FloatList.get(index=i)
             DoubleListBB[i] = root.ListDevice.DoubleList.get(index=i)
@@ -280,6 +315,9 @@ def test_memory():
         for i in range(32):
             if UInt32ListBA[i] != UInt32ListB[i]:
                 raise AssertionError(f'Verification Failure for UInt32ListBA at position {i}')
+
+            if Int32ListBA[i] != Int32ListB[i]:
+                raise AssertionError(f'Verification Failure for Int32ListBA at position {i}')
 
             if UInt48ListBA[i] != UInt48ListB[i]:
                 raise AssertionError(f'Verification Failure for UInt48ListBA at position {i}')

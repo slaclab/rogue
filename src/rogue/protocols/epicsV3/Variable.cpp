@@ -84,10 +84,10 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
 
       npy_intp ndims = PyArray_NDIM(arr);
       npy_intp * dims = PyArray_SHAPE(arr);
-      if ( ndims != 1 || dims[0] == 0 ) {
+      if ( !PyArray_Check(value.ptr()) || ndims != 1 || dims[0] == 0 ) {
          forceStr = true;
          count = 0;
-         log_->info("Unsupported ndarray for %s with ndtype = %s. Forcing to string\n", epicsName.c_str(),ndtype.c_str());
+         log_->info("Unsupported or invalid ndarray for %s with ndtype = %s. Forcing to string\n", epicsName.c_str(),ndtype.c_str());
       }
 
       else {

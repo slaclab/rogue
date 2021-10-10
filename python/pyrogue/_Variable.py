@@ -647,6 +647,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
             if (numValues * valueStride) != sum(bitSize):
                 raise VariableError(f'Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
 
+            if self._ndType is None:
+                raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
+
         else:
             self._typeStr = self._base.name
 
