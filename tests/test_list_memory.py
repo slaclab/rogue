@@ -364,7 +364,7 @@ def test_memory():
             root.ListDevice.Int32List.set(Int32ListA)
 
             root.ListDevice.UInt32List.set(np.array([1,2,3],np.uint32),index=7)
-            root.ListDevice.Int32List.set([1,-2,-33],index=5)
+            root.ListDevice.Int32List.set([1,-22,-33],index=5)
 
             resA = root.ListDevice.UInt32List.get()
             resB = root.ListDevice.Int32List.get()
