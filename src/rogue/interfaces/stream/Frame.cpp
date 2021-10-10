@@ -422,12 +422,10 @@ void ris::Frame::putNumpy ( boost::python::object p, uint32_t offset ) {
    // Retrieve pointer to PyObject
    PyObject *obj = p.ptr ();
 
-
    // Check that this is a PyArrayObject
    if (! PyArray_Check (obj) ) {
       throw(rogue::GeneralError("Frame::putNumpy","Object is not a numpy array"));
    }
-
 
    // Cast to an array object and check that the numpy array
    // data buffer is write-able and contiguous
