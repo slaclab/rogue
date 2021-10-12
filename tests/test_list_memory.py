@@ -372,6 +372,7 @@ def test_memory():
             UInt32ListA[7:10] = [1,2,3]
             Int32ListA[5:8] = [1,-22,-33]
 
+            # Verify update
             for i in range(32):
 
                 if resA[i] != UInt32ListA[i]:
@@ -379,6 +380,9 @@ def test_memory():
 
                 if resB[i] != Int32ListA[i]:
                     raise AssertionError(f'Stripe Verification Failure for Int32ListA at position {i}')
+
+            # Test value shift
+            _ = resA[0] >> 5
 
 def run_gui():
     import pyrogue.pydm

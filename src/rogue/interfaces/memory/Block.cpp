@@ -850,7 +850,7 @@ bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
       // Create a numpy array to receive it and locate the destination data buffer
       npy_intp dims[1] = { var->numValues_ };
 
-      if ( var->bitTotal_ > 32 ) {
+      if ( var->valueBits_ > 32 ) {
           obj = PyArray_SimpleNew (1, dims, NPY_UINT64);
           PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
           uint64_t      *dst = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
@@ -991,7 +991,7 @@ bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
       // Create a numpy array to receive it and locate the destination data buffer
       npy_intp   dims[1] = { var->numValues_ };
 
-      if ( var->bitTotal_ > 32 ) {
+      if ( var->valueBits_ > 32 ) {
           obj = PyArray_SimpleNew (1, dims, NPY_INT64);
           PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
           int64_t       *dst = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
