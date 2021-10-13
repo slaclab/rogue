@@ -287,18 +287,20 @@ def yamlUpdate(old, new):
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
-# Function helper
-def functionHelper(func,pargs,log,path):
+# Function builder for methods with variable args
+def functionBuilder(func,callArgs):
 
+    # Find the arg overlaps
     try:
         # Function args
         fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
 
         # Build overlapping arg list
-        args = {k:pargs[k] for k in fargs if k != 'self' and k in pargs}
+        args = [k for k in fargs if k != 'self' and k in callArgs]
 
     # handle c++ functions, no args supported for now
     except Exception:
-        args = {}
+        args = []
 
-    return func(**args)
+    # Build the function
+    return eval("lambda func" + ", ".join(callArgs) + ": func(" + ", ".join(args) + ")")
