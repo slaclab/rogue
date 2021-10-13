@@ -112,7 +112,7 @@ class BaseCommand(pr.BaseVariable):
             else:
                 arg = self.parseDisp(arg)
 
-            ret = self._functionWrapper(function=self._function, root=self.root, dev=self.parent, cmd=self, arg=arg)
+            ret = self._functionWrap(function=self._function, root=self.root, dev=self.parent, cmd=self, arg=arg)
 
             # Set arg to local variable if not a remote variable
             if self._arg and not isinstance(self,RemoteCommand):
