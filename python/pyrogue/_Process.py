@@ -25,7 +25,9 @@ class Process(pr.Device):
         self._runEn  = False
         self._argVar = argVariable
         self._retVar = returnVariable
-        self._func   = function
+        self._function = function
+
+        self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'arg'])
 
         self.add(pr.LocalCommand(
             name='Start',
@@ -125,10 +127,7 @@ class Process(pr.Device):
             else:
                 arg = None
 
-            # Possible args
-            pargs = {'root' : self.root, 'dev' : self, 'arg' : arg}
-
-            ret = pr.functionHelper(self._func, pargs, self._log, self.path)
+            ret = self._functionWrap(func=self._function, root=self.root, dev=self, arg=arg)
 
             if self._retVar is not None:
                 self._retVar.set(ret)

@@ -287,13 +287,16 @@ def yamlUpdate(old, new):
 def recreate_OrderedDict(name, values):
     return odict(values['items'])
 
-# Function builder for methods with variable args
-def functionBuilder(func,callArgs):
+# Creation function wrapper for methods with variable args
+def functionWrapper(function, callArgs):
+
+    if function is None:
+        return eval("lambda " + ", ".join(['function'] + callArgs) + ": None")
 
     # Find the arg overlaps
     try:
         # Function args
-        fargs = inspect.getfullargspec(func).args + inspect.getfullargspec(func).kwonlyargs
+        fargs = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
 
         # Build overlapping arg list
         args = [k for k in fargs if k != 'self' and k in callArgs]
@@ -303,4 +306,4 @@ def functionBuilder(func,callArgs):
         args = []
 
     # Build the function
-    return eval("lambda func" + ", ".join(callArgs) + ": func(" + ", ".join(args) + ")")
+    return eval("lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")")

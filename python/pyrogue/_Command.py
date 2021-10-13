@@ -50,7 +50,9 @@ class BaseCommand(pr.BaseVariable):
             bulkOpEn=False,
             guiGroup=guiGroup)
 
-        self._function = function if function is not None else BaseCommand.nothing
+        self._function = function
+        self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
+
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
@@ -110,10 +112,7 @@ class BaseCommand(pr.BaseVariable):
             else:
                 arg = self.parseDisp(arg)
 
-            # Possible args
-            pargs = {'root' : self.root, 'dev' : self.parent, 'cmd' : self, 'arg' : arg}
-
-            ret = pr.functionHelper(self._function,pargs, self._log,self.path)
+            ret = self._functionWrapper(function=self._function, root=self.root, dev=self.parent, cmd=self, arg=arg)
 
             # Set arg to local variable if not a remote variable
             if self._arg and not isinstance(self,RemoteCommand):

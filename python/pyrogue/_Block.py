@@ -60,6 +60,10 @@ class LocalBlock(object):
         # Setup logging
         self._log = pr.logInit(cls=self,name=self._path)
 
+        # Wrap local functions
+        self._localSetWrap = pr.functionWrapper(function=self._localSet, callArgs=['dev', 'var', 'value', 'changed'])
+        self._localGetWrap = pr.functionWrapper(function=self._localGet, callArgs=['dev', 'var'])
+
     def __repr__(self):
         return repr(self._path)
 
@@ -106,21 +110,12 @@ class LocalBlock(object):
 
             # If a setFunction exists, call it (Used by local variables)
             if self._enable and self._localSet is not None:
-
-                # Possible args
-                pargs = {'dev' : self._device, 'var' : self._variable, 'value' : self._value, 'changed' : changed}
-
-                pr.functionHelper(self._localSet, pargs, self._log, self._variable.path)
+                self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
 
     def get(self, var, index=-1):
         if self._enable and self._localGet is not None:
             with self._lock:
-
-                # Possible args
-                pargs = {'dev' : self._device, 'var' : self._variable}
-
-                self._value = pr.functionHelper(self._localGet,pargs, self._log, self._variable.path)
-
+                self._value = self._localGetWrap(function=self._localGet, dev=self._device, var=self._variable)
         if index >= 0:
             return self._value[index]
         else:
