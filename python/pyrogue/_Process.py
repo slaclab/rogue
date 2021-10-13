@@ -118,7 +118,7 @@ class Process(pr.Device):
     def _process(self):
 
         # User has provided a function Update status at start and end and call their function
-        if self._func is not None:
+        if self._function is not None:
             self.Message.setDisp("Running")
             self.Progress.set(0.0)
 
@@ -127,7 +127,7 @@ class Process(pr.Device):
             else:
                 arg = None
 
-            ret = self._functionWrap(func=self._function, root=self.root, dev=self, arg=arg)
+            ret = self._functionWrap(function=self._function, root=self.root, dev=self, arg=arg)
 
             if self._retVar is not None:
                 self._retVar.set(ret)

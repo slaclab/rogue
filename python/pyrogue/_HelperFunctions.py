@@ -299,11 +299,13 @@ def functionWrapper(function, callArgs):
         fargs = inspect.getfullargspec(function).args + inspect.getfullargspec(function).kwonlyargs
 
         # Build overlapping arg list
-        args = [k for k in fargs if k != 'self' and k in callArgs]
+        args = [f'{k}={k}' for k in fargs if k != 'self' and k in callArgs]
 
     # handle c++ functions, no args supported for now
     except Exception:
         args = []
 
     # Build the function
-    return eval("lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")")
+    ls = "lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")"
+    #print("Creating Function: " + ls)
+    return eval(ls)
