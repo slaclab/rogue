@@ -201,6 +201,7 @@ class BaseCommand(pr.BaseVariable):
 
     def replaceFunction(self, function):
         self._function = function
+        self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         pass
