@@ -15,6 +15,7 @@ import pyrogue.interfaces.simulation
 import pyrogue.utilities.fileio
 import pyrogue.utilities.prbs
 import rogue.interfaces.stream
+import rogue.interfaces.memory
 import test_device
 import time
 import rogue
@@ -81,7 +82,7 @@ class DummyTree(pyrogue.Root):
 
     def __init__(self):
         self._scnt = 0
-        self._sdata = np.array(0)
+        self._sdata = np.zeros(100,dtype=np.float64)
 
         pyrogue.Root.__init__(self,
                               name='dummyTree',
@@ -91,8 +92,9 @@ class DummyTree(pyrogue.Root):
                               serverPort=0)
 
         # Use a memory space emulator
-        sim = pyrogue.interfaces.simulation.MemEmulate()
+        sim = rogue.interfaces.memory.Emulate(4,0x1000)
         sim.setName("SimSlave")
+        self.addInterface(sim)
 
         # Add Device
         self.add(test_device.AxiVersion(memBase=sim,
@@ -146,8 +148,8 @@ class DummyTree(pyrogue.Root):
             mode = 'RO',
             pollInterval=1.0,
             localGet = self._myArray,
-            disp='{:1.2f}',
-            value = np.zeros(100,dtype=np.float64)))
+            disp='{:1.2f}'))
+            #value = np.zeros(100,dtype=np.float64)))
 
         #self.add(pyrogue.LocalVariable(
         #    name = 'Test/Slash',

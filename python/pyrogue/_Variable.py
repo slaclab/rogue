@@ -16,6 +16,8 @@ import re
 import time
 import shlex
 import numpy as np
+import ast
+import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -138,10 +140,11 @@ class BaseVariable(pr.Node):
         self._highWarning   = highWarning
         self._highAlarm     = highAlarm
         self._default       = value
+        self._typeStr       = typeStr
         self._block         = None
         self._pollInterval  = pollInterval
         self._nativeType    = None
-        self._isList        = False
+        self._ndType        = None
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
@@ -149,37 +152,35 @@ class BaseVariable(pr.Node):
         # Build enum if specified
         self._disp = disp
         self._enum = enum
+
         if isinstance(disp, dict):
-            self._disp = 'enum'
             self._enum = disp
         elif isinstance(disp, list):
-            self._disp = 'enum'
             self._enum = {k:str(k) for k in disp}
         elif type(value) == bool and enum is None:
-            self._disp = 'enum'
             self._enum = {False: 'False', True: 'True'}
 
-        if enum is not None:
+        if self._enum is not None:
             self._disp = 'enum'
-
-        if value is not None and (isinstance(value, list) or isinstance(value, np.ndarray)):
-            self._isList = True
-
-        # Determine typeStr from value type
-        if typeStr == 'Unknown' and value is not None:
-            if isinstance(value, list):
-                self._typeStr = f'{value[0].__class__.__name__}[]'
-            elif isinstance(value, np.ndarray):
-                self._typeStr = str(value.dtype).capitalize() + '[np]'
-            else:
-                self._typeStr = value.__class__.__name__
-        else:
-            self._typeStr = typeStr
 
         # Create inverted enum
         self._revEnum = None
         if self._enum is not None:
             self._revEnum = {v:k for k,v in self._enum.items()}
+
+        # Auto determine types
+        if value is not None:
+            self._nativeType = type(value)
+
+            if self._enum is not None and (self._nativeType is np.ndarray or self._nativeType is list or self._nativeType is dict):
+                raise VariableError(f"Invalid use of enum with value of type {self._nativeType}")
+
+            if self._nativeType is np.ndarray:
+                self._ndType = value.dtype
+                self._typeStr = f'{value.dtype}{value.shape}'
+
+            elif self._typeStr == 'Unknown':
+                self._typeStr = value.__class__.__name__
 
         # Check modes
         if (self._mode != 'RW') and (self._mode != 'RO') and \
@@ -202,6 +203,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def typeStr(self):
+        if self._typeStr == 'Unknown':
+            v = self.value()
+            if self.nativeType is np.ndarray:
+                self._typeStr = f'{v.dtype}{v.shape}'
+            else:
+                self._typeStr = v.__class__.__name__
         return self._typeStr
 
     @pr.expose
@@ -212,12 +219,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def precision(self):
-        if 'ndarray' in self.typeStr or 'Float' in self.typeStr or self.typeStr == 'float':
+        if self.nativeType is float or self.nativeType is np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
                 return int(res[2])
             except Exception:
-                return 3
+                return 8
         else:
             return 0
 
@@ -225,11 +232,6 @@ class BaseVariable(pr.Node):
     @property
     def mode(self):
         return self._mode
-
-    @pr.expose
-    @property
-    def isList(self):
-        return self._isList
 
     @pr.expose
     @property
@@ -384,16 +386,23 @@ class BaseVariable(pr.Node):
     @pr.expose
     def genDisp(self, value):
         try:
-            if self.typeStr == 'ndarray':
-                return str(value)
-            elif self._isList:
-                return "[" + ", ".join([pr.quoteComma(self._genDispValue(v)) for v in value]) + "]"
+
+            if isinstance(value,np.ndarray):
+                np.set_printoptions(formatter={'all':self.disp.format},threshold=sys.maxsize)
+                return np.array2string(value, separator=', ')
+
+            elif self.disp == 'enum':
+                if value in self.enum:
+                    return self.enum[value]
+                else:
+                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
+                    return f'INVALID: {value}'
             else:
-                return self._genDispValue(value)
+                return self.disp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
-            self._log.error(f"Error generating disp for value {value} in variable {self.path}")
+            self._log.error(f"Error generating disp for value {value} with type {type(value)} in variable {self.path}")
             raise e
 
     @pr.expose
@@ -407,18 +416,19 @@ class BaseVariable(pr.Node):
     @pr.expose
     def parseDisp(self, sValue):
         try:
-            if self._isList and isinstance(sValue,str) and '[' in sValue and ']' in sValue:
-                s = shlex.shlex(" " + sValue.lstrip('[').rstrip(']') + " ",posix=True)
-                s.whitespace_split=True
-                s.whitespace=','
-                return [self._parseDispValue(v.strip()) for v in s]
-            elif sValue is None or isinstance(sValue, self.nativeType()) or isinstance(sValue,list):
+            if not isinstance(sValue,str):
+                return sValue
+            elif self.nativeType is np.ndarray:
+                return np.array(ast.literal_eval(sValue),self._ndType)
+            elif self.disp == 'enum':
+                return self.revEnum[sValue]
+            elif self.nativeType is str:
                 return sValue
             else:
-                return self._parseDispValue(sValue)
+                return ast.literal_eval(sValue)
 
-        except Exception:
-            msg = "Invalid value {} for variable {} with type {}".format(sValue,self.name,self.nativeType())
+        except Exception as e:
+            msg = "Invalid value {} for variable {} with type {}: {}".format(sValue,self.name,self.nativeType,e)
             self._log.error(msg)
             raise VariableError(msg)
 
@@ -426,47 +436,26 @@ class BaseVariable(pr.Node):
     def setDisp(self, sValue, write=True, index=-1):
         self.set(self.parseDisp(sValue), write=write, index=index)
 
-    @pr.expose
+    @property
     def nativeType(self):
         if self._nativeType is None:
             v = self.value()
-            if isinstance(v,list):
-                self._nativeType = type(v[0])
-            else:
-                self._nativeType = type(v)
+            self._nativeType = type(v)
+
+            if self._nativeType is np.ndarray:
+                self._ndType = v.dtype
+
         return self._nativeType
 
-    def _genDispValue(self,value):
-        #print('{}.genDisp(read={}) disp={} value={}'.format(self.path, read, self.disp, value))
-        if self.disp == 'enum':
-            if value in self.enum:
-                return self.enum[value]
-            else:
-                self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
-                return f'INVALID: {value}'
+    @property
+    def ndType(self):
+        if self._ndType is None:
+            _ = self.nativeType
+        return self._ndType
 
-        elif (value == '' or value is None):
-            return value
-        else:
-            return self.disp.format(value)
-
-    def _parseDispValue(self, sValue):
-        if sValue == '':
-            return ''
-        elif self.disp == 'enum':
-            return self.revEnum[sValue]
-        else:
-            t = self.nativeType()
-            if t == int:
-                return int(sValue, 0)
-            elif t == float:
-                return float(sValue)
-            elif t == bool:
-                return str.lower(sValue) == "true"
-            elif t == dict:
-                return eval(sValue)
-            else:
-                return sValue
+    @property
+    def ndTypeStr(self):
+        return str(self.ndType)
 
     def _setDefault(self):
         if self._default is not None:
@@ -487,7 +476,7 @@ class BaseVariable(pr.Node):
         # and the variable should be a list variable
         if keys is not None:
 
-            if len(keys) != 1 or not self._isList:
+            if len(keys) != 1 or (self.nativeType is not list and self.nativeType is not np.ndarray):
                 self._log.error(f"Entry {self.name} with key {keys} not found")
 
             elif self._mode in modes:
@@ -643,12 +632,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               pollInterval=pollInterval,updateNotify=updateNotify,
                               guiGroup=guiGroup)
 
-        self._typeStr = self._base.name
-
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
-            self._typeStr = f'{self._base.name}[{numValues}]'
-            self._isList = True
+            self._nativeType = np.ndarray
+            self._ndType = self._base.ndType
+            self._typeStr = f'{self.ndType}({numValues},)'
 
             if len(bitSize) != 1:
                 raise VariableError('BitSize array must have a length of one when numValues > 0')
@@ -658,6 +646,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
             if (numValues * valueStride) != sum(bitSize):
                 raise VariableError(f'Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
+
+            if self._ndType is None:
+                raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
 
         else:
             self._typeStr = self._base.name
@@ -811,9 +802,9 @@ class LocalVariable(BaseVariable):
 
     def __init__(self, *,
                  name,
+                 value=None,
                  description='',
                  mode='RW',
-                 value=None,
                  disp='{}',
                  enum=None,
                  units=None,
@@ -827,9 +818,9 @@ class LocalVariable(BaseVariable):
                  highAlarm=None,
                  localSet=None,
                  localGet=None,
-                 typeStr='Unknown',
                  pollInterval=0,
                  updateNotify=True,
+                 typeStr='Unknown',
                  bulkOpEn=True,
                  guiGroup=None):
 
@@ -971,7 +962,6 @@ class LinkVariable(BaseVariable):
                  name,
                  variable=None,
                  dependencies=None,
-                 typeStr='Linked',
                  linkedSet=None,
                  linkedGet=None,
                  **kwargs): # Args passed to BaseVariable
@@ -997,10 +987,8 @@ class LinkVariable(BaseVariable):
         if not self._linkedGet:
             kwargs['mode'] = 'WO'
 
-        # Need to have at least 1 of linkedSet or linkedGet, otherwise error
-
         # Call super constructor
-        BaseVariable.__init__(self, name=name, typeStr=typeStr, **kwargs)
+        BaseVariable.__init__(self, name=name, **kwargs)
 
         # Dependency tracking
         if variable is not None:

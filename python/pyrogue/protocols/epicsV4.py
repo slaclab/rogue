@@ -19,6 +19,7 @@ import pyrogue
 import time
 import warnings
 import re
+import numpy as np
 
 try:
     import p4p.server.thread
@@ -50,9 +51,10 @@ def EpicsConvSeverity(varValue):
 
 
 class EpicsPvHandler(p4p.server.thread.Handler):
-    def __init__(self, valType, var):
+    def __init__(self, valType, var, log):
         self._valType = valType
         self._var     = var
+        self._log     = log
 
     def put(self, pv, op):
         if self._var.isVariable and (self._var.mode == 'RW' or self._var.mode == 'WO'):
@@ -61,6 +63,9 @@ class EpicsPvHandler(p4p.server.thread.Handler):
                     self._var.setDisp(str(op.value()))
                 elif self._valType == 's':
                     self._var.setDisp(op.value().raw.value)
+                elif self._valType == 'ndarray':
+                    # This seems wrong!
+                    self._var.set(op._op.value().value.copy())
                 else:
                     self._var.set(op.value().raw.value)
 
@@ -68,7 +73,8 @@ class EpicsPvHandler(p4p.server.thread.Handler):
                 op.done()
 
             except Exception as msg:
-                op.done(error=msg)
+                self._log.error(f"Got error on put: {msg}")
+                op.done(error=str(msg))
 
         else:
             op.done(error='Put Not Supported On This Variable')
@@ -117,9 +123,12 @@ class EpicsPvHolder(object):
             typeStr = self._var.typeStr
 
         # Convert valType
-        if self._var.disp == 'enum':
+        if var.nativeType is np.ndarray:
+            self._valType = 'ndarray'
+            #self._valType = 's'
+        elif self._var.disp == 'enum':
             self._valType = 'enum'
-        elif typeStr is None:
+        elif typeStr is None or var.nativeType is list or var.nativeType is dict:
             self._valType = 's'
         else:
 
@@ -182,13 +191,13 @@ class EpicsPvHolder(object):
         if varVal.valueDisp is None:
             varVal.valueDisp = ''
 
-        # Detect array
-        if self._var.isList:
-            self._valType = 'a' + self._valType
-
         self._log.info("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
         try:
-            if self._valType == 'enum':
+            if self._valType == 'ndarray':
+                nt = p4p.nt.NTNDArray()
+                #iv = nt.wrap(varVal.value)
+                iv = varVal.value
+            elif self._valType == 'enum':
                 nt = p4p.nt.NTEnum(display=False, control=False, valueAlarm=False)
                 enum = list(self._var.enum.values())
                 iv = {'choices':enum, 'index':enum.index(varVal.valueDisp)}
@@ -200,20 +209,23 @@ class EpicsPvHolder(object):
                 #print(f"Setting value {varVal.value} to {self._name}")
                 iv = nt.wrap(varVal.value)
         except Exception as e:
-            raise Exception("Failed to add {} with type {} init={}. Error={}".format(self._name,self._valType,varVal.valueDisp,e))
+            raise Exception("Failed to add {} with type {} ndtype={} init={}. Error={}".format(self._name,self._valType,self._var.ndType,varVal.valueDisp,e))
 
         # Setup variable
-        self._pv = p4p.server.thread.SharedPV(queue=None,
-                                              handler=EpicsPvHandler(self._valType,self._var),
-                                              initial=iv,
-                                              nt=nt,
-                                              options={})
+        try:
+            self._pv = p4p.server.thread.SharedPV(queue=None,
+                                                  handler=EpicsPvHandler(self._valType,self._var,self._log),
+                                                  initial=iv,
+                                                  nt=nt,
+                                                  options={})
+        except Exception as e:
+            raise Exception("Failed to start {} with type {} ndtype={} init={}. Error={}".format(self._name,self._valType,self._var.ndType,varVal.valueDisp,e))
 
         provider.add(self._name,self._pv)
         self._var.addListener(self._varUpdated)
 
         # Update fields in numeric types
-        if self._valType != 'enum' and self._valType != 's':
+        if self._valType != 'enum' and self._valType != 's' and self._valType != 'ndarray':
             curr = self._pv.current()
             curr.raw.value = varVal.value
             curr.raw.alarm.status = EpicsConvStatus(varVal)
@@ -242,6 +254,8 @@ class EpicsPvHolder(object):
     def _varUpdated(self,path,value):
         if self._valType == 'enum' or self._valType == 's':
             self._pv.post(value.valueDisp)
+        elif self._valType == 'ndarray':
+            self._pv.post(value.value)
         else:
             curr = self._pv.current()
             curr.raw.value          = value.value

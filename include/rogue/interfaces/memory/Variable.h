@@ -129,6 +129,12 @@ namespace rogue {
                // Stale flag
                bool stale_;
 
+               // Stale start address
+               uint32_t staleLowByte_;
+
+               // Stale stop address
+               uint32_t staleHighByte_;
+
                // Number of values
                uint32_t numValues_;
 

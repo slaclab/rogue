@@ -18,7 +18,7 @@ import math
 
 def exportRemoteVariable(variable,indent):
 
-    if variable.isList or not('Bool' in variable.typeStr or 'String' in variable.typeStr or 'Int' in variable.typeStr):
+    if variable.ndType is not None or not('Bool' in variable.typeStr or 'String' in variable.typeStr or 'Int' in variable.typeStr):
         print(f"Error: Found variable {variable.path} with unsupported type {variable.typeStr}, error exporting")
         return ""
 

@@ -29,6 +29,7 @@
 #include <rogue/interfaces/memory/TcpServer.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Variable.h>
+#include <rogue/interfaces/memory/Emulate.h>
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
@@ -74,5 +75,6 @@ void rim::setup_module() {
    rim::TcpServer::setup_python();
    rim::Block::setup_python();
    rim::Variable::setup_python();
+   rim::Emulate::setup_python();
 }
 

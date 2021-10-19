@@ -38,6 +38,16 @@ class TestDev(pr.Device):
             mode         = "RW",
         ))
 
+        self.add(pr.RemoteVariable(
+            name         = "TestRemoteNoVerify",
+            offset       =  0x08,
+            verify       = False,
+            bitSize      =  32,
+            bitOffset    =  0x00,
+            base         = pr.UInt,
+            mode         = "RW",
+        ))
+
         self.add(pr.LocalVariable(
             name         = "TestLocal",
             mode         = "RW",
@@ -77,7 +87,8 @@ class DummyTree(pr.Root):
                          serverPort=None)
 
         # Use a memory space emulator
-        sim = pr.interfaces.simulation.MemEmulate()
+        sim = rogue.interfaces.memory.Emulate(4,0x1000)
+        #sim = pr.interfaces.simulation.MemEmulate()
         self.addInterface(sim)
 
         self.add(TestDev(
@@ -96,6 +107,12 @@ def test_rate():
             for i in range(count):
                 root.TestDev.TestRemote.set(i)
         remoteSetRate = 1/((time.time()-stime) / count)
+
+        stime = time.time()
+        with root.updateGroup():
+            for i in range(count):
+                root.TestDev.TestRemoteNoVerify.set(i)
+        remoteSetNvRate = 1/((time.time()-stime) / count)
 
         stime = time.time()
         with root.updateGroup():
@@ -127,12 +144,13 @@ def test_rate():
                 root.TestDev.TestLink.get(i)
         linkedGetRate = 1/((time.time()-stime) / count)
 
-        print(f"Remote Set Rate = {remoteSetRate:.0f}")
-        print(f"Remote Get Rate = {remoteGetRate:.0f}")
-        print(f"Local  Set Rate = {localSetRate:.0f}")
-        print(f"Local  Get Rate = {localGetRate:.0f}")
-        print(f"Linked Set Rate = {linkedSetRate:.0f}")
-        print(f"Linked Get Rate = {linkedGetRate:.0f}")
+        print(f"Remote Set Rate    = {remoteSetRate:.0f}")
+        print(f"Remote Set Nv Rate = {remoteSetNvRate:.0f}")
+        print(f"Remote Get Rate    = {remoteGetRate:.0f}")
+        print(f"Local  Set Rate    = {localSetRate:.0f}")
+        print(f"Local  Get Rate    = {localGetRate:.0f}")
+        print(f"Linked Set Rate    = {linkedSetRate:.0f}")
+        print(f"Linked Get Rate    = {linkedGetRate:.0f}")
 
 
 if __name__ == "__main__":
