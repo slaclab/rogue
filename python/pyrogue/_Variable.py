@@ -973,7 +973,7 @@ class LinkVariable(BaseVariable):
         if variable is not None:
             # If directly linked to a variable, use it's value and set by defualt
             # for linkedGet and linkedSet unless overridden
-            self._linkedGet = linkedGet if linkedGet else variable.value
+            self._linkedGet = linkedGet if linkedGet else variable.get
             self._linkedSet = linkedSet if linkedSet else variable.set
 
             # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
@@ -982,10 +982,15 @@ class LinkVariable(BaseVariable):
                 if arg not in kwargs:
                     kwargs[arg] = getattr(variable, arg)
 
+        # Why not inhertit mode from link variable?
         if not self._linkedSet:
             kwargs['mode'] = 'RO'
         if not self._linkedGet:
             kwargs['mode'] = 'WO'
+
+        # Wrap linked get and set functions
+        self._linkedGetWrap = pr.functionWrapper(function=self._linkedGet, callArgs=['dev', 'var', 'read', 'index', 'check'])
+        self._linkedSetWrap = pr.functionWrapper(function=self._linkedSet, callArgs=['dev', 'var', 'value', 'write', 'index', 'verify', 'check'])
 
         # Call super constructor
         BaseVariable.__init__(self, name=name, **kwargs)
@@ -1005,33 +1010,18 @@ class LinkVariable(BaseVariable):
 
     @pr.expose
     def set(self, value, *, write=True, index=-1, verify=True, check=True):
-        if self._linkedSet is not None:
-            try:
-
-                # Possible args
-                pargs = {'dev' : self.parent, 'var' : self, 'value' : value, 'write' : write, 'index' : index, 'verify': verify, 'check': check}
-
-                pr.functionHelper(self._linkedSet,pargs,self._log,self.path)
-
-            except Exception as e:
-                pr.logException(self._log,e)
-                self._log.error("Error setting link variable '{}'".format(self.path))
-                raise e
+        try:
+            self._linkedSetWrap(function=self._linkedSet, dev=self.parent, var=self, value=value, write=write, index=index, verify=verify, check=check)
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error setting link variable '{}'".format(self.path))
+            raise e
 
     @pr.expose
     def get(self, read=True, index=-1, check=True):
-        if self._linkedGet is not None:
-            try:
-
-                # Possible args
-                pargs = {'dev' : self.parent, 'var' : self, 'read' : read, 'index' : index, 'check': check}
-
-                return pr.functionHelper(self._linkedGet,pargs,self._log,self.path)
-
-            except Exception as e:
-                pr.logException(self._log,e)
-                self._log.error("Error getting link variable '{}'".format(self.path))
-                raise e
-
-        else:
-            return None
+        try:
+            return self._linkedGetWrap(function=self._linkedGet, dev=self.parent, var=self, read=read, index=index, check=check)
+        except Exception as e:
+            pr.logException(self._log,e)
+            self._log.error("Error getting link variable '{}'".format(self.path))
+            raise e
