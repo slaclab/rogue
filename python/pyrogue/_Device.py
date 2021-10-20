@@ -230,6 +230,9 @@ class Device(pr.Node,rim.Hub):
             else:
                 self._ifAndProto.append(protocol)
 
+    def manage(self, *interfaces):
+        self._ifAndProto.extend(interfaces)
+
     def _start(self):
         """ Called recursively from Root.stop when starting """
         for intf in self._ifAndProto:
