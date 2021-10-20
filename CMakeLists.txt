@@ -1,12 +1,12 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# This file is part of the rogue software package. It is subject to
-# the license terms in the LICENSE.txt file found in the top-level directory
-# of this distribution and at:
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-# No part of the rogue software package, including this file, may be
-# copied, modified, propagated, or distributed except according to the terms
+# This file is part of the rogue software package. It is subject to 
+# the license terms in the LICENSE.txt file found in the top-level directory 
+# of this distribution and at: 
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
+# No part of the rogue software package, including this file, may be 
+# copied, modified, propagated, or distributed except according to the terms 
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 # See notes for compiling on macros under anaconda:
@@ -37,16 +37,12 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
-SET(CMAKE_SKIP_BUILD_RPATH TRUE)
-SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
-SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
-
 #####################################
 # Boost + Python
 #####################################
-if ( NOT NO_PYTHON )
-   find_package(PythonInterp 3 QUIET REQUIRED)
-   find_package(PythonLibs 3 QUIET REQUIRED)
+if ( NOT NO_PYTHON ) 
+   find_package(PythonInterp 3.6 QUIET REQUIRED)
+   find_package(PythonLibs 3.6 QUIET REQUIRED)
 
    # Find Numpy
    execute_process(
@@ -62,43 +58,36 @@ if ( NOT NO_PYTHON )
    endif()
 
    set(Boost_USE_MULTITHREADED ON)
-   set(Boost_NO_BOOST_CMAKE ON)
 
-   # Hint for boost on anaconda
-   if (DEFINED ENV{CONDA_PREFIX})
-      set(BOOST_ROOT $ENV{CONDA_PREFIX})
+   # Boost may need help on SLAC machines
+   set(BOOST_ROOT:PATHNAME $ENV{BOOST_PATH})
 
-   # SLAC AFS custom path
-   elseif (DEFINED ENV{BOOST_PATH})
-      set(BOOST_ROOT $ENV{BOOST_PATH})
+   # First try standard suffix for boost
+   message("Looking for boost/python3")
+   find_package(Boost 1.58 QUIET COMPONENTS system thread python3)
+
+   # Next try boost/python38
+   if (NOT Boost_FOUND)
+      message("Looking for boost/python38")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python38)
    endif()
 
-   # libboost_python3.7 style libraries
-   message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-
-   # libboost_python3 style libraries
+   # Next try boost/python37
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
+      message("Looking for boost/python37")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python37)
    endif()
 
-   # libboost_python style libraries
+   # Next try boost/python-py36
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python)
+      message("Looking for boost/python-py36")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python-py36)
    endif()
 
-   # libboost_python-py37 style libraries
+   # Next try boost/python36
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
-   endif()
-
-   # libboost_python3-py37 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      message("Looking for boost/python36")
+      find_package(Boost 1.58 QUIET COMPONENTS system thread python36)
    endif()
 
    # Nothing worked
@@ -106,17 +95,14 @@ if ( NOT NO_PYTHON )
       message("")
       message(FATAL_ERROR "Failed to find boost libraries!")
    endif()
-
 else()
    add_definitions( -DNO_PYTHON )
 endif()
-
 
 #####################################
 # BZIP2
 #####################################
 find_package(BZip2 QUIET REQUIRED)
-
 
 #####################################
 # ZeroMQ
@@ -126,7 +112,7 @@ find_package(ZeroMQ QUIET)
 
 # ZeroMQ does not always support cmake, use brute force
 if (NOT ZeroMQ_FOUND)
-
+   
    # Convert LD_LIBRARY PATH for search
    if(DEFINED ENV{LD_LIBRARY_PATH})
       string(REPLACE ":" ";" HINT_PATHS $ENV{LD_LIBRARY_PATH})
@@ -135,12 +121,12 @@ if (NOT ZeroMQ_FOUND)
    endif()
 
    # See if zmq library is in LD_LIBRARY_PATH
-   find_library(ZeroMQ_LIBRARY
-                NAMES zmq
+   find_library(ZeroMQ_LIBRARY 
+                NAMES zmq 
                 PATHS ${HINT_PATHS})
 
    # Found it
-   if (ZeroMQ_LIBRARY)
+   if (ZeroMQ_LIBRARY) 
 
       # Get the base directory
       get_filename_component(ZMQ_LIBDIR ${ZeroMQ_LIBRARY} DIRECTORY)
@@ -159,9 +145,7 @@ if (NOT ZeroMQ_FOUND)
       message("")
       message(FATAL_ERROR "Failed to find zeroMQ!")
    endif()
-
 endif()
-
 
 #####################################
 # EPICS V3
@@ -172,7 +156,7 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
        set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
    else()
-       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch
+       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch 
                        OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
        string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
    endif()
@@ -194,35 +178,33 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/clang
+                            ${EPICS_BASE_DIR}/include/compiler/gcc 
                             ${EPICS_BASE_DIR}/include/os/Darwin)
 
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib 
                             ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib 
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
    else()
 
       set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
                             ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc
+                            ${EPICS_BASE_DIR}/include/compiler/gcc 
                             ${EPICS_BASE_DIR}/include/os/Linux)
 
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so
+      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so 
                             ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
+                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so 
                             ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
    endif()
-
 else()
    set(DO_EPICS_V3 0)
 endif()
 
-
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION
 ##########################################################
-if ( NOT ROGUE_VERSION )
+if ( NOT ROGUE_VERSION ) 
 
    # Set version from git tag
    find_package(Git QUIET)
@@ -231,20 +213,20 @@ if ( NOT ROGUE_VERSION )
          COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
          OUTPUT_VARIABLE ROGUE_VERSION
          OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+      string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
    else()
       message("")
       message(FATAL_ERROR "Git is required to build rogue!")
    endif()
 endif()
 
-string(REGEX MATCH "^v([0-9]+)\\.([0-9]+)" ROGUE_SOVER ${ROGUE_VERSION})
-
 #####################################
 # Setup Type and Directories
 #####################################
 
 # Default install type
-if ( NOT ROGUE_INSTALL )
+if ( NOT ROGUE_INSTALL ) 
    if (DEFINED ENV{CONDA_PREFIX})
       set (ROGUE_INSTALL "conda")
    else()
@@ -255,26 +237,15 @@ endif()
 # Default Install directory
 if (${ROGUE_INSTALL} STREQUAL "local")
    set (ROGUE_DIR ${PROJECT_SOURCE_DIR})
-elseif (NOT ROGUE_DIR)
+elseif (NOT ROGUE_DIR) 
    if (${ROGUE_INSTALL} STREQUAL "custom")
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}/rogue")
-   elseif (${ROGUE_INSTALL} STREQUAL "target_arch")
-      set (ROGUE_DIR "${PROJECT_BINARY_DIR}")
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}")
    else()
       set (ROGUE_DIR "$ENV{CONDA_PREFIX}/${CMAKE_INSTALL_PREFIX}")
    endif()
 endif()
-
-if ( NOT CMAKE_INSTALL_LIBDIR )
-   set (CMAKE_INSTALL_LIBDIR "${ROGUE_DIR}/lib")
-endif()
-
-if ( NOT CMAKE_INSTALL_INCLUDEDIR )
-   set (CMAKE_INSTALL_INCLUDEDIR "${ROGUE_DIR}/include")
-endif()
-
 
 #####################################
 # Setup build, core library
@@ -315,33 +286,33 @@ set_target_properties(rogue-core-shared PROPERTIES OUTPUT_NAME librogue-core)
 set_target_properties(rogue-core-shared PROPERTIES PREFIX "" SUFFIX ".so")
 set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVERSION ${ROGUE_SOVER})
 
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${EPICS_LIBRARIES})
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${BZIP2_LIBRARIES})
+# Link rogue core to boost, python and bzip
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${ZeroMQ_LIBRARY})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${EPICS_LIBRARIES})
+TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
 if (APPLE)
    set_target_properties(rogue-core-shared PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${PYTHON_LIBRARIES})
-   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC rt)
+   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core-shared LINK_PUBLIC rt)
 endif()
 
-if(STATIC_LIB)
+if(STATIC_LIB) 
     add_library(rogue-core-static STATIC $<TARGET_OBJECTS:rogue-core> "")
     set_target_properties(rogue-core-static PROPERTIES OUTPUT_NAME librogue-core)
     set_target_properties(rogue-core-static PROPERTIES PREFIX "" SUFFIX ".a")
 
     # Link rogue core to boost, python and bzip
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Boost_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${EPICS_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${PYTHON_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${Boost_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${ZeroMQ_LIBRARY})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${EPICS_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${BZIP2_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static LINK_PUBLIC rt)
 endif()
-
 
 #####################################
 # Setup build, python library
@@ -363,31 +334,30 @@ if (NOT NO_PYTHON)
    endif()
 
    # Link to rogue core
-   TARGET_LINK_LIBRARIES(rogue PUBLIC rogue-core-shared)
+   TARGET_LINK_LIBRARIES(rogue LINK_PUBLIC rogue-core-shared)
 
 else()
    add_definitions( -DNO_PYTHON )
 endif()
 
-
 #########################################
 # Configuration & Setup Script Generation
 #########################################
-set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
+set(CONF_INCLUDE_DIRS ${ROGUE_DIR}/include)
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES PUBLIC rogue-core)
+   set(CONF_LIBRARIES LINK_PUBLIC rogue-core)
 else()
    if (APPLE)
-      set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.${ROGUE_SOVER}.dylib)
+      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.${ROGUE_SOVER}.dylib)
    else()
-      set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.so.${ROGUE_SOVER})
+      set(CONF_LIBRARIES ${ROGUE_DIR}/lib/librogue-core.so.${ROGUE_SOVER})
    endif()
 endif()
 
 # Create the config file
-configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in
+configure_file(${PROJECT_SOURCE_DIR}/templates/RogueConfig.cmake.in 
                ${PROJECT_BINARY_DIR}/RogueConfig.cmake @ONLY)
 
 # Create the setup files
@@ -400,19 +370,18 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
                ${PROJECT_BINARY_DIR}/setup.py)
 
-
 #####################################
 # Install Setup
 #####################################
 
 # Always install core libraries and config files
 if (STATIC_LIB)
-   install(TARGETS rogue-core-static LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+   install(TARGETS rogue-core-static LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 endif()
 
-install(TARGETS rogue-core-shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS rogue-core-shared LIBRARY DESTINATION ${ROGUE_DIR}/lib ARCHIVE DESTINATION ${ROGUE_DIR}/lib)
 
-install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${ROGUE_DIR}/lib)
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
@@ -421,7 +390,7 @@ endif()
 
 # Install header files for non local installs
 if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
-   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} FILES_MATCHING PATTERN "*.h")
+   install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/rogue DESTINATION ${ROGUE_DIR}/include FILES_MATCHING PATTERN "*.h")
 endif()
 
 # Conda activate and deactivate functions
@@ -442,21 +411,20 @@ if (NOT NO_PYTHON)
 
    # Use setuptools with python3 for system
    elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
-
+      install(CODE "execute_process(COMMAND python3 ${PROJECT_SOURCE_DIR}/build/setup.py install)")
+   
    # Use setuptools with python for anaconda
    elseif (${ROGUE_INSTALL} STREQUAL "conda")
-      install(CODE "execute_process(COMMAND python
-              ${PROJECT_BINARY_DIR}/setup.py install --prefix=${ROGUE_DIR})")
+      install(CODE "execute_process(COMMAND python 
+              ${PROJECT_SOURCE_DIR}/build/setup.py install --prefix=${ROGUE_DIR})")
    endif()
 
    # Do byte compile for custom or local
    if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
       install(CODE "execute_process(COMMAND python3 -m compileall ${ROGUE_DIR}/python)")
-   endif()
+   endif()   
 
 endif()
-
 
 #####################################
 # Print status
@@ -475,9 +443,9 @@ if (NO_PYTHON)
    message("-- Compiling without boost & python!")
 else()
    message("-- Found boost: ${Boost_INCLUDE_DIRS}")
-   message("-- Found boost: ${Boost_LIBRARIES}")
    message("")
    message("-- Found python: ${PYTHON_LIBRARIES}")
+   message("")
    message("-- Found numpy: ${Python3_NumPy_INCLUDE_DIRS}")
 endif()
 
