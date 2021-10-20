@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Python File Reader &mdash; Rogue v5.10.0-54-g0f63d6ba documentation</title>
+  <title>Python File Reader &mdash; Rogue v5.11.0-2-g52767bd8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.10.0
+                v5.11.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -123,12 +123,37 @@ a list of segemented data files.</p>
       <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data time = </span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">configValue</span><span class="p">[</span><span class="s1">&#39;root.Time&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
+<p>In some cases the data file contains frames that are “batched” using the BatcherV1 protocol:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">FileReader</span><span class="p">(</span><span class="n">files</span><span class="o">=</span><span class="s2">&quot;mydata.dat&quot;</span><span class="p">,</span><span class="n">configChan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span><span class="n">batched</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">fd</span><span class="p">:</span>
+
+   <span class="c1"># Loop through the file data</span>
+   <span class="k">for</span> <span class="n">header</span><span class="p">,</span><span class="n">bHeader</span><span class="p">,</span><span class="n">data</span> <span class="ow">in</span> <span class="n">fd</span><span class="o">.</span><span class="n">records</span><span class="p">():</span>
+
+      <span class="c1"># Look at record header data</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing record. Total=</span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">totCount</span><span class="si">}</span><span class="s2">, Current=</span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">currCount</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record size    = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record channel = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">channel</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record flags   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">flags</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Record error   = </span><span class="si">{</span><span class="n">header</span><span class="o">.</span><span class="n">error</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batcher size   = </span><span class="si">{</span><span class="n">bHeader</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batcher tdest  = </span><span class="si">{</span><span class="n">bHeader</span><span class="o">.</span><span class="n">tdest</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batcher fUser  = </span><span class="si">{</span><span class="n">bHeader</span><span class="o">.</span><span class="n">fUser</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Batcher lUser  = </span><span class="si">{</span><span class="n">bHeader</span><span class="o">.</span><span class="n">lUser</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+      <span class="c1"># Do something with the data here:</span>
+      <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">header</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Byte </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+      <span class="c1"># At any time you can access the current config and status state</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Data time = </span><span class="si">{</span><span class="n">fd</span><span class="o">.</span><span class="n">configValue</span><span class="p">[</span><span class="s1">&#39;root.Time&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
 <section id="filereader-description">
 <h2>FileReader Description<a class="headerlink" href="#filereader-description" title="Permalink to this headline"></a></h2>
 <p>The class description for the SimpleClient class is included below:</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.utilities.fileio.FileReader">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></span><span class="sig-name descname"><span class="pre">FileReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configChan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></span><span class="sig-name descname"><span class="pre">FileReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">configChan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batched</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/utilities/fileio/_FileReader.html#FileReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.utilities.fileio.FileReader" title="Permalink to this definition"></a></dt>
 <dd><p>A lightweight file reader for Rogue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -136,6 +161,7 @@ a list of segemented data files.</p>
 <li><p><strong>files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><em>list</em></a>) – Filename or list of filenams to read data from</p></li>
 <li><p><strong>configChan</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Channel id of configuration/status stream in the data file. Set to None to disable processing configuration.</p></li>
 <li><p><strong>log</strong> (<em>obj</em>) – Logging object to use. If set to None a new logger will be created with the name “pyrogue.FileReader”.</p></li>
+<li><p><strong>batched</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Flag to indicate if data file contains batched data</p></li>
 </ul>
 </dd>
 </dl>
@@ -178,10 +204,11 @@ a list of segemented data files.</p>
 <dd><p>Generator which returns (header, data) tuples</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>(header, data) tuple where header is a dictionary and data is a byte array.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#pyrogue.utilities.fileio.RogueHeader" title="pyrogue.utilities.fileio.RogueHeader">RogueHeader</a>, <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.10)">bytearray</a></p>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><em>RogueHeader, bytearray</em> – (header, data) tuple where header is a dictionary and data is a byte array, for batched = False.</p></li>
+<li><p><em>RogueHeader, BatchHeader, bytearray</em> – (header, header, data) tuple where header are dictionaried and data is a byte array, for batched = True.</p></li>
+</ul>
+</p>
 </dd>
 </dl>
 </dd></dl>
@@ -209,11 +236,11 @@ a list of segemented data files.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pyrogue.utilities.fileio.</span></span><span class="sig-name descname"><span class="pre">RogueHeader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader" title="Permalink to this definition"></a></dt>
-<dd><p>Header data</p>
+<dd><p>Rogue Header data</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.utilities.fileio.RogueHeader.size">
 <span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#pyrogue.utilities.fileio.RogueHeader.size" title="Permalink to this definition"></a></dt>
-<dd><p>Size of the record</p>
+<dd><p>Size of the record, minus the header</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Model &mdash; Rogue v5.10.0-54-g0f63d6ba documentation</title>
+  <title>pyrogue._Model &mdash; Rogue v5.11.0-2-g52767bd8 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.10.0
+                v5.11.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -87,7 +87,7 @@
 <span class="c1">#-----------------------------------------------------------------------------</span>
 
 <span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span> <span class="k">as</span> <span class="nn">rim</span>
-
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
 <span class="k">def</span> <span class="nf">wordCount</span><span class="p">(</span><span class="n">bits</span><span class="p">,</span> <span class="n">wordSize</span><span class="p">):</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">bits</span> <span class="o">//</span> <span class="n">wordSize</span>
@@ -176,6 +176,9 @@
 <span class="sd">    isBigEndian: bool</span>
 <span class="sd">        True if endianness = &#39;big&#39;</span>
 
+<span class="sd">    ndType: np.dtype</span>
+<span class="sd">        numpy type value (bool, int32, int64, uint32, uin64, float32, float64)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">fstring</span>     <span class="o">=</span> <span class="kc">None</span>
@@ -191,6 +194,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span> <span class="o">=</span> <span class="n">binPoint</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span>  <span class="o">=</span> <span class="n">bitSize</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span>     <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span>   <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">isBigEndian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -280,6 +284,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">)</span> <span class="k">if</span> <span class="n">bitSize</span> <span class="o">&lt;=</span> <span class="mi">32</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">uint64</span><span class="p">)</span>
 
     <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
 <div class="viewcode-block" id="UInt.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UInt.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -304,8 +309,12 @@
 <span class="sd">    Model class for unsigned integers, stored in reverse bit order</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">modelId</span>   <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span> <span class="c1"># Not yet supported</span>
+    <span class="n">modelId</span>    <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">PyFunc</span> <span class="c1"># Not yet supported</span>
     <span class="n">bitReverse</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="UIntReversed.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.UIntReversed.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="n">valueReverse</span> <span class="o">=</span> <span class="n">reverseBits</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="p">)</span>
@@ -325,6 +334,10 @@
     <span class="n">defaultdisp</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:d}</span><span class="s1">&#39;</span>
     <span class="n">signed</span>      <span class="o">=</span> <span class="kc">True</span>
     <span class="n">modelId</span>     <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Int</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span> <span class="k">if</span> <span class="n">bitSize</span> <span class="o">&lt;=</span> <span class="mi">32</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
 
     <span class="c1"># Called by raw read/write and when bitsize &gt; 64</span>
 <div class="viewcode-block" id="Int.toBytes"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Int.toBytes">[docs]</a>    <span class="k">def</span> <span class="nf">toBytes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
@@ -396,6 +409,7 @@
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 1&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Bool.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Bool.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">str</span><span class="o">.</span><span class="n">lower</span><span class="p">(</span><span class="n">string</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span></div>
@@ -449,6 +463,7 @@
         <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">32</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 32&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Float.fromString"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Float.fromString">[docs]</a>    <span class="k">def</span> <span class="nf">fromString</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">string</span><span class="p">)</span></div>
@@ -471,12 +486,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">fstring</span> <span class="o">=</span> <span class="s1">&#39;d&#39;</span>
-    <span class="n">modelId</span>   <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Double</span>
+    <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Double</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">bitSize</span> <span class="o">==</span> <span class="mi">64</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;The bitSize param of Model </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> must be 64&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">)</span>
+        <span class="n">Model</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">bitSize</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Double.minValue"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Double.minValue">[docs]</a>    <span class="k">def</span> <span class="nf">minValue</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="o">-</span><span class="mf">1.80e308</span></div>
@@ -516,14 +532,14 @@
 <span class="sd">        Huh?</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">pytype</span> <span class="o">=</span> <span class="nb">float</span>
-    <span class="n">signed</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">modelId</span>   <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Fixed</span>
+    <span class="n">pytype</span>  <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">signed</span>  <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Fixed</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">,</span> <span class="n">binPoint</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">,</span><span class="n">binPoint</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Fixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Fixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

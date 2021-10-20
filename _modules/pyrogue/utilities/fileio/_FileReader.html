@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v5.10.0-54-g0f63d6ba documentation</title>
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v5.11.0-2-g52767bd8 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -27,7 +27,7 @@
             <a href="../../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.10.0
+                v5.11.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -107,12 +107,12 @@
     <span class="s1">&#39;error&#39;</span>   <span class="p">,</span>  <span class="c1"># 1 bytes, uint8,  B</span>
     <span class="s1">&#39;channel&#39;</span> <span class="p">]</span>  <span class="c1"># 1 bytes, uint8,  B</span>
 <span class="p">)</span>
-<span class="sd">&quot;&quot;&quot; Header data</span>
+<span class="sd">&quot;&quot;&quot; Rogue Header data</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    size : int</span>
-<span class="sd">        Size of the record</span>
+<span class="sd">        Size of the record, minus the header</span>
 
 <span class="sd">    flags : int</span>
 <span class="sd">        Frame flags for the record</span>
@@ -125,6 +125,39 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="n">BatchHeaderSize</span>  <span class="o">=</span> <span class="mi">8</span>
+<span class="n">BatchHeaderPack</span>  <span class="o">=</span> <span class="s1">&#39;IBBBB&#39;</span>
+
+<span class="c1"># Batcher Header</span>
+<span class="n">BatchHeader</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
+    <span class="s1">&#39;BatchHeader&#39;</span><span class="p">,</span>
+    <span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">,</span>   <span class="c1"># 4 Bytes, uint32, I</span>
+    <span class="s1">&#39;tdest&#39;</span><span class="p">,</span>   <span class="c1"># 1 Byte, uint8, B</span>
+    <span class="s1">&#39;fUser&#39;</span><span class="p">,</span>   <span class="c1"># 1 Byte, uint8, B</span>
+    <span class="s1">&#39;lUser&#39;</span><span class="p">,</span>   <span class="c1"># 1 Byte, uint8, B</span>
+    <span class="s1">&#39;width&#39;</span><span class="p">]</span>   <span class="c1"># 1 Byte, uint8, B</span>
+<span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot; Batcher Header data</span>
+
+<span class="sd">    Attributes</span>
+<span class="sd">    ----------</span>
+<span class="sd">    size: int</span>
+<span class="sd">        Sub frame size in bytes</span>
+
+<span class="sd">    tdest: int</span>
+<span class="sd">        TDEST value from AXI Stream Frame</span>
+
+<span class="sd">    fUser: int</span>
+<span class="sd">        First USER value from AXI Stream Frame</span>
+
+<span class="sd">    lUser: int</span>
+<span class="sd">        Last USER value from AXI Stream Frame</span>
+
+<span class="sd">    width : int</span>
+<span class="sd">        Width of the batched data in bytes</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="k">class</span> <span class="nc">FileReaderException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; File reader exception &quot;&quot;&quot;</span>
@@ -146,6 +179,9 @@
 <span class="sd">    log : obj</span>
 <span class="sd">        Logging object to use. If set to None a new logger will be created with the name &quot;pyrogue.FileReader&quot;.</span>
 
+<span class="sd">    batched : bool</span>
+<span class="sd">        Flag to indicate if data file contains batched data</span>
+
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
 <span class="sd">    currCount: int</span>
@@ -158,16 +194,16 @@
 <span class="sd">        Current configuration/status dictionary</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span> <span class="o">=</span> <span class="n">configChan</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span>   <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileSize</span>   <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_header</span>     <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_data</span>       <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>     <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span>  <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span>  <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span>   <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_batched</span>    <span class="o">=</span> <span class="n">batched</span>
 
         <span class="k">if</span> <span class="n">log</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;pyrogue.FileReader&#39;</span><span class="p">)</span>
@@ -197,10 +233,10 @@
                 <span class="k">return</span> <span class="kc">False</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">RogueHeader</span><span class="o">.</span><span class="n">_make</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="n">RogueHeaderPack</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">RogueHeaderSize</span><span class="p">)))</span>
-            <span class="n">payload</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">4</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span> <span class="o">-=</span> <span class="mi">4</span>
 
             <span class="c1"># Set next frame position</span>
-            <span class="n">recEnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">+</span> <span class="n">payload</span>
+            <span class="n">recEnd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span>
 
             <span class="c1"># Sanity check</span>
             <span class="k">if</span> <span class="n">recEnd</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fileSize</span><span class="p">:</span>
@@ -209,14 +245,10 @@
 
             <span class="c1"># Process meta data</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">channel</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_updateConfig</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_updateConfig</span><span class="p">(</span><span class="n">yaml</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)))</span>
 
             <span class="c1"># This is a data channel</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">payload</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to read data from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -229,7 +261,10 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        RogueHeader, bytearray</span>
-<span class="sd">            (header, data) tuple where header is a dictionary and data is a byte array.</span>
+<span class="sd">            (header, data) tuple where header is a dictionary and data is a byte array, for batched = False.</span>
+
+<span class="sd">        RogueHeader, BatchHeader, bytearray</span>
+<span class="sd">            (header, header, data) tuple where header are dictionaried and data is a byte array, for batched = True.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="p">{}</span>
@@ -246,7 +281,53 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span> <span class="o">=</span> <span class="n">f</span>
 
                 <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nextRecord</span><span class="p">():</span>
-                    <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data</span><span class="p">)</span>
+
+                    <span class="c1"># Batch Mode</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_batched</span><span class="p">:</span>
+
+                        <span class="n">curIdx</span> <span class="o">=</span> <span class="mi">0</span>
+
+                        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+                            <span class="c1"># Check header size</span>
+                            <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                            <span class="c1"># Read in header data</span>
+                            <span class="n">bHead</span> <span class="o">=</span> <span class="n">BatchHeader</span><span class="o">.</span><span class="n">_make</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="n">BatchHeaderPack</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BatchHeaderSize</span><span class="p">)))</span>
+                            <span class="n">curIdx</span> <span class="o">+=</span> <span class="mi">8</span>
+
+                            <span class="c1"># Fix header width</span>
+                            <span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">][</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="p">]</span>
+
+                            <span class="c1"># Skip rest of header if more than 64-bits</span>
+                            <span class="k">if</span> <span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
+
+                                <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                                    <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                                <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span>
+
+                            <span class="c1"># Check payload size</span>
+                            <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="n">bHead</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                                <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame data underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                            <span class="c1"># Get data</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">bHead</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                            <span class="n">curIdx</span> <span class="o">+=</span> <span class="n">bHead</span><span class="o">.</span><span class="n">size</span>
+
+                            <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span> <span class="n">bHead</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="n">curIdx</span><span class="p">:</span>
+                                <span class="k">break</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                            <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to read data from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                        <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span><span class="si">}</span><span class="s2"> data records from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
