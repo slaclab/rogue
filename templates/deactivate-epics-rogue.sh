@@ -1,0 +1,2 @@
+unset EPICS_BASE_LIB
+unset EPICS_PCAS_LIB
