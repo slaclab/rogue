@@ -255,7 +255,7 @@ jobs:
         run: |
           export PATH="${HOME}/miniconda/bin:$PATH"
           source ${HOME}/miniconda/etc/profile.d/conda.sh
-          conda build $CONDA_SRC --debug --output-folder bld-dir -c tidair-packages -c conda-forge
+          conda build $CONDA_SRC --output-folder bld-dir -c tidair-packages -c conda-forge
 
       - name: Upload
         run: |
