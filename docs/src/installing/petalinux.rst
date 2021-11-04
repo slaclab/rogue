@@ -28,7 +28,7 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 
    SRC_URI = "https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz"
    SRC_URI[md5sum] = "${ROGUE_MD5SUM}"
-   S = "${WORKDIR}/rogue-${ROGUE_VERSION}/"
+   S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
 
    DEPENDS += "python3 python3-numpy python3-native python3-numpy-native cmake boost zeromq bzip2"
    DEPENDS += "python3-pyzmq python3-parse python3-pyyaml python3-click python3-sqlalchemy python3-pyserial"
@@ -64,7 +64,7 @@ To enable compilation and installation of the rogue package in your petalinux pr
 
 .. code::
 
-   > petalinux-config rootfs
+   > petalinux-config -c rootfs
 
 and enable the rogue package under 'user packages'. Save and exit the menu configuration.
 
