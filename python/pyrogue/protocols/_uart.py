@@ -51,7 +51,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
             ch = self.serialPort.read().decode('ASCII')
             # Break and return if timeout occurs
             if len(ch) == 0:
-                break;
+                break
             line.append(ch)
             if ch == '\n' or ch == '\r':
                 break
