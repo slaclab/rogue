@@ -79,7 +79,13 @@ You can then build the rogue package with the following command:
 
 .. code::
 
+   # Try to let rogue build and let it assert the error about missing setup.py file
+   > petalinux-build -c rogue
+
+   # Copy the autogenerate setup.py from the 1st "petalinux-build -c rogue" to the correct directory (work around)
+   > cp build/tmp/work/cortexa72-cortexa53-xilinx-linux/rogue/1.0-r0/build/setup.py build/tmp/work/cortexa72-cortexa53-xilinx-linux/rogue/1.0-r0/rogue-<ROGUE_VERSION>/.
+
+   # Rebuild again
    > petalinux-build -c rogue
 
 You can then build the petalinux project as normal.
-
