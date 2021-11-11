@@ -1589,13 +1589,12 @@ void rim::Block::setFixed ( const double &val, rim::Variable *var, int32_t index
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
    // Convert
-   uint64_t fPoint = (int64_t)round(val * pow(2,var->binPoint_));
+   int64_t fPoint = (int64_t)round(val * pow(2,var->binPoint_));
    // Check for positive edge case
-   uint64_t mask  = 1 << (var->bitSize_[0]-1);
+   uint64_t mask  = 1 << (var->valueBits_-1);
    if (val > 0 && ((fPoint & mask) != 0)) {
      fPoint -= 1;
    }
-   
    setBytes((uint8_t *)&fPoint,var,index);
 }
 
@@ -1606,13 +1605,12 @@ double rim::Block::getFixed ( rim::Variable *var, int32_t index ) {
 
    getBytes((uint8_t *)&fPoint,var,index);
    // Do two-complement if negative
-   if ((fPoint & (1 << var->bitSize_[0]-1)) != 0) {
-     fPoint = fPoint - (1 << var->bitSize_[0]);
+   if ((fPoint & (1 << var->valueBits_-1)) != 0) {
+     fPoint = fPoint - (1 << var->valueBits_);
    }
 
    // Convert to float
    tmp = (double)fPoint / pow(2,var->binPoint_);
-
    return tmp;
 }
 
