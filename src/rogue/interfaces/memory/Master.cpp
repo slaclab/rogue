@@ -207,7 +207,7 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
    }
 
    log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
-   tran->log_->debug("Created transaction type=%i id=%i, address=0x%.8x, size=0x%x",
+   tran->log_->debug("Created transaction type=%i id=%i, address=0x%x, size=0x%x",
          tran->type_,tran->id_,tran->address_,tran->size_);
    slave->doTransaction(tran);
    tran->refreshTimer(tran);

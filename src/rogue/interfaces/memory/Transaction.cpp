@@ -122,7 +122,7 @@ uint32_t rim::Transaction::type() { return type_; }
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
 
-   log_->debug("Transaction done. type=%i id=%i, address=0x%.8x, size=0x%x",
+   log_->debug("Transaction done. type=%i id=%i, address=0x%x, size=0x%x",
          type_,id_,address_,size_);
 
    error_ = "";
