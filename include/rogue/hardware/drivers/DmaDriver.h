@@ -8,12 +8,12 @@
  * Description:
  * Defintions and inline functions for interacting drivers.
  * ----------------------------------------------------------------------------
- * This file is part of the aes_stream_drivers package. It is subject to 
- * the license terms in the LICENSE.txt file found in the top-level directory 
- * of this distribution and at: 
- *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
- * No part of the aes_stream_drivers package, including this file, may be 
- * copied, modified, propagated, or distributed except according to the terms 
+ * This file is part of the aes_stream_drivers package. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the aes_stream_drivers package, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
@@ -27,7 +27,7 @@
 #endif
 
 // API Version
-#define DMA_VERSION  0x05
+#define DMA_VERSION  0x06
 
 // Error values
 #define DMA_ERR_FIFO 0x01
@@ -131,7 +131,7 @@ static inline ssize_t dmaWriteIndex(int32_t fd, uint32_t index, size_t size, uin
 }
 
 // Write frame from iovector
-static inline ssize_t dmaWriteVector(int32_t fd, struct iovec *iov, size_t iovlen, 
+static inline ssize_t dmaWriteVector(int32_t fd, struct iovec *iov, size_t iovlen,
                                      uint32_t begFlags, uint32_t midFlags, uint32_t endFlags, uint32_t dest) {
    uint32_t x;
    ssize_t ret;
@@ -148,7 +148,7 @@ static inline ssize_t dmaWriteVector(int32_t fd, struct iovec *iov, size_t iovle
       w.is32    = (sizeof(void *)==4);
       w.data    = (uint64_t)iov[x].iov_base;
 
-      do { 
+      do {
          res = write(fd,&w,sizeof(struct DmaWriteData));
 
          if ( res < 0 ) return(res);
@@ -160,7 +160,7 @@ static inline ssize_t dmaWriteVector(int32_t fd, struct iovec *iov, size_t iovle
 }
 
 // Write Frame, memory mapped from iovector
-static inline ssize_t dmaWriteIndexVector(int32_t fd, struct iovec *iov, size_t iovlen, 
+static inline ssize_t dmaWriteIndexVector(int32_t fd, struct iovec *iov, size_t iovlen,
                                           uint32_t begFlags, uint32_t midFlags, uint32_t endFlags, uint32_t dest) {
    uint32_t x;
    ssize_t ret;
@@ -418,7 +418,7 @@ static inline ssize_t dmaReadRegister(int32_t fd, uint64_t address, uint32_t *da
    return(res);
 }
 
-// Return user space mapping to a relative register space 
+// Return user space mapping to a relative register space
 static inline void * dmaMapRegister(int32_t fd, off_t offset, uint32_t size) {
    uint32_t bCount;
    uint32_t bSize;
