@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.11.0-2-g52767bd8 documentation</title>
+  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.12.0-3-g18c8bc5b documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.11.0
+                v5.12.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -106,7 +106,7 @@ LIC_FILES_CHKSUM = &quot;file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf850
 
 SRC_URI = &quot;https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz&quot;
 SRC_URI[md5sum] = &quot;${ROGUE_MD5SUM}&quot;
-S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}/&quot;
+S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}&quot;
 
 DEPENDS += &quot;python3 python3-numpy python3-native python3-numpy-native cmake boost zeromq bzip2&quot;
 DEPENDS += &quot;python3-pyzmq python3-parse python3-pyyaml python3-click python3-sqlalchemy python3-pyserial&quot;
@@ -136,7 +136,7 @@ do_install() {
 </div>
 <p>If your rogue application requires additional python libraries you can add them to the DEPENDS += line in the above text.</p>
 <p>To enable compilation and installation of the rogue package in your petalinux project execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">config</span> <span class="n">rootfs</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">config</span> <span class="o">-</span><span class="n">c</span> <span class="n">rootfs</span>
 </pre></div>
 </div>
 <p>and enable the rogue package under ‘user packages’. Save and exit the menu configuration.</p>
@@ -146,7 +146,14 @@ do_install() {
 </pre></div>
 </div>
 <p>You can then build the rogue package with the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">c</span> <span class="n">rogue</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Try to let rogue build and let it assert the error about missing setup.py file</span>
+<span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">c</span> <span class="n">rogue</span>
+
+<span class="c1"># Copy the autogenerate setup.py from the 1st &quot;petalinux-build -c rogue&quot; to the correct directory (work around)</span>
+<span class="o">&gt;</span> <span class="n">cp</span> <span class="n">build</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">work</span><span class="o">/</span><span class="n">cortexa72</span><span class="o">-</span><span class="n">cortexa53</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="mf">1.0</span><span class="o">-</span><span class="n">r0</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">build</span><span class="o">/</span><span class="n">tmp</span><span class="o">/</span><span class="n">work</span><span class="o">/</span><span class="n">cortexa72</span><span class="o">-</span><span class="n">cortexa53</span><span class="o">-</span><span class="n">xilinx</span><span class="o">-</span><span class="n">linux</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="mf">1.0</span><span class="o">-</span><span class="n">r0</span><span class="o">/</span><span class="n">rogue</span><span class="o">-&lt;</span><span class="n">ROGUE_VERSION</span><span class="o">&gt;/.</span>
+
+<span class="c1"># Rebuild again</span>
+<span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">c</span> <span class="n">rogue</span>
 </pre></div>
 </div>
 <p>You can then build the petalinux project as normal.</p>
