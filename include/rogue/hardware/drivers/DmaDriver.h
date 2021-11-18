@@ -6,7 +6,7 @@
  * Created    : 2016-08-08
  * ----------------------------------------------------------------------------
  * Description:
- * Definitions and inline functions for interacting drivers.
+ * Defintions and inline functions for interacting drivers.
  * ----------------------------------------------------------------------------
  * This file is part of the aes_stream_drivers package. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -27,7 +27,7 @@
 #endif
 
 // API Version
-#define DMA_VERSION  0x05
+#define DMA_VERSION  0x06
 
 // Error values
 #define DMA_ERR_FIFO 0x01
@@ -49,6 +49,11 @@
 #define DMA_Read_Register    0x100B
 #define DMA_Get_RxBuff_Count 0x100C
 #define DMA_Get_TxBuff_Count 0x100D
+#define DMA_Get_TxBuffinUser_Count 0x100F
+#define DMA_Get_TxBuffinHW_Count 0x1010
+#define DMA_Get_TxBuffinPreHWQ_Count 0x1011
+#define DMA_Get_TxBuffinSWQ_Count 0x1012
+#define DMA_Get_TxBuffMiss_Count 0x1013
 
 // Mask size
 #define DMA_MASK_SIZE 512
@@ -80,7 +85,7 @@ struct DmaReadData {
 
 // Register data
 struct DmaRegisterData {
-   uint32_t   address;
+   uint64_t   address;
    uint32_t   data;
 };
 
@@ -391,7 +396,7 @@ static inline ssize_t dmaCheckVersion(int32_t fd) {
 }
 
 // Write Register
-static inline ssize_t dmaWriteRegister(int32_t fd, uint32_t address, uint32_t data) {
+static inline ssize_t dmaWriteRegister(int32_t fd, uint64_t address, uint32_t data) {
    struct DmaRegisterData reg;
 
    reg.address = address;
@@ -400,7 +405,7 @@ static inline ssize_t dmaWriteRegister(int32_t fd, uint32_t address, uint32_t da
 }
 
 // Read Register
-static inline ssize_t dmaReadRegister(int32_t fd, uint32_t address, uint32_t *data) {
+static inline ssize_t dmaReadRegister(int32_t fd, uint64_t address, uint32_t *data) {
    struct DmaRegisterData reg;
    ssize_t res;
 
