@@ -1505,7 +1505,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
 
       if ( PyArray_TYPE(arr) == NPY_FLOAT64 ) {
           double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
-          for (x=0; x < dims[0]; x++) setDouble (src[x], var, index+x);
+          for (x=0; x < dims[0]; x++) setFixed (src[x], var, index+x);
       }
       else
          throw(rogue::GeneralError::create("Block::setFixedPy","Passed nparray is not of type (double) for %s",var->name_.c_str()));
@@ -1526,7 +1526,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
          if ( !tmp.check() )
             throw(rogue::GeneralError::create("Block::setFixedPy","Failed to extract value for %s.",var->name_.c_str()));
 
-         setDouble (tmp, var, index+x);
+         setFixed (tmp, var, index+x);
       }
    }
 
@@ -1535,7 +1535,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
       if ( PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64 ) {
          double val;
          PyArray_ScalarAsCtype(value.ptr(), &val);
-         setDouble (val, var, index);
+         setFixed (val, var, index);
       }
       else
          throw(rogue::GeneralError::create("Block::setFixedPy","Failed to extract value for %s.",var->name_.c_str()));
@@ -1546,7 +1546,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
       if ( !tmp.check() )
          throw(rogue::GeneralError::create("Block::setFixedPy","Failed to extract value for %s.",var->name_.c_str()));
 
-      setDouble (tmp, var, index);
+      setFixed (tmp, var, index);
    }
 }
 
@@ -1564,7 +1564,7 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
       PyArrayObject *arr = reinterpret_cast<PyArrayObject *>(obj);
       double        *dst = reinterpret_cast<double *>(PyArray_DATA (arr));
 
-      for (x=0; x < var->numValues_; x++) dst[x] = getDouble(var,x);
+      for (x=0; x < var->numValues_; x++) dst[x] = getFixed(var,x);
 
       boost::python::handle<> handle (obj);
       ret = bp::object(handle);
@@ -1585,25 +1585,32 @@ void rim::Block::setFixed ( const double &val, rim::Variable *var, int32_t index
 
    // Check range
    if ( (var->minValue_ != 0 || var->maxValue_ != 0) && (val > var->maxValue_ || val < var->minValue_) )
-      throw(rogue::GeneralError::create("Block::setFIxed",
+      throw(rogue::GeneralError::create("Block::setFixed",
          "Value range error for %s. Value=%f, Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   // I don't think this is correct!
-   uint64_t fPoint = (uint64_t)round(val * pow(2,var->binPoint_));
-
+   // Convert
+   int64_t fPoint = (int64_t)round(val * pow(2,var->binPoint_));
+   // Check for positive edge case
+   uint64_t mask  = 1 << (var->valueBits_-1);
+   if (val > 0 && ((fPoint & mask) != 0)) {
+     fPoint -= 1;
+   }
    setBytes((uint8_t *)&fPoint,var,index);
 }
 
 // Get data using fixed point
 double rim::Block::getFixed ( rim::Variable *var, int32_t index ) {
-   uint64_t fPoint = 0;
+   int64_t fPoint = 0;
    double tmp;
 
    getBytes((uint8_t *)&fPoint,var,index);
+   // Do two-complement if negative
+   if ((fPoint & (1 << var->valueBits_-1)) != 0) {
+     fPoint = fPoint - (1 << var->valueBits_);
+   }
 
-   // I don't think this is correct!
-   tmp = (double)fPoint * pow(2,-1*var->binPoint_);
-
+   // Convert to float
+   tmp = (double)fPoint / pow(2,var->binPoint_);
    return tmp;
 }
 

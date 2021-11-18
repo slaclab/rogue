@@ -425,11 +425,21 @@ if (NOT (${ROGUE_INSTALL} STREQUAL "local"))
 endif()
 
 # Conda activate and deactivate functions
-if ((${ROGUE_INSTALL} STREQUAL "conda"))
+if (${ROGUE_INSTALL} STREQUAL "conda")
+   install(CODE "execute_process(COMMAND mkdir -p ${ROGUE_DIR}/etc/conda/activate.d)")
+   install(CODE "execute_process(COMMAND mkdir -p ${ROGUE_DIR}/etc/conda/deactivate.d)")
    install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/activate-rogue.sh
                                              ${ROGUE_DIR}/etc/conda/activate.d/rogue.sh)")
    install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/deactivate-rogue.sh
                                              ${ROGUE_DIR}/etc/conda/deactivate.d/rogue.sh)")
+endif()
+
+# Conda activate and deactivate functions
+if ((${ROGUE_INSTALL} STREQUAL "conda") AND DO_EPICS_V3)
+   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/activate-epics-rogue.sh
+                                             ${ROGUE_DIR}/etc/conda/activate.d/epics-rogue.sh)")
+   install(CODE "execute_process(COMMAND scp ${PROJECT_SOURCE_DIR}/templates/deactivate-epics-rogue.sh
+                                             ${ROGUE_DIR}/etc/conda/deactivate.d/epics-rogue.sh)")
 endif()
 
 # Python file install

@@ -122,7 +122,7 @@ uint32_t rim::Transaction::type() { return type_; }
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
 
-   log_->debug("Transaction done. type=%i id=%i, address=0x%.8x, size=0x%x",
+   log_->debug("Transaction done. type=%i id=%i, address=0x%016x, size=0x%x",
          type_,id_,address_,size_);
 
    error_ = "";
@@ -135,7 +135,7 @@ void rim::Transaction::errorPy(std::string error) {
    error_ = error;
    done_  = true;
 
-   log_->debug("Transaction error. type=%i id=%i, address=0x%.8x, size=0x%x, error=%s",
+   log_->debug("Transaction error. type=%i id=%i, address=0x%016x, size=0x%x, error=%s",
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
@@ -153,7 +153,7 @@ void rim::Transaction::error(const char * fmt, ...) {
    error_ = buffer;
    done_  = true;
 
-   log_->debug("Transaction error. type=%i id=%i, address=0x%.8x, size=0x%x, error=%s",
+   log_->debug("Transaction error. type=%i id=%i, address=0x%016x, size=0x%x, error=%s",
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
@@ -175,7 +175,7 @@ std::string rim::Transaction::wait() {
          done_  = true;
          error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
-         log_->debug("Transaction timeout. type=%i id=%i, address=0x%.8x, size=0x%x",
+         log_->debug("Transaction timeout. type=%i id=%i, address=0x%016x, size=0x%x",
                type_,id_,address_,size_);
       }
       else cond_.wait_for(lock,std::chrono::microseconds(1000));
@@ -208,7 +208,7 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
 
       if ( warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0 ) warnTime_ = endTime_;
       else if ( timercmp(&warnTime_,&currTime,>=) ) {
-            log_->warning("Transaction timer refresh! Possible slow link! type=%i id=%i, address=0x%.8x, size=0x%x",
+            log_->warning("Transaction timer refresh! Possible slow link! type=%i id=%i, address=0x%016x, size=0x%x",
                   type_,id_,address_,size_);
          warnTime_ = endTime_;
       }
