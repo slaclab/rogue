@@ -141,7 +141,7 @@ class LocalBlock(object):
             with self._lock:
                 doUpdate = self._doUpdate
                 self._doUpdate = False
-                self._changed = False                
+                self._changed = False
 
             # Update variables outside of lock
             if doUpdate:
