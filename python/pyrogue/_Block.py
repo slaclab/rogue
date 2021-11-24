@@ -13,6 +13,8 @@
 #-----------------------------------------------------------------------------
 import threading
 import pyrogue as pr
+import collections
+import numpy as np
 
 
 def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
@@ -56,6 +58,7 @@ class LocalBlock(object):
         self._lock      = threading.RLock()
         self._doUpdate  = False
         self._enable    = True
+        self._changed   = True
 
         # Setup logging
         self._log = pr.logInit(cls=self,name=self._path)
@@ -96,12 +99,12 @@ class LocalBlock(object):
     def set(self, var, value, index=-1):
         with self._lock:
 
-            if index < 0 and (isinstance(value, list) or isinstance(value,dict)):
-                changed = True
+            if self._changed or isinstance(value, (collections.Sequence, np.ndarray)):
+                self._changed = True
             elif index >= 0:
-                changed = self._value[index] != value
+                self._changed = self._value[index] != value
             else:
-                changed = self._value != value
+                self._changed = self._value != value
 
             if index >= 0:
                 self._value[index] = value
@@ -110,7 +113,7 @@ class LocalBlock(object):
 
             # If a setFunction exists, call it (Used by local variables)
             if self._enable and self._localSet is not None:
-                self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
+                self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=self._changed)
 
     def get(self, var, index=-1):
         if self._enable and self._localGet is not None:
@@ -127,7 +130,7 @@ class LocalBlock(object):
         """
         if self._enable:
             with self._lock:
-                self._doUpdate = self._variable._updateNotify
+                self._doUpdate = self._variable._updateNotify and self._changed
 
     def _checkTransaction(self):
         """
@@ -138,6 +141,7 @@ class LocalBlock(object):
             with self._lock:
                 doUpdate = self._doUpdate
                 self._doUpdate = False
+                self._changed = False                
 
             # Update variables outside of lock
             if doUpdate:
