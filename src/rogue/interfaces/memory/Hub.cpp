@@ -138,13 +138,19 @@ bool rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096,
       auto id = this->reqTransaction(subtran->address_, subtran->size_, subtran->iter_, subtran->type_);
 
       // Wait for sub-transaction to complete
-      this -> waitTransaction(id);
+      this->waitTransaction(id);
 
       // Check transaction result
-      if (this -> getError() != "")
-         return false;
+      if (this->getError() != "")
+      {
+         subtran->error_ = this->getError();
+         transStatMap[id] = false;
+      }
       else
-         continue;
+      {
+         subtran->done();
+         transStatMap[id] = true;
+      }
    }
    return true;
 }
