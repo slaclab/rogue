@@ -143,7 +143,7 @@ bool rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096,
       // Check transaction result
       if (this->getError() != "")
       {
-         subtran->error_ = this->getError();
+         subtran->error(reinterpret_cast<const char *>(this->getError().c_str()));
          transStatMap[id] = false;
       }
       else
