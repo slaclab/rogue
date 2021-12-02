@@ -29,6 +29,15 @@
 
 namespace rim = rogue::interfaces::memory;
 
+namespace rogue {
+   namespace interfaces {
+      namespace memory {
+         using TransactionQueue     = std::queue<TransactionPtr>;
+         using TransactionStatusMap = std::map<uint32_t,bool>;
+      }
+   }
+}
+
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
@@ -98,6 +107,46 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
    // Forward transaction
    getSlave()->doTransaction(tran);
+}
+
+//! Create new transactions. We call this method from rim::Hub::doTransaction or a Hub sub-class.
+bool rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
+
+   // Queue to store the new transactions
+   TransactionQueue transQueue;
+
+   // Map to keep track of the status of each sub-transaction
+   TransactionStatusMap transStatMap;
+
+   // Compute number of protocol-compliant transactions required
+   auto numberOfTransactions = std::ceil(tran->size() / limit);
+
+   // Create new transactions
+   for (unsigned int i = 0; i < numberOfTransactions; ++i)
+   {
+      // Create the new sub-transaction
+      rim::TransactionPtr subtran = rim::Transaction::create(tran->timeout_);
+
+      subtran->iter_    = (uint8_t *) tran -> address() + i * offset;
+      subtran->size_    = limit;
+      subtran->address_ = this->getAddress() + i * offset;
+      subtran->type_    = tran->type();
+
+      transQueue.push(subtran);
+
+      // Schedule the new sub-transaction
+      auto id = this->reqTransaction(subtran->address_, subtran->size_, subtran->iter_, subtran->type_);
+
+      // Wait for sub-transaction to complete
+      this -> waitTransaction(id);
+
+      // Check transaction result
+      if (this -> getError() != "")
+         return false;
+      else
+         continue;
+   }
+   return true;
 }
 
 void rim::Hub::setup_python() {

@@ -25,6 +25,8 @@
 #include <stdint.h>
 #include <vector>
 #include <memory>
+#include <queue>
+#include <map>
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
@@ -159,6 +161,18 @@ namespace rogue {
                 * @param transaction Transaction pointer as TransactionPtr
                 */
                virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+
+               //! Request and create new transactions that conform with the slave/protocol limitations
+               /** This function is used internally only.
+                *
+                * It is possible for this method to be overridden in a C++ subclass
+                * Examples of sub-classing a Hub are included elsewhere in this
+                * document.
+                *
+                * Not exposed to Python yet
+                * @param transactionQueue Transaction pointer queue as TransactionQueue
+                */
+               virtual bool processTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction, uint32_t limit, uint32_t offset);
          };
 
          //! Alias for using shared pointer as HubPtr
