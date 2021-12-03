@@ -124,24 +124,6 @@ rim::TransactionQueue rim::Hub::processTransaction(rim::TransactionPtr tran, uin
 
       // Add sub-transaction to the queue
       transQueue.push(subtran);
-
-      // Schedule the new sub-transaction
-      auto id = this->intTransaction(subtran);
-      
-      // Wait for sub-transaction to complete
-      //this->waitTransaction(id);
-
-      // Check transaction result
-      //if (this->getError() != "")
-      //{
-      //   subtran->error(this->getError().c_str());
-      //   transStatMap[id] = false;
-      //}
-      //else
-      //{
-      //   subtran->done();
-      //   transStatMap[id] = true;
-      //}
    }
    return transQueue;
 }
@@ -152,13 +134,26 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
    // Adjust address
    tran->address_ |= offset_;
    
-   // Pre-process the transaction
+   // Process the transaction
    auto transQueue = this->processTransaction(tran);
 
    // Forward transaction
    while (!transQueue.empty())
    {
-      getSlave()->doTransaction(transQueue.front());
+      // Schedule the transaction
+      auto subtran = transQueue.front();
+      auto id = this->intTransaction(subtran);
+      
+      // Wait for sub-transaction to complete
+      //this->waitTransaction(id);
+
+      // Check transaction result
+      //if (this->getError() != "")
+      //   subtran->error(this->getError().c_str());
+      //else
+      //   subtran->done();
+      
+      //getSlave()->doTransaction(transQueue.front());
       transQueue.pop();
    }
 }
