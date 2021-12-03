@@ -100,7 +100,7 @@ uint64_t rim::Hub::doAddress() {
 }
 
 //! Create new transactions. We call this method from rim::Hub::doTransaction or a Hub sub-class.
-rim::TransactionQueue rim::Hub::preprocTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
+rim::TransactionQueue rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
 
    // Queue to store the new transactions
    TransactionQueue transQueue;
@@ -153,7 +153,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
    tran->address_ |= offset_;
    
    // Pre-process the transaction
-   auto transQueue = this->preprocTransaction(tran);
+   auto transQueue = this->processTransaction(tran);
 
    // Forward transaction
    while (!transQueue.empty())
