@@ -99,18 +99,8 @@ uint64_t rim::Hub::doAddress() {
    else return(reqAddress() | offset_);
 }
 
-//! Post a transaction. Master will call this method with the access attributes.
-void rim::Hub::doTransaction(rim::TransactionPtr tran) {
-
-   // Adjust address
-   tran->address_ |= offset_;
-
-   // Forward transaction
-   getSlave()->doTransaction(tran);
-}
-
 //! Create new transactions. We call this method from rim::Hub::doTransaction or a Hub sub-class.
-bool rim::Hub::reqTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
+rim::TransactionQueue rim::Hub::preprocTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
 
    // Queue to store the new transactions
    TransactionQueue transQueue;
@@ -125,34 +115,52 @@ bool rim::Hub::reqTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uin
    for (unsigned int i=0; i<numberOfTransactions; ++i)
    {
       // Create the new sub-transaction
-      rim::TransactionPtr subtran = rim::Transaction::create(tran->timeout_);
+      auto subtran = rim::Transaction::create(tran->timeout_);
 
       subtran->iter_    = (uint8_t *) tran->address() + i * offset;
       subtran->size_    = limit;
       subtran->address_ = this->getAddress() + i * offset;
       subtran->type_    = tran->type();
 
+      // Add sub-transaction to the queue
       transQueue.push(subtran);
 
       // Schedule the new sub-transaction
-      auto id = this->reqTransaction(subtran->address_, subtran->size_, subtran->iter_, subtran->type_);
-
+      auto id = this->intTransaction(subtran);
+      
       // Wait for sub-transaction to complete
-      this->waitTransaction(id);
+      //this->waitTransaction(id);
 
       // Check transaction result
-      if (this->getError() != "")
-      {
-         subtran->error(reinterpret_cast<const char *>(this->getError().c_str()));
-         transStatMap[id] = false;
-      }
-      else
-      {
-         subtran->done();
-         transStatMap[id] = true;
-      }
+      //if (this->getError() != "")
+      //{
+      //   subtran->error(this->getError().c_str());
+      //   transStatMap[id] = false;
+      //}
+      //else
+      //{
+      //   subtran->done();
+      //   transStatMap[id] = true;
+      //}
    }
-   return true;
+   return transQueue;
+}
+
+//! Post a transaction. Master will call this method with the access attributes.
+void rim::Hub::doTransaction(rim::TransactionPtr tran) {
+
+   // Adjust address
+   tran->address_ |= offset_;
+   
+   // Pre-process the transaction
+   auto transQueue = this->preprocTransaction(tran);
+
+   // Forward transaction
+   while (!transQueue.empty())
+   {
+      getSlave()->doTransaction(transQueue.front());
+      transQueue.pop();
+   }
 }
 
 void rim::Hub::setup_python() {
