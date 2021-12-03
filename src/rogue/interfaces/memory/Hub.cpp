@@ -110,7 +110,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 }
 
 //! Create new transactions. We call this method from rim::Hub::doTransaction or a Hub sub-class.
-bool rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
+bool rim::Hub::reqTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
 
    // Queue to store the new transactions
    TransactionQueue transQueue;
@@ -122,12 +122,12 @@ bool rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096,
    auto numberOfTransactions = std::ceil(tran->size() / limit);
 
    // Create new transactions
-   for (unsigned int i = 0; i < numberOfTransactions; ++i)
+   for (unsigned int i=0; i<numberOfTransactions; ++i)
    {
       // Create the new sub-transaction
       rim::TransactionPtr subtran = rim::Transaction::create(tran->timeout_);
 
-      subtran->iter_    = (uint8_t *) tran -> address() + i * offset;
+      subtran->iter_    = (uint8_t *) tran->address() + i * offset;
       subtran->size_    = limit;
       subtran->address_ = this->getAddress() + i * offset;
       subtran->type_    = tran->type();

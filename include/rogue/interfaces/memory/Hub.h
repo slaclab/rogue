@@ -162,6 +162,8 @@ namespace rogue {
                 */
                virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
+               using Master::reqTransaction;
+
                //! Request and create new transactions that conform with the slave/protocol limitations
                /** This function should be called from within doTransaction() in a Hub sub-class.
                 *
@@ -172,7 +174,7 @@ namespace rogue {
                 * Not exposed to Python yet
                 * @param transactionQueue Transaction pointer queue as TransactionQueue
                 */
-               virtual bool processTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction, uint32_t limit, uint32_t offset);
+               virtual bool reqTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction, uint32_t limit, uint32_t offset);
          };
 
          //! Alias for using shared pointer as HubPtr
