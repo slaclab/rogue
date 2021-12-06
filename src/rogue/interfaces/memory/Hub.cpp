@@ -29,15 +29,6 @@
 
 namespace rim = rogue::interfaces::memory;
 
-namespace rogue {
-   namespace interfaces {
-      namespace memory {
-         using TransactionQueue     = std::queue<TransactionPtr>;
-         using TransactionStatusMap = std::map<uint32_t,bool>;
-      }
-   }
-}
-
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
@@ -105,9 +96,6 @@ rim::TransactionQueue rim::Hub::processTransaction(rim::TransactionPtr tran, uin
    // Queue to store the new transactions
    TransactionQueue transQueue;
 
-   // Map to keep track of the status of each sub-transaction
-   TransactionStatusMap transStatMap;
-
    // Compute number of protocol-compliant transactions required
    auto numberOfTransactions = std::ceil(tran->size() / limit);
 
@@ -121,6 +109,9 @@ rim::TransactionQueue rim::Hub::processTransaction(rim::TransactionPtr tran, uin
       subtran->size_    = limit;
       subtran->address_ = this->getAddress() + i * offset;
       subtran->type_    = tran->type();
+
+      subtran->parentTransaction_ = tran;
+      subtran->isSubtransaction_  = true;
 
       // Add sub-transaction to the queue
       transQueue.push(subtran);
@@ -136,6 +127,9 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
    
    // Process the transaction
    auto transQueue = this->processTransaction(tran);
+   
+   // Vector to store IDs of queued transactions
+   TransactionIDVec transVec;
 
    // Forward transaction
    while (!transQueue.empty())
@@ -143,19 +137,13 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
       // Schedule the transaction
       auto subtran = transQueue.front();
       auto id = this->intTransaction(subtran);
-      
-      // Wait for sub-transaction to complete
-      //this->waitTransaction(id);
 
-      // Check transaction result
-      //if (this->getError() != "")
-      //   subtran->error(this->getError().c_str());
-      //else
-      //   subtran->done();
-      
-      //getSlave()->doTransaction(transQueue.front());
+      transVec.emplace_back(id);
       transQueue.pop();
    }
+
+   // Set the subtransactions vector in the original transaction
+   tran->subtransactions(transVec);
 }
 
 void rim::Hub::setup_python() {

@@ -85,6 +85,8 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    error_   = "";
    done_    = false;
 
+   isSubtransaction_ = false;
+
    log_ = rogue::Logging::create("memory.Transaction",true);
 
    classMtx_.lock();
@@ -119,6 +121,9 @@ uint32_t rim::Transaction::size() { return size_; }
 //! Get type
 uint32_t rim::Transaction::type() { return type_; }
 
+//! Get address
+void rim::Transaction::subtransactions(std::vector<uint32_t> vec) { subtransactions_ = vec; }
+
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
 
@@ -128,6 +133,21 @@ void rim::Transaction::done() {
    error_ = "";
    done_  = true;
    cond_.notify_all();
+
+   // If sub-transaction, remove own ID from parent transaction's sub-transactions ID vector
+   if (this->isSubtransaction_)
+   {
+      auto sptr = this->parentTransaction_.lock();
+      if (sptr)
+      {
+         auto position = std::find(sptr->subtransactions_.begin(),sptr->subtransactions_.end(),id_);
+         sptr->subtransactions_.erase(position);
+
+         // If this is the last sub-transaction, notify parent transaction it is done
+         if (sptr->subtransactions_.empty())
+            sptr->done();
+      }
+   }
 }
 
 //! Complete transaction with passed error, lock must be held

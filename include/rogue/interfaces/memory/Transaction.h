@@ -21,6 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #include <memory>
 #include <stdint.h>
+#include <queue>
 #include <vector>
 #include <thread>
 #include <mutex>
@@ -38,9 +39,13 @@ namespace rogue {
       namespace memory {
 
          class TransactionLock;
+         class Transaction;
          class Master;
          class Hub;
 
+         using TransactionIDVec = std::vector<uint32_t>;
+         using TransactionQueue = std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>>;
+         
          //! Transaction Container
          /** The Transaction is passed between the Master and Slave to initiate a transaction.
           * The Transaction class contains information about the transaction as well as the
@@ -114,10 +119,19 @@ namespace rogue {
 
                // Transaction lock
                std::mutex lock_;
+               
+               // Sub-transactions vector
+               std::vector<uint32_t> subtransactions_;
+               
+               // Identify if it's a parent or a sub transaction
+               bool isSubtransaction_;
 
                //! Log
                std::shared_ptr<rogue::Logging> log_;
 
+               // Weak pointer to parent transaction, where applicable
+               std::weak_ptr<rogue::interfaces::memory::Transaction> parentTransaction_;
+               
                // Create a transaction container and return a TransactionPtr, called by Master
                static std::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
@@ -226,6 +240,15 @@ namespace rogue {
                 * @return Data iterator as Transaction::iterator
                 */
                uint8_t * end();
+
+               //! Set vector of sub-transactions associated with this transaction 
+               /** Not exposed to Python
+                *
+                * Lock must be held before calling this method and while
+                * updating Transaction data.
+                * @return Data iterator as Transaction::iterator
+                */
+               void subtransactions(std::vector<uint32_t> vec);
 
 #ifndef NO_PYTHON
 
