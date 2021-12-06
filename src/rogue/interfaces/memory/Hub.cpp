@@ -91,7 +91,7 @@ uint64_t rim::Hub::doAddress() {
 }
 
 //! Create new transactions. We call this method from rim::Hub::doTransaction or a Hub sub-class.
-rim::TransactionQueue rim::Hub::processTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
+rim::TransactionQueue rim::Hub::splitTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
 
    // Queue to store the new transactions
    TransactionQueue transQueue;
@@ -124,26 +124,34 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
    // Adjust address
    tran->address_ |= offset_;
-   
-   // Process the transaction
-   auto transQueue = this->processTransaction(tran);
-   
-   // Vector to store IDs of queued transactions
-   TransactionIDVec transVec;
-
-   // Forward transaction
-   while (!transQueue.empty())
+  
+   if (tran->size()>getSlave()->max())
    {
-      // Schedule the transaction
-      auto subtran = transQueue.front();
-      auto id = this->intTransaction(subtran);
+      // Split the transaction
+      auto transQueue = this->splitTransaction(tran);
+   
+      // Vector to store IDs of queued transactions
+      TransactionIDVec transVec;
 
-      transVec.emplace_back(id);
-      transQueue.pop();
+      // Forward transaction
+      while (!transQueue.empty())
+      {
+         // Schedule the transaction
+         auto subtran = transQueue.front();
+         auto id = this->intTransaction(subtran);
+
+         transVec.emplace_back(id);
+         transQueue.pop();
+      }
+
+      // Set the subtransactions vector in the original transaction
+      tran->subtransactions(transVec);
    }
-
-   // Set the subtransactions vector in the original transaction
-   tran->subtransactions(transVec);
+   else
+   {   
+      // Forward transaction
+      getSlave()->doTransaction(tran);
+   }
 }
 
 void rim::Hub::setup_python() {

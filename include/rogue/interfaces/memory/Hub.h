@@ -172,7 +172,7 @@ namespace rogue {
                 * Not exposed to Python yet
                 * @param transactionQueue Transaction pointer queue as TransactionQueue
                 */
-               virtual std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> processTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction, uint32_t limit, uint32_t offset);
+               virtual std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> splitTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction, uint32_t limit, uint32_t offset);
          };
 
          //! Alias for using shared pointer as HubPtr
