@@ -180,7 +180,7 @@ void rpu::Client::runThread() {
    uint32_t       avail;
 
    udpLog_->logThreadId();
-   //usleep(1000);
+   usleep(1000);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);
