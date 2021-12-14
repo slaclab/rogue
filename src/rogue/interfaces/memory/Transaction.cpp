@@ -138,11 +138,11 @@ void rim::Transaction::done() {
    if (this->isSubtransaction_)
    {
       // Get a shared_ptr to the parent transaction
-      auto sptr = this->parentTransaction_.lock();
+      rim::TransactionPtr sptr = this->parentTransaction_.lock();
       if (sptr)
       {
          // Remove own ID from subtransactions ID vector in parent transaction
-         auto position = std::find(sptr->subtransactions_.begin(),sptr->subtransactions_.end(),id_);
+         std::vector<uint32_t>::iterator position = std::find(sptr->subtransactions_.begin(),sptr->subtransactions_.end(),id_);
          sptr->subtransactions_.erase(position);
 
          // If this is the last sub-transaction, notify parent transaction it is all done

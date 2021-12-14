@@ -94,16 +94,16 @@ uint64_t rim::Hub::doAddress() {
 rim::TransactionQueue rim::Hub::splitTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
 
    // Queue to store the new transactions
-   TransactionQueue transQueue;
+   rim::TransactionQueue transQueue;
 
    // Compute number of protocol-compliant transactions required
-   auto numberOfTransactions = std::ceil(tran->size() / limit);
+   unsigned int numberOfTransactions = std::ceil(tran->size() / limit);
 
    // Create new transactions
    for (unsigned int i=0; i<numberOfTransactions; ++i)
    {
       // Create the new sub-transaction
-      auto subtran = rim::Transaction::create(tran->timeout_);
+      rim::TransactionPtr subtran = rim::Transaction::create(tran->timeout_);
 
       subtran->iter_    = (uint8_t *) tran->address() + i * offset;
       subtran->size_    = limit;
@@ -128,17 +128,17 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
    if (tran->size()>getSlave()->max())
    {
       // Split the transaction
-      auto transQueue = this->splitTransaction(tran);
+      rim::TransactionQueue transQueue = this->splitTransaction(tran);
    
       // Vector to store IDs of queued transactions
-      TransactionIDVec transVec;
+      rim::TransactionIDVec transVec;
 
       // Forward transaction
       while (!transQueue.empty())
       {
          // Schedule the transaction
-         auto subtran = transQueue.front();
-         auto id = this->intTransaction(subtran);
+         rim::TransactionPtr subtran = transQueue.front();
+         uint32_t id = this->intTransaction(subtran);
 
          transVec.emplace_back(id);
          transQueue.pop();
