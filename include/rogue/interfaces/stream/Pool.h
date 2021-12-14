@@ -73,6 +73,9 @@ namespace rogue {
 
             public:
 
+               //! Class creation
+               static std::shared_ptr<rogue::interfaces::stream::Pool> create();
+               
                // Class creator
                Pool();
 

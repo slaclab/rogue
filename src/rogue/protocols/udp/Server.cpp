@@ -176,6 +176,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
 void rpu::Server::runThread() {
    ris::BufferPtr     buff;
    ris::FramePtr      frame;
+   ris::PoolPtr       pool;
    fd_set             fds;
    int32_t            res;
    struct timeval     tout;
@@ -184,10 +185,17 @@ void rpu::Server::runThread() {
    uint32_t           avail;
 
    udpLog_->logThreadId();
-   usleep(1000);
+   //usleep(1000);
+
+   // Allocate the frame pool
+   pool = ris::Pool::create();
+
+   // Fixed size buffer pool
+   pool->setFixedSize(maxPayload());
+   pool->setPoolSize(10000); // Initial value, 10K frames
 
    // Preallocate frame
-   frame = ris::Pool::acceptReq(maxPayload(),false);
+   frame = pool->acceptReq(maxPayload(),false);
 
    while(threadEn_) {
 
@@ -207,7 +215,7 @@ void rpu::Server::runThread() {
          }
 
          // Get new frame
-         frame = ris::Pool::acceptReq(maxPayload(),false);
+         frame = pool->acceptReq(maxPayload(),false);
 
          // Lock before updating address
          if ( memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0 ) {

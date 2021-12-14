@@ -36,6 +36,12 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 #endif
 
+//! Class creation
+ris::PoolPtr ris::Pool::create () {
+   ris::PoolPtr r = std::make_shared<ris::Pool>();
+   return(r);
+}
+
 //! Creator
 ris::Pool::Pool() {
    allocMeta_  = 0;
