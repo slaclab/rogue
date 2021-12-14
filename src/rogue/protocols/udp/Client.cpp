@@ -82,8 +82,8 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
    ((struct sockaddr_in *)(&remAddr_))->sin_port=htons(port_);
 
    // Fixed size buffer pool
-   setFixedSize(maxPayload());
-   setPoolSize(10000); // Initial value, 10K frames
+   //setFixedSize(maxPayload());
+   //setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    threadEn_ = true;

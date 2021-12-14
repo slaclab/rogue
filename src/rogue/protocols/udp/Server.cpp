@@ -79,8 +79,8 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    }
 
    // Fixed size buffer pool
-   setFixedSize(maxPayload());
-   setPoolSize(10000); // Initial value, 10K frames
+   //setFixedSize(maxPayload());
+   //setPoolSize(10000); // Initial value, 10K frames
 
    // Start rx thread
    threadEn_ = true;
