@@ -26,6 +26,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <memory>
+#include <cmath>
 
 namespace rim = rogue::interfaces::memory;
 
