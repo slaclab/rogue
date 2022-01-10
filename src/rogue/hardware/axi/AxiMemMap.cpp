@@ -52,6 +52,10 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    log_ = rogue::Logging::create("axi.AxiMemMap");
    if ( fd_ < 0 )
       throw(rogue::GeneralError::create("AxiMemMap::AxiMemMap", "Failed to open device file: %s",path.c_str()));
+   
+   // Check driver version
+   if ( dmaCheckVersion(fd_) < 0 )
+      throw(rogue::GeneralError("AxiMemMap::AxiMemMap","Bad kernel driver version detected. Please re-compile kernel driver"));
 
    // Start read thread
    threadEn_ = true;
