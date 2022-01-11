@@ -64,13 +64,17 @@ class MemoryDevice(pr.Device):
         pass
 
     @pr.expose
+    def update(self):
+        self.writeBlocks()
+        self.verifyBlocks()
+        self.checkBlocks()
+
+    @pr.expose
     def set(self, offset, values, write=False):
         with self._txnLock:
             self._setValues[offset] = values
             if write:
-                self.writeBlocks()
-                self.verifyBlocks()
-                self.checkBlocks()
+                self.update()
 
     @pr.expose
     def get(self, offset, numWords):
