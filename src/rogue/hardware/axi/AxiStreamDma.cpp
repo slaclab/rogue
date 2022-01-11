@@ -62,7 +62,10 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
-      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver"));
+      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver.\n \
+      Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
+      To use later versions, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
+      \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.12.2 (or later ... or next release)"));
 
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
