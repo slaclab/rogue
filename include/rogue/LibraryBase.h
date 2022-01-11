@@ -24,6 +24,8 @@
 #include <map>
 #include <set>
 #include <string>
+#include <fstream>
+#include <istream>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
@@ -61,6 +63,8 @@ namespace rogue {
 
          // Parse memory map
          void parseMemMap (std::string map);
+		 void parseMemMap (const char * filePath, char delim = '\n');
+		 void parseMemMap (std::istream & fStream, char delim);
 
          static std::shared_ptr<rogue::LibraryBase> create();
 
