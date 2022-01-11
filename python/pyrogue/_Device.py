@@ -632,6 +632,63 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
+    def genDocuments(self,path,groups):
+
+        with open(path + '/' + self.path + '.rst','w') as f:
+
+            print("***************",file=f)
+            print(self.name,file=f)
+            print("***************",file=f)
+
+            print('',file=f)
+            print(self.description,file=f)
+            print('',file=f)
+
+            print(".. toctree::",file=f)
+            print("   :maxdepth: 1",file=f)
+            print("   :caption: Sub Devices:",file=f)
+            print('',file=f)
+            for k,v in self.devicesByGroup(incGroups=groups).items():
+                print(v.path,file=f)
+                v.genDocuments(path,groups)
+            print('',file=f)
+
+            print("Summary",file=f)
+            print("#######",file=f)
+            print('',file=f)
+
+            print("Variable List",file=f)
+            print("*************",file=f)
+            print('',file=f)
+            for k,v in self.variablesByGroup(incGroups=groups).items():
+                print(f"* {k}",file=f)
+            print('',file=f)
+
+            print("Command List",file=f)
+            print("*************",file=f)
+            print('',file=f)
+            for k,v in self.commandsByGroup(incGroups=groups).items():
+                print(f"* {k}",file=f)
+            print('',file=f)
+
+            print("Details",file=f)
+            print("#######",file=f)
+            print('',file=f)
+
+            print("Variables",file=f)
+            print("*********",file=f)
+            print('',file=f)
+            for k,v in self.variablesByGroup(incGroups=groups).items():
+                v._genDocs(file=f)
+            print('',file=f)
+
+            print("Commands",file=f)
+            print("********",file=f)
+            print('',file=f)
+            for k,v in self.commandsByGroup(incGroups=groups).items():
+                v._genDocs(file=f)
+            print('',file=f)
+
 
 class ArrayDevice(Device):
     def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):

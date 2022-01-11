@@ -551,6 +551,27 @@ class BaseVariable(pr.Node):
             return 'Good','Good'
 
 
+    def _genDocs(self,file):
+        print("..topic:: {self.path}",file=file)
+
+        print('',file=file)
+        print('    {self.description}',file=file)
+        print('',file=file)
+
+        print('    +----------+----------+',file=file)
+        print('    + Field    + Value    +',file=file)
+        print('    +----------+----------+',file=file)
+
+        for a in ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
+                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
+                 'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']:
+
+            print(f'    + {a}      + {getattr(self,a)} +',file=file)
+            print('    +----------+----------+',file=file)
+
+
+
 class RemoteVariable(BaseVariable,rim.Variable):
 
     def __init__(self, *,
@@ -796,6 +817,14 @@ class RemoteVariable(BaseVariable,rim.Variable):
             return self.revEnum[sValue]
         else:
             return self._base.fromString(sValue)
+
+    def _genDocs(self,file):
+        BaseVariable._genDocs(self,file)
+
+        for a in ['offset', 'numValues', 'valueBits', 'valueStride', 'bitSize', 'bitOffset', 'verify', 'varBytes']:
+
+            print(f'    + {a}      + {getattr(self,a)} +',file=file)
+            print('    +----------+----------+',file=file)
 
 
 class LocalVariable(BaseVariable):

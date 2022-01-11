@@ -212,6 +212,24 @@ class BaseCommand(pr.BaseVariable):
     def get(self,read=True, index=-1):
         return self._default
 
+    def _genDocs(self,file):
+        print("..topic:: {self.path}",file=file)
+
+        print('',file=file)
+        print('    {self.description}',file=file)
+        print('',file=file)
+
+        print('    +----------+----------+',file=file)
+        print('    + Field    + Value    +',file=file)
+        print('    +----------+----------+',file=file)
+
+        for a in ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+                  'typeStr', 'disp']:
+
+            print(f'    + {a}      + {getattr(self,a)} +',file=file)
+            print('    +----------+----------+',file=file)
+
+
 # LocalCommand is the same as BaseCommand
 LocalCommand = BaseCommand
 
@@ -287,6 +305,14 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         except Exception as e:
             pr.logException(self._log,e)
             raise e
+
+    def _genDocs(self,file):
+        BaseCommand._genDocs(self,file)
+
+        for a in ['offset', 'bitSize', 'bitOffset', 'varBytes']:
+            print(f'    + {a}      + {getattr(self,a)} +',file=file)
+            print('    +----------+----------+',file=file)
+
 
 # Alias, this should go away
 Command = BaseCommand
