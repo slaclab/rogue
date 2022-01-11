@@ -213,21 +213,21 @@ class BaseCommand(pr.BaseVariable):
         return self._default
 
     def _genDocs(self,file):
-        print("..topic:: {self.path}",file=file)
+        print(f".. topic:: {self.path}",file=file)
 
         print('',file=file)
-        print('    {self.description}',file=file)
+        print(f'    {self.description}',file=file)
         print('',file=file)
 
-        print('    +----------+----------+',file=file)
-        print('    + Field    + Value    +',file=file)
-        print('    +----------+----------+',file=file)
+        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+        print('    ' + pr.genTableRow(['Field','Value'],100),file=file)
+        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
 
-        for a in ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+        for a in ['name', 'path', 'hidden', 'groups', 'enum',
                   'typeStr', 'disp']:
 
-            print(f'    + {a}      + {getattr(self,a)} +',file=file)
-            print('    +----------+----------+',file=file)
+            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
+            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
 
 
 # LocalCommand is the same as BaseCommand
@@ -310,8 +310,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         BaseCommand._genDocs(self,file)
 
         for a in ['offset', 'bitSize', 'bitOffset', 'varBytes']:
-            print(f'    + {a}      + {getattr(self,a)} +',file=file)
-            print('    +----------+----------+',file=file)
+            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
+            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
 
 
 # Alias, this should go away

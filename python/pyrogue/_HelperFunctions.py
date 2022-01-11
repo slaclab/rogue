@@ -309,3 +309,14 @@ def functionWrapper(function, callArgs):
     ls = "lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")"
     #print("Creating Function: " + ls)
     return eval(ls)
+
+def genTableRow(fields,width):
+    r = ''
+
+    for f in fields:
+        r += f'| {f}'
+        r += ' ' * (width-len(f)-1)
+    r += '|'
+
+    return r
+

@@ -552,24 +552,23 @@ class BaseVariable(pr.Node):
 
 
     def _genDocs(self,file):
-        print("..topic:: {self.path}",file=file)
+        print(f".. topic:: {self.path}",file=file)
 
         print('',file=file)
-        print('    {self.description}',file=file)
+        print(f'    {self.description}',file=file)
         print('',file=file)
 
-        print('    +----------+----------+',file=file)
-        print('    + Field    + Value    +',file=file)
-        print('    +----------+----------+',file=file)
+        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+        print('    ' + pr.genTableRow(['Field','Value'],100),file=file)
+        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
 
-        for a in ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+        for a in ['name', 'path', 'hidden', 'groups', 'enum',
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']:
 
-            print(f'    + {a}      + {getattr(self,a)} +',file=file)
-            print('    +----------+----------+',file=file)
-
+            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
+            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
 
 
 class RemoteVariable(BaseVariable,rim.Variable):
@@ -727,6 +726,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
+    @property
+    def numValues(self):
+        return self._numValues()
+
+    @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
         """
         Set the value and write to hardware if applicable
@@ -821,10 +825,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def _genDocs(self,file):
         BaseVariable._genDocs(self,file)
 
-        for a in ['offset', 'numValues', 'valueBits', 'valueStride', 'bitSize', 'bitOffset', 'verify', 'varBytes']:
+        for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verify', 'varBytes']:
 
-            print(f'    + {a}      + {getattr(self,a)} +',file=file)
-            print('    +----------+----------+',file=file)
+            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
+            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
 
 
 class LocalVariable(BaseVariable):
