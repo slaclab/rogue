@@ -641,7 +641,7 @@ class Device(pr.Node,rim.Hub):
             print("****************************",file=file)
 
             print('',file=file)
-            print(self.description,file=file)
+            print(pr.genDocDesc(self.description,0),file=file)
             print('',file=file)
 
             dlist = self.devicesByGroup(incGroups=incGroups,excGroups=excGroups)

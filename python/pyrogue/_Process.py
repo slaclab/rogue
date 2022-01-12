@@ -32,19 +32,19 @@ class Process(pr.Device):
         self.add(pr.LocalCommand(
             name='Start',
             function=self._startProcess,
-            description='Start process.'))
+            description='Start process. No Args.'))
 
         self.add(pr.LocalCommand(
             name='Stop',
             function=self._stopProcess,
-            description='Stop process.'))
+            description='Stop process. No Args.'))
 
         self.add(pr.LocalVariable(
             name='Running',
             mode='RO',
             value=False,
             pollInterval=1.0,
-            description='Operation is running.'))
+            description='Status values indicating if operation is running.'))
 
         self.add(pr.LocalVariable(
             name='Progress',
@@ -55,14 +55,14 @@ class Process(pr.Device):
             minimum=0.0,
             maximum=1.0,
             pollInterval=1.0,
-            description='Percent complete: 0.0 - 1.0.'))
+            description='Percent complete: 0 - 100 %.'))
 
         self.add(pr.LocalVariable(
             name='Message',
             mode='RO',
             value='',
             pollInterval=1.0,
-            description='Process status message. Prefix with Error: if an error occurred.'))
+            description="Process status message. Prefixed with 'Error:' if an error occurred."))
 
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:

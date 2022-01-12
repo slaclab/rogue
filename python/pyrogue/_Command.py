@@ -221,7 +221,7 @@ class BaseCommand(pr.BaseVariable):
 
         print(pr.genDocTableHeader(['Field','Value'],4,100),file=file)
 
-        for a in ['name', 'path', 'hidden', 'groups', 'enum', 'typeStr', 'disp']:
+        for a in ['name', 'path', 'enum', 'typeStr', 'disp']:
             astr = str(getattr(self,a))
 
             if astr != 'None':
