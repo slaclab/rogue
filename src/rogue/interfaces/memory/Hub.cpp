@@ -46,6 +46,7 @@ rim::HubPtr rim::Hub::create (uint64_t offset, uint32_t min, uint32_t max) {
 rim::Hub::Hub(uint64_t offset, uint32_t min, uint32_t max) : Master (), Slave(min,max) {
    offset_ = offset;
    root_   = (min != 0 && max != 0);
+   log_ = rogue::Logging::create("memory.Hub");   
 }
 
 //! Destroy a block
@@ -73,16 +74,17 @@ std::string rim::Hub::doSlaveName() {
    else return(reqSlaveName());
 }
 
-//! Return min access size to requesting master
-uint32_t rim::Hub::doMinAccess() {
-   if ( root_ ) return(rim::Slave::doMinAccess());
-   else return(reqMinAccess());
-}
+ //! Return min access size to requesting master
+ uint32_t rim::Hub::doMinAccess() {
+    if ( root_ ) return(rim::Slave::doMinAccess());
+    else return(reqMinAccess());
+ }
 
 //! Return max access size to requesting master
 uint32_t rim::Hub::doMaxAccess() {
-   if ( root_ ) return(rim::Slave::doMaxAccess());
-   else return(reqMaxAccess());
+    // Transaction splitting allows for "unlimited" max access
+    if ( root_ ) return(rim::Slave::doMaxAccess());
+    else return 0xFFFFFFFF;
 }
 
 //! Return address
@@ -99,6 +101,7 @@ rim::TransactionQueue rim::Hub::splitTransaction(rim::TransactionPtr tran, uint3
 
    // Compute number of protocol-compliant transactions required
    unsigned int numberOfTransactions = std::ceil(tran->size() / limit);
+   log_->debug("Splitting transaction %i into %i transactions", tran->id_, numberOfTransactions);
 
    // Create new transactions
    for (unsigned int i=0; i<numberOfTransactions; ++i)
@@ -106,10 +109,13 @@ rim::TransactionQueue rim::Hub::splitTransaction(rim::TransactionPtr tran, uint3
       // Create the new sub-transaction
       rim::TransactionPtr subtran = rim::Transaction::create(tran->timeout_);
 
-      subtran->iter_    = (uint8_t *) tran->address() + i * offset;
+
+      subtran->iter_    = (uint8_t *) (tran->begin() + i * offset);
       subtran->size_    = limit;
-      subtran->address_ = this->getAddress() + i * offset;
+      subtran->address_ = tran->address_ + (i * offset);
       subtran->type_    = tran->type();
+
+      log_->debug("Created subtransaction %i, parent=%i, iter=%x, size=%i, address=%x", subtran->id_, tran->id_, subtran->iter_, subtran->size_, subtran->address_);      
 
       subtran->parentTransaction_ = tran;
       subtran->isSubtransaction_  = true;
@@ -125,8 +131,10 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
    // Adjust address
    tran->address_ |= offset_;
+
+   log_->debug("doTransaction() - id=%i, size=%i, slavemax=%i, addr=%x)", tran->id_, tran->size(), getSlave()->doMaxAccess(), tran->address_);   
   
-   if (tran->size()>getSlave()->max())
+   if (tran->size() > getSlave()->doMaxAccess())
    {
       // Split the transaction
       rim::TransactionQueue transQueue = this->splitTransaction(tran);
@@ -139,7 +147,8 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
       {
          // Schedule the transaction
          rim::TransactionPtr subtran = transQueue.front();
-         uint32_t id = this->intTransaction(subtran);
+         uint32_t id = subtran->id_;         
+         getSlave()->doTransaction(subtran);
 
          transVec.emplace_back(id);
          transQueue.pop();
@@ -149,7 +158,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
       tran->subtransactions(transVec);
    }
    else
-   {   
+   {
       // Forward transaction
       getSlave()->doTransaction(tran);
    }
