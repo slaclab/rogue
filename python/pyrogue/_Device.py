@@ -644,16 +644,29 @@ class Device(pr.Node,rim.Hub):
             print(pr.genDocDesc(self.description,0),file=file)
             print('',file=file)
 
+            plist = self.getNodes(typ=pr.Process,incGroups=incGroups,excGroups=excGroups)
             dlist = self.devicesByGroup(incGroups=incGroups,excGroups=excGroups)
             vlist = self.variablesByGroup(incGroups=incGroups,excGroups=excGroups)
             clist = self.commandsByGroup(incGroups=incGroups,excGroups=excGroups)
 
-            if len(dlist) > 0:
+            tlist = [d for d in dlist if d not in plist]
+
+            if len(tlist) > 0:
                 print(".. toctree::",file=file)
                 print("   :maxdepth: 1",file=file)
                 print("   :caption: Sub Devices:",file=file)
                 print('',file=file)
-                for k,v in dlist.items():
+                for k,v in tlist.items():
+                    print('   ' + v.path.replace('.','_'),file=file)
+                    v.genDocuments(path,incGroups,excGroups)
+                print('',file=file)
+
+            if len(plist) > 0:
+                print(".. toctree::",file=file)
+                print("   :maxdepth: 1",file=file)
+                print("   :caption: Processes:",file=file)
+                print('',file=file)
+                for k,v in plist.items():
                     print('   ' + v.path.replace('.','_'),file=file)
                     v.genDocuments(path,incGroups,excGroups)
                 print('',file=file)
