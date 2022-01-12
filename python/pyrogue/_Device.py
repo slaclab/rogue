@@ -649,7 +649,7 @@ class Device(pr.Node,rim.Hub):
             vlist = self.variablesByGroup(incGroups=incGroups,excGroups=excGroups)
             clist = self.commandsByGroup(incGroups=incGroups,excGroups=excGroups)
 
-            tlist = [d for d in dlist if d not in plist]
+            tlist = {k:v for k,v in dlist.items() if k not in plist}
 
             if len(tlist) > 0:
                 print(".. toctree::",file=file)
