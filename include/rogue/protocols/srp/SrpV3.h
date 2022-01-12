@@ -67,6 +67,8 @@ namespace rogue {
                //! Accept a frame from master
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
+               // Set hardware timeout
+               void setHardwareTimeout( uint32_t timeout, uint32_t *header ) { header[0] |= timeout; }
          };
 
          // Convenience
