@@ -27,7 +27,6 @@
 #include <memory>
 #include <queue>
 #include <map>
-#include <cstring>
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
