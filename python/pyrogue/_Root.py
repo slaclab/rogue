@@ -235,7 +235,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     autoPrefix='state',
                                                                     autoCompress=True),
                                  hidden=True,
-                                 description='Save state to passed filename in YAML format'))
+                                 description='Save state to file. Data is saved in YAML format. Passed arg is full path to file to sore data to.'))
 
         self.add(pr.LocalCommand(name='SaveConfig', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
@@ -246,7 +246,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     autoPrefix='config',
                                                                     autoCompress=False),
                                  hidden=True,
-                                 description='Save configuration to passed filename in YAML format'))
+                                 description='Save configuration to file. Data is saved in YAML format. Passed arg is full path to file to sore data to.'))
 
         self.add(pr.LocalCommand(name='LoadConfig', value='',
                                  function=lambda arg: self.loadYaml(name=arg,
@@ -255,7 +255,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                     incGroups=None,
                                                                     excGroups='NoConfig'),
                                  hidden=True,
-                                 description='Read configuration from passed filename in YAML format'))
+                                 description='Read configuration from file. Data is read in YAML format. Passed arg is full path to file to read data from.'))
 
         self.add(pr.LocalCommand(name='RemoteVariableDump', value='',
                                  function=lambda arg: self.remoteVariableDump(name=arg,
@@ -291,7 +291,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                    incGroups=None,
                                                                    excGroups='NoConfig'),
                                  hidden=True,
-                                 description='Set configuration from passed YAML string'))
+                                 description='Set configuration from YAML string. Passed arg is configuration string in YAML format.'))
 
         self.add(pr.LocalCommand(name='GetYamlConfig', value=True, retValue='',
                                  function=lambda arg: self.getYaml(readFirst=arg,
@@ -299,7 +299,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                                                    incGroups=None,
                                                                    excGroups='NoConfig'),
                                  hidden=True,
-                                 description='Get current configuration as YAML string. Pass read first arg.'))
+                                 description='Get configuration in YAML string. '
+                                             'Passed arg is a boolean indicating if a full system read should be generated. '
+                                             'Return data is configuration as a YAML string.'))
 
         self.add(pr.LocalCommand(name='GetYamlState', value=True, retValue='',
                                  function=lambda arg: self.getYaml(readFirst=arg,

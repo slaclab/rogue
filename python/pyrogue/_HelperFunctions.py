@@ -310,13 +310,47 @@ def functionWrapper(function, callArgs):
     #print("Creating Function: " + ls)
     return eval(ls)
 
-def genTableRow(fields,width):
-    r = ''
+
+def genDocTableHeader(fields, indent, width):
+    r = ' ' * indent + '+'
+
+    for _ in range(len(fields)):
+        r += '-' * width + '+'
+
+    r += '\n' + ' ' * indent + '|'
 
     for f in fields:
-        r += f'| {f}'
-        r += ' ' * (width-len(f)-1)
-    r += '|'
+        r += f + ' '
+        r += ' ' * (width-len(f)-1) + '|'
+
+    r += '\n' + ' ' * indent + '+'
+
+    for _ in range(len(fields)):
+        r += '=' * width + '+'
 
     return r
 
+def genDocTableRow(fields, indent, width):
+    r = ' ' * indent + '|'
+
+    for f in fields:
+        r += f + ' '
+        r += ' ' * (width-len(f)-1) + '|'
+
+    r += '\n' + ' ' * indent + '+'
+
+    for _ in range(len(fields)):
+        r += '-' * width + '+'
+
+    return r
+
+def genDocDesc(desc, indent):
+    r = ''
+
+    for f in desc.split('.'):
+        f = f.strip()
+        if len(f) > 0:
+            r += ' ' * indent
+            r += '| ' + f + '.\n'
+
+    return r

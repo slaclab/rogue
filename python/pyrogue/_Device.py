@@ -632,7 +632,7 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
-    def genDocuments(self,path,groups):
+    def genDocuments(self,path,incGroups, excGroups):
 
         with open(path + '/' + self.path.replace('.','_') + '.rst','w') as file:
 
@@ -644,50 +644,59 @@ class Device(pr.Node,rim.Hub):
             print(self.description,file=file)
             print('',file=file)
 
-            print(".. toctree::",file=file)
-            print("   :maxdepth: 1",file=file)
-            print("   :caption: Sub Devices:",file=file)
-            print('',file=file)
-            for k,v in self.devicesByGroup(incGroups=groups).items():
-                print('   ' + v.path.replace('.','_'),file=file)
-                v.genDocuments(path,groups)
-            print('',file=file)
+            dlist = self.devicesByGroup(incGroups=incGroups,excGroups=excGroups)
+            vlist = self.variablesByGroup(incGroups=incGroups,excGroups=excGroups)
+            clist = self.commandsByGroup(incGroups=incGroups,excGroups=excGroups)
+
+            if len(dlist) > 0:
+                print(".. toctree::",file=file)
+                print("   :maxdepth: 1",file=file)
+                print("   :caption: Sub Devices:",file=file)
+                print('',file=file)
+                for k,v in dlist.items():
+                    print('   ' + v.path.replace('.','_'),file=file)
+                    v.genDocuments(path,incGroups,excGroups)
+                print('',file=file)
 
             print("Summary",file=file)
             print("#######",file=file)
             print('',file=file)
 
-            print("Variable List",file=file)
-            print("*************",file=file)
-            print('',file=file)
-            for k,v in self.variablesByGroup(incGroups=groups).items():
-                print(f"* {k}",file=file)
-            print('',file=file)
+            if len(vlist):
+                print("Variable List",file=file)
+                print("*************",file=file)
+                print('',file=file)
+                for k,v in vlist.items():
+                    print(f"* {k}",file=file)
+                print('',file=file)
 
-            print("Command List",file=file)
-            print("*************",file=file)
-            print('',file=file)
-            for k,v in self.commandsByGroup(incGroups=groups).items():
-                print(f"* {k}",file=file)
-            print('',file=file)
+            if len(clist):
+                print("Command List",file=file)
+                print("*************",file=file)
+                print('',file=file)
+                for k,v in clist.items():
+                    print(f"* {k}",file=file)
+                print('',file=file)
 
             print("Details",file=file)
             print("#######",file=file)
             print('',file=file)
 
-            print("Variables",file=file)
-            print("*********",file=file)
-            print('',file=file)
-            for k,v in self.variablesByGroup(incGroups=groups).items():
-                v._genDocs(file=file)
+            if len(vlist):
+                print("Variables",file=file)
+                print("*********",file=file)
                 print('',file=file)
+                for k,v in vlist.items():
+                    v._genDocs(file=file)
+                    print('',file=file)
 
-            print("Commands",file=file)
-            print("********",file=file)
-            print('',file=file)
-            for k,v in self.commandsByGroup(incGroups=groups).items():
-                v._genDocs(file=file)
+            if len(clist):
+                print("Commands",file=file)
+                print("********",file=file)
                 print('',file=file)
+                for k,v in clist.items():
+                    v._genDocs(file=file)
+                    print('',file=file)
 
 
 class ArrayDevice(Device):

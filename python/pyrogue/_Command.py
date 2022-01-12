@@ -216,18 +216,16 @@ class BaseCommand(pr.BaseVariable):
         print(f".. topic:: {self.path}",file=file)
 
         print('',file=file)
-        print(f'    {self.description}',file=file)
+        print(pr.genDocDesc(self.description,4),file=file)
         print('',file=file)
 
-        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
-        print('    ' + pr.genTableRow(['Field','Value'],100),file=file)
-        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+        print(pr.genDocTableHeader(['Field','Value'],4,100),file=file)
 
-        for a in ['name', 'path', 'hidden', 'groups', 'enum',
-                  'typeStr', 'disp']:
+        for a in ['name', 'path', 'hidden', 'groups', 'enum', 'typeStr', 'disp']:
+            astr = str(getattr(self,a))
 
-            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
-            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
 
 
 # LocalCommand is the same as BaseCommand
@@ -310,8 +308,11 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         BaseCommand._genDocs(self,file)
 
         for a in ['offset', 'bitSize', 'bitOffset', 'varBytes']:
-            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
-            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+            astr = str(getattr(self,a))
+
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
+
 
 
 # Alias, this should go away

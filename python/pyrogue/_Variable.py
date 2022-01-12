@@ -555,20 +555,20 @@ class BaseVariable(pr.Node):
         print(f".. topic:: {self.path}",file=file)
 
         print('',file=file)
-        print(f'    {self.description}',file=file)
+        print(pr.genDocDesc(self.description,4),file=file)
         print('',file=file)
 
-        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
-        print('    ' + pr.genTableRow(['Field','Value'],100),file=file)
-        print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+        print(pr.genDocTableHeader(['Field','Value'],4,100),file=file)
 
         for a in ['name', 'path', 'hidden', 'groups', 'enum',
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']:
 
-            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
-            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+            astr = str(getattr(self,a))
+
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
 
 
 class RemoteVariable(BaseVariable,rim.Variable):
@@ -826,9 +826,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
         BaseVariable._genDocs(self,file)
 
         for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verify', 'varBytes']:
+            astr = str(getattr(self,a))
 
-            print('    ' + pr.genTableRow([a,str(getattr(self,a))],100),file=file)
-            print('    +' + '-' * 100 + '+' + '-' * 100 + '+',file=file)
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
 
 
 class LocalVariable(BaseVariable):
