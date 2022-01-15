@@ -43,6 +43,8 @@ namespace rogue {
                static const uint32_t HeadLen = 20;
                static const uint32_t TailLen = 4;
 
+               uint32_t timeout = 0x0A000000;
+
                // Setup header, return write flag
                bool setupHeader(std::shared_ptr<rogue::interfaces::memory::Transaction> tran,
                                 uint32_t *header, uint32_t &frameLen, bool tx);
@@ -68,7 +70,7 @@ namespace rogue {
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                // Set hardware timeout
-               void setHardwareTimeout( uint32_t timeout, uint32_t *header ) { header[0] |= timeout; }
+               void setHardwareTimeout( uint32_t val ) { timeout = val; }
          };
 
          // Convenience
