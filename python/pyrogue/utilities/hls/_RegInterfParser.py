@@ -176,36 +176,36 @@ def write(parameters):
         if vartype is RemoteVariable.__name__:
             fhand.write('        pr.RemoteVariable(\n')
             argline = \
-            '                        name=' + '\'' + param.name + '\'' + ',\n' + \
-            '                        description=' + '\'' + param.description + '\'' + ',\n' + \
-            '                        offset=' + str(param.offset) + ',\n' + \
-            '                        bitSize=' + str(param.bitSize) + ',\n' + \
-            '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
-            '                        base=' + str(param.base) + ',\n' + \
-            '                        mode=' + '\'' + str(param.mode) + '\'' + ',\n'
+                '                        name=' + '\'' + param.name + '\'' + ',\n' + \
+                '                        description=' + '\'' + param.description + '\'' + ',\n' + \
+                '                        offset=' + str(param.offset) + ',\n' + \
+                '                        bitSize=' + str(param.bitSize) + ',\n' + \
+                '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
+                '                        base=' + str(param.base) + ',\n' + \
+                '                        mode=' + '\'' + str(param.mode) + '\'' + ',\n'
             fhand.write(argline)
             fhand.write('                       )\n\n')
         elif vartype is MemoryDevice.__name__:
             fhand.write('        pr.MemoryDevice(\n')
             argline = \
-            '                        name=' + '\'' + param.name + '\'' + ',\n' + \
-            '                        offset=' + str(param.offset) + ',\n' + \
-            '                        size=' + str(param.size) + ',\n' + \
-            '                        wordBitSize=' + str(param.wordBitSize) + ',\n' + \
-            '                        stride=' + str(param.stride) + ',\n' + \
-            '                        base=' + str(param.base) + ',\n'
+                '                        name=' + '\'' + param.name + '\'' + ',\n' + \
+                '                        offset=' + str(param.offset) + ',\n' + \
+                '                        size=' + str(param.size) + ',\n' + \
+                '                        wordBitSize=' + str(param.wordBitSize) + ',\n' + \
+                '                        stride=' + str(param.stride) + ',\n' + \
+                '                        base=' + str(param.base) + ',\n'
             fhand.write(argline)
             fhand.write('                       )\n\n')
         elif vartype is RemoteCommand.__name__:
             fhand.write('        self.add(pr.RemoteCommand(\n')
             argline = \
-            '                        name=' + '\'' + param.name + '\'' + ',\n' + \
-            '                        description=' + '\'' + param.description + '\'' + ',\n' + \
-            '                        offset=' + str(param.offset) + ',\n' + \
-            '                        bitSize=' + str(param.bitSize) + ',\n' + \
-            '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
-            '                        base=' + str(param.base) + ',\n' + \
-            '                        function=' + str(param.function) + ',\n'
+                '                        name=' + '\'' + param.name + '\'' + ',\n' + \
+                '                        description=' + '\'' + param.description + '\'' + ',\n' + \
+                '                        offset=' + str(param.offset) + ',\n' + \
+                '                        bitSize=' + str(param.bitSize) + ',\n' + \
+                '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
+                '                        base=' + str(param.base) + ',\n' + \
+                '                        function=' + str(param.function) + ',\n'
             fhand.write(argline)
             fhand.write('                       ))\n\n')
 
@@ -223,6 +223,8 @@ def run():
     parser.add_argument('--remoteVariable', action='store_true', required=False, help='connect remote variables to register interface')
     parser.add_argument('--memoryDevice', action='store_true', required=False, help='connect memory devices to register interface')
     args = parser.parse_args()
+
+    global vartype
 
     if args.memoryDevice:
         vartype = 'MemoryDevice'
