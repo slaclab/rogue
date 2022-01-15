@@ -8,10 +8,10 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-# Run as shown below:
-# python main.py --memoryDevice
-# python main.py --remoteVariable
-# python main.py --remoteCommand
+# Run this script as shown below:
+# python -m pyrogue.utilities.hls._RegInterfParser --memoryDevice
+# python -m pyrogue.utilities.hls._RegInterfParser --remoteVariable
+# python -m pyrogue.utilities.hls._RegInterfParser --remoteCommand
 
 import argparse
 from collections import namedtuple
@@ -237,6 +237,6 @@ def run():
     dev_params = parse()
     write(dev_params)
 
-# __main__ block.
+# __main__ block
 if __name__ == '__main__':
     run()
