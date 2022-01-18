@@ -70,7 +70,7 @@ namespace rogue {
                void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
                // Set hardware timeout
-               void setHardwareTimeout( uint8_t val ) { timeout_ = val; }
+               void setHardwareTimeout( uint8_t val );
          };
 
          // Convenience
