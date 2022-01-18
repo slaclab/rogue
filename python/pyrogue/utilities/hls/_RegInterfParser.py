@@ -13,8 +13,9 @@
 # python -m pyrogue.utilities.hls._RegInterfParser --remoteVariable
 # python -m pyrogue.utilities.hls._RegInterfParser --remoteCommand
 
-import argparse
+import argparse, os
 from collections import namedtuple
+from zipfile import ZipFile
 
 ##############################################################################
 # Supported types of rogue devices and variables                             #
@@ -37,11 +38,29 @@ MemoryDevice = namedtuple('MemoryDevice', ['name', 'offset', 'size', 'wordBitSiz
 vartype = ''
 
 def parse():
-    fname = input('Enter the file name: ')
+    # Get the path to the zip file
+    zname = input('Enter the path to the zipfile: ')
+    fname = zname
+
+    try:
+        zhand = open(zname)
+    except FileNotFoundError:
+        print('Zip file cannot be opened:', fname)
+        exit()
+
+    # Extract all the contents of the zip file in the current directory
+    with ZipFile(zname, 'r') as zipObj:
+        zipObj.extractall()
+
+    for root, dirs, files in os.walk("./"):
+        for file in files:
+            if file.endswith("_hw.h"):
+                fname = os.path.join(root, file)
+
     try:
         fhand = open(fname)
     except FileNotFoundError:
-        print('File cannot be opened:', fname)
+        print('Register file cannot be opened:', fname)
         exit()
 
     macrolines = []
