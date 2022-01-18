@@ -90,7 +90,7 @@ bool rps::SrpV3::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_
    // Bit 14 = ignore mem resp
    // Bit 23:15 = Unused
    // Bit 31:24 = timeout count
-   header[0] |= timeout;
+   header[0] |= (timeout_<<24 | 0x00000000);
 
    // Header word 1, transaction ID
    header[1] = tran->id();
