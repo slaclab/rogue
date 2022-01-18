@@ -13,7 +13,8 @@
 # python -m pyrogue.utilities.hls._RegInterfParser --remoteVariable
 # python -m pyrogue.utilities.hls._RegInterfParser --remoteCommand
 
-import argparse, os
+import os
+import argparse
 from collections import namedtuple
 from zipfile import ZipFile
 
