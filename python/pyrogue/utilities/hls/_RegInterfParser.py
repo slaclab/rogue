@@ -45,7 +45,8 @@ def parse():
     try:
         zhand = open(zname)
     except FileNotFoundError:
-        print('Zip file cannot be opened:', fname)
+        print('Zip file cannot be opened:', zname)
+        del zhand
         exit()
 
     # Extract all the contents of the zip file in the current directory
