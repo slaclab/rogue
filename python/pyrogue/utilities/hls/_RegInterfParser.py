@@ -173,69 +173,69 @@ def parse():
     return params
 
 def write(parameters):
-    fhand = open('application.py', 'w+')
+    with open('application.py', 'w+') as fhand:
 
-    fhand.write('#-----------------------------------------------------------------------------\n')
-    fhand.write('# This file is part of the utilities for the rogue library. It is subject to\n')
-    fhand.write('# the license terms in the LICENSE.txt file found in the top-level directory\n')
-    fhand.write('# of this distribution and at:\n')
-    fhand.write('#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.\n')
-    fhand.write('# No part of the rogue, including this file, may be copied, modified,\n')
-    fhand.write('# propagated, or distributed except according to the terms\n')
-    fhand.write('# contained in the LICENSE.txt file.\n')
-    fhand.write('#-----------------------------------------------------------------------------\n')
-    fhand.write('\n')
-    fhand.write('import pyrogue as pr\n')
-    fhand.write('\n')
-    fhand.write('class Application(pr.Device):\n')
-    fhand.write('    def __init__(self, **kwargs):\n')
-    fhand.write('        super().__init__(**kwargs)\n')
-    fhand.write('\n')
+        fhand.write('#-----------------------------------------------------------------------------\n')
+        fhand.write('# This file is part of the utilities for the rogue library. It is subject to\n')
+        fhand.write('# the license terms in the LICENSE.txt file found in the top-level directory\n')
+        fhand.write('# of this distribution and at:\n')
+        fhand.write('#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.\n')
+        fhand.write('# No part of the rogue, including this file, may be copied, modified,\n')
+        fhand.write('# propagated, or distributed except according to the terms\n')
+        fhand.write('# contained in the LICENSE.txt file.\n')
+        fhand.write('#-----------------------------------------------------------------------------\n')
+        fhand.write('\n')
+        fhand.write('import pyrogue as pr\n')
+        fhand.write('\n')
+        fhand.write('class Application(pr.Device):\n')
+        fhand.write('    def __init__(self, **kwargs):\n')
+        fhand.write('        super().__init__(**kwargs)\n')
+        fhand.write('\n')
 
-    for param in parameters:
-        print(param)
-        if vartype is RemoteVariable.__name__:
-            fhand.write('        pr.RemoteVariable(\n')
-            argline = \
-                '                        name=' + '\'' + param.name + '\'' + ',\n' + \
-                '                        description=' + '\'' + param.description + '\'' + ',\n' + \
-                '                        offset=' + str(param.offset) + ',\n' + \
-                '                        bitSize=' + str(param.bitSize) + ',\n' + \
-                '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
-                '                        base=' + str(param.base) + ',\n' + \
-                '                        mode=' + '\'' + str(param.mode) + '\'' + ',\n'
-            fhand.write(argline)
-            fhand.write('                       )\n\n')
-        elif vartype is MemoryDevice.__name__:
-            fhand.write('        pr.MemoryDevice(\n')
-            argline = \
-                '                        name=' + '\'' + param.name + '\'' + ',\n' + \
-                '                        offset=' + str(param.offset) + ',\n' + \
-                '                        size=' + str(param.size) + ',\n' + \
-                '                        wordBitSize=' + str(param.wordBitSize) + ',\n' + \
-                '                        stride=' + str(param.stride) + ',\n' + \
-                '                        base=' + str(param.base) + ',\n'
-            fhand.write(argline)
-            fhand.write('                       )\n\n')
-        elif vartype is RemoteCommand.__name__:
-            fhand.write('        self.add(pr.RemoteCommand(\n')
-            argline = \
-                '                        name=' + '\'' + param.name + '\'' + ',\n' + \
-                '                        description=' + '\'' + param.description + '\'' + ',\n' + \
-                '                        offset=' + str(param.offset) + ',\n' + \
-                '                        bitSize=' + str(param.bitSize) + ',\n' + \
-                '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
-                '                        base=' + str(param.base) + ',\n' + \
-                '                        function=' + str(param.function) + ',\n'
-            fhand.write(argline)
-            fhand.write('                       ))\n\n')
+        for param in parameters:
+            print(param)
+            if vartype is RemoteVariable.__name__:
+                fhand.write('        pr.RemoteVariable(\n')
+                argline = \
+                    '                        name=' + '\'' + param.name + '\'' + ',\n' + \
+                    '                        description=' + '\'' + param.description + '\'' + ',\n' + \
+                    '                        offset=' + str(param.offset) + ',\n' + \
+                    '                        bitSize=' + str(param.bitSize) + ',\n' + \
+                    '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
+                    '                        base=' + str(param.base) + ',\n' + \
+                    '                        mode=' + '\'' + str(param.mode) + '\'' + ',\n'
+                fhand.write(argline)
+                fhand.write('                       )\n\n')
+            elif vartype is MemoryDevice.__name__:
+                fhand.write('        pr.MemoryDevice(\n')
+                argline = \
+                    '                        name=' + '\'' + param.name + '\'' + ',\n' + \
+                    '                        offset=' + str(param.offset) + ',\n' + \
+                    '                        size=' + str(param.size) + ',\n' + \
+                    '                        wordBitSize=' + str(param.wordBitSize) + ',\n' + \
+                    '                        stride=' + str(param.stride) + ',\n' + \
+                    '                        base=' + str(param.base) + ',\n'
+                fhand.write(argline)
+                fhand.write('                       )\n\n')
+            elif vartype is RemoteCommand.__name__:
+                fhand.write('        self.add(pr.RemoteCommand(\n')
+                argline = \
+                    '                        name=' + '\'' + param.name + '\'' + ',\n' + \
+                    '                        description=' + '\'' + param.description + '\'' + ',\n' + \
+                    '                        offset=' + str(param.offset) + ',\n' + \
+                    '                        bitSize=' + str(param.bitSize) + ',\n' + \
+                    '                        bitOffset=' + str(param.bitOffset) + ',\n' + \
+                    '                        base=' + str(param.base) + ',\n' + \
+                    '                        function=' + str(param.function) + ',\n'
+                fhand.write(argline)
+                fhand.write('                       ))\n\n')
 
-    fhand.write('    # This function call occurs after loading YAML configuration\n')
-    fhand.write('    def initialize(self):\n')
-    fhand.write('        super().initialize()\n')
-    fhand.write('\n')
-    fhand.write('        # Add and execute the relevant commands below\n')
-    fhand.write('\n\n')
+        fhand.write('    # This function call occurs after loading YAML configuration\n')
+        fhand.write('    def initialize(self):\n')
+        fhand.write('        super().initialize()\n')
+        fhand.write('\n')
+        fhand.write('        # Add and execute the relevant commands below\n')
+        fhand.write('\n\n')
 
 def run():
     # Read command line option (i.e. output type)
