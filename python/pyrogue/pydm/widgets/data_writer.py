@@ -123,14 +123,14 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)
-    
+
     @Slot()
     def _enableFilenameText(self):
         self._dataFile.setEnabled(True)
 
     @Slot()
     def _disableFilenameText(self):
-        self._dataFile.setEnabled(False) 
+        self._dataFile.setEnabled(False)
 
     @Slot()
     def _browse(self):
