@@ -66,9 +66,11 @@ class DataWriter(PyDMFrame):
         hb.addWidget(w)
 
         w = PyDMPushButton(label='Open',pressValue=1,init_channel=self._path + '.Open')
+        w.clicked.connect(self._disableFilenameText)
         hb.addWidget(w)
 
         w = PyDMPushButton(label='Close',pressValue=1,init_channel=self._path + '.Close')
+        w.clicked.connect(self._enableFilenameText)
         hb.addWidget(w)
 
         hb = QHBoxLayout()
@@ -121,6 +123,14 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)
+    
+    @Slot()
+    def _enableFilenameText(self):
+        self._dataFile.setEnabled(True)
+
+    @Slot()
+    def _disableFilenameText(self):
+        self._dataFile.setEnabled(False) 
 
     @Slot()
     def _browse(self):
