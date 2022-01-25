@@ -41,14 +41,15 @@ vartype = ''
 def parse():
     # Get the path to the zip file
     zname = input('Enter the path to the zipfile: ')
-    fname = zname
+    fname = '' 
 
     try:
         zhand = open(zname)
     except FileNotFoundError:
         print('Zip file cannot be opened:', zname)
-        del zhand
         exit()
+    
+    zhand = open(zname)
 
     # Extract all the contents of the zip file in the current directory
     with ZipFile(zname, 'r') as zipObj:
