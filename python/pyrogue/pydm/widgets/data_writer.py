@@ -70,7 +70,7 @@ class DataWriter(PyDMFrame):
         hb.addWidget(self._openbutton)
 
         self._closebutton = PyDMPushButton(label='Close',pressValue=1,init_channel=self._path + '.Close')
-        self._closebutton.connection_changed = lambda conn: None
+        self._closebutton.check_enable_state = lambda: None
         self._closebutton.clicked.connect(self._closeDataFile)
         self._closebutton.setEnabled(False)
         hb.addWidget(self._closebutton)
