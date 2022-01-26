@@ -39,13 +39,8 @@ MemoryDevice = namedtuple('MemoryDevice', ['name', 'offset', 'size', 'wordBitSiz
 
 vartype = ''
 maxwidth = 64
-varmaxwidth = 0
-msgmaxwidth = False
 
 def parse():
-    global msgmaxwidth
-    global varmaxwidth
-
     # Get the path to the zip file
     zname = input('Enter the path to the zipfile: ')
 
@@ -145,9 +140,14 @@ def parse():
 
             # Ensure bit width is no larger than 64
             if int(width) > maxwidth:
-                width = str(maxwidth)
-                msgmaxwidth = True
-                varmaxwidth += 1
+                print('\n*********************************************************************')
+                print('*                               ERROR                               *')
+                print('*********************************************************************')
+                print('Bit widths larger than 64 were detected that Rogue does not support.')
+                print('Please ensure the correct bit widths are assigned in the header file.')
+                print('*********************************************************************\n')
+                print('Exiting ...')
+                exit()
 
             # Get bit depth
             if 'DEPTH' in list(macroname):
@@ -277,15 +277,6 @@ def run():
 
     dev_params = parse()
     write(dev_params)
-
-    if msgmaxwidth:
-        print('\n*****************************************************************')
-        print('*                            WARNING                            *')
-        print('*****************************************************************')
-        print('Bit widths higher than 64 were detected and limited to 64 instead.')
-        print('Please ensure the correct bit widths are assigned in the output.')
-        print(f'Number of variables with reassigned bit widths: {varmaxwidth}')
-        print('*****************************************************************\n')
 
 # __main__ block
 if __name__ == '__main__':
