@@ -15,6 +15,7 @@
 
 import os
 import argparse
+import zipfile
 from collections import namedtuple
 from zipfile import ZipFile
 
@@ -37,13 +38,24 @@ MemoryDevice = namedtuple('MemoryDevice', ['name', 'offset', 'size', 'wordBitSiz
 ##############################################################################
 
 vartype = ''
+maxwidth = 64
+varmaxwidth = 0
+msgmaxwidth = False
 
 def parse():
+    global msgmaxwidth
+    global varmaxwidth
+
     # Get the path to the zip file
     zname = input('Enter the path to the zipfile: ')
 
     if not os.path.exists(zname):
         print('Zip file cannot be opened:', zname)
+        exit()
+
+    # Check if it's a valid zipfile
+    if not zipfile.is_zipfile(zname):
+        print('Not a valid zip file:', zname)
         exit()
 
     # Extract all the contents of the zip file in the current directory
@@ -131,6 +143,12 @@ def parse():
             elif 'WIDTH' in list(macroname):
                 width = macroline[1]
 
+            # Ensure bit width is no larger than 64
+            if int(width) > maxwidth:
+                width = str(maxwidth)
+                msgmaxwidth = True
+                varmaxwidth += 1
+
             # Get bit depth
             if 'DEPTH' in list(macroname):
                 depth = macroline[1]
@@ -189,6 +207,8 @@ def write(parameters):
         fhand.write('    def __init__(self, **kwargs):\n')
         fhand.write('        super().__init__(**kwargs)\n')
         fhand.write('\n')
+
+        print('\nCreating the following Rogue variables:\n')
 
         for param in parameters:
             print(param)
@@ -257,6 +277,15 @@ def run():
 
     dev_params = parse()
     write(dev_params)
+
+    if msgmaxwidth:
+        print('\n*****************************************************************')
+        print('*                            WARNING                            *')
+        print('*****************************************************************')
+        print('Bit widths higher than 64 were detected and limited to 64 instead.')
+        print('Please ensure the correct bit widths are assigned in the output.')
+        print(f'Number of variables with reassigned bit widths: {varmaxwidth}')
+        print('*****************************************************************\n')
 
 # __main__ block
 if __name__ == '__main__':
