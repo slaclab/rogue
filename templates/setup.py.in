@@ -24,6 +24,7 @@ setup (
               'pyrogue.gui', 
               'pyrogue.utilities', 
               'pyrogue.utilities.fileio', 
+              'pyrogue.utilities.hls', 
               'pyrogue.interfaces', 
               'pyrogue.protocols', 
               'pyrogue.pydm', 
