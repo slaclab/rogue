@@ -100,6 +100,7 @@ class RootControl(PyDMFrame):
         self._loadConfigCmd = PyDMPushButton(label='Load Config',
                                              pressValue='',
                                              init_channel=self._path + '.LoadConfig')
+        self._loadConfigCmd.check_enable_state = lambda: None
 
         hb.addWidget(self._loadConfigCmd)
 
@@ -120,6 +121,7 @@ class RootControl(PyDMFrame):
         self._saveConfigCmd = PyDMPushButton(label='Save Config',
                                              pressValue='',
                                              init_channel=self._path + '.SaveConfig')
+        self._saveConfigCmd.check_enable_state = lambda: None
 
         hb.addWidget(self._saveConfigCmd)
 
@@ -140,6 +142,7 @@ class RootControl(PyDMFrame):
         self._saveStateCmd = PyDMPushButton(label='Save State ',
                                             pressValue='',
                                             init_channel=self._path + '.SaveState')
+        self._saveStateCmd.check_enable_state = lambda: None
 
         hb.addWidget(self._saveStateCmd)
 
@@ -168,6 +171,7 @@ class RootControl(PyDMFrame):
 
         if loadFile != '':
             self._loadConfigValue.setText(','.join(loadFile))
+            self._loadConfigCmd.setEnabled(True)
 
     @Slot(str)
     def _saveConfigChanged(self,value):
@@ -186,6 +190,8 @@ class RootControl(PyDMFrame):
 
         if saveFile != '':
             self._saveConfigValue.setText(saveFile)
+            self._saveConfigCmd.setEnabled(True)
+
 
     @Slot(str)
     def _saveStateChanged(self,value):
@@ -204,3 +210,4 @@ class RootControl(PyDMFrame):
 
         if stateFile != '':
             self._saveStateValue.setText(stateFile)
+            self._saveStateCmd.setEnabled(True)
