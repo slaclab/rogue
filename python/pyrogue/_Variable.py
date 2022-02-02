@@ -28,7 +28,8 @@ class VariableError(Exception):
 
 
 def VariableWait(varList, testFunction, timeout=0):
-    """Wait for a number of variable conditions to be true.
+    """
+    Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
     The test function is passed a dictionary containing the current
     variableValue state index by variable path
@@ -61,6 +62,7 @@ def VariableWait(varList, testFunction, timeout=0):
         # Method to handle variable updates callback
         def varUpdate(self,path,varValue):
             """
+            
 
             Parameters
             ----------
@@ -132,7 +134,12 @@ class VariableListData(object):
 
 
 class BaseVariable(pr.Node):
-    """ """
+    """ 
+    Documentation string for __init__ goes here 
+    (under the 'class' definition)
+
+    Fill in the paremeters.
+    """
 
     def __init__(self, *,
                  name,
@@ -332,6 +339,7 @@ class BaseVariable(pr.Node):
 
     def addDependency(self, dep):
         """
+        
 
         Parameters
         ----------
@@ -355,6 +363,7 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         """
+        
 
         Parameters
         ----------
@@ -389,7 +398,8 @@ class BaseVariable(pr.Node):
         return self.__dependencies
 
     def addListener(self, listener):
-        """Add a listener Variable or function to call when variable changes.
+        """
+        Add a listener Variable or function to call when variable changes.
         This is useful when chaining variables together. (ADC conversions, etc)
         The variable and value class are passed as an arg: func(path,varValue)
 
@@ -410,7 +420,8 @@ class BaseVariable(pr.Node):
                 self.__functions.append(listener)
 
     def delListener(self, listener):
-        """Remove a listener Variable or function
+        """
+        Remove a listener Variable or function
 
         Parameters
         ----------
@@ -426,7 +437,8 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
-        """Set the value and write to hardware if applicable
+        """
+        Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
 
         Parameters
@@ -452,7 +464,8 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def post(self, value, *, index=-1):
-        """Set the value and write to hardware if applicable using a posted write.
+        """
+        Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
 
@@ -474,6 +487,9 @@ class BaseVariable(pr.Node):
     @pr.expose
     def get(self, *, index=-1, read=True, check=True):
         """
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
 
         Parameters
         ----------
@@ -488,16 +504,14 @@ class BaseVariable(pr.Node):
 
         Returns
         -------
-        type
-            Hardware read is blocking. An error will result in a logged exception.
-            Listeners will be informed of the update.
-
+        
         """
         return None
 
     @pr.expose
     def write(self, *, verify=True, check=True):
-        """Force a write of the variable.
+        """
+        Force a write of the variable.
 
         Parameters
         ----------
@@ -517,6 +531,9 @@ class BaseVariable(pr.Node):
     @pr.expose
     def getVariableValue(self,read=True):
         """
+        Return the value after performing a read from hardware if applicable.
+        Hardware read is blocking. An error will result in a logged exception.
+        Listeners will be informed of the update.
 
         Parameters
         ----------
@@ -540,6 +557,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     def genDisp(self, value):
         """
+        
 
         Parameters
         ----------
@@ -573,6 +591,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     def getDisp(self, read=True, index=-1):
         """
+        
 
         Parameters
         ----------
@@ -590,6 +609,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     def valueDisp(self, read=True, index=-1):
         """
+        
 
         Parameters
         ----------
@@ -607,6 +627,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     def parseDisp(self, sValue):
         """
+        
 
         Parameters
         ----------
@@ -637,6 +658,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     def setDisp(self, sValue, write=True, index=-1):
         """
+        
 
         Parameters
         ----------
@@ -695,6 +717,7 @@ class BaseVariable(pr.Node):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
+        
 
         Parameters
         ----------
@@ -752,6 +775,7 @@ class BaseVariable(pr.Node):
 
     def _getDict(self,modes,incGroups,excGroups):
         """
+        
 
         Parameters
         ----------
@@ -789,6 +813,7 @@ class BaseVariable(pr.Node):
 
     def _alarmState(self,value):
         """
+        
 
         Parameters
         ----------
@@ -1027,7 +1052,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
-        """Set the value and write to hardware if applicable
+        """
+        Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
         A verify will be performed according to self.verify if verify=True
         A verify will not be performed if verify=False
@@ -1071,7 +1097,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     def post(self, value, *, index=-1):
-        """Set the value and write to hardware if applicable using a posted write.
+        """
+        Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
 
@@ -1103,6 +1130,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     def get(self, *, index=-1, read=True, check=True):
         """
+        
 
         Parameters
         ----------
@@ -1138,7 +1166,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     def write(self, *, verify=True, check=True):
-        """Force a write of the variable.
+        """
+        Force a write of the variable.
         Hardware write is blocking if check=True.
         A verify will be performed according to self.verify if verify=True
         A verify will not be performed if verify=False
@@ -1170,6 +1199,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     def _parseDispValue(self, sValue):
         """
+        
 
         Parameters
         ----------
@@ -1249,7 +1279,8 @@ class LocalVariable(BaseVariable):
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
-        """Set the value and write to hardware if applicable
+        """
+        Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
 
         Parameters
@@ -1290,7 +1321,8 @@ class LocalVariable(BaseVariable):
 
     @pr.expose
     def post(self,value, *, index=-1):
-        """Set the value and write to hardware if applicable using a posted write.
+        """
+        Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
 
@@ -1322,6 +1354,7 @@ class LocalVariable(BaseVariable):
     @pr.expose
     def get(self, *, index=-1, read=True, check=True):
         """
+        
 
         Parameters
         ----------
@@ -1466,6 +1499,7 @@ class LinkVariable(BaseVariable):
     @pr.expose
     def set(self, value, *, write=True, index=-1, verify=True, check=True):
         """
+        
 
         Parameters
         ----------
@@ -1496,6 +1530,7 @@ class LinkVariable(BaseVariable):
     @pr.expose
     def get(self, read=True, index=-1, check=True):
         """
+        
 
         Parameters
         ----------
