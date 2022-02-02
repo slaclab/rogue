@@ -191,7 +191,6 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
       continue;
 
    udpLog_->logThreadId();
-   //usleep(1000);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);
