@@ -160,6 +160,8 @@ class RootControl(PyDMFrame):
         self._loadConfigCmd.pressValue = value
         if not self._loadConfigValue.text():
             self._loadConfigCmd.setEnabled(False)
+        else:
+            self._loadConfigCmd.setEnabled(True)
 
     @Slot()
     def _loadConfigBrowse(self):
