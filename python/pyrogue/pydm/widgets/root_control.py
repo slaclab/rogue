@@ -158,6 +158,8 @@ class RootControl(PyDMFrame):
     @Slot(str)
     def _loadConfigChanged(self,value):
         self._loadConfigCmd.pressValue = value
+        if not self._loadConfigValue.text():
+            self._loadConfigCmd.setEnabled(False)
 
     @Slot()
     def _loadConfigBrowse(self):
@@ -169,7 +171,7 @@ class RootControl(PyDMFrame):
         if isinstance(loadFile,tuple):
             loadFile = loadFile[0]
 
-        if loadFile != '':
+        if len(loadFile) != 0:
             self._loadConfigValue.setText(','.join(loadFile))
             self._loadConfigCmd.setEnabled(True)
 
