@@ -190,7 +190,7 @@ class RootControl(PyDMFrame):
         if isinstance(saveFile,tuple):
             saveFile = saveFile[0]
 
-        if saveFile != '':
+        if len(saveFile) != 0:
             self._saveConfigValue.setText(saveFile)
             self._saveConfigCmd.setEnabled(True)
 
@@ -210,6 +210,6 @@ class RootControl(PyDMFrame):
         if isinstance(stateFile,tuple):
             stateFile = stateFile[0]
 
-        if stateFile != '':
+        if len(stateFile) != 0:
             self._saveStateValue.setText(stateFile)
             self._saveStateCmd.setEnabled(True)
