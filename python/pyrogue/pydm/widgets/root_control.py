@@ -100,6 +100,7 @@ class RootControl(PyDMFrame):
         self._loadConfigCmd = PyDMPushButton(label='Load Config',
                                              pressValue='',
                                              init_channel=self._path + '.LoadConfig')
+        self._loadConfigCmd.check_enable_state = lambda: None
 
         hb.addWidget(self._loadConfigCmd)
 
@@ -120,6 +121,7 @@ class RootControl(PyDMFrame):
         self._saveConfigCmd = PyDMPushButton(label='Save Config',
                                              pressValue='',
                                              init_channel=self._path + '.SaveConfig')
+        self._saveConfigCmd.check_enable_state = lambda: None
 
         hb.addWidget(self._saveConfigCmd)
 
@@ -140,6 +142,7 @@ class RootControl(PyDMFrame):
         self._saveStateCmd = PyDMPushButton(label='Save State ',
                                             pressValue='',
                                             init_channel=self._path + '.SaveState')
+        self._saveStateCmd.check_enable_state = lambda: None
 
         hb.addWidget(self._saveStateCmd)
 
@@ -155,6 +158,10 @@ class RootControl(PyDMFrame):
     @Slot(str)
     def _loadConfigChanged(self,value):
         self._loadConfigCmd.pressValue = value
+        if not self._loadConfigValue.text():
+            self._loadConfigCmd.setEnabled(False)
+        else:
+            self._loadConfigCmd.setEnabled(True)
 
     @Slot()
     def _loadConfigBrowse(self):
@@ -166,12 +173,17 @@ class RootControl(PyDMFrame):
         if isinstance(loadFile,tuple):
             loadFile = loadFile[0]
 
-        if loadFile != '':
+        if len(loadFile) != 0:
             self._loadConfigValue.setText(','.join(loadFile))
+            self._loadConfigCmd.setEnabled(True)
 
     @Slot(str)
     def _saveConfigChanged(self,value):
         self._saveConfigCmd.pressValue = value
+        if not self._saveConfigValue.text():
+            self._saveConfigCmd.setEnabled(False)
+        else:
+            self._saveConfigCmd.setEnabled(True)
 
     @Slot()
     def _saveConfigBrowse(self):
@@ -184,12 +196,18 @@ class RootControl(PyDMFrame):
         if isinstance(saveFile,tuple):
             saveFile = saveFile[0]
 
-        if saveFile != '':
+        if len(saveFile) != 0:
             self._saveConfigValue.setText(saveFile)
+            self._saveConfigCmd.setEnabled(True)
+
 
     @Slot(str)
     def _saveStateChanged(self,value):
         self._saveStateCmd.pressValue = value
+        if not self._saveStateValue.text():
+            self._saveStateCmd.setEnabled(False)
+        else:
+            self._saveStateCmd.setEnabled(True)
 
     @Slot()
     def _saveStateBrowse(self):
@@ -202,5 +220,6 @@ class RootControl(PyDMFrame):
         if isinstance(stateFile,tuple):
             stateFile = stateFile[0]
 
-        if stateFile != '':
+        if len(stateFile) != 0:
             self._saveStateValue.setText(stateFile)
+            self._saveStateCmd.setEnabled(True)
