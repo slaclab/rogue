@@ -180,6 +180,10 @@ class RootControl(PyDMFrame):
     @Slot(str)
     def _saveConfigChanged(self,value):
         self._saveConfigCmd.pressValue = value
+        if not self._saveConfigValue.text():
+            self._saveConfigCmd.setEnabled(False)
+        else:
+            self._saveConfigCmd.setEnabled(True)
 
     @Slot()
     def _saveConfigBrowse(self):
@@ -200,6 +204,10 @@ class RootControl(PyDMFrame):
     @Slot(str)
     def _saveStateChanged(self,value):
         self._saveStateCmd.pressValue = value
+        if not self._saveStateValue.text():
+            self._saveStateCmd.setEnabled(False)
+        else:
+            self._saveStateCmd.setEnabled(True)
 
     @Slot()
     def _saveStateBrowse(self):
