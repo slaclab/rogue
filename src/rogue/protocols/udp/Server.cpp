@@ -56,7 +56,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    udpLog_ = rogue::Logging::create("udp.Server");
 
    // Create a shared pointer to use as a lock for runThread()
-   std::shared_ptr<int> ctorSharedPtr = std::make_shared<int>(0);
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
@@ -87,7 +87,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Start rx thread
    threadEn_ = true;
-   thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(ctorSharedPtr));
+   thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
