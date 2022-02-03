@@ -87,8 +87,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Start rx thread
    threadEn_ = true;
-   std::weak_ptr<int> ctorWeakPtr = ctorSharedPtr;
-   thread_ = new std::thread(&rpu::Server::runThread, this, ctorWeakPtr);
+   thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(ctorSharedPtr));
 
    // Set a thread name
 #ifndef __MACH__

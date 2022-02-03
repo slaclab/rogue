@@ -90,8 +90,7 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Start rx thread
    threadEn_ = true;
-   std::weak_ptr<int> ctorWeakPtr = ctorSharedPtr;
-   thread_ = new std::thread(&rpu::Client::runThread, this, ctorWeakPtr);
+   thread_ = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(ctorSharedPtr));
 
    // Set a thread name
 #ifndef __MACH__
