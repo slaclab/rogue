@@ -58,18 +58,22 @@ class DataWriter(PyDMFrame):
         hb = QHBoxLayout()
         vb.addLayout(hb)
 
-        pb = QPushButton('Browse')
-        pb.clicked.connect(self._browse)
-        hb.addWidget(pb)
+        self._browsebutton = QPushButton('Browse')
+        self._browsebutton.clicked.connect(self._browse)
+        hb.addWidget(self._browsebutton)
 
-        w = PyDMPushButton(label='Auto Name',pressValue=1,init_channel=self._path + '.AutoName')
-        hb.addWidget(w)
+        self._autonamebutton = PyDMPushButton(label='Auto Name',pressValue=1,init_channel=self._path + '.AutoName')
+        hb.addWidget(self._autonamebutton)
 
-        w = PyDMPushButton(label='Open',pressValue=1,init_channel=self._path + '.Open')
-        hb.addWidget(w)
+        self._openbutton = PyDMPushButton(label='Open',pressValue=1,init_channel=self._path + '.Open')
+        self._openbutton.clicked.connect(self._openDataFile)
+        hb.addWidget(self._openbutton)
 
-        w = PyDMPushButton(label='Close',pressValue=1,init_channel=self._path + '.Close')
-        hb.addWidget(w)
+        self._closebutton = PyDMPushButton(label='Close',pressValue=1,init_channel=self._path + '.Close')
+        self._closebutton.check_enable_state = lambda: None
+        self._closebutton.clicked.connect(self._closeDataFile)
+        self._closebutton.setEnabled(False)
+        hb.addWidget(self._closebutton)
 
         hb = QHBoxLayout()
         vb.addLayout(hb)
@@ -121,6 +125,22 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)
+
+    @Slot()
+    def _closeDataFile(self):
+        self._dataFile.setEnabled(True)
+        self._browsebutton.setEnabled(True)
+        self._openbutton.setEnabled(True)
+        self._autonamebutton.setEnabled(True)
+        self._closebutton.setEnabled(False)
+
+    @Slot()
+    def _openDataFile(self):
+        self._dataFile.setEnabled(False)
+        self._browsebutton.setEnabled(False)
+        self._openbutton.setEnabled(False)
+        self._autonamebutton.setEnabled(False)
+        self._closebutton.setEnabled(True)
 
     @Slot()
     def _browse(self):
