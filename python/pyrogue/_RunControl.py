@@ -15,10 +15,36 @@ import time
 
 
 class RunControl(pr.Device):
-    """Special base class to control runs. """
+    """
+    Special base class to control runs.
+    
+    Attributes
+    ----------
+    attr1 : 
+        pr.Device
+    """
 
     def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
-        """Initialize device class"""
+        """
+        Initialize device class - test
+        
+        Parameters
+        ----------
+        param1 : *
+            
+        param2 : hidden=True
+            
+        param3 : rates=None
+
+        param4 : states=None
+
+        param5 : cmd=None
+
+        param6 : **kwargs
+
+        returns: none
+        ----------
+        """
 
         if rates is None:
             rates={1:'1 Hz', 10:'10 Hz'}
@@ -64,6 +90,16 @@ class RunControl(pr.Device):
         Set run state. Re-implement in sub-class.
         Enum of run states can also be overridden.
         Underlying run control must update runCount variable.
+
+        Parameters
+        ----------
+        param1: self
+        param2: value
+        param3: changed
+       
+        returns: 
+        -------
+
         """
         if changed:
             if self.runState.valueDisp() == 'Running':
@@ -78,10 +114,25 @@ class RunControl(pr.Device):
     def _setRunRate(self,value):
         """
         Set run rate. Re-implement in sub-class if necessary.
+
+        Parameters
+        ----------
+        param1: self
+        param2: value
+
+        returns: 
+        -------
+
         """
         pass
 
     def _run(self):
+        """
+        Parameters
+        ----------
+        param1: self
+        ----------
+        """
         #print("Thread start")
         self.runCount.set(0)
 
