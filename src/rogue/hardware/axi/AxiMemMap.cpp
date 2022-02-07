@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <inttypes.h>
 
 namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
