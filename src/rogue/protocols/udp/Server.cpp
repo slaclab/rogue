@@ -186,6 +186,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
    uint32_t           tmpLen;
    uint32_t           avail;
 
+   // Wait until constructor completes
    while (!lockPtr.expired())
       continue;
 

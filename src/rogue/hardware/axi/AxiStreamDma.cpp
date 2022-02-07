@@ -52,6 +52,9 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    retThold_   = 1;
    zeroCopyEn_ = true;
 
+   // Create a shared pointer to use as a lock for runThread()
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+
    rogue::defaultTimeout(timeout_);
 
    log_ = rogue::Logging::create("axi.AxiStreamDma");
@@ -84,7 +87,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    // Start read thread
    threadEn_ = true;
-   thread_ = new std::thread(&rha::AxiStreamDma::runThread, this);
+   thread_ = new std::thread(&rha::AxiStreamDma::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
@@ -344,7 +347,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 }
 
 //! Run thread
-void rha::AxiStreamDma::runThread() {
+void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
    ris::BufferPtr buff[RxBufferCount];
    uint32_t       meta[RxBufferCount];
    uint32_t       rxFlags[RxBufferCount];
@@ -364,8 +367,11 @@ void rha::AxiStreamDma::runThread() {
    luser = 0;
    cont  = 0;
 
+   // Wait until constructor completes
+   while (!lockPtr.expired())
+      continue;
+
    log_->logThreadId();
-   usleep(1000);
 
    // Preallocate empty frame
    frame = ris::Frame::create();

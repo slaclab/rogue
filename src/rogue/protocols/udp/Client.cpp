@@ -182,6 +182,7 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
    struct timeval tout;
    uint32_t       avail;
 
+   // Wait until constructor completes
    while (!lockPtr.expired())
       continue;
 

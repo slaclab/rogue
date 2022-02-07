@@ -73,7 +73,7 @@ namespace rogue {
                std::shared_ptr<rogue::Logging> log_;
 
                //! Thread background
-               void runThread();
+               void runThread(std::weak_ptr<int>);
 
                //! Enable zero copy
                bool zeroCopyEn_;
