@@ -206,8 +206,8 @@ uint32_t rim::Master::intTransaction(rim::TransactionPtr tran) {
       tranMap_[tran->id_] = tran;
    }
 
-   log_->debug("Request transaction type=%i id=%i",tran->type_,tran->id_);
-   tran->log_->debug("Created transaction type=%i id=%i, address=0x%016x, size=0x%x",
+   log_->debug("Request transaction type=%" PRIu32 " id=%" PRIu32, tran->type_, tran->id_);
+   tran->log_->debug("Created transaction type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32 ,
          tran->type_,tran->id_,tran->address_,tran->size_);
    slave->doTransaction(tran);
    tran->refreshTimer(tran);
