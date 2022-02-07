@@ -31,6 +31,7 @@ from contextlib import contextmanager
 SystemLogInit = '[]'
 
 class UpdateTracker(object):
+    """ """
     def __init__(self,q):
         self._count = 0
         self._list = {}
@@ -39,17 +40,31 @@ class UpdateTracker(object):
         self._q = q
 
     def increment(self, period):
+        """
+        
+
+        Parameters
+        ----------
+        period : int
+            default value period = 0
+
+        Returns
+        -------
+
+        """
         if self._count == 0 or self._period < period:
             self._period = period
         self._count +=1
 
     def decrement(self):
+        """ """
         if self._count != 0:
             self._count -= 1
 
         self._check()
 
     def _check(self):
+        """ """
         if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
             #print(f"Update fired {time.time()}")
             self._last = time.time()
@@ -57,16 +72,40 @@ class UpdateTracker(object):
             self._list = {}
 
     def update(self,var):
+        """
+        
+
+        Parameters
+        ----------
+        var :
+            
+
+        Returns
+        -------
+
+        """
         self._list[var.path] = var
         self._check()
 
 class RootLogHandler(logging.Handler):
-    """ Class to listen to log entries and add them to syslog variable"""
+    """Class to listen to log entries and add them to syslog variable"""
     def __init__(self,*, root):
         logging.Handler.__init__(self)
         self._root = root
 
     def emit(self,record):
+        """
+        
+
+        Parameters
+        ----------
+        record :
+            
+
+        Returns
+        -------
+
+        """
 
         if not self._root.running:
             return
@@ -117,6 +156,17 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     The root is a stream master which generates frames containing tree
     configuration and status values. This allows configuration and status
     to be stored in data files.
+
+    Attributes
+    ----------
+    rogue.interfaces.stream.Master : 
+    
+
+    pr.Device : 
+    
+    Returns
+    -------
+
     """
 
     def __enter__(self):
@@ -435,58 +485,171 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @property
     def serverPort(self):
+        """ """
         return self._serverPort
 
     @pr.expose
     @property
     def running(self):
+        """ """
         return self._running
 
     def addVarListener(self,func):
         """
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
+
+        Parameters
+        ----------
+        func :
+            
+
+        Returns
+        -------
+
         """
         with self._varListenLock:
             self._varListeners.append(func)
 
     @pr.expose
     def get(self,path):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj.get()
 
     @pr.expose
     def getDisp(self,path):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj.getDisp()
 
     @pr.expose
     def value(self,path):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj.value()
 
     @pr.expose
     def valueDisp(self,path):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj.valueDisp()
 
     @pr.expose
     def set(self,path,value):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+        value :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj.set(value)
 
     @pr.expose
     def setDisp(self,path,value):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+        value :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj.setDisp(value)
 
     @pr.expose
     def exec(self,path,arg):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+        arg :
+            
+
+        Returns
+        -------
+
+        """
         obj = self.getNode(path)
         return obj(arg)
 
     @contextmanager
     def updateGroup(self, period=0):
+        """
+        
+
+        Parameters
+        ----------
+        period :
+             (Default value = 0)
+
+        Returns
+        -------
+
+        """
         tid = threading.get_ident()
 
         # At with call
@@ -506,6 +669,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @contextmanager
     def pollBlock(self):
+        """ """
 
         # At with call
         self._pollQueue._blockIncrement()
@@ -520,9 +684,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @pr.expose
     def waitOnUpdate(self):
-        """
-        Wait until all update queue items have been processed.
-        """
+        """Wait until all update queue items have been processed."""
         self._updateQueue.join()
 
     def hardReset(self):
@@ -535,6 +697,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @ft.lru_cache(maxsize=None)
     def getNode(self,path):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+
+        Returns
+        -------
+
+        """
         obj = self
 
         if '.' in path:
@@ -555,6 +729,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @pr.expose
     def saveAddressMap(self,fname,headerEn=False):
+        """
+        
+
+        Parameters
+        ----------
+        fname :
+            
+        headerEn :
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
 
         # First form header
         # Changing these names here requires changing the createVariable() method in LibraryBase.cpp
@@ -642,6 +830,22 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @pr.expose
     def saveVariableList(self,fname,polledOnly=False,incGroups=None):
+        """
+        
+
+        Parameters
+        ----------
+        fname :
+            
+        polledOnly : bool
+             (Default value = False)
+        incGroups : 
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
         with open(fname,'w') as f:
             f.write("Path\t")
             f.write("TypeStr\t")
@@ -663,6 +867,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
     def _hbeatWorker(self):
+        """ """
         while self._running:
             time.sleep(1)
 
@@ -679,6 +884,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     #    os.execl(py, py, *sys.argv)
 
     def _rootAttached(self):
+        """ """
         self._parent = self
         self._root   = self
         self._path   = self.name
@@ -695,6 +901,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _sendYamlFrame(self,yml):
         """
         Generate a frame containing the passed string.
+
+        Parameters
+        ----------
+        yml :
+            
+
+        Returns
+        -------
+
         """
         b = bytearray(yml,'utf-8')
         frame = self._reqFrame(len(b),True)
@@ -712,6 +927,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         incGroups are None, the default set of stream include and
         exclude groups will be used as specified when the Root class was created.
         By default all variables are included, except for members of the NoStream group.
+
+        Parameters
+        ----------
+        modes :
+             (Default value = ['RW')
+        'RO' :
+            
+        'WO'] :
+            
+        incGroups :
+             (Default value = None)
+        excGroups :
+             (Default value = None)
+
+        Returns
+        -------
+
         """
 
         # Don't send if there are not any Slaves connected
@@ -754,7 +986,30 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         return True
 
     def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
-        """Save YAML configuration/status to a file. Called from command"""
+        """
+        Save YAML configuration/status to a file. Called from command
+
+        Parameters
+        ----------
+        name :
+            
+        readFirst :
+            
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+        autoPrefix :
+            
+        autoCompress :
+            
+
+        Returns
+        -------
+
+        """
 
         # Auto generate name if no arg
         if name is None or name == '':
@@ -777,7 +1032,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
     def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
-        """Load YAML configuration from a file. Called from command"""
+        """
+        Load YAML configuration from a file. Called from command
+
+        Parameters
+        ----------
+        name :
+            
+        writeEach :
+            
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+
+        Returns
+        -------
+
+        """
 
         # Pass arg is a python list
         if isinstance(name,list):
@@ -855,6 +1129,21 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Get current values as yaml data.
         modes is a list of variable modes to include.
         If readFirst=True a full read from hardware is performed.
+
+        Parameters
+        ----------
+        readFirst :
+            
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+
+        Returns
+        -------
+
         """
         if readFirst:
             self._read()
@@ -869,6 +1158,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         false a bulk write will be performed after all of the variable updates
         are completed. Bulk writes provide better performance when updating a large
         quantity of variables.
+
+        Parameters
+        ----------
+        yml :
+            
+        writeEach :
+            
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+
+        Returns
+        -------
+
         """
         d = pr.yamlToData(yml)
 
@@ -883,7 +1189,22 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
     def remoteVariableDump(self,name,modes,readFirst):
-        """Dump remote variable values to a file."""
+        """
+        Dump remote variable values to a file.
+
+        Parameters
+        ----------
+        name :
+            
+        modes :
+            
+        readFirst :
+            
+
+        Returns
+        -------
+
+        """
 
         # Auto generate name if no arg
         if name is None or name == '':
@@ -901,6 +1222,26 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
     def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
+        """
+        
+
+        Parameters
+        ----------
+        d :
+            
+        writeEach :
+            
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+
+        Returns
+        -------
+
+        """
         for key, value in d.items():
 
             # Attempt to get node
@@ -918,6 +1259,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.SystemLog.set(SystemLogInit)
 
     def _queueUpdates(self,var):
+        """
+        
+
+        Parameters
+        ----------
+        var :
+            
+
+        Returns
+        -------
+
+        """
         tid = threading.get_ident()
 
         with self._updateLock:
@@ -927,6 +1280,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     # Worker thread
     def _updateWorker(self):
+        """ """
         self._log.info("Starting update thread")
         strm = {}
         zmq  = {}

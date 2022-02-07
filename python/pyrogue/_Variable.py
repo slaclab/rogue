@@ -43,7 +43,7 @@ def VariableWait(varList, testFunction, timeout=0):
         
     testFunction :
         
-    timeout :
+    timeout : int
          (Default value = 0)
 
     Returns
@@ -53,7 +53,12 @@ def VariableWait(varList, testFunction, timeout=0):
 
     # Container class
     class varStates(object):
-        """ """
+        """
+       
+
+
+
+        """
 
         def __init__(self):
             self.vlist  = odict()
@@ -73,6 +78,7 @@ def VariableWait(varList, testFunction, timeout=0):
 
             Returns
             -------
+            ret
 
             """
             with self.cv:
@@ -445,15 +451,15 @@ class BaseVariable(pr.Node):
         ----------
         value :
             
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
-        write :
+        write : bool
              (Default value = True)
-        verify :
+        verify : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -473,9 +479,9 @@ class BaseVariable(pr.Node):
         ----------
         value :
             
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
 
         Returns
@@ -495,11 +501,11 @@ class BaseVariable(pr.Node):
         ----------
         * :
             
-        index :
+        index : int
              (Default value = -1)
-        read :
+        read : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -517,9 +523,9 @@ class BaseVariable(pr.Node):
         ----------
         * :
             
-        verify :
+        verify : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -537,7 +543,7 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        read :
+        read : bool
              (Default value = True)
 
         Returns
@@ -595,9 +601,9 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        read :
+        read : bool
              (Default value = True)
-        index :
+        index : int
              (Default value = -1)
 
         Returns
@@ -613,9 +619,9 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        read :
+        read : bool
              (Default value = True)
-        index :
+        index : int
              (Default value = -1)
 
         Returns
@@ -664,9 +670,9 @@ class BaseVariable(pr.Node):
         ----------
         sValue :
             
-        write :
+        write : bool
              (Default value = True)
-        index :
+        index : int
              (Default value = -1)
 
         Returns
@@ -1063,15 +1069,15 @@ class RemoteVariable(BaseVariable,rim.Variable):
         ----------
         value :
             
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
-        write :
+        write : bool
              (Default value = True)
-        verify :
+        verify : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -1106,9 +1112,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
         ----------
         value :
             
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
 
         Returns
@@ -1134,13 +1140,13 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         Parameters
         ----------
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
-        read :
+        read : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -1175,11 +1181,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         Parameters
         ----------
-        * :
+             * :
             
-        verify :
+        verify : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -1287,15 +1293,15 @@ class LocalVariable(BaseVariable):
         ----------
         value :
             
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
-        write :
+        write : bool
              (Default value = True)
-        verify :
+        verify : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -1332,7 +1338,7 @@ class LocalVariable(BaseVariable):
             
         * :
             
-        index :
+        index : int
              (Default value = -1)
 
         Returns
@@ -1358,13 +1364,13 @@ class LocalVariable(BaseVariable):
 
         Parameters
         ----------
-        * :
+            * :
             
-        index :
+        index : int
              (Default value = -1)
-        read :
+        read : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -1505,15 +1511,15 @@ class LinkVariable(BaseVariable):
         ----------
         value :
             
-        * :
+            * :
             
-        write :
+        write : bool
              (Default value = True)
-        index :
+        index : int
              (Default value = -1)
-        verify :
+        verify : bool
              (Default value = True)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
@@ -1534,11 +1540,11 @@ class LinkVariable(BaseVariable):
 
         Parameters
         ----------
-        read :
+        read : bool
              (Default value = True)
-        index :
+        index : int
              (Default value = -1)
-        check :
+        check : bool
              (Default value = True)
 
         Returns
