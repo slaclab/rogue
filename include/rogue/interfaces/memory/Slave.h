@@ -24,6 +24,7 @@
 #include <map>
 #include <memory>
 #include <rogue/interfaces/memory/Master.h>
+#include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON

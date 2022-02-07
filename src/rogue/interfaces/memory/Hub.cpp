@@ -93,72 +93,39 @@ uint64_t rim::Hub::doAddress() {
    else return(reqAddress() | offset_);
 }
 
-//! Create new transactions. We call this method from rim::Hub::doTransaction or a Hub sub-class.
-rim::TransactionQueue rim::Hub::splitTransaction(rim::TransactionPtr tran, uint32_t limit=4096, uint32_t offset=0x1000) {
-
-   // Queue to store the new transactions
-   rim::TransactionQueue transQueue;
-
-   // Compute number of protocol-compliant transactions required
-   unsigned int numberOfTransactions = std::ceil(tran->size() / limit);
-   log_->debug("Splitting transaction %i into %i transactions", tran->id_, numberOfTransactions);
-
-   // Create new transactions
-   for (unsigned int i=0; i<numberOfTransactions; ++i)
-   {
-      // Create the new sub-transaction
-      rim::TransactionPtr subtran = rim::Transaction::create(tran->timeout_);
-
-
-      subtran->iter_    = (uint8_t *) (tran->begin() + i * offset);
-      subtran->size_    = limit;
-      subtran->address_ = tran->address_ + (i * offset);
-      subtran->type_    = tran->type();
-
-      log_->debug("Created subtransaction %i, parent=%i, iter=%x, size=%i, address=%x", subtran->id_, tran->id_, subtran->iter_, subtran->size_, subtran->address_);      
-
-      subtran->parentTransaction_ = tran;
-      subtran->isSubtransaction_  = true;
-
-      // Add sub-transaction to the queue
-      transQueue.push(subtran);
-   }
-   return transQueue;
-}
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::Hub::doTransaction(rim::TransactionPtr tran) {
+  uint32_t maxAccess = doMaxAccess();
 
    // Adjust address
    tran->address_ |= offset_;
 
-   log_->debug("doTransaction() - id=%i, size=%i, slavemax=%i, addr=%x)", tran->id_, tran->size(), getSlave()->doMaxAccess(), tran->address_);   
-  
-   if (tran->size() > getSlave()->doMaxAccess())
-   {
-      // Split the transaction
-      rim::TransactionQueue transQueue = this->splitTransaction(tran);
-   
-      // Vector to store IDs of queued transactions
-      rim::TransactionIDVec transVec;
+   log_->debug("doTransaction() - id=%i, size=%i, maxAccess=%i, addr=%x)", tran->id_, tran->size(), maxAccess, tran->address_);   
 
-      // Forward transaction
-      while (!transQueue.empty())
-      {
-         // Schedule the transaction
-         rim::TransactionPtr subtran = transQueue.front();
-         uint32_t id = subtran->id_;         
-         getSlave()->doTransaction(subtran);
+   // Split into smaller transactions if necessary
+   if (tran->size() > maxAccess)  {
+     rim::TransactionPtr subTran = tran->createSubTransaction(tran->timeout_);     
+     uint32_t numberOfTransactions = std::ceil(tran->size() / maxAccess);
 
-         transVec.emplace_back(id);
-         transQueue.pop();
-      }
+     for (unsigned int i=0; i<numberOfTransactions; ++i)  {
+       subTran->iter_    = (uint8_t *) (tran->begin() + i * maxAccess);
+       subTran->size_    = (tran->size() >= (i+1 * maxAccess)) ? maxAccess : tran->size() % maxAccess;
+       subTran->address_ = tran->address_ + (i * maxAccess);
+       subTran->type_    = tran->type();
 
-      // Set the subtransactions vector in the original transaction
-      tran->subtransactions(transVec);
+       log_->debug("Created subTransaction %i, parent=%i, iter=%x, size=%i, address=%x", subTran->id_, tran->id_, subTran->iter_, subTran->size_, subTran->address_);      
+     }
+
+     // Declare all subTransactions have been created
+     tran->doneSubTransactions();
+
+     // Forward the subTransactions
+     for (TransactionMap::iterator it = tran->subTranMap_.begin(); it != tran->subTranMap_.end(); it++) {
+       getSlave()->doTransaction(it->second);
+     }
    }
-   else
-   {
+   else  {
       // Forward transaction
       getSlave()->doTransaction(tran);
    }

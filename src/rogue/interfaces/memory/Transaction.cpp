@@ -86,7 +86,7 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    error_   = "";
    done_    = false;
 
-   isSubtransaction_ = false;
+   isSubTransaction_ = false;
 
    log_ = rogue::Logging::create("memory.Transaction",true);
 
@@ -122,8 +122,22 @@ uint32_t rim::Transaction::size() { return size_; }
 //! Get type
 uint32_t rim::Transaction::type() { return type_; }
 
-//! Get address
-void rim::Transaction::subtransactions(std::vector<uint32_t> vec) { subtransactions_ = vec; }
+//! Create a subtransaction
+rim::TransactionPtr rim::Transaction::createSubTransaction (struct timeval timeout) {
+   // Create a new transaction and set up pointers back and forth
+   rim::TransactionPtr subTran = std::make_shared<rim::Transaction>(timeout);
+   subTran->parentTransaction_ = shared_from_this();
+   subTran->isSubTransaction_ = true;
+   subTranMap_[subTran->id()] = subTran;
+   log_->debug("Created subtransaction %i, parent=%i", subTran->id_, this->id_);
+
+   // Should subtransactions be given default address identical to parent?
+   return(subTran);
+}
+
+void rim::Transaction::doneSubTransactions() {
+  doneCreatingSubTransactions_ = true;
+}
 
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
@@ -136,19 +150,16 @@ void rim::Transaction::done() {
    cond_.notify_all();
 
    // If applicable, notify parent transaction about completion of a sub-transaction 
-   if (this->isSubtransaction_)
-   {
+   if (isSubTransaction_)  {
       // Get a shared_ptr to the parent transaction
-      rim::TransactionPtr sptr = this->parentTransaction_.lock();
-      if (sptr)
-      {
-         // Remove own ID from subtransactions ID vector in parent transaction
-         std::vector<uint32_t>::iterator position = std::find(sptr->subtransactions_.begin(),sptr->subtransactions_.end(),id_);
-         sptr->subtransactions_.erase(position);
+      rim::TransactionPtr parentTran = this->parentTransaction_.lock();
+      if (parentTran) {
+         // Remove own ID from parent subtransaction map
+        parentTran->subTranMap_.erase(id_);
 
          // If this is the last sub-transaction, notify parent transaction it is all done
-         if (sptr->subtransactions_.empty())
-            sptr->done();
+         if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+            parentTran->done();
       }
    }
 }
@@ -162,6 +173,20 @@ void rim::Transaction::errorPy(std::string error) {
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
+   
+   // If applicable, notify parent transaction about completion of a sub-transaction 
+   if (isSubTransaction_)  {
+      // Get a shared_ptr to the parent transaction
+      rim::TransactionPtr parentTran = parentTransaction_.lock();
+      if (parentTran) {
+         // Remove own ID from parent subtransaction map
+        parentTran->subTranMap_.erase(id_);
+
+         // If this is the last sub-transaction, notify parent transaction it is all done
+         if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+           parentTran->error("Transaction error. Subtransaction failed.");
+      }
+   }   
 }
 
 //! Complete transaction with passed error, lock must be held
@@ -180,6 +205,21 @@ void rim::Transaction::error(const char * fmt, ...) {
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
+   
+   // If applicable, notify parent transaction about completion of a sub-transaction 
+   if (isSubTransaction_)  {
+      // Get a shared_ptr to the parent transaction
+      rim::TransactionPtr parentTran = parentTransaction_.lock();
+      if (parentTran) {
+         // Remove own ID from parent subtransaction map
+        parentTran->subTranMap_.erase(id_);
+
+         // If this is the last sub-transaction, notify parent transaction it is all done
+         if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+           parentTran->error("Transaction error. Subtransaction failed.");
+      }
+   }   
+   
 }
 
 //! Wait for the transaction to complete

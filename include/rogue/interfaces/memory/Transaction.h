@@ -21,8 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #include <memory>
 #include <stdint.h>
-#include <queue>
-#include <vector>
+#include <map>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -43,8 +42,9 @@ namespace rogue {
          class Master;
          class Hub;
 
-         using TransactionIDVec = std::vector<uint32_t>;
-         using TransactionQueue = std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>>;
+      //         using TransactionIDVec = std::vector<uint32_t>;
+      //         using TransactionQueue = std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>>;
+         using TransactionMap = std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction>>;
          
          //! Transaction Container
          /** The Transaction is passed between the Master and Slave to initiate a transaction.
@@ -121,10 +121,13 @@ namespace rogue {
                std::mutex lock_;
                
                // Sub-transactions vector
-               std::vector<uint32_t> subtransactions_;
+           TransactionMap subTranMap_;
+
+           // Done creating subtransactions for this transaction
+           bool doneCreatingSubTransactions_;
                
                // Identify if it's a parent or a sub transaction
-               bool isSubtransaction_;
+               bool isSubTransaction_;
 
                //! Log
                std::shared_ptr<rogue::Logging> log_;
@@ -189,6 +192,14 @@ namespace rogue {
                 * @return 32-bit Transaction type
                 */
                uint32_t type();
+
+               //! Create a subtransaction
+               /** Create a new transaction and assign internal pointers linking it to this parent transaction
+                * @return A pointer to the newly created subtransaction
+                */
+           std::shared_ptr<rogue::interfaces::memory::Transaction> createSubTransaction (struct timeval timeout);
+
+           void doneSubTransactions();
 
                //! Refresh transaction timer
                /** Called to refresh the Transaction timer. If the passed reference
