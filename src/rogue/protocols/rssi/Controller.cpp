@@ -544,6 +544,14 @@ uint8_t  rpr::Controller::curMaxCumAck() {
    return curMaxCumAck_;
 }
 
+void rpr::Controller::resetCounters() {
+  dropCount_ = 0;
+  downCount_ = 0;
+  retranCount_ = 0;
+  locBusyCnt_ = 0;
+  remBusyCnt_ = 0;
+}
+
 // Method to transit a frame with proper updates
 void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txReset) {
    std::unique_lock<std::mutex> lock(txMtx_);

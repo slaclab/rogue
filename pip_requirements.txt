@@ -18,3 +18,4 @@ numpy
 flake8
 gitpython
 pygithub
+pydm

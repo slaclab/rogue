@@ -1,5 +1,5 @@
 
-# rogue
+# Rogue
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
 *Current documentation can be found at:*
@@ -15,6 +15,8 @@ SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
    https://jira.slac.stanford.edu/projects/ESROGUE
 
 # Getting Rogue
+
+[![Anaconda-Server Badge](https://anaconda.org/tidair-tag/rogue/badges/version.svg)](https://anaconda.org/tidair-tag/rogue) [![Anaconda-Server Badge](https://anaconda.org/tidair-tag/rogue/badges/platforms.svg)](https://anaconda.org/tidair-tag/rogue)
 
 Instructions for getting and installing Rogue can be found here:
 
@@ -37,3 +39,4 @@ The following is how you install the development version (pre-release) or Rogue 
    $ conda create -n rogue_pre -c tidair-dev -c tidair-packages -c conda-forge rogue
 
 ```
+

@@ -70,9 +70,23 @@ const std::map< std::string, rim::BlockPtr> rogue::LibraryBase::getBlockList() {
 
 // Parse memory map
 void rogue::LibraryBase::parseMemMap (std::string map) {
+   // Determine which delimiter we are using
+   char delim;
+   std::size_t found = map.find("|");
+   if (found!=std::string::npos) delim = '|';
+   else delim = '\n';
+   std::istringstream fStream(map);
+   parseMemMap( fStream, delim );
+}
+
+void rogue::LibraryBase::parseMemMap ( const char * filePath, char delim ) {
+   std::ifstream fStream(filePath);
+   parseMemMap( fStream, delim );
+}
+
+void rogue::LibraryBase::parseMemMap (std::istream & fStream,char delim){
    std::string line;
    std::string field;
-   std::istringstream fStream(map);
    std::vector<std::string> key;
 
    std::map< std::string, std::vector<rim::VariablePtr> > blockVars;
@@ -80,12 +94,6 @@ void rogue::LibraryBase::parseMemMap (std::string map) {
 
    uint32_t x;
    bool doKey=true;
-   char delim;
-
-   // Determine which delimiter we are using
-   std::size_t found = map.find("|");
-   if (found!=std::string::npos) delim = '|';
-   else delim = '\n';
 
    while(std::getline(fStream,line,delim)) {
       std::istringstream lStream(line);

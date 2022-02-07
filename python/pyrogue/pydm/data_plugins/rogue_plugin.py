@@ -117,7 +117,10 @@ class RogueConnection(PyDMConnection):
         elif self._enum is not None:
             self.new_value_signal[int].emit(self._enum.index(varValue.valueDisp))
         else:
-            self.new_value_signal[type(varValue.value)].emit(varValue.value)
+            if isinstance(varValue.value, list):
+                self.new_value_signal[str].emit(varValue.valueDisp)
+            else:
+                self.new_value_signal[type(varValue.value)].emit(varValue.value)
 
         self.new_severity_signal.emit(AlarmToInt[varValue.severity])
 
