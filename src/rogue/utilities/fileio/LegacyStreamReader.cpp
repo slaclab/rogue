@@ -30,6 +30,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -178,9 +179,9 @@ void ruf::LegacyStreamReader::runThread() {
          }
 
          //cout << "Frame with size" << size << "and channel" << chan;
-         log.info("Got frame with header %x, size %i and channel %i", header, size, chan);
+         log.info("Got frame with header %" PRIx32 ", size %" PRIu32 " and channel %" PRIu8, header, size, chan);
          if ( size == 0 ) {
-            log.warning("Bad size read %i",size);
+            log.warning("Bad size read %" PRIu32, size);
             err = true;
             break;
          }
@@ -201,7 +202,7 @@ void ruf::LegacyStreamReader::runThread() {
             if ( bSize > (*it)->getSize() ) bSize = (*it)->getSize();
 
             if ( (ret = read(fd_,(*it)->begin(),bSize)) != bSize) {
-               log.warning("Short read. Ret = %i Req = %i after %i bytes",ret,bSize,frame->getPayload());
+               log.warning("Short read. Ret = %" PRId32 " Req = %" PRIu32 " after %" PRIu32 " bytes", ret, bSize, frame->getPayload());
                ::close(fd_);
                fd_ = -1;
                frame->setError(0x1);

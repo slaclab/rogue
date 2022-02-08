@@ -37,6 +37,7 @@
 #include <unistd.h>
 #include <sys/time.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -196,12 +197,12 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
    ris::FrameLockPtr flock = frame->lock();
 
    if ( frame->getError() || frame->isEmpty() || ! head->verify() ) {
-      log_->warning("Dumping bad frame state=%i server=%i",state_,server_);
+      log_->warning("Dumping bad frame state=%" PRIu32 " server=%" PRIu32, state_, server_);
       dropCount_++;
       return;
    }
 
-   log_->debug("RX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, bst=%i, rst=%i, ack#=%i seq=%i, nxt=%i",
+   log_->debug("RX frame: state=%i server=%" PRIu32 " size=%" PRIu32 " syn=%" PRIu32 " ack=%" PRIu32 " nul=%" PRIu32 ", bst=%" PRIu32 ", rst=%" PRIu32 ", ack#=%" PRIu32 " seq=%" PRIu32 ", nxt=%" PRIu32,
          state_, server_,frame->getPayload(),head->syn,head->ack,head->nul,head->busy,head->rst,
          head->acknowledge,head->sequence,nextSeqRx_);
 
@@ -253,7 +254,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
             // First remove received sequence number from queue to avoid duplicates
             if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
-               log_->warning("Removed duplicate frame. server=%i, head->sequence=%i, next sequence=%i",
+               log_->warning("Removed duplicate frame. server=%" PRIu8 ", head->sequence=%" PRIu32 ", next sequence=%" PRIu32,
                      server_, head->sequence, nextSeqRx_);
                dropCount_++;
                oooQueue_.erase(it);
@@ -267,7 +268,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
                nextSeqRx_ = nextSeqRx_ + 1;
 
                appQueue_.push(it->second);
-               log_->info("Using frame from ooo queue. server=%i, head->sequence=%i", server_, (it->second)->sequence);
+               log_->info("Using frame from ooo queue. server=%" PRIu8 ", head->sequence=%" PRIu32, server_, (it->second)->sequence);
                oooQueue_.erase(it);
             }
          }
@@ -278,7 +279,7 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
 
       // Check if received frame is already in out of order queue
       else if ( ( it = oooQueue_.find(head->sequence)) != oooQueue_.end() ) {
-         log_->warning("Dropped duplicate frame. server=%i, head->sequence=%i, next sequence=%i",
+         log_->warning("Dropped duplicate frame. server=%" PRIu8 ", head->sequence=%" PRIu32 ", next sequence=%" PRIu32,
                server_, head->sequence, nextSeqRx_);
          dropCount_++;
       }
@@ -293,14 +294,14 @@ void rpr::Controller::transportRx( ris::FramePtr frame ) {
          while ( ++x != windowEnd ) {
             if (head->sequence == x) {
                oooQueue_.insert(std::make_pair(head->sequence,head));
-               log_->info("Adding frame to ooo queue. server=%i, head->sequence=%i, nextSeqRx_=%i, windowsEnd=%i",
+               log_->info("Adding frame to ooo queue. server=%" PRIu8 ", head->sequence=%" PRIu32 ", nextSeqRx_=% " PRIu8 ", windowsEnd=%" PRIu32,
                      server_, head->sequence, nextSeqRx_, windowEnd);
                break;
             }
          }
 
          if ( x == windowEnd ) {
-            log_->warning("Dropping out of window frame. server=%i, head->sequence=%i, nextSeqRx_=%i, windowsEnd=%i",
+            log_->warning("Dropping out of window frame. server=%" PRIu8 ", head->sequence=%" PRIu32 ", nextSeqRx_=%" PRIu8 ", windowsEnd=%" PRIu32,
                   server_, head->sequence, nextSeqRx_, windowEnd);
             dropCount_++;
          }
@@ -373,7 +374,7 @@ void rpr::Controller::applicationRx ( ris::FramePtr frame ) {
       usleep(10);
       if ( timePassed(startTime,timeout_) ) {
          gettimeofday(&startTime,NULL);
-         log_->critical("Controller::applicationRx: Timeout waiting for outbound queue after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
+         log_->critical("Controller::applicationRx: Timeout waiting for outbound queue after %" PRIu32 ".%" PRIu32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
       }
    }
 
@@ -580,7 +581,7 @@ void rpr::Controller::transportTx(rpr::HeaderPtr head, bool seqUpdate, bool txRe
    head->update();
 
    log_->log(rogue::Logging::Debug,
-         "TX frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, bsy=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
+         "TX frame: state=%" PRIu32 " server=%" PRIu8 " size=%" PRIu32 " syn=%" PRIu8 " ack=%" PRIu8 " nul=%" PRIu8 ", bsy=%" PRIu8 ", rst=%" PRIu8 ", ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%" PRIu32,
          state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->busy,head->rst,
          head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
 
@@ -620,9 +621,9 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
    gettimeofday(&txTime_,NULL);
 
    log_->log(rogue::Logging::Warning,
-         "Retran frame: state=%i server=%i size=%i syn=%i ack=%i nul=%i, rst=%i, ack#=%i, seq=%i, recount=%i, ptr=%p",
-         state_,server_,head->getFrame()->getPayload(),head->syn,head->ack,head->nul,head->rst,
-         head->acknowledge,head->sequence,retranCount_,head->getFrame().get());
+         "Retran frame: state=%" PRIu8 " server=%" PRIu8 " size=%" PRIu32 " syn=%" PRIu8 " ack=%" PRIu8 " nul=%" PRIu8 ", rst=%" PRIu8 ", ack#=%" PRIu8 ", seq=%" PRIu8 ", recount=%" PRIu32 ", ptr=%" PRIu8,
+         state_, server_, head->getFrame()->getPayload(), head->syn, head->ack, head->nul, head->rst,
+         head->acknowledge, head->sequence, retranCount_, head->getFrame().get());
 
    ris::FrameLockPtr flock = head->getFrame()->lock();
    head->update();
@@ -717,7 +718,7 @@ struct timeval & rpr::Controller::stateClosedWait () {
       // Reset
       if ( head->rst ) {
          state_ = StClosed;
-         log_->warning("Closing link. Server=%i",server_);
+         log_->warning("Closing link. Server=%" PRIu8, server_);
       }
 
       // Syn ack
@@ -813,7 +814,7 @@ struct timeval & rpr::Controller::stateSendSynAck () {
    transportTx(head,true,true);
 
    // Update state
-   log_->warning("State is open. Server=%i",server_);
+   log_->warning("State is open. Server=%" PRIu8, server_);
    state_ = StOpen;
    return(cumAckToutD2_);
 }
@@ -834,7 +835,7 @@ struct timeval & rpr::Controller::stateSendSeqAck () {
 
    // Update state
    state_ = StOpen;
-   log_->warning("State is open. Server=%i",server_);
+   log_->warning("State is open. Server=%" PRIu8, server_);
    return(cumAckToutD2_);
 }
 
@@ -897,7 +898,7 @@ struct timeval & rpr::Controller::stateError () {
    rpr::HeaderPtr rst;
    uint32_t x;
 
-   log_->warning("Entering reset state. Server=%i",server_);
+   log_->warning("Entering reset state. Server=%" PRIu8, server_);
 
    rst = rpr::Header::create(tran_->reqFrame(rpr::Header::HeaderSize,false));
    rst->rst = true;
@@ -905,7 +906,7 @@ struct timeval & rpr::Controller::stateError () {
    transportTx(rst,true,true);
 
    downCount_++;
-   log_->warning("Entering closed state. Server=%i",server_);
+   log_->warning("Entering closed state. Server=%" PRIu8, server_);
    state_ = StClosed;
 
    // Reset queues

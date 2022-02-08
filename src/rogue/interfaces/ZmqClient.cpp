@@ -22,6 +22,7 @@
 #include <rogue/GeneralError.h>
 #include <string>
 #include <zmq.h>
+#include <inttypes.h>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
@@ -114,10 +115,10 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port, bool d
 
    if ( doString_ ) {
       threadEn_ = false;
-      log_->info("Connected to Rogue server at port %i",reqPort);
+      log_->info("Connected to Rogue server at port %" PRIu32, reqPort);
    }
    else {
-      log_->info("Connected to Rogue server at ports %i:%i",port,reqPort);
+      log_->info("Connected to Rogue server at ports %" PRIu16 ":%" PRIu32, port, reqPort);
 
       threadEn_ = true;
       thread_ = new std::thread(&rogue::interfaces::ZmqClient::runThread, this);
@@ -181,7 +182,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
       if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
          seconds += (float)timeout_ / 1000.0;
          if ( waitRetry_ ) {
-            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",seconds);
+            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
             zmq_msg_close(&msg);
          }
          else
@@ -190,7 +191,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
       else break;
    }
 
-   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
+   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!", seconds);
 
    data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
    zmq_msg_close(&msg);
@@ -241,7 +242,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
          if ( zmq_recvmsg(this->zmqReq_,&rxMsg,0) <= 0 ) {
             seconds += (float)timeout_ / 1000.0;
             if ( waitRetry_ ) {
-               log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",seconds);
+               log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
                zmq_msg_close(&rxMsg);
             }
             else
@@ -251,7 +252,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
       }
    }
 
-   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
+   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!", seconds);
 
    PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
    zmq_msg_close(&rxMsg);

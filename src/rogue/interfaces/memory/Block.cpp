@@ -247,7 +247,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
       }
       doUpdate_ = updateEn_;
 
-      bLog_->debug("Start transaction type = %i, Offset=0x%x, lByte=%i, hByte=%i, tOff=0x%x, tSize=%i",type,offset_,lowByte,highByte,tOff,tSize);
+      bLog_->debug("Start transaction type = %" PRIu32 ", Offset=0x%" PRIx64 ", lByte=%" PRIu32 ", hByte=%" PRIu32 ", tOff=0x%" PRIx32 ", tSize=%" PRIu32, type, offset_, lowByte, highByte, tOff, tSize);
 
       // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
@@ -274,7 +274,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
 
       } catch ( rogue::GeneralError err ) {
          if ( (count+1) >= retryCount_ ) throw err;
-         bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
+         bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
          fWr = true; // Stale state is now lost
       }
    }
@@ -307,7 +307,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
       } catch ( rogue::GeneralError err ) {
          if ( (count+1) >= retryCount_ ) throw err;
-         bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
+         bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
          fWr = true; // Stale state is now lost
       }
    }
@@ -343,7 +343,7 @@ bool rim::Block::checkTransaction() {
 
       // Check verify data if verifyInp is set
       if ( verifyInp_ ) {
-         bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
+         bLog_->debug("Verfying data. Base=0x%" PRIx32 ", size=%" PRIu32, verifyBase_, verifySize_);
          verifyReq_ = false;
          verifyInp_ = false;
 
@@ -459,7 +459,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
          }
       }
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",(*vit)->name_.c_str(),path_.c_str(),offset_);
+      bLog_->debug("Adding variable %s to block %s at offset 0x%" PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_);
    }
 
    // Init overlap enable before check, block level overlap enable flag will be removed in the future
@@ -1605,7 +1605,7 @@ double rim::Block::getFixed ( rim::Variable *var, int32_t index ) {
 
    getBytes((uint8_t *)&fPoint,var,index);
    // Do two-complement if negative
-   if ((fPoint & (1 << var->valueBits_-1)) != 0) {
+   if ((fPoint & (1 << (var->valueBits_-1))) != 0) {
      fPoint = fPoint - (1 << var->valueBits_);
    }
 

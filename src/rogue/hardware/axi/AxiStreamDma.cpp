@@ -27,6 +27,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
@@ -181,7 +182,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIu32 ".%" PRIu32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -282,7 +283,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIu32 ".%" PRIu32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {

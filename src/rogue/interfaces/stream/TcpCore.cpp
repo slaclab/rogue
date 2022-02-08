@@ -28,6 +28,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -171,7 +172,7 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    }
 
    if ( zmq_msg_init_size (&(msg[3]), frame->getPayload()) < 0 ) {
-      bridgeLog_->warning("Failed to init message with size %i",frame->getPayload());
+      bridgeLog_->warning("Failed to init message with size %" PRIu32,frame->getPayload());
       return;
    }
 
@@ -192,9 +193,9 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    // Send data
    for (x=0; x < 4; x++) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
-        bridgeLog_->warning("Failed to push message with size %i on %s",frame->getPayload(), this->pushAddr_.c_str());
+        bridgeLog_->warning("Failed to push message with size %" PRIu32 " on %s", frame->getPayload(), this->pushAddr_.c_str());
    }
-   bridgeLog_->debug("Pushed TCP frame with size %i on %s",frame->getPayload(), this->pushAddr_.c_str());
+   bridgeLog_->debug("Pushed TCP frame with size %" PRIu32 " on %s", frame->getPayload(), this->pushAddr_.c_str());
 }
 
 //! Run thread
@@ -266,7 +267,7 @@ void ris::TcpCore::runThread() {
          frame->setChannel(chan);
          frame->setError(err);
 
-         bridgeLog_->debug("Pulled frame with size %i",frame->getPayload());
+         bridgeLog_->debug("Pulled frame with size %" PRIu32, frame->getPayload());
          sendFrame(frame);
       }
 

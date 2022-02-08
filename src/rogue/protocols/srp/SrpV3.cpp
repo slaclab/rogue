@@ -35,6 +35,7 @@
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;
@@ -169,10 +170,10 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done();
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=%i, addr 0x%0.8x. Size=%i, type=%i",
+   log_->debug("Send frame for id=%" PRIu32 ", addr 0x%" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32,
                tran->id(),tran->address(),tran->size(),tran->type());
-   log_->debug("Send frame for id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
-               tran->id(), header[0],header[1],header[2],header[3],header[4]);
+   log_->debug("Send frame for id=%" PRIu32 ", header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32,
+               tran->id(), header[0], header[1], header[2], header[3], header[4]);
 
    sendFrame(frame);
 }
@@ -194,13 +195,13 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr frLock = frame->lock();
 
    if ( frame->getError() ) {
-      log_->warning("Got errored frame = 0x%i",frame->getError());
+      log_->warning("Got errored frame = 0x%" PRIu8, frame->getError());
       return; // Invalid frame, drop it
    }
 
    // Check frame size
    if ( (fSize = frame->getPayload()) < (HeadLen+TailLen) ) {
-      log_->warning("Got undersized frame size = %i",fSize);
+      log_->warning("Got undersized frame size = %" PRIu32, fSize);
       return; // Invalid frame, drop it
    }
 
@@ -214,12 +215,12 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract the id
    id = header[1];
-   log_->debug("Got frame id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x tail: 0x%0.8x",
-               id, header[0],header[1],header[2],header[3],header[4],tail[0]);
+   log_->debug("Got frame id=%i, header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " tail: 0x%" PRIx32,
+               id, header[0], header[1], header[2], header[3], header[4], tail[0]);
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->warning("Failed to find transaction id=%i",id);
+     log_->warning("Failed to find transaction id=%" PRIu32, id);
      return; // Bad id or post, drop frame
    }
 
@@ -240,7 +241,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    if ( ((header[0] & 0xFFFFC3FF) != expHeader[0]) ||
          (header[1] != expHeader[1]) || (header[2] != expHeader[2]) ||
          (header[3] != expHeader[3]) || (header[4] != expHeader[4]) ) {
-     log_->warning("Bad header for %i",id);
+     log_->warning("Bad header for %" PRIu32, id);
      tran->error("Received SRPV3 message did not match expected protocol");
      return;
    }
@@ -250,13 +251,13 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       if ( tail[0] & 0x2000 ) tran->error("FPGA register bus lockup detected in hardware. Power cycle required.");
       else if ( tail[0] & 0x0100 ) tran->error("FPGA register bus timeout detected in hardware");
       else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%x",tail[0]);
-      log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
+      log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%" PRIx32, id, tail[0]);
       return;
    }
 
    // Verify frame size, drop frame
    if ( (fSize != expFrameLen) || (header[4]+1) != tran->size() ) {
-      log_->warning("Size mismatch id=%i. fsize=%i, exp=%i, tsize=%i, header=%i",id, fSize, expFrameLen, tran->size(),header[4]+1);
+      log_->warning("Size mismatch id=%" PRIu32 ". fsize=%" PRIu32 ", exp=%" PRIu32 ", tsize=%" PRIu32 ", header=%" PRIu32, id, fSize, expFrameLen, tran->size(), header[4] + 1);
       tran->error("Received SRPV3 message had a header size mismatch");
       return;
    }

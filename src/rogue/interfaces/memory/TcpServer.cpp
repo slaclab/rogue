@@ -188,7 +188,7 @@ void rim::TcpServer::runThread() {
             // Data pointer
             data = (uint8_t *)zmq_msg_data(&(msg[4]));
 
-            bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32,id,addr,size,type);
+            bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32, id, addr, size, type);
 
             // Execute transaction and wait for result
             this->clearError();
@@ -196,7 +196,7 @@ void rim::TcpServer::runThread() {
             waitTransaction(0);
             result = getError();
 
-            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=(%s)",id,addr,size,type,result.c_str());
+            bridgeLog_->debug("Done transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32 ", result=(%s)", id, addr, size, type, result.c_str());
 
             // Result message, at least one char needs to be sent
             if ( result.length() == 0 ) result = "OK";
