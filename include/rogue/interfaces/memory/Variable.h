@@ -396,7 +396,7 @@ namespace rogue {
                /////////////////////////////////
 
                //! Set byte array
-               void setBytArray(uint8_t *, int32_t index=-1);
+               void setByteArray(uint8_t *, int32_t index=-1);
 
                //! Get byte array
                void getByteArray(uint8_t *, int32_t index=-1);
