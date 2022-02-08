@@ -108,8 +108,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
      uint32_t numberOfTransactions = std::ceil(1.0*tran->size() / maxAccess);
      
-     log_->debug("Splitting txn into %i subtransactions", numberOfTransactions);
-     log_->debug("std::ceil(%i, %i) = %i", tran->size(), maxAccess, numberOfTransactions);
+     log_->debug("Splitting txn %i into %i subtransactions", tran->id_, numberOfTransactions);
 
      for (unsigned int i=0; i<numberOfTransactions; ++i)  {
        rim::TransactionPtr subTran = tran->createSubTransaction(tran->timeout_);            
