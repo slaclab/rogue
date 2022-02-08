@@ -84,7 +84,7 @@ std::string rim::Hub::doSlaveName() {
 uint32_t rim::Hub::doMaxAccess() {
     // Transaction splitting allows for "unlimited" max access
     if ( root_ ) return(rim::Slave::doMaxAccess());
-    else return 0xFFFFFFFF;
+    else return 0x0FFFFFFF;
 }
 
 //! Return address
@@ -96,7 +96,7 @@ uint64_t rim::Hub::doAddress() {
 
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::Hub::doTransaction(rim::TransactionPtr tran) {
-  uint32_t maxAccess = doMaxAccess();
+  uint32_t maxAccess = getSlave()->doMaxAccess();
 
    // Adjust address
    tran->address_ |= offset_;
@@ -105,12 +105,20 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
    // Split into smaller transactions if necessary
    if (tran->size() > maxAccess)  {
-     rim::TransactionPtr subTran = tran->createSubTransaction(tran->timeout_);     
-     uint32_t numberOfTransactions = std::ceil(tran->size() / maxAccess);
+
+     uint32_t numberOfTransactions = std::ceil(1.0*tran->size() / maxAccess);
+     
+     log_->debug("Splitting txn into %i subtransactions", numberOfTransactions);
+     log_->debug("std::ceil(%i, %i) = %i", tran->size(), maxAccess, numberOfTransactions);
 
      for (unsigned int i=0; i<numberOfTransactions; ++i)  {
+       rim::TransactionPtr subTran = tran->createSubTransaction(tran->timeout_);            
        subTran->iter_    = (uint8_t *) (tran->begin() + i * maxAccess);
-       subTran->size_    = (tran->size() >= (i+1 * maxAccess)) ? maxAccess : tran->size() % maxAccess;
+       if (tran->size() >= ((i+1) * maxAccess)) {
+         subTran->size_ = maxAccess;
+       } else {
+         subTran->size_ = tran->size() % maxAccess;
+       }
        subTran->address_ = tran->address_ + (i * maxAccess);
        subTran->type_    = tran->type();
 
