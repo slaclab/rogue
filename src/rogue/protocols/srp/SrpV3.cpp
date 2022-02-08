@@ -143,7 +143,7 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    }
 
    if (tran->size() > max()) {
-      tran->error("Transaction size 0x%x exceeds max size %i",tran->size(),min());
+      tran->error("Transaction size 0x%x exceeds max size %i",tran->size(),max());
       return;
    }
 
