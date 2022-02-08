@@ -252,15 +252,6 @@ namespace rogue {
                 */
                uint8_t * end();
 
-               //! Set vector of sub-transactions associated with this transaction 
-               /** Not exposed to Python
-                *
-                * Lock must be held before calling this method and while
-                * updating Transaction data.
-                * @return Data iterator as Transaction::iterator
-                */
-               void subtransactions(std::vector<uint32_t> vec);
-
 #ifndef NO_PYTHON
 
                //! Method for copying transaction data to Python byte array
