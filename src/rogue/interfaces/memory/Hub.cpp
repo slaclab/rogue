@@ -84,7 +84,7 @@ std::string rim::Hub::doSlaveName() {
 uint32_t rim::Hub::doMaxAccess() {
     // Transaction splitting allows for "unlimited" max access
     if ( root_ ) return(rim::Slave::doMaxAccess());
-    else return 0x0FFFFFFF;
+    else return 0xFFFFFFFF;
 }
 
 //! Return address
