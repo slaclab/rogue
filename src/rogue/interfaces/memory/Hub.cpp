@@ -28,6 +28,8 @@
 #include <memory>
 #include <cmath>
 
+#include <inttypes.h>
+
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
