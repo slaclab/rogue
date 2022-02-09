@@ -198,28 +198,7 @@ void rim::Transaction::error(const char * fmt, ...) {
    vsnprintf(buffer,10000,fmt,args);
    va_end(args);
 
-   error_ = buffer;
-   done_  = true;
-
-   log_->debug("Transaction error. type=%i id=%i, address=0x%016x, size=0x%x, error=%s",
-         type_,id_,address_,size_,error_.c_str());
-
-   cond_.notify_all();
-   
-   // If applicable, notify parent transaction about completion of a sub-transaction 
-   if (isSubTransaction_)  {
-      // Get a shared_ptr to the parent transaction
-      rim::TransactionPtr parentTran = parentTransaction_.lock();
-      if (parentTran) {
-         // Remove own ID from parent subtransaction map
-        parentTran->subTranMap_.erase(id_);
-
-         // If this is the last sub-transaction, notify parent transaction it is all done
-         if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
-           parentTran->error("Transaction error. Subtransaction failed.");
-      }
-   }   
-   
+   errorPy(std::string(buffer));
 }
 
 //! Wait for the transaction to complete
