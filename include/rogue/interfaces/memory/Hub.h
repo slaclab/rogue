@@ -23,10 +23,9 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_HUB_H__
 #define __ROGUE_INTERFACES_MEMORY_HUB_H__
 #include <stdint.h>
-#include <vector>
-#include <memory>
-#include <queue>
-#include <map>
+//#include <vector>
+//#include <memory>
+//#include <map>
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
