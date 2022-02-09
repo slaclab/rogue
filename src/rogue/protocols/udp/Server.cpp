@@ -55,6 +55,9 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    port_    = port;
    udpLog_ = rogue::Logging::create("udp.Server");
 
+   // Create a shared pointer to use as a lock for runThread()
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %i",port_));
@@ -84,7 +87,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Start rx thread
    threadEn_ = true;
-   thread_ = new std::thread(&rpu::Server::runThread, this);
+   thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
@@ -173,7 +176,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Run thread
-void rpu::Server::runThread() {
+void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
    ris::BufferPtr     buff;
    ris::FramePtr      frame;
    fd_set             fds;
@@ -183,8 +186,11 @@ void rpu::Server::runThread() {
    uint32_t           tmpLen;
    uint32_t           avail;
 
+   // Wait until constructor completes
+   while (!lockPtr.expired())
+      continue;
+
    udpLog_->logThreadId();
-   usleep(1000);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

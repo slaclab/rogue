@@ -57,6 +57,9 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    vc_         = vc;
    zeroCopyEn_ = true;
 
+   // Create a shared pointer to use as a lock for runThread()
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+
    rogue::defaultTimeout(timeout_);
 
    rogue::GilRelease noGil;
@@ -85,7 +88,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    // Start read thread
    threadEn_ = true;
-   thread_ = new std::thread(&rhp::PgpCard::runThread, this);
+   thread_ = new std::thread(&rhp::PgpCard::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
@@ -342,7 +345,7 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
 }
 
 //! Run thread
-void rhp::PgpCard::runThread() {
+void rhp::PgpCard::runThread(std::weak_ptr<int> lockPtr) {
    ris::BufferPtr buff;
    ris::FramePtr  frame;
    fd_set         fds;
@@ -353,8 +356,11 @@ void rhp::PgpCard::runThread() {
    uint32_t       meta;
    struct timeval tout;
 
+   // Wait until constructor completes
+   while (!lockPtr.expired())
+      continue;
+
    log_->logThreadId();
-   usleep(1000);
 
    // Preallocate empty frame
    frame = ris::Frame::create();

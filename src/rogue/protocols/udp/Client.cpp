@@ -59,6 +59,9 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
    port_    = port;
    udpLog_  = rogue::Logging::create("udp.Client");
 
+   // Create a shared pointer to use as a lock for runThread()
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
       throw(rogue::GeneralError::create("Client::Client","Failed to create socket for port %i at address %s",port_,address_.c_str()));
@@ -87,7 +90,7 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Start rx thread
    threadEn_ = true;
-   thread_ = new std::thread(&rpu::Client::runThread, this);
+   thread_ = new std::thread(&rpu::Client::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
@@ -171,7 +174,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Run thread
-void rpu::Client::runThread() {
+void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
    ris::BufferPtr buff;
    ris::FramePtr  frame;
    fd_set         fds;
@@ -179,8 +182,11 @@ void rpu::Client::runThread() {
    struct timeval tout;
    uint32_t       avail;
 
+   // Wait until constructor completes
+   while (!lockPtr.expired())
+      continue;
+
    udpLog_->logThreadId();
-   usleep(1000);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

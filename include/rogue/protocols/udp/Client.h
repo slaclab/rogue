@@ -43,7 +43,7 @@ namespace rogue {
                uint16_t port_;
 
                //! Thread background
-               void runThread();
+               void runThread(std::weak_ptr<int>);
 
             public:
 
