@@ -190,18 +190,17 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
          highByte = size_-1;
          if ( type == rim::Write || type == rim::Post ) {
             stale_ = false;
-            for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) (*vit)->stale_ = false;
+            for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
+              (*vit)->stale_ = false;
+            }
          }
-         bLog_->debug("intStartTransaction null - lowByte %i, highByte %i", lowByte, highByte);                                   
       } else {
 
         if ( type == rim::Read || type == rim::Verify ) {
             if (index < 0 || index >= var->numValues_) {
                  lowByte = var->lowTranByte_;
                  highByte = var->highTranByte_;
-             }
-
-             else {
+             } else {
                  lowByte = var->listLowTranByte_[index];
                  highByte = var->listHighTranByte_[index];
              }
@@ -218,8 +217,6 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
                 }
             }
          }
-
-          bLog_->debug("intStartTransaction - var: %s, lowByte %i, highByte %i", var->name_.c_str(), lowByte, highByte);
       }
 
       // Device is disabled, check after clearing stale states
