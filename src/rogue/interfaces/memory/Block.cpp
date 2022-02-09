@@ -563,8 +563,6 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t in
          var->staleLowByte_ = var->listLowTranByte_[index];
          var->staleHighByte_ = var->listHighTranByte_[index];
       }
-      bLog_->debug("setBytes var: %s - var->stale_: %i, lowByte: %i, highByte: %i", var->name_.c_str(), var->stale_, var->staleLowByte_, var->staleHighByte_);
-
    }
 
    // Standard variable
@@ -787,7 +785,6 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
       if ( (index + dims[0]) > var->numValues_ )
          throw(rogue::GeneralError::create("Block::setUIntPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
-      bLog_->debug("setUIntPy called on %s with nparray size %i", var->name_.c_str(), dims[0]);
       if ( PyArray_TYPE(arr) == NPY_UINT64 ) {
           uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
           for (x=0; x < dims[0]; x++) setUInt (src[x], var, index+x);
@@ -891,7 +888,6 @@ void rim::Block::setUInt ( const uint64_t &val, rim::Variable *var, int32_t inde
       throw(rogue::GeneralError::create("Block::setUInt",
          "Value range error for %s. Value=%" PRIu64 ", Min=%f, Max=%f",var->name_.c_str(),val,var->minValue_,var->maxValue_));
 
-   bLog_->debug("setUInt called on %s with value: %" PRIu64 ", and index %i", var->name_.c_str(), val, index);
    setBytes((uint8_t *)&val,var,index);
 }
 

@@ -101,14 +101,12 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
    // Adjust address
    tran->address_ |= offset_;
 
-   log_->debug("doTransaction() - id=%i, size=%i, maxAccess=%i, addr=%x)", tran->id_, tran->size(), maxAccess, tran->address_);   
-
    // Split into smaller transactions if necessary
    if (tran->size() > maxAccess)  {
 
      uint32_t numberOfTransactions = std::ceil(1.0*tran->size() / maxAccess);
      
-     log_->debug("Splitting txn %i into %i subtransactions", tran->id_, numberOfTransactions);
+     log_->debug("Splitting transaction %" PRIu32 " into %" PRIu32 " subtransactions", tran->id_, numberOfTransactions);
 
      for (unsigned int i=0; i<numberOfTransactions; ++i)  {
        rim::TransactionPtr subTran = tran->createSubTransaction(tran->timeout_);            
@@ -121,7 +119,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
        subTran->address_ = tran->address_ + (i * maxAccess);
        subTran->type_    = tran->type();
 
-       log_->debug("Created subTransaction %i, parent=%i, iter=%x, size=%i, address=%x", subTran->id_, tran->id_, subTran->iter_, subTran->size_, subTran->address_);      
+       log_->debug("Created subTransaction %" PRIu32 ", parent=%" PRIu32 ", iter=%" PRIx32 ", size=%" PRIu32 ", address=%" PRIx64, subTran->id_, tran->id_, subTran->iter_, subTran->size_, subTran->address_);      
      }
 
      // Declare all subTransactions have been created

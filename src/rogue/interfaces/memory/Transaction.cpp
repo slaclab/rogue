@@ -129,7 +129,7 @@ rim::TransactionPtr rim::Transaction::createSubTransaction (struct timeval timeo
    subTran->parentTransaction_ = shared_from_this();
    subTran->isSubTransaction_ = true;
    subTranMap_[subTran->id()] = subTran;
-   log_->debug("Created subtransaction %i, parent=%i", subTran->id_, this->id_);
+   log_->debug("Created subTransaction id=%" PRIu32 ", parent=%" PRIu32, subTran->id_, this->id_);
 
    // Should subtransactions be given default address identical to parent?
    return(subTran);
