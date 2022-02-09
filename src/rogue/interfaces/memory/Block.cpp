@@ -17,6 +17,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/interfaces/memory/Block.h>
+#include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <rogue/interfaces/memory/Constants.h>
@@ -169,6 +170,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
    uint8_t * tData;
    uint32_t  highByte;
    uint32_t  lowByte;
+   uint32_t minAccess = getSlave()->doMinAccess();
 
    std::vector<rim::VariablePtr>::iterator vit;
 
@@ -206,8 +208,12 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
              }
          }
          else {
+
              lowByte = var->staleLowByte_;
              highByte = var->staleHighByte_;
+             // Catch case where fewer stale bytes than min access or non-aligned
+             if (lowByte % minAccess != 0) lowByte -= lowByte % minAccess;
+             if ((highByte+1) % minAccess != 0) highByte += minAccess - ((highByte+1) % minAccess);
              stale_ = false;
              for ( vit = variables_.begin(); vit != variables_.end(); ++vit ) {
                 if ( (*vit)->stale_ ) {
