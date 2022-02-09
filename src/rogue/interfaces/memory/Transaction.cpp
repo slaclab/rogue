@@ -86,6 +86,7 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    done_    = false;
 
    isSubTransaction_ = false;
+   doneCreatingSubTransactions_ = false;
 
    log_ = rogue::Logging::create("memory.Transaction",true);
 
