@@ -20,6 +20,7 @@
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
 #include <stdint.h>
+#include <inttypes.h>
 #include <memory>
 #include <rogue/GeneralError.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
@@ -58,7 +59,7 @@ namespace rogue {
                T & at(const uint32_t offset) {
 
                   if ( offset >= size_ )
-                     throw rogue::GeneralError::create("FrameAccessor","Attempt to access element %i with size %i",offset,size_);
+                     throw rogue::GeneralError::create("FrameAccessor","Attempt to access element %" PRIu32 " with size %" PRIu32, offset, size_);
 
                   return data_[offset];
                }
