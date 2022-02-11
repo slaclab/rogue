@@ -141,7 +141,7 @@ void rha::AxiMemMap::runThread() {
             it += dataSize;
          }
 
-         log_->debug("Transaction id=%" PRIu32 ", addr 0x%" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32 ", data=0x%08x", tran->id(), tran->address(), tran->size(), tran->type(), data);
+         log_->debug("Transaction id=%" PRIu32 ", addr 0x%016" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32 ", data=0x%08" PRIu32, tran->id(), tran->address(), tran->size(), tran->type(), data);
          if ( ret != 0 ) tran->error("Memory transaction failed with error code %" PRIi32 ", see driver error codes", ret);
          else tran->done();
       }

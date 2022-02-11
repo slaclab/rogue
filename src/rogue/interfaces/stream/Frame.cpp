@@ -220,7 +220,7 @@ void ris::Frame::adjustPayload(int32_t value) {
 
    if ( value < 0 && (uint32_t)abs(value) > size)
       throw(rogue::GeneralError::create("Frame::adjustPayload",
-               "Attempt to reduce payload by %" PRId32 " in frame with size %" PRIu32,
+               "Attempt to reduce payload by %" PRIi32 " in frame with size %" PRIu32,
                value, size));
 
    setPayload(size + value);

@@ -350,7 +350,7 @@ bool rim::Block::checkTransaction() {
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
                throw(rogue::GeneralError::create("Block::checkTransaction",
-                  "Verify error for block %s with address 0x%" PRIx64 ". Byte: %" PRIu32 ". Got: 0x%" PRIx8 ", Exp: 0x%" PRIx8 ", Mask: 0x%" PRIx8,
+                  "Verify error for block %s with address 0x%.8" PRIx64 ". Byte: %" PRIu32 ". Got: 0x%.2" PRIx8 ", Exp: 0x%.2" PRIx8 ", Mask: 0x%.2" PRIx8,
                   path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
             }
          }
@@ -459,7 +459,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
          }
       }
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%" PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_);
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8" PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_);
    }
 
    // Init overlap enable before check, block level overlap enable flag will be removed in the future

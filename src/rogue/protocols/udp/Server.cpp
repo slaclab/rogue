@@ -161,7 +161,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
          tout = timeout_;
 
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %" PRIu32 ".%" PRIu32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
+            udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )

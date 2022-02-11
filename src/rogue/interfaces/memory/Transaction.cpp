@@ -123,7 +123,7 @@ uint32_t rim::Transaction::type() { return type_; }
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
 
-   log_->debug("Transaction done. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32 ,
+   log_->debug("Transaction done. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ,
          type_,id_,address_,size_);
 
    error_ = "";
@@ -136,7 +136,7 @@ void rim::Transaction::errorPy(std::string error) {
    error_ = error;
    done_  = true;
 
-   log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32 ", error=%s",
+   log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ", error=%s",
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
@@ -154,7 +154,7 @@ void rim::Transaction::error(const char * fmt, ...) {
    error_ = buffer;
    done_  = true;
 
-   log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32 ", error=%s",
+   log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ", error=%s",
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
@@ -209,7 +209,7 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
 
       if ( warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0 ) warnTime_ = endTime_;
       else if ( timercmp(&warnTime_,&currTime,>=) ) {
-            log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
+            log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32,
                   type_,id_,address_,size_);
          warnTime_ = endTime_;
       }

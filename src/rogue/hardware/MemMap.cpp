@@ -140,7 +140,7 @@ void rh::MemMap::runThread() {
             count += 4;
          }
 
-         log_->debug("Transaction id=0x%" PRIx32 ", addr 0x%" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32, tran->id(), tran->address(), tran->size(), tran->type());
+         log_->debug("Transaction id=%" PRIu32 ", addr 0x%08" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32, tran->id(), tran->address(), tran->size(), tran->type());
          tran->done();
       }
    }

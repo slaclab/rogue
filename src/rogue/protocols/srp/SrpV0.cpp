@@ -120,7 +120,7 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    }
 
    if (tran->size() > max()) {
-      tran->error("Transaction size 0x%" PRIx32 " exceeds max size %" PRIu32, tran->size(), min());
+      tran->error("Transaction size %" PRIu32 " exceeds max size %" PRIu32, tran->size(), max());
       return;
    }
 
@@ -150,9 +150,9 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done();
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=%" PRIu32 ", addr 0x%" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32 ", doWrite=%" PRIu8,
+   log_->debug("Send frame for id=%" PRIu32 ", addr 0x%0.8" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32 ", doWrite=%" PRIu8,
                tran->id(), tran->address(), tran->size(), tran->type(), doWrite);
-   log_->debug("Send frame for id=%" PRIu32 ", header: 0x%" PRIx32" 0x%" PRIx32 " 0x%" PRIx32,
+   log_->debug("Send frame for id=%" PRIu32 ", header: 0x%0.8" PRIx32" 0x%0.8" PRIx32 " 0x%0.8" PRIx32,
                tran->id(), header[0], header[1], header[2]);
 
    sendFrame(frame);
@@ -195,7 +195,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract id from frame
    id = header[0];
-   log_->debug("Got frame id=%" PRIu32 " header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32,
+   log_->debug("Got frame id=%" PRIu32 " header: 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32,
                id, header[0], header[1], header[2]);
 
    // Find Transaction
@@ -236,7 +236,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
       if ( tail[0] & 0x20000 ) tran->error("Axi bus timeout detected in hardware");
       else if ( tail[0] & 0x10000 ) tran->error("Axi bus returned fail status in hardware");
       else tran->error("Non zero status message returned on axi bus in hardware: 0x%" PRIu32, tail[0]);
-      log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%" PRIu32, id, tail[0]);
+      log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%0.8" PRIu32, id, tail[0]);
       return;
    }
 

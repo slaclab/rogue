@@ -139,12 +139,12 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
 
    // Size error
    if ((tran->size() % min()) != 0 || tran->size() < min()) {
-      tran->error("Transaction size 0x%" PRIu32 " is not aligned to min size %" PRIu32, tran->size(), min());
+      tran->error("Transaction size 0x%" PRIx32 " is not aligned to min size %" PRIu32, tran->size(), min());
       return;
    }
 
    if (tran->size() > max()) {
-      tran->error("Transaction size 0x%" PRIu32 " exceeds max size %" PRIu32, tran->size(), min());
+      tran->error("Transaction size %" PRIu32 " exceeds max size %" PRIu32, tran->size(), max());
       return;
    }
 
@@ -170,9 +170,9 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done();
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=%" PRIu32 ", addr 0x%" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32,
+   log_->debug("Send frame for id=%" PRIu32 ", addr 0x%0.8" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32,
                tran->id(),tran->address(),tran->size(),tran->type());
-   log_->debug("Send frame for id=%" PRIu32 ", header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32,
+   log_->debug("Send frame for id=%" PRIu32 ", header: 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32,
                tran->id(), header[0], header[1], header[2], header[3], header[4]);
 
    sendFrame(frame);
@@ -195,7 +195,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr frLock = frame->lock();
 
    if ( frame->getError() ) {
-      log_->warning("Got errored frame = 0x%" PRIu8, frame->getError());
+      log_->warning("Got errored frame = 0x%" PRIx8, frame->getError());
       return; // Invalid frame, drop it
    }
 
@@ -215,7 +215,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract the id
    id = header[1];
-   log_->debug("Got frame id=%" PRIu32 ", header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " tail: 0x%" PRIx32,
+   log_->debug("Got frame id=%" PRIu32 ", header: 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " tail: 0x%0.8" PRIx32,
                id, header[0], header[1], header[2], header[3], header[4], tail[0]);
 
    // Find Transaction
@@ -251,7 +251,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
       if ( tail[0] & 0x2000 ) tran->error("FPGA register bus lockup detected in hardware. Power cycle required.");
       else if ( tail[0] & 0x0100 ) tran->error("FPGA register bus timeout detected in hardware");
       else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%" PRIx32, tail[0]);
-      log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%" PRIx32, id, tail[0]);
+      log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%0.8" PRIx32, id, tail[0]);
       return;
    }
 
