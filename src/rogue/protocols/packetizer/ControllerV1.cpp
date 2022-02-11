@@ -99,7 +99,7 @@ void rpp::ControllerV1::transportRx( ris::FramePtr frame ) {
 
    log_->debug("transportRx: Raw header: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,
          data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
-   log_->debug("transportRx: Raw footer: 0x%x",
+   log_->debug("transportRx: Raw footer: 0x%" PRIx8,
          data[size-1]);
    log_->debug("transportRx: Got frame: Fuser=0x%" PRIx8 ", Dest=0x%" PRIx8 ", Id=0x%" PRIx32 ", Count=%" PRIx32 ", Luser=0x%" PRIx8 ", Eof=%" PRIu8 ", size=%" PRIu32,
          tmpFuser, tmpDest, tmpIdx, tmpCount, tmpLuser, tmpEof, size);

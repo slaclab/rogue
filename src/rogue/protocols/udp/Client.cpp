@@ -62,7 +62,7 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::create("Client::Client","Failed to create socket for port %i at address %s",port_,address_.c_str()));
+      throw(rogue::GeneralError::create("Client::Client","Failed to create socket for port %" PRIu16 " at address %s", port_, address_.c_str()));
 
    // Lookup host address
    bzero(&aiHints, sizeof(aiHints));

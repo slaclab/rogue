@@ -133,18 +133,18 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
 
    // Size error
    if ((tran->address() % min()) != 0 ) {
-      tran->error("Transaction address 0x%x is not aligned to min size %i",tran->address(),min());
+      tran->error("Transaction address 0x%" PRIx64 " is not aligned to min size %" PRIu32, tran->address(), min());
       return;
    }
 
    // Size error
    if ((tran->size() % min()) != 0 || tran->size() < min()) {
-      tran->error("Transaction size 0x%x is not aligned to min size %i",tran->size(),min());
+      tran->error("Transaction size 0x%" PRIu32 " is not aligned to min size %" PRIu32, tran->size(), min());
       return;
    }
 
    if (tran->size() > max()) {
-      tran->error("Transaction size 0x%x exceeds max size %i",tran->size(),min());
+      tran->error("Transaction size 0x%" PRIu32 " exceeds max size %" PRIu32, tran->size(), min());
       return;
    }
 
@@ -215,7 +215,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract the id
    id = header[1];
-   log_->debug("Got frame id=%i, header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " tail: 0x%" PRIx32,
+   log_->debug("Got frame id=%" PRIu32 ", header: 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " 0x%" PRIx32 " tail: 0x%" PRIx32,
                id, header[0], header[1], header[2], header[3], header[4], tail[0]);
 
    // Find Transaction
@@ -229,7 +229,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Transaction expired
    if ( tran->expired() ) {
-      tran->error("Transaction expired: Id=%i (increase root->timeout value if this ID matches a previous timeout message)",id);
+      tran->error("Transaction expired: Id=%" PRIu32 " (increase root->timeout value if this ID matches a previous timeout message)", id);
       return;
    }
    tIter = tran->begin();
@@ -250,7 +250,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    if ( tail[0] != 0 ) {
       if ( tail[0] & 0x2000 ) tran->error("FPGA register bus lockup detected in hardware. Power cycle required.");
       else if ( tail[0] & 0x0100 ) tran->error("FPGA register bus timeout detected in hardware");
-      else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%x",tail[0]);
+      else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%" PRIx32, tail[0]);
       log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%" PRIx32, id, tail[0]);
       return;
    }

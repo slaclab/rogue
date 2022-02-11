@@ -109,18 +109,18 @@ void rps::SrpV0::doTransaction(rim::TransactionPtr tran) {
 
    // Size error
    if ((tran->address() % min()) != 0 ) {
-      tran->error("Transaction address 0x%x is not aligned to min size %i",tran->address(),min());
+      tran->error("Transaction address 0x%" PRIx64 " is not aligned to min size %" PRIu32, tran->address(), min());
       return;
    }
 
    // Size error
    if ((tran->size() % min()) != 0 || tran->size() < min()) {
-      tran->error("Transaction size 0x%x is not aligned to min size %i",tran->size(),min());
+      tran->error("Transaction size 0x%" PRIx32 " is not aligned to min size %" PRIu32, tran->size(), min());
       return;
    }
 
    if (tran->size() > max()) {
-      tran->error("Transaction size 0x%x exceeds max size %i",tran->size(),min());
+      tran->error("Transaction size 0x%" PRIx32 " exceeds max size %" PRIu32, tran->size(), min());
       return;
    }
 
@@ -209,7 +209,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
 
    // Transaction expired
    if ( tran->expired() ) {
-      log_->warning("Transaction expired. Id=%i",id);
+      log_->warning("Transaction expired. Id=%" PRIu32, id);
       return;
    }
    tIter = tran->begin();
@@ -235,7 +235,7 @@ void rps::SrpV0::acceptFrame ( ris::FramePtr frame ) {
    if ( tail[0] != 0 ) {
       if ( tail[0] & 0x20000 ) tran->error("Axi bus timeout detected in hardware");
       else if ( tail[0] & 0x10000 ) tran->error("Axi bus returned fail status in hardware");
-      else tran->error("Non zero status message returned on axi bus in hardware: 0x%x",tail[0]);
+      else tran->error("Non zero status message returned on axi bus in hardware: 0x%" PRIu32, tail[0]);
       log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%" PRIu32, id, tail[0]);
       return;
    }

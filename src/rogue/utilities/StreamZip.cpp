@@ -28,6 +28,7 @@
 #include <rogue/GilRelease.h>
 #include <memory>
 #include <bzlib.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
@@ -70,7 +71,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    strm.opaque  = NULL;
 
    if ( (ret = BZ2_bzCompressInit(&strm,1,0,30)) != BZ_OK )
-      throw(rogue::GeneralError::create("StreamZip::acceptFrame","Error initializing compressor. ret=%i",ret));
+      throw(rogue::GeneralError::create("StreamZip::acceptFrame","Error initializing compressor. ret=%" PRIi32, ret));
 
    // Setup decompression pointers
    rBuff = frame->beginBuffer();
@@ -86,7 +87,7 @@ void ru::StreamZip::acceptFrame ( ris::FramePtr frame ) {
    do {
 
       if ( (ret = BZ2_bzCompress(&strm,(done)?BZ_FINISH:BZ_RUN)) == BZ_SEQUENCE_ERROR )
-         throw(rogue::GeneralError::create("StreamZip::acceptFrame","Compression runtime error %i",ret));
+         throw(rogue::GeneralError::create("StreamZip::acceptFrame","Compression runtime error %" PRIi32, ret));
 
       // Update read buffer if necessary
       if ( strm.avail_in == 0 && (!done)) {

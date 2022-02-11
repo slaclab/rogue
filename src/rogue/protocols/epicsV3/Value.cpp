@@ -152,8 +152,8 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
       else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; }
       else { epicsType_ = aitEnumString; }
 
-      log_->info("Detected Rogue Int with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue Int with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
    }
 
    // Signed Int types, > 32-bits treated as string

@@ -25,6 +25,7 @@
 #include <rogue/GilRelease.h>
 #include <memory>
 #include <string.h>
+#include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -62,7 +63,7 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
    uint64_t addr = tran->address();
    uint8_t * ptr = tran->begin();
 
-   //printf("Got transaction address=0x%x, size=%i, type = %i\n",addr,size,type);
+   //printf("Got transaction address=0x%" PRIx64 ", size=%" PRIu32 ", type = %" PRIu32 "\n", addr, size, type);
 
    rogue::interfaces::memory::TransactionLockPtr lock = tran->lock();
    {
@@ -84,13 +85,13 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
          if ( tran->type() == rogue::interfaces::memory::Write ||
               tran->type() == rogue::interfaces::memory::Post ) {
 
-               //printf("Write data to 4k=0x%x, offset=0x%x, size=%i\n",addr4k,off4k,size4k);
+               //printf("Write data to 4k=0x%" PRIx64 ", offset=0x%" PRIx64 ", size=%" PRIu64 "\n", addr4k, off4k, size4k);
                memcpy(memMap_[addr4k]+off4k,ptr,size4k);
          }
 
          // Read or verify
          else {
-            //printf("Read data from 4k=0x%x, offset=0x%x, size=%i\n",addr4k,off4k,size4k);
+            //printf("Read data from 4k=0x%" PRIx64 ", offset=0x%" PRIx64 ", size=%" PRIu64 "\n", addr4k, off4k, size4k);
             memcpy(ptr,memMap_[addr4k]+off4k,size4k);
          }
 

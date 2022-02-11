@@ -470,9 +470,9 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          flfsr(expData);
 
          if ( ! std::equal(frIter,frIter+byteWidth_,expData ) ) {
-            sprintf(debugA,"Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
+            sprintf(debugA,"Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32, pos, rxCount_, (size/byteWidth_)-1);
             for (x=0; x < byteWidth_; x++) {
-               sprintf(debugB,"\n   %i:%i Got=0x%x Exp=0x%x",pos,x,*(frIter+x),*(expData+x));
+               sprintf(debugB,"\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8, pos, x, *(frIter+x), *(expData+x));
                strcat(debugA,debugB);
             }
             rxLog_->warning(debugA);

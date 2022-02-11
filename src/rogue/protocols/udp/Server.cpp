@@ -58,7 +58,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %i",port_));
+      throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %" PRIu16, port_));
 
    // Setup Remote Address
    memset(&locAddr_,0,sizeof(struct sockaddr_in));
@@ -69,7 +69,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    memset(&remAddr_,0,sizeof(struct sockaddr_in));
 
    if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0)
-      throw(rogue::GeneralError::create("Server::Server","Failed to bind to local port %i. Another process may be using it",port_));
+      throw(rogue::GeneralError::create("Server::Server","Failed to bind to local port %" PRIu16 ". Another process may be using it", port_));
 
    // Kernel assigns port
    if ( port_ == 0 ) {

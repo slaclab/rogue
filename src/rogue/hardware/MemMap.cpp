@@ -112,14 +112,14 @@ void rh::MemMap::runThread() {
          }
 
          if ( (tran->size() % 4) != 0 ) {
-            tran->error("Invalid transaction size %i, must be an integer number of 4 bytes",tran->size());
+            tran->error("Invalid transaction size %" PRIu32 ", must be an integer number of 4 bytes", tran->size());
             tran.reset();
             continue;
          }
 
          // Check that the address is legal
          if ( (tran->address() + tran->size()) > size_ ) {
-            tran->error("Request transaction to address 0x%x with size %i is out of bounds",tran->address(),tran->size());
+            tran->error("Request transaction to address 0x%" PRIx64 " with size %" PRIu32 " is out of bounds", tran->address(), tran->size());
             tran.reset();
             continue;
          }

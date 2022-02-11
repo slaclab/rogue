@@ -93,13 +93,13 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
       if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to bind server to port %i at address %s, another process may be using this port",port,addr.c_str()));
+                  "Failed to bind server to port %" PRIu16 " at address %s, another process may be using this port", port, addr.c_str()));
 
       this->bridgeLog_->debug("Creating push server port: %s",this->pushAddr_.c_str());
 
       if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
+                  "Failed to bind server to port %" PRIu16 " at address %s, another process may be using this port", port+1, addr.c_str()));
    }
 
    // Client mode
@@ -111,13 +111,13 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
       if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
+                  "Failed to connect to remote port %" PRIu16 " at address %s", port+1, addr.c_str()));
 
       this->bridgeLog_->debug("Creating push client port: %s",this->pushAddr_.c_str());
 
       if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to connect to remote port %i at address %s",port,addr.c_str()));
+                  "Failed to connect to remote port %" PRIu16 " at address %s", port, addr.c_str()));
    }
 
    // Start rx thread

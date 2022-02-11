@@ -75,7 +75,7 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
             "Failed to auto bind server on interface %s.",addr.c_str()));
       else
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
-            "Failed to bind server to port %i on interface %s. Another process may be using this port.",port+1,addr.c_str()));
+            "Failed to bind server to port %" PRIu16 " on interface %s. Another process may be using this port.", port+1, addr.c_str()));
    }
 
    log_->info("Started Rogue server at ports %" PRIu16 ":%" PRIu16, this->basePort_, this->basePort_+1);

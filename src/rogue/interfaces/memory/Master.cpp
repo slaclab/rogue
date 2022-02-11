@@ -181,8 +181,8 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address, boost::python::object p
    if ( (tran->size_ + offset) > tran->pyBuf_.len ) {
       PyBuffer_Release(&(tran->pyBuf_));
       throw(rogue::GeneralError::create("Master::reqTransactionPy",
-               "Attempt to access %i bytes in python buffer with size %i at offset %i",
-               tran->size_,tran->pyBuf_.len,offset));
+               "Attempt to access %" PRIu32 " bytes in python buffer with size %" PRIu32 " at offset %" PRIu32,
+               tran->size_, tran->pyBuf_.len, offset));
    }
 
    tran->pyValid_ = true;
@@ -295,7 +295,7 @@ void rim::Master::copyBitsPy(boost::python::object dst, uint32_t dstLsb, boost::
    if ( (dstLsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
       throw(rogue::GeneralError::create("Master::copyBits",
-               "Attempt to copy %i bits starting from bit %i from dest array with bitSize %i",
+               "Attempt to copy %" PRIu32 " bits starting from bit %" PRIu32 " from dest array with bitSize %" PRIu32,
                size, dstLsb, dstBuf.len*8));
    }
 
@@ -308,7 +308,7 @@ void rim::Master::copyBitsPy(boost::python::object dst, uint32_t dstLsb, boost::
       PyBuffer_Release(&srcBuf);
       PyBuffer_Release(&dstBuf);
       throw(rogue::GeneralError::create("Master::copyBits",
-               "Attempt to copy %i bits starting from bit %i from source array with bitSize %i",
+               "Attempt to copy %" PRIu32 " bits starting from bit %" PRIu32 " from source array with bitSize %" PRIu32,
                size, srcLsb, srcBuf.len*8));
    }
 
@@ -363,7 +363,7 @@ void rim::Master::setBitsPy(boost::python::object dst, uint32_t lsb, uint32_t si
    if ( (lsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
       throw(rogue::GeneralError::create("Master::setBits",
-               "Attempt to set %i bits starting from bit %i in array with bitSize %i",
+               "Attempt to set %" PRIu32 " bits starting from bit %" PRIu32 " in array with bitSize %" PRIu32,
                size, lsb, dstBuf.len*8));
    }
 
@@ -424,7 +424,7 @@ bool rim::Master::anyBitsPy(boost::python::object dst, uint32_t lsb, uint32_t si
    if ( (lsb + size) > (dstBuf.len*8) ) {
       PyBuffer_Release(&dstBuf);
       throw(rogue::GeneralError::create("Master::anyBits",
-               "Attempt to access %i bits starting from bit %i from array with bitSize %i",
+               "Attempt to access %" PRIu32 " bits starting from bit %" PRIu32 " from array with bitSize %" PRIu32,
                size, lsb, dstBuf.len*8));
    }
 

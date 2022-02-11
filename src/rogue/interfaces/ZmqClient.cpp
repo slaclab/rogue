@@ -81,7 +81,7 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port, bool d
 
       if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 )
          throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
-                  "Failed to connect to port %i at address %s",port,addr.c_str()));
+                  "Failed to connect to port %" PRIu16 " at address %s", port, addr.c_str()));
 
       reqPort = port + 1;
    }
@@ -111,7 +111,7 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port, bool d
 
    if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 )
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
-               "Failed to connect to port %i at address %s",reqPort,addr.c_str()));
+               "Failed to connect to port %" PRIu32 " at address %s", reqPort, addr.c_str()));
 
    if ( doString_ ) {
       threadEn_ = false;
@@ -150,7 +150,7 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
    waitRetry_ = waitRetry;
    timeout_ = msecs;
 
-   printf("ZmqClient::setTimeout: Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
+   printf("ZmqClient::setTimeout: Setting timeout to %" PRIu32 " msecs, waitRetry = %" PRIu8 "\n", timeout_, waitRetry_);
 
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));

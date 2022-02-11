@@ -74,7 +74,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
-            "Failed to open device file %s with dest 0x%x! Another process may already have it open!",path.c_str(),dest));
+            "Failed to open device file %s with dest 0x%" PRIu32 "! Another process may already have it open!", path.c_str(), dest));
 
    }
 
@@ -323,7 +323,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 
          // Bulk return
          if ( (count = retQueue_.size()) >= retThold_ ) {
-            printf("Return count=%i\n",count);
+            printf("Return count=%" PRIu32 "\n", count);
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 

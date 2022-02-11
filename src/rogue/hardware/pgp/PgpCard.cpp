@@ -78,7 +78,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %i on device %s",(lane*4)+vc,path.c_str()));
+      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %" PRIu32 " on device %s", (lane*4)+vc, path.c_str()));
    }
 
    // Result may be that rawBuff_ = NULL

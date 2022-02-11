@@ -104,7 +104,7 @@ void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    char buffer[1000];
    vsnprintf(buffer,1000,fmt,args);
    gettimeofday(&tme,NULL);
-   printf("%li.%i:%s: %s\n",tme.tv_sec,tme.tv_usec,name_.c_str(),buffer);
+   printf("%" PRIuLEAST32 ".%" PRIuLEAST32 ":%s: %s\n", tme.tv_sec, tme.tv_usec, name_.c_str(), buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {
