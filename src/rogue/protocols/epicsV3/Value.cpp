@@ -124,7 +124,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
    else if ( forceStr ) epicsType_ = aitEnumString;
 
    // Unsigned Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"UInt%" PRIu32, &bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"UInt%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8;}
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
       else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; }
@@ -135,7 +135,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
   }
 
    // Unsigned Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"uint%" PRIu32,&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"uint%" SCNu32,&bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8;}
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
       else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; }
@@ -146,7 +146,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
   }
 
    // Signed Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"Int%" PRIu32, &bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"Int%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; }
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; }
       else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; }
@@ -157,7 +157,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
    }
 
    // Signed Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"int%" PRIu32, &bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"int%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; }
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; }
       else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; }
@@ -176,7 +176,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
    }
 
    // Floats with size included
-   else if ( sscanf(typeStr.c_str(),"float%" PRIu32, &bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"float%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumFloat32; }
       else { fSize_ = 8; epicsType_ = aitEnumFloat64; }
 
@@ -185,7 +185,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
    }
 
    // Floats with size included
-   else if ( sscanf(typeStr.c_str(),"Float%" PRIu32, &bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"Float%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumFloat32; }
       else { fSize_ = 8; epicsType_ = aitEnumFloat64; }
 
