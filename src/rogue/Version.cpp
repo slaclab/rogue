@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <string>
 #include <sstream>
+#include <inttypes.h>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
@@ -42,14 +43,14 @@ void rogue::Version::init() {
    char     lead;
    int32_t  ret;
 
-   ret = sscanf(_version,"%c%i.%i.%i-%i-%s",&lead,&_major,&_minor,&_maint,&_devel,dump);
+   ret = sscanf(_version,"%c%" SCNu32 ".%" SCNu32 ".%" SCNu32 "-%" SCNu32 "-%s", &lead, &_major, &_minor, &_maint, &_devel, dump);
 
    if ( (ret != 4 && ret != 6) || (lead != 'v' && lead != 'V'))
       throw(rogue::GeneralError("Version:init","Invalid compiled version string"));
 }
 
 void rogue::Version::extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint) {
-   if ( sscanf(compare.c_str(),"%i.%i.%i",major,minor,maint) != 3 )
+   if ( sscanf(compare.c_str(),"%" PRIu32 ".%" PRIu32 ".%" PRIu32, major, minor, maint) != 3 )
       throw(rogue::GeneralError("Version:extract","Invalid version string"));
 }
 

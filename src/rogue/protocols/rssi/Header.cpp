@@ -30,6 +30,7 @@
 #include <sstream>
 #include <string.h>
 #include <sys/time.h>
+#include <inttypes.h>
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
@@ -162,7 +163,7 @@ void rpr::Header::update() {
 
    if ( buff->getSize() < size )
       throw(rogue::GeneralError::create("rssi::Header::update",
-               "Buffer size %i is less size indicated in header %i",
+               "Buffer size %" PRIu32 " is less size indicated in header %" PRIu8,
                buff->getSize(), size));
 
    buff->minPayload(size);

@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -64,7 +65,7 @@ rpu::Client::Client ( std::string host, uint16_t port, bool jumbo) : rpu::Core(j
 
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::create("Client::Client","Failed to create socket for port %i at address %s",port_,address_.c_str()));
+      throw(rogue::GeneralError::create("Client::Client","Failed to create socket for port %" PRIu16 " at address %s", port_, address_.c_str()));
 
    // Lookup host address
    bzero(&aiHints, sizeof(aiHints));
@@ -161,7 +162,7 @@ void rpu::Client::acceptFrame ( ris::FramePtr frame ) {
          tout = timeout_;
 
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            udpLog_->critical("Client::acceptFrame: Timeout waiting for outbound transmit after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
+            udpLog_->critical("Client::acceptFrame: Timeout waiting for outbound transmit after %" PRIu32 ".%" PRIu32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )

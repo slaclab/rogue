@@ -33,6 +33,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
@@ -80,7 +81,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %i on device %s",(lane*4)+vc,path.c_str()));
+      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %" PRIu32 " on device %s", (lane*4)+vc, path.c_str()));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -224,7 +225,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("PgpCard::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("PgpCard::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -306,7 +307,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("PgpCard::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("PgpCard::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {

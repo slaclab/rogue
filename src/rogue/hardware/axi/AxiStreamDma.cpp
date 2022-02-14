@@ -27,6 +27,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
@@ -76,7 +77,7 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
-            "Failed to open device file %s with dest 0x%x! Another process may already have it open!",path.c_str(),dest));
+            "Failed to open device file %s with dest 0x%" PRIx32 "! Another process may already have it open!", path.c_str(), dest));
 
    }
 
@@ -184,7 +185,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -285,7 +286,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
@@ -325,7 +326,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 
          // Bulk return
          if ( (count = retQueue_.size()) >= retThold_ ) {
-            printf("Return count=%i\n",count);
+            printf("Return count=%" PRIu32 "\n", count);
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 

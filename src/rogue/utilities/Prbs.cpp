@@ -35,6 +35,7 @@
 #include <rogue/GeneralError.h>
 #include <sys/time.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
@@ -426,14 +427,14 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
 
    // Check for frame errors
    if ( frame->getError() ) {
-      rxLog_->warning("Frame error field is set: 0x%x",frame->getError());
+      rxLog_->warning("Frame error field is set: 0x%" PRIx8, frame->getError());
       rxErrCount_++;
       return;
    }
 
    // Verify size
    if ((( size % byteWidth_ ) != 0) || size < minSize_ ) {
-      rxLog_->warning("Size violation size=%i, count=%i",size,rxCount_);
+      rxLog_->warning("Size violation size=%" PRIu32 ", count=%" PRIu32, size, rxCount_);
       rxErrCount_++;
       return;
    }
@@ -451,8 +452,8 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
    // Accept any sequence if our local count is zero
    // incoming frames with seq = 0 never cause errors and treated as a restart
    if ( ( expSize != size ) || ( frSeq[0] != 0 && expSeq != 0 && frSeq[0] != expSeq ) ) {
-      rxLog_->warning("Bad header. expSize=%u gotSize=%u expSeq=%u gotSeq=%u nxtSeq=%u count=%i",
-            expSize,size,expSeq,frSeq[0],rxSeq_,rxCount_);
+      rxLog_->warning("Bad header. expSize=%" PRIu32 " gotSize=%" PRIu32 " expSeq=%" PRIu32 " gotSeq=%" PRIu32 " nxtSeq=%" PRIu32 " count=%" PRIu32,
+            expSize, size, expSeq, frSeq[0], rxSeq_, rxCount_);
       rxErrCount_++;
       return;
    }
@@ -469,9 +470,9 @@ void ru::Prbs::acceptFrame ( ris::FramePtr frame ) {
          flfsr(expData);
 
          if ( ! std::equal(frIter,frIter+byteWidth_,expData ) ) {
-            sprintf(debugA,"Bad value at index %i. count=%i, size=%i",pos,rxCount_,(size/byteWidth_)-1);
+            sprintf(debugA,"Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32, pos, rxCount_, (size/byteWidth_)-1);
             for (x=0; x < byteWidth_; x++) {
-               sprintf(debugB,"\n   %i:%i Got=0x%x Exp=0x%x",pos,x,*(frIter+x),*(expData+x));
+               sprintf(debugB,"\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8, pos, x, *(frIter+x), *(expData+x));
                strcat(debugA,debugB);
             }
             rxLog_->warning(debugA);

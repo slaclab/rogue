@@ -29,6 +29,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>
+#include <inttypes.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
@@ -106,7 +107,7 @@ ris::FramePtr rpp::Controller::reqFrame ( uint32_t size ) {
       // Buffer should support our header/tail plus at least one payload byte
       if ( buff->getAvailable() < (headSize_ + tailSize_ + 1) )
          throw(rogue::GeneralError::create("packetizer::Controller::reqFrame",
-                  "Buffer size %i is less than min size required %i",
+                  "Buffer size %" PRIu32 " is less than min size required %" PRIu32,
                   buff->getAvailable(), (headSize_ + tailSize_ + 1)));
 
       // Add 8 bytes to head and tail reservation

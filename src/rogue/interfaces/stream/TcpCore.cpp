@@ -28,6 +28,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <zmq.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -92,13 +93,13 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
       if ( zmq_bind(this->zmqPull_,this->pullAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to bind server to port %i at address %s, another process may be using this port",port,addr.c_str()));
+                  "Failed to bind server to port %" PRIu16 " at address %s, another process may be using this port", port, addr.c_str()));
 
       this->bridgeLog_->debug("Creating push server port: %s",this->pushAddr_.c_str());
 
       if ( zmq_bind(this->zmqPush_,this->pushAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to bind server to port %i at address %s, another process may be using this port",port+1,addr.c_str()));
+                  "Failed to bind server to port %" PRIu16 " at address %s, another process may be using this port", port+1, addr.c_str()));
    }
 
    // Client mode
@@ -110,13 +111,13 @@ ris::TcpCore::TcpCore (std::string addr, uint16_t port, bool server) {
 
       if ( zmq_connect(this->zmqPull_,this->pullAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
+                  "Failed to connect to remote port %" PRIu16 " at address %s", port+1, addr.c_str()));
 
       this->bridgeLog_->debug("Creating push client port: %s",this->pushAddr_.c_str());
 
       if ( zmq_connect(this->zmqPush_,this->pushAddr_.c_str()) < 0 )
          throw(rogue::GeneralError::create("stream::TcpCore::TcpCore",
-                  "Failed to connect to remote port %i at address %s",port,addr.c_str()));
+                  "Failed to connect to remote port %" PRIu16 " at address %s", port, addr.c_str()));
    }
 
    // Start rx thread
@@ -171,7 +172,7 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    }
 
    if ( zmq_msg_init_size (&(msg[3]), frame->getPayload()) < 0 ) {
-      bridgeLog_->warning("Failed to init message with size %i",frame->getPayload());
+      bridgeLog_->warning("Failed to init message with size %" PRIu32,frame->getPayload());
       return;
    }
 
@@ -192,9 +193,9 @@ void ris::TcpCore::acceptFrame ( ris::FramePtr frame ) {
    // Send data
    for (x=0; x < 4; x++) {
       if ( zmq_sendmsg(this->zmqPush_,&(msg[x]),(x==3)?0:ZMQ_SNDMORE) < 0 )
-        bridgeLog_->warning("Failed to push message with size %i on %s",frame->getPayload(), this->pushAddr_.c_str());
+        bridgeLog_->warning("Failed to push message with size %" PRIu32 " on %s", frame->getPayload(), this->pushAddr_.c_str());
    }
-   bridgeLog_->debug("Pushed TCP frame with size %i on %s",frame->getPayload(), this->pushAddr_.c_str());
+   bridgeLog_->debug("Pushed TCP frame with size %" PRIu32 " on %s", frame->getPayload(), this->pushAddr_.c_str());
 }
 
 //! Run thread
@@ -266,7 +267,7 @@ void ris::TcpCore::runThread() {
          frame->setChannel(chan);
          frame->setError(err);
 
-         bridgeLog_->debug("Pulled frame with size %i",frame->getPayload());
+         bridgeLog_->debug("Pulled frame with size %" PRIu32, frame->getPayload());
          sendFrame(frame);
       }
 
