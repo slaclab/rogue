@@ -15,6 +15,7 @@ import threading
 
 
 class MemoryDevice(pr.Device):
+    """ """
     def __init__(self, *,
                  name=None,
                  description='',
@@ -61,10 +62,27 @@ class MemoryDevice(pr.Device):
 
 
     def _buildBlocks(self):
+        """ """
         pass
 
     @pr.expose
     def set(self, offset, values, write=False):
+        """
+        
+
+        Parameters
+        ----------
+        offset :
+            
+        values :
+            
+        write : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
         with self._txnLock:
             self._setValues[offset] = values
             if write:
@@ -74,6 +92,20 @@ class MemoryDevice(pr.Device):
 
     @pr.expose
     def get(self, offset, numWords):
+        """
+        
+
+        Parameters
+        ----------
+        offset :
+            
+        numWords :
+            
+
+        Returns
+        -------
+
+        """
         with self._txnLock:
             #print(f'get() self._wordBitSize={self._wordBitSize}')
             data = self._txnChunker(offset=offset, data=None,
@@ -87,16 +119,72 @@ class MemoryDevice(pr.Device):
 
 
     def _setDict(self, d, writeEach, modes,incGroups,excGroups,keys):
+        """
+        
+
+        Parameters
+        ----------
+        d :
+            
+        writeEach :
+            
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+        keys :
+            
+
+        Returns
+        -------
+
+        """
         # Parse comma separated values at each offset (key) in d
         with self._txnLock:
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
 
     def _getDict(self,modes,incGroups,excGroups):
+        """
+        
+
+        Parameters
+        ----------
+        modes :
+            
+        incGroups :
+            
+        excGroups :
+            
+
+        Returns
+        -------
+
+        """
         return None
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        if self.enable.get() is not True:
+        """
+        
+
+        Parameters
+        ----------
+        force : bool
+             (Default value = False)
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
+        if self.ena ble.get() is not True:
             return
 
         with self._txnLock:
@@ -109,6 +197,22 @@ class MemoryDevice(pr.Device):
 
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
+        """
+        
+
+        Parameters
+        ----------
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
         if (not self._verify) or (self.enable.get() is not True):
             return
 
@@ -118,6 +222,20 @@ class MemoryDevice(pr.Device):
                 self._verValues[offset] = self._txnChunker(offset, None, self._base, self._stride, self._wordBitSize, txnType=rim.Verify, numWords=len(ba))
 
     def checkBlocks(self, recurse=True, variable=None):
+        """
+        
+
+        Parameters
+        ----------
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
         with self._txnLock:
             # Wait for all txns to complete
             self._waitTransaction(0)
@@ -149,14 +267,55 @@ class MemoryDevice(pr.Device):
 
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
+        """
+        
+
+        Parameters
+        ----------
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
         pass
 
     @pr.expose
     @property
     def size(self):
+        """ """
         return self._rawSize
 
     def _txnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
+        """
+        
+
+        Parameters
+        ----------
+        offset :
+            
+        data :
+            
+        base :
+             (Default value = pr.UInt)
+        stride : int
+             (Default value = 4)
+        wordBitSize : int
+             (Default value = 32)
+        txnType : 
+             (Default value = rim.Write)
+        numWords : int
+             (Default value = 1)
+
+        Returns
+        -------
+
+        """
 
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)

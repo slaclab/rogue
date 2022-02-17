@@ -17,6 +17,7 @@ import threading
 
 
 class EnableVariable(pr.BaseVariable):
+    """ """
     def __init__(self, *, enabled, deps=None):
         pr.BaseVariable.__init__(
             self,
@@ -42,6 +43,21 @@ class EnableVariable(pr.BaseVariable):
 
     @pr.expose
     def get(self, read=False, index=-1):
+        """
+        
+
+        Parameters
+        ----------
+        read : bool
+             (Default value = False)
+        index : int
+             (Default value = -1)
+
+        Returns
+             ret : 
+        -------
+
+        """
         ret = self._value
 
         with self._lock:
@@ -62,6 +78,22 @@ class EnableVariable(pr.BaseVariable):
 
     @pr.expose
     def set(self, value, write=True, index=-1):
+        """
+        
+
+        Parameters
+        ----------
+        value : 
+             (Default value = enabled)
+        write : bool
+             (Default value = True)
+        index : int
+             (Default value = -1)
+
+        Returns
+        -------
+
+        """
         if value != 'parent' and value != 'deps':
             old = self.value()
 
@@ -84,6 +116,7 @@ class EnableVariable(pr.BaseVariable):
             #    var._doUpdate()
 
     def _doUpdate(self):
+        """ """
         if len(self._deps) != 0:
             oldEn = (self.value() is True)
 
@@ -99,6 +132,20 @@ class EnableVariable(pr.BaseVariable):
         return super()._doUpdate()
 
     def _rootAttached(self,parent,root):
+        """
+        
+
+        Parameters
+        ----------
+        parent :
+            
+        root :
+            
+
+        Returns
+        -------
+
+        """
         pr.Node._rootAttached(self,parent,root)
 
         if parent is not root:
@@ -106,7 +153,7 @@ class EnableVariable(pr.BaseVariable):
 
 
 class DeviceError(Exception):
-    """ Exception for device manipulation errors."""
+    """ """
     pass
 
 
@@ -185,23 +232,50 @@ class Device(pr.Node,rim.Hub):
     @pr.expose
     @property
     def address(self):
+        """ """
         return self._getAddress()
 
     @pr.expose
     @property
     def offset(self):
+        """ """
         return self._getOffset()
 
     @pr.expose
     @property
     def size(self):
+        """ """
         return self._size
 
     def addCustomBlock(self, block):
+        """
+        
+
+        Parameters
+        ----------
+        block :
+            
+
+        Returns
+        -------
+
+        """
         self._custBlocks.append(block)
         self._custBlocks.sort(key=lambda x: (x.offset, x.size))
 
     def add(self,node):
+        """
+        
+
+        Parameters
+        ----------
+        node :
+            
+
+        Returns
+        -------
+
+        """
         # Call node add
         pr.Node.add(self,node)
 
@@ -213,8 +287,19 @@ class Device(pr.Node,rim.Hub):
                 node._setSlave(self)
 
     def addInterface(self, *interfaces):
-        """Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
-        Also accepts iterables for adding multiple at once"""
+        """
+        Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
+        Also accepts iterables for adding multiple at once
+
+        Parameters
+        ----------
+        *interfaces :
+            
+
+        Returns
+        -------
+
+        """
         for interface in interfaces:
             if isinstance(interface, collections.abc.Iterable):
                 self._ifAndProto.extend(interface)
@@ -222,8 +307,19 @@ class Device(pr.Node,rim.Hub):
                 self._ifAndProto.append(interface)
 
     def addProtocol(self, *protocols):
-        """Add a protocol entity.
-        Also accepts iterables for adding multiple at once"""
+        """
+        Add a protocol entity.
+        Also accepts iterables for adding multiple at once
+
+        Parameters
+        ----------
+        *protocols :
+            
+
+        Returns
+        -------
+
+        """
         for protocol in protocols:
             if isinstance(protocol, collections.abc.Iterable):
                 self._ifAndProto.extend(protocol)
@@ -231,10 +327,22 @@ class Device(pr.Node,rim.Hub):
                 self._ifAndProto.append(protocol)
 
     def manage(self, *interfaces):
+        """
+        
+
+        Parameters
+        ----------
+        *interfaces :
+            
+
+        Returns
+        -------
+
+        """
         self._ifAndProto.extend(interfaces)
 
     def _start(self):
-        """ Called recursively from Root.stop when starting """
+        """Called recursively from Root.stop when starting"""
         for intf in self._ifAndProto:
             if hasattr(intf,"_start"):
                 intf._start()
@@ -242,7 +350,7 @@ class Device(pr.Node,rim.Hub):
             d._start()
 
     def _stop(self):
-        """ Called recursively from Root.stop when exiting """
+        """Called recursively from Root.stop when exiting"""
         for intf in self._ifAndProto:
             if hasattr(intf,"_stop"):
                 intf._stop()
@@ -251,6 +359,24 @@ class Device(pr.Node,rim.Hub):
 
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
+        """
+        
+
+        Parameters
+        ----------
+        number :
+            
+        stride :
+            
+        pack : bool
+             (Default value = False)
+        **kwargs :
+            
+
+        Returns
+        -------
+
+        """
         if pack:
             hidden=True
         else:
@@ -263,6 +389,24 @@ class Device(pr.Node,rim.Hub):
             varList = getattr(self, kwargs['name']).values()
 
             def linkedSet(dev, var, val, write):
+                """
+                
+
+                Parameters
+                ----------
+                dev :
+                    
+                var :
+                    
+                val :
+                    
+                write :
+                    
+
+                Returns
+                -------
+
+                """
                 if val == '':
                     return
                 values = reversed(val.split('_'))
@@ -270,6 +414,22 @@ class Device(pr.Node,rim.Hub):
                     variable.setDisp(value, write=write)
 
             def linkedGet(dev, var, read):
+                """
+                
+
+                Parameters
+                ----------
+                dev :
+                    
+                var :
+                    
+                read :
+                    
+
+                Returns
+                -------
+
+                """
                 values = [v.getDisp(read=read) for v in varList]
                 return '_'.join(reversed(values))
 
@@ -280,9 +440,22 @@ class Device(pr.Node,rim.Hub):
             self.add(lv)
 
     def setPollInterval(self, interval, variables=None):
-        """Set the poll interval for a group of variables.
+        """
+        Set the poll interval for a group of variables.
         The variables param is an Iterable of strings
-        If variables=None, set interval for all variables that currently have nonzero pollInterval"""
+        If variables=None, set interval for all variables that currently have nonzero pollInterval
+
+        Parameters
+        ----------
+        interval :
+            
+        variables : str
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
         if variables is None:
             variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
@@ -290,7 +463,20 @@ class Device(pr.Node,rim.Hub):
             self.node(x).pollInterval = interval
 
     def hideVariables(self, hidden, variables=None):
-        """Hide a list of Variables (or Variable names)"""
+        """
+        Hide a list of Variables (or Variable names)
+
+        Parameters
+        ----------
+        hidden :
+            
+        variables : str
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
         if variables is None:
             variables=self.variables.values()
 
@@ -301,18 +487,33 @@ class Device(pr.Node,rim.Hub):
                 self.variables[v].hidden = hidden
 
     def initialize(self):
+        """ """
         for key,value in self.devices.items():
             value.initialize()
 
     def hardReset(self):
+        """ """
         for key,value in self.devices.items():
             value.hardReset()
 
     def countReset(self):
+        """ """
         for key,value in self.devices.items():
             value.countReset()
 
     def enableChanged(self,value):
+        """
+        
+
+        Parameters
+        ----------
+        value :
+            
+
+        Returns
+        -------
+
+        """
         pass
 
         #if value is True:
@@ -321,6 +522,27 @@ class Device(pr.Node,rim.Hub):
     def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
         """
         Write all of the blocks held by this Device to memory
+
+        Parameters
+        ----------
+        * :
+            
+        force : bool
+             (Default value = False)
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+        index : int
+             (Default value = -1)
+        **kwargs :
+            
+
+        Returns
+        -------
+
         """
         checkEach = checkEach or self.forceCheckEach
 
@@ -339,6 +561,23 @@ class Device(pr.Node,rim.Hub):
     def verifyBlocks(self, *, recurse=True, variable=None, checkEach=False, **kwargs):
         """
         Perform background verify
+
+        Parameters
+        ----------
+              * :
+            
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+        **kwargs :
+            
+
+        Returns
+        -------
+
         """
         checkEach = checkEach or self.forceCheckEach
 
@@ -357,6 +596,25 @@ class Device(pr.Node,rim.Hub):
     def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
         """
         Perform background reads
+
+        Parameters
+        ----------
+              * :
+            
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+        index : int
+             (Default value = -1)
+        **kwargs :
+            
+
+        Returns
+        -------
+
         """
         checkEach = checkEach or self.forceCheckEach
 
@@ -373,7 +631,24 @@ class Device(pr.Node,rim.Hub):
                     value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
     def checkBlocks(self, *, recurse=True, variable=None, **kwargs):
-        """Check errors in all blocks and generate variable update notifications"""
+        """
+        Check errors in all blocks and generate variable update notifications
+
+        Parameters
+        ----------
+              * :
+            
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        **kwargs :
+            
+
+        Returns
+        -------
+
+        """
         if variable is not None:
             pr.checkTransaction(variable._block, **kwargs)
 
@@ -386,17 +661,50 @@ class Device(pr.Node,rim.Hub):
                     value.checkBlocks(recurse=True, **kwargs)
 
     def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        """Perform a write, verify and check. Useful for committing any stale variables"""
+        """
+        Perform a write, verify and check. Useful for committing any stale variables
+
+        Parameters
+        ----------
+        force : bool
+             (Default value = False)
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def readAndCheckBlocks(self, recurse=True, variable=None, checkEach=False):
-        """Perform a read and check."""
+        """
+        Perform a read and check.
+
+        Parameters
+        ----------
+        recurse : bool
+             (Default value = True)
+        variable : str
+             (Default value = None)
+        checkEach : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
         self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
     def _updateBlockEnable(self):
+        """ """
         for block in self._blocks:
             block.setEnable(self.enable.value() is True)
 
@@ -404,6 +712,30 @@ class Device(pr.Node,rim.Hub):
             value._updateBlockEnable()
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
+        """
+        
+
+        Parameters
+        ----------
+        offset :
+            
+        data :
+            
+        base : str
+             (Default value = pr.UInt)
+        stride : int
+             (Default value = 4)
+        wordBitSize : int
+             (Default value = 32)
+        txnType : str
+             (Default value = rim.Write)
+        numWords : int
+             (Default value = 1)
+
+        Returns
+        -------
+
+        """
 
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
@@ -440,6 +772,30 @@ class Device(pr.Node,rim.Hub):
             return ldata
 
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
+        """
+        
+
+        Parameters
+        ----------
+        offset :
+            
+        data :
+            
+        base : str
+             (Default value = pr.UInt)
+        stride : int
+             (Default value = 4)
+        wordBitSize : int
+             (Default value = 32)
+        tryCount : int
+             (Default value = 1)
+        posted : bool
+             (Default value = False)
+
+        Returns
+        -------
+
+        """
 
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
@@ -466,6 +822,30 @@ class Device(pr.Node,rim.Hub):
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
+        """
+        
+
+        Parameters
+        ----------
+        offset :
+            
+        numWords : int
+             (Default value = 1)
+        base : str
+             (Default value = pr.UInt)
+        stride : int
+             (Default value = 4)
+        wordBitSize : int
+             (Default value = 32)
+        data : str
+             (Default value = None)
+        tryCount : int
+             (Default value = 1)
+
+        Returns
+        -------
+
+        """
 
         if not isinstance(base, pr.Model):
             base = base(wordBitSize)
@@ -487,6 +867,7 @@ class Device(pr.Node,rim.Hub):
             raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
     def _buildBlocks(self):
+        """ """
         remVars = []
 
         # Use min block size, larger blocks can be pre-created
@@ -576,6 +957,20 @@ class Device(pr.Node,rim.Hub):
             newBlock.setEnable(self.enable.value() is True)
 
     def _rootAttached(self, parent, root):
+        """
+        
+
+        Parameters
+        ----------
+        parent :
+            
+        root :
+            
+
+        Returns
+        -------
+
+        """
         pr.Node._rootAttached(self, parent, root)
 
         for key,value in self._nodes.items():
@@ -599,6 +994,15 @@ class Device(pr.Node,rim.Hub):
     def _setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks
+
+        Parameters
+        ----------
+        timeout :
+            
+
+        Returns
+        -------
+
         """
 
         for block in self._blocks:
@@ -611,8 +1015,31 @@ class Device(pr.Node,rim.Hub):
                 value._setTimeout(timeout)
 
     def command(self, **kwargs):
-        """A Decorator to add inline constructor functions as commands"""
+        """
+        A Decorator to add inline constructor functions as commands
+
+        Parameters
+        ----------
+        **kwargs :
+            
+
+        Returns
+        -------
+
+        """
         def _decorator(func):
+            """
+            
+
+            Parameters
+            ----------
+            func :
+                
+
+            Returns
+            -------
+
+            """
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
@@ -622,8 +1049,31 @@ class Device(pr.Node,rim.Hub):
         return _decorator
 
     def linkVariableGet(self, **kwargs):
-        """ Decorator to add inline constructor functions as LinkVariable.linkedGet functions"""
+        """
+        Decorator to add inline constructor functions as LinkVariable.linkedGet functions
+
+        Parameters
+        ----------
+        **kwargs :
+            
+
+        Returns
+        -------
+
+        """
         def _decorator(func):
+            """
+            
+
+            Parameters
+            ----------
+            func :
+                
+
+            Returns
+            -------
+
+            """
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
@@ -633,6 +1083,22 @@ class Device(pr.Node,rim.Hub):
         return _decorator
 
     def genDocuments(self,path,incGroups, excGroups):
+        """
+        
+
+        Parameters
+        ----------
+        path :
+            
+        incGroups :
+            
+        excGroups :
+            
+
+        Returns
+        -------
+
+        """
 
         with open(path + '/' + self.path.replace('.','_') + '.rst','w') as file:
 
@@ -713,6 +1179,7 @@ class Device(pr.Node,rim.Hub):
 
 
 class ArrayDevice(Device):
+    """ """
     def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
         if 'name' not in kwargs:
             kwargs['name'] = f'{arrayClass.__name__}Array'
