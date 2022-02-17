@@ -17,7 +17,20 @@ class DataWriter(pr.Device):
     """Special base class to control data files. TODO: Update comments"""
 
     def __init__(self, *, hidden=True, **kwargs):
-        """Initialize device class"""
+        """
+        Initialize device class
+        Parameters
+        ----------
+        * : 
+        
+        hidden=True : 
+        
+        **kwargs : 
+        
+        Returns
+        -------
+        
+        """
 
         pr.Device.__init__(self,
                            hidden=hidden,
@@ -109,11 +122,33 @@ class DataWriter(pr.Device):
         pass
 
     def _setBufferSize(self,value):
-        """Set buffer size. Override in sub-class"""
+        """
+        Set buffer size. Override in sub-class
+
+        Parameters
+        ----------
+        value :
+            
+
+        Returns
+        -------
+
+        """
         pass
 
     def _setMaxFileSize(self,value):
-        """Set max file size. Override in sub-class"""
+        """
+        Set max file size. Override in sub-class
+
+        Parameters
+        ----------
+        value :
+            
+
+        Returns
+        -------
+
+        """
         pass
 
     def _getCurrentSize(self):
@@ -132,6 +167,13 @@ class DataWriter(pr.Device):
         """
         Auto create data file name based upon date and time.
         Preserve file's location in path.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+
         """
         idx = self.DataFile.value().rfind('/')
 
