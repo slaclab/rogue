@@ -46,7 +46,7 @@ class NodeInformation(ExternalTool):
             self._command(node,channels[0])
 
     def _variable(self, node, channel):
-        attrs = ['name', 'val', 'valDisp', 'path', 'description', 'hidden', 'groups', 'enum',
+        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
@@ -76,6 +76,16 @@ class NodeInformation(ExternalTool):
             le.setReadOnly(True)
             le.setText(str(getattr(node,a)))
             fl.addRow(a,le)
+
+        le = QLineEdit()
+        le.setReadOnly(True)
+        le.setText(str(node.value()))
+        fl.addRow('Value',le)
+
+        le = QLineEdit()
+        le.setReadOnly(True)
+        le.setText(str(node.valueDisp()))
+        fl.addRow('ValueDisp',le)
 
         le = QLineEdit()
         le.setReadOnly(True)
