@@ -380,6 +380,11 @@ class BaseVariable(pr.Node):
         return VariableValue(self,read=read)
 
     @pr.expose
+    @property
+    def val(self):
+        return self.value
+
+    @pr.expose
     def value(self):
         return self.get(read=False, index=-1)
 
@@ -409,6 +414,11 @@ class BaseVariable(pr.Node):
     @pr.expose
     def getDisp(self, read=True, index=-1):
         return(self.genDisp(self.get(read=read,index=index)))
+
+    @pr.expose
+    @property
+    def valDisp(self):
+        return self.valueDisp
 
     @pr.expose
     def valueDisp(self, read=True, index=-1):
