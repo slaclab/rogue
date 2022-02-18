@@ -46,7 +46,7 @@ class NodeInformation(ExternalTool):
             self._command(node,channels[0])
 
     def _variable(self, node, channel):
-        attrs = ['name', 'path', 'description', 'hidden', 'groups', 'enum',
+        attrs = ['name', 'val', 'valDisp', 'path', 'description', 'hidden', 'groups', 'enum',
                  'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
                  'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
