@@ -21,6 +21,7 @@ class DataReceiver(pr.Device,ris.Slave):
                  typeStr='UInt8[np]',
                  hideData=True,
                  value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 enableOnStart=True,
                  **kwargs):
 
         pr.Device.__init__(self, **kwargs)
@@ -61,8 +62,12 @@ class DataReceiver(pr.Device,ris.Slave):
         self.ByteCount.set(0)
         super().countReset()
 
+    def _start(self):
+        super()._start()
+        self.RxEnable.set(True)
+
     def _acceptFrame(self, frame):
-        if not self.RxEnable.get():
+        if not self.RxEnable.value():
             return
 
         # Lock frame
