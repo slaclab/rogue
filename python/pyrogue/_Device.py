@@ -144,6 +144,7 @@ class Device(pr.Node,rim.Hub):
         self._memLock    = threading.RLock()
         self._size       = size
         self._defaults   = defaults if defaults is not None else {}
+        self._started    = False
 
         if size != 0:
             print("")
@@ -240,6 +241,7 @@ class Device(pr.Node,rim.Hub):
                 intf._start()
         for d in self.deviceList:
             d._start()
+        self._started = True
 
     def _stop(self):
         """ Called recursively from Root.stop when exiting """
@@ -248,6 +250,11 @@ class Device(pr.Node,rim.Hub):
                 intf._stop()
         for d in self.deviceList:
             d._stop()
+        self._started = False
+
+    def started(self):
+        """ Check if Device._start() has been called """
+        return self._started
 
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
