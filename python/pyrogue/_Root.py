@@ -597,7 +597,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v.maximum)
                 data += "{}\t".format(v.enum)
                 data += "{}\t".format(v.overlapEn)
-                data += "{}\t".format(v.verify)
+                data += "{}\t".format(v.verifyEn)
                 data += "{}\t".format(v._base.modelId)
                 data += "{}\t".format(v._base.isBigEndian)
                 data += "{}\t".format(v._base.bitReverse)

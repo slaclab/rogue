@@ -105,6 +105,12 @@ class VariableListData(object):
 
 class BaseVariable(pr.Node):
 
+    PROPS = ['name', 'path', 'mode', 'typeStr', 'value', 'valueDisp', 'enum',
+             'disp', 'precision', 'units', 'minimum', 'maximum',
+             'nativeType', 'ndType', 'updateNotify',
+             'hasAlarm', 'lowWarning', 'highWarning', 'lowAlarm',
+             'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+
     def __init__(self, *,
                  name,
                  description='',
@@ -187,8 +193,10 @@ class BaseVariable(pr.Node):
            (self._mode != 'WO'):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
+        
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
+
 
     @pr.expose
     @property
@@ -248,6 +256,7 @@ class BaseVariable(pr.Node):
     def maximum(self):
         return self._maximum
 
+
     @pr.expose
     @property
     def hasAlarm(self):
@@ -284,6 +293,9 @@ class BaseVariable(pr.Node):
     def alarmSeverity(self):
         stat,sevr = self._alarmState(self.value())
         return sevr
+
+    def properties(self)
+        ret = {p:getattr(self, p) for p in self.PROPS}
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
@@ -554,6 +566,11 @@ class BaseVariable(pr.Node):
 
 class RemoteVariable(BaseVariable,rim.Variable):
 
+    PROPS = BaseVariable.PROPS + [
+        'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
+        'verifyEn', 'numValues', 'valueBits', 'valueStride', 'retryCount',
+        'varBytes', 'bulkEn']
+
     def __init__(self, *,
                  name,
                  description='',
@@ -661,6 +678,26 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               offset, bitOffset, bitSize, overlapEn, verify,
                               self._bulkOpEn, self._updateNotify, self._base, listData, retryCount)
 
+
+    ##############################
+    # Properties held by C++ class
+    ##############################
+    @property
+    def numValues(self):
+        return self._numValues()
+
+    @property
+    def valueBits(self):
+        return self._valueBits()
+
+    @property
+    def valueStride(self):
+        return self._valueStride()
+
+    @property
+    def retryCount(self):
+        return self._retryCount()
+
     @pr.expose
     @property
     def varBytes(self):
@@ -673,9 +710,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def address(self):
-        return self._block.address
-
+    def overlapEn(self):
+        return self._overlapEn()
+    
     @pr.expose
     @property
     def bitSize(self):
@@ -688,18 +725,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def verify(self):
+    def verifyEn(self):
         return self._verifyEn()
+
+
+    ########################
+    # Local Properties
+    ########################
+    @pr.expose
+    @property
+    def address(self):
+        return self._block.address
 
     @pr.expose
     @property
     def base(self):
         return self._base
-
-    @pr.expose
-    @property
-    def overlapEn(self):
-        return self._overlapEn()
 
     @pr.expose
     @property
@@ -711,7 +752,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
-        A verify will be performed according to self.verify if verify=True
+        A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception.
         """
@@ -777,7 +818,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         Force a write of the variable.
         Hardware write is blocking if check=True.
-        A verify will be performed according to self.verify if verify=True
+        A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception
         """

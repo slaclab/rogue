@@ -72,6 +72,12 @@ def expose(item):
     item._rogueExposed = True
     return item
 
+def isExposed(item):
+    if inspect.isdatadescriptor(item):
+        return hasattr(item.fget, '_rogueExposed') and item.fget._rogueExposed
+    else:
+        return hasattr(item, '_rogueExposed') and item._rogueExposed
+
 
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
