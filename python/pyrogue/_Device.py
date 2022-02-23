@@ -249,7 +249,7 @@ class Device(pr.Node,rim.Hub):
         for d in self.deviceList:
             d._stop()
 
-    @proptery
+    @property
     def running(self):
         """ Check if Device._start() has been called """
         return self.root is not None and self.root.running
