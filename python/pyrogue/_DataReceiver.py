@@ -64,10 +64,6 @@ class DataReceiver(pr.Device,ris.Slave):
         self.ByteCount.set(0)
         super().countReset()
 
-    def _start(self):
-        super()._start()
-        self.RxEnable.set(self._enableOnStart)
-
     def _acceptFrame(self, frame):
         # Do nothing if not yet started or enabled
         if self.running is False or self.RxEnable.value() is False:
@@ -110,7 +106,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
     def _start(self):
         super()._start()
-        self.RxEnable.set(value=True)
+        self.RxEnable.set(value=self._enableOnStart)
 
     def _stop(self):
         self.RxEnable.set(value=False)
