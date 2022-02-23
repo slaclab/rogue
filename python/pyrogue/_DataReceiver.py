@@ -69,7 +69,8 @@ class DataReceiver(pr.Device,ris.Slave):
         self.RxEnable.set(self._enableOnStart)
 
     def _acceptFrame(self, frame):
-        if not self.RxEnable.value():
+        # Do nothing if not yet started or enabled
+        if self.running is False or self.RxEnable.value() is False:
             return
 
         # Lock frame
