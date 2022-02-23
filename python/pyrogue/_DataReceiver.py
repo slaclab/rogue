@@ -27,6 +27,8 @@ class DataReceiver(pr.Device,ris.Slave):
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
 
+        self._enableOnStart = enableOnStart
+
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
                                   description='Frame Rx Enable'))
@@ -64,7 +66,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
     def _start(self):
         super()._start()
-        self.RxEnable.set(True)
+        self.RxEnable.set(self._enableOnStart)
 
     def _acceptFrame(self, frame):
         if not self.RxEnable.value():
