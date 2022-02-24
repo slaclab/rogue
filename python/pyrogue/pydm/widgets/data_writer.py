@@ -97,7 +97,7 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('File Open:',w)
 
-        w = PyDMLabel(parent=None, init_channel=self._path + '.CurrentSize')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.CurrentSize/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Current File Size:',w)
@@ -121,7 +121,7 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)
