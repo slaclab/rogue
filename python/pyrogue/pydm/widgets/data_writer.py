@@ -90,7 +90,10 @@ class DataWriter(PyDMFrame):
         w = PyRogueLineEdit(parent=None, init_channel=self._path + '.BufferSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        fl.addRow('Buffer Size:',w)
+        w.check_enable_state = lambda: None
+        w.setReadOnly(True)
+        if w.text().isnumeric() and w.text() != '0':
+          fl.addRow('Buffer Size:',w)
 
         w = PyDMLabel(parent=None, init_channel=self._path + '.IsOpen/disp')
         w.alarmSensitiveContent = False
@@ -114,7 +117,10 @@ class DataWriter(PyDMFrame):
         w = PyRogueLineEdit(parent=None, init_channel=self._path + '.MaxFileSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        fl.addRow('Max Size:',w)
+        w.check_enable_state = lambda: None
+        w.setReadOnly(True)
+        if w.text().isnumeric() and w.text() != '0':
+          fl.addRow('Max Size:',w)
 
         w = PyDMLabel(parent=None, init_channel=self._path + '.FrameCount')
         w.alarmSensitiveContent = False
