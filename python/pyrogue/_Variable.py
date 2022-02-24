@@ -105,7 +105,7 @@ class VariableListData(object):
 
 class BaseVariable(pr.Node):
 
-    PROPS = ['name', 'path', 'mode', 'typeStr', 'value', 'valueDisp', 'enum',
+    PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
              'disp', 'precision', 'units', 'minimum', 'maximum',
              'nativeType', 'ndType', 'updateNotify',
              'hasAlarm', 'lowWarning', 'highWarning', 'lowAlarm',
@@ -294,8 +294,18 @@ class BaseVariable(pr.Node):
         stat,sevr = self._alarmState(self.value())
         return sevr
 
-    def properties(self)
-        ret = {p:getattr(self, p) for p in self.PROPS}
+    def properties(self, props=None):
+        if props is None:
+            props = self.PROPS
+            
+        d = odict()
+        d['value'] = self.value()
+        d['valueDisp'] = self.valueDisp()
+        d['class'] = self.__class__.__name__
+        
+        for p in props:
+            d[p] = getattr(self, p)
+        return d
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
@@ -423,8 +433,8 @@ class BaseVariable(pr.Node):
         return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def valueDisp(self, read=True, index=-1):
-        return self.getDisp(read=False,index=index)
+    def valueDisp(self): #, read=True, index=-1):
+        return self.getDisp(read=False,index=-1)
 
     @pr.expose
     def parseDisp(self, sValue):
@@ -519,11 +529,16 @@ class BaseVariable(pr.Node):
         elif self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes,incGroups,excGroups):
+            
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
         if self._mode in modes:
             return VariableValue(self)
         else:
             return None
+
+    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+        return self.properties(properties)
+        
 
     def _queueUpdate(self):
         self._root._queueUpdates(self)

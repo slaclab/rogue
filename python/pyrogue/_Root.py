@@ -858,6 +858,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._read()
         return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
 
+    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+        d = super().treeDict(modes, incGroups, excGroups, properties)
+        return {self.name: d}
+
+    def treeYaml(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+        return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
+
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
         Set variable values from a yaml file

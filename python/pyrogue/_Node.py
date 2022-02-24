@@ -531,7 +531,7 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _getDict(self,modes,incGroups,excGroups):
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -548,6 +548,9 @@ class Node(object):
             return None
         else:
             return data
+
+    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+        return self._getDict(modes, incGroups, excGroups, properties)
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
 
