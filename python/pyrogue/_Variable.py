@@ -95,12 +95,19 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
+    def __repr__(self):
+        return f'{str(self.__class__)}({self.__dict__})'
+
 
 class VariableListData(object):
     def __init__(self, numValues, valueBits, valueStride):
         self.numValues   = numValues
         self.valueBits   = valueBits
         self.valueStride = valueStride
+
+    def __repr__(self):
+        return f'{self.__class__}({self.__dict__})'
+    
 
 
 class BaseVariable(pr.Node):
@@ -294,16 +301,13 @@ class BaseVariable(pr.Node):
         stat,sevr = self._alarmState(self.value())
         return sevr
 
-    def properties(self, props=None):
-        if props is None:
-            props = self.PROPS
-            
+    def properties(self):
         d = odict()
         d['value'] = self.value()
         d['valueDisp'] = self.valueDisp()
         d['class'] = self.__class__.__name__
         
-        for p in props:
+        for p in self.PROPS:
             d[p] = getattr(self, p)
         return d
 
@@ -530,15 +534,15 @@ class BaseVariable(pr.Node):
             self.setDisp(d,writeEach)
 
             
-    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         if self._mode in modes:
-            return VariableValue(self)
+            if properties is False:
+                return VariableValue(self)
+            else:
+                return self.properties()                
         else:
             return None
 
-    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
-        return self.properties(properties)
-        
 
     def _queueUpdate(self):
         self._root._queueUpdates(self)
@@ -577,6 +581,7 @@ class BaseVariable(pr.Node):
 
         else:
             return 'Good','Good'
+
 
 
 class RemoteVariable(BaseVariable,rim.Variable):

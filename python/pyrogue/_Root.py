@@ -858,8 +858,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._read()
         return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
 
-    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
-        d = super().treeDict(modes, incGroups, excGroups, properties)
+    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
+        d = self._getDict(modes, incGroups, excGroups, properties=True)
         return {self.name: d}
 
     def treeYaml(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):

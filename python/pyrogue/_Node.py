@@ -72,12 +72,6 @@ def expose(item):
     item._rogueExposed = True
     return item
 
-def isExposed(item):
-    if inspect.isdatadescriptor(item):
-        return hasattr(item.fget, '_rogueExposed') and item.fget._rogueExposed
-    else:
-        return hasattr(item, '_rogueExposed') and item._rogueExposed
-
 
 class NodeError(Exception):
     """ Exception for node manipulation errors."""
@@ -128,6 +122,10 @@ class Node(object):
 
         if hidden is True:
             self.addToGroup('Hidden')
+
+    def __repr__(self):
+        return f'{self.__class__} - {self.path}'
+            
 
     @property
     def name(self):
@@ -531,7 +529,7 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -540,7 +538,7 @@ class Node(object):
         data = odict()
         for key,value in self.nodes.items():
             if value.filterByGroup(incGroups,excGroups):
-                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)
+                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
             if nv is not None:
                 data[key] = nv
 
@@ -548,9 +546,6 @@ class Node(object):
             return None
         else:
             return data
-
-    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
-        return self._getDict(modes, incGroups, excGroups, properties)
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
 

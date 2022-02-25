@@ -206,7 +206,7 @@ class BaseCommand(pr.BaseVariable):
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         pass
 
-    def _getDict(self,modes,incGroups,excGroups):
+    def _getDict(self,modes,incGroups,excGroups,properties):
         return None
 
     def get(self,read=True, index=-1):
