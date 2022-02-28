@@ -74,7 +74,7 @@ namespace rogue {
                uint64_t currSize_;
 
                //! Total file size in bytes
-               uint32_t totSize_;
+               uint64_t totSize_;
 
                //! Buffering size to cache file writes, zero if disabled
                uint32_t buffSize_;
