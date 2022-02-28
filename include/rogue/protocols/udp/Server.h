@@ -28,6 +28,7 @@
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Master.h"
 #include "rogue/interfaces/stream/Slave.h"
+#include "rogue/protocols/udp/Core.h"
 
 namespace rogue {
 namespace protocols {
