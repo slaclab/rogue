@@ -249,6 +249,11 @@ class Device(pr.Node,rim.Hub):
         for d in self.deviceList:
             d._stop()
 
+    @property
+    def running(self):
+        """ Check if Device._start() has been called """
+        return self.root is not None and self.root.running
+
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         if pack:
