@@ -16,61 +16,62 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
-#include <rogue/protocols/epicsV3/Work.h>
-#include <rogue/protocols/epicsV3/Value.h>
+#include "rogue/protocols/epicsV3/Work.h"
+
 #include <time.h>
+
+#include "rogue/protocols/epicsV3/Value.h"
 
 namespace rpe = rogue::protocols::epicsV3;
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 
 //! Create a work container for write
-rpe::WorkPtr rpe::Work::createWrite ( rpe::ValuePtr value, const gdd & wValue, casAsyncWriteIO *write) {
-   rpe::WorkPtr m = std::make_shared<rpe::Work>(value,wValue,write);
-   return(m);
+rpe::WorkPtr rpe::Work::createWrite(rpe::ValuePtr value, const gdd& wValue, casAsyncWriteIO* write) {
+    rpe::WorkPtr m = std::make_shared<rpe::Work>(value, wValue, write);
+    return (m);
 }
 
 //! Create a work container for read
-rpe::WorkPtr rpe::Work::createRead ( rpe::ValuePtr value, gdd & rValue, casAsyncReadIO *read) {
-   rpe::WorkPtr m = std::make_shared<rpe::Work>(value,rValue,read);
-   return(m);
+rpe::WorkPtr rpe::Work::createRead(rpe::ValuePtr value, gdd& rValue, casAsyncReadIO* read) {
+    rpe::WorkPtr m = std::make_shared<rpe::Work>(value, rValue, read);
+    return (m);
 }
 
-rpe::Work::Work ( rpe::ValuePtr value, const gdd & wValue, casAsyncWriteIO *write) {
-   value_  = value;
-   write_  = write;
-   read_   = NULL;
-   gValue_ = (gdd *)(&wValue);
-   gValue_->reference();
+rpe::Work::Work(rpe::ValuePtr value, const gdd& wValue, casAsyncWriteIO* write) {
+    value_  = value;
+    write_  = write;
+    read_   = NULL;
+    gValue_ = (gdd*)(&wValue);
+    gValue_->reference();
 }
 
-rpe::Work::Work ( rpe::ValuePtr value, gdd & rValue, casAsyncReadIO *read) {
-   value_  = value;
-   write_  = NULL;
-   read_   = read;
-   gValue_ = (gdd *)(&rValue);
-   gValue_->reference();
+rpe::Work::Work(rpe::ValuePtr value, gdd& rValue, casAsyncReadIO* read) {
+    value_  = value;
+    write_  = NULL;
+    read_   = read;
+    gValue_ = (gdd*)(&rValue);
+    gValue_->reference();
 }
 
 rpe::Work::~Work() {
-   gValue_->unreference();
+    gValue_->unreference();
 }
 
-void rpe::Work::execute () {
-   caStatus ret;
+void rpe::Work::execute() {
+    caStatus ret;
 
-   if ( this->read_ != NULL ) {
-      ret = this->value_->read(*(this->gValue_));
-      this->read_->postIOCompletion(ret, *(this->gValue_));
-   }
+    if (this->read_ != NULL) {
+        ret = this->value_->read(*(this->gValue_));
+        this->read_->postIOCompletion(ret, *(this->gValue_));
+    }
 
-   else if ( this->write_ != NULL ) {
-      ret = this->value_->write(*(this->gValue_));
-      this->write_->postIOCompletion(ret);
-   }
+    else if (this->write_ != NULL) {
+        ret = this->value_->write(*(this->gValue_));
+        this->write_->postIOCompletion(ret);
+    }
 }
-

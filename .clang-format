@@ -1,0 +1,34 @@
+BasedOnStyle: Google
+ColumnLimit: 120
+IndentWidth: 4
+AllowShortBlocksOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: WithoutElse # Maybe want Never
+DerivePointerAlignment: false
+PointerAlignment: Left
+AllowAllConstructorInitializersOnNextLine: false
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+BinPackArguments: false
+BinPackParameters: false
+AlignConsecutiveAssignments: true
+AlignConsecutiveMacros: true
+AccessModifierOffset: -2
+SortIncludes: true
+IncludeBlocks: Regroup
+IncludeCategories:
+    # Rogue headers go last
+  - Regex:           '^((<|")(rogue)/)'
+    Priority:        5
+    # C-headers
+  - Regex:           '^<ext/.*\.h>'
+    Priority:        2
+  - Regex:           '^<.*\.h>'
+    Priority:        2
+  # C++ headers
+  - Regex:           '^<.*'
+    Priority:        3
+  # Everything else
+  - Regex:           '.*'
+    Priority:        4
+    

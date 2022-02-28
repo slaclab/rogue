@@ -15,21 +15,24 @@
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
-**/
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
-#include <rogue/utilities/fileio/StreamWriter.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
+ **/
+#include "rogue/utilities/fileio/StreamWriterChannel.h"
+
 #include <stdint.h>
-#include <thread>
-#include <memory>
-#include <rogue/GilRelease.h>
 #include <sys/time.h>
+
+#include <memory>
+#include <thread>
+
+#include "rogue/GilRelease.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -41,89 +44,90 @@ namespace bp = boost::python;
 #endif
 
 //! Class creation
-ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create (ruf::StreamWriterPtr writer, uint8_t channel) {
-   ruf::StreamWriterChannelPtr s = std::make_shared<ruf::StreamWriterChannel>(writer,channel);
-   return(s);
+ruf::StreamWriterChannelPtr ruf::StreamWriterChannel::create(ruf::StreamWriterPtr writer, uint8_t channel) {
+    ruf::StreamWriterChannelPtr s = std::make_shared<ruf::StreamWriterChannel>(writer, channel);
+    return (s);
 }
 
 //! Setup class in python
 void ruf::StreamWriterChannel::setup_python() {
 #ifndef NO_PYTHON
-   bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable >("StreamWriterChannel",bp::no_init)
-       .def("getFrameCount", &ruf::StreamWriterChannel::getFrameCount)
-       .def("waitFrameCount", &ruf::StreamWriterChannel::waitFrameCount)
-       .def("setFrameCount", &ruf::StreamWriterChannel::setFrameCount)
-       ;
-   bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
+    bp::class_<ruf::StreamWriterChannel, ruf::StreamWriterChannelPtr, bp::bases<ris::Slave>, boost::noncopyable>(
+        "StreamWriterChannel",
+        bp::no_init)
+        .def("getFrameCount", &ruf::StreamWriterChannel::getFrameCount)
+        .def("waitFrameCount", &ruf::StreamWriterChannel::waitFrameCount)
+        .def("setFrameCount", &ruf::StreamWriterChannel::setFrameCount);
+    bp::implicitly_convertible<ruf::StreamWriterChannelPtr, ris::SlavePtr>();
 #endif
 }
 
 //! Creator
 ruf::StreamWriterChannel::StreamWriterChannel(ruf::StreamWriterPtr writer, uint8_t channel) {
-   writer_  = writer;
-   channel_ = channel;
-   frameCount_ = 0;
+    writer_     = writer;
+    channel_    = channel;
+    frameCount_ = 0;
 }
 
 //! Deconstructor
-ruf::StreamWriterChannel::~StreamWriterChannel() { }
+ruf::StreamWriterChannel::~StreamWriterChannel() {}
 
 //! Accept a frame from master
-void ruf::StreamWriterChannel::acceptFrame ( ris::FramePtr frame ) {
-   uint8_t ichan;
+void ruf::StreamWriterChannel::acceptFrame(ris::FramePtr frame) {
+    uint8_t ichan;
 
-   rogue::GilRelease noGil;
-   ris::FrameLockPtr fLock = frame->lock();
+    rogue::GilRelease noGil;
+    ris::FrameLockPtr fLock = frame->lock();
 
-   // Support for channelized traffic
-   if ( channel_ == 0 ) ichan = frame->getChannel();
-   else ichan = channel_;
+    // Support for channelized traffic
+    if (channel_ == 0)
+        ichan = frame->getChannel();
+    else
+        ichan = channel_;
 
-   writer_->writeFile (ichan, frame);
+    writer_->writeFile(ichan, frame);
 
-   std::unique_lock<std::mutex> lock(mtx_);
-   frameCount_++;
-   cond_.notify_all();
+    std::unique_lock<std::mutex> lock(mtx_);
+    frameCount_++;
+    cond_.notify_all();
 }
 
 uint32_t ruf::StreamWriterChannel::getFrameCount() {
-  return frameCount_;
+    return frameCount_;
 }
 
-
 void ruf::StreamWriterChannel::setFrameCount(uint32_t count) {
-  rogue::GilRelease noGil;
-  std::unique_lock<std::mutex> lock(mtx_);
-  frameCount_ = count;
+    rogue::GilRelease noGil;
+    std::unique_lock<std::mutex> lock(mtx_);
+    frameCount_ = count;
 }
 
 bool ruf::StreamWriterChannel::waitFrameCount(uint32_t count, uint64_t timeout) {
-   struct timeval endTime;
-   struct timeval sumTime;
-   struct timeval curTime;
+    struct timeval endTime;
+    struct timeval sumTime;
+    struct timeval curTime;
 
-   rogue::GilRelease noGil;
-   std::unique_lock<std::mutex> lock(mtx_);
+    rogue::GilRelease noGil;
+    std::unique_lock<std::mutex> lock(mtx_);
 
-   if (timeout != 0 ) {
-      gettimeofday(&curTime,NULL);
+    if (timeout != 0) {
+        gettimeofday(&curTime, NULL);
 
-      div_t divResult = div(timeout,1000000);
-      sumTime.tv_sec  = divResult.quot;
-      sumTime.tv_usec = divResult.rem;
+        div_t divResult = div(timeout, 1000000);
+        sumTime.tv_sec  = divResult.quot;
+        sumTime.tv_usec = divResult.rem;
 
-      timeradd(&curTime,&sumTime,&endTime);
-   }
+        timeradd(&curTime, &sumTime, &endTime);
+    }
 
-   while (frameCount_ < count) {
-      cond_.wait_for(lock, std::chrono::microseconds(1000));
+    while (frameCount_ < count) {
+        cond_.wait_for(lock, std::chrono::microseconds(1000));
 
-      if ( timeout != 0 ) {
-         gettimeofday(&curTime,NULL);
-         if ( timercmp(&curTime,&endTime,>) ) break;
-      }
-   }
+        if (timeout != 0) {
+            gettimeofday(&curTime, NULL);
+            if (timercmp(&curTime, &endTime, >)) break;
+        }
+    }
 
-   return (frameCount_ >= count);
+    return (frameCount_ >= count);
 }
-

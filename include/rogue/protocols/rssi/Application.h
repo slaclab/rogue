@@ -13,68 +13,66 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_APPLICATION_H__
 #define __ROGUE_PROTOCOLS_RSSI_APPLICATION_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
 #include <stdint.h>
+
 #include <memory>
 
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+
 namespace rogue {
-   namespace protocols {
-      namespace rssi {
+namespace protocols {
+namespace rssi {
 
-         class Controller;
+class Controller;
 
-         //! RSSI Application Class
-         class Application : public rogue::interfaces::stream::Master,
-                             public rogue::interfaces::stream::Slave {
+//! RSSI Application Class
+class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
+    //! Core module
+    std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-               //! Core module
-               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+    // Transmission thread
+    std::thread* thread_;
+    bool threadEn_;
 
-               // Transmission thread
-               std::thread* thread_;
-               bool threadEn_;
+    //! Thread background
+    void runThread();
 
-               //! Thread background
-               void runThread();
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::rssi::Application> create();
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::rssi::Application> create ();
+    //! Creator
+    Application();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Application();
 
-               //! Creator
-               Application();
+    //! Setup links
+    void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
-               //! Destructor
-               ~Application();
+    //! Generate a Frame. Called from master
+    /*
+     * Pass total size required.
+     * Pass flag indicating if zero copy buffers are acceptable
+     */
+    std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-               //! Setup links
-               void setController ( std::shared_ptr<rogue::protocols::rssi::Controller> cntl );
-
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
-                */
-               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::rssi::Application> ApplicationPtr;
-
-      }
-   }
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-#endif
+// Convienence
+typedef std::shared_ptr<rogue::protocols::rssi::Application> ApplicationPtr;
 
+}  // namespace rssi
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

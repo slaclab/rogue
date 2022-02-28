@@ -13,17 +13,16 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_HARDWARE_PGP_MODULE_H__
 #define __ROGUE_HARDWARE_PGP_MODULE_H__
 
 namespace rogue {
-   namespace hardware {
-      namespace pgp {
-         void setup_module();
-      }
-   }
+namespace hardware {
+namespace pgp {
+void setup_module();
 }
+}  // namespace hardware
+}  // namespace rogue
 
 #endif
-

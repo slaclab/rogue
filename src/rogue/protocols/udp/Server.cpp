@@ -16,21 +16,24 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include <rogue/protocols/udp/Core.h>
-#include <rogue/protocols/udp/Server.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
-#include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
-#include <iostream>
-#include <unistd.h>
+ **/
+#include "rogue/protocols/udp/Server.h"
+
+#include <inttypes.h>
 #include <stdlib.h>
 #include <string.h>
-#include <inttypes.h>
+#include <unistd.h>
+
+#include <iostream>
+#include <memory>
+
+#include "rogue/GeneralError.h"
+#include "rogue/GilRelease.h"
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/protocols/udp/Core.h"
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -38,216 +41,215 @@ namespace ris = rogue::interfaces::stream;
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Class creation
-rpu::ServerPtr rpu::Server::create (uint16_t port, bool jumbo) {
-   rpu::ServerPtr r = std::make_shared<rpu::Server>(port,jumbo);
-   return(r);
+rpu::ServerPtr rpu::Server::create(uint16_t port, bool jumbo) {
+    rpu::ServerPtr r = std::make_shared<rpu::Server>(port, jumbo);
+    return (r);
 }
 
 //! Creator
-rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
-   uint32_t len;
-   int32_t  val;
-   uint32_t  size;
+rpu::Server::Server(uint16_t port, bool jumbo) : rpu::Core(jumbo) {
+    uint32_t len;
+    int32_t val;
+    uint32_t size;
 
-   port_    = port;
-   udpLog_ = rogue::Logging::create("udp.Server");
+    port_   = port;
+    udpLog_ = rogue::Logging::create("udp.Server");
 
-   // Create a shared pointer to use as a lock for runThread()
-   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+    // Create a shared pointer to use as a lock for runThread()
+    std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
 
-   // Create socket
-   if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %" PRIu16, port_));
+    // Create socket
+    if ((fd_ = socket(AF_INET, SOCK_DGRAM, 0)) < 0)
+        throw(rogue::GeneralError::create("Server::Server", "Failed to create socket for port %" PRIu16, port_));
 
-   // Setup Remote Address
-   memset(&locAddr_,0,sizeof(struct sockaddr_in));
-   locAddr_.sin_family=AF_INET;
-   locAddr_.sin_addr.s_addr=htonl(INADDR_ANY);
-   locAddr_.sin_port=htons(port_);
+    // Setup Remote Address
+    memset(&locAddr_, 0, sizeof(struct sockaddr_in));
+    locAddr_.sin_family      = AF_INET;
+    locAddr_.sin_addr.s_addr = htonl(INADDR_ANY);
+    locAddr_.sin_port        = htons(port_);
 
-   memset(&remAddr_,0,sizeof(struct sockaddr_in));
+    memset(&remAddr_, 0, sizeof(struct sockaddr_in));
 
-   if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0)
-      throw(rogue::GeneralError::create("Server::Server","Failed to bind to local port %" PRIu16 ". Another process may be using it", port_));
+    if (bind(fd_, (struct sockaddr*)&locAddr_, sizeof(locAddr_)) < 0)
+        throw(rogue::GeneralError::create("Server::Server",
+                                          "Failed to bind to local port %" PRIu16 ". Another process may be using it",
+                                          port_));
 
-   // Kernel assigns port
-   if ( port_ == 0 ) {
-      len = sizeof(locAddr_);
-      if (getsockname(fd_, (struct sockaddr *) &locAddr_, &len) < 0 )
-         throw(rogue::GeneralError::create("Server::Server","Failed to dynamically assign local port"));
-      port_ = ntohs(locAddr_.sin_port);
-   }
+    // Kernel assigns port
+    if (port_ == 0) {
+        len = sizeof(locAddr_);
+        if (getsockname(fd_, (struct sockaddr*)&locAddr_, &len) < 0)
+            throw(rogue::GeneralError::create("Server::Server", "Failed to dynamically assign local port"));
+        port_ = ntohs(locAddr_.sin_port);
+    }
 
-   // Fixed size buffer pool
-   setFixedSize(maxPayload());
-   setPoolSize(10000); // Initial value, 10K frames
+    // Fixed size buffer pool
+    setFixedSize(maxPayload());
+    setPoolSize(10000);  // Initial value, 10K frames
 
-   // Start rx thread
-   threadEn_ = true;
-   thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
+    // Start rx thread
+    threadEn_ = true;
+    thread_   = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
 
-   // Set a thread name
+    // Set a thread name
 #ifndef __MACH__
-   pthread_setname_np( thread_->native_handle(), "UdpServer" );
+    pthread_setname_np(thread_->native_handle(), "UdpServer");
 #endif
 }
 
 //! Destructor
 rpu::Server::~Server() {
-   this->stop();
+    this->stop();
 }
 
 void rpu::Server::stop() {
-  if (threadEn_)  {
-      threadEn_ = false;
-      thread_->join();
+    if (threadEn_) {
+        threadEn_ = false;
+        thread_->join();
 
-      ::close(fd_);
-  }
+        ::close(fd_);
+    }
 }
 
 //! Get port number
 uint32_t rpu::Server::getPort() {
-   return(port_);
+    return (port_);
 }
 
 //! Accept a frame from master
-void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
-   ris::Frame::BufferIterator it;
-   int32_t          res;
-   fd_set           fds;
-   struct timeval   tout;
-   uint32_t         x;
-   struct msghdr    msg;
-   struct iovec     msg_iov[1];
+void rpu::Server::acceptFrame(ris::FramePtr frame) {
+    ris::Frame::BufferIterator it;
+    int32_t res;
+    fd_set fds;
+    struct timeval tout;
+    uint32_t x;
+    struct msghdr msg;
+    struct iovec msg_iov[1];
 
-   rogue::GilRelease noGil;
-   ris::FrameLockPtr frLock = frame->lock();
-   std::lock_guard<std::mutex> lock(udpMtx_);
+    rogue::GilRelease noGil;
+    ris::FrameLockPtr frLock = frame->lock();
+    std::lock_guard<std::mutex> lock(udpMtx_);
 
-   // Drop errored frames
-   if ( frame->getError() ) {
-      udpLog_->warning("Server::acceptFrame: Dumping errored frame");
-      return;
-   }
+    // Drop errored frames
+    if (frame->getError()) {
+        udpLog_->warning("Server::acceptFrame: Dumping errored frame");
+        return;
+    }
 
-   // Setup message header
-   msg.msg_name       = &remAddr_;
-   msg.msg_namelen    = sizeof(struct sockaddr_in);
-   msg.msg_iov        = msg_iov;
-   msg.msg_iovlen     = 1;
-   msg.msg_control    = NULL;
-   msg.msg_controllen = 0;
-   msg.msg_flags      = 0;
+    // Setup message header
+    msg.msg_name       = &remAddr_;
+    msg.msg_namelen    = sizeof(struct sockaddr_in);
+    msg.msg_iov        = msg_iov;
+    msg.msg_iovlen     = 1;
+    msg.msg_control    = NULL;
+    msg.msg_controllen = 0;
+    msg.msg_flags      = 0;
 
-   // Go through each buffer in the frame
-   for (it=frame->beginBuffer(); it != frame->endBuffer(); ++it) {
-      if ( (*it)->getPayload() == 0 ) break;
+    // Go through each buffer in the frame
+    for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) {
+        if ((*it)->getPayload() == 0) break;
 
-      // Setup IOVs
-      msg_iov[0].iov_base = (*it)->begin();
-      msg_iov[0].iov_len  = (*it)->getPayload();
+        // Setup IOVs
+        msg_iov[0].iov_base = (*it)->begin();
+        msg_iov[0].iov_len  = (*it)->getPayload();
 
-      // Keep trying since select call can fire
-      // but write fails because we did not win the buffer lock
-      do {
+        // Keep trying since select call can fire
+        // but write fails because we did not win the buffer lock
+        do {
+            // Setup fds for select call
+            FD_ZERO(&fds);
+            FD_SET(fd_, &fds);
 
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
+            // Setup select timeout
+            tout = timeout_;
 
-         // Setup select timeout
-         tout = timeout_;
+            if (select(fd_ + 1, NULL, &fds, NULL, &tout) <= 0) {
+                udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %" PRIuLEAST32
+                                  ".%" PRIuLEAST32 " seconds! May be caused by outbound backpressure.",
+                                  timeout_.tv_sec,
+                                  timeout_.tv_usec);
+                res = 0;
+            } else if ((res = sendmsg(fd_, &msg, 0)) < 0)
+                udpLog_->warning("UDP Write Call Failed");
+        }
 
-         if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
-            res = 0;
-         }
-         else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
-            udpLog_->warning("UDP Write Call Failed");
-      }
-
-      // Continue while write result was zero
-      while ( res == 0 );
-   }
+        // Continue while write result was zero
+        while (res == 0);
+    }
 }
 
 //! Run thread
 void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
-   ris::BufferPtr     buff;
-   ris::FramePtr      frame;
-   fd_set             fds;
-   int32_t            res;
-   struct timeval     tout;
-   struct sockaddr_in tmpAddr;
-   uint32_t           tmpLen;
-   uint32_t           avail;
+    ris::BufferPtr buff;
+    ris::FramePtr frame;
+    fd_set fds;
+    int32_t res;
+    struct timeval tout;
+    struct sockaddr_in tmpAddr;
+    uint32_t tmpLen;
+    uint32_t avail;
 
-   // Wait until constructor completes
-   while (!lockPtr.expired())
-      continue;
+    // Wait until constructor completes
+    while (!lockPtr.expired()) continue;
 
-   udpLog_->logThreadId();
+    udpLog_->logThreadId();
 
-   // Preallocate frame
-   frame = ris::Pool::acceptReq(maxPayload(),false);
+    // Preallocate frame
+    frame = ris::Pool::acceptReq(maxPayload(), false);
 
-   while(threadEn_) {
+    while (threadEn_) {
+        // Attempt receive
+        buff   = *(frame->beginBuffer());
+        avail  = buff->getAvailable();
+        tmpLen = sizeof(struct sockaddr_in);
+        res    = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr*)&tmpAddr, &tmpLen);
 
-      // Attempt receive
-      buff = *(frame->beginBuffer());
-      avail = buff->getAvailable();
-      tmpLen = sizeof(struct sockaddr_in);
-      res = recvfrom(fd_, buff->begin(), avail, MSG_TRUNC, (struct sockaddr *)&tmpAddr, &tmpLen);
+        if (res > 0) {
+            // Message was too big
+            if (res > avail)
+                udpLog_->warning("Receive data was too large. Dropping.");
+            else {
+                buff->setPayload(res);
+                sendFrame(frame);
+            }
 
-      if ( res > 0 ) {
+            // Get new frame
+            frame = ris::Pool::acceptReq(maxPayload(), false);
 
-         // Message was too big
-         if (res > avail ) udpLog_->warning("Receive data was too large. Dropping.");
-         else {
-            buff->setPayload(res);
-            sendFrame(frame);
-         }
+            // Lock before updating address
+            if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {
+                std::lock_guard<std::mutex> lock(udpMtx_);
+                remAddr_ = tmpAddr;
+            }
+        } else {
+            // Setup fds for select call
+            FD_ZERO(&fds);
+            FD_SET(fd_, &fds);
 
-         // Get new frame
-         frame = ris::Pool::acceptReq(maxPayload(),false);
+            // Setup select timeout
+            tout.tv_sec  = 0;
+            tout.tv_usec = 100;
 
-         // Lock before updating address
-         if ( memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0 ) {
-            std::lock_guard<std::mutex> lock(udpMtx_);
-            remAddr_ = tmpAddr;
-         }
-      }
-      else {
-
-         // Setup fds for select call
-         FD_ZERO(&fds);
-         FD_SET(fd_,&fds);
-
-         // Setup select timeout
-         tout.tv_sec  = 0;
-         tout.tv_usec = 100;
-
-         // Select returns with available buffer
-         select(fd_+1,&fds,NULL,NULL,&tout);
-      }
-   }
+            // Select returns with available buffer
+            select(fd_ + 1, &fds, NULL, NULL, &tout);
+        }
+    }
 }
 
-void rpu::Server::setup_python () {
+void rpu::Server::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<rpu::Core,ris::Master,ris::Slave>, boost::noncopyable >("Server",bp::init<uint16_t,bool>())
-      .def("getPort",        &rpu::Server::getPort)
-   ;
+    bp::class_<rpu::Server, rpu::ServerPtr, bp::bases<rpu::Core, ris::Master, ris::Slave>, boost::noncopyable>(
+        "Server",
+        bp::init<uint16_t, bool>())
+        .def("getPort", &rpu::Server::getPort);
 
-   bp::implicitly_convertible<rpu::ServerPtr, rpu::CorePtr>();
-   bp::implicitly_convertible<rpu::ServerPtr, ris::MasterPtr>();
-   bp::implicitly_convertible<rpu::ServerPtr, ris::SlavePtr>();
+    bp::implicitly_convertible<rpu::ServerPtr, rpu::CorePtr>();
+    bp::implicitly_convertible<rpu::ServerPtr, ris::MasterPtr>();
+    bp::implicitly_convertible<rpu::ServerPtr, ris::SlavePtr>();
 #endif
 }
-

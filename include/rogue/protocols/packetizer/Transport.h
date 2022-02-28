@@ -13,61 +13,59 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_TRANSPORT_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_TRANSPORT_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
 #include <stdint.h>
+
 #include <memory>
 
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+
 namespace rogue {
-   namespace protocols {
-      namespace packetizer {
+namespace protocols {
+namespace packetizer {
 
-         class Controller;
+class Controller;
 
-         //! Transport Class
-         class Transport : public rogue::interfaces::stream::Master,
-                           public rogue::interfaces::stream::Slave {
+//! Transport Class
+class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
+    //! Core module
+    std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
-               //! Core module
-               std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+    // Transmission thread
+    std::thread* thread_;
+    bool threadEn_;
 
-               // Transmission thread
-               std::thread* thread_;
-               bool threadEn_;
+    //! Thread background
+    void runThread();
 
-               //! Thread background
-               void runThread();
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::packetizer::Transport> create();
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::packetizer::Transport> create ();
+    //! Creator
+    Transport();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Transport();
 
-               //! Creator
-               Transport();
+    //! Set Controller
+    void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
-               //! Destructor
-               ~Transport();
-
-               //! Set Controller
-               void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::packetizer::Transport> TransportPtr;
-
-      }
-   }
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::packetizer::Transport> TransportPtr;
 
+}  // namespace packetizer
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

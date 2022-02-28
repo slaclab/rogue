@@ -13,13 +13,12 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_MODULE_H__
 #define __ROGUE_MODULE_H__
 
 namespace rogue {
-   void setup_module();
+void setup_module();
 }
 
 #endif
-

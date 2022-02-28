@@ -16,87 +16,86 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_SERVER_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_SERVER_H__
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/python.hpp>
-#include <thread>
-#include <memory>
 #include <casdef.h>
 #include <gdd.h>
-#include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <gddApps.h>
+
+#include <boost/python.hpp>
 #include <map>
-#include <rogue/Queue.h>
-#include <rogue/Logging.h>
+#include <memory>
+#include <thread>
+
+#include "rogue/Logging.h"
+#include "rogue/Queue.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace epicsV3 {
+namespace protocols {
+namespace epicsV3 {
 
-         class Value;
-         class Work;
+class Value;
+class Work;
 
-         class Server : public caServer {
+class Server : public caServer {
+  private:
+    std::map<std::string, std::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
 
-            private:
+    std::thread* thread_;
+    bool threadEn_;
 
-               std::map<std::string, std::shared_ptr<rogue::protocols::epicsV3::Value>> values_;
+    std::thread** workers_;
+    uint32_t workCnt_;
+    bool workersEn_;
 
-               std::thread * thread_;
-               bool threadEn_;
+    std::mutex mtx_;
 
-               std::thread ** workers_;
-               uint32_t         workCnt_;
-               bool workersEn_;
+    rogue::Queue<std::shared_ptr<rogue::protocols::epicsV3::Work>> workQueue_;
 
-               std::mutex mtx_;
+    bool running_;
 
-               rogue::Queue<std::shared_ptr<rogue::protocols::epicsV3::Work> > workQueue_;
+    void runThread();
 
-               bool running_;
+    void runWorker();
 
-               void runThread();
+    std::shared_ptr<rogue::Logging> log_;
 
-               void runWorker();
+  public:
+    //! Setup class in python
+    static void setup_python();
 
-               std::shared_ptr<rogue::Logging> log_;
+    //! Class creation
+    Server(uint32_t threadCnt);
 
-            public:
+    ~Server();
 
-               //! Setup class in python
-               static void setup_python();
+    void start();
 
-               //! Class creation
-               Server (uint32_t threadCnt);
+    void stop();
 
-               ~Server();
+    void addValue(std::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
-               void start();
+    void addWork(std::shared_ptr<rogue::protocols::epicsV3::Work> work);
 
-               void stop();
+    bool doAsync();
 
-               void addValue(std::shared_ptr<rogue::protocols::epicsV3::Value> value);
+    pvExistReturn pvExistTest(const casCtx& ctx, const char* pvName);
 
-               void addWork(std::shared_ptr<rogue::protocols::epicsV3::Work> work);
+    pvCreateReturn createPV(const casCtx& ctx, const char* pvName);
 
-               bool doAsync();
+    pvAttachReturn pvAttach(const casCtx& ctx, const char* pvName);
+};
 
-               pvExistReturn pvExistTest (const casCtx &ctx, const char *pvName);
+// Convienence
+typedef std::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
 
-               pvCreateReturn createPV(const casCtx &ctx, const char *pvName);
-
-               pvAttachReturn pvAttach(const casCtx &ctx, const char *pvName);
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::epicsV3::Server> ServerPtr;
-
-      }
-   }
-}
+}  // namespace epicsV3
+}  // namespace protocols
+}  // namespace rogue
 
 #endif

@@ -13,83 +13,82 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_UDP_CORE_H__
 #define __ROGUE_PROTOCOLS_UDP_CORE_H__
-#include <rogue/Logging.h>
-#include <stdint.h>
 #include <netdb.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <stdint.h>
+#include <sys/socket.h>
+
 #include <memory>
 
+#include "rogue/Logging.h"
+
 namespace rogue {
-   namespace protocols {
-      namespace udp {
+namespace protocols {
+namespace udp {
 
-         const uint32_t JumboMTU = 9000;
-         const uint32_t StdMTU   = 1500;
+const uint32_t JumboMTU = 9000;
+const uint32_t StdMTU   = 1500;
 
-          // IPv4 Header = 20B, UDP Header = 8B
-         const uint32_t HdrSize  = 20+8;
+// IPv4 Header = 20B, UDP Header = 8B
+const uint32_t HdrSize = 20 + 8;
 
-         const uint32_t MaxJumboPayload = JumboMTU-HdrSize;
-         const uint32_t MaxStdPayload   = StdMTU-HdrSize;
+const uint32_t MaxJumboPayload = JumboMTU - HdrSize;
+const uint32_t MaxStdPayload   = StdMTU - HdrSize;
 
-         //! UDP Core
-         class Core {
+//! UDP Core
+class Core {
+  protected:
+    std::shared_ptr<rogue::Logging> udpLog_;
 
-            protected:
+    //! Jumbo frames enables
+    bool jumbo_;
 
-               std::shared_ptr<rogue::Logging> udpLog_;
+    //! Socket
+    int32_t fd_;
 
-               //! Jumbo frames enables
-               bool jumbo_;
+    //! Remote socket address
+    struct sockaddr_in remAddr_;
 
-               //! Socket
-               int32_t  fd_;
+    //! Timeout value
+    struct timeval timeout_;
 
-               //! Remote socket address
-               struct sockaddr_in remAddr_;
+    std::thread* thread_;
+    bool threadEn_;
 
-               //! Timeout value
-               struct timeval timeout_;
+    //! mutex
+    std::mutex udpMtx_;
 
-               std::thread* thread_;
-               bool threadEn_;
+  public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! mutex
-               std::mutex udpMtx_;
+    //! Creator
+    Core(bool jumbo);
 
-            public:
+    //! Destructor
+    ~Core();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Stop the interface
+    void stop();
 
-               //! Creator
-               Core(bool jumbo);
+    //! Return max payload
+    uint32_t maxPayload();
 
-               //! Destructor
-               ~Core();
+    //! Set number of expected incoming buffers
+    bool setRxBufferCount(uint32_t count);
 
-               //! Stop the interface
-               void stop();
-
-               //! Return max payload
-               uint32_t maxPayload();
-
-               //! Set number of expected incoming buffers
-               bool setRxBufferCount(uint32_t count);
-
-               //! Set timeout for frame transmits in microseconds
-               void setTimeout(uint32_t timeout);
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::udp::Core> CorePtr;
-      }
-   }
+    //! Set timeout for frame transmits in microseconds
+    void setTimeout(uint32_t timeout);
 };
+
+// Convenience
+typedef std::shared_ptr<rogue::protocols::udp::Core> CorePtr;
+}  // namespace udp
+}  // namespace protocols
+};  // namespace rogue
 
 #endif

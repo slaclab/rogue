@@ -13,17 +13,16 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_MEMORY_MODULE_H__
 #define __ROGUE_INTERFACES_MEMORY_MODULE_H__
 
 namespace rogue {
-   namespace interfaces {
-      namespace memory {
-         void setup_module();
-      }
-   }
+namespace interfaces {
+namespace memory {
+void setup_module();
 }
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

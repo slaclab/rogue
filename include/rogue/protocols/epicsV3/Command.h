@@ -16,43 +16,43 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/python.hpp>
-#include <thread>
-#include <memory>
 #include <casdef.h>
 #include <gdd.h>
-#include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/protocols/epicsV3/Variable.h>
+#include <gddApps.h>
+
+#include <boost/python.hpp>
+#include <memory>
+#include <thread>
+
+#include "rogue/protocols/epicsV3/Variable.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace epicsV3 {
+namespace protocols {
+namespace epicsV3 {
 
-         class Command: public Variable {
-            public:
+class Command : public Variable {
+  public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Class creation
+    Command(std::string epicsName, boost::python::object p);
 
-               //! Class creation
-               Command ( std::string epicsName, boost::python::object p );
+    ~Command();
+};
 
-               ~Command ();
-         };
+// Convienence
+typedef std::shared_ptr<rogue::protocols::epicsV3::Command> CommandPtr;
 
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::epicsV3::Command> CommandPtr;
-
-      }
-   }
-}
+}  // namespace epicsV3
+}  // namespace protocols
+}  // namespace rogue
 
 #endif
-

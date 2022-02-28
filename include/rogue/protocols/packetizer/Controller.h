@@ -13,97 +13,98 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <memory>
 #include <stdint.h>
-#include <rogue/Queue.h>
-#include <rogue/Logging.h>
+
+#include <memory>
+
+#include "rogue/Logging.h"
+#include "rogue/Queue.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace packetizer {
+namespace protocols {
+namespace packetizer {
 
-         class Application;
-         class Transport;
-         class Header;
+class Application;
+class Transport;
+class Header;
 
-         //! Packetizer Controller Class
-         class Controller {
+//! Packetizer Controller Class
+class Controller {
+  protected:
+    // parameters
+    bool enSsi_;
+    uint32_t appIndex_;
+    uint32_t tranIndex_;
+    bool transSof_[256];
+    uint32_t tranCount_[256];
+    uint32_t crc_[256];
+    uint8_t tranDest_;
+    uint32_t dropCount_;
+    uint32_t headSize_;
+    uint32_t tailSize_;
+    uint32_t alignSize_;
 
-            protected:
+    struct timeval timeout_;
 
-               // parameters
-               bool     enSsi_;
-               uint32_t appIndex_;
-               uint32_t tranIndex_;
-               bool     transSof_[256];
-               uint32_t tranCount_[256];
-               uint32_t crc_[256];
-               uint8_t  tranDest_;
-               uint32_t dropCount_;
-               uint32_t headSize_;
-               uint32_t tailSize_;
-               uint32_t alignSize_;
+    std::shared_ptr<rogue::Logging> log_;
 
-               struct timeval timeout_;
+    std::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
 
-               std::shared_ptr<rogue::Logging> log_;
+    std::mutex appMtx_;
+    std::mutex tranMtx_;
 
-               std::shared_ptr<rogue::interfaces::stream::Frame> tranFrame_[256];
+    std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
+    std::shared_ptr<rogue::protocols::packetizer::Application>* app_;
 
-               std::mutex appMtx_;
-               std::mutex tranMtx_;
+    rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
-               std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
-               std::shared_ptr<rogue::protocols::packetizer::Application> * app_;
+  public:
+    //! Creator
+    Controller(std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+               std::shared_ptr<rogue::protocols::packetizer::Application>* app,
+               uint32_t headSize,
+               uint32_t tailSize,
+               uint32_t alignSize,
+               bool enSsi);
 
-               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
+    //! Destructor
+    ~Controller();
 
-            public:
+    //! Transport frame allocation request
+    std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame(uint32_t size);
 
-               //! Creator
-               Controller( std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           std::shared_ptr<rogue::protocols::packetizer::Application> * app,
-                           uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi );
+    //! Frame received at transport interface
+    virtual void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Destructor
-               ~Controller();
+    //! Stop transmit queue
+    void stopQueue();
 
-               //! Transport frame allocation request
-               std::shared_ptr<rogue::interfaces::stream::Frame> reqFrame ( uint32_t size);
+    //! Stop
+    void stop();
 
-               //! Frame received at transport interface
-               virtual void transportRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
+    //! Interface for transport transmitter thread
+    std::shared_ptr<rogue::interfaces::stream::Frame> transportTx();
 
-               //! Stop transmit queue
-               void stopQueue();
+    //! Frame received at application interface
+    virtual void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 
-               //! Stop
-               void stop();
+    //! Get drop count
+    uint32_t getDropCount();
 
-               //! Interface for transport transmitter thread
-               std::shared_ptr<rogue::interfaces::stream::Frame> transportTx ();
-
-               //! Frame received at application interface
-               virtual void applicationRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
-
-               //! Get drop count
-               uint32_t getDropCount();
-
-               //! Set timeout in microseconds for frame transmits
-               void setTimeout(uint32_t timeout);
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::packetizer::Controller> ControllerPtr;
-
-      }
-   }
+    //! Set timeout in microseconds for frame transmits
+    void setTimeout(uint32_t timeout);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::packetizer::Controller> ControllerPtr;
 
+}  // namespace packetizer
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

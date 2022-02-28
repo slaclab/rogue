@@ -16,72 +16,72 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/GilRelease.h>
+ **/
+#include "rogue/interfaces/memory/TransactionLock.h"
+
 #include <memory>
+
+#include "rogue/GilRelease.h"
+#include "rogue/interfaces/memory/Transaction.h"
 
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Create a container
-rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) {
-   rim::TransactionLockPtr tranLock = std::make_shared<rim::TransactionLock>(tran);
-   return(tranLock);
+rim::TransactionLockPtr rim::TransactionLock::create(rim::TransactionPtr tran) {
+    rim::TransactionLockPtr tranLock = std::make_shared<rim::TransactionLock>(tran);
+    return (tranLock);
 }
 
 //! Constructor
 rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
-   rogue::GilRelease noGil;
-   tran_ = tran;
-   tran_->lock_.lock();
-   locked_ = true;
+    rogue::GilRelease noGil;
+    tran_ = tran;
+    tran_->lock_.lock();
+    locked_ = true;
 }
 
 //! Setup class in python
 void rim::TransactionLock::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rim::TransactionLock, rim::TransactionLockPtr, boost::noncopyable>("TransactionLock",bp::no_init)
-      .def("lock",      &rim::TransactionLock::lock)
-      .def("unlock",    &rim::TransactionLock::unlock)
-      .def("__enter__", &rim::TransactionLock::enter)
-      .def("__exit__",  &rim::TransactionLock::exit)
-   ;
+    bp::class_<rim::TransactionLock, rim::TransactionLockPtr, boost::noncopyable>("TransactionLock", bp::no_init)
+        .def("lock", &rim::TransactionLock::lock)
+        .def("unlock", &rim::TransactionLock::unlock)
+        .def("__enter__", &rim::TransactionLock::enter)
+        .def("__exit__", &rim::TransactionLock::exit);
 #endif
 }
 
 //! Destructor
 rim::TransactionLock::~TransactionLock() {
-   if ( locked_ ) tran_->lock_.unlock();
+    if (locked_) tran_->lock_.unlock();
 }
 
 //! lock
 void rim::TransactionLock::lock() {
-   if ( ! locked_ ) {
-      rogue::GilRelease noGil;
-      tran_->lock_.lock();
-      locked_ = true;
-   }
+    if (!locked_) {
+        rogue::GilRelease noGil;
+        tran_->lock_.lock();
+        locked_ = true;
+    }
 }
 
 //! lock
 void rim::TransactionLock::unlock() {
-   if ( locked_ ) {
-      tran_->lock_.unlock();
-      locked_ = false;
-   }
+    if (locked_) {
+        tran_->lock_.unlock();
+        locked_ = false;
+    }
 }
 
 //! Enter method for python, do nothing
-void rim::TransactionLock::enter() { }
+void rim::TransactionLock::enter() {}
 
 //! Exit method for python, do nothing
-void rim::TransactionLock::exit(void *, void *, void *) { }
-
+void rim::TransactionLock::exit(void*, void*, void*) {}

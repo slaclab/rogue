@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ASIS_DRIVER_H__
 #define __ASIS_DRIVER_H__
 #include "DmaDriver.h"
@@ -25,36 +25,35 @@
 #ifndef DMA_IN_KERNEL
 
 // Set flags
-//static constexpr inline uint32_t axisSetFlags(uint32_t fuser, uint32_t luser, uint32_t cont) {
+// static constexpr inline uint32_t axisSetFlags(uint32_t fuser, uint32_t luser, uint32_t cont) {
 //   return ( ((cont & 0x1) << 16)  | ((luser & 0xFF) << 8) | ((fuser & 0xFF) << 0) );
 //}
 
 static inline uint32_t axisSetFlags(uint32_t fuser, uint32_t luser, uint32_t cont) {
-   uint32_t flags;
+    uint32_t flags;
 
-   flags  = fuser & 0xFF;
-   flags += (luser << 8) & 0xFF00;
-   flags += (cont  << 16) & 0x10000;
-   return(flags);
+    flags = fuser & 0xFF;
+    flags += (luser << 8) & 0xFF00;
+    flags += (cont << 16) & 0x10000;
+    return (flags);
 }
 
 static inline uint32_t axisGetFuser(uint32_t flags) {
-   return(flags & 0xFF);
+    return (flags & 0xFF);
 }
 
 static inline uint32_t axisGetLuser(uint32_t flags) {
-   return((flags >> 8) & 0xFF);
+    return ((flags >> 8) & 0xFF);
 }
 
 static inline uint32_t axisGetCont(uint32_t flags) {
-   return((flags >> 16) & 0x1);
+    return ((flags >> 16) & 0x1);
 }
 
 // Read ACK
-static inline void axisReadAck (int32_t fd) {
-   ioctl(fd,AXIS_Read_Ack,0);
+static inline void axisReadAck(int32_t fd) {
+    ioctl(fd, AXIS_Read_Ack, 0);
 }
 
 #endif
 #endif
-

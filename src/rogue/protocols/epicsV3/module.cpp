@@ -17,34 +17,33 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
+#include "rogue/protocols/epicsV3/module.h"
+
 #include <boost/python.hpp>
 
-#include <rogue/protocols/epicsV3/module.h>
-#include <rogue/protocols/epicsV3/Value.h>
-#include <rogue/protocols/epicsV3/Variable.h>
-#include <rogue/protocols/epicsV3/Command.h>
-#include <rogue/protocols/epicsV3/Server.h>
+#include "rogue/protocols/epicsV3/Command.h"
+#include "rogue/protocols/epicsV3/Server.h"
+#include "rogue/protocols/epicsV3/Value.h"
+#include "rogue/protocols/epicsV3/Variable.h"
 
 namespace bp  = boost::python;
 namespace rpe = rogue::protocols::epicsV3;
 
 void rpe::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.epicsV3"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.epicsV3"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("epicsV3") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("epicsV3") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rpe::Value::setup_python();
-   rpe::Variable::setup_python();
-   rpe::Command::setup_python();
-   rpe::Server::setup_python();
+    rpe::Value::setup_python();
+    rpe::Variable::setup_python();
+    rpe::Command::setup_python();
+    rpe::Server::setup_python();
 }
-

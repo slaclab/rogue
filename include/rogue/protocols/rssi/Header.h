@@ -13,147 +13,143 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #define __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #include <stdint.h>
+
 #include <memory>
-#include <rogue/interfaces/stream/Frame.h>
+
+#include "rogue/interfaces/stream/Frame.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace rssi {
+namespace protocols {
+namespace rssi {
 
-         //! PGP Card class
-         class Header {
+//! PGP Card class
+class Header {
+    //! Set 16-bit uint value
+    inline void setUInt16(uint8_t* data, uint8_t byte, uint16_t value);
 
-               //! Set 16-bit uint value
-               inline void setUInt16 ( uint8_t *data, uint8_t byte, uint16_t value);
+    //! Get 16-bit uint value
+    inline uint16_t getUInt16(uint8_t* data, uint8_t byte);
 
-               //! Get 16-bit uint value
-               inline uint16_t getUInt16 ( uint8_t *data, uint8_t byte );
+    //! Set 32-bit uint value
+    inline void setUInt32(uint8_t* data, uint8_t byte, uint32_t value);
 
-               //! Set 32-bit uint value
-               inline void setUInt32 ( uint8_t *data, uint8_t byte, uint32_t value);
+    //! Get 32-bit uint value
+    inline uint32_t getUInt32(uint8_t* data, uint8_t byte);
 
-               //! Get 32-bit uint value
-               inline uint32_t getUInt32 ( uint8_t *data, uint8_t byte );
+    //! compute checksum
+    uint16_t compSum(uint8_t* data, uint8_t size);
 
-               //! compute checksum
-               uint16_t compSum (uint8_t *data, uint8_t size);
+  public:
+    //! Header Size
+    static const int32_t HeaderSize = 8;
+    static const uint32_t SynSize   = 24;
 
-            public:
+  private:
+    //! Frame pointer
+    std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-               //! Header Size
-               static const  int32_t HeaderSize = 8;
-               static const uint32_t SynSize    = 24;
+    //! Time last transmitted
+    struct timeval time_;
 
-            private:
+    //! Transmit count
+    uint32_t count_;
 
-               //! Frame pointer
-               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+  public:
+    //! Create
+    static std::shared_ptr<rogue::protocols::rssi::Header> create(
+        std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Time last transmitted
-               struct timeval time_;
+    //! Creator
+    Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Transmit count
-               uint32_t count_;
+    //! Destructor
+    ~Header();
 
-            public:
+    //! Get Frame
+    std::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
 
-               //! Create
-               static std::shared_ptr<rogue::protocols::rssi::Header>
-                  create(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    //! Verify header checksum. Also inits records.
+    bool verify();
 
-               //! Creator
-               Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    //! Update header with settings and update checksum
+    void update();
 
-               //! Destructor
-               ~Header();
+    //! Get time
+    struct timeval& getTime();
 
-               //! Get Frame
-               std::shared_ptr<rogue::interfaces::stream::Frame> getFrame();
+    //! Get Count
+    uint32_t count();
 
-               //! Verify header checksum. Also inits records.
-               bool verify();
+    //! Reset tx time
+    void rstTime();
 
-               //! Update header with settings and update checksum
-               void update();
+    //! Dump message contents
+    std::string dump();
 
-               //! Get time
-               struct timeval & getTime();
+    //! Syn flag
+    bool syn;
 
-               //! Get Count
-               uint32_t count();
+    //! Ack flag
+    bool ack;
 
-               //! Reset tx time
-               void rstTime();
+    //! Rst flag
+    bool rst;
 
-               //! Dump message contents
-               std::string dump();
+    //! NUL flag
+    bool nul;
 
-               //! Syn flag
-               bool syn;
+    //! Busy flag
+    bool busy;
 
-               //! Ack flag
-               bool ack;
+    //! Sequence number
+    uint8_t sequence;
 
-               //! Rst flag
-               bool rst;
+    //! Acknowledge number
+    uint8_t acknowledge;
 
-               //! NUL flag
-               bool nul;
+    //! Version field
+    uint8_t version;
 
-               //! Busy flag
-               bool busy;
+    //! Chk flag
+    bool chk;
 
-               //! Sequence number
-               uint8_t sequence;
+    //! MAX Outstanding Segments
+    uint8_t maxOutstandingSegments;
 
-               //! Acknowledge number
-               uint8_t acknowledge;
+    //! MAX Segment Size
+    uint16_t maxSegmentSize;
 
-               //! Version field
-               uint8_t version;
+    //! Retransmission Timeout
+    uint16_t retransmissionTimeout;
 
-               //! Chk flag
-               bool chk;
+    //! Cumulative Acknowledgment Timeout
+    uint16_t cumulativeAckTimeout;
 
-               //! MAX Outstanding Segments
-               uint8_t maxOutstandingSegments;
+    //! NULL Timeout
+    uint16_t nullTimeout;
 
-               //! MAX Segment Size
-               uint16_t maxSegmentSize;
+    //! Max Retransmissions
+    uint8_t maxRetransmissions;
 
-               //! Retransmission Timeout
-               uint16_t retransmissionTimeout;
+    //! MAX Cumulative Ack
+    uint8_t maxCumulativeAck;
 
-               //! Cumulative Acknowledgment Timeout
-               uint16_t cumulativeAckTimeout;
+    //! Timeout Unit
+    uint8_t timeoutUnit;
 
-               //! NULL Timeout
-               uint16_t nullTimeout;
-
-               //! Max Retransmissions
-               uint8_t maxRetransmissions;
-
-               //! MAX Cumulative Ack
-               uint8_t maxCumulativeAck;
-
-               //! Timeout Unit
-               uint8_t timeoutUnit;
-
-               //! Connection ID
-               uint32_t connectionId;
-
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::rssi::Header> HeaderPtr;
-
-      }
-   }
+    //! Connection ID
+    uint32_t connectionId;
 };
 
-#endif
+// Convienence
+typedef std::shared_ptr<rogue::protocols::rssi::Header> HeaderPtr;
 
+}  // namespace rssi
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

@@ -18,18 +18,18 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
-#include <rogue/hardware/pgp/module.h>
-#include <rogue/hardware/pgp/PgpCard.h>
-#include <rogue/hardware/pgp/Info.h>
-#include <rogue/hardware/pgp/Status.h>
-#include <rogue/hardware/pgp/PciStatus.h>
-#include <rogue/hardware/pgp/EvrStatus.h>
-#include <rogue/hardware/pgp/EvrControl.h>
-#include <rogue/hardware/pgp/EvrStatus.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/hardware/pgp/module.h"
+
+#include "rogue/hardware/pgp/EvrControl.h"
+#include "rogue/hardware/pgp/EvrStatus.h"
+#include "rogue/hardware/pgp/Info.h"
+#include "rogue/hardware/pgp/PciStatus.h"
+#include "rogue/hardware/pgp/PgpCard.h"
+#include "rogue/hardware/pgp/Status.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
@@ -39,22 +39,19 @@ namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
 
 void rhp::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.pgp"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.pgp"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("pgp") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("pgp") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rhp::EvrControl::setup_python();
-   rhp::EvrStatus::setup_python();
-   rhp::Info::setup_python();
-   rhp::Status::setup_python();
-   rhp::PciStatus::setup_python();
-   rhp::PgpCard::setup_python();
-
+    rhp::EvrControl::setup_python();
+    rhp::EvrStatus::setup_python();
+    rhp::Info::setup_python();
+    rhp::Status::setup_python();
+    rhp::PciStatus::setup_python();
+    rhp::PgpCard::setup_python();
 }
-

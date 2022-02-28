@@ -16,143 +16,141 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_VALUE_H__
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/python.hpp>
-#include <thread>
-#include <memory>
 #include <casdef.h>
 #include <gdd.h>
-#include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/Logging.h>
+#include <gddApps.h>
+
+#include <boost/python.hpp>
+#include <memory>
+#include <thread>
+
+#include "rogue/Logging.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace epicsV3 {
+namespace protocols {
+namespace epicsV3 {
 
-         class Pv;
+class Pv;
 
-         class Value {
-            protected:
+class Value {
+  protected:
+    std::string epicsName_;
+    std::string typeStr_;
+    aitEnum epicsType_;
+    gdd* pValue_;
+    uint32_t max_;
+    uint32_t size_;
+    uint32_t fSize_;
+    bool array_;
+    bool isString_;
 
-               std::string epicsName_;
-               std::string typeStr_;
-               aitEnum     epicsType_;
-               gdd       * pValue_;
-               uint32_t    max_;
-               uint32_t    size_;
-               uint32_t    fSize_;
-               bool        array_;
-               bool        isString_;
+    std::vector<std::string> enums_;
+    rogue::protocols::epicsV3::Pv* pv_;
 
-               std::vector<std::string> enums_;
-               rogue::protocols::epicsV3::Pv * pv_;
+    std::shared_ptr<rogue::Logging> log_;
 
-               std::shared_ptr<rogue::Logging> log_;
+    gdd* units_;
+    gdd* precision_;
+    gdd* hopr_;
+    gdd* lopr_;
+    gdd* highAlarm_;
+    gdd* highWarning_;
+    gdd* lowWarning_;
+    gdd* lowAlarm_;
+    gdd* highCtrlLimit_;
+    gdd* lowCtrlLimit_;
 
-               gdd * units_;
-               gdd * precision_;
-               gdd * hopr_;
-               gdd * lopr_;
-               gdd * highAlarm_;
-               gdd * highWarning_;
-               gdd * lowWarning_;
-               gdd * lowAlarm_;
-               gdd * highCtrlLimit_;
-               gdd * lowCtrlLimit_;
+    gddAppFuncTable<rogue::protocols::epicsV3::Value> funcTable_;
 
-               gddAppFuncTable<rogue::protocols::epicsV3::Value> funcTable_;
+    std::mutex mtx_;
 
-               std::mutex mtx_;
+    void initGdd(std::string typeStr, bool isEnum, uint32_t count, bool forceStr);
 
-               void initGdd(std::string typeStr, bool isEnum, uint32_t count, bool forceStr );
+    void updated();
 
-               void updated();
+    uint32_t revEnum(std::string val);
 
-               uint32_t revEnum(std::string val);
+  public:
+    //! Setup class in python
+    static void setup_python();
 
-            public:
+    //! Class creation
+    Value(std::string epicsName);
 
-               //! Setup class in python
-               static void setup_python();
+    ~Value();
 
-               //! Class creation
-               Value ( std::string epicsName );
+    std::string epicsName();
 
-               ~Value ();
+    virtual bool valueSet();
 
-               std::string epicsName();
+    virtual bool valueGet();
 
-               virtual bool valueSet();
+    void setPv(rogue::protocols::epicsV3::Pv* pv);
 
-               virtual bool valueGet();
+    rogue::protocols::epicsV3::Pv* getPv();
 
-               void setPv(rogue::protocols::epicsV3::Pv * pv);
+    //---------------------------------------
+    // EPICS Interface
+    //---------------------------------------
+    caStatus read(gdd& value);
 
-               rogue::protocols::epicsV3::Pv * getPv();
+    gddAppFuncTableStatus readValue(gdd& value);
 
-               //---------------------------------------
-               // EPICS Interface
-               //---------------------------------------
-               caStatus read(gdd &value);
+    caStatus write(const gdd& value);
 
-               gddAppFuncTableStatus readValue(gdd &value);
+    aitEnum bestExternalType();
 
-               caStatus write(const gdd &value);
+    unsigned maxDimension();
 
-               aitEnum bestExternalType();
+    aitIndex maxBound(unsigned dimension);
 
-               unsigned maxDimension();
+    gddAppFuncTableStatus readStatus(gdd& value);
 
-               aitIndex maxBound(unsigned dimension);
+    gddAppFuncTableStatus readSeverity(gdd& value);
 
-               gddAppFuncTableStatus readStatus(gdd &value);
+    gddAppFuncTableStatus readPrecision(gdd& value);
 
-               gddAppFuncTableStatus readSeverity(gdd &value);
+    gddAppFuncTableStatus readHopr(gdd& value);
 
-               gddAppFuncTableStatus readPrecision(gdd &value);
+    gddAppFuncTableStatus readLopr(gdd& value);
 
-               gddAppFuncTableStatus readHopr(gdd &value);
+    gddAppFuncTableStatus readHighAlarm(gdd& value);
 
-               gddAppFuncTableStatus readLopr(gdd &value);
+    gddAppFuncTableStatus readHighWarn(gdd& value);
 
-               gddAppFuncTableStatus readHighAlarm(gdd &value);
+    gddAppFuncTableStatus readLowWarn(gdd& value);
 
-               gddAppFuncTableStatus readHighWarn(gdd &value);
+    gddAppFuncTableStatus readLowAlarm(gdd& value);
 
-               gddAppFuncTableStatus readLowWarn(gdd &value);
+    gddAppFuncTableStatus readHighCtrl(gdd& value);
 
-               gddAppFuncTableStatus readLowAlarm(gdd &value);
+    gddAppFuncTableStatus readLowCtrl(gdd& value);
 
-               gddAppFuncTableStatus readHighCtrl(gdd &value);
+    gddAppFuncTableStatus readUnits(gdd& value);
 
-               gddAppFuncTableStatus readLowCtrl(gdd &value);
+    gddAppFuncTableStatus readEnums(gdd& value);
+};
 
-               gddAppFuncTableStatus readUnits(gdd &value);
+// Convienence
+typedef std::shared_ptr<rogue::protocols::epicsV3::Value> ValuePtr;
 
-               gddAppFuncTableStatus readEnums(gdd &value);
-
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::epicsV3::Value> ValuePtr;
-
-         // Destructor
-         template<typename T>
-         class Destructor : public gddDestructor {
-            virtual void run (void * pUntyped) {
-               T ps = reinterpret_cast <T>(pUntyped);
-               delete [] ps;
-            }
-         };
-      }
-   }
-}
+// Destructor
+template <typename T>
+class Destructor : public gddDestructor {
+    virtual void run(void* pUntyped) {
+        T ps = reinterpret_cast<T>(pUntyped);
+        delete[] ps;
+    }
+};
+}  // namespace epicsV3
+}  // namespace protocols
+}  // namespace rogue
 
 #endif
-

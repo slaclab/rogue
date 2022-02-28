@@ -16,45 +16,48 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include <rogue/interfaces/stream/TcpClient.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
-#include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
+ **/
+#include "rogue/interfaces/stream/TcpClient.h"
+
 #include <zmq.h>
+
+#include <memory>
+
+#include "rogue/GeneralError.h"
+#include "rogue/GilRelease.h"
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/interfaces/stream/FrameLock.h"
 
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Class creation
-ris::TcpClientPtr ris::TcpClient::create (std::string addr, uint16_t port) {
-   ris::TcpClientPtr r = std::make_shared<ris::TcpClient>(addr,port);
-   return(r);
+ris::TcpClientPtr ris::TcpClient::create(std::string addr, uint16_t port) {
+    ris::TcpClientPtr r = std::make_shared<ris::TcpClient>(addr, port);
+    return (r);
 }
 
 //! Creator
-ris::TcpClient::TcpClient (std::string addr, uint16_t port) : ris::TcpCore(addr,port,false) { }
+ris::TcpClient::TcpClient(std::string addr, uint16_t port) : ris::TcpCore(addr, port, false) {}
 
 //! Destructor
-ris::TcpClient::~TcpClient() { }
+ris::TcpClient::~TcpClient() {}
 
-
-void ris::TcpClient::setup_python () {
+void ris::TcpClient::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<ris::TcpClient, ris::TcpClientPtr, bp::bases<ris::TcpCore>, boost::noncopyable >("TcpClient",bp::init<std::string,uint16_t>());
+    bp::class_<ris::TcpClient, ris::TcpClientPtr, bp::bases<ris::TcpCore>, boost::noncopyable>(
+        "TcpClient",
+        bp::init<std::string, uint16_t>());
 
-   bp::implicitly_convertible<ris::TcpClientPtr, ris::TcpCorePtr>();
+    bp::implicitly_convertible<ris::TcpClientPtr, ris::TcpCorePtr>();
 #endif
 }
-

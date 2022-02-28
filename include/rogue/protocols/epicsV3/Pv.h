@@ -16,82 +16,77 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_PV_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_PV_H__
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/python.hpp>
-#include <thread>
-#include <memory>
 #include <casdef.h>
 #include <gdd.h>
-#include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <gddApps.h>
+
+#include <boost/python.hpp>
+#include <memory>
 #include <mutex>
+#include <thread>
 
 namespace rogue {
-   namespace protocols {
-      namespace epicsV3 {
+namespace protocols {
+namespace epicsV3 {
 
-         class Value;
-         class Server;
+class Value;
+class Server;
 
-         class Pv : public casPV {
-            private:
+class Pv : public casPV {
+  private:
+    std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+    rogue::protocols::epicsV3::Server* server_;
+    aitBool interest_;
+    std::mutex mtx_;
+    casEventMask valueMask_;
 
-               std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
-               rogue::protocols::epicsV3::Server *server_;
-               aitBool interest_;
-               std::mutex mtx_;
-               casEventMask valueMask_;
+  public:
+    //! Class creation
+    Pv(rogue::protocols::epicsV3::Server* server, std::shared_ptr<rogue::protocols::epicsV3::Value> value);
 
-            public:
+    ~Pv();
 
-               //! Class creation
-               Pv (rogue::protocols::epicsV3::Server *server, std::shared_ptr<rogue::protocols::epicsV3::Value> value);
+    // Virtual methods in casPV
 
-               ~Pv ();
+    void show(unsigned level) const;
 
-               // Virtual methods in casPV
+    caStatus interestRegister();
 
-               void show (unsigned level) const;
+    void interestDelete();
 
-               caStatus interestRegister();
+    caStatus beginTransaction();
 
-               void interestDelete();
+    void endTransaction();
 
-               caStatus beginTransaction();
+    caStatus read(const casCtx& ctx, gdd& value);
 
-               void endTransaction();
+    caStatus write(const casCtx& ctx, const gdd& value);
 
-               caStatus read(const casCtx &ctx, gdd &value);
+    caStatus writeNotify(const casCtx& ctx, const gdd& value);
 
-               caStatus write(const casCtx &ctx, const gdd &value);
+    casChannel* createChannel(const casCtx& ctx, const char* const pUserName, const char* const pHostName);
 
-               caStatus writeNotify(const casCtx &ctx, const gdd &value);
+    void destroy();
 
-               casChannel * createChannel(const casCtx &ctx,
-                                          const char * const pUserName,
-                                          const char * const pHostName);
+    aitEnum bestExternalType() const;
 
-               void destroy();
+    unsigned maxDimension() const;
 
-               aitEnum bestExternalType() const;
+    aitIndex maxBound(unsigned dimension) const;
 
-               unsigned maxDimension() const;
+    const char* getName() const;
 
-               aitIndex maxBound(unsigned dimension) const;
-
-               const char * getName() const;
-
-               void updated(const gdd & event);
-
-         };
-      }
-   }
-}
+    void updated(const gdd& event);
+};
+}  // namespace epicsV3
+}  // namespace protocols
+}  // namespace rogue
 
 #endif
-
