@@ -19,6 +19,7 @@ import pyrogue as pr
 
 
 class PollQueueEntry(object):
+    """ """
     def __init__(self, readTime, count, interval, block):
         self.readTime = readTime
         self.count    = count
@@ -33,6 +34,7 @@ class PollQueueEntry(object):
 
 
 class PollQueue(object):
+    """ """
 
     def __init__(self,*, root):
         self._pq = [] # The heap queue
@@ -49,10 +51,25 @@ class PollQueue(object):
         self._log = pr.logInit(cls=self)
 
     def _start(self):
+        """ """
         self._pollThread.start()
         self._log.info("PollQueue Started")
 
     def _addEntry(self, block, interval):
+        """
+        
+
+        Parameters
+        ----------
+        block :
+            
+        interval :
+            
+
+        Returns
+        -------
+
+        """
         with self._condLock:
             timedelta = datetime.timedelta(seconds=interval)
             # new entries are always polled first immediately
@@ -66,16 +83,30 @@ class PollQueue(object):
             self._condLock.notify()
 
     def _blockIncrement(self):
+        """ """
         with self._condLock:
             self.blockCount += 1
             self._condLock.notify()
 
     def _blockDecrement(self):
+        """ """
         with self._condLock:
             self.blockCount -= 1
             self._condLock.notify()
 
     def updatePollInterval(self, var):
+        """
+        
+
+        Parameters
+        ----------
+        var :
+            
+
+        Returns
+        -------
+
+        """
         with self._condLock:
             self._log.debug(f'updatePollInterval {var} - {var.pollInterval}')
             # Special case: Variable has no block and just depends on other variables
@@ -172,9 +203,19 @@ class PollQueue(object):
 
 
     def _expiredEntries(self, time=None):
-        """An iterator of all entries that expire by a given time.
+        """
+        An iterator of all entries that expire by a given time.
         Use datetime.now() if no time provided. Each entry is popped from the queue before being
         yielded by the iterator
+
+        Parameters
+        ----------
+        time :
+             (Default value = None)
+
+        Returns
+        -------
+
         """
         with self._condLock:
             if time is None:
@@ -186,6 +227,7 @@ class PollQueue(object):
 
 
     def peek(self):
+        """ """
         with self._condLock:
             if self.empty() is False:
                 return self._pq[0]
@@ -193,15 +235,29 @@ class PollQueue(object):
                 return None
 
     def empty(self):
+        """ """
         with self._condLock:
             return len(self._pq)==0
 
     def _stop(self):
+        """ """
         with self._condLock:
             self._run = False
             self._condLock.notify()
 
     def pause(self, value):
+        """
+        
+
+        Parameters
+        ----------
+        value :
+            
+
+        Returns
+        -------
+
+        """
         if value is True:
             with self._condLock:
                 self._pause = True
@@ -212,5 +268,6 @@ class PollQueue(object):
 
 
     def paused(self):
+        """ """
         with self._condLock:
             return self._pause

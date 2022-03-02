@@ -74,6 +74,7 @@ class Process(pr.Device):
 
 
     def _startProcess(self):
+        """ """
         with self._lock:
             if self.Running.value() is False:
                 self._runEn  = True
@@ -83,10 +84,12 @@ class Process(pr.Device):
                 self._log.warning("Process already running!")
 
     def _stopProcess(self):
+        """ """
         with self._lock:
             self._runEn  = False
 
     def _stop(self):
+        """ """
         self._stopProcess()
         pr.Device._stop(self)
 
@@ -105,6 +108,7 @@ class Process(pr.Device):
         return None
 
     def _run(self):
+        """ """
         self.Running.set(True)
 
         try:
@@ -116,6 +120,7 @@ class Process(pr.Device):
         self.Running.set(False)
 
     def _process(self):
+        """ """
 
         # User has provided a function Update status at start and end and call their function
         if self._function is not None:
