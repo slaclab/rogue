@@ -50,17 +50,13 @@ args = parser.parse_args()
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-with pyrogue.examples.ExampleRoot() as root:
+with pyrogue.examples.ExampleRoot(epics3En=args.epics3, epics4En=args.epics4) as root:
     root.saveAddressMap('addr_map.csv')
     root.saveAddressMap('addr_map.h',headerEn=True)
 
-    if args.oldGui:
-        import pyrogue.gui
-        pyrogue.gui.runGui(root=root)
-
-    elif args.gui:
+    if args.gui:
         import pyrogue.pydm
-        pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
+        pyrogue.pydm.runPyDM(root=root,title='test123',sizeX=1000,sizeY=500)
 
     else:
         pyrogue.waitCntrlC()

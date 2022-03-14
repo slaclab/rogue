@@ -22,18 +22,25 @@ import time
 import rogue
 import math
 import numpy as np
+import pyrogue.protocols.epicsV4
+
+try:
+    import pyrogue.protocols.epics
+except:
+    pass
 
 class ExampleRoot(pyrogue.Root):
 
-    def __init__(self):
+    def __init__(self,
+                 epics3En=False,
+                 epics4En=False):
+
         self._scnt = 0
         self._sdata = np.zeros(100,dtype=np.float64)
 
         pyrogue.Root.__init__(self,
                               description="Example Root",
                               timeout=2.0,
-                              epics3En=False,
-                              epics4En=False,
                               pollEn=True,
                               serverPort=0)
 

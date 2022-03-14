@@ -6,12 +6,12 @@
 # Description:
 # Rogue python install script to be overridden by Cmake.
 # ----------------------------------------------------------------------------
-# This file is part of the rogue software platform. It is subject to 
-# the license terms in the LICENSE.txt file found in the top-level directory 
-# of this distribution and at: 
-#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-# No part of the rogue software platform, including this file, may be 
-# copied, modified, propagated, or distributed except according to the terms 
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
@@ -20,16 +20,17 @@ from distutils.core import setup
 setup (
     name='rogue',
     version='${ROGUE_VERSION}',
-    packages=['pyrogue', 
-              'pyrogue.gui', 
-              'pyrogue.utilities', 
-              'pyrogue.utilities.fileio', 
-              'pyrogue.utilities.hls', 
-              'pyrogue.interfaces', 
-              'pyrogue.protocols', 
-              'pyrogue.pydm', 
-              'pyrogue.pydm.widgets', 
-              'pyrogue.pydm.tools', 
+    packages=['pyrogue',
+              'pyrogue.gui',
+              'pyrogue.utilities',
+              'pyrogue.utilities.fileio',
+              'pyrogue.utilities.hls',
+              'pyrogue.interfaces',
+              'pyrogue.protocols',
+              'pyrogue.examples',
+              'pyrogue.pydm',
+              'pyrogue.pydm.widgets',
+              'pyrogue.pydm.tools',
               'pyrogue.pydm.data_plugins' ],
     package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
     package_data={'':['../rogue.so']},
