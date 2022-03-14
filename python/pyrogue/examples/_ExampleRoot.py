@@ -18,7 +18,6 @@ import pyrogue.examples
 import pyrogue.protocols
 import rogue.interfaces.stream
 import rogue.interfaces.memory
-import time
 import rogue
 import math
 import numpy as np
@@ -26,7 +25,7 @@ import pyrogue.protocols.epicsV4
 
 try:
     import pyrogue.protocols.epics
-except:
+except Exception:
     pass
 
 class ExampleRoot(pyrogue.Root):
@@ -123,4 +122,3 @@ class ExampleRoot(pyrogue.Root):
 
     def _myArray(self):
         return self._sdata
-

@@ -11,7 +11,6 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue.examples
-import logging
 import argparse
 
 # Set the argument parser
@@ -44,6 +43,7 @@ parser.add_argument(
 # Get the arguments
 args = parser.parse_args()
 
+#import logging
 #rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
