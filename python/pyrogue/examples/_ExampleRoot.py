@@ -14,17 +14,14 @@ import pyrogue
 import pyrogue.interfaces.simulation
 import pyrogue.utilities.fileio
 import pyrogue.utilities.prbs
+import pyrogue.examples
+import pyrogue.protocols
 import rogue.interfaces.stream
 import rogue.interfaces.memory
-import test_device
 import time
 import rogue
-import pyrogue.protocols
-import logging
 import math
 import numpy as np
-import argparse
-import test_large
 
 class ExampleRoot(pyrogue.Root):
 
@@ -46,10 +43,10 @@ class ExampleRoot(pyrogue.Root):
         self.addInterface(sim)
 
         # Add Device
-        self.add(test_device.AxiVersion(memBase=sim,
+        self.add(pyrogue.examples.AxiVersion(memBase=sim,
                                         guiGroup='TestGroup',
                                         offset=0x0))
-        self.add(test_large.TestLarge(guiGroup='TestGroup'))
+        self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
 
         # Add Data Writer
         self._prbsTx = pyrogue.utilities.prbs.PrbsTx()

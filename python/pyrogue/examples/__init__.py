@@ -10,3 +10,4 @@
 
 from pyrogue.examples._AxiVersion  import *
 from pyrogue.examples._ExampleRoot import *
+from pyrogue.examples._LargeDevice import *
