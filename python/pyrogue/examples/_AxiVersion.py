@@ -361,10 +361,10 @@ class AxiVersion(pr.Device):
             mode = 'RW',
             value = [False] * 10))
 
-        self.add(pr.LocalVariable(
-            name = 'TestBadArray[x]',
-            mode = 'RW',
-            value = ''))
+        #self.add(pr.LocalVariable(
+        #    name = 'TestBadArray[x]',
+        #    mode = 'RW',
+        #    value = ''))
 
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):

@@ -381,6 +381,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
             print(f"Start: Started zmqServer on ports {self._serverPort}-{self._serverPort+2}")
+            print(f"    To start a gui: python -m pyrogue gui --server='localhost:{self._serverPort}'")
+            print(f"    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port={self._serverPort})")
 
         # Start sql interface
         if self._sqlUrl is not None:
