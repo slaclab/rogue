@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Title      : Server only test script
+# Title      : Example Root
 #-----------------------------------------------------------------------------
 # This file is part of the rogue_example software. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -35,6 +35,8 @@ class ExampleRoot(pyrogue.Root):
         pyrogue.Root.__init__(self,
                               description="Example Root",
                               timeout=2.0,
+                              epics3En=False,
+                              epics4En=False,
                               pollEn=True,
                               serverPort=0)
 
@@ -98,11 +100,11 @@ class ExampleRoot(pyrogue.Root):
             disp='{:1.2f}'))
             #value = np.zeros(100,dtype=np.float64)))
 
-        if epics3:
+        if epics3En:
             self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
             self.addProtocol(self._epics)
 
-        if epics4:
+        if epics4En:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
             self.addProtocol(self._epics4)
 
