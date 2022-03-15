@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1809</width>
-    <height>853</height>
+    <height>917</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,7 +36,7 @@
             <string/>
            </property>
            <property name="channel" stdset="0">
-            <string>rogue://0/dummyTree.AxiVersion.TestBool</string>
+            <string>rogue://0/ExampleRoot.AxiVersion.TestBool</string>
            </property>
           </widget>
          </item>
@@ -46,7 +46,7 @@
             <string/>
            </property>
            <property name="channel" stdset="0">
-            <string>rogue://0/dummyTree.AxiVersion.TestBool</string>
+            <string>rogue://0/ExampleRoot.AxiVersion.TestBool</string>
            </property>
           </widget>
          </item>
@@ -59,7 +59,7 @@
          </property>
          <property name="curves">
           <stringlist>
-           <string>{&quot;y_channel&quot;: &quot;rogue://0/dummyTree.TestPlot&quot;, &quot;x_channel&quot;: &quot;rogue://0/dummyTree.TestXAxis&quot;, &quot;name&quot;: &quot;Test2&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 5, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;redraw_mode&quot;: 2, &quot;buffer_size&quot;: 1200}</string>
+           <string>{&quot;y_channel&quot;: &quot;rogue://0/ExampleRoot.TestPlot&quot;, &quot;x_channel&quot;: &quot;rogue://0/ExampleRoot.TestXAxis&quot;, &quot;name&quot;: &quot;Test2&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 5, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;, &quot;redraw_mode&quot;: 2, &quot;buffer_size&quot;: 1200}</string>
           </stringlist>
          </property>
          <property name="autoRangeX">
@@ -74,7 +74,7 @@
          </property>
          <property name="curves">
           <stringlist>
-           <string>{&quot;y_channel&quot;: &quot;rogue://0/dummyTree.TestArray&quot;, &quot;x_channel&quot;: null, &quot;name&quot;: &quot;Test&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;redraw_mode&quot;: 2}</string>
+           <string>{&quot;y_channel&quot;: &quot;rogue://0/ExampleRoot.TestArray&quot;, &quot;x_channel&quot;: null, &quot;name&quot;: &quot;Test&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 1, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;, &quot;redraw_mode&quot;: 2}</string>
           </stringlist>
          </property>
         </widget>
@@ -84,9 +84,14 @@
          <property name="toolTip">
           <string/>
          </property>
+         <property name="yAxes">
+          <stringlist>
+           <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;minRange&quot;: -1.0, &quot;maxRange&quot;: 1.0, &quot;autoRange&quot;: true}</string>
+          </stringlist>
+         </property>
          <property name="curves">
           <stringlist>
-           <string>{&quot;channel&quot;: &quot;rogue://0/dummyTree.TestPlot&quot;, &quot;name&quot;: &quot;TestPlot&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 5, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10}</string>
+           <string>{&quot;channel&quot;: &quot;rogue://0/ExampleRoot.TestPlot&quot;, &quot;name&quot;: &quot;TestPlot&quot;, &quot;color&quot;: &quot;white&quot;, &quot;lineStyle&quot;: 1, &quot;lineWidth&quot;: 5, &quot;symbol&quot;: null, &quot;symbolSize&quot;: 10, &quot;yAxisName&quot;: &quot;Axis 1&quot;}</string>
           </stringlist>
          </property>
          <property name="updatesAsynchronously">
@@ -107,6 +112,16 @@
          </property>
          <property name="channel" stdset="0">
           <string>rogue://0/root</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="Plotter" name="Plotter">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="channel" stdset="0">
+          <string>rogue://0/ExampleRoot.TestPlotFigure</string>
          </property>
         </widget>
        </item>
@@ -149,6 +164,11 @@
    <class>RootControl</class>
    <extends>PyDMFrame</extends>
    <header>pyrogue.pydm.widgets.root_control</header>
+  </customwidget>
+  <customwidget>
+   <class>Plotter</class>
+   <extends>PyDMFrame</extends>
+   <header>pyrogue.pydm.widgets.plot</header>
   </customwidget>
   <customwidget>
    <class>Process</class>
