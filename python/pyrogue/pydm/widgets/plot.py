@@ -12,7 +12,6 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
