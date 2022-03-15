@@ -136,6 +136,7 @@ class ExampleRoot(pyrogue.Root):
         if self._fig is not None:
             plt.close(self._fig)
 
-        self._fig, ax = plt.subplots()
+        self._fig = plt.Figure()
+        ax = self._fig.add_subplot(111)
         ax.plot(self.TestArray.get(read=read))
         return self._fig
