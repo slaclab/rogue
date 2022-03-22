@@ -18,6 +18,7 @@ add_subdirectory("rssi")
 add_subdirectory("srp")
 add_subdirectory("udp")
 add_subdirectory("batcher")
+add_subdirectory("xilinx/xvc")
 
 if (DO_EPICS_V3)
    add_subdirectory("epicsV3")
