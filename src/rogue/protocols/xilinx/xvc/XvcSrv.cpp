@@ -232,10 +232,10 @@ rpxx::JtagDriverAxisToJtag::init()
 int
 rpxx::JtagDriverAxisToJtag::xferRel( uint8_t *txb, unsigned txBytes, Header *phdr, uint8_t *rxb, unsigned sizeBytes )
 {
-Xid      xid = getXid( getHdr( txb ) );
-unsigned attempt;
-unsigned e;
-int      got;
+        Xid      xid = getXid( getHdr( txb ) );
+        unsigned attempt;
+        unsigned e;
+        int      got;
 
 	for (attempt = 0; attempt <= retry_; attempt++ ) {
 		Header   hdr;
@@ -271,8 +271,8 @@ int      got;
 unsigned long
 rpxx::JtagDriverAxisToJtag::query()
 {
-Header   hdr;
-unsigned siz;
+        Header   hdr;
+        unsigned siz;
 
 	setHdr ( &txBuf_[0], mkQuery() );
 
@@ -327,17 +327,16 @@ uint32_t currentPeriod = getPeriodNs();
 void
 rpxx::JtagDriverAxisToJtag::sendVectors(unsigned long bits, uint8_t *tms, uint8_t *tdi, uint8_t *tdo)
 {
-unsigned      wsz = getWordSize();
+        unsigned      wsz = getWordSize();
+        unsigned long bytesCeil      = (bits  +   8 - 1 )/8;
+        unsigned      wholeWords     = bytesCeil / wsz;
+        unsigned      wholeWordBytes = wholeWords * wsz;
+        unsigned      wordCeilBytes  = ((bytesCeil + wsz - 1)/wsz) * wsz;
+        unsigned      idx;
+        unsigned      bytesLeft      = bytesCeil - wholeWordBytes;
+        unsigned      bytesTot       = wsz + 2*wordCeilBytes;
 
-unsigned long bytesCeil      = (bits  +   8 - 1 )/8;
-unsigned      wholeWords     = bytesCeil / wsz;
-unsigned      wholeWordBytes = wholeWords * wsz;
-unsigned      wordCeilBytes  = ((bytesCeil + wsz - 1)/wsz) * wsz;
-unsigned      idx;
-unsigned      bytesLeft      = bytesCeil - wholeWordBytes;
-unsigned      bytesTot       = wsz + 2*wordCeilBytes;
-
-uint8_t       *wp;
+        uint8_t       *wp;
 
 	if ( debug_ > 1 ) {
 		fprintf(stderr, "sendVec -- bits %ld, bytes %ld, bytesTot %d\n", bits, bytesCeil, bytesTot);
@@ -409,8 +408,8 @@ rpxx::XvcServer::XvcServer(
   maxMsgSize_( maxMsgSize ),
   once_      ( once       )
 {
-struct sockaddr_in a;
-int               yes = 1;
+        struct sockaddr_in a;
+        int               yes = 1;
 
 	a.sin_family      = AF_INET;
 	a.sin_addr.s_addr = INADDR_ANY;
@@ -494,7 +493,7 @@ rpxx::DriverRegistry::registerFactory(Factory f, Usage h)
 {
 	printf("Registering Driver\n");
 	creator_ = f;
-    helper_  = h;
+        helper_  = h;
 }
 
 void
@@ -541,23 +540,23 @@ JtagDriver *drv;
 int
 rpxx::XvcServer::main_f(int argc, char **argv)
 {
-int opt;
+        int            opt;
+        unsigned       debug    = 0;
+        unsigned       port     = 2542;
+        pthread_t      loopT;
+        unsigned       maxMsg   = 32768;
+        bool           setTest  = false;
+        unsigned       testMode = 0;
+        bool           once     = false;
+        bool           help     = false;
 
-unsigned        debug    = 0;
-const char     *target   = 0;
-const char     *drvnam   = "udp";
-unsigned        port     = 2542;
-unsigned       *i_p      = 0;
-JtagDriver     *drv      = 0;
-void           *hdl;
-UdpLoopBack    *loop     = 0;
-pthread_t       loopT;
-unsigned        maxMsg   = 32768;
-DriverRegistry *registry = DriverRegistry::init();
-bool            setTest  = false;
-unsigned        testMode = 0;
-bool            once     = false;
-bool            help     = false;
+        const char     *target   = 0;
+        const char     *drvnam   = "udp";
+        unsigned       *i_p      = 0;
+        JtagDriver     *drv      = 0;
+        void           *hdl;
+        UdpLoopBack    *loop     = 0;
+        DriverRegistry *registry = DriverRegistry::init();
 
 	while ( (opt = getopt(argc, argv, "hvVot:D:p:M:T:")) > 0 ) {
         i_p = 0;

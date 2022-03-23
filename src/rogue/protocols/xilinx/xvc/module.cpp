@@ -43,7 +43,6 @@ void rpxx::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rpxx::XvcConn::setup_python();
    rpxx::XvcServer::setup_python();
 }
 

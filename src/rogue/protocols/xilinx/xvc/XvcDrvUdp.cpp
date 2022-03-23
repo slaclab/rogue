@@ -32,16 +32,17 @@ rpxx::JtagDriverUdp::JtagDriverUdp(int argc, char *const argv[], const char *tar
   timeoutMs_ ( 500   ),
   mtu_       ( 1450  ) // ethernet mtu minus MAC/IP/UDP addresses
 {
-struct addrinfo hint, *res;
-const char            *col, *prtnam;
-char                   buf[MAXL];
-unsigned               l;
-int                    stat, opt;
-unsigned               mtu;
-unsigned              *i_p;
-socklen_t              slen;
-bool                   userMtu = false;
-bool                   frag    = false;
+        struct     addrinfo hint, *res;
+        char       buf[MAXL];
+        unsigned   l;
+        int        stat, opt;
+        unsigned   mtu;
+        socklen_t  slen;
+        bool       userMtu = false;
+        bool       frag    = false;
+
+        const char *col, *prtnam;
+        unsigned   *i_p;
 
 	while ( (opt = getopt(argc, argv, "m:f")) > 0 ) {
 
@@ -108,7 +109,7 @@ bool                   frag    = false;
 	}
 
 	// find current MTU
-    slen = sizeof(mtu);
+        slen = sizeof(mtu);
 	stat = getsockopt( sock_.getSd(), IPPROTO_IP, IP_MTU, &mtu, &slen );
 	if ( stat ) {
 		fprintf(stderr,"Warning: Unable to estimate MTU (getsockopt(IP_MTU) failed: %s) -- using %d\n", strerror(errno), mtu_);
@@ -152,16 +153,16 @@ rpxx::JtagDriverUdp::init()
 unsigned long
 rpxx::JtagDriverUdp::getMaxVectorSize()
 {
-// MTU lim; 2*vector size + header must fit!
-unsigned long mtuLim    = (mtu_ - getWordSize()) / 2;
-
-		return mtuLim;
+    // MTU lim; 2*vector size + header must fit!
+    unsigned long mtuLim    = (mtu_ - getWordSize()) / 2;
+    
+    return mtuLim;
 }
 
 int
 rpxx::JtagDriverUdp::xfer( uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size )
 {
-int got;
+        int got;
 
 	if ( write( poll_[0].fd, txb, txBytes ) < 0 ) {
 		if ( EMSGSIZE == errno ) {

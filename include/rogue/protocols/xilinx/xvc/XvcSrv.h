@@ -51,6 +51,7 @@ public:
         //! Setup class in python
         static void setup_python();        
 
+        // Previous main() for standalone
         int main_f(int argc, char **argv);
 };
 

@@ -43,9 +43,9 @@ rpxx::XvcConn::~XvcConn()
 void
 rpxx::XvcConn::fill(unsigned long n)
 {
-uint8_t      *p = rp_ + rl_;
-int           got;
-unsigned long k = n;
+        uint8_t      *p = rp_ + rl_;
+        int           got;
+        unsigned long k = n;
 
 	if ( n <= rl_ )
 		return;
@@ -76,11 +76,11 @@ rpxx::XvcConn::bump(unsigned long n)
 void
 rpxx::XvcConn::allocBufs()
 {
-unsigned long      tgtVecLen;
-unsigned long      overhead = 128; //headers and such;
+        unsigned long      tgtVecLen;
+        unsigned long      overhead = 128; //headers and such;
 
 	// Determine the vector size supported by the target
-    tgtVecLen = drv_->query();
+        tgtVecLen = drv_->query();
 
 	if ( 0 == tgtVecLen ) {
 		// target can stream
@@ -88,7 +88,7 @@ unsigned long      overhead = 128; //headers and such;
 	}
 
 	// What can the driver support?
-    supVecLen_ = drv_->getMaxVectorSize();
+        supVecLen_ = drv_->getMaxVectorSize();
 
 	if ( supVecLen_ == 0 ) {
 		// supports any size
@@ -110,8 +110,8 @@ unsigned long      overhead = 128; //headers and such;
 void
 rpxx::XvcConn::flush()
 {
-int      put;
-uint8_t *p = &txb_[0];
+        int      put;
+        uint8_t *p = &txb_[0];
 
 	while ( tl_ > 0 ) {
 		put = write( sd_, p, tl_ );
@@ -127,12 +127,11 @@ void
 rpxx::XvcConn::run()
 {
 
-int        got;
-uint32_t   bits, bitsLeft, bitsSent;
-unsigned long bytes;
-unsigned long vecLen;
-unsigned long off;
-
+        int           got;
+        uint32_t      bits, bitsLeft, bitsSent;
+        unsigned long bytes;
+        unsigned long vecLen;
+        unsigned long off;
 
 	allocBufs();
 
@@ -235,13 +234,3 @@ unsigned long off;
 	}
 }
 
-void rpxx::XvcConn::setup_python () {
-#ifndef NO_PYTHON
-   //bp::class_<rpu::Core, rpu::CorePtr, boost::noncopyable >("Core",bp::no_init)
-   //   .def("maxPayload",        &rpu::Core::maxPayload)
-   //   .def("setRxBufferCount",  &rpu::Core::setRxBufferCount)
-   //   .def("setTimeout",        &rpu::Core::setTimeout)
-   ;
-#endif
-
-}

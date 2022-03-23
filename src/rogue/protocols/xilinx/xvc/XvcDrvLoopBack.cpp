@@ -63,8 +63,8 @@ rpxx::JtagDriverLoopBack::rdl(char *buf, size_t bufsz)
 unsigned long
 rpxx::JtagDriverLoopBack::check(unsigned long val, const char *fmt, bool rdOnly)
 {
-char cbuf[512];
-unsigned long cmp = 0;
+        char cbuf[512];
+        unsigned long cmp = 0;
 
 	if ( rdl( cbuf, sizeof(cbuf) ) ) {
 		if ( 1 != sscanf(cbuf, fmt, &cmp) ) {
@@ -119,7 +119,7 @@ rpxx::JtagDriverLoopBack::getTDO()
 unsigned long
 rpxx::JtagDriverLoopBack::getValLE(uint8_t *buf, unsigned wsz)
 {
-unsigned long rval = 0;
+        unsigned long rval = 0;
 	while ( wsz > 0 ) {
 		wsz--;
 		rval = (rval << 8) | buf[wsz];
@@ -153,16 +153,16 @@ rpxx::JtagDriverLoopBack::emulMemDepth()
 int
 rpxx::JtagDriverLoopBack::xfer( uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size )
 {
-unsigned       i,j;
-int            rval = 0;
-uint32_t       cmd;
-unsigned long  bits;
-unsigned       bytes;
-unsigned       rem;
-unsigned       wbytes;
-const unsigned wsz = emulWordSize();
-const unsigned dpt = emulMemDepth();
-char           cbuf[1024];
+        unsigned       i,j;
+        int            rval = 0;
+        uint32_t       cmd;
+        unsigned long  bits;
+        unsigned       bytes;
+        unsigned       rem;
+        unsigned       wbytes;
+        const unsigned wsz = emulWordSize();
+        const unsigned dpt = emulMemDepth();
+        char           cbuf[1024];
 
 	if ( txBytes < 4 )
 		return 0;
@@ -245,8 +245,8 @@ rpxx::UdpLoopBack::UdpLoopBack(const char *fnam, unsigned port)
   sock_( false      ),
   tsiz_( -1         )
 {
-struct sockaddr_in a;
-int               yes = 1;
+        struct sockaddr_in a;
+        int    yes = 1;
 
 	rbuf_.reserve(1500);
 	tbuf_.reserve(1500);
@@ -273,11 +273,11 @@ rpxx::UdpLoopBack::~UdpLoopBack()
 int
 rpxx::UdpLoopBack::xfer( uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size )
 {
-Header txh = getHdr( txb   );
-Header rxh = getHdr( hdbuf );
+        Header txh = getHdr( txb   );
+        Header rxh = getHdr( hdbuf );
 
-int    got;
-bool   isNewShift = false;
+        int    got;
+        bool   isNewShift = false;
 
 	switch ( getCmd(txh) ) {
 		case CMD_Q:
@@ -320,9 +320,9 @@ rpxx::UdpLoopBack::emulMemDepth()
 void
 rpxx::UdpLoopBack::run()
 {
-int              got, pld;
-struct sockaddr  sa;
-socklen_t        sl;
+        int              got, pld;
+        struct sockaddr  sa;
+        socklen_t        sl;
 
 	while ( 1 ) {
 		sl = sizeof(sa);

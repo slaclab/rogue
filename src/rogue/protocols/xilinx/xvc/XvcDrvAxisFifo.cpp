@@ -24,10 +24,10 @@ rpxx::JtagDriverZynqFifo::JtagDriverZynqFifo(int argc, char *const argv[], const
   map_   ( devnam ),
   useIrq_( true   )
 {
-uint32_t sizVal;
-unsigned long maxBytes;
-unsigned long maxWords;
-int           opt;
+       uint32_t      sizVal;
+       unsigned long maxBytes;
+       unsigned long maxWords;
+       int           opt;
 
 	while ( (opt = getopt(argc, argv, "i")) > 0 ) {
 		switch ( opt ) {
@@ -79,7 +79,7 @@ rpxx::JtagDriverZynqFifo::i32(unsigned idx)
 uint32_t
 rpxx::JtagDriverZynqFifo::wait()
 {
-uint32_t evs = 0;
+        uint32_t evs = 0;
 	if ( useIrq_ ) {
 		evs = 1;
 		if ( sizeof(evs) != write( map_.fd(), &evs, sizeof(evs) ) ) {
@@ -95,7 +95,7 @@ uint32_t evs = 0;
 void
 rpxx::JtagDriverZynqFifo::reset()
 {
-int set = 0;
+        int set = 0;
 
 	o32( RX_RST_IDX, RST_MAGIC );
 	o32( TX_RST_IDX, RST_MAGIC );
@@ -143,11 +143,11 @@ rpxx::JtagDriverZynqFifo::getMaxVectorSize()
 int
 rpxx::JtagDriverZynqFifo::xfer( uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size )
 {
-unsigned txWords   = (txBytes + 3)/4;
-uint32_t lastBytes = txBytes - 4*(txWords - 1);
-unsigned i;
-unsigned got, min, minw, rem;
-uint32_t w;
+        unsigned txWords   = (txBytes + 3)/4;
+        uint32_t lastBytes = txBytes - 4*(txWords - 1);
+        unsigned i;
+        unsigned got, min, minw, rem;
+        uint32_t w;
 
 	if ( hsize % 4 != 0 ) {
 		throw std::runtime_error("zynq FIFO only supports word-lengths that are a multiple of 4");

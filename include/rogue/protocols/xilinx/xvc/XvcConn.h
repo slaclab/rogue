@@ -49,9 +49,6 @@ class XvcConn {
 public:
 XvcConn( int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768 );
 
-        //! Setup class in python
-        static void setup_python();
-        
 	// fill rx buffer to 'n' octets (from TCP connection)
 	virtual void fill(unsigned long n);
 
