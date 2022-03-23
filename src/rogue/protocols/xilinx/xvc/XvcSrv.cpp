@@ -443,16 +443,6 @@ rpxx::XvcServer::run()
 	} while ( ! once_ );
 }
 
-void rpxx::XvcServer::setup_python () {
-#ifndef NO_PYTHON
-   //bp::class_<rpu::Core, rpu::CorePtr, boost::noncopyable >("Core",bp::no_init)
-   //   .def("maxPayload",        &rpu::Core::maxPayload)
-   //   .def("setRxBufferCount",  &rpu::Core::setRxBufferCount)
-   //   .def("setTimeout",        &rpu::Core::setTimeout)
-   ;
-#endif
-}
-
 static void
 usage(const char *nm)
 {

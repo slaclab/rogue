@@ -23,11 +23,12 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <rogue/protocols/xilinx/xvc/module.h>
+#include <rogue/protocols/xilinx/xvc/Xvc.h>
+#include <rogue/protocols/xilinx/xvc/XvcSrv.h>
 #include <rogue/protocols/xilinx/xvc/XvcConn.h>
+#include <rogue/protocols/xilinx/xvc/XvcDrvUdp.h>
 #include <rogue/protocols/xilinx/xvc/XvcDrvAxisFifo.h>
 #include <rogue/protocols/xilinx/xvc/XvcDrvLoopBack.h>
-#include <rogue/protocols/xilinx/xvc/XvcDrvUdp.h>
-#include <rogue/protocols/xilinx/xvc/XvcSrv.h>
 
 namespace bp  = boost::python;
 namespace rpxx = rogue::protocols::xilinx::xvc;
@@ -43,6 +44,6 @@ void rpxx::setup_module() {
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rpxx::XvcServer::setup_python();
+   rpxx::Xvc::setup_python();
 }
 
