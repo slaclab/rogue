@@ -30,10 +30,11 @@
 #include <rogue/protocols/xilinx/xvc/XvcDrvAxisFifo.h>
 #include <rogue/protocols/xilinx/xvc/XvcDrvLoopBack.h>
 
-namespace bp  = boost::python;
+namespace bp = boost::python;
 namespace rpxx = rogue::protocols::xilinx::xvc;
 
-void rpxx::setup_module() {
+void rpxx::setup_module()
+{
 
    // map the IO namespace to a sub-module
    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.xilinx.xvc"))));
@@ -46,4 +47,3 @@ void rpxx::setup_module() {
 
    rpxx::Xvc::setup_python();
 }
-

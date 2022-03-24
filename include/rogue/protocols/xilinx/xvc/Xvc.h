@@ -31,59 +31,61 @@
 #include <netinet/ip.h>
 #include <memory>
 
-namespace rogue {
-   namespace protocols {
-      namespace xilinx {
-         namespace xvc {
+namespace rogue
+{
+   namespace protocols
+   {
+      namespace xilinx
+      {
+         namespace xvc
+         {
 
             const unsigned int kMaxArgs = 10;
 
             class Xvc : public rogue::interfaces::stream::Master,
-                           public rogue::interfaces::stream::Slave {
+                        public rogue::interfaces::stream::Slave
+            {
 
-                  //! Address, hostname or ip address
-                  std::string host_;
+               //! Address, hostname or ip address
+               std::string host_;
 
-                  //! Remote port number
-                  uint16_t port_;
+               //! Remote port number
+               uint16_t port_;
 
-                  //! Driver type
-                  std::string driver_;
+               //! Driver type
+               std::string driver_;
 
-                  //! Thread background
-                  void runThread();
+               //! Thread background
+               void runThread();
 
-                  // Extract argc, argv from command string
-                  void makeArgcArgv(std::string cmd, int& argc, char* argv[]);
+               // Extract argc, argv from command string
+               void makeArgcArgv(std::string cmd, int &argc, char *argv[]);
 
-               public:
+            public:
+               //! Class creation
+               static std::shared_ptr<rogue::protocols::xilinx::xvc::Xvc>
+               create(std::string host, uint16_t port, std::string driver);
 
-                  //! Class creation
-                  static std::shared_ptr<rogue::protocols::xilinx::xvc::Xvc>
-                     create (std::string host, uint16_t port, std::string driver);
+               //! Setup class in python
+               static void setup_python();
 
-                  //! Setup class in python
-                  static void setup_python();
+               // Setters
+               void setHost(std::string host);
+               void setPort(uint16_t port);
+               void setDriver(std::string driver);
 
-                  // Setters
-                  void setHost   (std::string host  );
-                  void setPort   (uint16_t port     );
-                  void setDriver (std::string driver);
+               //! Creator
+               Xvc(std::string host, uint16_t port, std::string driver);
 
-                  //! Creator
-                  Xvc(std::string host, uint16_t port, std::string driver);
-
-                  //! Destructor
-                  ~Xvc();
+               //! Destructor
+               ~Xvc();
             };
 
             // Convenience
             typedef std::shared_ptr<rogue::protocols::xilinx::xvc::Xvc> XvcPtr;
          }
-
       }
    }
 };
 
 #endif
-

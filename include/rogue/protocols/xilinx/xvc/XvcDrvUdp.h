@@ -3,14 +3,14 @@
 //-----------------------------------------------------------------------------
 // Company    : SLAC National Accelerator Laboratory
 //-----------------------------------------------------------------------------
-// Description: 
+// Description:
 //-----------------------------------------------------------------------------
 // This file is part of 'SLAC Firmware Standard Library'.
-// It is subject to the license terms in the LICENSE.txt file found in the 
-// top-level directory of this distribution and at: 
-//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html. 
-// No part of 'SLAC Firmware Standard Library', including this file, 
-// may be copied, modified, propagated, or distributed except according to 
+// It is subject to the license terms in the LICENSE.txt file found in the
+// top-level directory of this distribution and at:
+//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+// No part of 'SLAC Firmware Standard Library', including this file,
+// may be copied, modified, propagated, or distributed except according to
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
@@ -21,47 +21,52 @@
 #include <sys/socket.h>
 #include <poll.h>
 
-namespace rogue {
-   namespace protocols {
-      namespace xilinx {
-         namespace xvc {
+namespace rogue
+{
+	namespace protocols
+	{
+		namespace xilinx
+		{
+			namespace xvc
+			{
 
-class JtagDriverUdp : public JtagDriverAxisToJtag {
-private:
-	SockSd            sock_;
+				class JtagDriverUdp : public JtagDriverAxisToJtag
+				{
+				private:
+					SockSd sock_;
 
-	struct pollfd     poll_[1];
+					struct pollfd poll_[1];
 
-	int               timeoutMs_;
+					int timeoutMs_;
 
-	struct msghdr     msgh_;
-	struct iovec      iovs_[2];
+					struct msghdr msgh_;
+					struct iovec iovs_[2];
 
-    unsigned          mtu_;
-public:
+					unsigned mtu_;
 
-	JtagDriverUdp(int argc, char *const argv[], const char *target);
+				public:
+					JtagDriverUdp(int argc, char *const argv[], const char *target);
 
-        //! Setup class in python
-        static void setup_python();
-        
-	virtual void
-	init();
+					//! Setup class in python
+					static void setup_python();
 
-	virtual unsigned long
-	getMaxVectorSize();
+					virtual void
+					init();
 
-	virtual int
-	xfer( uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size );
+					virtual unsigned long
+					getMaxVectorSize();
 
-	virtual ~JtagDriverUdp();
+					virtual int
+					xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
 
-	static void usage();
-};
+					virtual ~JtagDriverUdp();
 
-         }
-      }
-   }
+					static void usage();
+				};
+
+			}
+		}
+	}
 }
 
 #endif

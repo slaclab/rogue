@@ -17,10 +17,14 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_MODULE_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_MODULE_H__
 
-namespace rogue {
-   namespace protocols {
-      namespace xilinx {
-         namespace xvc {
+namespace rogue
+{
+   namespace protocols
+   {
+      namespace xilinx
+      {
+         namespace xvc
+         {
             void setup_module();
          }
       }
@@ -28,4 +32,3 @@ namespace rogue {
 }
 
 #endif
-
