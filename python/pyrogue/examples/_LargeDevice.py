@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Title      : Server only test script
+# Title      : Large Device Test Group
 #-----------------------------------------------------------------------------
 # This file is part of the rogue_example software. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -12,7 +12,7 @@
 #-----------------------------------------------------------------------------
 import pyrogue
 
-class TestLarge(pyrogue.Device):
+class LargeDevice(pyrogue.Device):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

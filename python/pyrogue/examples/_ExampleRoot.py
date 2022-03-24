@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Title      : Server only test script
+# Title      : Example Root
 #-----------------------------------------------------------------------------
 # This file is part of the rogue_example software. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -14,79 +14,33 @@ import pyrogue
 import pyrogue.interfaces.simulation
 import pyrogue.utilities.fileio
 import pyrogue.utilities.prbs
+import pyrogue.examples
+import pyrogue.protocols
 import rogue.interfaces.stream
 import rogue.interfaces.memory
-import test_device
-import time
 import rogue
-import pyrogue.protocols
-import logging
 import math
 import numpy as np
-import argparse
-import test_large
+import pyrogue.protocols.epicsV4
+import matplotlib.pyplot as plt
 
-
-# Set the argument parser
-parser = argparse.ArgumentParser('Test Server')
-
-parser.add_argument(
-    "--oldGui",
-    action   = 'store_true',
-    required = False,
-    default  = False,
-    help     = "Use old gui",
-)
-
-parser.add_argument(
-    "--gui",
-    action   = 'store_true',
-    required = False,
-    default  = False,
-    help     = "Use gui",
-)
-
-parser.add_argument(
-    "--epics3",
-    action   = 'store_true',
-    required = False,
-    default  = False,
-    help     = "Enable EPICS 3",
-)
-
-parser.add_argument(
-    "--epics4",
-    action   = 'store_true',
-    required = False,
-    default  = False,
-    help     = "Enable EPICS 4",
-)
-
-# Get the arguments
-args = parser.parse_args()
-
-if args.epics3:
+try:
     import pyrogue.protocols.epics
+except Exception:
+    pass
 
-if args.epics4:
-    import pyrogue.protocols.epicsV4
+class ExampleRoot(pyrogue.Root):
 
-#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+    def __init__(self,
+                 epics3En=False,
+                 epics4En=False):
 
-#logger = logging.getLogger('pyrogue')
-#logger.setLevel(logging.DEBUG)
-
-
-class DummyTree(pyrogue.Root):
-
-    def __init__(self):
         self._scnt = 0
         self._sdata = np.zeros(100,dtype=np.float64)
 
+        self._fig = None
         pyrogue.Root.__init__(self,
-                              name='dummyTree',
-                              description="Dummy tree for example",
+                              description="Example Root",
                               timeout=2.0,
                               pollEn=True,
                               serverPort=0)
@@ -97,10 +51,10 @@ class DummyTree(pyrogue.Root):
         self.addInterface(sim)
 
         # Add Device
-        self.add(test_device.AxiVersion(memBase=sim,
+        self.add(pyrogue.examples.AxiVersion(memBase=sim,
                                         guiGroup='TestGroup',
                                         offset=0x0))
-        self.add(test_large.TestLarge(guiGroup='TestGroup'))
+        self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
 
         # Add Data Writer
         self._prbsTx = pyrogue.utilities.prbs.PrbsTx()
@@ -151,55 +105,17 @@ class DummyTree(pyrogue.Root):
             disp='{:1.2f}'))
             #value = np.zeros(100,dtype=np.float64)))
 
-        #self.add(pyrogue.LocalVariable(
-        #    name = 'Test/Slash',
-        #    mode = 'RW',
-        #    value = ''))
+        self.add(pyrogue.LinkVariable(
+            name = 'TestPlotFigure',
+            mode = 'RO',
+            dependencies = [self.TestArray],
+            linkedGet = self._getPlot))
 
-        #self.add(pyrogue.LocalVariable(
-        #    name = 'Test.Dot',
-        #    mode = 'RW',
-        #    value = ''))
-
-        #self.add(pyrogue.LocalVariable(
-        #    name = 'Test\BackSlash',
-        #    mode = 'RW',
-        #    value = ''))
-
-        #self.add(pyrogue.LocalVariable(
-        #    name = 'Test&And',
-        #    mode = 'RW',
-        #    value = ''))
-
-        #self.rudpServer = pyrogue.protocols.UdpRssiPack(
-        #    name    = 'UdpServer',
-        #    port    = 8192,
-        #    jumbo   = True,
-        #    server  = True,
-        #    expand  = False,
-        #    )
-        #self.add(self.rudpServer)
-
-        # Create the ETH interface @ IP Address = args.dev
-        #self.rudpClient = pyrogue.protocols.UdpRssiPack(
-        #    name    = 'UdpClient',
-        #    host    = "127.0.0.1",
-        #    port    = 8192,
-        #    jumbo   = True,
-        #    expand  = False,
-        #    )
-        #self.add(self.rudpClient)
-
-        #self.prbsTx = pyrogue.utilities.prbs.PrbsTx()
-        #self.add(self.prbsTx)
-
-        #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
-
-        if args.epics3:
+        if epics3En:
             self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
             self.addProtocol(self._epics)
 
-        if args.epics4:
+        if epics4En:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
             self.addProtocol(self._epics4)
 
@@ -215,19 +131,12 @@ class DummyTree(pyrogue.Root):
     def _myArray(self):
         return self._sdata
 
-if __name__ == "__main__":
+    def _getPlot(self, read):
 
-    with DummyTree() as dummyTree:
-        dummyTree.saveAddressMap('addr_map.csv')
-        dummyTree.saveAddressMap('addr_map.h',headerEn=True)
+        if self._fig is not None:
+            plt.close(self._fig)
 
-        if args.oldGui:
-            import pyrogue.gui
-            pyrogue.gui.runGui(root=dummyTree)
-
-        elif args.gui:
-            import pyrogue.pydm
-            pyrogue.pydm.runPyDM(root=dummyTree,title='test123',sizeX=1000,sizeY=500)
-
-        else:
-            pyrogue.waitCntrlC()
+        self._fig = plt.Figure()
+        ax = self._fig.add_subplot(111)
+        ax.plot(self.TestArray.get(read=read))
+        return self._fig
