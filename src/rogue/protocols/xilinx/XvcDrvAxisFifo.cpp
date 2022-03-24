@@ -14,12 +14,12 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/xvc/XvcDrvAxisFifo.h>
+#include <rogue/protocols/xilinx/XvcDrvAxisFifo.h>
 #include <unistd.h>
 
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 
-rpxx::JtagDriverZynqFifo::JtagDriverZynqFifo(int argc, char *const argv[], const char *devnam)
+rpx::JtagDriverZynqFifo::JtagDriverZynqFifo(int argc, char *const argv[], const char *devnam)
 	: JtagDriverAxisToJtag(argc, argv),
 	  map_(devnam),
 	  useIrq_(true)
@@ -58,11 +58,11 @@ rpxx::JtagDriverZynqFifo::JtagDriverZynqFifo(int argc, char *const argv[], const
 	maxVec_ = maxBytes / 2;
 }
 
-rpxx::JtagDriverZynqFifo::~JtagDriverZynqFifo()
+rpx::JtagDriverZynqFifo::~JtagDriverZynqFifo()
 {
 }
 
-void rpxx::JtagDriverZynqFifo::o32(unsigned idx, uint32_t v)
+void rpx::JtagDriverZynqFifo::o32(unsigned idx, uint32_t v)
 {
 	if (debug_ > 2)
 	{
@@ -72,7 +72,7 @@ void rpxx::JtagDriverZynqFifo::o32(unsigned idx, uint32_t v)
 }
 
 uint32_t
-rpxx::JtagDriverZynqFifo::i32(unsigned idx)
+rpx::JtagDriverZynqFifo::i32(unsigned idx)
 {
 	uint32_t v = map_.rd(idx);
 	if (debug_ > 2)
@@ -83,7 +83,7 @@ rpxx::JtagDriverZynqFifo::i32(unsigned idx)
 }
 
 uint32_t
-rpxx::JtagDriverZynqFifo::wait()
+rpx::JtagDriverZynqFifo::wait()
 {
 	uint32_t evs = 0;
 	if (useIrq_)
@@ -101,7 +101,7 @@ rpxx::JtagDriverZynqFifo::wait()
 	return evs;
 }
 
-void rpxx::JtagDriverZynqFifo::reset()
+void rpx::JtagDriverZynqFifo::reset()
 {
 	int set = 0;
 
@@ -138,7 +138,7 @@ void rpxx::JtagDriverZynqFifo::reset()
 	}
 }
 
-void rpxx::JtagDriverZynqFifo::init()
+void rpx::JtagDriverZynqFifo::init()
 {
 	reset();
 	JtagDriverAxisToJtag::init();
@@ -150,12 +150,12 @@ void rpxx::JtagDriverZynqFifo::init()
 }
 
 unsigned long
-rpxx::JtagDriverZynqFifo::getMaxVectorSize()
+rpx::JtagDriverZynqFifo::getMaxVectorSize()
 {
 	return maxVec_;
 }
 
-int rpxx::JtagDriverZynqFifo::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
+int rpx::JtagDriverZynqFifo::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
 	unsigned txWords = (txBytes + 3) / 4;
 	uint32_t lastBytes = txBytes - 4 * (txWords - 1);
@@ -238,10 +238,10 @@ int rpxx::JtagDriverZynqFifo::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbu
 	return min;
 }
 
-void rpxx::JtagDriverZynqFifo::usage()
+void rpx::JtagDriverZynqFifo::usage()
 {
 	printf("  Axi Stream Fifo Driver options: [-i]\n");
 	printf("  -i          : disable interrupts (use polled mode)\n");
 }
 
-static rpxx::DriverRegistrar<rpxx::JtagDriverZynqFifo> r;
+static rpx::DriverRegistrar<rpx::JtagDriverZynqFifo> r;

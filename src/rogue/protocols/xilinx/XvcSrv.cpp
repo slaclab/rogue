@@ -14,10 +14,10 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/xvc/XvcSrv.h>
-#include <rogue/protocols/xilinx/xvc/XvcConn.h>
-#include <rogue/protocols/xilinx/xvc/XvcDrvLoopBack.h>
-#include <rogue/protocols/xilinx/xvc/XvcDrvUdp.h>
+#include <rogue/protocols/xilinx/XvcSrv.h>
+#include <rogue/protocols/xilinx/XvcConn.h>
+#include <rogue/protocols/xilinx/XvcDrvLoopBack.h>
+#include <rogue/protocols/xilinx/XvcDrvUdp.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -30,42 +30,42 @@
 #define XVC_SRV_VERSION "unknown"
 #endif
 
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 
-rpxx::JtagDriver::JtagDriver(int argc, char *const argv[], unsigned debug)
+rpx::JtagDriver::JtagDriver(int argc, char *const argv[], unsigned debug)
 	: debug_(debug),
 	  drop_(0),
 	  drEn_(false)
 {
 }
 
-void rpxx::JtagDriver::setDebug(unsigned debug)
+void rpx::JtagDriver::setDebug(unsigned debug)
 {
 	debug_ = debug;
 }
 
-void rpxx::JtagDriver::setTestMode(unsigned flags)
+void rpx::JtagDriver::setTestMode(unsigned flags)
 {
 	drEn_ = !!(flags & 1);
 }
 
 unsigned
-rpxx::JtagDriver::getDebug()
+rpx::JtagDriver::getDebug()
 {
 	return debug_;
 }
 
-rpxx::SysErr::SysErr(const char *prefix)
+rpx::SysErr::SysErr(const char *prefix)
 	: std::runtime_error(std::string(prefix) + std::string(": ") + std::string(::strerror(errno)))
 {
 }
 
-rpxx::ProtoErr::ProtoErr(const char *msg)
+rpx::ProtoErr::ProtoErr(const char *msg)
 	: std::runtime_error(std::string("Protocol error: ") + std::string(msg))
 {
 }
 
-rpxx::TimeoutErr::TimeoutErr(const char *detail)
+rpx::TimeoutErr::TimeoutErr(const char *detail)
 	: std::runtime_error(std::string("Timeout error; too many retries failed") + std::string(detail))
 {
 }
@@ -75,7 +75,7 @@ static unsigned hdBufMax()
 	return 16;
 }
 
-rpxx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(int argc, char *const argv[], unsigned debug)
+rpx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(int argc, char *const argv[], unsigned debug)
 	: JtagDriver(argc, argv, debug),
 	  wordSize_(sizeof(Header)),
 	  memDepth_(1),
@@ -90,8 +90,8 @@ rpxx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(int argc, char *const argv[], u
 	hdBuf_.resize(hdBufMax()); // fill with zeros
 }
 
-rpxx::JtagDriverAxisToJtag::Header
-rpxx::JtagDriverAxisToJtag::newXid()
+rpx::JtagDriverAxisToJtag::Header
+rpx::JtagDriverAxisToJtag::newXid()
 {
 	if (XID_ANY == ++xid_)
 	{
@@ -100,20 +100,20 @@ rpxx::JtagDriverAxisToJtag::newXid()
 	return ((Header)(xid_)) << XID_SHIFT;
 }
 
-rpxx::JtagDriverAxisToJtag::Xid
-rpxx::JtagDriverAxisToJtag::getXid(Header x)
+rpx::JtagDriverAxisToJtag::Xid
+rpx::JtagDriverAxisToJtag::getXid(Header x)
 {
 	return (x >> 20) & 0xff;
 }
 
 uint32_t
-rpxx::JtagDriverAxisToJtag::getCmd(Header x)
+rpx::JtagDriverAxisToJtag::getCmd(Header x)
 {
 	return x & CMD_MASK;
 }
 
 unsigned
-rpxx::JtagDriverAxisToJtag::getErr(Header x)
+rpx::JtagDriverAxisToJtag::getErr(Header x)
 {
 	if (getCmd(x) != CMD_E)
 	{
@@ -123,7 +123,7 @@ rpxx::JtagDriverAxisToJtag::getErr(Header x)
 }
 
 unsigned long
-rpxx::JtagDriverAxisToJtag::getLen(Header x)
+rpx::JtagDriverAxisToJtag::getLen(Header x)
 {
 	if (getCmd(x) != CMD_S)
 	{
@@ -133,7 +133,7 @@ rpxx::JtagDriverAxisToJtag::getLen(Header x)
 }
 
 const char *
-rpxx::JtagDriverAxisToJtag::getMsg(unsigned e)
+rpx::JtagDriverAxisToJtag::getMsg(unsigned e)
 {
 	switch (e)
 	{
@@ -153,33 +153,33 @@ rpxx::JtagDriverAxisToJtag::getMsg(unsigned e)
 	return NULL;
 }
 
-rpxx::JtagDriverAxisToJtag::Header
-rpxx::JtagDriverAxisToJtag::mkQuery()
+rpx::JtagDriverAxisToJtag::Header
+rpx::JtagDriverAxisToJtag::mkQuery()
 {
 	return PVERS | CMD_Q | XID_ANY;
 }
 
-rpxx::JtagDriverAxisToJtag::Header
-rpxx::JtagDriverAxisToJtag::mkShift(unsigned len)
+rpx::JtagDriverAxisToJtag::Header
+rpx::JtagDriverAxisToJtag::mkShift(unsigned len)
 {
 	len = len - 1;
 	return PVERS | CMD_S | newXid() | (len << LEN_SHIFT);
 }
 
 unsigned
-rpxx::JtagDriverAxisToJtag::wordSize(Header reply)
+rpx::JtagDriverAxisToJtag::wordSize(Header reply)
 {
 	return (reply & 0x0000000f) + 1;
 }
 
 unsigned
-rpxx::JtagDriverAxisToJtag::memDepth(Header reply)
+rpx::JtagDriverAxisToJtag::memDepth(Header reply)
 {
 	return (reply >> 4) & 0xffff;
 }
 
 uint32_t
-rpxx::JtagDriverAxisToJtag::cvtPerNs(Header reply)
+rpx::JtagDriverAxisToJtag::cvtPerNs(Header reply)
 {
 	unsigned rawVal = (reply >> XID_SHIFT) & 0xff;
 	double tmp;
@@ -195,19 +195,19 @@ rpxx::JtagDriverAxisToJtag::cvtPerNs(Header reply)
 }
 
 unsigned
-rpxx::JtagDriverAxisToJtag::getWordSize()
+rpx::JtagDriverAxisToJtag::getWordSize()
 {
 	return wordSize_;
 }
 
 unsigned
-rpxx::JtagDriverAxisToJtag::getMemDepth()
+rpx::JtagDriverAxisToJtag::getMemDepth()
 {
 	return memDepth_;
 }
 
-rpxx::JtagDriverAxisToJtag::Header
-rpxx::JtagDriverAxisToJtag::getHdr(uint8_t *buf)
+rpx::JtagDriverAxisToJtag::Header
+rpx::JtagDriverAxisToJtag::getHdr(uint8_t *buf)
 {
 	Header hdr;
 	memcpy(&hdr, buf, sizeof(hdr));
@@ -218,7 +218,7 @@ rpxx::JtagDriverAxisToJtag::getHdr(uint8_t *buf)
 	return hdr;
 }
 
-void rpxx::JtagDriverAxisToJtag::setHdr(uint8_t *buf, Header hdr)
+void rpx::JtagDriverAxisToJtag::setHdr(uint8_t *buf, Header hdr)
 {
 	unsigned empty = getWordSize() - sizeof(hdr);
 
@@ -230,13 +230,13 @@ void rpxx::JtagDriverAxisToJtag::setHdr(uint8_t *buf, Header hdr)
 	memset(buf + sizeof(hdr), 0, empty);
 }
 
-void rpxx::JtagDriverAxisToJtag::init()
+void rpx::JtagDriverAxisToJtag::init()
 {
 	// obtain server parameters
 	query();
 }
 
-int rpxx::JtagDriverAxisToJtag::xferRel(uint8_t *txb, unsigned txBytes, Header *phdr, uint8_t *rxb, unsigned sizeBytes)
+int rpx::JtagDriverAxisToJtag::xferRel(uint8_t *txb, unsigned txBytes, Header *phdr, uint8_t *rxb, unsigned sizeBytes)
 {
 	Xid xid = getXid(getHdr(txb));
 	unsigned attempt;
@@ -285,7 +285,7 @@ int rpxx::JtagDriverAxisToJtag::xferRel(uint8_t *txb, unsigned txBytes, Header *
 }
 
 unsigned long
-rpxx::JtagDriverAxisToJtag::query()
+rpx::JtagDriverAxisToJtag::query()
 {
 	Header hdr;
 	unsigned siz;
@@ -327,13 +327,13 @@ rpxx::JtagDriverAxisToJtag::query()
 }
 
 uint32_t
-rpxx::JtagDriverAxisToJtag::getPeriodNs()
+rpx::JtagDriverAxisToJtag::getPeriodNs()
 {
 	return periodNs_;
 }
 
 uint32_t
-rpxx::JtagDriverAxisToJtag::setPeriodNs(uint32_t requestedPeriod)
+rpx::JtagDriverAxisToJtag::setPeriodNs(uint32_t requestedPeriod)
 {
 	uint32_t currentPeriod = getPeriodNs();
 
@@ -343,7 +343,7 @@ rpxx::JtagDriverAxisToJtag::setPeriodNs(uint32_t requestedPeriod)
 	return UNKNOWN_PERIOD == currentPeriod ? requestedPeriod : currentPeriod;
 }
 
-void rpxx::JtagDriverAxisToJtag::sendVectors(unsigned long bits, uint8_t *tms, uint8_t *tdi, uint8_t *tdo)
+void rpx::JtagDriverAxisToJtag::sendVectors(unsigned long bits, uint8_t *tms, uint8_t *tdi, uint8_t *tdo)
 {
 	unsigned wsz = getWordSize();
 	unsigned long bytesCeil = (bits + 8 - 1) / 8;
@@ -384,7 +384,7 @@ void rpxx::JtagDriverAxisToJtag::sendVectors(unsigned long bits, uint8_t *tms, u
 	xferRel(&txBuf_[0], bytesTot, 0, tdo, bytesCeil);
 }
 
-void rpxx::JtagDriverAxisToJtag::dumpInfo(FILE *f)
+void rpx::JtagDriverAxisToJtag::dumpInfo(FILE *f)
 {
 	fprintf(f, "Word size:                  %d\n", getWordSize());
 	fprintf(f, "Target Memory Depth (bytes) %d\n", getWordSize() * getMemDepth());
@@ -392,11 +392,11 @@ void rpxx::JtagDriverAxisToJtag::dumpInfo(FILE *f)
 	fprintf(f, "TCK Period             (ns) %ld\n", (unsigned long)getPeriodNs());
 }
 
-void rpxx::JtagDriverAxisToJtag::usage()
+void rpx::JtagDriverAxisToJtag::usage()
 {
 }
 
-rpxx::SockSd::SockSd(bool stream)
+rpx::SockSd::SockSd(bool stream)
 {
 	if ((sd_ = ::socket(AF_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 0)) < 0)
 	{
@@ -404,17 +404,17 @@ rpxx::SockSd::SockSd(bool stream)
 	}
 }
 
-rpxx::SockSd::~SockSd()
+rpx::SockSd::~SockSd()
 {
 	::close(sd_);
 }
 
-int rpxx::SockSd::getSd()
+int rpx::SockSd::getSd()
 {
 	return sd_;
 }
 
-rpxx::XvcServer::XvcServer(
+rpx::XvcServer::XvcServer(
 	uint16_t port,
 	JtagDriver *drv,
 	unsigned debug,
@@ -449,7 +449,7 @@ rpxx::XvcServer::XvcServer(
 	}
 }
 
-void rpxx::XvcServer::run()
+void rpx::XvcServer::run()
 {
 	do
 	{
@@ -483,19 +483,19 @@ usage(const char *nm)
 	fprintf(stderr, "  -T <mode>   : set test mode/flags\n");
 }
 
-rpxx::DriverRegistry::DriverRegistry()
+rpx::DriverRegistry::DriverRegistry()
 	: creator_(0)
 {
 }
 
-void rpxx::DriverRegistry::registerFactory(Factory f, Usage h)
+void rpx::DriverRegistry::registerFactory(Factory f, Usage h)
 {
 	printf("Registering Driver\n");
 	creator_ = f;
 	helper_ = h;
 }
 
-void rpxx::DriverRegistry::usage()
+void rpx::DriverRegistry::usage()
 {
 	if (helper_)
 	{
@@ -503,8 +503,8 @@ void rpxx::DriverRegistry::usage()
 	}
 }
 
-rpxx::DriverRegistry *
-rpxx::DriverRegistry::getP(bool creat)
+rpx::DriverRegistry *
+rpx::DriverRegistry::getP(bool creat)
 {
 	static DriverRegistry *theR = 0;
 	if (!theR && creat)
@@ -514,20 +514,20 @@ rpxx::DriverRegistry::getP(bool creat)
 	return theR;
 }
 
-rpxx::DriverRegistry *
-rpxx::DriverRegistry::get()
+rpx::DriverRegistry *
+rpx::DriverRegistry::get()
 {
 	return getP(false);
 }
 
-rpxx::DriverRegistry *
-rpxx::DriverRegistry::init()
+rpx::DriverRegistry *
+rpx::DriverRegistry::init()
 {
 	return getP(true);
 }
 
-rpxx::JtagDriver *
-rpxx::DriverRegistry::create(int argc, char *const argv[], const char *arg)
+rpx::JtagDriver *
+rpx::DriverRegistry::create(int argc, char *const argv[], const char *arg)
 {
 	JtagDriver *drv;
 	if (!creator_)

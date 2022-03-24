@@ -14,12 +14,12 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/xvc/XvcDrvLoopBack.h>
+#include <rogue/protocols/xilinx/XvcDrvLoopBack.h>
 #include <netinet/in.h>
 
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 
-rpxx::JtagDriverLoopBack::JtagDriverLoopBack(int argc, char *const argv[], const char *fnam)
+rpx::JtagDriverLoopBack::JtagDriverLoopBack(int argc, char *const argv[], const char *fnam)
 	: JtagDriverAxisToJtag(argc, argv),
 	  skip_(0 == fnam || 0 == *fnam),
 	  line_(1),
@@ -45,7 +45,7 @@ rpxx::JtagDriverLoopBack::JtagDriverLoopBack(int argc, char *const argv[], const
 	}
 }
 
-rpxx::JtagDriverLoopBack::~JtagDriverLoopBack()
+rpx::JtagDriverLoopBack::~JtagDriverLoopBack()
 {
 	if (f_)
 	{
@@ -53,7 +53,7 @@ rpxx::JtagDriverLoopBack::~JtagDriverLoopBack()
 	}
 }
 
-bool rpxx::JtagDriverLoopBack::rdl(char *buf, size_t bufsz)
+bool rpx::JtagDriverLoopBack::rdl(char *buf, size_t bufsz)
 {
 	if (!skip_ && 0 == fgets(buf, bufsz, f_))
 	{
@@ -64,7 +64,7 @@ bool rpxx::JtagDriverLoopBack::rdl(char *buf, size_t bufsz)
 }
 
 unsigned long
-rpxx::JtagDriverLoopBack::check(unsigned long val, const char *fmt, bool rdOnly)
+rpx::JtagDriverLoopBack::check(unsigned long val, const char *fmt, bool rdOnly)
 {
 	char cbuf[512];
 	unsigned long cmp = 0;
@@ -87,12 +87,12 @@ rpxx::JtagDriverLoopBack::check(unsigned long val, const char *fmt, bool rdOnly)
 }
 
 unsigned long
-rpxx::JtagDriverLoopBack::getMaxVectorSize()
+rpx::JtagDriverLoopBack::getMaxVectorSize()
 {
 	return 0; // allow any
 }
 
-void rpxx::JtagDriverLoopBack::checkTDI(unsigned long val)
+void rpx::JtagDriverLoopBack::checkTDI(unsigned long val)
 {
 	if (!tdoOnly_)
 	{
@@ -100,7 +100,7 @@ void rpxx::JtagDriverLoopBack::checkTDI(unsigned long val)
 	}
 }
 
-void rpxx::JtagDriverLoopBack::checkTMS(unsigned long val)
+void rpx::JtagDriverLoopBack::checkTMS(unsigned long val)
 {
 	if (!tdoOnly_)
 	{
@@ -108,7 +108,7 @@ void rpxx::JtagDriverLoopBack::checkTMS(unsigned long val)
 	}
 }
 
-void rpxx::JtagDriverLoopBack::checkLEN(unsigned long val)
+void rpx::JtagDriverLoopBack::checkLEN(unsigned long val)
 {
 	if (!tdoOnly_)
 	{
@@ -117,13 +117,13 @@ void rpxx::JtagDriverLoopBack::checkLEN(unsigned long val)
 }
 
 unsigned long
-rpxx::JtagDriverLoopBack::getTDO()
+rpx::JtagDriverLoopBack::getTDO()
 {
 	return check(0, "TDO : %li", true);
 }
 
 unsigned long
-rpxx::JtagDriverLoopBack::getValLE(uint8_t *buf, unsigned wsz)
+rpx::JtagDriverLoopBack::getValLE(uint8_t *buf, unsigned wsz)
 {
 	unsigned long rval = 0;
 	while (wsz > 0)
@@ -134,7 +134,7 @@ rpxx::JtagDriverLoopBack::getValLE(uint8_t *buf, unsigned wsz)
 	return rval;
 }
 
-void rpxx::JtagDriverLoopBack::setValLE(unsigned long val, uint8_t *buf, unsigned wsz)
+void rpx::JtagDriverLoopBack::setValLE(unsigned long val, uint8_t *buf, unsigned wsz)
 {
 	while (wsz > 0)
 	{
@@ -145,18 +145,18 @@ void rpxx::JtagDriverLoopBack::setValLE(unsigned long val, uint8_t *buf, unsigne
 }
 
 unsigned
-rpxx::JtagDriverLoopBack::emulWordSize()
+rpx::JtagDriverLoopBack::emulWordSize()
 {
 	return 4;
 }
 
 unsigned
-rpxx::JtagDriverLoopBack::emulMemDepth()
+rpx::JtagDriverLoopBack::emulMemDepth()
 {
 	return 0; // no memory = reliable channel required!
 }
 
-int rpxx::JtagDriverLoopBack::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
+int rpx::JtagDriverLoopBack::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
 	unsigned i, j;
 	int rval = 0;
@@ -259,7 +259,7 @@ int rpxx::JtagDriverLoopBack::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbu
 	return rval;
 }
 
-rpxx::UdpLoopBack::UdpLoopBack(const char *fnam, unsigned port)
+rpx::UdpLoopBack::UdpLoopBack(const char *fnam, unsigned port)
 	: JtagDriverLoopBack(0, 0, fnam),
 	  sock_(false),
 	  tsiz_(-1)
@@ -285,11 +285,11 @@ rpxx::UdpLoopBack::UdpLoopBack(const char *fnam, unsigned port)
 	}
 }
 
-rpxx::UdpLoopBack::~UdpLoopBack()
+rpx::UdpLoopBack::~UdpLoopBack()
 {
 }
 
-int rpxx::UdpLoopBack::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
+int rpx::UdpLoopBack::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
 	Header txh = getHdr(txb);
 	Header rxh = getHdr(hdbuf);
@@ -333,13 +333,13 @@ int rpxx::UdpLoopBack::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsi
 }
 
 unsigned
-rpxx::UdpLoopBack::emulMemDepth()
+rpx::UdpLoopBack::emulMemDepth()
 {
 	// limit to ethernet MTU; 2 vectors plus header must fit...
 	return 1450 / 2 / emulWordSize() - 1;
 }
 
-void rpxx::UdpLoopBack::run()
+void rpx::UdpLoopBack::run()
 {
 	int got, pld;
 	struct sockaddr sa;
@@ -369,4 +369,4 @@ void rpxx::UdpLoopBack::run()
 	}
 }
 
-static rpxx::DriverRegistrar<rpxx::JtagDriverLoopBack> r;
+static rpx::DriverRegistrar<rpx::JtagDriverLoopBack> r;

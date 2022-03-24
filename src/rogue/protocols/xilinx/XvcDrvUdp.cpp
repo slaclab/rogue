@@ -14,7 +14,7 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/xvc/XvcDrvUdp.h>
+#include <rogue/protocols/xilinx/XvcDrvUdp.h>
 #include <netdb.h>
 #include <string.h>
 #include <netinet/ip.h>
@@ -24,9 +24,9 @@ static const char *DFLT_PORT = "2542";
 
 static const unsigned MAXL = 256;
 
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 
-rpxx::JtagDriverUdp::JtagDriverUdp(int argc, char *const argv[], const char *target)
+rpx::JtagDriverUdp::JtagDriverUdp(int argc, char *const argv[], const char *target)
 	: JtagDriverAxisToJtag(argc, argv),
 	  sock_(false),
 	  timeoutMs_(500),
@@ -154,11 +154,11 @@ rpxx::JtagDriverUdp::JtagDriverUdp(int argc, char *const argv[], const char *tar
 	poll_[0].events = POLLIN;
 }
 
-rpxx::JtagDriverUdp::~JtagDriverUdp()
+rpx::JtagDriverUdp::~JtagDriverUdp()
 {
 }
 
-void rpxx::JtagDriverUdp::init()
+void rpx::JtagDriverUdp::init()
 {
 	JtagDriverAxisToJtag::init();
 	if (getMemDepth() == 0)
@@ -169,7 +169,7 @@ void rpxx::JtagDriverUdp::init()
 }
 
 unsigned long
-rpxx::JtagDriverUdp::getMaxVectorSize()
+rpx::JtagDriverUdp::getMaxVectorSize()
 {
 	// MTU lim; 2*vector size + header must fit!
 	unsigned long mtuLim = (mtu_ - getWordSize()) / 2;
@@ -177,7 +177,7 @@ rpxx::JtagDriverUdp::getMaxVectorSize()
 	return mtuLim;
 }
 
-int rpxx::JtagDriverUdp::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
+int rpx::JtagDriverUdp::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
 	int got;
 
@@ -242,11 +242,11 @@ int rpxx::JtagDriverUdp::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, un
 	return got;
 }
 
-void rpxx::JtagDriverUdp::usage()
+void rpx::JtagDriverUdp::usage()
 {
 	printf("  UDP Driver options: [-m <mtu>]\n");
 	printf("  -m <mtu>    : Set MTU limit for UDP datagrams (must not be fragmented!)\n");
 	printf("  -f          : Enable IP fragmentation - note that FW does probably not support this!\n");
 }
 
-static rpxx::DriverRegistrar<rpxx::JtagDriverUdp> r;
+static rpx::DriverRegistrar<rpx::JtagDriverUdp> r;

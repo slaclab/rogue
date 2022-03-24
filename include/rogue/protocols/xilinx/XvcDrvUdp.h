@@ -14,10 +14,12 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef XVC_SRV_H
-#define XVC_SRV_H
+#ifndef JTAG_DRIVER_UDP_H
+#define JTAG_DRIVER_UDP_H
 
-#include <rogue/protocols/xilinx/xvc/XvcDriver.h>
+#include <rogue/protocols/xilinx/XvcDriver.h>
+#include <sys/socket.h>
+#include <poll.h>
 
 namespace rogue
 {
@@ -25,38 +27,39 @@ namespace rogue
 	{
 		namespace xilinx
 		{
-			namespace xvc
+			class JtagDriverUdp : public JtagDriverAxisToJtag
 			{
+			private:
+				SockSd sock_;
 
-				// XVC Server (top) class
-				class XvcServer
-				{
-				private:
-					SockSd sock_;
-					JtagDriver *drv_;
-					unsigned debug_;
-					unsigned maxMsgSize_;
-					bool once_;
+				struct pollfd poll_[1];
 
-				public:
-					XvcServer(
-						uint16_t port,
-						JtagDriver *drv,
-						unsigned debug = 0,
-						unsigned maxMsgSize = 32768,
-						bool once = false);
+				int timeoutMs_;
 
-					virtual void run();
+				struct msghdr msgh_;
+				struct iovec iovs_[2];
 
-					virtual ~XvcServer(){};
+				unsigned mtu_;
 
-					//! Setup class in python
-					static void setup_python();
+			public:
+				JtagDriverUdp(int argc, char *const argv[], const char *target);
 
-					// Previous main() for standalone
-					int main_f(int argc, char **argv);
-				};
-			}
+				//! Setup class in python
+				static void setup_python();
+
+				virtual void
+				init();
+
+				virtual unsigned long
+				getMaxVectorSize();
+
+				virtual int
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
+
+				virtual ~JtagDriverUdp();
+
+				static void usage();
+			};
 		}
 	}
 }

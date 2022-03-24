@@ -14,12 +14,13 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef JTAG_DRIVER_UDP_H
-#define JTAG_DRIVER_UDP_H
+#ifndef XVC_CONNECTION_H
+#define XVC_CONNECTION_H
 
-#include <rogue/protocols/xilinx/xvc/XvcDriver.h>
+#include <rogue/protocols/xilinx/XvcSrv.h>
+
 #include <sys/socket.h>
-#include <poll.h>
+#include <netinet/in.h>
 
 namespace rogue
 {
@@ -27,44 +28,45 @@ namespace rogue
 	{
 		namespace xilinx
 		{
-			namespace xvc
+			// Class managing a XVC tcp connection
+			class XvcConn
 			{
 
-				class JtagDriverUdp : public JtagDriverAxisToJtag
-				{
-				private:
-					SockSd sock_;
+				JtagDriver *drv_;
+				int sd_;
+				struct sockaddr_in peer_;
+				// just use vectors to back raw memory; DONT use 'size/resize'
+				// (unfortunately 'resize' fills elements beyond the current 'size'
+				// with zeroes)
+				vector<uint8_t> rxb_;
+				uint8_t *rp_;
+				unsigned long rl_;
+				unsigned long tl_;
 
-					struct pollfd poll_[1];
+				vector<uint8_t> txb_;
+				unsigned long maxVecLen_;
+				unsigned long supVecLen_;
+				unsigned long chunk_;
 
-					int timeoutMs_;
+			public:
+				XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768);
 
-					struct msghdr msgh_;
-					struct iovec iovs_[2];
+				// fill rx buffer to 'n' octets (from TCP connection)
+				virtual void fill(unsigned long n);
 
-					unsigned mtu_;
+				// send tx buffer to TCP connection
+				virtual void flush();
 
-				public:
-					JtagDriverUdp(int argc, char *const argv[], const char *target);
+				// discard 'n' octets from rx buffer (mark as consumed)
+				virtual void bump(unsigned long n);
 
-					//! Setup class in python
-					static void setup_python();
+				// (re)allocated buffers
+				virtual void allocBufs();
 
-					virtual void
-					init();
+				virtual void run();
 
-					virtual unsigned long
-					getMaxVectorSize();
-
-					virtual int
-					xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
-
-					virtual ~JtagDriverUdp();
-
-					static void usage();
-				};
-
-			}
+				virtual ~XvcConn();
+			};
 		}
 	}
 }

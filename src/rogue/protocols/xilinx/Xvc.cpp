@@ -18,7 +18,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/xilinx/xvc/Xvc.h>
+#include <rogue/protocols/xilinx/Xvc.h>
 #include <rogue/GeneralError.h>
 #include <memory>
 #include <rogue/GilRelease.h>
@@ -28,7 +28,7 @@
 #include <string.h>
 #include <unistd.h>
 
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
@@ -38,14 +38,14 @@ namespace bp = boost::python;
 #endif
 
 //! Class creation
-rpxx::XvcPtr rpxx::Xvc::create(std::string host, uint16_t port, std::string driver)
+rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port, std::string driver)
 {
-   rpxx::XvcPtr r = std::make_shared<rpxx::Xvc>(host, port, driver);
+   rpx::XvcPtr r = std::make_shared<rpx::Xvc>(host, port, driver);
    return (r);
 }
 
 //! Creator
-rpxx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
+rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
     : host_(host),
       port_(port),
       driver_(driver)
@@ -121,34 +121,34 @@ rpxx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
 }
 
 //! Destructor
-rpxx::Xvc::~Xvc()
+rpx::Xvc::~Xvc()
 {
 }
 
 //! Set host
-void rpxx::Xvc::setHost(std::string host)
+void rpx::Xvc::setHost(std::string host)
 {
    host_ = host;
 }
 
 //! Set port
-void rpxx::Xvc::setPort(uint16_t port)
+void rpx::Xvc::setPort(uint16_t port)
 {
    port_ = port;
 }
 //! Set driver
-void rpxx::Xvc::setDriver(std::string driver)
+void rpx::Xvc::setDriver(std::string driver)
 {
    driver_ = driver;
 }
 
 //! Run thread
-void rpxx::Xvc::runThread()
+void rpx::Xvc::runThread()
 {
 }
 
 // Extract argc, argv from a command string
-void rpxx::Xvc::makeArgcArgv(std::string cmd, int &argc, char *argv[])
+void rpx::Xvc::makeArgcArgv(std::string cmd, int &argc, char *argv[])
 {
    char *cline = const_cast<char *>(cmd.c_str());
    char *p2 = std::strtok(cline, " ");
@@ -163,21 +163,21 @@ void rpxx::Xvc::makeArgcArgv(std::string cmd, int &argc, char *argv[])
 static void *
 xvcUdpTestThread(void *arg)
 {
-   rpxx::UdpLoopBack *loop = (rpxx::UdpLoopBack *)arg;
+   rpx::UdpLoopBack *loop = (rpx::UdpLoopBack *)arg;
    loop->setTestMode(1);
    loop->run();
    return 0;
 }
 
-void rpxx::Xvc::setup_python()
+void rpx::Xvc::setup_python()
 {
 #ifndef NO_PYTHON
 
-   bp::class_<rpxx::Xvc, rpxx::XvcPtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>("Xvc", bp::init<std::string, uint16_t, std::string>())
-       .def("setHost", &rpxx::Xvc::setHost)
-       .def("setPort", &rpxx::Xvc::setPort)
-       .def("setDriver", &rpxx::Xvc::setDriver);
-   bp::implicitly_convertible<rpxx::XvcPtr, ris::MasterPtr>();
-   bp::implicitly_convertible<rpxx::XvcPtr, ris::SlavePtr>();
+   bp::class_<rpx::Xvc, rpx::XvcPtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>("Xvc", bp::init<std::string, uint16_t, std::string>())
+       .def("setHost", &rpx::Xvc::setHost)
+       .def("setPort", &rpx::Xvc::setPort)
+       .def("setDriver", &rpx::Xvc::setDriver);
+   bp::implicitly_convertible<rpx::XvcPtr, ris::MasterPtr>();
+   bp::implicitly_convertible<rpx::XvcPtr, ris::SlavePtr>();
 #endif
 }

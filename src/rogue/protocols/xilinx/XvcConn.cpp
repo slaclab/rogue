@@ -14,14 +14,14 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/xvc/XvcConn.h>
+#include <rogue/protocols/xilinx/XvcConn.h>
 
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 
-rpxx::XvcConn::XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen)
+rpx::XvcConn::XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen)
 	: drv_(drv),
 	  maxVecLen_(maxVecLen),
 	  supVecLen_(0)
@@ -35,13 +35,13 @@ rpxx::XvcConn::XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen)
 	}
 }
 
-rpxx::XvcConn::~XvcConn()
+rpx::XvcConn::~XvcConn()
 {
 	::close(sd_);
 }
 
 // fill rx buffer to 'n' octets
-void rpxx::XvcConn::fill(unsigned long n)
+void rpx::XvcConn::fill(unsigned long n)
 {
 	uint8_t *p = rp_ + rl_;
 	int got;
@@ -65,7 +65,7 @@ void rpxx::XvcConn::fill(unsigned long n)
 }
 
 // mark 'n' octets as 'consumed'
-void rpxx::XvcConn::bump(unsigned long n)
+void rpx::XvcConn::bump(unsigned long n)
 {
 	rp_ += n;
 	rl_ -= n;
@@ -75,7 +75,7 @@ void rpxx::XvcConn::bump(unsigned long n)
 	}
 }
 
-void rpxx::XvcConn::allocBufs()
+void rpx::XvcConn::allocBufs()
 {
 	unsigned long tgtVecLen;
 	unsigned long overhead = 128; //headers and such;
@@ -112,7 +112,7 @@ void rpxx::XvcConn::allocBufs()
 	tl_ = 0;
 }
 
-void rpxx::XvcConn::flush()
+void rpx::XvcConn::flush()
 {
 	int put;
 	uint8_t *p = &txb_[0];
@@ -129,7 +129,7 @@ void rpxx::XvcConn::flush()
 	}
 }
 
-void rpxx::XvcConn::run()
+void rpx::XvcConn::run()
 {
 
 	int got;

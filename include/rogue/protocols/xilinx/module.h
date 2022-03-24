@@ -23,10 +23,7 @@ namespace rogue
    {
       namespace xilinx
       {
-         namespace xvc
-         {
-            void setup_module();
-         }
+         void setup_module();
       }
    }
 }

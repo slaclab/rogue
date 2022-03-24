@@ -22,18 +22,18 @@
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-#include <rogue/protocols/xilinx/xvc/module.h>
-#include <rogue/protocols/xilinx/xvc/Xvc.h>
-#include <rogue/protocols/xilinx/xvc/XvcSrv.h>
-#include <rogue/protocols/xilinx/xvc/XvcConn.h>
-#include <rogue/protocols/xilinx/xvc/XvcDrvUdp.h>
-#include <rogue/protocols/xilinx/xvc/XvcDrvAxisFifo.h>
-#include <rogue/protocols/xilinx/xvc/XvcDrvLoopBack.h>
+#include <rogue/protocols/xilinx/module.h>
+#include <rogue/protocols/xilinx/Xvc.h>
+#include <rogue/protocols/xilinx/XvcSrv.h>
+#include <rogue/protocols/xilinx/XvcConn.h>
+#include <rogue/protocols/xilinx/XvcDrvUdp.h>
+#include <rogue/protocols/xilinx/XvcDrvAxisFifo.h>
+#include <rogue/protocols/xilinx/XvcDrvLoopBack.h>
 
 namespace bp = boost::python;
-namespace rpxx = rogue::protocols::xilinx::xvc;
+namespace rpx = rogue::protocols::xilinx;
 
-void rpxx::setup_module()
+void rpx::setup_module()
 {
 
    // map the IO namespace to a sub-module
@@ -45,5 +45,5 @@ void rpxx::setup_module()
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rpxx::Xvc::setup_python();
+   rpx::Xvc::setup_python();
 }
