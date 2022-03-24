@@ -104,7 +104,7 @@ rpxx::Xvc::Xvc (std::string host, uint16_t port, std::string driver)
 	drv->init();
 
 
-	if ( setTest_ ) {
+	if ( setTest ) {
 		drv->setTestMode( testMode );
 	}
 
