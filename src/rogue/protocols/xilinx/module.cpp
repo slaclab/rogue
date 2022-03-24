@@ -37,10 +37,10 @@ void rpx::setup_module()
 {
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.xilinx.xvc"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.xilinx"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("xilinx.xvc") = module;
+   bp::scope().attr("xilinx") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
