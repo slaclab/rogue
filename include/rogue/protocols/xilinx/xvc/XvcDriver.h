@@ -274,7 +274,7 @@ protected:
 
 	static int isLE()
 	{
-	static const union { uint8_t c[2]; uint16_t s; } u = { s: 1 };
+	static const union { uint8_t c[2]; uint16_t s; } u = { .s= 1 };
 		return !!u.c[0];
 	}
 

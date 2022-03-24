@@ -18,6 +18,10 @@
 #define __ROGUE_PROTOCOLS_XILINX_XVC_H__
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
+#include <rogue/protocols/xilinx/xvc/XvcSrv.h>
+#include <rogue/protocols/xilinx/xvc/XvcConn.h>
+#include <rogue/protocols/xilinx/xvc/XvcDrvLoopBack.h>
+#include <rogue/protocols/xilinx/xvc/XvcDrvUdp.h>
 #include <rogue/Logging.h>
 #include <thread>
 #include <stdint.h>
@@ -32,26 +36,42 @@ namespace rogue {
       namespace xilinx {
          namespace xvc {
 
+            const unsigned int kMaxArgs = 10;
+
             class Xvc : public rogue::interfaces::stream::Master,
                            public rogue::interfaces::stream::Slave {
 
                   //! Address, hostname or ip address
-                  std::string address_;
+                  std::string host_;
 
                   //! Remote port number
                   uint16_t port_;
+
+                  //! Driver type
+                  std::string driver_;
+
+                  //! Thread background
+                  void runThread();
+
+                  // Extract argc, argv from command string
+                  void makeArgcArgv(std::string cmd, int& argc, char* argv[]);
 
                public:
 
                   //! Class creation
                   static std::shared_ptr<rogue::protocols::xilinx::xvc::Xvc>
-                     create (std::string host, uint16_t port);
+                     create (std::string host, uint16_t port, std::string driver);
 
                   //! Setup class in python
                   static void setup_python();
 
+                  // Setters
+                  void setHost   (std::string host  );
+                  void setPort   (uint16_t port     );
+                  void setDriver (std::string driver);
+
                   //! Creator
-                  Xvc(std::string host, uint16_t port);
+                  Xvc(std::string host, uint16_t port, std::string driver);
 
                   //! Destructor
                   ~Xvc();

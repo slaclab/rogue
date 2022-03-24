@@ -13,12 +13,12 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Xvc.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcSrv.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcConn.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcDrvUdp.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcDrvAxisFifo.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcDrvLoopBack.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Xvc.cpp")
 
 if (NOT NO_PYTHON)
    target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")

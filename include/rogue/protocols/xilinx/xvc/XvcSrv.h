@@ -54,7 +54,7 @@ public:
         // Previous main() for standalone
         int main_f(int argc, char **argv);
 };
-
+static void * udpTestThread(void *arg);
          }
       }
    }

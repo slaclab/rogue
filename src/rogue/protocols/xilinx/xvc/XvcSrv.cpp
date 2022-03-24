@@ -461,8 +461,8 @@ usage(const char *nm)
 	fprintf(stderr,"  -T <mode>   : set test mode/flags\n");
 }
 
-static void *
-udpTestThread(void *arg)
+void *
+rpxx::udpTestThread(void *arg)
 {
 rpxx::UdpLoopBack *loop = (rpxx::UdpLoopBack*) arg;
 
@@ -649,7 +649,7 @@ rpxx::XvcServer::main_f(int argc, char **argv)
 		loop->setDebug( debug );
 		loop->init();
 
-		if ( pthread_create( &loopT, 0, udpTestThread, loop ) ) {
+		if ( pthread_create( &loopT, 0, rpxx::udpTestThread, loop ) ) {
 			throw SysErr("Unable to launch UDP loopback test thread");
 		}
 	}
