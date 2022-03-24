@@ -60,7 +60,7 @@ namespace rogue
 
          public:
             //! Class creation
-            static std::shared_ptr<rogue::protocols::xilinx::xvc::Xvc>
+            static std::shared_ptr<rogue::protocols::xilinx::Xvc>
             create(std::string host, uint16_t port, std::string driver);
 
             //! Setup class in python
@@ -79,7 +79,7 @@ namespace rogue
          };
 
          // Convenience
-         typedef std::shared_ptr<rogue::protocols::xilinx::xvc::Xvc> XvcPtr;
+         typedef std::shared_ptr<rogue::protocols::xilinx::Xvc> XvcPtr;
       }
    }
 }
