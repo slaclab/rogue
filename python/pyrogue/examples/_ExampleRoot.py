@@ -22,6 +22,7 @@ import rogue
 import math
 import numpy as np
 import pyrogue.protocols.epicsV4
+import matplotlib.pyplot as plt
 
 try:
     import pyrogue.protocols.epics
@@ -37,6 +38,7 @@ class ExampleRoot(pyrogue.Root):
         self._scnt = 0
         self._sdata = np.zeros(100,dtype=np.float64)
 
+        self._fig = None
         pyrogue.Root.__init__(self,
                               description="Example Root",
                               timeout=2.0,
@@ -103,6 +105,12 @@ class ExampleRoot(pyrogue.Root):
             disp='{:1.2f}'))
             #value = np.zeros(100,dtype=np.float64)))
 
+        self.add(pyrogue.LinkVariable(
+            name = 'TestPlotFigure',
+            mode = 'RO',
+            dependencies = [self.TestArray],
+            linkedGet = self._getPlot))
+
         if epics3En:
             self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
             self.addProtocol(self._epics)
@@ -122,3 +130,13 @@ class ExampleRoot(pyrogue.Root):
 
     def _myArray(self):
         return self._sdata
+
+    def _getPlot(self, read):
+
+        if self._fig is not None:
+            plt.close(self._fig)
+
+        self._fig = plt.Figure()
+        ax = self._fig.add_subplot(111)
+        ax.plot(self.TestArray.get(read=read))
+        return self._fig
