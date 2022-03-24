@@ -94,9 +94,9 @@ rpxx::Xvc::Xvc (std::string host, uint16_t port, std::string driver)
 		loop->setDebug( debug );
 		loop->init();
 
-		if ( pthread_create( &loopT, 0, rpxx::udpTestThread, loop ) ) {
-			throw SysErr("Unable to launch UDP loopback test thread");
-		}
+		//if ( pthread_create( &loopT, 0, xvcUdpTestThread, loop ) ) {
+		//	throw SysErr("Unable to launch UDP loopback test thread");
+		//}
 	}
 
 	drv->setDebug( debug );
@@ -150,6 +150,14 @@ void rpxx::Xvc::makeArgcArgv(std::string cmd, int& argc, char* argv[]){
    argv[argc] = 0;
 }
 
+static void* 
+xvcUdpTestThread(void *arg)
+{
+        rpxx::UdpLoopBack *loop = (rpxx::UdpLoopBack*) arg;
+	loop->setTestMode( 1 );
+	loop->run();
+	return 0;
+}
 
 void rpxx::Xvc::setup_python () {
 #ifndef NO_PYTHON

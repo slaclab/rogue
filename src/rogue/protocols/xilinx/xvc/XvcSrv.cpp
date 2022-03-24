@@ -461,18 +461,6 @@ usage(const char *nm)
 	fprintf(stderr,"  -T <mode>   : set test mode/flags\n");
 }
 
-void *
-rpxx::udpTestThread(void *arg)
-{
-rpxx::UdpLoopBack *loop = (rpxx::UdpLoopBack*) arg;
-
-	loop->setTestMode( 1 );
-
-	loop->run();
-
-	return 0;
-}
-
 rpxx::DriverRegistry::DriverRegistry()
 : creator_(0)
 {
@@ -527,6 +515,7 @@ JtagDriver *drv;
 	return drv;
 }
 
+/*
 int
 rpxx::XvcServer::main_f(int argc, char **argv)
 {
@@ -649,8 +638,8 @@ rpxx::XvcServer::main_f(int argc, char **argv)
 		loop->setDebug( debug );
 		loop->init();
 
-		if ( pthread_create( &loopT, 0, rpxx::udpTestThread, loop ) ) {
-			throw SysErr("Unable to launch UDP loopback test thread");
+		//if ( pthread_create( &loopT, 0, ::xvcUdpTestThread, loop ) ) {
+		//	throw SysErr("Unable to launch UDP loopback test thread");
 		}
 	}
 
@@ -674,3 +663,4 @@ rpxx::XvcServer::main_f(int argc, char **argv)
         
         return 0;
 }
+*/
