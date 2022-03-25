@@ -525,6 +525,17 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
+    @expose
+    def getYaml(self,readFirst=False,modes=['RW','RO','WO'],incGroups=None,excGroups=None):
+        """
+        Get current values as yaml data.
+        modes is a list of variable modes to include.
+        If readFirst=True a full read from hardware is performed.
+        """
+        if readFirst:
+            self.root._read()
+        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
+
     def _getDict(self,modes,incGroups,excGroups):
         """
         Get variable values in a dictionary starting from this level.

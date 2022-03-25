@@ -850,16 +850,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def getYaml(self,readFirst,modes,incGroups,excGroups):
-        """
-        Get current values as yaml data.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
-        """
-        if readFirst:
-            self._read()
-        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
-
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
         Set variable values from a yaml file
@@ -880,7 +870,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if self.InitAfterConfig.value():
             self.initialize()
-
 
     def remoteVariableDump(self,name,modes,readFirst):
         """Dump remote variable values to a file."""
