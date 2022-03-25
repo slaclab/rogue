@@ -192,9 +192,6 @@ class Node(object):
     def guiGroup(self):
         return self._guiGroup
 
-    def __repr__(self):
-        return self.path
-
     def __getattr__(self, name):
         """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.

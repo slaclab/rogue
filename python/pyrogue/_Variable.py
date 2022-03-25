@@ -107,7 +107,7 @@ class VariableListData(object):
 
     def __repr__(self):
         return f'{self.__class__}({self.__dict__})'
- 
+
 
 
 class BaseVariable(pr.Node):
@@ -200,7 +200,7 @@ class BaseVariable(pr.Node):
            (self._mode != 'WO'):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
- 
+
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
 
@@ -306,7 +306,7 @@ class BaseVariable(pr.Node):
         d['value'] = self.value()
         d['valueDisp'] = self.valueDisp()
         d['class'] = self.__class__.__name__
- 
+
         for p in self.PROPS:
             d[p] = getattr(self, p)
         return d
@@ -533,7 +533,7 @@ class BaseVariable(pr.Node):
         elif self._mode in modes:
             self.setDisp(d,writeEach)
 
- 
+
     def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         if self._mode in modes:
             if properties is False:
@@ -702,7 +702,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
     ##############################
     # Properties held by C++ class
     ##############################
-    
+
+
     @property
     def numValues(self):
         return self._numValues()
@@ -733,7 +734,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @property
     def overlapEn(self):
         return self._overlapEn()
- 
+
     @pr.expose
     @property
     def bitSize(self):
@@ -753,7 +754,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
     ########################
     # Local Properties
     ########################
-    
+
+
     @pr.expose
     @property
     def address(self):
