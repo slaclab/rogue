@@ -124,8 +124,7 @@ class Node(object):
             self.addToGroup('Hidden')
 
     def __repr__(self):
-        return f'{self.__class__} - {self.path}'
-            
+        return f'{self.__class__} - {self.path}' 
 
     @property
     def name(self):
