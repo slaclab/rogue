@@ -10,6 +10,9 @@ class PyRogueLineEdit(PyDMLineEdit):
         self.textEdited.connect(self.text_edited)
         self._dirty = False
 
+        self.setStyleSheet("*[dirty='true']\
+                           {background-color: orange;}")
+
     def text_edited(self):
         self._dirty = True
         refresh_style(self)
