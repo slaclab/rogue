@@ -27,6 +27,7 @@
 #include <cstring>
 #include <string.h>
 #include <unistd.h>
+#include <dlfcn.h>
 
 namespace rpx = rogue::protocols::xilinx;
 namespace ris = rogue::interfaces::stream;
@@ -82,7 +83,7 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    else
    {
       throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
-      drv = registry->create(argc, argv, target);
+      drv = registry->create(argc, argv, target.c_str());
    }
 
    if (!drv)
@@ -97,7 +98,7 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
       loop->setDebug(debug);
       loop->init();
 
-      if (pthread_create(&loopT, 0, runThread, loop))
+      if (pthread_create(&loopT, 0, this->runThread, loop))
       {
          throw SysErr("Unable to launch UDP loopback test thread");
       }
@@ -145,7 +146,7 @@ void rpx::Xvc::setDriver(std::string driver)
 }
 
 //! Run thread
-void rpx::Xvc::runThread()
+void* rpx::Xvc::runThread(void* arg)
 {
    rpx::UdpLoopBack *loop = (rpx::UdpLoopBack *)arg;
    loop->setTestMode(1);

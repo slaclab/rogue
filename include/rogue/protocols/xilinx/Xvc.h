@@ -53,7 +53,7 @@ namespace rogue
             std::string driver_;
 
             //! Thread background
-            void runThread();
+            static void* runThread(void*);
 
             // Extract argc, argv from command string
             void makeArgcArgv(std::string cmd, int &argc, char *argv[]);
