@@ -95,6 +95,9 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
+    def __repr__(self):
+        return f'{str(self.__class__)}({self.__dict__})'
+
 
 class VariableListData(object):
     def __init__(self, numValues, valueBits, valueStride):
@@ -102,8 +105,18 @@ class VariableListData(object):
         self.valueBits   = valueBits
         self.valueStride = valueStride
 
+    def __repr__(self):
+        return f'{self.__class__}({self.__dict__})'
+
+
 
 class BaseVariable(pr.Node):
+
+    PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
+             'disp', 'precision', 'units', 'minimum', 'maximum',
+             'nativeType', 'ndType', 'updateNotify',
+             'hasAlarm', 'lowWarning', 'highWarning', 'lowAlarm',
+             'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
     def __init__(self, *,
                  name,
@@ -187,8 +200,10 @@ class BaseVariable(pr.Node):
            (self._mode != 'WO'):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
+
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
+
 
     @pr.expose
     @property
@@ -248,6 +263,7 @@ class BaseVariable(pr.Node):
     def maximum(self):
         return self._maximum
 
+
     @pr.expose
     @property
     def hasAlarm(self):
@@ -284,6 +300,16 @@ class BaseVariable(pr.Node):
     def alarmSeverity(self):
         stat,sevr = self._alarmState(self.value())
         return sevr
+
+    def properties(self):
+        d = odict()
+        d['value'] = self.value()
+        d['valueDisp'] = self.valueDisp()
+        d['class'] = self.__class__.__name__
+
+        for p in self.PROPS:
+            d[p] = getattr(self, p)
+        return d
 
     def addDependency(self, dep):
         if dep not in self.__dependencies:
@@ -411,8 +437,8 @@ class BaseVariable(pr.Node):
         return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def valueDisp(self, read=True, index=-1):
-        return self.getDisp(read=False,index=index)
+    def valueDisp(self): #, read=True, index=-1):
+        return self.getDisp(read=False,index=-1)
 
     @pr.expose
     def parseDisp(self, sValue):
@@ -507,11 +533,16 @@ class BaseVariable(pr.Node):
         elif self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes,incGroups,excGroups):
+
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         if self._mode in modes:
-            return VariableValue(self)
+            if properties is False:
+                return VariableValue(self)
+            else:
+                return self.properties()
         else:
             return None
+
 
     def _queueUpdate(self):
         self._root._queueUpdates(self)
@@ -552,7 +583,13 @@ class BaseVariable(pr.Node):
             return 'Good','Good'
 
 
+
 class RemoteVariable(BaseVariable,rim.Variable):
+
+    PROPS = BaseVariable.PROPS + [
+        'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
+        'verifyEn', 'numValues', 'valueBits', 'valueStride', 'retryCount',
+        'varBytes', 'bulkEn']
 
     def __init__(self, *,
                  name,
@@ -661,6 +698,28 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               offset, bitOffset, bitSize, overlapEn, verify,
                               self._bulkOpEn, self._updateNotify, self._base, listData, retryCount)
 
+
+    ##############################
+    # Properties held by C++ class
+    ##############################
+
+
+    @property
+    def numValues(self):
+        return self._numValues()
+
+    @property
+    def valueBits(self):
+        return self._valueBits()
+
+    @property
+    def valueStride(self):
+        return self._valueStride()
+
+    @property
+    def retryCount(self):
+        return self._retryCount()
+
     @pr.expose
     @property
     def varBytes(self):
@@ -673,8 +732,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def address(self):
-        return self._block.address
+    def overlapEn(self):
+        return self._overlapEn()
 
     @pr.expose
     @property
@@ -688,18 +747,24 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def verify(self):
+    def verifyEn(self):
         return self._verifyEn()
+
+
+    ########################
+    # Local Properties
+    ########################
+
+
+    @pr.expose
+    @property
+    def address(self):
+        return self._block.address
 
     @pr.expose
     @property
     def base(self):
         return self._base
-
-    @pr.expose
-    @property
-    def overlapEn(self):
-        return self._overlapEn()
 
     @pr.expose
     @property
@@ -711,7 +776,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
-        A verify will be performed according to self.verify if verify=True
+        A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception.
         """
@@ -777,7 +842,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         Force a write of the variable.
         Hardware write is blocking if check=True.
-        A verify will be performed according to self.verify if verify=True
+        A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception
         """
