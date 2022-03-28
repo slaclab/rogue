@@ -28,7 +28,6 @@ namespace rogue
 	{
 		namespace xilinx
 		{
-
 			template <typename T>
 			class MemMap
 			{

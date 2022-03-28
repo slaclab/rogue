@@ -52,10 +52,10 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
 {
    pthread_t loopT;
 
-   bool     once     = false;
-   bool     setTest  = false;
-   unsigned debug    = 0;
-   unsigned maxMsg   = 32768;
+   bool once = false;
+   bool setTest = false;
+   unsigned debug = 0;
+   unsigned maxMsg = 32768;
    unsigned testMode = 0;
 
    JtagDriver *drv = 0;
@@ -81,8 +81,8 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    }
    else
    {
-      //throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
-      //drv = registry->create( argc, argv, target );
+      throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
+      drv = registry->create(argc, argv, target);
    }
 
    if (!drv)
@@ -97,12 +97,14 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
       loop->setDebug(debug);
       loop->init();
 
-      //if ( pthread_create( &loopT, 0, xvcUdpTestThread, loop ) ) {
-      //	throw SysErr("Unable to launch UDP loopback test thread");
-      //}
+      if (pthread_create(&loopT, 0, runThread, loop))
+      {
+         throw SysErr("Unable to launch UDP loopback test thread");
+      }
    }
 
    drv->setDebug(debug);
+
    // initialize fully constructed object
    drv->init();
 
@@ -145,6 +147,10 @@ void rpx::Xvc::setDriver(std::string driver)
 //! Run thread
 void rpx::Xvc::runThread()
 {
+   rpx::UdpLoopBack *loop = (rpx::UdpLoopBack *)arg;
+   loop->setTestMode(1);
+   loop->run();
+   return 0;
 }
 
 // Extract argc, argv from a command string
@@ -158,15 +164,6 @@ void rpx::Xvc::makeArgcArgv(std::string cmd, int &argc, char *argv[])
       p2 = std::strtok(0, " ");
    }
    argv[argc] = 0;
-}
-
-static void *
-xvcUdpTestThread(void *arg)
-{
-   rpx::UdpLoopBack *loop = (rpx::UdpLoopBack *)arg;
-   loop->setTestMode(1);
-   loop->run();
-   return 0;
 }
 
 void rpx::Xvc::setup_python()
