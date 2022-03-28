@@ -51,15 +51,17 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
       port_(port),
       driver_(driver)
 {
+   void *hdl;
+
    pthread_t loopT;
 
-   bool once = false;
-   bool setTest = false;
-   unsigned debug = 0;
-   unsigned maxMsg = 32768;
+   bool     once     = false;
+   bool     setTest  = false;
+   unsigned debug    = 0;
+   unsigned maxMsg   = 32768;
    unsigned testMode = 0;
 
-   JtagDriver *drv = 0;
+   JtagDriver  *drv  = 0;
    UdpLoopBack *loop = 0;
 
    DriverRegistry *registry = DriverRegistry::init();
@@ -82,13 +84,17 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    }
    else
    {
-      throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
+      if (!(hdl = dlopen(driver.c_str(), RTLD_NOW | RTLD_GLOBAL))) 
+      {
+         throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
+      }
       drv = registry->create(argc, argv, target.c_str());
    }
 
    if (!drv)
    {
       fprintf(stderr, "ERROR: No transport-driver found\n");
+      exit(EXIT_FAILURE);
    }
 
    // must fire up the loopback UDP (FW emulation) first
