@@ -20,6 +20,16 @@
 #include <netinet/ip.h>
 #include <sys/uio.h>
 
+#ifndef IP_MTU
+   #define IP_MTU 14
+#endif
+#ifndef IP_MTU_DISCOVER
+   #define IP_MTU_DISCOVER 10
+#endif
+#ifndef IP_PMTUDISC_DO
+   #define IP_PMTUDISC_DO 2
+#endif
+
 static const char *DFLT_PORT = "2542";
 
 static const unsigned MAXL = 256;
