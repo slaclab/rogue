@@ -42,7 +42,6 @@ namespace rogue
          class Xvc : public rogue::interfaces::stream::Master,
                      public rogue::interfaces::stream::Slave
          {
-
             //! Address, hostname or ip address
             std::string host_;
 
@@ -51,6 +50,13 @@ namespace rogue
 
             //! Driver type
             std::string driver_;
+
+            //! Pointers to JTAG driver, UDP loopback, 
+            //  driver registry and XVC server 
+            JtagDriver     *drv_;
+            UdpLoopBack    *loop_;
+            DriverRegistry *registry_;
+            XvcServer      *s_;
 
             //! Thread background
             static void* runThread(void*);

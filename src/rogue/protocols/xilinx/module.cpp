@@ -22,13 +22,9 @@
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
+
 #include <rogue/protocols/xilinx/module.h>
 #include <rogue/protocols/xilinx/Xvc.h>
-#include <rogue/protocols/xilinx/XvcSrv.h>
-#include <rogue/protocols/xilinx/XvcConn.h>
-#include <rogue/protocols/xilinx/XvcDrvUdp.h>
-#include <rogue/protocols/xilinx/XvcDrvAxisFifo.h>
-#include <rogue/protocols/xilinx/XvcDrvLoopBack.h>
 
 namespace bp = boost::python;
 namespace rpx = rogue::protocols::xilinx;
