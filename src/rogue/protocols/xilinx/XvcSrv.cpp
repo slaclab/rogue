@@ -24,6 +24,7 @@
 #include <dlfcn.h>
 #include <pthread.h>
 #include <math.h>
+#include <string>
 
 // To be defined by Makefile
 #ifndef XVC_SRV_VERSION
