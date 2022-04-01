@@ -37,7 +37,7 @@ namespace rogue
    {
       namespace xilinx
       {
-         const unsigned int kMaxArgs = 10;
+         const unsigned int kMaxArgs = 3;
 
          class Xvc : public rogue::interfaces::stream::Master,
                      public rogue::interfaces::stream::Slave
@@ -59,10 +59,14 @@ namespace rogue
             XvcServer      *s_;
 
             //! Thread background
-            static void* runThread(void*);
+            bool threadEn_;            
+            std::thread* thread_;
+
+            void runXvcThread();
+            static void* runTestThread(void*);
 
             // Extract argc, argv from command string
-            void makeArgcArgv(std::string cmd, int &argc, char *argv[]);
+            void makeArgcArgv(std::string cmd, int &argc, char **argv);
 
          public:
             //! Class creation

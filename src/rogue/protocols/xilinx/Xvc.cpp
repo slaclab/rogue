@@ -28,6 +28,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <dlfcn.h>
+#include <iostream>
 
 namespace rpx = rogue::protocols::xilinx;
 namespace ris = rogue::interfaces::stream;
@@ -47,25 +48,23 @@ rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port, std::string driver
 
 //! Creator
 rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
-    : host_     (host),
-      port_     (port),
+    : host_     (host  ),
+      port_     (port  ),
       driver_   (driver),
-      drv_      (NULL),
-      loop_     (NULL),
-      registry_ (NULL),
-      s_        (NULL)
+      drv_      (NULL  ),
+      loop_     (NULL  ),
+      registry_ (NULL  ),
+      s_        (NULL  ),
+      threadEn_ (false )
 {
-   void *hdl;
-
+   void      *hdl;
    pthread_t loopT;
 
-   bool     once     = false;
    bool     setTest  = false;
    unsigned debug    = 0;
-   unsigned maxMsg   = 32768;
    unsigned testMode = 0;
 
-   int   argc = 0;
+   int  argc = 0;
    char *argv[kMaxArgs];
 
    registry_ = DriverRegistry::init();
@@ -74,6 +73,8 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    std::string cmd    = "./xvcSrv -t " + target;
 
    makeArgcArgv(cmd, argc, argv);
+   char exec[] = "./xvcSrv";
+   argv[0] = &exec[0];
 
    if (driver_ == "udp")
       drv_ = new JtagDriverUdp(argc, argv, target.c_str());
@@ -106,14 +107,14 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
       loop_->setDebug(debug);
       loop_->init();
 
-      if (pthread_create(&loopT, 0, this->runThread, loop_))
+      if (pthread_create(&loopT, 0, this->runTestThread, loop_))
          throw SysErr("Unable to launch UDP loopback test thread");
    }
 
    drv_->setDebug(debug);
 
    // initialize fully constructed object
-   drv_->init();
+//   drv_->init();
 
    if (setTest)
    {
@@ -124,9 +125,9 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    {
       drv_->dumpInfo();
    }
-
-   s_ = new XvcServer(port_, drv_, debug, maxMsg, once);
-   s_->run();
+   // start XVC thread
+   thread_   = new std::thread(&rpx::Xvc::runXvcThread, this);
+   threadEn_ = true;
 }
 
 //! Destructor
@@ -151,28 +152,40 @@ void rpx::Xvc::setDriver(std::string driver)
    driver_ = driver;
 }
 
-//! Run thread
-void* rpx::Xvc::runThread(void* arg)
+//! Run UDP test thread
+void* rpx::Xvc::runTestThread(void* arg)
 {
    rpx::UdpLoopBack *loop = (rpx::UdpLoopBack *)arg;
+
    loop->setTestMode(1);
    loop->run();
    return 0;
 }
 
+//! Run XVC thread
+void rpx::Xvc::runXvcThread()
+{
+   bool     once     = false;
+   unsigned debug    = 0;
+   unsigned maxMsg   = 32768;
+
+   s_ = new XvcServer(port_, drv_, debug, maxMsg, once);
+   s_->run();
+}
+
 // Extract argc, argv from a command string
-void rpx::Xvc::makeArgcArgv(std::string cmd, int &argc, char *argv[])
+void rpx::Xvc::makeArgcArgv(std::string cmd, int &argc, char **argv)
 {
    char *cline = const_cast<char *>(cmd.c_str());
    char *p2 = std::strtok(cline, " ");
 
-   while (p2 && argc < kMaxArgs - 1)
+   while (p2 && argc < kMaxArgs)
    {
       argv[argc++] = p2;
       p2 = std::strtok(NULL, " ");
    }
-   
-   for (unsigned int i = argc; i < kMaxArgs - 1; ++i)
+
+   for (int i = argc; i < kMaxArgs; ++i)
       argv[i] = NULL;
 }
 
