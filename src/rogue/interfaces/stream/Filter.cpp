@@ -25,6 +25,7 @@
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Filter.h>
 #include <rogue/Logging.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -66,7 +67,7 @@ void ris::Filter::acceptFrame ( ris::FramePtr frame ) {
 
    // Drop errored frames
    if ( dropErrors_ && (frame->getError() != 0) ) {
-      log_->debug("Dropping errored frame: Channel=%i, Error=0x%x",channel_, frame->getError());
+      log_->debug("Dropping errored frame: Channel=%" PRIu8 ", Error=0x%" PRIx8, channel_, frame->getError());
       return;
    }
 

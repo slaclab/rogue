@@ -26,6 +26,7 @@
 #include <rogue/GilRelease.h>
 #include <memory>
 #include <memory>
+#include <inttypes.h>
 
 #ifdef __MACH__
 #include <mach/clock.h>
@@ -87,7 +88,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
       if ( !PyArray_Check(value.ptr()) || ndims != 1 || dims[0] == 0 ) {
          forceStr = true;
          count = 0;
-         log_->info("Unsupported or invalid ndarray for %s with ndtype = %s. Forcing to string\n", epicsName.c_str(),ndtype.c_str());
+         log_->info("Unsupported or invalid ndarray for %s with ndtype = %s. Forcing to string\n", epicsName.c_str(), ndtype.c_str());
       }
 
       else {
@@ -95,7 +96,7 @@ rpe::Variable::Variable (std::string epicsName, bp::object p, bool syncRead) : V
          type = ndtype;
 
          // Get initial element count
-         log_->info("Detected ndarray for %s with ndtype = %s (%i) and count = %i", epicsName.c_str(),ndtype.c_str(),PyArray_TYPE(arr),count);
+         log_->info("Detected ndarray for %s with ndtype = %s (%" PRIu32 ") and count = %" PRIu32, epicsName.c_str(), ndtype.c_str(), PyArray_TYPE(arr), count);
       }
    }
 
@@ -304,7 +305,7 @@ bool rpe::Variable::valueGet() {
    if ( syncRead_ ) {
       { // GIL Scope
          rogue::ScopedGil gil;
-         log_->info("Synchronous read for %s",epicsName_.c_str());
+         log_->info("Synchronous read for %s", epicsName_.c_str());
 
          try {
             bp::object val = var_.attr("getVariableValue")();
@@ -314,7 +315,7 @@ bool rpe::Variable::valueGet() {
                updateAlarm(val.attr("status"), val.attr("severity"));
             }
          } catch (...) {
-            log_->error("Error getting values from epics: %s\n",epicsName_.c_str());
+            log_->error("Error getting values from epics: %s\n", epicsName_.c_str());
             return false;
          }
       }
@@ -350,7 +351,7 @@ void rpe::Variable::fromPython(bp::object value) {
 
          size_ = dims[0];
 
-         log_->debug("Found array of type %i with size %i for %s", PyArray_TYPE(arr), size_, epicsName_.c_str());
+         log_->debug("Found array of type %" PRIu32 " with size %" PRIu32 " for %s", PyArray_TYPE(arr), size_, epicsName_.c_str());
       }
 
       // Limit size
@@ -459,19 +460,19 @@ void rpe::Variable::fromPython(bp::object value) {
 
       if ( epicsType_ == aitEnumUint8 || epicsType_ == aitEnumUint16 || epicsType_ == aitEnumUint32 ) {
          uint32_t nVal = extractValue<uint32_t>(value);
-         log_->info("Python set Uint for %s: Value=%lu", epicsName_.c_str(),nVal);
+         log_->info("Python set Uint for %s: Value=%" PRIuLEAST32, epicsName_.c_str(), nVal);
          pValue_->putConvert(nVal);
       }
 
       else if ( epicsType_ == aitEnumInt8 || epicsType_ == aitEnumInt16 || epicsType_ == aitEnumInt32 ) {
          int32_t nVal = extractValue<int32_t>(value);
-         log_->info("Python set Int for %s: Value=%li", epicsName_.c_str(),nVal);
+         log_->info("Python set Int for %s: Value=%" PRIdLEAST32, epicsName_.c_str(), nVal);
          pValue_->putConvert(nVal);
       }
 
       else if ( epicsType_ == aitEnumFloat32 || epicsType_ == aitEnumFloat64 ) {
          double nVal = extractValue<double>(value);
-         log_->info("Python set double for %s: Value=%f", epicsName_.c_str(),nVal);
+         log_->info("Python set double for %s: Value=%f", epicsName_.c_str(), nVal);
          pValue_->putConvert(nVal);
       }
 
@@ -491,7 +492,7 @@ void rpe::Variable::fromPython(bp::object value) {
          // Invalid
          else throw rogue::GeneralError::create("Variable::fromPython","Invalid enum for %s",epicsName_.c_str());
 
-         log_->info("Python set enum for %s: Enum Value=%i", epicsName_.c_str(),idx);
+         log_->info("Python set enum for %s: Enum Value=%" PRIu8, epicsName_.c_str(), idx);
          pValue_->putConvert(idx);
       }
 
@@ -519,7 +520,7 @@ bool rpe::Variable::valueSet() {
    PyObject *obj;
    uint32_t i;
 
-   log_->info("Variable set for %s",epicsName_.c_str());
+   log_->info("Variable set for %s", epicsName_.c_str());
 
    try {
       if ( isString_ ) {
@@ -645,7 +646,7 @@ bool rpe::Variable::valueSet() {
          }
       }
    } catch (...) {
-      log_->error("Error setting value from epics: %s\n",epicsName_.c_str());
+      log_->error("Error setting value from epics: %s\n", epicsName_.c_str());
       return false;
    }
    return true;
@@ -668,7 +669,7 @@ T rpe::Variable::extractValue(boost::python::object value)
       catch (boost::numeric::bad_numeric_cast& e)
       {
          // If an exception is thrown, log the error and return zero.
-         log_->warning("Variable::extractValue error for %s: %s", epicsName_.c_str(),e.what());
+         log_->warning("Variable::extractValue error for %s: %s", epicsName_.c_str(), e.what());
          return 0;
       }
    }

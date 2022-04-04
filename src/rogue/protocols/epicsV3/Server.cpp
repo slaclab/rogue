@@ -25,6 +25,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <fdManager.h>
+#include <inttypes.h>
 
 namespace rpe = rogue::protocols::epicsV3;
 
@@ -72,7 +73,7 @@ void rpe::Server::start() {
    uint32_t x;
    //this->setDebugLevel(10);
 
-   log_->info("Starting epics server with %i workers",workCnt_);
+   log_->info("Starting epics server with %" PRIu32 " workers",workCnt_);
 
    threadEn_ = true;
    thread_ = new std::thread(&rpe::Server::runThread, this);

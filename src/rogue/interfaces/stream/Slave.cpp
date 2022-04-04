@@ -33,6 +33,7 @@
 #include <rogue/ScopedGil.h>
 #include <rogue/Logging.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 
@@ -83,7 +84,7 @@ void ris::Slave::acceptFrame ( ris::FramePtr frame ) {
    if ( debug_ > 0 ) {
       char buffer[1000];
 
-      log_->critical("Got Size=%i, Error=%i, Data:",frame->getPayload(),frame->getError());
+      log_->critical("Got Size=%" PRIu32 ", Error=%" PRIu8 ", Data:", frame->getPayload(), frame->getError());
       sprintf(buffer,"     ");
 
       count = 0;

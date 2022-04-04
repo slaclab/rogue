@@ -22,6 +22,7 @@
 #include <rogue/GeneralError.h>
 #include <rogue/Helpers.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 namespace rpu = rogue::protocols::udp;
 
@@ -59,7 +60,7 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
    if(size > rwin) {
       udpLog_->critical("----------------------------------------------------------");
       udpLog_->critical("Error setting rx buffer size.");
-      udpLog_->critical("Wanted %i (%i * %i) Got %i",size,count,per,rwin);
+      udpLog_->critical("Wanted %" PRIu32 " (%" PRIu32 " * %" PRIu32 ") Got %" PRIu32, size, count, per, rwin);
       udpLog_->critical("sysctl -w net.core.rmem_max=size to increase in kernel");
       udpLog_->critical("----------------------------------------------------------");
       return(false);

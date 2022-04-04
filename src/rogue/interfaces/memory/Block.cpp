@@ -256,7 +256,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
       }
       doUpdate_ = updateEn_;
 
-      bLog_->debug("Start transaction type = %i, Offset=0x%x, lByte=%i, hByte=%i, tOff=0x%x, tSize=%i",type,offset_,lowByte,highByte,tOff,tSize);
+      bLog_->debug("Start transaction type = %" PRIu32 ", Offset=0x%" PRIx64 ", lByte=%" PRIu32 ", hByte=%" PRIu32 ", tOff=0x%" PRIx32 ", tSize=%" PRIu32, type, offset_, lowByte, highByte, tOff, tSize);
 
       // Start transaction
       reqTransaction(offset_+tOff, tSize, tData, type);
@@ -283,7 +283,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
 
       } catch ( rogue::GeneralError err ) {
          if ( (count+1) >= retryCount_ ) throw err;
-         bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
+         bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
          fWr = true; // Stale state is now lost
       }
    }
@@ -316,7 +316,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
       } catch ( rogue::GeneralError err ) {
          if ( (count+1) >= retryCount_ ) throw err;
-         bLog_->error("Error on try %i out of %i: %s",(count+1),(retryCount_+1),err.what());
+         bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
          fWr = true; // Stale state is now lost
       }
    }
@@ -352,14 +352,14 @@ bool rim::Block::checkTransaction() {
 
       // Check verify data if verifyInp is set
       if ( verifyInp_ ) {
-         bLog_->debug("Verfying data. Base=0x%x, size=%i",verifyBase_,verifySize_);
+         bLog_->debug("Verfying data. Base=0x%" PRIx32 ", size=%" PRIu32, verifyBase_, verifySize_);
          verifyReq_ = false;
          verifyInp_ = false;
 
          for (x=verifyBase_; x < verifyBase_ + verifySize_; x++) {
             if ((verifyData_[x] & verifyMask_[x]) != (blockData_[x] & verifyMask_[x])) {
                throw(rogue::GeneralError::create("Block::checkTransaction",
-                  "Verify error for block %s with address 0x%.8x. Byte: %i. Got: 0x%.2x, Exp: 0x%.2x, Mask: 0x%.2x",
+                  "Verify error for block %s with address 0x%.8" PRIx64 ". Byte: %" PRIu32 ". Got: 0x%.2" PRIx8 ", Exp: 0x%.2" PRIx8 ", Mask: 0x%.2" PRIx8,
                   path_.c_str(), address(), x, verifyData_[x], blockData_[x], verifyMask_[x]));
             }
          }
@@ -468,7 +468,7 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
          }
       }
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8x",(*vit)->name_.c_str(),path_.c_str(),offset_);
+      bLog_->debug("Adding variable %s to block %s at offset 0x%.8" PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_);
    }
 
    // Init overlap enable before check, block level overlap enable flag will be removed in the future
@@ -551,7 +551,7 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t in
 
       // Verify range
       if ( index < 0 || index >= var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setBytes","Index %i is out of range for %s",index, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setBytes","Index %" PRIu32 " is out of range for %s", index, var->name_.c_str()));
 
       // Fast copy
       if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[index],buff,var->valueBytes_);
@@ -605,7 +605,7 @@ void rim::Block::getBytes( uint8_t *data, rim::Variable *var, uint32_t index ) {
 
       // Verify range
       if ( index < 0 || index >= var->numValues_ )
-         throw(rogue::GeneralError::create("Block::getBytes","Index %i is out of range for %s",index, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::getBytes","Index %" PRIu32 " is out of range for %s", index, var->name_.c_str()));
 
       // Fast copy
       if ( var->fastByte_ != NULL ) memcpy(data,blockData_+var->fastByte_[index],var->valueBytes_);
@@ -661,7 +661,7 @@ void rim::Block::setPyFunc ( bp::object &value, rim::Variable *var, int32_t inde
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setPyFunc","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setPyFunc","Overflow error for passed array with length %" PRIu32 " at index %" PRIu32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          tmp = vl[x];
@@ -786,10 +786,10 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
       npy_intp * dims = PyArray_SHAPE(arr);
 
       if ( ndims != 1 )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Invalid number of dimensions (%i) for passed ndarray for %s", ndims, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setUIntPy","Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s", ndims, var->name_.c_str()));
 
       if ( (index + dims[0]) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setUIntPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIu32 ". Variable length = %" PRIu32 " for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_UINT64 ) {
           uint64_t *src = reinterpret_cast<uint64_t *>(PyArray_DATA (arr));
@@ -810,7 +810,7 @@ void rim::Block::setUIntPy ( bp::object &value, rim::Variable *var, int32_t inde
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setUIntPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setUIntPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          bp::extract<uint64_t> tmp(vl[x]);
@@ -927,10 +927,10 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
       npy_intp * dims = PyArray_SHAPE(arr);
 
       if ( ndims != 1 )
-         throw(rogue::GeneralError::create("Block::setIntPy","Invalid number of dimensions (%i) for passed ndarray for %s", ndims, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setIntPy","Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s", ndims, var->name_.c_str()));
 
       if ( (index + dims[0]) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setIntPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setIntPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_INT64 ) {
           int64_t *src = reinterpret_cast<int64_t *>(PyArray_DATA (arr));
@@ -951,7 +951,7 @@ void rim::Block::setIntPy ( bp::object &value, rim::Variable *var, int32_t index
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setIntPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setIntPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          bp::extract<int64_t> tmp(vl[x]);
@@ -1072,10 +1072,10 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t inde
       npy_intp * dims = PyArray_SHAPE(arr);
 
       if ( ndims != 1 )
-         throw(rogue::GeneralError::create("Block::setBoolPy","Invalid number of dimensions (%i) for passed ndarray for %s", ndims, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setBoolPy","Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s", ndims, var->name_.c_str()));
 
       if ( (index + dims[0]) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setBoolPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setBoolPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_BOOL ) {
           bool *src = reinterpret_cast<bool *>(PyArray_DATA (arr));
@@ -1092,7 +1092,7 @@ void rim::Block::setBoolPy ( bp::object &value, rim::Variable *var, int32_t inde
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setBoolPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setBoolPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          bp::extract<bool> tmp(vl[x]);
@@ -1261,10 +1261,10 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t ind
       npy_intp * dims = PyArray_SHAPE(arr);
 
       if ( ndims != 1 )
-         throw(rogue::GeneralError::create("Block::setFloatPy","Invalid number of dimensions (%i) for passed ndarray for %s", ndims, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setFloatPy","Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s", ndims, var->name_.c_str()));
 
       if ( (index + dims[0]) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFloatPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setFloatPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_FLOAT32 ) {
           float *src = reinterpret_cast<float *>(PyArray_DATA (arr));
@@ -1280,7 +1280,7 @@ void rim::Block::setFloatPy ( bp::object &value, rim::Variable *var, int32_t ind
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFloatPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setFloatPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          bp::extract<float> tmp(vl[x]);
@@ -1384,10 +1384,10 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t in
       npy_intp * dims = PyArray_SHAPE(arr);
 
       if ( ndims != 1 )
-         throw(rogue::GeneralError::create("Block::setDoublePy","Invalid number of dimensions (%i) for passed ndarray for %s", ndims, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setDoublePy","Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s", ndims, var->name_.c_str()));
 
       if ( (index + dims[0]) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setDoublePy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setDoublePy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_FLOAT64 ) {
           double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
@@ -1404,7 +1404,7 @@ void rim::Block::setDoublePy ( bp::object &value, rim::Variable *var, int32_t in
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setDoublePy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setDoublePy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          bp::extract<double> tmp(vl[x]);
@@ -1507,10 +1507,10 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
       npy_intp * dims = PyArray_SHAPE(arr);
 
       if ( ndims != 1 )
-         throw(rogue::GeneralError::create("Block::setFixedPy","Invalid number of dimensions (%i) for passed ndarray for %s", ndims, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setFixedPy","Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s", ndims, var->name_.c_str()));
 
       if ( (index + dims[0]) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFixedPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", dims[0], index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setFixedPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", dims[0], index, var->numValues_, var->name_.c_str()));
 
       if ( PyArray_TYPE(arr) == NPY_FLOAT64 ) {
           double *src = reinterpret_cast<double *>(PyArray_DATA (arr));
@@ -1527,7 +1527,7 @@ void rim::Block::setFixedPy ( bp::object &value, rim::Variable *var, int32_t ind
       uint32_t vlen = len(vl);
 
       if ( (index + vlen) > var->numValues_ )
-         throw(rogue::GeneralError::create("Block::setFixedPy","Overflow error for passed array with length %i at index %i. Variable length = %i for %s", vlen, index, var->numValues_, var->name_.c_str()));
+         throw(rogue::GeneralError::create("Block::setFixedPy","Overflow error for passed array with length %" PRIu32 " at index %" PRIi32 ". Variable length = %" PRIu32 " for %s", vlen, index, var->numValues_, var->name_.c_str()));
 
       for (x=0; x < vlen; x++) {
          bp::extract<double> tmp(vl[x]);
@@ -1614,7 +1614,7 @@ double rim::Block::getFixed ( rim::Variable *var, int32_t index ) {
 
    getBytes((uint8_t *)&fPoint,var,index);
    // Do two-complement if negative
-   if ((fPoint & (1 << var->valueBits_-1)) != 0) {
+   if ((fPoint & (1 << (var->valueBits_-1))) != 0) {
      fPoint = fPoint - (1 << var->valueBits_);
    }
 

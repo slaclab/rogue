@@ -24,6 +24,7 @@
 #include <sys/time.h>
 #include <sys/syscall.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 #if defined(__linux__)
 #include <sys/syscall.h>
@@ -75,7 +76,7 @@ rogue::Logging::Logging(std::string name, bool quiet) {
    }
    levelMtx_.unlock();
 
-   if ( ! quiet ) warning("Starting logger with level = %i",level_);
+   if ( ! quiet ) warning("Starting logger with level = %" PRIu32, level_);
 }
 
 rogue::Logging::~Logging() { }
@@ -103,7 +104,7 @@ void rogue::Logging::intLog(uint32_t level, const char * fmt, va_list args) {
    char buffer[1000];
    vsnprintf(buffer,1000,fmt,args);
    gettimeofday(&tme,NULL);
-   printf("%li.%li:%s: %s\n",tme.tv_sec,tme.tv_usec,name_.c_str(),buffer);
+   printf("%l" PRIi32 ".%06l" PRIi32 ":%s: %s\n", tme.tv_sec, tme.tv_usec, name_.c_str(), buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char * fmt, ...) {
@@ -161,7 +162,7 @@ void rogue::Logging::logThreadId() {
    tid = 0;
 #endif
 
-   this->log(Thread, "PID=%i, TID=%i", getpid(), tid);
+   this->log(Thread, "PID=%" PRIu32 ", TID=%" PRIu32, getpid(), tid);
 }
 
 void rogue::Logging::setup_python() {

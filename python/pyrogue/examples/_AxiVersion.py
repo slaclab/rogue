@@ -307,7 +307,7 @@ class AxiVersion(pr.Device):
         ))
 
         self.add(pr.RemoteVariable(
-            name         = 'AlarmTest'.format(i),
+            name         = 'AlarmTest',
             description  = 'Alarm Test Field',
             offset       = 0x8000,
             bitSize      = 32,
@@ -361,10 +361,10 @@ class AxiVersion(pr.Device):
             mode = 'RW',
             value = [False] * 10))
 
-        self.add(pr.LocalVariable(
-            name = 'TestBadArray[x]',
-            mode = 'RW',
-            value = ''))
+        #self.add(pr.LocalVariable(
+        #    name = 'TestBadArray[x]',
+        #    mode = 'RW',
+        #    value = ''))
 
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
@@ -385,11 +385,11 @@ class AxiVersion(pr.Device):
 
         @self.command(hidden=False,value='',retValue='')
         def TestGeneralException(arg):
-            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True)
+            return(rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True))
 
         @self.command(hidden=False,value='',retValue='')
         def TestOtherError(arg):
-            a = rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0)
+            return(rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0))
 
         @self.command(hidden=False,value='blah blah',retValue='')
         def TestCmdString(arg):

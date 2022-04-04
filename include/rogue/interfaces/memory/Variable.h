@@ -23,6 +23,7 @@
 #include <vector>
 #include <rogue/EnableSharedFromThis.h>
 #include <memory>
+#include <string>
 
 #include <thread>
 

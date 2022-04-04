@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <inttypes.h>
 
 namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
@@ -107,7 +108,7 @@ void rha::AxiMemMap::runThread() {
       if ( (tran = queue_.pop()) != NULL ) {
 
          if ( (tran->size() % dataSize) != 0 ) {
-            tran->error("Invalid transaction size %i, must be an integer number of %i bytes",tran->size(),dataSize);
+            tran->error("Invalid transaction size %" PRIu32 ", must be an integer number of %" PRIu32 " bytes", tran->size(), dataSize);
             tran.reset();
             continue;
          }
@@ -118,7 +119,7 @@ void rha::AxiMemMap::runThread() {
          rim::TransactionLockPtr lock = tran->lock();
 
          if ( tran->expired() ) {
-            log_->warning("Transaction expired. Id=%i",tran->id());
+            log_->warning("Transaction expired. Id=%" PRIu32, tran->id());
             tran.reset();
             continue;
          }
@@ -140,8 +141,8 @@ void rha::AxiMemMap::runThread() {
             it += dataSize;
          }
 
-         log_->debug("Transaction id=0x%08x, addr 0x%016x. Size=%i, type=%i, data=0x%08x",tran->id(),tran->address(),tran->size(),tran->type(),data);
-         if ( ret != 0 ) tran->error("Memory transaction failed with error code %i, see driver error codes",ret);
+         log_->debug("Transaction id=%" PRIu32 ", addr 0x%016" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32 ", data=0x%08" PRIu32, tran->id(), tran->address(), tran->size(), tran->type(), data);
+         if ( ret != 0 ) tran->error("Memory transaction failed with error code %" PRIi32 ", see driver error codes", ret);
          else tran->done();
       }
    }

@@ -143,7 +143,7 @@ void rim::Transaction::doneSubTransactions() {
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
 
-   log_->debug("Transaction done. type=%i id=%i, address=0x%016x, size=0x%x",
+   log_->debug("Transaction done. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ,
          type_,id_,address_,size_);
 
    error_ = "";
@@ -170,7 +170,7 @@ void rim::Transaction::errorPy(std::string error) {
    error_ = error;
    done_  = true;
 
-   log_->debug("Transaction error. type=%i id=%i, address=0x%016x, size=0x%x, error=%s",
+   log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ", error=%s",
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
@@ -218,7 +218,7 @@ std::string rim::Transaction::wait() {
          done_  = true;
          error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
-         log_->debug("Transaction timeout. type=%i id=%i, address=0x%016x, size=0x%x",
+         log_->debug("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
                type_,id_,address_,size_);
       }
       else cond_.wait_for(lock,std::chrono::microseconds(1000));
@@ -251,7 +251,7 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
 
       if ( warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0 ) warnTime_ = endTime_;
       else if ( timercmp(&warnTime_,&currTime,>=) ) {
-            log_->warning("Transaction timer refresh! Possible slow link! type=%i id=%i, address=0x%016x, size=0x%x",
+            log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32,
                   type_,id_,address_,size_);
          warnTime_ = endTime_;
       }
@@ -284,7 +284,7 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
       throw(rogue::GeneralError::create("Transaction::setData",
-               "Attempt to set %i bytes at offset %i to python buffer with size %i",
+               "Attempt to set %" PRIu32 " bytes at offset %" PRIu32 " to python buffer with size %" PRIu32,
                count,offset,size_));
    }
 
@@ -304,8 +304,8 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
       throw(rogue::GeneralError::create("Transaction::getData",
-               "Attempt to get %i bytes from offset %i to python buffer with size %i",
-               count,offset,size_));
+               "Attempt to get %" PRIu32 " bytes from offset %" PRIu32 " to python buffer with size %" PRIu32,
+               count, offset, size_));
    }
 
    std::memcpy((uint8_t *)pyBuf.buf, begin()+offset, count);

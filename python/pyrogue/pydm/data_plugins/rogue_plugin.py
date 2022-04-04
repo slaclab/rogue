@@ -21,6 +21,9 @@ from pydm import utilities
 
 import pyrogue
 from pyrogue.interfaces import VirtualClient
+from matplotlib.pyplot import Figure
+import numpy as np
+import pickle
 
 
 logger = logging.getLogger(__name__)
@@ -119,6 +122,8 @@ class RogueConnection(PyDMConnection):
         else:
             if isinstance(varValue.value, list):
                 self.new_value_signal[str].emit(varValue.valueDisp)
+            elif isinstance(varValue.value, Figure):
+                self.new_value_signal[str].emit(pickle.dumps(varValue.value).hex())
             else:
                 self.new_value_signal[type(varValue.value)].emit(varValue.value)
 

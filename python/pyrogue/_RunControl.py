@@ -37,6 +37,7 @@ class RunControl(pr.Device):
             name='runState',
             value=value,
             mode='RW',
+            groups=['NoConfig'],
             disp=states,
             localSet=self._setRunState,
             description='Run state of the system.'))
