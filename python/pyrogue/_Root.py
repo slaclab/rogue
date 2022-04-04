@@ -599,7 +599,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v.maximum)
                 data += "{}\t".format(v.enum)
                 data += "{}\t".format(v.overlapEn)
-                data += "{}\t".format(v.verify)
+                data += "{}\t".format(v.verifyEn)
                 data += "{}\t".format(v._base.modelId)
                 data += "{}\t".format(v._base.isBigEndian)
                 data += "{}\t".format(v._base.bitReverse)
@@ -849,6 +849,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self.initialize()
 
         return True
+
+    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
+        d = self._getDict(modes, incGroups, excGroups, properties=True)
+        return {self.name: d}
+
+    def treeYaml(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+        return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
