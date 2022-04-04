@@ -124,9 +124,9 @@ uint32_t rim::Transaction::size() { return size_; }
 uint32_t rim::Transaction::type() { return type_; }
 
 //! Create a subtransaction
-rim::TransactionPtr rim::Transaction::createSubTransaction (struct timeval timeout) {
+rim::TransactionPtr rim::Transaction::createSubTransaction () {
    // Create a new transaction and set up pointers back and forth
-   rim::TransactionPtr subTran = std::make_shared<rim::Transaction>(timeout);
+   rim::TransactionPtr subTran = std::make_shared<rim::Transaction>(timeout_);
    subTran->parentTransaction_ = shared_from_this();
    subTran->isSubTransaction_ = true;
    subTranMap_[subTran->id()] = subTran;
@@ -150,7 +150,7 @@ void rim::Transaction::done() {
    done_  = true;
    cond_.notify_all();
 
-   // If applicable, notify parent transaction about completion of a sub-transaction 
+   // If applicable, notify parent transaction about completion of a sub-transaction
    if (isSubTransaction_)  {
       // Get a shared_ptr to the parent transaction
       rim::TransactionPtr parentTran = this->parentTransaction_.lock();
@@ -174,8 +174,8 @@ void rim::Transaction::errorPy(std::string error) {
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
-   
-   // If applicable, notify parent transaction about completion of a sub-transaction 
+
+   // If applicable, notify parent transaction about completion of a sub-transaction
    if (isSubTransaction_)  {
       // Get a shared_ptr to the parent transaction
       rim::TransactionPtr parentTran = parentTransaction_.lock();
@@ -185,9 +185,9 @@ void rim::Transaction::errorPy(std::string error) {
 
          // If this is the last sub-transaction, notify parent transaction it is all done
          if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
-           parentTran->error("Transaction error. Subtransaction failed.");
+             parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s", id_, error.c_str());
       }
-   }   
+   }
 }
 
 //! Complete transaction with passed error, lock must be held
@@ -313,4 +313,3 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
 }
 
 #endif
-

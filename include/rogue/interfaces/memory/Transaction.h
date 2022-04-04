@@ -45,7 +45,7 @@ namespace rogue {
       //         using TransactionIDVec = std::vector<uint32_t>;
       //         using TransactionQueue = std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>>;
          using TransactionMap = std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction>>;
-         
+
          //! Transaction Container
          /** The Transaction is passed between the Master and Slave to initiate a transaction.
           * The Transaction class contains information about the transaction as well as the
@@ -119,13 +119,13 @@ namespace rogue {
 
                // Transaction lock
                std::mutex lock_;
-               
+
                // Sub-transactions vector
            TransactionMap subTranMap_;
 
            // Done creating subtransactions for this transaction
            bool doneCreatingSubTransactions_;
-               
+
                // Identify if it's a parent or a sub transaction
                bool isSubTransaction_;
 
@@ -134,7 +134,7 @@ namespace rogue {
 
                // Weak pointer to parent transaction, where applicable
                std::weak_ptr<rogue::interfaces::memory::Transaction> parentTransaction_;
-               
+
                // Create a transaction container and return a TransactionPtr, called by Master
                static std::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
 
@@ -197,7 +197,7 @@ namespace rogue {
                /** Create a new transaction and assign internal pointers linking it to this parent transaction
                 * @return A pointer to the newly created subtransaction
                 */
-           std::shared_ptr<rogue::interfaces::memory::Transaction> createSubTransaction (struct timeval timeout);
+           std::shared_ptr<rogue::interfaces::memory::Transaction> createSubTransaction ();
 
            void doneSubTransactions();
 
@@ -284,4 +284,3 @@ namespace rogue {
 }
 
 #endif
-

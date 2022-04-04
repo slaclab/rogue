@@ -48,7 +48,7 @@ rim::HubPtr rim::Hub::create (uint64_t offset, uint32_t min, uint32_t max) {
 rim::Hub::Hub(uint64_t offset, uint32_t min, uint32_t max) : Master (), Slave(min,max) {
    offset_ = offset;
    root_   = (min != 0 && max != 0);
-   log_ = rogue::Logging::create("memory.Hub");   
+   log_ = rogue::Logging::create("memory.Hub");
 }
 
 //! Destroy a block
@@ -107,11 +107,11 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
    if (tran->size() > maxAccess)  {
 
      uint32_t numberOfTransactions = std::ceil(1.0*tran->size() / maxAccess);
-     
+
      log_->debug("Splitting transaction %" PRIu32 " into %" PRIu32 " subtransactions", tran->id_, numberOfTransactions);
 
      for (unsigned int i=0; i<numberOfTransactions; ++i)  {
-       rim::TransactionPtr subTran = tran->createSubTransaction(tran->timeout_);            
+       rim::TransactionPtr subTran = tran->createSubTransaction();
        subTran->iter_    = (uint8_t *) (tran->begin() + i * maxAccess);
        if (tran->size() >= ((i+1) * maxAccess)) {
          subTran->size_ = maxAccess;
@@ -121,7 +121,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
        subTran->address_ = tran->address_ + (i * maxAccess);
        subTran->type_    = tran->type();
 
-       log_->debug("Created subTransaction %" PRIu32 ", parent=%" PRIu32 ", iter=%" PRIx32 ", size=%" PRIu32 ", address=%" PRIx64, subTran->id_, tran->id_, subTran->iter_, subTran->size_, subTran->address_);      
+       log_->debug("Created subTransaction %" PRIu32 ", parent=%" PRIu32 ", iter=%" PRIx32 ", size=%" PRIu32 ", address=%" PRIx64, subTran->id_, tran->id_, subTran->iter_, subTran->size_, subTran->address_);
      }
 
      // Declare all subTransactions have been created
@@ -181,4 +181,3 @@ void rim::HubWrap::defDoTransaction(rim::TransactionPtr transaction) {
 }
 
 #endif
-
