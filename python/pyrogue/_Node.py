@@ -527,7 +527,7 @@ class Node(object):
 
     @expose
     def getYaml(self,readFirst=False,modes=['RW','RO','WO'],incGroups=None,excGroups=None):
-    
+
         """
         Get current values as yaml data.
         modes is a list of variable modes to include.
