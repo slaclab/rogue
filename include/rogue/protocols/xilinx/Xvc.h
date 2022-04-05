@@ -86,6 +86,9 @@ namespace rogue
 
             //! Destructor
             ~Xvc();
+
+            //! Stop the interface
+            void stop();
          };
 
          // Convenience

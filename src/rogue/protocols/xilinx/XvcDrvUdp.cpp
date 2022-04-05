@@ -215,9 +215,14 @@ int rpx::JtagDriverUdp::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, uns
 		throw TimeoutErr();
 	}
 
-	if (poll_[0].revents & (POLLERR | POLLNVAL))
+	if (poll_[0].revents & POLLERR)
 	{
-		throw std::runtime_error("JtagDriverUdp -- internal error; poll has POLLERR or POLLNVAL set");
+		throw std::runtime_error("JtagDriverUdp -- internal error; poll has POLLERR set");
+	}
+
+	if (poll_[0].revents & POLLNVAL)
+	{
+		throw std::runtime_error("JtagDriverUdp -- internal error; poll has POLLNVAL set");
 	}
 
 	if (!(poll_[0].revents & POLLIN))

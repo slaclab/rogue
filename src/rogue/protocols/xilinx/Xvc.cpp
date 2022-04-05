@@ -88,9 +88,7 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    else
    {
       if (!(hdl = dlopen(driver.c_str(), RTLD_NOW | RTLD_GLOBAL))) 
-      {
          throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
-      }
       drv_ = registry_->create(argc, argv, target.c_str());
    }
 
@@ -103,7 +101,6 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    // must fire up the loopback UDP (FW emulation) first
    if (loop_)
    {
-
       loop_->setDebug(debug);
       loop_->init();
 
@@ -111,20 +108,18 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
          throw SysErr("Unable to launch UDP loopback test thread");
    }
 
+   // set debug mode
    drv_->setDebug(debug);
 
    // initialize fully constructed object
-//   drv_->init();
+   drv_->init();
 
    if (setTest)
-   {
       drv_->setTestMode(testMode);
-   }
 
    if (drv_->getDebug() > 0)
-   {
       drv_->dumpInfo();
-   }
+
    // start XVC thread
    thread_   = new std::thread(&rpx::Xvc::runXvcThread, this);
    threadEn_ = true;
@@ -133,6 +128,21 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
 //! Destructor
 rpx::Xvc::~Xvc()
 {
+   this->stop();
+
+   delete s_;
+   delete drv_;
+   delete loop_;
+}
+
+//! Stop the interface
+void rpx::Xvc::stop() 
+{
+   if (threadEn_)  
+   {
+      threadEn_ = false;
+      thread_->join();
+   }
 }
 
 //! Set host
@@ -179,14 +189,14 @@ void rpx::Xvc::makeArgcArgv(std::string cmd, int &argc, char **argv)
    char *cline = const_cast<char *>(cmd.c_str());
    char *p2 = std::strtok(cline, " ");
 
+   for (int i = argc; i < kMaxArgs; ++i)
+      argv[i] = NULL;
+
    while (p2 && argc < kMaxArgs)
    {
       argv[argc++] = p2;
       p2 = std::strtok(NULL, " ");
    }
-
-   for (int i = argc; i < kMaxArgs; ++i)
-      argv[i] = NULL;
 }
 
 void rpx::Xvc::setup_python()
