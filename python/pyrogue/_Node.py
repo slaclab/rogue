@@ -525,7 +525,7 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    @expose
+    @pr.expose
     def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
 
         """
