@@ -64,8 +64,18 @@ rim::TransactionLock::~TransactionLock() {
 
 //! lock
 void rim::TransactionLock::lock() {
+    std::weak_ptr<rogue::interfaces::memory::Transaction> tran = tran_;
    if ( ! locked_ ) {
       rogue::GilRelease noGil;
+      lockList_.clear();      
+      // Walk up to top parent transaction
+      while (tran->isSubTransaction_) {
+          lockList_.push_front(tran)
+          tran = tran->parentTransaction_;
+      }
+
+      
+
       tran_->lock_.lock();
       locked_ = true;
    }

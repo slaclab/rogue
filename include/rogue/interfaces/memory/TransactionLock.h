@@ -39,6 +39,7 @@ namespace rogue {
 
                std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
                bool locked_;
+             std::list<std::shared_ptr<rogue::interfaces::memory::Transaction>> lockList_;
 
             public:
 
