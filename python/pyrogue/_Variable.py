@@ -48,7 +48,7 @@ def VariableWait(varList, testFunction, timeout=0):
 
     Returns
     -------
-
+       
     """
 
     # Container class
