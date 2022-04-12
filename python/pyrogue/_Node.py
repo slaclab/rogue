@@ -20,18 +20,18 @@ import collections
 
 def logException(log,e):
     """
-    
+    logs instances of memory error, else, will log the exception.
 
     Parameters
     ----------
     log :
-        
+        calls command to log instance of memory error or exception
     e :
-        
+        stores values of memory errors or exceptions
 
     Returns
     -------
-
+    none
     """
     if isinstance(e,pr.MemoryError):
         log.error(e)
@@ -41,7 +41,7 @@ def logException(log,e):
 
 def logInit(cls=None,name=None,path=None):
     """
-    
+    logs base classes in order of highest ranking class. Checks values of  cls, name, and path, if their value is not  =None, will do something
 
     Parameters
     ----------
@@ -54,14 +54,14 @@ def logInit(cls=None,name=None,path=None):
 
     Returns
     -------
-
+    returns logger
     """
 
     # Support base class in order of precedence
     baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
                          pr.Root : 'Root', pr.Device : 'Device'})
 
-    """Init a logging pbject. Set global options."""
+    """Init a logging object. Set global options."""
     logging.basicConfig(
         #level=logging.NOTSET,
         format="%(levelname)s:%(name)s:%(message)s",
@@ -93,7 +93,7 @@ def logInit(cls=None,name=None,path=None):
 
 def expose(item):
     """
-    
+    Allows user to interface with function under item parameter
 
     Parameters
     ----------
@@ -102,7 +102,7 @@ def expose(item):
 
     Returns
     -------
-
+    returns item
     """
 
     # Property
@@ -198,7 +198,7 @@ class Node(object):
 
         Returns
         -------
-        type
+        returns legnth of string and sets group to > 0 or returns group in self._groups
             
 
         """
@@ -272,12 +272,12 @@ class Node(object):
 
         Parameters
         ----------
-        value :
-            
+        value : bool
+            Boolean value assigned to the Hidden group
 
         Returns
         -------
-
+        if value = true, add to group, else remove from group
         """
         if value is True:
             self.addToGroup('Hidden')
@@ -303,10 +303,12 @@ class Node(object):
         return self.path
 
     def __getattr__(self, name):
-        """Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
+        """
+        Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.
         This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
-        Raises AttributeError if no such named Nodes are found. """
+        Raises AttributeError if no such named Nodes are found.
+        """
 
         # Node matches name in node list
         if name in self._nodes:
