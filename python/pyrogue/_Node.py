@@ -137,7 +137,19 @@ class Node(object):
 
     Parameters
     ----------
+    name :
+        global name of object
 
+    description :
+        Description of object
+
+    path :
+        full path to the node (ie. node1.node2.node3)
+
+    expand :
+
+    guiGroup :
+        arbitrary groups for gui and graphical aesthetic purposes
     Returns
     -------
 
@@ -198,7 +210,7 @@ class Node(object):
 
         Returns
         -------
-        returns legnth of string and sets group to > 0 or returns group in self._groups
+        
             
 
         """
