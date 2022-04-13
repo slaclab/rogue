@@ -14,14 +14,14 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/XvcConn.h>
-
+#include <rogue/protocols/xilinx/XvcConnection.h>
+#include <rogue/protocols/xilinx/Exceptions.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
 
 namespace rpx = rogue::protocols::xilinx;
 
-rpx::XvcConn::XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen)
+rpx::XvcConnection::XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecLen)
 	: drv_(drv),
 	  maxVecLen_(maxVecLen),
 	  supVecLen_(0)
@@ -35,13 +35,13 @@ rpx::XvcConn::XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen)
 	}
 }
 
-rpx::XvcConn::~XvcConn()
+rpx::XvcConnection::~XvcConnection()
 {
 	::close(sd_);
 }
 
 // fill rx buffer to 'n' octets
-void rpx::XvcConn::fill(unsigned long n)
+void rpx::XvcConnection::fill(unsigned long n)
 {
 	uint8_t *p = rp_ + rl_;
 	int got;
@@ -65,7 +65,7 @@ void rpx::XvcConn::fill(unsigned long n)
 }
 
 // mark 'n' octets as 'consumed'
-void rpx::XvcConn::bump(unsigned long n)
+void rpx::XvcConnection::bump(unsigned long n)
 {
 	rp_ += n;
 	rl_ -= n;
@@ -75,7 +75,7 @@ void rpx::XvcConn::bump(unsigned long n)
 	}
 }
 
-void rpx::XvcConn::allocBufs()
+void rpx::XvcConnection::allocBufs()
 {
 	unsigned long tgtVecLen;
 	unsigned long overhead = 128; //headers and such;
@@ -112,7 +112,7 @@ void rpx::XvcConn::allocBufs()
 	tl_ = 0;
 }
 
-void rpx::XvcConn::flush()
+void rpx::XvcConnection::flush()
 {
 	int put;
 	uint8_t *p = &txb_[0];
@@ -129,7 +129,7 @@ void rpx::XvcConn::flush()
 	}
 }
 
-void rpx::XvcConn::run()
+void rpx::XvcConnection::run()
 {
 
 	int got;
@@ -243,7 +243,7 @@ void rpx::XvcConn::run()
 
 			flush();
 
-			/* Repeat until all the characters from the first chunk are exhausted
+		/* Repeat until all the characters from the first chunk are exhausted
 		 * (most likely the chunk just contained a vector shift message) and
 		 * it is exhausted during the first iteration. If for some reason it is
 		 * not then we use the spill-over area for a second iteration which

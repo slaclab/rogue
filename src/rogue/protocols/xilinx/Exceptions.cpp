@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Company    : SLAC National Accelerator Laboratory
 //-----------------------------------------------------------------------------
-// Description:
+// Description: Exceptions.cpp
 //-----------------------------------------------------------------------------
 // This file is part of 'SLAC Firmware Standard Library'.
 // It is subject to the license terms in the LICENSE.txt file found in the
@@ -14,54 +14,33 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef JTAG_DRIVER_UDP_H
-#define JTAG_DRIVER_UDP_H
-
-#include <rogue/protocols/xilinx/XvcDriver.h>
+#include <rogue/protocols/xilinx/Exceptions.h>
 #include <sys/socket.h>
-#include <poll.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <dlfcn.h>
+#include <pthread.h>
+#include <math.h>
+#include <string>
 
-namespace rogue
+// To be defined by Makefile
+#ifndef XVC_SRV_VERSION
+#define XVC_SRV_VERSION "unknown"
+#endif
+
+namespace rpx = rogue::protocols::xilinx;
+
+rpx::SysErr::SysErr(const char *prefix)
+	: std::runtime_error(std::string(prefix) + std::string(": ") + std::string(::strerror(errno)))
 {
-	namespace protocols
-	{
-		namespace xilinx
-		{
-			class JtagDriverUdp : public JtagDriverAxisToJtag
-			{
-			private:
-				SockSd sock_;
-
-				struct pollfd poll_[1];
-
-				int timeoutMs_;
-
-				struct msghdr msgh_;
-				struct iovec iovs_[2];
-
-				unsigned mtu_;
-
-			public:
-				JtagDriverUdp(int argc, char *const argv[], const char *target);
-
-				//! Setup class in python
-				static void setup_python();
-
-				virtual void
-				init();
-
-				virtual unsigned long
-				getMaxVectorSize();
-
-				virtual int
-				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
-
-				virtual ~JtagDriverUdp();
-
-				static void usage();
-			};
-		}
-	}
 }
 
-#endif
+rpx::ProtoErr::ProtoErr(const char *msg)
+	: std::runtime_error(std::string("Protocol error: ") + std::string(msg))
+{
+}
+
+rpx::TimeoutErr::TimeoutErr(const char *detail)
+	: std::runtime_error(std::string("Timeout error; too many retries failed") + std::string(detail))
+{
+}

@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Company    : SLAC National Accelerator Laboratory
 //-----------------------------------------------------------------------------
-// Description:
+// Description: UdpLoopBack.h
 //-----------------------------------------------------------------------------
 // This file is part of 'SLAC Firmware Standard Library'.
 // It is subject to the license terms in the LICENSE.txt file found in the
@@ -14,10 +14,11 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef XVC_SRV_H
-#define XVC_SRV_H
+#ifndef __ROGUE_PROTOCOLS_XILINX_UDP_LOOP_BACK_H__
+#define __ROGUE_PROTOCOLS_XILINX_UDP_LOOP_BACK_H__
 
-#include <rogue/protocols/xilinx/XvcDriver.h>
+#include <rogue/protocols/xilinx/SockSd.h>
+#include <rogue/protocols/xilinx/JtagDriverLoopBack.h>
 
 namespace rogue
 {
@@ -25,33 +26,27 @@ namespace rogue
 	{
 		namespace xilinx
 		{
-			// XVC Server (top) class
-			class XvcServer
+			// mimick the 'far' end of UDP, i.e., a FW server
+			class UdpLoopBack : public JtagDriverLoopBack
 			{
 			private:
 				SockSd sock_;
-				JtagDriver *drv_;
-				unsigned debug_;
-				unsigned maxMsgSize_;
-				bool once_;
+				vector<uint8_t> rbuf_;
+				vector<uint8_t> tbuf_;
+				int tsiz_;
 
 			public:
-				XvcServer(
-					uint16_t port,
-					JtagDriver *drv,
-					unsigned debug = 0,
-					unsigned maxMsgSize = 32768,
-					bool once = false);
+				UdpLoopBack(const char *fnam, unsigned port = 2543);
 
-				virtual void run();
+				virtual int
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
 
-				virtual ~XvcServer(){};
+				virtual unsigned
+				emulMemDepth();
 
-				//! Setup class in python
-				static void setup_python();
+				void run();
 
-				// Previous main() for standalone
-				int main_f(int argc, char **argv);
+				virtual ~UdpLoopBack();
 			};
 		}
 	}

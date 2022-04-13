@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Company    : SLAC National Accelerator Laboratory
 //-----------------------------------------------------------------------------
-// Description:
+// Description: JtagDriverUdp.h
 //-----------------------------------------------------------------------------
 // This file is part of 'SLAC Firmware Standard Library'.
 // It is subject to the license terms in the LICENSE.txt file found in the
@@ -14,13 +14,13 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef XVC_CONNECTION_H
-#define XVC_CONNECTION_H
+#ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_UDP_H__
+#define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_UDP_H__
 
-#include <rogue/protocols/xilinx/XvcSrv.h>
-
+#include <rogue/protocols/xilinx/SockSd.h>
+#include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <poll.h>
 
 namespace rogue
 {
@@ -28,44 +28,38 @@ namespace rogue
 	{
 		namespace xilinx
 		{
-			// Class managing a XVC tcp connection
-			class XvcConn
+			class JtagDriverUdp : public JtagDriverAxisToJtag
 			{
+			private:
+				SockSd sock_;
 
-				JtagDriver *drv_;
-				int sd_;
-				struct sockaddr_in peer_;
-				// just use vectors to back raw memory; DONT use 'size/resize'
-				// (unfortunately 'resize' fills elements beyond the current 'size'
-				// with zeroes)
-				vector<uint8_t> rxb_;
-				uint8_t *rp_;
-				unsigned long rl_;
-				unsigned long tl_;
+				struct pollfd poll_[1];
 
-				vector<uint8_t> txb_;
-				unsigned long maxVecLen_;
-				unsigned long supVecLen_;
-				unsigned long chunk_;
+				int timeoutMs_;
+
+				struct msghdr msgh_;
+				struct iovec iovs_[2];
+
+				unsigned mtu_;
 
 			public:
-				XvcConn(int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768);
+				JtagDriverUdp(int argc, char *const argv[], const char *target);
 
-				// fill rx buffer to 'n' octets (from TCP connection)
-				virtual void fill(unsigned long n);
+				//! Setup class in python
+				static void setup_python();
 
-				// send tx buffer to TCP connection
-				virtual void flush();
+				virtual void
+				init();
 
-				// discard 'n' octets from rx buffer (mark as consumed)
-				virtual void bump(unsigned long n);
+				virtual unsigned long
+				getMaxVectorSize();
 
-				// (re)allocated buffers
-				virtual void allocBufs();
+				virtual int
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
 
-				virtual void run();
+				virtual ~JtagDriverUdp();
 
-				virtual ~XvcConn();
+				static void usage();
 			};
 		}
 	}

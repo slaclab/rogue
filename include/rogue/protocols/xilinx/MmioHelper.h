@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Company    : SLAC National Accelerator Laboratory
 //-----------------------------------------------------------------------------
-// Description:
+// Description: MmioHelper.h
 //-----------------------------------------------------------------------------
 // This file is part of 'SLAC Firmware Standard Library'.
 // It is subject to the license terms in the LICENSE.txt file found in the
@@ -14,9 +14,10 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef MMIO_HELPER_H
-#define MMIO_HELPER_H
+#ifndef __ROGUE_PROTOCOLS_XILINX_MMIO_HELPER_H__
+#define __ROGUE_PROTOCOLS_XILINX_MMIO_HELPER_H__
 
+#include <rogue/protocols/xilinx/Exceptions.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>

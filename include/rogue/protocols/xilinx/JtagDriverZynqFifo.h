@@ -3,7 +3,7 @@
 //-----------------------------------------------------------------------------
 // Company    : SLAC National Accelerator Laboratory
 //-----------------------------------------------------------------------------
-// Description:
+// Description: JtagDriverZynqFifo.h
 //-----------------------------------------------------------------------------
 // This file is part of 'SLAC Firmware Standard Library'.
 // It is subject to the license terms in the LICENSE.txt file found in the
@@ -14,11 +14,11 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#ifndef JTAG_DRIVER_ZYNQ_FIFO_H
-#define JTAG_DRIVER_ZYNQ_FIFO_H
+#ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_ZYNQ_FIFO_H__
+#define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_ZYNQ_FIFO_H__
 
-#include <rogue/protocols/xilinx/XvcDriver.h>
 #include <rogue/protocols/xilinx/MmioHelper.h>
+#include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
 
 namespace rogue
 {
@@ -82,8 +82,6 @@ namespace rogue
 
 				static void usage();
 			};
-
-			extern "C" JtagDriver *drvCreate(const char *target);
 		}
 	}
 }

@@ -19,6 +19,15 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/protocols/xilinx/Xvc.h>
+#include <rogue/protocols/xilinx/JtagDriverUdp.h>
+#include <rogue/protocols/xilinx/JtagDriverLoopBack.h>
+//#include <rogue/protocols/xilinx/StreamInterfaceDriver.h>
+#include <rogue/protocols/xilinx/UdpLoopBack.h>
+#include <rogue/protocols/xilinx/Exceptions.h>
+#include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
+#include <rogue/interfaces/stream/FrameLock.h>
+#include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
 #include <memory>
 #include <rogue/GilRelease.h>
@@ -53,9 +62,9 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
       driver_   (driver),
       drv_      (NULL  ),
       loop_     (NULL  ),
-      registry_ (NULL  ),
       s_        (NULL  ),
       threadEn_ (false )
+
 {
    void      *hdl;
    pthread_t loopT;
@@ -67,8 +76,6 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    int  argc = 0;
    char *argv[kMaxArgs];
 
-   registry_ = DriverRegistry::init();
-
    std::string target = host_ + ":" + std::to_string(port_);
    std::string cmd    = "./xvcSrv -t " + target;
 
@@ -76,36 +83,13 @@ rpx::Xvc::Xvc(std::string host, uint16_t port, std::string driver)
    char exec[] = "./xvcSrv";
    argv[0] = &exec[0];
 
-   if (driver_ == "udp")
-      drv_ = new JtagDriverUdp(argc, argv, target.c_str());
-   else if (driver_ == "loopback")
-      drv_ = new JtagDriverLoopBack(argc, argv, target.c_str());
-   else if (driver_ == "udpLoopback")
-   {
-      drv_  = new JtagDriverUdp(argc, argv, "localhost:2543");
-      loop_ = new UdpLoopBack(target.c_str(), 2543);
-   }
-   else
-   {
-      if (!(hdl = dlopen(driver.c_str(), RTLD_NOW | RTLD_GLOBAL))) 
-         throw std::runtime_error(std::string("Unable to load requested driver: ") + std::string(dlerror()));
-      drv_ = registry_->create(argc, argv, target.c_str());
-   }
-
+   //drv_ = new StreamInterfaceDriver(argc, argv, "localhost:2542");
+   //drv_->setXvc(this);
+   
    if (!drv_)
    {
       fprintf(stderr, "ERROR: No transport-driver found\n");
       exit(EXIT_FAILURE);
-   }
-
-   // must fire up the loopback UDP (FW emulation) first
-   if (loop_)
-   {
-      loop_->setDebug(debug);
-      loop_->init();
-
-      if (pthread_create(&loopT, 0, this->runTestThread, loop_))
-         throw SysErr("Unable to launch UDP loopback test thread");
    }
 
    // set debug mode
@@ -162,16 +146,6 @@ void rpx::Xvc::setDriver(std::string driver)
    driver_ = driver;
 }
 
-//! Run UDP test thread
-void* rpx::Xvc::runTestThread(void* arg)
-{
-   rpx::UdpLoopBack *loop = (rpx::UdpLoopBack *)arg;
-
-   loop->setTestMode(1);
-   loop->run();
-   return 0;
-}
-
 //! Run XVC thread
 void rpx::Xvc::runXvcThread()
 {
@@ -179,6 +153,7 @@ void rpx::Xvc::runXvcThread()
    unsigned debug    = 0;
    unsigned maxMsg   = 32768;
 
+   // Start the XVC server on localhost
    s_ = new XvcServer(port_, drv_, debug, maxMsg, once);
    s_->run();
 }
@@ -198,6 +173,18 @@ void rpx::Xvc::makeArgcArgv(std::string cmd, int &argc, char **argv)
       p2 = std::strtok(NULL, " ");
    }
 }
+
+//! Accept a frame
+void rpx::Xvc::acceptFrame ( ris::FramePtr frame )
+{
+   // Set the frame pointer in the rogue stream driver
+   // drv_ -> setFrame(frame);
+}
+
+//! Send a frame
+//void rpx::Xvc::sendFrame ( ris::FramePtr frame )
+//{
+//}
 
 void rpx::Xvc::setup_python()
 {
