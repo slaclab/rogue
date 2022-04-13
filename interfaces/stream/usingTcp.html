@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The TCP Bridge &mdash; Rogue v5.12.0-3-g18c8bc5b documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v5.13.0-104-g8e62490f documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.12.0
+                v5.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -54,6 +54,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#python-client">Python Client</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#c-server">C++ Server</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#c-client">C++ Client</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#resource-configuration-for-multiple-streams">Resource Configuration For Multiple Streams</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="usingFifo.html">Using A Fifo</a></li>
@@ -194,6 +195,49 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
 
 <span class="c1">// Connect the transmitter</span>
 <span class="o">*</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="resource-configuration-for-multiple-streams">
+<h2>Resource Configuration For Multiple Streams<a class="headerlink" href="#resource-configuration-for-multiple-streams" title="Permalink to this headline"></a></h2>
+<p>To use multiple rogue streams, ensure that the appropriate operating-system-level settings have been enabled.  The following (non-optimized) settings allow for the parallel launch of 2043 TCP servers on a RedHat Enterprise Linux 7.9 machine.  See the steps below.</p>
+<p>Use sysctl calls to set max number of open files/sockets, threads and max_map_count:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sysctl</span> <span class="o">-</span><span class="n">w</span> <span class="n">fs</span><span class="o">.</span><span class="n">file</span><span class="o">-</span><span class="nb">max</span><span class="o">=</span><span class="mi">262140</span>
+<span class="n">sysctl</span> <span class="o">-</span><span class="n">w</span> <span class="n">kernel</span><span class="o">.</span><span class="n">threads</span><span class="o">-</span><span class="nb">max</span><span class="o">=</span><span class="mi">1014712</span>
+<span class="n">sysctl</span> <span class="o">-</span><span class="n">w</span> <span class="n">vm</span><span class="o">.</span><span class="n">max_map_count</span><span class="o">=</span><span class="mi">2097152</span>
+</pre></div>
+</div>
+<p>Confirm with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cat</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">fs</span><span class="o">/</span><span class="n">file</span><span class="o">-</span><span class="nb">max</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">kernel</span><span class="o">/</span><span class="n">threads</span><span class="o">-</span><span class="nb">max</span>
+<span class="n">cat</span> <span class="o">/</span><span class="n">proc</span><span class="o">/</span><span class="n">sys</span><span class="o">/</span><span class="n">vm</span><span class="o">/</span><span class="n">max_map_count</span>
+</pre></div>
+</div>
+<p>Edit /etc/security/limits.conf and add the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">soft</span>     <span class="n">nproc</span>          <span class="mi">8192</span>
+<span class="o">*</span> <span class="n">hard</span>     <span class="n">nproc</span>          <span class="mi">8192</span>
+<span class="o">*</span> <span class="n">soft</span>     <span class="n">nofile</span>         <span class="mi">524280</span>
+<span class="o">*</span> <span class="n">hard</span>     <span class="n">nofile</span>         <span class="mi">524280</span>
+</pre></div>
+</div>
+<p>Ensure the following limits:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(rogue_build) [skoufis@pc94331 ~]$ ulimit -a
+core file size          (blocks, -c) 0
+data seg size           (kbytes, -d) unlimited
+scheduling priority             (-e) 0
+file size               (blocks, -f) unlimited
+pending signals                 (-i) 126839
+max locked memory       (kbytes, -l) 64
+max memory size         (kbytes, -m) unlimited
+open files                      (-n) 524280
+pipe size            (512 bytes, -p) 8
+POSIX message queues     (bytes, -q) 819200
+real-time priority              (-r) 0
+stack size              (kbytes, -s) 8192
+cpu time               (seconds, -t) unlimited
+max user processes              (-u) 8192
+virtual memory          (kbytes, -v) unlimited
+file locks                      (-x) unlimited
 </pre></div>
 </div>
 </section>

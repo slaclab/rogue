@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Debugging Streams &mdash; Rogue v5.12.0-3-g18c8bc5b documentation</title>
+  <title>Debugging Streams &mdash; Rogue v5.13.0-104-g8e62490f documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.12.0
+                v5.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -137,7 +137,7 @@ between an existing Master and Slave instance.</p>
 <span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// Debug Slave</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="nl">stream</span><span class="p">:;</span><span class="n">SlavePtr</span><span class="w"> </span><span class="n">dbg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="p">;</span><span class="o">:</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">:</span><span class="p">;</span><span class="n">SlavePtr</span><span class="w"> </span><span class="n">dbg</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="p">;</span><span class="o">:</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
 
 <span class="c1">// Set debug mode for first 100 bytes, with name myDebug</span>
 <span class="n">dbg</span><span class="o">-&gt;</span><span class="n">setDebug</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span><span class="s">&quot;myDebug&quot;</span><span class="p">);</span><span class="w"></span>

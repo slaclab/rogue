@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model &mdash; Rogue v5.12.0-3-g18c8bc5b documentation</title>
+  <title>Model &mdash; Rogue v5.13.0-104-g8e62490f documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.12.0
+                v5.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -253,12 +253,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>bytearray</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Byte array representation of value</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -269,12 +263,6 @@ using the Rogue Variables and Blocks</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.10)"><em>bytearray</em></a>) – Byte array to extract value from</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
 </dd>
 </dl>
 </dd></dl>
@@ -287,12 +275,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – String representation of the value</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
-</dd>
 </dl>
 </dd></dl>
 
@@ -300,28 +282,12 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.Model.minValue">
 <span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.minValue" title="Permalink to this definition"></a></dt>
 <dd><p>Return the minimum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Minimum value</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Model.maxValue">
 <span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.maxValue" title="Permalink to this definition"></a></dt>
 <dd><p>Return the maximum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Maximum value</p>
-</dd>
-</dl>
 </dd></dl>
 
 </dd></dl>
@@ -335,11 +301,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.UInt">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UInt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt" title="Permalink to this definition"></a></dt>
 <dd><p>Model class for unsigned integers</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of bits being represented</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.UInt.pytype">
 <span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.UInt.pytype" title="Permalink to this definition"></a></dt>
@@ -349,16 +310,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UInt.toBytes">
 <span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.toBytes" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the python value to byte array.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>bytearray</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Byte array representation of value</p>
+<dd class="field-odd"><p><strong>value</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -366,16 +320,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UInt.fromBytes">
 <span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromBytes" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the python value to byte array.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.10)"><em>bytearray</em></a>) – Byte array to extract value from</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
+<dd class="field-odd"><p><strong>ba</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -383,44 +330,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UInt.fromString">
 <span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromString" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the string to a python value.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – String representation of the value</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.UInt.minValue">
-<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.minValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the minimum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Minimum value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.UInt.maxValue">
-<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.maxValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the maximum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Maximum value</p>
+<dd class="field-odd"><p><strong>string</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -446,16 +358,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UIntReversed.toBytes">
 <span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.toBytes" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the python value to byte array.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>bytearray</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Byte array representation of value</p>
+<dd class="field-odd"><p><strong>value</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -463,16 +368,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UIntReversed.fromBytes">
 <span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.fromBytes" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the python value to byte array.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.10)"><em>bytearray</em></a>) – Byte array to extract value from</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
+<dd class="field-odd"><p><strong>ba</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -489,16 +387,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Int.toBytes">
 <span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.toBytes" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the python value to byte array.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>value</strong> (<em>obj</em>) – Python value to convert</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>bytearray</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Byte array representation of value</p>
+<dd class="field-odd"><p><strong>value</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -506,16 +397,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Int.fromBytes">
 <span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromBytes" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the python value to byte array.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ba</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#bytearray" title="(in Python v3.10)"><em>bytearray</em></a>) – Byte array to extract value from</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
+<dd class="field-odd"><p><strong>ba</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -523,44 +407,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Int.fromString">
 <span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromString" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the string to a python value.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – String representation of the value</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Int.minValue">
-<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.minValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the minimum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Minimum value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Int.maxValue">
-<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.maxValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the maximum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Maximum value</p>
+<dd class="field-odd"><p><strong>string</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -583,11 +432,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.Bool">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool" title="Permalink to this definition"></a></dt>
 <dd><p>Model class for booleans</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of bits being represented</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Bool.pytype">
 <span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Bool.pytype" title="Permalink to this definition"></a></dt>
@@ -597,44 +441,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Bool.fromString">
 <span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.fromString" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the string to a python value.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – String representation of the value</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Bool.minValue">
-<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.minValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the minimum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Minimum value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Bool.maxValue">
-<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.maxValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the maximum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Maximum value</p>
+<dd class="field-odd"><p><strong>string</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -648,11 +457,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.String">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">String</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String" title="Permalink to this definition"></a></dt>
 <dd><p>Model class for strings</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of bits being represented</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.String.pytype">
 <span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.String.pytype" title="Permalink to this definition"></a></dt>
@@ -662,16 +466,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.String.fromString">
 <span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.fromString" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the string to a python value.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – String representation of the value</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
+<dd class="field-odd"><p><strong>string</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -685,11 +482,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.Float">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float" title="Permalink to this definition"></a></dt>
 <dd><p>Model class for 32-bit floats</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of bits being represented, must be 32</p>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Float.pytype">
 <span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Float.pytype" title="Permalink to this definition"></a></dt>
@@ -699,44 +491,9 @@ using the Rogue Variables and Blocks</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Float.fromString">
 <span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.fromString" title="Permalink to this definition"></a></dt>
-<dd><p>Convert the string to a python value.</p>
-<dl class="field-list simple">
+<dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>string</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – String representation of the value</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Converted python value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Float.minValue">
-<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.minValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the minimum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Minimum value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Float.maxValue">
-<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.maxValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the maximum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Maximum value</p>
+<dd class="field-odd"><p><strong>string</strong> – </p>
 </dd>
 </dl>
 </dd></dl>
@@ -759,39 +516,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.Double">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Double</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double" title="Permalink to this definition"></a></dt>
 <dd><p>Model class for 64-bit floats</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of bits being represented, must be 64</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Double.minValue">
-<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double.minValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the minimum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Minimum value</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="pyrogue.Double.maxValue">
-<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double.maxValue" title="Permalink to this definition"></a></dt>
-<dd><p>Return the maximum value for the Model type</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>obj</strong></p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Maximum value</p>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </section>
@@ -810,14 +534,6 @@ using the Rogue Variables and Blocks</p>
 <dt class="sig sig-object py" id="pyrogue.Fixed">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Fixed" title="Permalink to this definition"></a></dt>
 <dd><p>Model class for fixed point signed integers</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>bitSize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Number of bits being represented</p></li>
-<li><p><strong>binPoint</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Huh?</p></li>
-</ul>
-</dd>
-</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Fixed.pytype">
 <span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Fixed.pytype" title="Permalink to this definition"></a></dt>

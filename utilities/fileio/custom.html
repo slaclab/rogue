@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Writers &mdash; Rogue v5.12.0-3-g18c8bc5b documentation</title>
+  <title>Custom Writers &mdash; Rogue v5.13.0-104-g8e62490f documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.12.0
+                v5.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -108,9 +108,9 @@ the writeFile virtual method.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Frame.h&gt;</span><span class="cp"></span>
 
-<span class="n">class</span><span class="w"> </span><span class="nl">MyDataWriter</span> <span class="p">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriter</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="n">class</span><span class="w"> </span><span class="n">MyDataWriter</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriter</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 
-<span class="w">   </span><span class="nl">protected</span><span class="p">:</span><span class="w"></span>
+<span class="w">   </span><span class="n">protected</span><span class="o">:</span><span class="w"></span>
 
 <span class="w">      </span><span class="n">virtual</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="n">writeFile</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="n">channel</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Frame</span><span class="o">&gt;</span><span class="w"> </span><span class="n">frame</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 

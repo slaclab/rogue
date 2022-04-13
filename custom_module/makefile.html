@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building The Custom Module &mdash; Rogue v5.12.0-3-g18c8bc5b documentation</title>
+  <title>Building The Custom Module &mdash; Rogue v5.13.0-104-g8e62490f documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.12.0
+                v5.13.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -106,13 +106,13 @@ environment variable.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Source for CMakeLists.txt</span>
 
 <span class="c"># Add support for building in conda environment</span>
-<span class="nb">if</span> <span class="p">(</span><span class="s">DEFINED</span> <span class="s">ENV{CONDA_PREFIX}</span><span class="p">)</span>
-   <span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span> <span class="s2">&quot;$ENV{CONDA_PREFIX}&quot;</span><span class="p">)</span>
-   <span class="nb">link_directories</span><span class="p">(</span><span class="o">$ENV{</span><span class="nv">CONDA_PREFIX</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
+<span class="nb">if</span> <span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{CONDA_PREFIX}</span><span class="p">)</span>
+<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">&quot;$ENV{CONDA_PREFIX}&quot;</span><span class="p">)</span>
+<span class="w">   </span><span class="nb">link_directories</span><span class="p">(</span><span class="o">$ENV{</span><span class="nv">CONDA_PREFIX</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">endif</span><span class="p">()</span>
 
 <span class="c"># Check cmake version</span>
-<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span> <span class="s">3.5</span><span class="p">)</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.5</span><span class="p">)</span>
 <span class="nb">include</span><span class="p">(</span><span class="s">InstallRequiredSystemLibraries</span><span class="p">)</span>
 
 <span class="c"># Project name, Replace with your name</span>
@@ -120,15 +120,15 @@ environment variable.</p>
 
 <span class="c"># C/C++</span>
 <span class="nb">enable_language</span><span class="p">(</span><span class="s">CXX</span><span class="p">)</span>
-<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span> <span class="s2">&quot;${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated&quot;</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span><span class="w"> </span><span class="s2">&quot;${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated&quot;</span><span class="p">)</span>
 
 <span class="c">#####################################</span>
 <span class="c"># Find Rogue &amp; Support Libraries</span>
 <span class="c">#####################################</span>
-<span class="nb">if</span> <span class="p">(</span><span class="s">DEFINED</span> <span class="s">ENV{ROGUE_DIR}</span><span class="p">)</span>
-   <span class="nb">set</span><span class="p">(</span><span class="s">Rogue_DIR</span> <span class="o">$ENV{</span><span class="nv">ROGUE_DIR</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
+<span class="nb">if</span> <span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{ROGUE_DIR}</span><span class="p">)</span>
+<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">Rogue_DIR</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ROGUE_DIR</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">else</span><span class="p">()</span>
-   <span class="nb">set</span><span class="p">(</span><span class="s">Rogue_DIR</span> <span class="o">${</span><span class="nv">CMAKE_PREFIX_PATH</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
+<span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">Rogue_DIR</span><span class="w"> </span><span class="o">${</span><span class="nv">CMAKE_PREFIX_PATH</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">endif</span><span class="p">()</span>
 <span class="nb">find_package</span><span class="p">(</span><span class="s">Rogue</span><span class="p">)</span>
 
@@ -140,14 +140,14 @@ environment variable.</p>
 <span class="nb">include_directories</span><span class="p">(</span><span class="o">${</span><span class="nv">ROGUE_INCLUDE_DIRS</span><span class="o">}</span><span class="p">)</span>
 
 <span class="c"># Create rogue python library, point to your source file</span>
-<span class="nb">add_library</span><span class="p">(</span><span class="s">MyModule</span> <span class="s">SHARED</span> <span class="s">src/MyModule.cpp</span><span class="p">)</span>
+<span class="nb">add_library</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">SHARED</span><span class="w"> </span><span class="s">src/MyModule.cpp</span><span class="p">)</span>
 
 <span class="c"># Set output to TOP/lib, remove lib prefix</span>
-<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span> <span class="s">PROPERTIES</span> <span class="s">LIBRARY_OUTPUT_DIRECTORY</span> <span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/python</span><span class="p">)</span>
-<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span> <span class="s">PROPERTIES</span> <span class="s">PREFIX</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">LIBRARY_OUTPUT_DIRECTORY</span><span class="w"> </span><span class="o">${</span><span class="nv">PROJECT_SOURCE_DIR</span><span class="o">}</span><span class="s">/python</span><span class="p">)</span>
+<span class="nb">set_target_properties</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">PROPERTIES</span><span class="w"> </span><span class="s">PREFIX</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 
 <span class="c"># Link to rogue core</span>
-<span class="nb">TARGET_LINK_LIBRARIES</span><span class="p">(</span><span class="s">MyModule</span> <span class="s">LINK_PUBLIC</span> <span class="o">${</span><span class="nv">ROGUE_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
+<span class="nb">TARGET_LINK_LIBRARIES</span><span class="p">(</span><span class="s">MyModule</span><span class="w"> </span><span class="s">LINK_PUBLIC</span><span class="w"> </span><span class="o">${</span><span class="nv">ROGUE_LIBRARIES</span><span class="o">}</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
