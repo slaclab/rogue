@@ -24,11 +24,11 @@ def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=No
     Parameters2
     ----------
     block :
-        
+
     * :
-        
+
     type :
-        
+
     forceWr :
          (Default value = False)
     checkEach :
@@ -38,7 +38,7 @@ def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=No
     index :
          (Default value = -1)
     **kwargs :
-        
+
 
     Returns
     -------
@@ -56,9 +56,9 @@ def checkTransaction(block, **kwargs):
     Parameters
     ----------
     block :
-        
+
     **kwargs :
-        
+
 
     Returns
     -------
@@ -68,7 +68,7 @@ def checkTransaction(block, **kwargs):
 
 
 class MemoryError(Exception):
-    """ 
+    """
     Exception for memory access errors.
     """
 
@@ -129,12 +129,12 @@ class LocalBlock(object):
 
     def setEnable(self,value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -145,12 +145,12 @@ class LocalBlock(object):
 
     def _setTimeout(self,value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -165,14 +165,14 @@ class LocalBlock(object):
 
     def set(self, var, value, index=-1):
         """
-        
+
 
         Parameters
         ----------
         var :
-            
+
         value :
-            
+
         index : int
              (Default value = -1)
 
@@ -200,12 +200,12 @@ class LocalBlock(object):
 
     def get(self, var, index=-1):
         """
-        
+
 
         Parameters
         ----------
         var :
-            
+
         index : int
              (Default value = -1)
 
@@ -228,15 +228,15 @@ class LocalBlock(object):
         Parameters
         ----------
         type :
-            
+
         forceWr :
-            
+
         checkEach :
-            
+
         variable :
-            
+
         index :
-            
+
 
         Returns
         -------
@@ -269,12 +269,12 @@ class LocalBlock(object):
 
     def _iadd(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -287,12 +287,12 @@ class LocalBlock(object):
 
     def _isub(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -305,12 +305,12 @@ class LocalBlock(object):
 
     def _imul(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -323,12 +323,12 @@ class LocalBlock(object):
 
     def _imatmul(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -340,12 +340,12 @@ class LocalBlock(object):
 
     def _itruediv(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -358,12 +358,12 @@ class LocalBlock(object):
 
     def _ifloordiv(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -376,12 +376,12 @@ class LocalBlock(object):
 
     def _imod(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -394,12 +394,12 @@ class LocalBlock(object):
 
     def _ipow(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -412,12 +412,12 @@ class LocalBlock(object):
 
     def _ilshift(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -430,12 +430,12 @@ class LocalBlock(object):
 
     def _irshift(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -448,12 +448,12 @@ class LocalBlock(object):
 
     def _iand(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -466,12 +466,12 @@ class LocalBlock(object):
 
     def _ixor(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------
@@ -484,12 +484,12 @@ class LocalBlock(object):
 
     def _ior(self, other):
         """
-        
+
 
         Parameters
         ----------
         other :
-            
+
 
         Returns
         -------

@@ -44,7 +44,7 @@ class EnableVariable(pr.BaseVariable):
     @pr.expose
     def get(self, read=False, index=-1):
         """
-        
+
 
         Parameters
         ----------
@@ -54,7 +54,7 @@ class EnableVariable(pr.BaseVariable):
              (Default value = -1)
 
         Returns
-             ret : 
+             ret :
         -------
 
         """
@@ -79,11 +79,11 @@ class EnableVariable(pr.BaseVariable):
     @pr.expose
     def set(self, value, write=True, index=-1):
         """
-        
+
 
         Parameters
         ----------
-        value : 
+        value :
              (Default value = enabled)
         write : bool
              (Default value = True)
@@ -133,14 +133,14 @@ class EnableVariable(pr.BaseVariable):
 
     def _rootAttached(self,parent,root):
         """
-        
+
 
         Parameters
         ----------
         parent :
-            
+
         root :
-            
+
 
         Returns
         -------
@@ -249,12 +249,12 @@ class Device(pr.Node,rim.Hub):
 
     def addCustomBlock(self, block):
         """
-        
+
 
         Parameters
         ----------
         block :
-            
+
 
         Returns
         -------
@@ -265,12 +265,12 @@ class Device(pr.Node,rim.Hub):
 
     def add(self,node):
         """
-        
+
 
         Parameters
         ----------
         node :
-            
+
 
         Returns
         -------
@@ -294,7 +294,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         *interfaces :
-            
+
 
         Returns
         -------
@@ -314,7 +314,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         *protocols :
-            
+
 
         Returns
         -------
@@ -328,12 +328,12 @@ class Device(pr.Node,rim.Hub):
 
     def manage(self, *interfaces):
         """
-        
+
 
         Parameters
         ----------
         *interfaces :
-            
+
 
         Returns
         -------
@@ -365,18 +365,18 @@ class Device(pr.Node,rim.Hub):
 
     def addRemoteVariables(self, number, stride, pack=False, **kwargs):
         """
-        
+
 
         Parameters
         ----------
         number :
-            
+
         stride :
-            
+
         pack : bool
              (Default value = False)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -395,18 +395,18 @@ class Device(pr.Node,rim.Hub):
 
             def linkedSet(dev, var, val, write):
                 """
-                
+
 
                 Parameters
                 ----------
                 dev :
-                    
+
                 var :
-                    
+
                 val :
-                    
+
                 write :
-                    
+
 
                 Returns
                 -------
@@ -420,16 +420,16 @@ class Device(pr.Node,rim.Hub):
 
             def linkedGet(dev, var, read):
                 """
-                
+
 
                 Parameters
                 ----------
                 dev :
-                    
+
                 var :
-                    
+
                 read :
-                    
+
 
                 Returns
                 -------
@@ -453,7 +453,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         interval :
-            
+
         variables : str
              (Default value = None)
 
@@ -474,7 +474,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         hidden :
-            
+
         variables : str
              (Default value = None)
 
@@ -508,12 +508,12 @@ class Device(pr.Node,rim.Hub):
 
     def enableChanged(self,value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -531,7 +531,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         * :
-            
+
         force : bool
              (Default value = False)
         recurse : bool
@@ -543,7 +543,7 @@ class Device(pr.Node,rim.Hub):
         index : int
              (Default value = -1)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -570,7 +570,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
               * :
-            
+
         recurse : bool
              (Default value = True)
         variable : str
@@ -578,7 +578,7 @@ class Device(pr.Node,rim.Hub):
         checkEach : bool
              (Default value = False)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -605,7 +605,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
               * :
-            
+
         recurse : bool
              (Default value = True)
         variable : str
@@ -615,7 +615,7 @@ class Device(pr.Node,rim.Hub):
         index : int
              (Default value = -1)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -642,13 +642,13 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
               * :
-            
+
         recurse : bool
              (Default value = True)
         variable : str
              (Default value = None)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -718,14 +718,14 @@ class Device(pr.Node,rim.Hub):
 
     def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         """
-        
+
 
         Parameters
         ----------
         offset :
-            
+
         data :
-            
+
         base : str
              (Default value = pr.UInt)
         stride : int
@@ -778,14 +778,14 @@ class Device(pr.Node,rim.Hub):
 
     def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
         """
-        
+
 
         Parameters
         ----------
         offset :
-            
+
         data :
-            
+
         base : str
              (Default value = pr.UInt)
         stride : int
@@ -828,12 +828,12 @@ class Device(pr.Node,rim.Hub):
 
     def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
         """
-        
+
 
         Parameters
         ----------
         offset :
-            
+
         numWords : int
              (Default value = 1)
         base : str
@@ -963,14 +963,14 @@ class Device(pr.Node,rim.Hub):
 
     def _rootAttached(self, parent, root):
         """
-        
+
 
         Parameters
         ----------
         parent :
-            
+
         root :
-            
+
 
         Returns
         -------
@@ -1003,7 +1003,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         timeout :
-            
+
 
         Returns
         -------
@@ -1026,7 +1026,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         **kwargs :
-            
+
 
         Returns
         -------
@@ -1034,12 +1034,12 @@ class Device(pr.Node,rim.Hub):
         """
         def _decorator(func):
             """
-            
+
 
             Parameters
             ----------
             func :
-                
+
 
             Returns
             -------
@@ -1060,7 +1060,7 @@ class Device(pr.Node,rim.Hub):
         Parameters
         ----------
         **kwargs :
-            
+
 
         Returns
         -------
@@ -1068,12 +1068,12 @@ class Device(pr.Node,rim.Hub):
         """
         def _decorator(func):
             """
-            
+
 
             Parameters
             ----------
             func :
-                
+
 
             Returns
             -------
@@ -1089,16 +1089,16 @@ class Device(pr.Node,rim.Hub):
 
     def genDocuments(self,path,incGroups, excGroups):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------

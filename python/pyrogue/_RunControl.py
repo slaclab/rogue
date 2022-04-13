@@ -17,23 +17,23 @@ import time
 class RunControl(pr.Device):
     """
     Special base class to control runs.
-    
+
     Attributes
     ----------
-    attr1 : 
+    attr1 :
         pr.Device
     """
 
     def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
         """
         Initialize device class - test
-        
+
         Parameters
         ----------
         param1 : *
-            
+
         param2 : hidden=True
-            
+
         param3 : rates=None
 
         param4 : states=None
@@ -97,8 +97,8 @@ class RunControl(pr.Device):
         param1: self
         param2: value
         param3: changed
-       
-        returns: 
+
+        returns:
         -------
 
         """
@@ -121,7 +121,7 @@ class RunControl(pr.Device):
         param1: self
         param2: value
 
-        returns: 
+        returns:
         -------
 
         """

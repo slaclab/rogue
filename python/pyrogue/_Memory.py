@@ -184,7 +184,7 @@ class MemoryDevice(pr.Device):
         -------
 
         """
-        if self.ena ble.get() is not True:
+        if self.enable.get() is not True:
             return
 
         with self._txnLock:
