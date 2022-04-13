@@ -20,14 +20,12 @@
 **/
 #include <rogue/protocols/xilinx/StreamInterfaceDriver.h>
 #include <rogue/protocols/xilinx/Exceptions.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/FrameLock.h>
 #include <netdb.h>
 #include <string.h>
 #include <netinet/ip.h>
 #include <sys/uio.h>
 
+// Ensure it builds on Mac
 #ifndef IP_MTU
    #define IP_MTU 14
 #endif
@@ -43,12 +41,15 @@ static const char *DFLT_PORT = "2542";
 static const unsigned MAXL = 256;
 
 namespace rpx = rogue::protocols::xilinx;
+namespace ris = rogue::interfaces::stream;
 
 rpx::StreamInterfaceDriver::StreamInterfaceDriver(std::string host, uint16_t port)
 	: JtagDriverAxisToJtag(host, port),
-	  sock_(false),
-	  timeoutMs_(500),
-	  mtu_(1450) // ethernet mtu minus MAC/IP/UDP addresses
+	  sock_      (false  ),
+	  timeoutMs_ (500    ),
+	  jtag_      (nullptr),
+	  frame_     (nullptr),
+	  mtu_       (1450   ) // ethernet mtu minus MAC/IP/UDP addresses
 {
 	struct addrinfo hint, *res;
 	char buf[MAXL];
@@ -195,6 +196,11 @@ rpx::StreamInterfaceDriver::getMaxVectorSize()
 	unsigned long mtuLim = (mtu_ - getWordSize()) / 2;
 
 	return mtuLim;
+}
+
+//! Set a pointer to a new frame
+void rpx::StreamInterfaceDriver::setFrame ( ris::FramePtr frame )
+{
 }
 
 int rpx::StreamInterfaceDriver::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)

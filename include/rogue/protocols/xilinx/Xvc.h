@@ -48,9 +48,9 @@ namespace rogue
             //! Remote port number
             uint16_t port_;
 
-            //! Pointers to JTAG driver and XVC server 
-            JtagDriver     *drv_;
-            XvcServer      *s_;
+            //! Pointers to JTAG driver and XVC server
+            XvcServer  *s_;
+            JtagDriver *drv_;
 
             // Log
             std::shared_ptr<rogue::Logging> logger_;

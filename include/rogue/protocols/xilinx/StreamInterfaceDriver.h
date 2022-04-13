@@ -21,6 +21,9 @@
 #include <rogue/protocols/xilinx/Xvc.h>
 #include <rogue/protocols/xilinx/SockSd.h>
 #include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
+#include <rogue/interfaces/stream/Frame.h>
+#include <rogue/interfaces/stream/FrameIterator.h>
+#include <rogue/interfaces/stream/FrameLock.h>
 #include <sys/socket.h>
 #include <poll.h>
 
@@ -42,7 +45,8 @@ namespace rogue
 				struct msghdr msgh_;
 				struct iovec iovs_[2];
 
-				XvcPtr xvc_;
+				void* jtag_;
+				void* frame_;
 
 				unsigned mtu_;
 
@@ -63,9 +67,11 @@ namespace rogue
 
 				virtual ~StreamInterfaceDriver();
 
-				virtual void setXvc(XvcPtr xvc) { xvc_ = xvc; }
+                virtual void setJtag(void* jtag) {jtag_ = jtag; }
 
-				static void usage();
+                virtual void setFrame(void* frame) {frame_ = frame; }
+
+				virtual void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 			};
 		}
 	}

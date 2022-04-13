@@ -42,6 +42,7 @@ namespace rogue
 
 			protected:
 				unsigned debug_;
+				//XvcPtr jtag_;
 
 				// occasionally drop a packet for testing (when enabled)
 				unsigned drop_;
@@ -55,6 +56,10 @@ namespace rogue
 				unsigned getDebug();
 
 				void setTestMode(unsigned flags);
+
+				virtual void setJtag(void *) = 0;
+
+				virtual void setFrame(void *) = 0;
 
 				virtual void init() = 0;
 

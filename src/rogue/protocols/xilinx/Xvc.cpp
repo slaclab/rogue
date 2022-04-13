@@ -65,8 +65,8 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
    unsigned debug    = 0;
    unsigned testMode = 0;
 
-   //drv_ = new StreamInterfaceDriver(host, port);
-   //drv_->setXvc(this);
+   drv_ = new StreamInterfaceDriver(host, port);
+   drv_->setJtag(this);
    
    if (!drv_)
    {
@@ -138,13 +138,10 @@ void rpx::Xvc::runXvcThread()
 void rpx::Xvc::acceptFrame ( ris::FramePtr frame )
 {
    // Set the frame pointer in the rogue stream driver
-   // drv_ -> setFrame(frame);
-}
+   drv_ -> setFrame(&frame);
 
-//! Send a frame
-//void rpx::Xvc::sendFrame ( ris::FramePtr frame )
-//{
-//}
+   // ???
+}
 
 void rpx::Xvc::setup_python()
 {
