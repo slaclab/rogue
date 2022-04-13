@@ -216,18 +216,22 @@ class Node(object):
     @property
     def name(self):
         """
-        
+        assigns and returns name attribute to class variable
         """
         return self._name
 
     @property
     def description(self):
-        """ """
+        """
+        assigns and returns description attribute to class variable
+        """
         return self._description
 
     @property
     def groups(self):
-        """ """
+        """
+        assigns and returns groups attribute to class variable
+        """
         return self._groups
 
     def inGroup(self, group):
@@ -242,7 +246,7 @@ class Node(object):
         Returns
         -------
         
-            
+
 
         """
         if isinstance(group,list):
@@ -252,17 +256,18 @@ class Node(object):
 
     def filterByGroup(self, incGroups, excGroups):
         """
-        " Filter by the passed list of inclusion and exclusion groups
+        Filter by the passed list of inclusion and exclusion groups
 
         Parameters
         ----------
         incGroups :
-            
+            list of passed inclusion groups
         excGroups :
-            
+            list of passed exclusion groups
 
         Returns
         -------
+        
 
         """
         return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
@@ -275,11 +280,11 @@ class Node(object):
         Parameters
         ----------
         group :
-            
+            variable denoting a node that has not been passed
 
         Returns
         -------
-
+        
         """
         if group not in self._groups:
             self._groups.append(group)
@@ -294,18 +299,20 @@ class Node(object):
         Parameters
         ----------
         group :
-            
+            variable denoting a node that is in the passed group
 
         Returns
         -------
-
+        if in group, remove from group
         """
         if group in self._groups:
             self._groups.remove(group)
 
     @property
     def hidden(self):
-        """ """
+        """
+        assigns and returns hidden attribute to class variable
+        """
         return self.inGroup('Hidden')
 
     @hidden.setter
@@ -346,8 +353,16 @@ class Node(object):
         """
         Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.
-        This override builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Raises AttributeError if no such named Nodes are found.
+        
+        Parameters
+        ----------
+        
+        name : str
+            builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
+        Returns
+        -------
+        
         """
 
         # Node matches name in node list
