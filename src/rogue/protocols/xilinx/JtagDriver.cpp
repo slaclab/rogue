@@ -52,8 +52,3 @@ rpx::JtagDriver::getDebug()
 {
 	return debug_;
 }
-
-unsigned hdBufMax()
-{
-	return 16;
-}

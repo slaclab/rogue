@@ -94,8 +94,6 @@ namespace rogue
 				
 				static void usage(); // to be implemented by subclass
 			};
-
-			static unsigned hdBufMax();
 		}
 	}
 }

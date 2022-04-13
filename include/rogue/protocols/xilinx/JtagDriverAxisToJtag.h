@@ -186,6 +186,11 @@ namespace rogue
 
 				static void usage();
 			};
+
+                   static unsigned hdBufMax()
+                   {
+	              return 16;
+                   }
 		}
 	}
 }
