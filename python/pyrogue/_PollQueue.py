@@ -57,14 +57,14 @@ class PollQueue(object):
 
     def _addEntry(self, block, interval):
         """
-        
+
 
         Parameters
         ----------
         block :
-            
+
         interval :
-            
+
 
         Returns
         -------
@@ -96,12 +96,12 @@ class PollQueue(object):
 
     def updatePollInterval(self, var):
         """
-        
+
 
         Parameters
         ----------
         var :
-            
+
 
         Returns
         -------
@@ -247,12 +247,12 @@ class PollQueue(object):
 
     def pause(self, value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------

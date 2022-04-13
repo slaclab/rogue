@@ -98,7 +98,7 @@ def expose(item):
     Parameters
     ----------
     item :
-        
+
 
     Returns
     -------
@@ -130,7 +130,7 @@ class Node(object):
            Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
         classtype: text string matching name of node sub-class
         path: Full path to the node (ie. node1.node2.node3)
-    
+
     Each node is associated with a parent and has a link to the top node of a tree.
     A node has a list of sub-nodes as well as each sub-node being attached as an
     attribute. This allows tree browsing using: node1.node2.node3
@@ -192,17 +192,17 @@ class Node(object):
 
     def inGroup(self, group):
         """
-        
+
 
         Parameters
         ----------
         group :
-            
+
 
         Returns
         -------
         returns legnth of string and sets group to > 0 or returns group in self._groups
-            
+
 
         """
         if isinstance(group,list):
@@ -217,9 +217,9 @@ class Node(object):
         Parameters
         ----------
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -235,7 +235,7 @@ class Node(object):
         Parameters
         ----------
         group :
-            
+
 
         Returns
         -------
@@ -254,7 +254,7 @@ class Node(object):
         Parameters
         ----------
         group :
-            
+
 
         Returns
         -------
@@ -363,7 +363,7 @@ class Node(object):
         Parameters
         ----------
         node :
-            
+
 
         Returns
         -------
@@ -404,12 +404,12 @@ class Node(object):
 
     def _addArrayNode(self, node):
         """
-        
+
 
         Parameters
         ----------
         node :
-            
+
 
         Returns
         -------
@@ -465,14 +465,14 @@ class Node(object):
 
     def addNode(self, nodeClass, **kwargs):
         """
-        
+
 
         Parameters
         ----------
         nodeClass :
-            
+
         **kwargs :
-            
+
 
         Returns
         -------
@@ -482,18 +482,18 @@ class Node(object):
 
     def addNodes(self, nodeClass, number, stride, **kwargs):
         """
-        
+
 
         Parameters
         ----------
         nodeClass :
-            
+
         number :
-            
+
         stride :
-            
+
         **kwargs :
-            
+
 
         Returns
         -------
@@ -521,7 +521,7 @@ class Node(object):
         Parameters
         ----------
         typ :
-            
+
         excTyp :
              (Default value = None)
         incGroups :
@@ -548,7 +548,7 @@ class Node(object):
 
     def variablesByGroup(self,incGroups=None,excGroups=None):
         """
-        
+
 
         Parameters
         ----------
@@ -583,7 +583,7 @@ class Node(object):
 
     def commandsByGroup(self,incGroups=None,excGroups=None):
         """
-        
+
 
         Parameters
         ----------
@@ -607,7 +607,7 @@ class Node(object):
 
     def devicesByGroup(self,incGroups=None,excGroups=None):
         """
-        
+
 
         Parameters
         ----------
@@ -646,12 +646,12 @@ class Node(object):
 
     def node(self, name):
         """
-        
+
 
         Parameters
         ----------
         name :
-            
+
 
         Returns
         -------
@@ -686,13 +686,13 @@ class Node(object):
         Parameters
         ----------
         * :
-            
+
         recurse :
              (Default value = True)
         typ :
              (Default value = None)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -726,16 +726,16 @@ class Node(object):
 
     def callRecursive(self, func, nodeTypes=None, **kwargs):
         """
-        
+
 
         Parameters
         ----------
         func :
-            
+
         nodeTypes :
              (Default value = None)
         **kwargs :
-            
+
 
         Returns
         -------
@@ -755,12 +755,12 @@ class Node(object):
     # this might be useful
     def makeRecursive(self, func, nodeTypes=None):
         """
-        
+
 
         Parameters
         ----------
         func :
-            
+
         nodeTypes :
              (Default value = None)
 
@@ -770,12 +770,12 @@ class Node(object):
         """
         def closure(**kwargs):
             """
-            
+
 
             Parameters
             ----------
             **kwargs :
-                
+
 
             Returns
             -------
@@ -786,12 +786,12 @@ class Node(object):
 
     def isinstance(self,typ):
         """
-        
+
 
         Parameters
         ----------
         typ :
-            
+
 
         Returns
         -------
@@ -806,9 +806,9 @@ class Node(object):
         Parameters
         ----------
         parent :
-            
+
         root :
-            
+
 
         Returns
         -------
@@ -832,11 +832,11 @@ class Node(object):
         Parameters
         ----------
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -856,22 +856,22 @@ class Node(object):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
-        
+
 
         Parameters
         ----------
         d :
-            
+
         writeEach :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
         keys :
-            
+
 
         Returns
         -------
@@ -895,12 +895,12 @@ class Node(object):
 
     def _setTimeout(self,timeout):
         """
-        
+
 
         Parameters
         ----------
         timeout :
-            
+
 
         Returns
         -------
@@ -910,12 +910,12 @@ class Node(object):
 
     def nodeMatch(self,name):
         """
-        
+
 
         Parameters
         ----------
         name :
-            
+
 
         Returns
         -------
@@ -960,14 +960,14 @@ class Node(object):
 
 def _iterateDict(d, keys):
     """
-    
+
 
     Parameters
     ----------
     d :
-        
+
     keys :
-        
+
 
     Returns
     -------

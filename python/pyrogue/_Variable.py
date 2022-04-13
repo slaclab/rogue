@@ -1037,6 +1037,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
     ##############################
 
 
+    @pr.expose
+    @property
+    def address(self):
+        return self._block.address
+
     @property
     def numValues(self):
         return self._numValues()
@@ -1097,11 +1102,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def address(self):
-        return self._block.address
-
-    @pr.expose
-    @property
     def base(self):
         """ """
         return self._base
@@ -1111,12 +1111,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def bulkEn(self):
         """ """
         return self._bulkOpEn
-
-    @pr.expose
-    @property
-    def numValues(self):
-        """ """
-        return self._numValues()
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):

@@ -21,15 +21,15 @@ class DataWriter(pr.Device):
         Initialize device class
         Parameters
         ----------
-        * : 
-        
-        hidden=True : 
-        
-        **kwargs : 
-        
+        * :
+
+        hidden=True :
+
+        **kwargs :
+
         Returns
         -------
-        
+
         """
 
         pr.Device.__init__(self,
@@ -128,7 +128,7 @@ class DataWriter(pr.Device):
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -143,7 +143,7 @@ class DataWriter(pr.Device):
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------

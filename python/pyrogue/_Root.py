@@ -41,7 +41,7 @@ class UpdateTracker(object):
 
     def increment(self, period):
         """
-        
+
 
         Parameters
         ----------
@@ -73,12 +73,12 @@ class UpdateTracker(object):
 
     def update(self,var):
         """
-        
+
 
         Parameters
         ----------
         var :
-            
+
 
         Returns
         -------
@@ -95,12 +95,12 @@ class RootLogHandler(logging.Handler):
 
     def emit(self,record):
         """
-        
+
 
         Parameters
         ----------
         record :
-            
+
 
         Returns
         -------
@@ -159,11 +159,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     Attributes
     ----------
-    rogue.interfaces.stream.Master : 
-    
+    rogue.interfaces.stream.Master :
 
-    pr.Device : 
-    
+
+    pr.Device :
+
     Returns
     -------
 
@@ -504,7 +504,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         func :
-            
+
 
         Returns
         -------
@@ -516,12 +516,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def get(self,path):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
 
         Returns
         -------
@@ -533,12 +533,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def getDisp(self,path):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
 
         Returns
         -------
@@ -550,12 +550,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def value(self,path):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
 
         Returns
         -------
@@ -567,12 +567,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def valueDisp(self,path):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
 
         Returns
         -------
@@ -584,14 +584,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def set(self,path,value):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
         value :
-            
+
 
         Returns
         -------
@@ -603,14 +603,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def setDisp(self,path,value):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
         value :
-            
+
 
         Returns
         -------
@@ -622,14 +622,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def exec(self,path,arg):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
         arg :
-            
+
 
         Returns
         -------
@@ -641,7 +641,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def updateGroup(self, period=0):
         """
-        
+
 
         Parameters
         ----------
@@ -700,12 +700,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @ft.lru_cache(maxsize=None)
     def getNode(self,path):
         """
-        
+
 
         Parameters
         ----------
         path :
-            
+
 
         Returns
         -------
@@ -732,12 +732,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def saveAddressMap(self,fname,headerEn=False):
         """
-        
+
 
         Parameters
         ----------
         fname :
-            
+
         headerEn :
              (Default value = False)
 
@@ -833,15 +833,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @pr.expose
     def saveVariableList(self,fname,polledOnly=False,incGroups=None):
         """
-        
+
 
         Parameters
         ----------
         fname :
-            
+
         polledOnly : bool
              (Default value = False)
-        incGroups : 
+        incGroups :
              (Default value = None)
 
         Returns
@@ -907,7 +907,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         yml :
-            
+
 
         Returns
         -------
@@ -935,9 +935,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         modes :
              (Default value = ['RW')
         'RO' :
-            
+
         'WO'] :
-            
+
         incGroups :
              (Default value = None)
         excGroups :
@@ -994,19 +994,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         name :
-            
+
         readFirst :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
         autoPrefix :
-            
+
         autoCompress :
-            
+
 
         Returns
         -------
@@ -1040,15 +1040,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         name :
-            
+
         writeEach :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -1135,13 +1135,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         readFirst :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -1171,15 +1171,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         yml :
-            
+
         writeEach :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -1204,11 +1204,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         name :
-            
+
         modes :
-            
+
         readFirst :
-            
+
 
         Returns
         -------
@@ -1232,20 +1232,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
         """
-        
+
 
         Parameters
         ----------
         d :
-            
+
         writeEach :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -1269,12 +1269,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _queueUpdates(self,var):
         """
-        
+
 
         Parameters
         ----------
         var :
-            
+
 
         Returns
         -------

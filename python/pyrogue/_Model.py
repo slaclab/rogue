@@ -15,14 +15,14 @@ import numpy as np
 
 def wordCount(bits, wordSize):
     """
-    
+
 
     Parameters
     ----------
     bits :
-        
+
     wordSize :
-        
+
 
     Returns
     -------
@@ -36,12 +36,12 @@ def wordCount(bits, wordSize):
 
 def byteCount(bits):
     """
-    
+
 
     Parameters
     ----------
     bits :
-        
+
 
     Returns
     -------
@@ -52,14 +52,14 @@ def byteCount(bits):
 
 def reverseBits(value, bitSize):
     """
-    
+
 
     Parameters
     ----------
     value :
-        
+
     bitSize :
-        
+
 
     Returns
     -------
@@ -80,9 +80,9 @@ def twosComplement(value, bitSize):
     Parameters
     ----------
     value :
-        
+
     bitSize :
-        
+
 
     Returns
     -------
@@ -128,34 +128,34 @@ class Model(object, metaclass=ModelMeta):
     ----------
     name: str
         String representation of the Model type
-    
+
     fstring: str
         Not sure what this is, Where is it used?
-    
+
     encoding: str
         Encoding type for converting between string and byte arrays. i.e. UTF-8
-    
+
     pytype: int
         Python type class.
-    
+
     defaultdisp: str
         Default display formatting string. May be overriden by the Variable disp parameter.
-    
+
     signed: bool
         Flag indicating if value is signed. Default=False
-    
+
     endianness: str
         Endianness indicator. 'little' or 'big'. Default='little'
-    
+
     bitReverse: bool
         Bit reversal flag.
-    
+
     modelId: int
         Block processing ID. See :ref:`interfaces_memory_constants_ptype`
-    
+
     isBigEndian: bool
         True if endianness = 'big'
-    
+
     ndType: np.dtype
         numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
     """
@@ -192,7 +192,7 @@ class Model(object, metaclass=ModelMeta):
         Returns
         -------
 
-        
+
         """
         return None
 
@@ -209,7 +209,7 @@ class Model(object, metaclass=ModelMeta):
         Returns
         -------
 
-        
+
         """
         return None
 
@@ -225,7 +225,7 @@ class Model(object, metaclass=ModelMeta):
         Returns
         -------
 
-        
+
         """
         return None
 
@@ -253,12 +253,12 @@ class UInt(Model):
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -269,12 +269,12 @@ class UInt(Model):
     # Called by raw read/write and when bitsize > 64
     def fromBytes(self, ba):
         """
-        
+
 
         Parameters
         ----------
         ba :
-            
+
 
         Returns
         -------
@@ -284,12 +284,12 @@ class UInt(Model):
 
     def fromString(self, string):
         """
-        
+
 
         Parameters
         ----------
         string :
-            
+
 
         Returns
         -------
@@ -318,12 +318,12 @@ class UIntReversed(UInt):
 
     def toBytes(self, value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -334,12 +334,12 @@ class UIntReversed(UInt):
 
     def fromBytes(self, ba):
         """
-        
+
 
         Parameters
         ----------
         ba :
-            
+
 
         Returns
         -------
@@ -364,12 +364,12 @@ class Int(UInt):
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -386,12 +386,12 @@ class Int(UInt):
     # Called by raw read/write and when bitsize > 64
     def fromBytes(self,ba):
         """
-        
+
 
         Parameters
         ----------
         ba :
-            
+
 
         Returns
         -------
@@ -410,12 +410,12 @@ class Int(UInt):
 
     def fromString(self, string):
         """
-        
+
 
         Parameters
         ----------
         string :
-            
+
 
         Returns
         -------
@@ -462,12 +462,12 @@ class Bool(Model):
 
     def fromString(self, string):
         """
-        
+
 
         Parameters
         ----------
         string :
-            
+
 
         Returns
         -------
@@ -498,12 +498,12 @@ class String(Model):
 
     def fromString(self, string):
         """
-        
+
 
         Parameters
         ----------
         string :
-            
+
 
         Returns
         -------
@@ -528,12 +528,12 @@ class Float(Model):
 
     def fromString(self, string):
         """
-        
+
 
         Parameters
         ----------
         string :
-            
+
 
         Returns
         -------

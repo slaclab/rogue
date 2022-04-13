@@ -31,7 +31,7 @@ def addLibraryPath(path):
     Parameters
     ----------
     path :
-        
+
 
     Returns
     -------
@@ -82,18 +82,19 @@ def waitCntrlC():
 
     class monitorSignal(object):
         """ """
+
         def __init__(self):
-        """ """
+            """ """
             self.runEnable = True
 
         def receiveSignal(self,*args):
             """
-            
+
 
             Parameters
             ----------
             *args :
-                
+
 
             Returns
             -------
@@ -126,9 +127,9 @@ def streamConnect(source, dest):
     Parameters
     ----------
     source :
-        
+
     dest :
-        
+
 
     Returns
     -------
@@ -157,9 +158,9 @@ def streamTap(source, tap):
     Parameters
     ----------
     source :
-        
+
     tap :
-        
+
 
     Returns
     -------
@@ -181,9 +182,9 @@ def streamConnectBiDir(deviceA, deviceB):
     Parameters
     ----------
     deviceA :
-        
+
     deviceB :
-        
+
 
     Returns
     -------
@@ -213,9 +214,9 @@ def busConnect(source,dest):
     Parameters
     ----------
     source :
-        
+
     dest :
-        
+
 
     Returns
     -------
@@ -262,14 +263,14 @@ def yamlToData(stream='',fName=None):
 
     def include_mapping(loader, node):
         """
-        
+
 
         Parameters
         ----------
         loader :
-            
+
         node :
-            
+
 
         Returns
         -------
@@ -294,14 +295,14 @@ def yamlToData(stream='',fName=None):
 
     def construct_mapping(loader, node):
         """
-        
+
 
         Parameters
         ----------
         loader :
-            
+
         node :
-            
+
 
         Returns
         -------
@@ -336,18 +337,18 @@ def yamlToData(stream='',fName=None):
 
 
 def dataToYaml(data):
-        """
-        Convert data structure to yaml
+    """
+    Convert data structure to yaml
 
-        Parameters
-        ----------
-        data :
-        
+    Parameters
+    ----------
+    data :
 
-        Returns
-        -------
 
-        """
+    Returns
+    -------
+
+    """
 
     class PyrogueDumper(yaml.Dumper):
         """ """
@@ -355,14 +356,14 @@ def dataToYaml(data):
 
     def _var_representer(dumper, data):
         """
-        
+
 
         Parameters
         ----------
         dumper :
-            
+
         data :
-            
+
 
         Returns
         -------
@@ -386,14 +387,14 @@ def dataToYaml(data):
 
     def _dict_representer(dumper, data):
         """
-        
+
 
         Parameters
         ----------
         dumper :
-            
+
         data :
-            
+
 
         Returns
         -------
@@ -409,16 +410,16 @@ def dataToYaml(data):
 
 def keyValueUpdate(old, key, value):
     """
-    
+
 
     Parameters
     ----------
     old :
-        
+
     key :
-        
+
     value :
-        
+
 
     Returns
     -------
@@ -435,14 +436,14 @@ def keyValueUpdate(old, key, value):
 
 def dictUpdate(old, new):
     """
-    
+
 
     Parameters
     ----------
     old :
-        
+
     new :
-        
+
 
     Returns
     -------
@@ -459,14 +460,14 @@ def dictUpdate(old, new):
 
 def yamlUpdate(old, new):
     """
-    
+
 
     Parameters
     ----------
     old :
-        
+
     new :
-        
+
 
     Returns
     -------
@@ -477,14 +478,14 @@ def yamlUpdate(old, new):
 
 def recreate_OrderedDict(name, values):
     """
-    
+
 
     Parameters
     ----------
     name :
-        
+
     values :
-        
+
 
     Returns
     -------
@@ -495,14 +496,14 @@ def recreate_OrderedDict(name, values):
 # Creation function wrapper for methods with variable args
 def functionWrapper(function, callArgs):
     """
-    
+
 
     Parameters
     ----------
     function :
-        
+
     callArgs :
-        
+
 
     Returns
     -------
@@ -532,16 +533,16 @@ def functionWrapper(function, callArgs):
 
 def genDocTableHeader(fields, indent, width):
     """
-    
+
 
     Parameters
     ----------
     fields :
-        
+
     indent :
-        
+
     width :
-        
+
 
     Returns
     -------
@@ -567,16 +568,16 @@ def genDocTableHeader(fields, indent, width):
 
 def genDocTableRow(fields, indent, width):
     """
-    
+
 
     Parameters
     ----------
     fields :
-        
+
     indent :
-        
+
     width :
-        
+
 
     Returns
     -------
@@ -597,14 +598,14 @@ def genDocTableRow(fields, indent, width):
 
 def genDocDesc(desc, indent):
     """
-    
+
 
     Parameters
     ----------
     desc :
-        
+
     indent :
-        
+
 
     Returns
     -------
