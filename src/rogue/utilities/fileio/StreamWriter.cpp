@@ -47,6 +47,7 @@
 #include <sys/time.h>
 #include <string.h>
 #include <cstring>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -173,7 +174,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
 
          // Create new buffer
          if ( (buffer_ = (uint8_t *)malloc(size)) == NULL )
-            throw(rogue::GeneralError::create("StreamWriter::setBufferSize","Failed to allocate buffer with size = %i",size));
+            throw(rogue::GeneralError::create("StreamWriter::setBufferSize","Failed to allocate buffer with size = %" PRIu32, size));
          buffSize_ = size;
       }
    }

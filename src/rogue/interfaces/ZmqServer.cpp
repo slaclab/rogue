@@ -19,6 +19,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#include <inttypes.h>
 #include <string>
 #include <zmq.h>
 
@@ -74,10 +75,10 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
             "Failed to auto bind server on interface %s.",addr.c_str()));
       else
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
-            "Failed to bind server to port %i on interface %s. Another process may be using this port.",port+1,addr.c_str()));
+            "Failed to bind server to port %" PRIu16 " on interface %s. Another process may be using this port.", port+1, addr.c_str()));
    }
 
-   log_->info("Started Rogue server at ports %i:%i",this->basePort_,this->basePort_+1);
+   log_->info("Started Rogue server at ports %" PRIu16 ":%" PRIu16, this->basePort_, this->basePort_+1);
 
    threadEn_ = true;
    rThread_ = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
@@ -115,7 +116,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
    std::string temp;
    uint32_t opt;
 
-   log_->debug("Trying to serve on ports %i:%i:%i",this->basePort_,this->basePort_+1,this->basePort_+2);
+   log_->debug("Trying to serve on ports %" PRIu16 ":%" PRIu16 ":%" PRIu16, this->basePort_, this->basePort_+1, this->basePort_+2);
 
    this->zmqPub_ = zmq_socket(this->zmqCtx_,ZMQ_PUB);
    this->zmqRep_ = zmq_socket(this->zmqCtx_,ZMQ_REP);
@@ -148,7 +149,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
       zmq_close(this->zmqPub_);
       zmq_close(this->zmqRep_);
       zmq_close(this->zmqStr_);
-      log_->debug("Failed to bind publish to port %i",this->basePort_);
+      log_->debug("Failed to bind publish to port %" PRIu16, this->basePort_);
       return false;
    }
 
@@ -162,7 +163,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
       zmq_close(this->zmqPub_);
       zmq_close(this->zmqRep_);
       zmq_close(this->zmqStr_);
-      log_->debug("Failed to bind resp to port %i",this->basePort_+1);
+      log_->debug("Failed to bind resp to port %" PRIu16, this->basePort_+1);
       return false;
    }
 
@@ -176,7 +177,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
       zmq_close(this->zmqPub_);
       zmq_close(this->zmqRep_);
       zmq_close(this->zmqStr_);
-      log_->debug("Failed to bind str resp to port %i",this->basePort_+2);
+      log_->debug("Failed to bind str resp to port %" PRIu16, this->basePort_+2);
       return false;
    }
 

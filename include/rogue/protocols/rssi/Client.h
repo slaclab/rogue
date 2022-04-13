@@ -116,6 +116,8 @@ namespace rogue {
                uint8_t  curMaxRetran();
                uint8_t  curMaxCumAck();
 
+               void resetCounters();
+
                //! Set timeout in microseconds for frame transmits
                void setTimeout(uint32_t timeout);
 

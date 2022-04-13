@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
@@ -55,9 +56,12 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    port_    = port;
    udpLog_ = rogue::Logging::create("udp.Server");
 
+   // Create a shared pointer to use as a lock for runThread()
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+
    // Create socket
    if ( (fd_ = socket(AF_INET,SOCK_DGRAM,0)) < 0 )
-      throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %i",port_));
+      throw(rogue::GeneralError::create("Server::Server","Failed to create socket for port %" PRIu16, port_));
 
    // Setup Remote Address
    memset(&locAddr_,0,sizeof(struct sockaddr_in));
@@ -68,7 +72,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
    memset(&remAddr_,0,sizeof(struct sockaddr_in));
 
    if (bind(fd_, (struct sockaddr *) &locAddr_, sizeof(locAddr_))<0)
-      throw(rogue::GeneralError::create("Server::Server","Failed to bind to local port %i. Another process may be using it",port_));
+      throw(rogue::GeneralError::create("Server::Server","Failed to bind to local port %" PRIu16 ". Another process may be using it", port_));
 
    // Kernel assigns port
    if ( port_ == 0 ) {
@@ -84,7 +88,7 @@ rpu::Server::Server (uint16_t port, bool jumbo) : rpu::Core(jumbo) {
 
    // Start rx thread
    threadEn_ = true;
-   thread_ = new std::thread(&rpu::Server::runThread, this);
+   thread_ = new std::thread(&rpu::Server::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
@@ -160,7 +164,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
          tout = timeout_;
 
          if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-            udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
+            udpLog_->critical("Server::acceptFrame: Timeout waiting for outbound transmit after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
             res = 0;
          }
          else if ( (res = sendmsg(fd_,&msg,0)) < 0 )
@@ -173,7 +177,7 @@ void rpu::Server::acceptFrame ( ris::FramePtr frame ) {
 }
 
 //! Run thread
-void rpu::Server::runThread() {
+void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
    ris::BufferPtr     buff;
    ris::FramePtr      frame;
    fd_set             fds;
@@ -183,8 +187,11 @@ void rpu::Server::runThread() {
    uint32_t           tmpLen;
    uint32_t           avail;
 
+   // Wait until constructor completes
+   while (!lockPtr.expired())
+      continue;
+
    udpLog_->logThreadId();
-   usleep(1000);
 
    // Preallocate frame
    frame = ris::Pool::acceptReq(maxPayload(),false);

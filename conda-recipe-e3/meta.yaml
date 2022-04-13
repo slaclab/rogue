@@ -49,6 +49,7 @@ requirements:
      - sqlalchemy
      - pydm
      - pyserial
+     - matplotlib
 
 about:
    home: https://github.com/slaclab/rogue

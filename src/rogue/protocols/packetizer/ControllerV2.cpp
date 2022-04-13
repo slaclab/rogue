@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
+#include <inttypes.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
@@ -94,7 +95,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
       (size < 24)         ||           // Check for min. size (64-bit header + 64-bit min. payload + 64-bit tail)
       ((size&0x7) > 0)    ||           // Check for non 64-bit alignment
       ((data[0]&0xF) != 0x2) ) {       // Check for invalid version only (ignore the CRC mode flag)
-      log_->warning("Dropping frame due to contents: error=0x%x, payload=%i, buffers=%i, Version=0x%x",frame->getError(),size,frame->bufferCount(),data[0]&0xF);
+      log_->warning("Dropping frame due to contents: error=0x%" PRIx8 ", payload=%" PRIu32 ", buffers=%" PRIu32 ", Version=0x%" PRIx8, frame->getError(), size, frame->bufferCount(), data[0]&0xF);
       dropCount_++;
       return;
    }
@@ -130,11 +131,11 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    }
    else crcErr = false;
 
-   log_->debug("transportRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
-         data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
-   log_->debug("transportRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
-         data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
-   log_->debug("transportRx: Got frame: Fuser=0x%x, Dest=0x%x, Id=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i, crcErr=%i",
+   log_->debug("transportRx: Raw header: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,
+         data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+   log_->debug("transportRx: Raw footer: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,
+         data[size-8], data[size-7], data[size-6], data[size-5], data[size-4], data[size-3], data[size-2], data[size-1]);
+   log_->debug("transportRx: Got frame: Fuser=0x%" PRIx8 ", Dest=0x%" PRIx8 ", Id=0x%" PRIx8 ", Count=%" PRIu32 ", Sof=%" PRIu8 ", Luser=0x%" PRIx8 ", Eof=%" PRIu8 ", Last=%" PRIu32 ", crcErr=%" PRIu8,
          tmpFuser, tmpDest, tmpId, tmpCount, tmpSof, tmpLuser, tmpEof, last, crcErr);
 
    // Shorten message by removing tail and adjusting for last value
@@ -147,7 +148,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
 
    // Drop frame and reset state if mismatch
    if ( ( transSof_[tmpDest] != tmpSof) || crcErr || tmpCount != tranCount_[tmpDest] ) {
-      log_->warning("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i",tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
+      log_->warning("Dropping frame: gotDest=%" PRIu8 ", gotSof=%" PRIu8 ", crcErr=%" PRIu8 ", expCount=%" PRIu32 ", gotCount=%" PRIu32, tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
       dropCount_++;
       transSof_[tmpDest]  = true;
       tranCount_[tmpDest] = 0;
@@ -159,7 +160,7 @@ void rpp::ControllerV2::transportRx( ris::FramePtr frame ) {
    if ( transSof_[tmpDest] ) {
       transSof_[tmpDest]  = false;
       if ( (tranCount_[tmpDest] != 0) || !tmpSof || crcErr ) {
-         log_->warning("Dropping frame: gotDest=%i, gotSof=%i, crcErr=%i, expCount=%i, gotCount=%i", tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
+         log_->warning("Dropping frame: gotDest=%" PRIu8 ", gotSof=%" PRIu8 ", crcErr=%" PRIu8 ", expCount=%" PRIu32 ", gotCount=%" PRIu32, tmpDest, tmpSof, crcErr, tranCount_[tmpDest], tmpCount);
          dropCount_++;
          transSof_[tmpDest]  = true;
          tranCount_[tmpDest] = 0;
@@ -228,7 +229,7 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
       usleep(10);
       gettimeofday(&currTime,NULL);
       if ( timercmp(&currTime,&endTime,>)) {
-         log_->critical("ControllerV2::applicationRx: Timeout waiting for outbound queue after %i.%i seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
+         log_->critical("ControllerV2::applicationRx: Timeout waiting for outbound queue after %" PRIu32 ".%" PRIu32 " seconds! May be caused by outbound backpressure.", timeout_.tv_sec, timeout_.tv_usec);
          gettimeofday(&startTime,NULL);
          timeradd(&startTime,&timeout_,&endTime);
       }
@@ -298,12 +299,12 @@ void rpp::ControllerV2::applicationRx ( ris::FramePtr frame, uint8_t tDest ) {
          data[size-4] = 0;
       }
 
-      log_->debug("applicationRx: Gen frame: Size=%i, Fuser=0x%x, Dest=0x%x, Count=%i, Sof=%i, Luser=0x%x, Eof=%i, Last=%i",
+      log_->debug("applicationRx: Gen frame: Size=%" PRIu32 ", Fuser=0x%" PRIu8 ", Dest=0x%" PRIu8 ", Count=%" PRIu32 ", Sof=%" PRIu8", Luser=0x%" PRIu8", Eof=%" PRIu8 ", Last=%" PRIu32,
             (*it)->getPayload(), fUser, tDest, segment, data[7], lUser, data[size-7], last);
-      log_->debug("applicationRx: Raw header: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
-            data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7]);
-      log_->debug("applicationRx: Raw footer: 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x, 0x%x",
-            data[size-8],data[size-7],data[size-6],data[size-5],data[size-4],data[size-3],data[size-2],data[size-1]);
+      log_->debug("applicationRx: Raw header: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,
+            data[0], data[1], data[2], data[3], data[4], data[5], data[6], data[7]);
+      log_->debug("applicationRx: Raw footer: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,
+            data[size-8], data[size-7], data[size-6], data[size-5], data[size-4], data[size-3], data[size-2], data[size-1]);
 
       tFrame->appendBuffer(*it);
       tranQueue_.push(tFrame);
