@@ -156,7 +156,33 @@ class Node(object):
     """
 
     def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
-        """Init the node with passed attributes"""
+        """
+        Init the node with passed attributes
+        
+        Parameters
+        ----------
+        name : str
+            name of variable
+
+        description : str
+            description of variable
+
+        expand : bool
+            
+
+        hidden : bool
+            Default value = False, variable is not part of hidden group
+
+        groups : 
+            
+
+        guiGroup : 
+            
+
+        Returns
+        -------
+        
+        """
 
         # Public attributes
         self._name        = name
@@ -186,7 +212,9 @@ class Node(object):
 
     @property
     def name(self):
-        """ """
+        """
+        
+        """
         return self._name
 
     @property
