@@ -107,3 +107,46 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
    // Connect the transmitter
    *( *src >> tcp ) >> dst;
 
+Resource Configuration For Multiple Streams
+===========================================
+
+To use multiple rogue streams, ensure that the appropriate operating-system-level settings have been enabled.  The following (non-optimized) settings allow for the parallel launch of 2043 TCP servers on a RedHat Enterprise Linux 7.9 machine.  See the steps below.
+
+Use sysctl calls to set max number of open files/sockets, threads and max_map_count::
+
+    sysctl -w fs.file-max=262140
+    sysctl -w kernel.threads-max=1014712
+    sysctl -w vm.max_map_count=2097152
+
+Confirm with::
+
+    cat /proc/sys/fs/file-max
+    cat /proc/sys/kernel/threads-max
+    cat /proc/sys/vm/max_map_count
+
+Edit /etc/security/limits.conf and add the following::
+
+    * soft     nproc          8192
+    * hard     nproc          8192
+    * soft     nofile         524280
+    * hard     nofile         524280
+
+Ensure the following limits::
+
+    (rogue_build) [skoufis@pc94331 ~]$ ulimit -a
+    core file size          (blocks, -c) 0
+    data seg size           (kbytes, -d) unlimited
+    scheduling priority             (-e) 0
+    file size               (blocks, -f) unlimited
+    pending signals                 (-i) 126839
+    max locked memory       (kbytes, -l) 64
+    max memory size         (kbytes, -m) unlimited
+    open files                      (-n) 524280
+    pipe size            (512 bytes, -p) 8
+    POSIX message queues     (bytes, -q) 819200
+    real-time priority              (-r) 0
+    stack size              (kbytes, -s) 8192
+    cpu time               (seconds, -t) unlimited
+    max user processes              (-u) 8192
+    virtual memory          (kbytes, -v) unlimited
+    file locks                      (-x) unlimited

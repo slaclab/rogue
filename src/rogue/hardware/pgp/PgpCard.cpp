@@ -33,6 +33,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
+#include <inttypes.h>
 
 namespace rhp = rogue::hardware::pgp;
 namespace ris = rogue::interfaces::stream;
@@ -57,6 +58,9 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
    vc_         = vc;
    zeroCopyEn_ = true;
 
+   // Create a shared pointer to use as a lock for runThread()
+   std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
+
    rogue::defaultTimeout(timeout_);
 
    rogue::GilRelease noGil;
@@ -67,14 +71,17 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
       throw(rogue::GeneralError::create("PgpCard::PgpCard", "Failed to open device file: %s",path.c_str()));
 
    if ( dmaCheckVersion(fd_) < 0 )
-      throw(rogue::GeneralError("PgpCard::PgpCard","Bad kernel driver version detected. Please re-compile kernel driver"));
+      throw(rogue::GeneralError("PgpCard::PgpCard","Bad kernel driver version detected. Please re-compile kernel driver.\n \
+      Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
+      To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
+      \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
 
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,(lane_*4)+vc_);
 
    if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       ::close(fd_);
-      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %i on device %s",(lane*4)+vc,path.c_str()));
+      throw(rogue::GeneralError::create("PgpCard::PgpCard","Failed to acquire destination %" PRIu32 " on device %s", (lane*4)+vc, path.c_str()));
    }
 
    // Result may be that rawBuff_ = NULL
@@ -82,7 +89,7 @@ rhp::PgpCard::PgpCard ( std::string path, uint32_t lane, uint32_t vc ) {
 
    // Start read thread
    threadEn_ = true;
-   thread_ = new std::thread(&rhp::PgpCard::runThread, this);
+   thread_ = new std::thread(&rhp::PgpCard::runThread, this, std::weak_ptr<int>(scopePtr));
 
    // Set a thread name
 #ifndef __MACH__
@@ -218,7 +225,7 @@ ris::FramePtr rhp::PgpCard::acceptReq ( uint32_t size, bool zeroCopyEn) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("PgpCard::acceptReq: Timeout waiting for outbound buffer after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("PgpCard::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
@@ -300,7 +307,7 @@ void rhp::PgpCard::acceptFrame ( ris::FramePtr frame ) {
             tout = timeout_;
 
             if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
-               log_->critical("PgpCard::acceptFrame: Timeout waiting for outbound write after %i.%i seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
+               log_->critical("PgpCard::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
@@ -339,7 +346,7 @@ void rhp::PgpCard::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) {
 }
 
 //! Run thread
-void rhp::PgpCard::runThread() {
+void rhp::PgpCard::runThread(std::weak_ptr<int> lockPtr) {
    ris::BufferPtr buff;
    ris::FramePtr  frame;
    fd_set         fds;
@@ -350,8 +357,11 @@ void rhp::PgpCard::runThread() {
    uint32_t       meta;
    struct timeval tout;
 
+   // Wait until constructor completes
+   while (!lockPtr.expired())
+      continue;
+
    log_->logThreadId();
-   usleep(1000);
 
    // Preallocate empty frame
    frame = ris::Frame::create();

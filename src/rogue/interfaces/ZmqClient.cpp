@@ -22,6 +22,7 @@
 #include <rogue/GeneralError.h>
 #include <string>
 #include <zmq.h>
+#include <inttypes.h>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
@@ -80,7 +81,7 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port, bool d
 
       if ( zmq_connect(this->zmqSub_,temp.c_str()) < 0 )
          throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
-                  "Failed to connect to port %i at address %s",port,addr.c_str()));
+                  "Failed to connect to port %" PRIu16 " at address %s", port, addr.c_str()));
 
       reqPort = port + 1;
    }
@@ -110,14 +111,14 @@ rogue::interfaces::ZmqClient::ZmqClient (std::string addr, uint16_t port, bool d
 
    if ( zmq_connect(this->zmqReq_,temp.c_str()) < 0 )
       throw(rogue::GeneralError::create("ZmqClient::ZmqClient",
-               "Failed to connect to port %i at address %s",reqPort,addr.c_str()));
+               "Failed to connect to port %" PRIu32 " at address %s", reqPort, addr.c_str()));
 
    if ( doString_ ) {
       threadEn_ = false;
-      log_->info("Connected to Rogue server at port %i",reqPort);
+      log_->info("Connected to Rogue server at port %" PRIu32, reqPort);
    }
    else {
-      log_->info("Connected to Rogue server at ports %i:%i",port,reqPort);
+      log_->info("Connected to Rogue server at ports %" PRIu16 ":%" PRIu32, port, reqPort);
 
       threadEn_ = true;
       thread_ = new std::thread(&rogue::interfaces::ZmqClient::runThread, this);
@@ -149,7 +150,7 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
    waitRetry_ = waitRetry;
    timeout_ = msecs;
 
-   printf("ZmqClient::setTimeout: Setting timeout to %i msecs, waitRetry = %i\n",timeout_,waitRetry_);
+   printf("ZmqClient::setTimeout: Setting timeout to %" PRIu32 " msecs, waitRetry = %" PRIu8 "\n", timeout_, waitRetry_);
 
    if ( zmq_setsockopt (this->zmqReq_, ZMQ_RCVTIMEO, &timeout_, sizeof(int32_t)) != 0 )
          throw(rogue::GeneralError("ZmqClient::setTimeout","Failed to set socket timeout"));
@@ -181,7 +182,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
       if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
          seconds += (float)timeout_ / 1000.0;
          if ( waitRetry_ ) {
-            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",seconds);
+            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
             zmq_msg_close(&msg);
          }
          else
@@ -190,7 +191,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
       else break;
    }
 
-   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
+   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!", seconds);
 
    data = std::string((const char *)zmq_msg_data(&msg),zmq_msg_size(&msg));
    zmq_msg_close(&msg);
@@ -241,7 +242,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
          if ( zmq_recvmsg(this->zmqReq_,&rxMsg,0) <= 0 ) {
             seconds += (float)timeout_ / 1000.0;
             if ( waitRetry_ ) {
-               log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",seconds);
+               log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
                zmq_msg_close(&rxMsg);
             }
             else
@@ -251,7 +252,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
       }
    }
 
-   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!",seconds);
+   if ( seconds != 0 ) log_->error("Finally got response from server after %f seconds!", seconds);
 
    PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
    zmq_msg_close(&rxMsg);

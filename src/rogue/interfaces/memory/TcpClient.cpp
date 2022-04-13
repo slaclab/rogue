@@ -90,13 +90,13 @@ rim::TcpClient::TcpClient (std::string addr, uint16_t port) : rim::Slave(4,0xFFF
 
    if ( zmq_connect(this->zmqResp_,this->respAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpClient::TcpClient",
-               "Failed to connect to remote port %i at address %s",port+1,addr.c_str()));
+               "Failed to connect to remote port %" PRIu16 " at address %s", port+1, addr.c_str()));
 
    this->bridgeLog_->debug("Creating request client port: %s",this->reqAddr_.c_str());
 
    if ( zmq_connect(this->zmqReq_,this->reqAddr_.c_str()) < 0 )
       throw(rogue::GeneralError::create("memory::TcpClient::TcpClient",
-               "Failed to connect to remote port %i at address %s",port,addr.c_str()));
+               "Failed to connect to remote port %" PRIu16 " at address %s", port, addr.c_str()));
 
    // Start rx thread
    threadEn_ = true;

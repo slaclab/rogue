@@ -35,6 +35,7 @@
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 #include <string.h>
+#include <inttypes.h>
 
 namespace rps = rogue::protocols::srp;
 namespace rim = rogue::interfaces::memory;
@@ -55,9 +56,9 @@ rps::SrpV3Ptr rps::SrpV3::create () {
 //! Setup class in python
 void rps::SrpV3::setup_python() {
 #ifndef NO_PYTHON
-
-   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>());
-
+   bp::class_<rps::SrpV3, rps::SrpV3Ptr, bp::bases<ris::Master,ris::Slave,rim::Slave>,boost::noncopyable >("SrpV3",bp::init<>())
+      .def("_setHardwareTimeout",           &rps::SrpV3::setHardwareTimeout)
+   ;
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::MasterPtr>();
    bp::implicitly_convertible<rps::SrpV3Ptr, ris::SlavePtr>();
    bp::implicitly_convertible<rps::SrpV3Ptr, rim::SlavePtr>();
@@ -71,6 +72,11 @@ rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) {
 
 //! Deconstructor
 rps::SrpV3::~SrpV3() {}
+
+//! Set the hardware timeout
+void rps::SrpV3::setHardwareTimeout( uint8_t val ) { 
+   timeout_ = val; 
+}
 
 //! Setup header, return frame size
 bool rps::SrpV3::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_t &frameLen, bool tx) {
@@ -90,7 +96,7 @@ bool rps::SrpV3::setupHeader(rim::TransactionPtr tran, uint32_t *header, uint32_
    // Bit 14 = ignore mem resp
    // Bit 23:15 = Unused
    // Bit 31:24 = timeout count
-   header[0] |= 0x0A000000;
+   header[0] |= (timeout_ << 24 | 0x00000000);
 
    // Header word 1, transaction ID
    header[1] = tran->id();
@@ -127,18 +133,18 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
 
    // Size error
    if ((tran->address() % min()) != 0 ) {
-      tran->error("Transaction address 0x%x is not aligned to min size %i",tran->address(),min());
+      tran->error("Transaction address 0x%" PRIx64 " is not aligned to min size %" PRIu32, tran->address(), min());
       return;
    }
 
    // Size error
    if ((tran->size() % min()) != 0 || tran->size() < min()) {
-      tran->error("Transaction size 0x%x is not aligned to min size %i",tran->size(),min());
+      tran->error("Transaction size 0x%" PRIx32 " is not aligned to min size %" PRIu32, tran->size(), min());
       return;
    }
 
    if (tran->size() > max()) {
-      tran->error("Transaction size 0x%x exceeds max size %i",tran->size(),min());
+      tran->error("Transaction size %" PRIu32 " exceeds max size %" PRIu32, tran->size(), max());
       return;
    }
 
@@ -164,10 +170,10 @@ void rps::SrpV3::doTransaction(rim::TransactionPtr tran) {
    if ( tran->type() == rim::Post ) tran->done();
    else addTransaction(tran);
 
-   log_->debug("Send frame for id=%i, addr 0x%0.8x. Size=%i, type=%i",
+   log_->debug("Send frame for id=%" PRIu32 ", addr 0x%0.8" PRIx64 ". Size=%" PRIu32 ", type=%" PRIu32,
                tran->id(),tran->address(),tran->size(),tran->type());
-   log_->debug("Send frame for id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x",
-               tran->id(), header[0],header[1],header[2],header[3],header[4]);
+   log_->debug("Send frame for id=%" PRIu32 ", header: 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32,
+               tran->id(), header[0], header[1], header[2], header[3], header[4]);
 
    sendFrame(frame);
 }
@@ -189,13 +195,13 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    ris::FrameLockPtr frLock = frame->lock();
 
    if ( frame->getError() ) {
-      log_->warning("Got errored frame = 0x%i",frame->getError());
+      log_->warning("Got errored frame = 0x%" PRIx8, frame->getError());
       return; // Invalid frame, drop it
    }
 
    // Check frame size
    if ( (fSize = frame->getPayload()) < (HeadLen+TailLen) ) {
-      log_->warning("Got undersized frame size = %i",fSize);
+      log_->warning("Got undersized frame size = %" PRIu32, fSize);
       return; // Invalid frame, drop it
    }
 
@@ -209,12 +215,12 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Extract the id
    id = header[1];
-   log_->debug("Got frame id=%i, header: 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x 0x%0.8x tail: 0x%0.8x",
-               id, header[0],header[1],header[2],header[3],header[4],tail[0]);
+   log_->debug("Got frame id=%" PRIu32 ", header: 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " 0x%0.8" PRIx32 " tail: 0x%0.8" PRIx32,
+               id, header[0], header[1], header[2], header[3], header[4], tail[0]);
 
    // Find Transaction
    if ( (tran = getTransaction(id)) == NULL ) {
-     log_->warning("Failed to find transaction id=%i",id);
+     log_->warning("Failed to find transaction id=%" PRIu32, id);
      return; // Bad id or post, drop frame
    }
 
@@ -223,7 +229,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
 
    // Transaction expired
    if ( tran->expired() ) {
-      tran->error("Transaction expired: Id=%i (increase root->timeout value if this ID matches a previous timeout message)",id);
+      tran->error("Transaction expired: Id=%" PRIu32 " (increase root->timeout value if this ID matches a previous timeout message)", id);
       return;
    }
    tIter = tran->begin();
@@ -235,7 +241,7 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    if ( ((header[0] & 0xFFFFC3FF) != expHeader[0]) ||
          (header[1] != expHeader[1]) || (header[2] != expHeader[2]) ||
          (header[3] != expHeader[3]) || (header[4] != expHeader[4]) ) {
-     log_->warning("Bad header for %i",id);
+     log_->warning("Bad header for %" PRIu32, id);
      tran->error("Received SRPV3 message did not match expected protocol");
      return;
    }
@@ -244,14 +250,14 @@ void rps::SrpV3::acceptFrame ( ris::FramePtr frame ) {
    if ( tail[0] != 0 ) {
       if ( tail[0] & 0x2000 ) tran->error("FPGA register bus lockup detected in hardware. Power cycle required.");
       else if ( tail[0] & 0x0100 ) tran->error("FPGA register bus timeout detected in hardware");
-      else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%x",tail[0]);
-      log_->warning("Error detected for ID id=%i, tail=0x%0.8x",id,tail[0]);
+      else tran->error("Non zero status message returned on fpga register bus in hardware: 0x%" PRIx32, tail[0]);
+      log_->warning("Error detected for ID id=%" PRIu32 ", tail=0x%0.8" PRIx32, id, tail[0]);
       return;
    }
 
    // Verify frame size, drop frame
    if ( (fSize != expFrameLen) || (header[4]+1) != tran->size() ) {
-      log_->warning("Size mismatch id=%i. fsize=%i, exp=%i, tsize=%i, header=%i",id, fSize, expFrameLen, tran->size(),header[4]+1);
+      log_->warning("Size mismatch id=%" PRIu32 ". fsize=%" PRIu32 ", exp=%" PRIu32 ", tsize=%" PRIu32 ", header=%" PRIu32, id, fSize, expFrameLen, tran->size(), header[4] + 1);
       tran->error("Received SRPV3 message had a header size mismatch");
       return;
    }

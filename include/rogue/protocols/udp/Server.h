@@ -43,7 +43,7 @@ namespace rogue {
                struct sockaddr_in locAddr_;
 
                //! Thread background
-               void runThread();
+               void runThread(std::weak_ptr<int>);
 
             public:
 

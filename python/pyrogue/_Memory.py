@@ -68,14 +68,14 @@ class MemoryDevice(pr.Device):
     @pr.expose
     def set(self, offset, values, write=False):
         """
-        
+
 
         Parameters
         ----------
         offset :
-            
+
         values :
-            
+
         write : bool
              (Default value = False)
 
@@ -93,14 +93,14 @@ class MemoryDevice(pr.Device):
     @pr.expose
     def get(self, offset, numWords):
         """
-        
+
 
         Parameters
         ----------
         offset :
-            
+
         numWords :
-            
+
 
         Returns
         -------
@@ -120,22 +120,22 @@ class MemoryDevice(pr.Device):
 
     def _setDict(self, d, writeEach, modes,incGroups,excGroups,keys):
         """
-        
+
 
         Parameters
         ----------
         d :
-            
+
         writeEach :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
         keys :
-            
+
 
         Returns
         -------
@@ -146,18 +146,18 @@ class MemoryDevice(pr.Device):
             for offset, values in d.items():
                 self._setValues[offset] = [self._base.fromString(s) for s in values.split(',')]
 
-    def _getDict(self,modes,incGroups,excGroups):
+    def _getDict(self,modes,incGroups,excGroups,properties):
         """
-        
+
 
         Parameters
         ----------
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
@@ -167,7 +167,7 @@ class MemoryDevice(pr.Device):
 
     def writeBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
         """
-        
+
 
         Parameters
         ----------
@@ -198,7 +198,7 @@ class MemoryDevice(pr.Device):
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
         """
-        
+
 
         Parameters
         ----------
@@ -223,7 +223,7 @@ class MemoryDevice(pr.Device):
 
     def checkBlocks(self, recurse=True, variable=None):
         """
-        
+
 
         Parameters
         ----------
@@ -268,7 +268,7 @@ class MemoryDevice(pr.Device):
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         """
-        
+
 
         Parameters
         ----------
@@ -293,21 +293,21 @@ class MemoryDevice(pr.Device):
 
     def _txnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
         """
-        
+
 
         Parameters
         ----------
         offset :
-            
+
         data :
-            
+
         base :
              (Default value = pr.UInt)
         stride : int
              (Default value = 4)
         wordBitSize : int
              (Default value = 32)
-        txnType : 
+        txnType :
              (Default value = rim.Write)
         numWords : int
              (Default value = 1)

@@ -78,6 +78,7 @@ void rpr::Client::setup_python() {
       .def("curNullTout",      &rpr::Client::curNullTout)
       .def("curMaxRetran",     &rpr::Client::curMaxRetran)
       .def("curMaxCumAck",     &rpr::Client::curMaxCumAck)
+      .def("resetCounters",    &rpr::Client::resetCounters)
       .def("setTimeout",       &rpr::Client::setTimeout)
       .def("_stop",            &rpr::Client::stop)
       .def("_start",           &rpr::Client::start)
@@ -240,6 +241,10 @@ uint8_t  rpr::Client::curMaxRetran() {
 
 uint8_t  rpr::Client::curMaxCumAck() {
    return cntl_->curMaxCumAck();
+}
+
+void rpr::Client::resetCounters() {
+  cntl_->resetCounters();
 }
 
 //! Set timeout for frame transmits in microseconds

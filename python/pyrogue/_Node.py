@@ -172,6 +172,9 @@ class Node(object):
         if hidden is True:
             self.addToGroup('Hidden')
 
+    def __repr__(self):
+        return f'{self.__class__} - {self.path}'
+
     @property
     def name(self):
         """ """
@@ -298,9 +301,6 @@ class Node(object):
     def guiGroup(self):
         """ """
         return self._guiGroup
-
-    def __repr__(self):
-        return self.path
 
     def __getattr__(self, name):
         """
@@ -823,7 +823,7 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _getDict(self,modes,incGroups,excGroups):
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -845,7 +845,7 @@ class Node(object):
         data = odict()
         for key,value in self.nodes.items():
             if value.filterByGroup(incGroups,excGroups):
-                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)
+                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
             if nv is not None:
                 data[key] = nv
 

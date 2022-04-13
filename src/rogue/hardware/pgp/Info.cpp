@@ -22,6 +22,7 @@
 
 #include <rogue/hardware/pgp/Info.h>
 #include <memory>
+#include <string>
 
 namespace rhp = rogue::hardware::pgp;
 

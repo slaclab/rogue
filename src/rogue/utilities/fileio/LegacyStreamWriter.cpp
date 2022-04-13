@@ -44,6 +44,7 @@
 #include <fcntl.h>
 #include <rogue/GilRelease.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
@@ -116,7 +117,7 @@ void ruf::LegacyStreamWriter::writeFile ( uint8_t channel, std::shared_ptr<rogue
      // Data count is number of 32-bit words
      if ( channel == RawData ) {
         if ( (size % 4) != 0 )
-           throw(rogue::GeneralError::create("LegacyStreamWriter::writeFile", "FrameSize %i is not 32-bit aligned.",size));
+           throw(rogue::GeneralError::create("LegacyStreamWriter::writeFile", "FrameSize %" PRIu32 " is not 32-bit aligned.", size));
         size = size/4;
      }
 

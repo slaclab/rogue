@@ -79,6 +79,16 @@ class NodeInformation(ExternalTool):
 
         le = QLineEdit()
         le.setReadOnly(True)
+        le.setText(str(node.value()))
+        fl.addRow('Value',le)
+
+        le = QLineEdit()
+        le.setReadOnly(True)
+        le.setText(str(node.valueDisp()))
+        fl.addRow('ValueDisp',le)
+
+        le = QLineEdit()
+        le.setReadOnly(True)
         le.setText(channel.address)
         fl.addRow('PyDM Path',le)
 

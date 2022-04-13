@@ -40,21 +40,21 @@ def VariableWait(varList, testFunction, timeout=0):
     Parameters
     ----------
     varList :
-        
+
     testFunction :
-        
+
     timeout : int
          (Default value = 0)
 
     Returns
     -------
-       
+
     """
 
     # Container class
     class varStates(object):
         """
-       
+
 
 
 
@@ -67,14 +67,14 @@ def VariableWait(varList, testFunction, timeout=0):
         # Method to handle variable updates callback
         def varUpdate(self,path,varValue):
             """
-            
+
 
             Parameters
             ----------
             path :
-                
+
             varValue :
-                
+
 
             Returns
             -------
@@ -130,6 +130,9 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
+    def __repr__(self):
+        return f'{str(self.__class__)}({self.__dict__})'
+
 
 class VariableListData(object):
     """ """
@@ -138,14 +141,24 @@ class VariableListData(object):
         self.valueBits   = valueBits
         self.valueStride = valueStride
 
+    def __repr__(self):
+        return f'{self.__class__}({self.__dict__})'
+
+
 
 class BaseVariable(pr.Node):
-    """ 
-    Documentation string for __init__ goes here 
+    """
+    Documentation string for __init__ goes here
     (under the 'class' definition)
 
     Fill in the paremeters.
     """
+
+    PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
+             'disp', 'precision', 'units', 'minimum', 'maximum',
+             'nativeType', 'ndType', 'updateNotify',
+             'hasAlarm', 'lowWarning', 'highWarning', 'lowAlarm',
+             'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
     def __init__(self, *,
                  name,
@@ -229,8 +242,10 @@ class BaseVariable(pr.Node):
            (self._mode != 'WO'):
             raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
 
+
         # Call super constructor
         pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
+
 
     @pr.expose
     @property
@@ -299,6 +314,7 @@ class BaseVariable(pr.Node):
         """ """
         return self._maximum
 
+
     @pr.expose
     @property
     def hasAlarm(self):
@@ -343,14 +359,24 @@ class BaseVariable(pr.Node):
         stat,sevr = self._alarmState(self.value())
         return sevr
 
+    def properties(self):
+        d = odict()
+        d['value'] = self.value()
+        d['valueDisp'] = self.valueDisp()
+        d['class'] = self.__class__.__name__
+
+        for p in self.PROPS:
+            d[p] = getattr(self, p)
+        return d
+
     def addDependency(self, dep):
         """
-        
+
 
         Parameters
         ----------
         dep :
-            
+
 
         Returns
         -------
@@ -369,12 +395,12 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         """
-        
+
 
         Parameters
         ----------
         interval :
-            
+
 
         Returns
         -------
@@ -412,7 +438,7 @@ class BaseVariable(pr.Node):
         Parameters
         ----------
         listener :
-            
+
 
         Returns
         -------
@@ -432,7 +458,7 @@ class BaseVariable(pr.Node):
         Parameters
         ----------
         listener :
-            
+
 
         Returns
         -------
@@ -450,9 +476,9 @@ class BaseVariable(pr.Node):
         Parameters
         ----------
         value :
-            
+
             * :
-            
+
         index : int
              (Default value = -1)
         write : bool
@@ -478,9 +504,9 @@ class BaseVariable(pr.Node):
         Parameters
         ----------
         value :
-            
+
             * :
-            
+
         index : int
              (Default value = -1)
 
@@ -500,7 +526,7 @@ class BaseVariable(pr.Node):
         Parameters
         ----------
         * :
-            
+
         index : int
              (Default value = -1)
         read : bool
@@ -510,7 +536,7 @@ class BaseVariable(pr.Node):
 
         Returns
         -------
-        
+
         """
         return None
 
@@ -522,7 +548,7 @@ class BaseVariable(pr.Node):
         Parameters
         ----------
         * :
-            
+
         verify : bool
              (Default value = True)
         check : bool
@@ -563,12 +589,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     def genDisp(self, value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
@@ -577,8 +603,9 @@ class BaseVariable(pr.Node):
         try:
 
             if isinstance(value,np.ndarray):
-                np.set_printoptions(formatter={'all':self.disp.format},threshold=sys.maxsize)
-                return np.array2string(value, separator=', ')
+                with np.printoptions(formatter={'all':self.disp.format},threshold=sys.maxsize):
+                    ret = np.array2string(value, separator=', ')
+                return ret
 
             elif self.disp == 'enum':
                 if value in self.enum:
@@ -597,7 +624,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     def getDisp(self, read=True, index=-1):
         """
-        
+
 
         Parameters
         ----------
@@ -613,9 +640,9 @@ class BaseVariable(pr.Node):
         return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def valueDisp(self, read=True, index=-1):
+    def valueDisp(self): #, read=True, index=-1):
         """
-        
+
 
         Parameters
         ----------
@@ -628,17 +655,17 @@ class BaseVariable(pr.Node):
         -------
 
         """
-        return self.getDisp(read=False,index=index)
+        return self.getDisp(read=False,index=-1)
 
     @pr.expose
     def parseDisp(self, sValue):
         """
-        
+
 
         Parameters
         ----------
         sValue :
-            
+
 
         Returns
         -------
@@ -664,12 +691,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     def setDisp(self, sValue, write=True, index=-1):
         """
-        
+
 
         Parameters
         ----------
         sValue :
-            
+
         write : bool
              (Default value = True)
         index : int
@@ -723,22 +750,22 @@ class BaseVariable(pr.Node):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
-        
+
 
         Parameters
         ----------
         d :
-            
+
         writeEach :
-            
+
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
         keys :
-            
+
 
         Returns
         -------
@@ -779,27 +806,31 @@ class BaseVariable(pr.Node):
         elif self._mode in modes:
             self.setDisp(d,writeEach)
 
-    def _getDict(self,modes,incGroups,excGroups):
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         """
-        
+
 
         Parameters
         ----------
         modes :
-            
+
         incGroups :
-            
+
         excGroups :
-            
+
 
         Returns
         -------
 
         """
         if self._mode in modes:
-            return VariableValue(self)
+            if properties is False:
+                return VariableValue(self)
+            else:
+                return self.properties()
         else:
             return None
+
 
     def _queueUpdate(self):
         """ """
@@ -819,17 +850,17 @@ class BaseVariable(pr.Node):
 
     def _alarmState(self,value):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
 
         Returns
         -------
         type
-            
+
 
         """
 
@@ -854,14 +885,13 @@ class BaseVariable(pr.Node):
         else:
             return 'Good','Good'
 
-
     def _genDocs(self,file):
         """
 
         Parameters
         ----------
         file :
-            
+
 
         Returns
         -------
@@ -888,6 +918,11 @@ class BaseVariable(pr.Node):
 
 class RemoteVariable(BaseVariable,rim.Variable):
     """ """
+
+    PROPS = BaseVariable.PROPS + [
+        'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
+        'verifyEn', 'numValues', 'valueBits', 'valueStride', 'retryCount',
+        'varBytes', 'bulkEn']
 
     def __init__(self, *,
                  name,
@@ -996,6 +1031,28 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               offset, bitOffset, bitSize, overlapEn, verify,
                               self._bulkOpEn, self._updateNotify, self._base, listData, retryCount)
 
+
+    ##############################
+    # Properties held by C++ class
+    ##############################
+
+
+    @property
+    def numValues(self):
+        return self._numValues()
+
+    @property
+    def valueBits(self):
+        return self._valueBits()
+
+    @property
+    def valueStride(self):
+        return self._valueStride()
+
+    @property
+    def retryCount(self):
+        return self._retryCount()
+
     @pr.expose
     @property
     def varBytes(self):
@@ -1010,9 +1067,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def address(self):
+    def overlapEn(self):
         """ """
-        return self._block.address
+        return self._overlapEn()
 
     @pr.expose
     @property
@@ -1028,21 +1085,26 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def verify(self):
+    def verifyEn(self):
         """ """
         return self._verifyEn()
+
+
+    ########################
+    # Local Properties
+    ########################
+
+
+    @pr.expose
+    @property
+    def address(self):
+        return self._block.address
 
     @pr.expose
     @property
     def base(self):
         """ """
         return self._base
-
-    @pr.expose
-    @property
-    def overlapEn(self):
-        """ """
-        return self._overlapEn()
 
     @pr.expose
     @property
@@ -1061,16 +1123,16 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
-        A verify will be performed according to self.verify if verify=True
+        A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception.
 
         Parameters
         ----------
         value :
-            
+
             * :
-            
+
         index : int
              (Default value = -1)
         write : bool
@@ -1111,9 +1173,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Parameters
         ----------
         value :
-            
+
             * :
-            
+
         index : int
              (Default value = -1)
 
@@ -1136,12 +1198,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     def get(self, *, index=-1, read=True, check=True):
         """
-        
+
 
         Parameters
         ----------
             * :
-            
+
         index : int
              (Default value = -1)
         read : bool
@@ -1175,14 +1237,14 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         Force a write of the variable.
         Hardware write is blocking if check=True.
-        A verify will be performed according to self.verify if verify=True
+        A verify will be performed according to self.verifyEn if verify=True
         A verify will not be performed if verify=False
         An error will result in a logged exception
 
         Parameters
         ----------
              * :
-            
+
         verify : bool
              (Default value = True)
         check : bool
@@ -1205,12 +1267,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     def _parseDispValue(self, sValue):
         """
-        
+
 
         Parameters
         ----------
         sValue :
-            
+
 
         Returns
         -------
@@ -1227,7 +1289,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Parameters
         ----------
         file :
-            
+
 
         Returns
         -------
@@ -1292,9 +1354,9 @@ class LocalVariable(BaseVariable):
         Parameters
         ----------
         value :
-            
+
             * :
-            
+
         index : int
              (Default value = -1)
         write : bool
@@ -1335,9 +1397,9 @@ class LocalVariable(BaseVariable):
         Parameters
         ----------
         value :
-            
+
         * :
-            
+
         index : int
              (Default value = -1)
 
@@ -1360,12 +1422,12 @@ class LocalVariable(BaseVariable):
     @pr.expose
     def get(self, *, index=-1, read=True, check=True):
         """
-        
+
 
         Parameters
         ----------
             * :
-            
+
         index : int
              (Default value = -1)
         read : bool
@@ -1505,14 +1567,14 @@ class LinkVariable(BaseVariable):
     @pr.expose
     def set(self, value, *, write=True, index=-1, verify=True, check=True):
         """
-        
+
 
         Parameters
         ----------
         value :
-            
+
             * :
-            
+
         write : bool
              (Default value = True)
         index : int
@@ -1536,7 +1598,7 @@ class LinkVariable(BaseVariable):
     @pr.expose
     def get(self, read=True, index=-1, check=True):
         """
-        
+
 
         Parameters
         ----------
