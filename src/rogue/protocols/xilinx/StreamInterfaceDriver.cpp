@@ -44,8 +44,8 @@ static const unsigned MAXL = 256;
 
 namespace rpx = rogue::protocols::xilinx;
 
-rpx::StreamInterfaceDriver::StreamInterfaceDriver(int argc, char *const argv[], const char *target)
-	: JtagDriverAxisToJtag(argc, argv),
+rpx::StreamInterfaceDriver::StreamInterfaceDriver(std::string host, uint16_t port)
+	: JtagDriverAxisToJtag(host, port),
 	  sock_(false),
 	  timeoutMs_(500),
 	  mtu_(1450) // ethernet mtu minus MAC/IP/UDP addresses

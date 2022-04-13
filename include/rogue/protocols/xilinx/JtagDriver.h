@@ -48,7 +48,7 @@ namespace rogue
 				bool drEn_;
 
 			public:
-				JtagDriver(int argc, char *const argv[], unsigned debug);
+				JtagDriver(std::string host, uint16_t port);
 
 				// set/get debug level
 				void setDebug(unsigned debug);

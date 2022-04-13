@@ -22,7 +22,6 @@
 #include <rogue/protocols/xilinx/XvcServer.h>
 #include <rogue/protocols/xilinx/XvcConnection.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
-#include <rogue/protocols/xilinx/UdpLoopBack.h>
 #include <rogue/Logging.h>
 #include <thread>
 #include <stdint.h>
@@ -49,13 +48,8 @@ namespace rogue
             //! Remote port number
             uint16_t port_;
 
-            //! Driver type
-            std::string driver_;
-
-            //! Pointers to JTAG driver, UDP loopback, 
-            //  driver registry and XVC server 
+            //! Pointers to JTAG driver and XVC server 
             JtagDriver     *drv_;
-            UdpLoopBack    *loop_;
             XvcServer      *s_;
 
             // Log
@@ -67,13 +61,10 @@ namespace rogue
 
             void runXvcThread();
 
-            // Extract argc, argv from command string
-            void makeArgcArgv(std::string cmd, int &argc, char **argv);
-
          public:
             //! Class creation
             static std::shared_ptr<rogue::protocols::xilinx::Xvc>
-            create(std::string host, uint16_t port, std::string driver);
+            create(std::string host, uint16_t port);
 
             //! Setup class in python
             static void setup_python();
@@ -81,10 +72,9 @@ namespace rogue
             // Setters
             void setHost(std::string host);
             void setPort(uint16_t port);
-            void setDriver(std::string driver);
 
             //! Creator
-            Xvc(std::string host, uint16_t port, std::string driver);
+            Xvc(std::string host, uint16_t port);
 
             //! Destructor
             ~Xvc();

@@ -47,7 +47,7 @@ namespace rogue
 				unsigned mtu_;
 
 			public:
-				StreamInterfaceDriver(int argc, char *const argv[], const char *target);
+				StreamInterfaceDriver(std::string host, uint16_t port);
 
 				//! Setup class in python
 				static void setup_python();

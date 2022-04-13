@@ -152,7 +152,7 @@ namespace rogue
 				virtual uint32_t getPeriodNs();
 
 			public:
-				JtagDriverAxisToJtag(int argc, char *const argv[], unsigned debug = 0);
+				JtagDriverAxisToJtag(std::string host, uint16_t port);
 
 				// initialization after full construction
 				virtual void

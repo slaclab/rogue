@@ -31,8 +31,8 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
-rpx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(int argc, char *const argv[], unsigned debug)
-	: JtagDriver(argc, argv, debug),
+rpx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(std::string host, uint16_t port)
+	: JtagDriver(host, port),
 	  wordSize_(sizeof(Header)),
 	  memDepth_(1),
 	  retry_(5),
