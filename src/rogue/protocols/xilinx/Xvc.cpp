@@ -25,7 +25,6 @@
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/Buffer.h>
 #include <rogue/GeneralError.h>
-#include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
 #include <stdlib.h>

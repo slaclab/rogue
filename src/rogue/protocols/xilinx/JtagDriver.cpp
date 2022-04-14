@@ -30,6 +30,19 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
+#ifndef NO_PYTHON
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+#include <boost/python.hpp>
+namespace bp = boost::python;
+#endif
+
+//! Class creation
+rpx::JtagDriverPtr rpx::JtagDriver::create(std::string host, uint16_t port)
+{
+   rpx::JtagDriverPtr r = std::make_shared<rpx::JtagDriver>(host, port);
+   return (r);
+}
+
 rpx::JtagDriver::JtagDriver(std::string host, uint16_t port)
 	: debug_ (false),
 	  drop_  (0    ),
@@ -57,6 +70,7 @@ void rpx::JtagDriver::setup_python()
 {
 #ifndef NO_PYTHON
 
-   //bp::class_<rpx::JtagDriver, rpx::JtagDriverPtr, bp::bases<>, boost::noncopyable>("JtagDriver", bp::init<std::string, uint16_t>());
+   bp::class_<rpx::JtagDriver, rpx::JtagDriverPtr, bp::bases<>, boost::noncopyable>("JtagDriver", bp::init<std::string, uint16_t>());
+   bp::implicitly_convertible<rpx::JtagDriverPtr, rpx::JtagDriverPtr>();
 #endif
 }

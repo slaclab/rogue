@@ -153,6 +153,10 @@ namespace rogue
 				virtual uint32_t getPeriodNs();
 
 			public:
+                //! Class creation
+                static std::shared_ptr<rogue::protocols::xilinx::JtagDriverAxisToJtag>
+                create(std::string host, uint16_t port);
+
                 //! Setup class in python
                 static void setup_python();
 				
@@ -160,14 +164,14 @@ namespace rogue
 
 				// initialization after full construction
 				virtual void
-				init();
+				init() override;
 
 				// virtual method to be implemented by transport-level driver;
 				// transmit txBytes from TX buffer (txb) and receive 'hsize' header
 				// bytes into hdbuf and up to 'size' bytes into rxb.
 				// RETURNS: number of payload bytes (w/o header).
 				virtual int
-				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) = 0;
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) {return 0;}
 
 				// Transfer with retry/timeout.
 				// 'txBytes' are transmitted from the TX buffer 'txb'.
@@ -178,17 +182,15 @@ namespace rogue
 
 				// XVC query ("getinfo")
 				virtual unsigned long
-				query();
+				query() override;
 
 				virtual uint32_t
-				setPeriodNs(uint32_t newPeriod);
+				setPeriodNs(uint32_t newPeriod) override;
 
 				// XVC send vectors ("shift")
-				virtual void sendVectors(unsigned long bits, uint8_t *tms, uint8_t *tdi, uint8_t *tdo);
+				virtual void sendVectors(unsigned long bits, uint8_t *tms, uint8_t *tdi, uint8_t *tdo) override;
 
-				virtual void dumpInfo(FILE *f);
-
-				static void usage();
+				virtual void dumpInfo(FILE *f) override;
 			};
 
             static unsigned hdBufMax()

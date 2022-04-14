@@ -100,10 +100,10 @@ namespace rogue
             // Receive frame
             void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-				virtual unsigned long getMaxVectorSize();
+				virtual unsigned long getMaxVectorSize() final;
 
 				virtual int
-				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);            
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) final;            
          };
 
          // Convenience

@@ -49,6 +49,10 @@ namespace rogue
 				bool drEn_;
 
 			public:
+                //! Class creation
+                static std::shared_ptr<rogue::protocols::xilinx::JtagDriver>
+                create(std::string host, uint16_t port);
+
                 //! Setup class in python
                 static void setup_python();
 
@@ -60,14 +64,14 @@ namespace rogue
 
 				void setTestMode(unsigned flags);
 
-				virtual void init() = 0;
+				virtual void init() {};
 
 				// XVC query support; return the size of max. supported JTAG vector in bytes
 				//                    if 0 then no the target does not have memory and if
 				//                    there is reliable transport there is no limit to vector
 				//                    length.
 				virtual unsigned long
-				query() = 0;
+				query() {return 0;}
 
 				// Max. vector size (in bytes) this driver supports - may be different
 				// from what the target supports and the minimum will be used...
@@ -76,11 +80,11 @@ namespace rogue
 				// the driver must consider this when computing the max. supported
 				// vector size)
 				virtual unsigned long
-				getMaxVectorSize() = 0;
+				getMaxVectorSize() {return 0;}
 
 				// XVC -- setting to 0 merely retrieves
 				virtual uint32_t
-				setPeriodNs(uint32_t newPeriod) = 0;
+				setPeriodNs(uint32_t newPeriod) {return 0;}
 
 				// send tms and tdi vectors of length numBits (each) and receive tdo
 				// little-endian (first send/received at lowest offset)
@@ -89,14 +93,12 @@ namespace rogue
 					unsigned long numBits,
 					uint8_t *tms,
 					uint8_t *tdi,
-					uint8_t *tdo) = 0;
+					uint8_t *tdo) {};
 
 				virtual void
-				dumpInfo(FILE *f = stdout) = 0;
+				dumpInfo(FILE *f = stdout) {};
 
-				virtual ~JtagDriver() {}
-				
-				static void usage(); // to be implemented by subclass
+				virtual ~JtagDriver() {}				
 			};
 
             // Convenience

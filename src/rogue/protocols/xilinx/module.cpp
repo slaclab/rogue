@@ -25,6 +25,8 @@
 
 #include <rogue/protocols/xilinx/module.h>
 #include <rogue/protocols/xilinx/Xvc.h>
+#include <rogue/protocols/xilinx/JtagDriver.h>
+#include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
 
 namespace bp = boost::python;
 namespace rpx = rogue::protocols::xilinx;
@@ -41,7 +43,7 @@ void rpx::setup_module()
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rpx::Xvc::setup_python();
    rpx::JtagDriver::setup_python();
    rpx::JtagDriverAxisToJtag::setup_python();
+   rpx::Xvc::setup_python();
 }
