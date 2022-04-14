@@ -157,7 +157,7 @@ class FileReader(object):
                 return False
 
             self._header = RogueHeader._make(struct.Struct(RogueHeaderPack).unpack(self._currFile.read(RogueHeaderSize)))
-            self._header.size -= 4
+            self._header = self._header._replace(size=(self._header.size-4))
 
             # Set next frame position
             recEnd = self._currFile.tell() + self._header.size
