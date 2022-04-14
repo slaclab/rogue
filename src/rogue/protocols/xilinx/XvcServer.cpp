@@ -38,11 +38,11 @@ rpx::XvcServer::XvcServer(
 	unsigned debug,
 	unsigned maxMsgSize,
 	bool once)
-	: sock_(true),
-	  drv_(drv),
-	  debug_(debug),
-	  maxMsgSize_(maxMsgSize),
-	  once_(once)
+	: sock_       (true      ),
+	  drv_        (drv       ),
+	  debug_      (debug     ),
+	  maxMsgSize_ (maxMsgSize),
+	  once_       (once      )
 {
 	struct sockaddr_in a;
 	int yes = 1;

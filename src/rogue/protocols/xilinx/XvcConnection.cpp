@@ -22,9 +22,9 @@
 namespace rpx = rogue::protocols::xilinx;
 
 rpx::XvcConnection::XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecLen)
-	: drv_(drv),
-	  maxVecLen_(maxVecLen),
-	  supVecLen_(0)
+	: drv_       (drv      ),
+	  maxVecLen_ (maxVecLen),
+	  supVecLen_ (0        )
 {
 	socklen_t sz = sizeof(peer_);
 

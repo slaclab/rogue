@@ -53,14 +53,14 @@ rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port)
 
 //! Creator
 rpx::Xvc::Xvc(std::string host, uint16_t port)
-    : host_     (host   ),
-      port_     (port   ),
-      s_        (NULL   ),
-      frame_    (nullptr),
-      threadEn_ (false  ),
-	   mtu_      (1450   ),
-	   timeoutMs_(500    ),
-      JtagDriverAxisToJtag(host, port)
+    : host_      (host   ),
+      port_      (port   ),
+      s_         (NULL   ),
+      frame_     (nullptr),
+      threadEn_  (false  ),
+	   mtu_       (1450   ),
+	   timeoutMs_ (500    ),
+      JtagDriverAxisToJtag (host, port)
 {
    bool     setTest  = false;
    unsigned debug    = 0;

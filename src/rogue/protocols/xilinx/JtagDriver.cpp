@@ -38,9 +38,9 @@ namespace rpx = rogue::protocols::xilinx;
 // }
 
 rpx::JtagDriver::JtagDriver(std::string host, uint16_t port)
-	: debug_(false),
-	  drop_(0),
-	  drEn_(false)
+	: debug_ (false),
+	  drop_  (0    ),
+	  drEn_  (false)
 {
 }
 

@@ -49,7 +49,7 @@ rpx::StreamInterfaceDriver::StreamInterfaceDriver(std::string host, uint16_t por
 	  timeoutMs_ (500    ),
 	  jtag_      (nullptr),
 	  frame_     (nullptr),
-	  mtu_       (1450   ) // ethernet mtu minus MAC/IP/UDP addresses
+	  mtu_       (1450   )
 {
 	struct addrinfo hint, *res;
 	char buf[MAXL];
