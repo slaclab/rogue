@@ -31,18 +31,11 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
-//! Class creation
-// rpx::JtagDriverAxisToJtagPtr rpx::JtagDriverAxisToJtag::create(std::string host, uint16_t port)
-// {
-//    rpx::JtagDriverAxisToJtagPtr r = std::make_shared<rpx::JtagDriverAxisToJtag>(host, port);
-//    return (r);
-// }
-
 rpx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(std::string host, uint16_t port)
 	: JtagDriver (host, port    ),
 	  wordSize_  (sizeof(Header)),
 	  memDepth_  (1             ),
-	  retry_     (5             ),
+	  retry_     (10            ),
 	  periodNs_  (UNKNOWN_PERIOD)
 {
 	// start out with an initial header size; it might be increased
@@ -278,7 +271,7 @@ rpx::JtagDriverAxisToJtag::query()
 	if (0 == memDepth_)
 		retry_ = 0;
 	else
-		retry_ = 5;
+		retry_ = 10;
 
 	if ((siz = (2 * memDepth_ + 1) * wordSize_) > bufSz_)
 	{

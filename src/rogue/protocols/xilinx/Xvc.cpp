@@ -137,8 +137,6 @@ unsigned long rpx::Xvc::getMaxVectorSize()
 
 int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
-	int got = 0;
-
    // Keep track of the old frame so we don't read it again
    static ris::FramePtr procFrame = nullptr;
 
@@ -185,7 +183,7 @@ int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsiz
 
    procFrame = frame_;
 
-	return got;
+	return(0);
 }
 
 void rpx::Xvc::setup_python()
@@ -197,5 +195,6 @@ void rpx::Xvc::setup_python()
        .def("setPort",   &rpx::Xvc::setPort);
    bp::implicitly_convertible<rpx::XvcPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpx::XvcPtr, ris::SlavePtr>();
+   bp::implicitly_convertible<rpx::XvcPtr, rpx::JtagDriverAxisToJtagPtr>();
 #endif
 }

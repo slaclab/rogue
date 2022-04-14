@@ -30,13 +30,6 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
-//! Class creation
-// rpx::JtagDriverPtr rpx::JtagDriver::create(std::string host, uint16_t port)
-// {
-//    rpx::JtagDriverPtr r = std::make_shared<rpx::JtagDriver>(host, port);
-//    return (r);
-// }
-
 rpx::JtagDriver::JtagDriver(std::string host, uint16_t port)
 	: debug_ (false),
 	  drop_  (0    ),

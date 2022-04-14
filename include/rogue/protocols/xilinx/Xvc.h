@@ -59,6 +59,7 @@ namespace rogue
 				int timeoutMs_;
 				unsigned mtu_;
 
+            // Use rogue frames to exchange data with other rogue objects
             std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
             // Log
@@ -71,6 +72,7 @@ namespace rogue
             // Lock
             std::mutex mtx_;
 
+            // TCP server for Vivado client
             void runXvcServerThread();
 
          public:
@@ -94,9 +96,6 @@ namespace rogue
 
             //! Stop the interface
             void stop();
-
-            // Send frame
-            //void sendFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
 
             // Receive frame
             void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);

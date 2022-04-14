@@ -153,9 +153,6 @@ namespace rogue
 				virtual uint32_t getPeriodNs();
 
 			public:
-                // static std::shared_ptr<rogue::protocols::xilinx::JtagDriverAxisToJtag>
-                // create(std::string host, uint16_t port);
-
                 //! Setup class in python
                 static void setup_python();
 				

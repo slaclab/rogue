@@ -43,16 +43,12 @@ namespace rogue
 
 			protected:
 				unsigned debug_;
-				//XvcPtr jtag_;
 
 				// occasionally drop a packet for testing (when enabled)
 				unsigned drop_;
 				bool drEn_;
 
 			public:
-                // static std::shared_ptr<rogue::protocols::xilinx::JtagDriver>
-                // create(std::string host, uint16_t port);
-
                 //! Setup class in python
                 static void setup_python();
 
