@@ -53,12 +53,13 @@ rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port)
 
 //! Creator
 rpx::Xvc::Xvc(std::string host, uint16_t port)
-    : host_     (host  ),
-      port_     (port  ),
-      s_        (NULL  ),
-      threadEn_ (false ),
-	   mtu_      (1450  ),
-	   timeoutMs_(500   ),
+    : host_     (host   ),
+      port_     (port   ),
+      s_        (NULL   ),
+      frame_    (nullptr),
+      threadEn_ (false  ),
+	   mtu_      (1450   ),
+	   timeoutMs_(500    ),
       JtagDriverAxisToJtag(host, port)
 {
    bool     setTest  = false;
@@ -66,10 +67,10 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
    unsigned testMode = 0;
    
    // initialize fully constructed object
-   this->init();
+   init();
 
    if (setTest)
-      this->setTestMode(testMode);
+      setTestMode(testMode);
 
    // start XVC thread
    thread_   = new std::thread(&rpx::Xvc::runXvcServerThread, this);
@@ -79,7 +80,7 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
 //! Destructor
 rpx::Xvc::~Xvc()
 {
-   this->stop();
+   stop();
    delete s_;
 }
 
@@ -120,12 +121,10 @@ void rpx::Xvc::runXvcServerThread()
 //! Accept a frame
 void rpx::Xvc::acceptFrame ( ris::FramePtr frame )
 {
-   // Set the frame pointer in the rogue stream driver
+   // Master will call this function to have Xvc accept the frame
    frame_ = frame;
 
-   // Now what???
-   // Master will call this acceptFrame() to receive the frame
-   // However, at the same time, 
+   // Now what ???
 }
 
 unsigned long rpx::Xvc::getMaxVectorSize()
@@ -138,15 +137,18 @@ unsigned long rpx::Xvc::getMaxVectorSize()
 
 int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
-	int got;
+	int got = 0;
+
+   // Keep track of the old frame so we don't read it again
+   static ris::FramePtr procFrame = nullptr;
 
 	// --Write out the tx buffer as a rogue stream--
 	// Send the frame to the slave
 	// Class Xvc is both a master & a slave (here a master)
 	ris::FramePtr frame;
 
-    auto txData = txb;
-    auto txSize = txBytes;
+    uint8_t* txData = txb;
+    unsigned txSize = txBytes;
 
     // Generate frame
     frame = ris::Pool::acceptReq(txSize,false);
@@ -156,82 +158,32 @@ int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsiz
     ris::FrameIterator iter = frame->begin();
     ris::toFrame(iter, txSize, txData);
 
-    // Set frame meta data?
+    // Set frame meta data ???
     //frame->setFlags(flags);
     //frame->setChannel(chan);
     //frame->setError(err);
 
-    this -> sendFrame(frame);
+    sendFrame(frame);
 
 	// --Read in the rx buffer as a rogue stream--
 	// Accept the frame from the master
 	// Class Xvc is both a master & a slave (here a slave)
 
-   // Read data in hdbuf and rxb from received frame
+   while(frame_ == nullptr || frame_ == procFrame)
+      continue;
+   
+   // // Read data in hdbuf and rxb from received frame
+   uint8_t* rxData = rxb;
 
+   rogue::GilRelease noGil;
+   ris::FrameLockPtr frLock = frame_->lock();
+   std::lock_guard<std::mutex> lock(mtx_);
 
-	// if (write(poll_[0].fd, txb, txBytes) < 0)
-	// {
-	// 	if (EMSGSIZE == errno)
-	// 	{
-	// 		fprintf(stderr, "UDP message size too large; would require fragmentation!\n");
-	// 		fprintf(stderr, "Try to reduce using the driver option -- -m <mtu_size>.\n");
-	// 	}
-	// 	throw SysErr("JtagDriverUdp: unable to send");
-	// }
+   // // Copy data
+   iter = frame_->begin();
+   ris::fromFrame(iter, frame_->getPayload(), rxData);
 
-	// poll_[0].revents = 0;
-
-	// got = poll(poll_, sizeof(poll_) / sizeof(poll_[0]), timeoutMs_ /* ms */);
-
-	// if (got < 0)
-	// {
-	// 	throw SysErr("JtagDriverUdp: poll failed");
-	// }
-
-	// if (got == 0)
-	// {
-	// 	throw TimeoutErr();
-	// }
-
-	// if (poll_[0].revents & POLLERR)
-	// {
-	// 	throw std::runtime_error("JtagDriverUdp -- internal error; poll has POLLERR set");
-	// }
-
-	// if (poll_[0].revents & POLLNVAL)
-	// {
-	// 	throw std::runtime_error("JtagDriverUdp -- internal error; poll has POLLNVAL set");
-	// }
-
-	// if (!(poll_[0].revents & POLLIN))
-	// {
-	// 	throw std::runtime_error("JtagDriverUdp -- poll with no data?");
-	// }
-
-	// iovs_[0].iov_base = hdbuf;
-	// iovs_[0].iov_len = hsize;
-	// iovs_[1].iov_base = rxb;
-	// iovs_[1].iov_len = size;
-
-	// got = readv(poll_[0].fd, iovs_, sizeof(iovs_) / sizeof(iovs_[0]));
-
-	// if (debug_ > 1)
-	// {
-	// 	fprintf(stderr, "HSIZE %d, SIZE %d, got %d\n", hsize, size, got);
-	// }
-
-	// if (got < 0)
-	// {
-	// 	throw SysErr("JtagDriverUdp -- recvmsg failed");
-	// }
-
-	// got -= hsize;
-
-	// if (got < 0)
-	// {
-	// 	throw ProtoErr("JtagDriverUdp -- not enough header data received");
-	// }
+   procFrame = frame_;
 
 	return got;
 }

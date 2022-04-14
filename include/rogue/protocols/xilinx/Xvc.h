@@ -44,6 +44,8 @@ namespace rogue
                      public rogue::interfaces::stream::Slave,
                      public rogue::protocols::xilinx::JtagDriverAxisToJtag
          {
+         protected:
+
             //! Address, hostname or ip address
             std::string host_;
 
@@ -66,9 +68,13 @@ namespace rogue
             bool threadEn_;            
             std::thread* thread_;
 
+            // Lock
+            std::mutex mtx_;
+
             void runXvcServerThread();
 
          public:
+
             //! Class creation
             static std::shared_ptr<rogue::protocols::xilinx::Xvc>
             create(std::string host, uint16_t port);
