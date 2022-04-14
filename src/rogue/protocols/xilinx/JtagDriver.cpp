@@ -30,6 +30,13 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
+//! Class creation
+// rpx::JtagDriverPtr rpx::JtagDriver::create(std::string host, uint16_t port)
+// {
+//    rpx::JtagDriverPtr r = std::make_shared<rpx::JtagDriver>(host, port);
+//    return (r);
+// }
+
 rpx::JtagDriver::JtagDriver(std::string host, uint16_t port)
 	: debug_(false),
 	  drop_(0),
@@ -51,4 +58,12 @@ unsigned
 rpx::JtagDriver::getDebug()
 {
 	return debug_;
+}
+
+void rpx::JtagDriver::setup_python()
+{
+#ifndef NO_PYTHON
+
+   //bp::class_<rpx::JtagDriver, rpx::JtagDriverPtr, bp::bases<>, boost::noncopyable>("JtagDriver", bp::init<std::string, uint16_t>());
+#endif
 }

@@ -31,6 +31,13 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
+//! Class creation
+// rpx::JtagDriverAxisToJtagPtr rpx::JtagDriverAxisToJtag::create(std::string host, uint16_t port)
+// {
+//    rpx::JtagDriverAxisToJtagPtr r = std::make_shared<rpx::JtagDriverAxisToJtag>(host, port);
+//    return (r);
+// }
+
 rpx::JtagDriverAxisToJtag::JtagDriverAxisToJtag(std::string host, uint16_t port)
 	: JtagDriver(host, port),
 	  wordSize_(sizeof(Header)),
@@ -350,4 +357,13 @@ void rpx::JtagDriverAxisToJtag::dumpInfo(FILE *f)
 
 void rpx::JtagDriverAxisToJtag::usage()
 {
+}
+
+void rpx::JtagDriverAxisToJtag::setup_python()
+{
+#ifndef NO_PYTHON
+
+   //bp::class_<rpx::JtagDriverAxisToJtag, rpx::JtagDriverAxisToJtagPtr, bp::bases<rpx::JtagDriver>, boost::noncopyable>("JtagDriverAxisToJtag", bp::init<std::string, uint16_t>());
+   //bp::implicitly_convertible<rpx::JtagDriverAxisToJtagPtr, rpx::JtagDriverPtr>();
+#endif
 }

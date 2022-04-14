@@ -42,4 +42,6 @@ void rpx::setup_module()
    bp::scope io_scope = module;
 
    rpx::Xvc::setup_python();
+   rpx::JtagDriver::setup_python();
+   rpx::JtagDriverAxisToJtag::setup_python();
 }

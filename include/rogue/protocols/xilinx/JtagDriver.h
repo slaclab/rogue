@@ -49,6 +49,12 @@ namespace rogue
 				bool drEn_;
 
 			public:
+                // static std::shared_ptr<rogue::protocols::xilinx::JtagDriver>
+                // create(std::string host, uint16_t port);
+
+                //! Setup class in python
+                static void setup_python();
+
 				JtagDriver(std::string host, uint16_t port);
 
 				// set/get debug level
@@ -95,6 +101,9 @@ namespace rogue
 				
 				static void usage(); // to be implemented by subclass
 			};
+
+            // Convenience
+            typedef std::shared_ptr<rogue::protocols::xilinx::JtagDriver> JtagDriverPtr;
 		}
 	}
 }
