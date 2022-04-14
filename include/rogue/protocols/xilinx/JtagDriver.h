@@ -57,10 +57,6 @@ namespace rogue
 
 				void setTestMode(unsigned flags);
 
-				virtual void setJtag(void *) = 0;
-
-				virtual void setFrame(void *) = 0;
-
 				virtual void init() = 0;
 
 				// XVC query support; return the size of max. supported JTAG vector in bytes

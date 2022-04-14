@@ -63,15 +63,9 @@ namespace rogue
 				getMaxVectorSize();
 
 				virtual int
-				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) {};
 
 				virtual ~StreamInterfaceDriver();
-
-                virtual void setJtag(void* jtag) {jtag_ = jtag; }
-
-                virtual void setFrame(void* frame) {frame_ = frame; }
-
-				virtual void setFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 			};
 		}
 	}

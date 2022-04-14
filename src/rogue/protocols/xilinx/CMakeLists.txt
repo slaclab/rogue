@@ -19,7 +19,6 @@ target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcServer.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/XvcConnection.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/JtagDriver.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/JtagDriverAxisToJtag.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/StreamInterfaceDriver.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Xvc.cpp")
 
 if (NOT NO_PYTHON)

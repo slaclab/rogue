@@ -22,6 +22,7 @@
 #include <rogue/protocols/xilinx/XvcServer.h>
 #include <rogue/protocols/xilinx/XvcConnection.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
+#include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
 #include <rogue/Logging.h>
 #include <thread>
 #include <stdint.h>
@@ -40,7 +41,8 @@ namespace rogue
          const unsigned int kMaxArgs = 3;
 
          class Xvc : public rogue::interfaces::stream::Master,
-                     public rogue::interfaces::stream::Slave
+                     public rogue::interfaces::stream::Slave,
+                     public rogue::protocols::xilinx::JtagDriverAxisToJtag
          {
             //! Address, hostname or ip address
             std::string host_;
@@ -52,6 +54,11 @@ namespace rogue
             XvcServer  *s_;
             JtagDriver *drv_;
 
+				int timeoutMs_;
+				unsigned mtu_;
+
+            std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+
             // Log
             std::shared_ptr<rogue::Logging> logger_;
 
@@ -59,7 +66,7 @@ namespace rogue
             bool threadEn_;            
             std::thread* thread_;
 
-            void runXvcThread();
+            void runXvcServerThread();
 
          public:
             //! Class creation
@@ -87,6 +94,11 @@ namespace rogue
 
             // Receive frame
             void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+
+				virtual unsigned long getMaxVectorSize();
+
+				virtual int
+				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size);            
          };
 
          // Convenience
