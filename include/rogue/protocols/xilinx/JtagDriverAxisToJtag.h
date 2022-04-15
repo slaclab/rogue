@@ -153,12 +153,12 @@ namespace rogue
 				virtual uint32_t getPeriodNs();
 
 			public:
-                //! Class creation
-                static std::shared_ptr<rogue::protocols::xilinx::JtagDriverAxisToJtag>
-                create(std::string host, uint16_t port);
+                                //! Class creation
+                                static std::shared_ptr<rogue::protocols::xilinx::JtagDriverAxisToJtag>
+                                create(std::string host, uint16_t port);
 
-                //! Setup class in python
-                static void setup_python();
+                                //! Setup class in python
+                                static void setup_python();
 				
 				JtagDriverAxisToJtag(std::string host, uint16_t port);
 
@@ -193,13 +193,13 @@ namespace rogue
 				virtual void dumpInfo(FILE *f) override;
 			};
 
-            static unsigned hdBufMax()
-            {
-	            return 16;
-            }
+                        static unsigned hdBufMax()
+                        {
+	                   return 16;
+                        }
 
-            // Convenience
-            typedef std::shared_ptr<rogue::protocols::xilinx::JtagDriverAxisToJtag> JtagDriverAxisToJtagPtr;
+                        // Convenience
+                        typedef std::shared_ptr<rogue::protocols::xilinx::JtagDriverAxisToJtag> JtagDriverAxisToJtagPtr;
 		}
 	}
 }

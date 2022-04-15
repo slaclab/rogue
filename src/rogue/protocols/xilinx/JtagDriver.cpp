@@ -44,33 +44,35 @@ rpx::JtagDriverPtr rpx::JtagDriver::create(std::string host, uint16_t port)
 }
 
 rpx::JtagDriver::JtagDriver(std::string host, uint16_t port)
-	: debug_ (false),
-	  drop_  (0    ),
-	  drEn_  (false)
+   : debug_ (false),
+     drop_  (0    ),
+     drEn_  (false),
+     host_  (host ),
+     port_  (port )
 {
 }
 
 void rpx::JtagDriver::setDebug(unsigned debug)
-{
-	debug_ = debug;
+{	
+   debug_ = debug;
 }
 
 void rpx::JtagDriver::setTestMode(unsigned flags)
 {
-	drEn_ = !!(flags & 1);
+   drEn_ = !!(flags & 1);
 }
 
 unsigned
 rpx::JtagDriver::getDebug()
 {
-	return debug_;
+   return debug_;
 }
 
 void rpx::JtagDriver::setup_python()
 {
 #ifndef NO_PYTHON
 
-   bp::class_<rpx::JtagDriver, rpx::JtagDriverPtr, bp::bases<>, boost::noncopyable>("JtagDriver", bp::init<std::string, uint16_t>());
+   bp::class_<rpx::JtagDriver, rpx::JtagDriverPtr, boost::noncopyable>("JtagDriver", bp::init<std::string, uint16_t>());
    bp::implicitly_convertible<rpx::JtagDriverPtr, rpx::JtagDriverPtr>();
 #endif
 }

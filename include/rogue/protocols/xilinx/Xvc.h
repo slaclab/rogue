@@ -23,6 +23,7 @@
 #include <rogue/protocols/xilinx/XvcConnection.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
 #include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
+#include <rogue/EnableSharedFromThis.h>
 #include <rogue/Logging.h>
 #include <thread>
 #include <stdint.h>
@@ -42,28 +43,23 @@ namespace rogue
 
          class Xvc : public rogue::interfaces::stream::Master,
                      public rogue::interfaces::stream::Slave,
-                     public rogue::protocols::xilinx::JtagDriverAxisToJtag
+                     public rogue::protocols::xilinx::JtagDriverAxisToJtag,
+                     public rogue::EnableSharedFromThis<rogue::protocols::xilinx::Xvc>
          {
          protected:
-
-            //! Address, hostname or ip address
-            std::string host_;
-
-            //! Remote port number
-            uint16_t port_;
 
             //! Pointers to JTAG driver and XVC server
             XvcServer  *s_;
             JtagDriver *drv_;
 
-				int timeoutMs_;
-				unsigned mtu_;
+            int timeoutMs_;
+            unsigned mtu_;
 
             // Use rogue frames to exchange data with other rogue objects
             std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
             // Log
-            std::shared_ptr<rogue::Logging> logger_;
+            std::shared_ptr<rogue::Logging> xvcLog_;
 
             //! Thread background
             bool threadEn_;            
@@ -84,10 +80,6 @@ namespace rogue
             //! Setup class in python
             static void setup_python();
 
-            // Setters
-            void setHost(std::string host);
-            void setPort(uint16_t port);
-
             //! Creator
             Xvc(std::string host, uint16_t port);
 
@@ -100,10 +92,10 @@ namespace rogue
             // Receive frame
             void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-				virtual unsigned long getMaxVectorSize() final;
+            virtual unsigned long getMaxVectorSize() final;
 
-				virtual int
-				xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) final;            
+            virtual int
+            xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) final;            
          };
 
          // Convenience
