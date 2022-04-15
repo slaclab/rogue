@@ -53,7 +53,7 @@ rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port)
 //! Creator
 rpx::Xvc::Xvc(std::string host, uint16_t port)
    : JtagDriverAxisToJtag (host, port),
-     s_         (NULL   ),
+     s_         (nullptr),
      frame_     (nullptr),
      threadEn_  (false  ),
      mtu_       (1450   ),
@@ -124,10 +124,7 @@ unsigned long rpx::Xvc::getMaxVectorSize()
 
 int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
 {
-    // Keep track of the old frame so we don't read it again
-    static ris::FramePtr procFrame = nullptr;
-
-    // --Write out the tx buffer as a rogue stream--
+    // Write out the tx buffer as a rogue stream
     // Send the frame to the slave
     // Class Xvc is both a master & a slave (here a master)
     ris::FramePtr frame;
@@ -136,39 +133,34 @@ int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsiz
     unsigned txSize = txBytes;
 
     // Generate frame
-    frame = ris::Pool::acceptReq(txSize,false);
-    frame->setPayload(txSize);
+    frame = reqFrame (txSize, true);
+    frame->setPayload(txSize      );
 
     // Copy data
     ris::FrameIterator iter = frame->begin();
     ris::toFrame(iter, txSize, txData);
 
-    // Set frame meta data ???
-    //frame->setFlags(flags);
-    //frame->setChannel(chan);
-    //frame->setError(err);
-
     sendFrame(frame);
 
-    // --Read in the rx buffer as a rogue stream--
+    // Read in the rx buffer as a rogue stream
     // Accept the frame from the master
     // Class Xvc is both a master & a slave (here a slave)
 
-   while(frame_ == nullptr || frame_ == procFrame)
+   while(frame_ == nullptr)
       continue;
    
-   // // Read data in hdbuf and rxb from received frame
+   // Read data in hdbuf and rxb from received frame
    uint8_t* rxData = rxb;
 
    rogue::GilRelease noGil;
    ris::FrameLockPtr frLock = frame_->lock();
    std::lock_guard<std::mutex> lock(mtx_);
 
-   // // Copy data
+   // Copy data
    iter = frame_->begin();
    ris::fromFrame(iter, frame_->getPayload(), rxData);
 
-   procFrame = frame_;
+   frame_ = nullptr;
 
    return(0);
 }
