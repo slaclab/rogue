@@ -60,7 +60,7 @@ void rim::Transaction::setup_python() {
       .def("size",    &rim::Transaction::size)
       .def("type",    &rim::Transaction::type)
       .def("done",    &rim::Transaction::done)
-      .def("error",   &rim::Transaction::errorPy)
+      .def("error",   &rim::Transaction::errorStr)
       .def("expired", &rim::Transaction::expired)
       .def("setData", &rim::Transaction::setData)
       .def("getData", &rim::Transaction::getData)
@@ -170,7 +170,7 @@ void rim::Transaction::done() {
 }
 
 //! Complete transaction with passed error, lock must be held
-void rim::Transaction::errorPy(std::string error) {
+void rim::Transaction::errorStr(std::string error) {
    error_ = error;
    done_  = true;
 
@@ -203,7 +203,7 @@ void rim::Transaction::error(const char * fmt, ...) {
    vsnprintf(buffer,10000,fmt,args);
    va_end(args);
 
-   errorPy(std::string(buffer));
+   errorStr(std::string(buffer));
 }
 
 //! Wait for the transaction to complete
