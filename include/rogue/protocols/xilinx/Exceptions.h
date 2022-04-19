@@ -41,7 +41,7 @@ namespace rogue
          {
             public:
                SysErr(const char *prefix);
-	 };
+         };
 
          // Protocol error
          class ProtoErr : public std::runtime_error
