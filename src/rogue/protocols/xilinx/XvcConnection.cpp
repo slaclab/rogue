@@ -18,6 +18,7 @@
 #include <rogue/protocols/xilinx/Exceptions.h>
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
+#include <iostream>
 
 namespace rpx = rogue::protocols::xilinx;
 
@@ -138,6 +139,7 @@ void rpx::XvcConnection::run()
 	unsigned long vecLen;
 	unsigned long off;
 
+        std::cout << "Driver pointer is: " << drv_ << std::endl;
 	allocBufs();
 
 	// XVC protocol is synchronous / not pipelined :-(
@@ -170,18 +172,20 @@ void rpx::XvcConnection::run()
 			if (0 == ::memcmp(rp_, "ge", 2))
 			{
 				fill(8);
-
-				drv_->query(); // informs the driver that there is a new connection
+                                std::cout << "XvcConnection: received ge over TCP port" << std::endl;
+                                drv_->query(); // informs the driver that there is a new connection
 
 				tl_ = sprintf((char *)&txb_[0], "xvcServer_v1.0:%ld\n", maxVecLen_);
 
 				bump(8);
+                                std::cout << "rp_ = ge" << std::endl;
 			}
 			else if (0 == ::memcmp(rp_, "se", 2))
 			{
 				uint32_t requestedPeriod;
 				uint32_t newPeriod;
 
+                                std::cout << "XvcConnection: received se over TCP port" << std::endl;
 				fill(11);
 
 				requestedPeriod = (rp_[10] << 24) | (rp_[9] << 16) | (rp_[8] << 8) | rp_[7];
@@ -197,9 +201,11 @@ void rpx::XvcConnection::run()
 				tl_ = 4;
 
 				bump(11);
+                                std::cout << "rp_ = se" << std::endl;
 			}
 			else if (0 == ::memcmp(rp_, "sh", 2))
 			{
+                                std::cout << "XvcConnection: received sh over TCP port" << std::endl;
 				fill(10);
 
 				bits = 0;
@@ -235,6 +241,7 @@ void rpx::XvcConnection::run()
 				tl_ = bytes;
 
 				bump(2 * bytes);
+                                std::cout << "rp_ = sh" << std::endl;
 			}
 			else
 			{

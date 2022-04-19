@@ -55,6 +55,7 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
    : JtagDriverAxisToJtag (host, port),
      s_         (nullptr),
      frame_     (nullptr),
+     thread_    (nullptr),
      threadEn_  (false  ),
      mtu_       (1450   ),
      timeoutMs_ (500    )
@@ -62,18 +63,18 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
    bool     setTest  = false;
    unsigned debug    = 0;
    unsigned testMode = 0;
-   
-   // initialize fully constructed object
-   init();
-
-   xvcLog_  = rogue::Logging::create("xilinx.Xvc");
+  
+   xvcLog_ = rogue::Logging::create("xilinx.Xvc");
 
    if (setTest)
       setTestMode(testMode);
 
-   // start XVC thread
-   thread_   = new std::thread(&rpx::Xvc::runXvcServerThread, this);
-   threadEn_ = true;
+   // create a lock to allow completion of constructor before the thread runs
+   std::shared_ptr<int> lock = std::make_shared<int>(0);
+
+   // start thread
+   thread_    = new std::thread(&rpx::Xvc::runThread, this, std::weak_ptr<int>(lock));
+   threadEn_  = true;
 }
 
 //! Destructor
@@ -93,12 +94,23 @@ void rpx::Xvc::stop()
    }
 }
 
-//! Run XVC thread
-void rpx::Xvc::runXvcServerThread()
+//! Run driver initialization and XVC thread
+void rpx::Xvc::runThread(std::weak_ptr<int> lock)
 {
    bool     once     = false;
    unsigned debug    = 0;
    unsigned maxMsg   = 32768;
+
+   // Check if constructor is done
+   while (!lock.expired())
+      continue;
+
+   std::cout << "Xvc::runThread: initialize driver" << std::endl;
+
+   // Driver initialization
+   this->init();
+
+   std::cout << "Xvc::runThread: start XVC-Server" << std::endl;
 
    // Start the XVC server on localhost
    s_ = new XvcServer(port_, this, debug, maxMsg, once);
@@ -111,7 +123,10 @@ void rpx::Xvc::acceptFrame ( ris::FramePtr frame )
    // Master will call this function to have Xvc accept the frame
    frame_ = frame;
 
-   // Now what ???
+   // XvcConnection class manages the TCP connection to Vivado.
+   // After a Vivado request is issued and forwarded to the FPGA, we wait for the response.
+   // XvcConnection will call the xfer() below to do the transfer when a response comes in.
+   // All we need to do is ensure that frame_ already points to the new frame of data coming in.
 }
 
 unsigned long rpx::Xvc::getMaxVectorSize()
@@ -122,45 +137,66 @@ unsigned long rpx::Xvc::getMaxVectorSize()
    return mtuLim;
 }
 
-int rpx::Xvc::xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size)
+int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes)
 {
-    // Write out the tx buffer as a rogue stream
-    // Send the frame to the slave
-    // Class Xvc is both a master & a slave (here a master)
-    ris::FramePtr frame;
-
-    uint8_t* txData = txb;
-    unsigned txSize = txBytes;
-
-    // Generate frame
-    frame = reqFrame (txSize, true);
-    frame->setPayload(txSize      );
-
-    // Copy data
-    ris::FrameIterator iter = frame->begin();
-    ris::toFrame(iter, txSize, txData);
-
-    sendFrame(frame);
-
-    // Read in the rx buffer as a rogue stream
-    // Accept the frame from the master
-    // Class Xvc is both a master & a slave (here a slave)
-
-   while(frame_ == nullptr)
-      continue;
-   
-   // Read data in hdbuf and rxb from received frame
-   uint8_t* rxData = rxb;
-
-   rogue::GilRelease noGil;
-   ris::FrameLockPtr frLock = frame_->lock();
-   std::lock_guard<std::mutex> lock(mtx_);
-
-   // Copy data
-   iter = frame_->begin();
-   ris::fromFrame(iter, frame_->getPayload(), rxData);
-
+   // Initialize poiner for received frame
    frame_ = nullptr;
+
+   // Write out the tx buffer as a rogue stream
+   // Send frame to slave (e.g. UDP Client or DMA channel)
+   // Note that class Xvc is both a master & a slave (here a master)
+   ris::FramePtr frame;
+
+   std::cout << "Running Xvc::xfer()" << std::endl;
+   std::cout << "Have " << txBytes << " bytes to send" << std::endl;
+
+   // Generate frame
+   frame = reqFrame (txBytes, true);
+   frame->setPayload(txBytes      );
+
+   // Copy data from transmitter buffer
+   ris::FrameIterator iter = frame->begin();
+   ris::toFrame(iter, txBytes, txBuffer);
+
+   std::cout << "Sending new frame" << std::endl;
+   std::cout << "Frame size is " << frame->getSize() << std::endl;
+
+   // Send frame
+   if (txBytes)
+      sendFrame(frame);
+
+   // Wait for response
+   usleep(1000);
+
+   // Read in the rx buffer as a rogue stream
+   // Accept frame from master (e.g. UDP Client or DMA channel)
+   // Note that class Xvc is both a master & a slave (here a slave)
+
+   // Process reply when available
+   if ( frame_ != nullptr )
+   {
+      std::cout << "Receiving new frame" << std::endl;
+      std::cout << "Frame size is " << frame_->getSize() << std::endl;
+   
+      // Read received data into the hdbuf and rxb buffers
+      rogue::GilRelease noGil;
+      ris::FrameLockPtr frLock = frame_->lock();
+      std::lock_guard<std::mutex> lock(mtx_);
+
+      // Populate header buffer
+      iter = frame_->begin();
+      if (hdBuffer)
+         std::copy(iter, iter+hdBytes, hdBuffer);
+
+      // Populate receiver buffer
+      if (rxBuffer)
+         ris::fromFrame(iter += hdBytes, frame_->getPayload() - hdBytes, rxBuffer);
+
+      // Reset frame pointer
+      frame_ = nullptr;
+   }
+   else
+      std::cout << "Timed out waiting for a reply (i.e. new frame)" << std::endl;
 
    return(0);
 }

@@ -24,6 +24,7 @@
 #include <pthread.h>
 #include <math.h>
 #include <string>
+#include <iostream>
 
 // To be defined by Makefile
 #ifndef XVC_SRV_VERSION
@@ -74,7 +75,8 @@ void rpx::XvcServer::run()
 		XvcConnection conn(sock_.getSd(), drv_, maxMsgSize_);
 		try
 		{
-			conn.run();
+		        std::cout << "Running XvcConnection" << std::endl;
+                        conn.run();
 		}
 		catch (SysErr &e)
 		{

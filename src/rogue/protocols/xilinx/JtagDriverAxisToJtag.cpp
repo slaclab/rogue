@@ -23,6 +23,7 @@
 #include <pthread.h>
 #include <math.h>
 #include <string>
+#include <iostream>
 
 // To be defined by Makefile
 #ifndef XVC_SRV_VERSION
@@ -212,6 +213,8 @@ int rpx::JtagDriverAxisToJtag::xferRel(uint8_t *txb, unsigned txBytes, Header *p
    unsigned e;
    int got;
 
+   std::cout << "sent xid = " << static_cast<unsigned short>(xid) << std::endl;
+
    for (attempt = 0; attempt <= retry_; attempt++)
    {
       Header hdr;
@@ -219,6 +222,7 @@ int rpx::JtagDriverAxisToJtag::xferRel(uint8_t *txb, unsigned txBytes, Header *p
       {
          got = xfer(txb, txBytes, &hdBuf_[0], getWordSize(), rxb, sizeBytes);
          hdr = getHdr(&hdBuf_[0]);
+         std::cout << "received xid = " << static_cast<unsigned short>(getXid(hdr)) << std::endl;
          if ((e = getErr(hdr)))
          {
             char errb[256];
@@ -264,9 +268,9 @@ rpx::JtagDriverAxisToJtag::query()
       fprintf(stderr, "query\n");
    }
 
-   xferRel(&txBuf_[0], getWordSize(), &hdr, 0, 0);
-
+   xferRel(&txBuf_[0], getWordSize(), &hdr, nullptr, 0);
    wordSize_ = wordSize(hdr);
+
    if (wordSize_ < sizeof(hdr))
    {
       throw ProtoErr("Received invalid word size");
@@ -346,7 +350,7 @@ void rpx::JtagDriverAxisToJtag::sendVectors(unsigned long bits, uint8_t *tms, ui
       memcpy(wp, &tms[idx], bytesLeft);
       memcpy(wp + wsz, &tdi[idx], bytesLeft);
    }
-   xferRel(&txBuf_[0], bytesTot, 0, tdo, bytesCeil);
+   xferRel(&txBuf_[0], bytesTot, nullptr, tdo, bytesCeil);
 }
 
 void rpx::JtagDriverAxisToJtag::dumpInfo(FILE *f)

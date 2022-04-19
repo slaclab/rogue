@@ -69,7 +69,7 @@ namespace rogue
             std::mutex mtx_;
 
             // TCP server for Vivado client
-            void runXvcServerThread();
+            void runThread(std::weak_ptr<int> lock);
 
          public:
 
@@ -95,7 +95,7 @@ namespace rogue
             virtual unsigned long getMaxVectorSize() final;
 
             virtual int
-            xfer(uint8_t *txb, unsigned txBytes, uint8_t *hdbuf, unsigned hsize, uint8_t *rxb, unsigned size) final;            
+            xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes) final;
          };
 
          // Convenience
