@@ -44,7 +44,7 @@ rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
 
    while ( tran_->isSubTransaction_ ) {
       rim::TransactionPtr parentTran = this->parentTransaction_.lock();
-      if (parentTran) tran_ = parentTran
+      if (parentTran) tran_ = parentTran;
       else break;
    }
    tran_->lock_.lock();
