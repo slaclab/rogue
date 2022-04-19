@@ -31,16 +31,16 @@
 namespace rpx = rogue::protocols::xilinx;
 
 rpx::SysErr::SysErr(const char *prefix)
-	: std::runtime_error(std::string(prefix) + std::string(": ") + std::string(::strerror(errno)))
+   : std::runtime_error(std::string(prefix) + std::string(": ") + std::string(::strerror(errno)))
 {
 }
 
 rpx::ProtoErr::ProtoErr(const char *msg)
-	: std::runtime_error(std::string("Protocol error: ") + std::string(msg))
+   : std::runtime_error(std::string("Protocol error: ") + std::string(msg))
 {
 }
 
 rpx::TimeoutErr::TimeoutErr(const char *detail)
-	: std::runtime_error(std::string("Timeout error; too many retries failed") + std::string(detail))
+   : std::runtime_error(std::string("Timeout error; too many retries failed") + std::string(detail))
 {
 }

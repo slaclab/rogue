@@ -34,71 +34,71 @@
 namespace rpx = rogue::protocols::xilinx;
 
 rpx::XvcServer::XvcServer(
-	uint16_t port,
-	JtagDriver *drv,
-	unsigned debug,
-	unsigned maxMsgSize,
-	bool once)
-	: sock_       (true      ),
-	  drv_        (drv       ),
-	  debug_      (debug     ),
-	  maxMsgSize_ (maxMsgSize),
-	  once_       (once      )
+                          uint16_t port,
+                          JtagDriver *drv,
+                          unsigned debug,
+                          unsigned maxMsgSize,
+                          bool once)
+   : sock_       (true      ),
+     drv_        (drv       ),
+     debug_      (debug     ),
+     maxMsgSize_ (maxMsgSize),
+     once_       (once      )
 {
-	struct sockaddr_in a;
-	int yes = 1;
+   struct sockaddr_in a;
+   int yes = 1;
 
-	a.sin_family = AF_INET;
-	a.sin_addr.s_addr = INADDR_ANY;
-	a.sin_port = htons(port);
+   a.sin_family = AF_INET;
+   a.sin_addr.s_addr = INADDR_ANY;
+   a.sin_port = htons(port);
 
-	if (::setsockopt(sock_.getSd(), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)))
-	{
-		throw SysErr("setsockopt(SO_REUSEADDR) failed");
-	}
+   if (::setsockopt(sock_.getSd(), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)))
+   {
+      throw SysErr("setsockopt(SO_REUSEADDR) failed");
+   }
 
-	if (::bind(sock_.getSd(), (struct sockaddr *)&a, sizeof(a)))
-	{
-		throw SysErr("Unable to bind Stream socket to local address");
-	}
+   if (::bind(sock_.getSd(), (struct sockaddr *)&a, sizeof(a)))
+   {
+      throw SysErr("Unable to bind Stream socket to local address");
+   }
 
-	if (::listen(sock_.getSd(), 1))
-	{
-		throw SysErr("Unable to listen on socket");
-	}
+   if (::listen(sock_.getSd(), 1))
+   {
+      throw SysErr("Unable to listen on socket");
+   }
 }
 
 void rpx::XvcServer::run()
 {
-	do
-	{
-		XvcConnection conn(sock_.getSd(), drv_, maxMsgSize_);
-		try
-		{
-		        std::cout << "Running XvcConnection" << std::endl;
-                        conn.run();
-		}
-		catch (SysErr &e)
-		{
-			fprintf(stderr, "Closing connection (%s)\n", e.what());
-		}
-	} while (!once_);
+   do
+   {
+      XvcConnection conn(sock_.getSd(), drv_, maxMsgSize_);
+      try
+      {
+         std::cout << "Running XvcConnection" << std::endl;
+         conn.run();
+      }
+      catch (SysErr &e)
+      {
+         fprintf(stderr, "Closing connection (%s)\n", e.what());
+      }
+   } while (!once_);
 }
 
 static void
 usage(const char *nm)
 {
-	fprintf(stderr, "Usage: %s [-v{v}] [-Vh] [-D <driver>] [-p <port>] -t <target> [ -- <driver_options>]\n", nm);
-	fprintf(stderr, "  -t <target> : contact target (depends on driver; e.g., <ip[:port]>)\n");
-	fprintf(stderr, "  -h          : this message\n");
-	fprintf(stderr, "  -D <driver> : use transport driver 'driver'\n");
-	fprintf(stderr, "                   built-in drivers:\n");
-	fprintf(stderr, "                   'udp' (default)\n");
-	fprintf(stderr, "                   'loopback'\n");
-	fprintf(stderr, "                   'udpLoopback'\n");
-	fprintf(stderr, "  -p <port>   : bind to TCP port <port> (default: 2542)\n");
-	fprintf(stderr, "  -M          : max XVC vector size (default 32768)\n");
-	fprintf(stderr, "  -v          : verbose (more 'v's increase verbosity)\n");
-	fprintf(stderr, "  -V          : print version information\n");
-	fprintf(stderr, "  -T <mode>   : set test mode/flags\n");
+   fprintf(stderr, "Usage: %s [-v{v}] [-Vh] [-D <driver>] [-p <port>] -t <target> [ -- <driver_options>]\n", nm);
+   fprintf(stderr, "  -t <target> : contact target (depends on driver; e.g., <ip[:port]>)\n");
+   fprintf(stderr, "  -h          : this message\n");
+   fprintf(stderr, "  -D <driver> : use transport driver 'driver'\n");
+   fprintf(stderr, "                   built-in drivers:\n");
+   fprintf(stderr, "                   'udp' (default)\n");
+   fprintf(stderr, "                   'loopback'\n");
+   fprintf(stderr, "                   'udpLoopback'\n");
+   fprintf(stderr, "  -p <port>   : bind to TCP port <port> (default: 2542)\n");
+   fprintf(stderr, "  -M          : max XVC vector size (default 32768)\n");
+   fprintf(stderr, "  -v          : verbose (more 'v's increase verbosity)\n");
+   fprintf(stderr, "  -V          : print version information\n");
+   fprintf(stderr, "  -T <mode>   : set test mode/flags\n");
 }

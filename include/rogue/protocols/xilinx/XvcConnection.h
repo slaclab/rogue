@@ -24,51 +24,50 @@
 
 namespace rogue
 {
-	namespace protocols
-	{
-		namespace xilinx
-		{
-			// Class managing a XVC tcp connection
-			class XvcConnection
-			{
+   namespace protocols
+   {
+      namespace xilinx
+      {
+         // Class managing a XVC tcp connection
+         class XvcConnection
+         {
+               JtagDriver *drv_;
+               int sd_;
+               struct sockaddr_in peer_;
+               // just use vectors to back raw memory; DONT use 'size/resize'// (unfortunately 'resize' fills elements beyond the current 'size'
+               // (unfortunately 'resize' fills elements beyond the current 'size'
+               // with zeroes)
+               vector<uint8_t> rxb_;
+               uint8_t *rp_;
+               unsigned long rl_;
+               unsigned long tl_;
 
-				JtagDriver *drv_;
-				int sd_;
-				struct sockaddr_in peer_;
-				// just use vectors to back raw memory; DONT use 'size/resize'
-				// (unfortunately 'resize' fills elements beyond the current 'size'
-				// with zeroes)
-				vector<uint8_t> rxb_;
-				uint8_t *rp_;
-				unsigned long rl_;
-				unsigned long tl_;
+               vector<uint8_t> txb_;
+               unsigned long maxVecLen_;
+               unsigned long supVecLen_;
+               unsigned long chunk_;
 
-				vector<uint8_t> txb_;
-				unsigned long maxVecLen_;
-				unsigned long supVecLen_;
-				unsigned long chunk_;
+            public:
+               XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768);
 
-			public:
-				XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768);
+               // fill rx buffer to 'n' octets (from TCP connection)
+               virtual void fill(unsigned long n);
 
-				// fill rx buffer to 'n' octets (from TCP connection)
-				virtual void fill(unsigned long n);
+               // send tx buffer to TCP connection
+               virtual void flush();
 
-				// send tx buffer to TCP connection
-				virtual void flush();
+               // discard 'n' octets from rx buffer (mark as consumed)
+               virtual void bump(unsigned long n);
 
-				// discard 'n' octets from rx buffer (mark as consumed)
-				virtual void bump(unsigned long n);
+               // (re)allocated buffers
+               virtual void allocBufs();
 
-				// (re)allocated buffers
-				virtual void allocBufs();
+               virtual void run();
 
-				virtual void run();
-
-				virtual ~XvcConnection();
-			};
-		}
-	}
+               virtual ~XvcConnection();
+         };
+      }
+   }
 }
 
 #endif

@@ -43,59 +43,57 @@ namespace rogue
 
          class Xvc : public rogue::interfaces::stream::Master,
                      public rogue::interfaces::stream::Slave,
-                     public rogue::protocols::xilinx::JtagDriverAxisToJtag,
-                     public rogue::EnableSharedFromThis<rogue::protocols::xilinx::Xvc>
+                     public rogue::protocols::xilinx::JtagDriverAxisToJtag
          {
-         protected:
+            protected:
 
-            //! Pointers to JTAG driver and XVC server
-            XvcServer  *s_;
-            JtagDriver *drv_;
+               //! Pointers to JTAG driver and XVC server
+               XvcServer  *s_;
 
-            int timeoutMs_;
-            unsigned mtu_;
+               int timeoutMs_;
+               unsigned mtu_;
 
-            // Use rogue frames to exchange data with other rogue objects
-            std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               // Use rogue frames to exchange data with other rogue objects
+               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
-            // Log
-            std::shared_ptr<rogue::Logging> xvcLog_;
+               // Log
+               std::shared_ptr<rogue::Logging> log_;
 
-            //! Thread background
-            bool threadEn_;            
-            std::thread* thread_;
+               //! Thread background
+               bool threadEn_;            
+               std::thread* thread_;
 
-            // Lock
-            std::mutex mtx_;
+               // Lock
+               std::mutex mtx_;
 
-            // TCP server for Vivado client
-            void runThread(std::weak_ptr<int> lock);
+               // TCP server for Vivado client
+               void runThread(std::weak_ptr<int> lock);
 
-         public:
+            public:
 
-            //! Class creation
-            static std::shared_ptr<rogue::protocols::xilinx::Xvc>
-            create(std::string host, uint16_t port);
+               //! Class creation
+               static std::shared_ptr<rogue::protocols::xilinx::Xvc>
+               create(std::string host, uint16_t port);
 
-            //! Setup class in python
-            static void setup_python();
+               //! Setup class in python
+               static void setup_python();
 
-            //! Creator
-            Xvc(std::string host, uint16_t port);
+               //! Creator
+               Xvc(std::string host, uint16_t port);
 
-            //! Destructor
-            ~Xvc();
+               //! Destructor
+               ~Xvc();
 
-            //! Stop the interface
-            void stop();
+               //! Stop the interface
+               void stop();
 
-            // Receive frame
-            void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+               // Receive frame
+               void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-            virtual unsigned long getMaxVectorSize() final;
+               virtual unsigned long getMaxVectorSize() final;
 
-            virtual int
-            xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes) final;
+               virtual int
+               xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes) final;
          };
 
          // Convenience

@@ -30,34 +30,34 @@ using std::vector;
 
 namespace rogue
 {
-	namespace protocols
-	{
-		namespace xilinx
-		{
-			// Exceptions
+   namespace protocols
+   {
+      namespace xilinx
+      {
+         // Exceptions
 
-			// library/syscall errors (yielding and 'errno' -- which is converted to a message)
-			class SysErr : public std::runtime_error
-			{
-			public:
-				SysErr(const char *prefix);
-			};
+         // library/syscall errors (yielding and 'errno' -- which is converted to a message)
+         class SysErr : public std::runtime_error
+         {
+            public:
+               SysErr(const char *prefix);
+	 };
 
-			// Protocol error
-			class ProtoErr : public std::runtime_error
-			{
-			public:
-				ProtoErr(const char *msg);
-			};
+         // Protocol error
+         class ProtoErr : public std::runtime_error
+         {
+            public:
+               ProtoErr(const char *msg);
+         };
 
-			// Timeout
-			class TimeoutErr : public std::runtime_error
-			{
-			public:
-				TimeoutErr(const char *detail = "");
-			};
-		}
-	}
+         // Timeout
+         class TimeoutErr : public std::runtime_error
+         {
+            public:
+               TimeoutErr(const char *detail = "");
+         };
+      }
+   }
 }
 
 #endif

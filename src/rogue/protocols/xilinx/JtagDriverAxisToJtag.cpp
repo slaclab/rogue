@@ -366,6 +366,5 @@ void rpx::JtagDriverAxisToJtag::setup_python()
 #ifndef NO_PYTHON
 
    bp::class_<rpx::JtagDriverAxisToJtag, rpx::JtagDriverAxisToJtagPtr, bp::bases<rpx::JtagDriver>, boost::noncopyable>("JtagDriverAxisToJtag", bp::init<std::string, uint16_t>());
-   //bp::implicitly_convertible<rpx::JtagDriverAxisToJtagPtr, rpx::JtagDriverPtr>();
 #endif
 }

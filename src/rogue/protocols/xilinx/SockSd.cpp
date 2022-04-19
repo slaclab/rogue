@@ -33,18 +33,18 @@ namespace rpx = rogue::protocols::xilinx;
 
 rpx::SockSd::SockSd(bool stream)
 {
-	if ((sd_ = ::socket(AF_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 0)) < 0)
-	{
-		throw SysErr("Unable to create Socket");
-	}
+   if ((sd_ = ::socket(AF_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 0)) < 0)
+   {
+      throw SysErr("Unable to create Socket");
+   }
 }
 
 rpx::SockSd::~SockSd()
 {
-	::close(sd_);
+   ::close(sd_);
 }
 
 int rpx::SockSd::getSd()
 {
-	return sd_;
+   return sd_;
 }

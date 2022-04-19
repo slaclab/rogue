@@ -22,37 +22,39 @@
 
 namespace rogue
 {
-	namespace protocols
-	{
-		namespace xilinx
-		{
-			// XVC Server (top) class
-			class XvcServer
-			{
-			private:
-				SockSd sock_;
-				JtagDriver *drv_;
-				unsigned debug_;
-				unsigned maxMsgSize_;
-				bool once_;
+   namespace protocols
+   {
+      namespace xilinx
+      {
+         // XVC Server (top) class
+         class XvcServer
+         {
+            private:
 
-			public:
-				XvcServer(
-					uint16_t port,
-					JtagDriver *drv,
-					unsigned debug = 0,
-					unsigned maxMsgSize = 32768,
-					bool once = false);
+               SockSd sock_;
+               JtagDriver *drv_;
+               unsigned debug_;
+               unsigned maxMsgSize_;
+               bool once_;
 
-				virtual void run();
+            public:
 
-				virtual ~XvcServer(){};
+               XvcServer(
+                         uint16_t port,
+                         JtagDriver *drv,
+                         unsigned debug = 0,
+                         unsigned maxMsgSize = 32768,
+                         bool once = false);
 
-				//! Setup class in python
-				static void setup_python();
-			};
-		}
-	}
+               virtual void run();
+
+               virtual ~XvcServer(){};
+
+               //! Setup class in python
+               static void setup_python();
+         };
+      }
+   }
 }
 
 #endif

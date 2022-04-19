@@ -64,7 +64,7 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
    unsigned debug    = 0;
    unsigned testMode = 0;
   
-   xvcLog_ = rogue::Logging::create("xilinx.Xvc");
+   log_ = rogue::Logging::create("xilinx.Xvc");
 
    if (setTest)
       setTestMode(testMode);
@@ -196,7 +196,7 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
       frame_ = nullptr;
    }
    else
-      std::cout << "Timed out waiting for a reply (i.e. new frame)" << std::endl;
+      std::cout << "Timed out waiting for a reply" << std::endl;
 
    return(0);
 }

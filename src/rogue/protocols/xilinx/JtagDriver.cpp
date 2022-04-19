@@ -73,6 +73,5 @@ void rpx::JtagDriver::setup_python()
 #ifndef NO_PYTHON
 
    bp::class_<rpx::JtagDriver, rpx::JtagDriverPtr, boost::noncopyable>("JtagDriver", bp::init<std::string, uint16_t>());
-   //bp::implicitly_convertible<rpx::JtagDriverPtr, rpx::JtagDriverPtr>();
 #endif
 }

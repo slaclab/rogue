@@ -30,29 +30,29 @@ using std::vector;
 
 namespace rogue
 {
-	namespace protocols
-	{
-		namespace xilinx
-		{
-			// RAII socket helper
-			class SockSd
-			{
-			private:
-				int sd_;
+   namespace protocols
+   {
+      namespace xilinx
+      {
+         // RAII socket helper
+         class SockSd
+         {
+            private:
+               int sd_;
 
-				SockSd(const SockSd &);
-				SockSd &operator=(const SockSd &);
+               SockSd(const SockSd &);
+               SockSd &operator=(const SockSd &);
 
-			public:
-				// 'stream': SOCK_STREAM vs SOCK_DGRAM
-				SockSd(bool stream);
+            public:
+               // 'stream': SOCK_STREAM vs SOCK_DGRAM
+               SockSd(bool stream);
 
-				virtual int getSd();
+               virtual int getSd();
 
-				virtual ~SockSd();
-			};
-		}
-	}
+               virtual ~SockSd();
+         };
+      }
+   }
 }
 
 #endif
