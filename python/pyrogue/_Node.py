@@ -158,7 +158,7 @@ class Node(object):
     def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
         """
         Init the node with passed attributes
-        
+
         Parameters
         ----------
         name : str
@@ -168,20 +168,20 @@ class Node(object):
             description of variable
 
         expand : bool
-            
+
 
         hidden : bool
             Default value = False, variable is not part of hidden group
 
-        groups : 
-            
+        groups :
 
-        guiGroup : 
-            
+
+        guiGroup :
+
 
         Returns
         -------
-        
+
         """
 
         # Public attributes
@@ -246,9 +246,9 @@ class Node(object):
         Returns
         -------
 <<<<<<< HEAD
-        
+
 =======
-        returns legnth of string and sets group to > 0 or returns group in self._groups
+
 >>>>>>> 8e62490fc10e721c039cb7338cc40b60315f8228
 
 
@@ -277,7 +277,7 @@ class Node(object):
 
         Returns
         -------
-        
+
 
         """
         return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
@@ -298,7 +298,7 @@ class Node(object):
 
         Returns
         -------
-        
+
         """
         if group not in self._groups:
             self._groups.append(group)
@@ -372,15 +372,15 @@ class Node(object):
         Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.
         Raises AttributeError if no such named Nodes are found.
-        
+
         Parameters
         ----------
-        
+
         name : str
             builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
         Returns
         -------
-        
+
         """
 
         # Node matches name in node list
@@ -604,7 +604,7 @@ class Node(object):
 
         Returns
         -------
-
+        ordered dictionary of nodes
         """
         return odict([(k,n) for k,n in self.nodes.items()
                       if (n.isinstance(typ) and ((excTyp is None) or (not n.isinstance(excTyp))) and n.filterByGroup(incGroups,excGroups))])
