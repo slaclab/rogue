@@ -19,6 +19,7 @@
 
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
+#include <rogue/Queue.h>
 #include <rogue/protocols/xilinx/XvcServer.h>
 #include <rogue/protocols/xilinx/XvcConnection.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
@@ -54,7 +55,7 @@ namespace rogue
                unsigned mtu_;
 
                // Use rogue frames to exchange data with other rogue objects
-               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
                // Log
                std::shared_ptr<rogue::Logging> log_;

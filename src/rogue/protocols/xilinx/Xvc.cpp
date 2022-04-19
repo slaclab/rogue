@@ -52,9 +52,8 @@ rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port)
 
 //! Creator
 rpx::Xvc::Xvc(std::string host, uint16_t port)
-   : JtagDriverAxisToJtag (host, port),
+   : JtagDriverAxisToJtag (host, port   ),
      s_         (nullptr),
-     frame_     (nullptr),
      thread_    (nullptr),
      threadEn_  (false  ),
      mtu_       (1450   ),
@@ -64,6 +63,10 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
    unsigned debug    = 0;
    unsigned testMode = 0;
   
+   // set queue capacity 
+   queue_.setThold(100);
+
+   // create logger
    log_ = rogue::Logging::create("xilinx.Xvc");
 
    if (setTest)
@@ -80,8 +83,12 @@ rpx::Xvc::Xvc(std::string host, uint16_t port)
 //! Destructor
 rpx::Xvc::~Xvc()
 {
+   threadEn_ = false;
+   rogue::GilRelease noGil;
+   queue_.stop();
    stop();
    delete s_;
+   delete thread_;
 }
 
 //! Stop the interface
@@ -120,13 +127,14 @@ void rpx::Xvc::runThread(std::weak_ptr<int> lock)
 //! Accept a frame
 void rpx::Xvc::acceptFrame ( ris::FramePtr frame )
 {
-   // Master will call this function to have Xvc accept the frame
-   frame_ = frame;
+   // Save off frame
+   if (!queue_.busy())
+      queue_.push(frame);
 
-   // XvcConnection class manages the TCP connection to Vivado.
+   // The XvcConnection class manages the TCP connection to Vivado.
    // After a Vivado request is issued and forwarded to the FPGA, we wait for the response.
-   // XvcConnection will call the xfer() below to do the transfer when a response comes in.
-   // All we need to do is ensure that frame_ already points to the new frame of data coming in.
+   // XvcConnection will call the xfer() below to do the transfer and checks for a response.
+   // All we need to do is ensure that as soon as the new frame comes in, it's stored in the queue.
 }
 
 unsigned long rpx::Xvc::getMaxVectorSize()
@@ -139,12 +147,9 @@ unsigned long rpx::Xvc::getMaxVectorSize()
 
 int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes)
 {
-   // Initialize poiner for received frame
-   frame_ = nullptr;
-
    // Write out the tx buffer as a rogue stream
    // Send frame to slave (e.g. UDP Client or DMA channel)
-   // Note that class Xvc is both a master & a slave (here a master)
+   // Note that class Xvc is both a stream master & a stream slave (here a master)
    ris::FramePtr frame;
 
    std::cout << "Running Xvc::xfer()" << std::endl;
@@ -168,32 +173,29 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
    // Wait for response
    usleep(1000);
 
-   // Read in the rx buffer as a rogue stream
+   // Read response in the rx buffer as a rogue stream
    // Accept frame from master (e.g. UDP Client or DMA channel)
-   // Note that class Xvc is both a master & a slave (here a slave)
+   // Note that class Xvc is both a stream master & a stream slave (here a slave)
 
    // Process reply when available
-   if ( frame_ != nullptr )
+   if ((frame = queue_.pop()) != nullptr)
    {
       std::cout << "Receiving new frame" << std::endl;
-      std::cout << "Frame size is " << frame_->getSize() << std::endl;
+      std::cout << "Frame size is " << frame->getSize() << std::endl;
    
       // Read received data into the hdbuf and rxb buffers
       rogue::GilRelease noGil;
-      ris::FrameLockPtr frLock = frame_->lock();
+      ris::FrameLockPtr frLock = frame->lock();
       std::lock_guard<std::mutex> lock(mtx_);
 
       // Populate header buffer
-      iter = frame_->begin();
+      iter = frame->begin();
       if (hdBuffer)
          std::copy(iter, iter+hdBytes, hdBuffer);
 
       // Populate receiver buffer
       if (rxBuffer)
-         ris::fromFrame(iter += hdBytes, frame_->getPayload() - hdBytes, rxBuffer);
-
-      // Reset frame pointer
-      frame_ = nullptr;
+         ris::fromFrame(iter += hdBytes, frame->getPayload() - hdBytes, rxBuffer);
    }
    else
       std::cout << "Timed out waiting for a reply" << std::endl;
