@@ -13,7 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from collections import namedtuple
+from dataclasses import dataclass
 import os
 import struct
 import numpy
@@ -24,13 +24,13 @@ RogueHeaderSize  = 8
 RogueHeaderPack  = 'IHBB'
 
 # Default header as a named tuple
-RogueHeader = namedtuple(
-    'RogueHeader',
-    ['size'   ,  # 4 Bytes, uint32, I
-    'flags'   ,  # 2 bytes, uint16, H
-    'error'   ,  # 1 bytes, uint8,  B
-    'channel' ]  # 1 bytes, uint8,  B
-)
+@dataclass
+class RogueHeader:
+    size : int     # 4 Bytes, uint32, I
+    flags: int     # 2 bytes, uint16, H
+    error: int     # 1 bytes, uint8,  B
+    channel: int   # 1 bytes, uint8,  B
+
 """ Rogue Header data
 
     Attributes
@@ -53,13 +53,13 @@ BatchHeaderSize  = 8
 BatchHeaderPack  = 'IBBBB'
 
 # Batcher Header
-BatchHeader = namedtuple(
-    'BatchHeader',
-    ['size',   # 4 Bytes, uint32, I
-    'tdest',   # 1 Byte, uint8, B
-    'fUser',   # 1 Byte, uint8, B
-    'lUser',   # 1 Byte, uint8, B
-    'width']   # 1 Byte, uint8, B
+@dataclass
+class BatchHeader
+    size: int   # 4 Bytes, uint32, I
+    tdest: int  # 1 Byte, uint8, B
+    fUser: int  # 1 Byte, uint8, B
+    lUser: int  # 1 Byte, uint8, B
+    width: int  # 1 Byte, uint8, B
 )
 
 """ Batcher Header data
@@ -156,8 +156,8 @@ class FileReader(object):
                 self._log.warning(f'File under run reading {self._currFName}')
                 return False
 
-            self._header = RogueHeader._make(struct.Struct(RogueHeaderPack).unpack(self._currFile.read(RogueHeaderSize)))
-            self._header = self._header._replace(size=(self._header.size-4))
+            self._header = RogueHeader(*struct.unpack(RogueHeaderPack, self._currFile.read(RogueHeaderSize)))
+            self._header.size -= 4
 
             # Set next frame position
             recEnd = self._currFile.tell() + self._header.size
@@ -218,7 +218,7 @@ class FileReader(object):
                                 raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
 
                             # Read in header data
-                            bHead = BatchHeader._make(struct.Struct(BatchHeaderPack).unpack(self._currFile.read(BatchHeaderSize)))
+                            bHead = BatchHeader(*struct.unpack(BatchHeaderPack, self._currFile.read(BatchHeaderSize)))
                             curIdx += 8
 
                             # Fix header width
