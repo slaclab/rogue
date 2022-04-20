@@ -215,7 +215,7 @@ class FileReader(object):
 
                             # Check header size
                             if curIdx + 8 > self._header.size:
-                                raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
+                                raise FileReaderException(f'Batch frame header underrun in {self._currFName}')
 
                             # Read in header data
                             bHead = BatchHeader(*struct.unpack(BatchHeaderPack, self._currFile.read(BatchHeaderSize)))
@@ -228,13 +228,13 @@ class FileReader(object):
                             if bHead.width > 8:
 
                                 if curIdx + (bHead.width-8) > self._header.size:
-                                    raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
+                                    raise FileReaderException(f'Batch frame header underrun in {self._currFName}')
 
                                 self._currFile.seek(bHead.width-8)
 
                             # Check payload size
                             if curIdx + bHead.size > self._header.size:
-                                raise FileReaderException(f'Batch frame data underrun in {self._currFname}')
+                                raise FileReaderException(f'Batch frame data underrun in {self._currFName}')
 
                             # Get data
                             data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=bHead.size)
@@ -249,7 +249,7 @@ class FileReader(object):
                         try:
                             data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=self._header.size)
                         except Exception:
-                            raise FileReaderException(f'Failed to read data from {self._currFname}')
+                            raise FileReaderException(f'Failed to read data from {self._currFName}')
 
                         yield (self._header, data)
 
