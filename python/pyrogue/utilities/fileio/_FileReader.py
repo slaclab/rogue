@@ -54,7 +54,7 @@ BatchHeaderPack  = 'IBBBB'
 
 # Batcher Header
 @dataclass
-class BatchHeader
+class BatchHeader:
     size: int   # 4 Bytes, uint32, I
     tdest: int  # 1 Byte, uint8, B
     fUser: int  # 1 Byte, uint8, B
