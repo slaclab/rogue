@@ -753,7 +753,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
-    @expose
+    @pr.expose
     def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
         """Save YAML configuration/status to a file. Called from command"""
 
