@@ -753,6 +753,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
+    @pr.expose
     def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
         """Save YAML configuration/status to a file. Called from command"""
 
@@ -850,16 +851,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def getYaml(self,readFirst,modes,incGroups,excGroups):
-        """
-        Get current values as yaml data.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
-        """
-        if readFirst:
-            self._read()
-        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
-
     def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
         d = self._getDict(modes, incGroups, excGroups, properties=True)
         return {self.name: d}
@@ -887,7 +878,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if self.InitAfterConfig.value():
             self.initialize()
-
 
     def remoteVariableDump(self,name,modes,readFirst):
         """Dump remote variable values to a file."""
