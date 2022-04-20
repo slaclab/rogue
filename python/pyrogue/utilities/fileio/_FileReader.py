@@ -60,7 +60,7 @@ class BatchHeader:
     fUser: int  # 1 Byte, uint8, B
     lUser: int  # 1 Byte, uint8, B
     width: int  # 1 Byte, uint8, B
-)
+
 
 """ Batcher Header data
 
