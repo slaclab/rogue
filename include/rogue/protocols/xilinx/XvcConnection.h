@@ -18,6 +18,7 @@
 #define __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
 
 #include <rogue/protocols/xilinx/JtagDriver.h>
+#include <rogue/GeneralError.h>
 
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -31,21 +32,23 @@ namespace rogue
          // Class managing a XVC tcp connection
          class XvcConnection
          {
-               JtagDriver *drv_;
-               int sd_;
+               int                sd_;
+               JtagDriver         *drv_;
                struct sockaddr_in peer_;
-               // just use vectors to back raw memory; DONT use 'size/resize'// (unfortunately 'resize' fills elements beyond the current 'size'
+
+               // just use vectors to back raw memory; DONT use 'size/resize'
                // (unfortunately 'resize' fills elements beyond the current 'size'
                // with zeroes)
+
+               uint8_t         *rp_;
                vector<uint8_t> rxb_;
-               uint8_t *rp_;
-               unsigned long rl_;
-               unsigned long tl_;
+               unsigned long   rl_;
+               unsigned long   tl_;
 
                vector<uint8_t> txb_;
-               unsigned long maxVecLen_;
-               unsigned long supVecLen_;
-               unsigned long chunk_;
+               unsigned long   maxVecLen_;
+               unsigned long   supVecLen_;
+               unsigned long   chunk_;
 
             public:
                XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768);

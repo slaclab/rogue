@@ -15,10 +15,9 @@
 //-----------------------------------------------------------------------------
 
 #include <rogue/protocols/xilinx/XvcConnection.h>
-#include <rogue/protocols/xilinx/Exceptions.h>
+
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
-#include <iostream>
 
 namespace rpx = rogue::protocols::xilinx;
 
@@ -31,9 +30,7 @@ rpx::XvcConnection::XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecL
 
    // RAII for the sd_
    if ((sd_ = ::accept(sd, (struct sockaddr *)&peer_, &sz)) < 0)
-   {
-      throw SysErr("Unable to accept connection");
-   }
+      throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to accept connection"));
 }
 
 rpx::XvcConnection::~XvcConnection()
@@ -55,10 +52,10 @@ void rpx::XvcConnection::fill(unsigned long n)
    while (k > 0)
    {
       got = read(sd_, p, k);
+
       if (got <= 0)
-      {
-         throw SysErr("Unable to read from socket");
-      }
+         throw(rogue::GeneralError::create("XvcConnection::fill()", "Unable to read from socket"));
+
       k -= got;
       p += got;
    }
@@ -121,10 +118,10 @@ void rpx::XvcConnection::flush()
    while (tl_ > 0)
    {
       put = write(sd_, p, tl_);
+
       if (put <= 0)
-      {
-         throw SysErr("Unable to send from socket");
-      }
+         throw(rogue::GeneralError::create("XvcConnection::flush()", "Unable to send from socket"));
+
       p += put;
       tl_ -= put;
    }
@@ -145,20 +142,17 @@ void rpx::XvcConnection::run()
    // use TCP_NODELAY to make sure our messages (many of which
    // are small) are sent ASAP
    got = 1;
-   if (setsockopt(sd_, IPPROTO_TCP, TCP_NODELAY, &got, sizeof(got)))
-   {
-      throw SysErr("Unable to set TCP_NODELAY");
-   }
 
-   while (1)
+   if (setsockopt(sd_, IPPROTO_TCP, TCP_NODELAY, &got, sizeof(got)))
+      throw(rogue::GeneralError::create("XvcConnection::run()", "Unable to get TCP_NODELAY"));
+
+   while (!drv_->isDone())
    {
       // read stuff;
-
       got = read(sd_, rp_, chunk_);
+
       if (got <= 0)
-      {
-         throw SysErr("Unable to read from socket");
-      }
+         throw(rogue::GeneralError::create("XvcConnection::run()", "Unable to read from socket"));
 
       rl_ = got;
 
@@ -169,7 +163,7 @@ void rpx::XvcConnection::run()
          if (0 == ::memcmp(rp_, "ge", 2))
          {
             fill(8);
-            std::cout << "XvcConnection: received ge over TCP port" << std::endl;
+
             drv_->query(); // informs the driver that there is a new connection
 
             tl_ = sprintf((char *)&txb_[0], "xvcServer_v1.0:%ld\n", maxVecLen_);
@@ -181,7 +175,6 @@ void rpx::XvcConnection::run()
             uint32_t requestedPeriod;
             uint32_t newPeriod;
 
-            std::cout << "XvcConnection: received se over TCP port" << std::endl;
             fill(11);
 
             requestedPeriod = (rp_[10] << 24) | (rp_[9] << 16) | (rp_[8] << 8) | rp_[7];
@@ -200,7 +193,6 @@ void rpx::XvcConnection::run()
          }
          else if (0 == ::memcmp(rp_, "sh", 2))
          {
-            std::cout << "XvcConnection: received sh over TCP port" << std::endl;
             fill(10);
 
             bits = 0;
@@ -209,10 +201,10 @@ void rpx::XvcConnection::run()
                bits = (bits << 8) | rp_[got];
             }
             bytes = (bits + 7) / 8;
+
             if (bytes > maxVecLen_)
-            {
-               throw ProtoErr("Requested bit vector length too big");
-            }
+               throw(rogue::GeneralError::create("XvcConnection::run()", "Requested bit vector length too big"));
+
             bump(10);
             fill(2 * bytes);
 
@@ -235,12 +227,9 @@ void rpx::XvcConnection::run()
             tl_ = bytes;
 
             bump(2 * bytes);
-            std::cout << "rp_ = sh" << std::endl;
          }
          else
-         {
-            throw ProtoErr("unsupported message received");
-         }
+            throw(rogue::GeneralError::create("XvcConnection::run()", "Unsupported message received"));
 
          flush();
 

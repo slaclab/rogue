@@ -19,13 +19,13 @@
 
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
-#include <rogue/Queue.h>
 #include <rogue/protocols/xilinx/XvcServer.h>
 #include <rogue/protocols/xilinx/XvcConnection.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
-#include <rogue/protocols/xilinx/JtagDriverAxisToJtag.h>
-#include <rogue/EnableSharedFromThis.h>
+#include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
+#include <rogue/Queue.h>
+
 #include <thread>
 #include <stdint.h>
 #include <netdb.h>
@@ -44,14 +44,13 @@ namespace rogue
 
          class Xvc : public rogue::interfaces::stream::Master,
                      public rogue::interfaces::stream::Slave,
-                     public rogue::protocols::xilinx::JtagDriverAxisToJtag
+                     public rogue::protocols::xilinx::JtagDriver
          {
             protected:
 
                //! Pointers to JTAG driver and XVC server
                XvcServer  *s_;
 
-               int timeoutMs_;
                unsigned mtu_;
 
                // Use rogue frames to exchange data with other rogue objects
@@ -61,29 +60,32 @@ namespace rogue
                std::shared_ptr<rogue::Logging> log_;
 
                //! Thread background
-               bool threadEn_;            
                std::thread* thread_;
+               bool         threadEn_;            
 
                // Lock
                std::mutex mtx_;
 
                // TCP server for Vivado client
-               void runThread(std::weak_ptr<int> lock);
+               void runThread();
 
             public:
 
                //! Class creation
                static std::shared_ptr<rogue::protocols::xilinx::Xvc>
-               create(std::string host, uint16_t port);
+               create(uint16_t port);
 
                //! Setup class in python
                static void setup_python();
 
                //! Creator
-               Xvc(std::string host, uint16_t port);
+               Xvc(uint16_t port);
 
                //! Destructor
                ~Xvc();
+
+               //! Start the interface
+               void start();
 
                //! Stop the interface
                void stop();

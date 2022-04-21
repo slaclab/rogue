@@ -19,7 +19,6 @@
  * ----------------------------------------------------------------------------
 **/
 #include <rogue/protocols/xilinx/Xvc.h>
-#include <rogue/protocols/xilinx/Exceptions.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 #include <rogue/interfaces/stream/FrameLock.h>
@@ -27,12 +26,12 @@
 #include <rogue/GeneralError.h>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
+
 #include <stdlib.h>
 #include <cstring>
 #include <string.h>
 #include <unistd.h>
 #include <dlfcn.h>
-#include <iostream>
 
 namespace rpx = rogue::protocols::xilinx;
 namespace ris = rogue::interfaces::stream;
@@ -44,83 +43,83 @@ namespace bp = boost::python;
 #endif
 
 //! Class creation
-rpx::XvcPtr rpx::Xvc::create(std::string host, uint16_t port)
+rpx::XvcPtr rpx::Xvc::create(uint16_t port)
 {
-   rpx::XvcPtr r = std::make_shared<rpx::Xvc>(host, port);
+   rpx::XvcPtr r = std::make_shared<rpx::Xvc>(port);
    return (r);
 }
 
 //! Creator
-rpx::Xvc::Xvc(std::string host, uint16_t port)
-   : JtagDriverAxisToJtag (host, port   ),
+rpx::Xvc::Xvc(uint16_t port)
+   : JtagDriver (port   ),
      s_         (nullptr),
      thread_    (nullptr),
      threadEn_  (false  ),
-     mtu_       (1450   ),
-     timeoutMs_ (500    )
+     mtu_       (1450   )
 {
-   bool     setTest  = false;
-   unsigned debug    = 0;
-   unsigned testMode = 0;
-  
    // set queue capacity 
    queue_.setThold(100);
 
    // create logger
-   log_ = rogue::Logging::create("xilinx.Xvc");
-
-   if (setTest)
-      setTestMode(testMode);
-
-   // create a lock to allow completion of constructor before the thread runs
-   std::shared_ptr<int> lock = std::make_shared<int>(0);
-
-   // start thread
-   thread_    = new std::thread(&rpx::Xvc::runThread, this, std::weak_ptr<int>(lock));
-   threadEn_  = true;
+   log_ = rogue::Logging::create("xilinx.xvc");
 }
 
 //! Destructor
 rpx::Xvc::~Xvc()
 {
-   threadEn_ = false;
-   rogue::GilRelease noGil;
-   queue_.stop();
    stop();
+
+   rogue::GilRelease noGil;
    delete s_;
    delete thread_;
+}
+
+//! Start the interface
+void rpx::Xvc::start() 
+{
+   // Log starting the xvc server thread
+   log_->debug("Stopping the XVC server thread");
+
+   // Start the thread
+   threadEn_ = true;
+   thread_   = new std::thread(&rpx::Xvc::runThread, this);
 }
 
 //! Stop the interface
 void rpx::Xvc::stop() 
 {
+   // Log stopping the xvc server thread
+   log_->debug("Stopping the XVC server thread");
+
+   // Stop the queue 
+   queue_.stop();
+
+   // Set done flag
+   done_ = true;
+
+   // Empty the queue if necessary
+   while (!queue_.empty())
+      auto f = queue_.pop();
+
+   // Stop the XVC server thread
    if (threadEn_)  
    {
       threadEn_ = false;
-      thread_->join();
+      //thread_->join();
    }
 }
 
 //! Run driver initialization and XVC thread
-void rpx::Xvc::runThread(std::weak_ptr<int> lock)
+void rpx::Xvc::runThread()
 {
-   bool     once     = false;
-   unsigned debug    = 0;
-   unsigned maxMsg   = 32768;
-
-   // Check if constructor is done
-   while (!lock.expired())
-      continue;
-
-   std::cout << "Xvc::runThread: initialize driver" << std::endl;
+   // Max message size
+   unsigned maxMsg = 32768;
 
    // Driver initialization
    this->init();
 
-   std::cout << "Xvc::runThread: start XVC-Server" << std::endl;
-
    // Start the XVC server on localhost
-   s_ = new XvcServer(port_, this, debug, maxMsg, once);
+   s_ = new XvcServer(port_, this, maxMsg);
    s_->run();
 }
 
@@ -147,13 +146,16 @@ unsigned long rpx::Xvc::getMaxVectorSize()
 
 int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes)
 {
+   // If the XVC server is not running, skip the transaction
+   if (!threadEn_)
+     return(0);
+
    // Write out the tx buffer as a rogue stream
    // Send frame to slave (e.g. UDP Client or DMA channel)
    // Note that class Xvc is both a stream master & a stream slave (here a master)
    ris::FramePtr frame;
 
-   std::cout << "Running Xvc::xfer()" << std::endl;
-   std::cout << "Have " << txBytes << " bytes to send" << std::endl;
+   log_->debug("Tx buffer has %", PRIi32, " bytes to send\n",txBytes);
 
    // Generate frame
    frame = reqFrame (txBytes, true);
@@ -163,8 +165,8 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
    ris::FrameIterator iter = frame->begin();
    ris::toFrame(iter, txBytes, txBuffer);
 
-   std::cout << "Sending new frame" << std::endl;
-   std::cout << "Frame size is " << frame->getSize() << std::endl;
+   log_->debug("Sending new frame of size %",PRIi32, frame->getSize());
+
 
    // Send frame
    if (txBytes)
@@ -178,10 +180,9 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
    // Note that class Xvc is both a stream master & a stream slave (here a slave)
 
    // Process reply when available
-   if ((frame = queue_.pop()) != nullptr)
+   if (!queue_.empty() && (frame = queue_.pop()) != nullptr)
    {
-      std::cout << "Receiving new frame" << std::endl;
-      std::cout << "Frame size is " << frame->getSize() << std::endl;
+      log_->debug("Receiving new frame of size %",PRIi32, frame->getSize());
    
       // Read received data into the hdbuf and rxb buffers
       rogue::GilRelease noGil;
@@ -198,7 +199,7 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
          ris::fromFrame(iter += hdBytes, frame->getPayload() - hdBytes, rxBuffer);
    }
    else
-      std::cout << "Timed out waiting for a reply" << std::endl;
+      throw(rogue::GeneralError::create("Xvc::xfer()", "Timeout error")); 
 
    return(0);
 }
@@ -207,9 +208,11 @@ void rpx::Xvc::setup_python()
 {
 #ifndef NO_PYTHON
 
-   bp::class_<rpx::Xvc, rpx::XvcPtr, bp::bases<ris::Master, ris::Slave, rpx::JtagDriverAxisToJtag>, boost::noncopyable>("Xvc", bp::init<std::string, uint16_t>());
+   bp::class_<rpx::Xvc, rpx::XvcPtr, bp::bases<ris::Master, ris::Slave, rpx::JtagDriver>, boost::noncopyable>("Xvc", bp::init<uint16_t>())
+      .def("_start", &rpx::Xvc::start)
+   ;
    bp::implicitly_convertible<rpx::XvcPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpx::XvcPtr, ris::SlavePtr>();
-   bp::implicitly_convertible<rpx::XvcPtr, rpx::JtagDriverAxisToJtagPtr>();
+   bp::implicitly_convertible<rpx::XvcPtr, rpx::JtagDriverPtr>();
 #endif
 }

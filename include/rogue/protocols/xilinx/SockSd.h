@@ -17,6 +17,8 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_SOCK_SD_H__
 #define __ROGUE_PROTOCOLS_XILINX_SOCK_SD_H__
 
+#include <rogue/GeneralError.h>
+
 #include <stdint.h>
 #include <exception>
 #include <stdexcept>

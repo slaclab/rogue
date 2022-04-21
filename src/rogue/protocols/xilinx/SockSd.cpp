@@ -15,7 +15,7 @@
 //-----------------------------------------------------------------------------
 
 #include <rogue/protocols/xilinx/SockSd.h>
-#include <rogue/protocols/xilinx/Exceptions.h>
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
@@ -24,19 +24,12 @@
 #include <math.h>
 #include <string>
 
-// To be defined by Makefile
-#ifndef XVC_SRV_VERSION
-#define XVC_SRV_VERSION "unknown"
-#endif
-
 namespace rpx = rogue::protocols::xilinx;
 
 rpx::SockSd::SockSd(bool stream)
 {
    if ((sd_ = ::socket(AF_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 0)) < 0)
-   {
-      throw SysErr("Unable to create Socket");
-   }
+      throw(rogue::GeneralError::create("SockSd::SockSd()", "Unable to create socket"));
 }
 
 rpx::SockSd::~SockSd()

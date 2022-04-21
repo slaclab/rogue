@@ -19,6 +19,7 @@
 
 #include <rogue/protocols/xilinx/SockSd.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
+#include <rogue/GeneralError.h>
 
 namespace rogue
 {
@@ -31,27 +32,23 @@ namespace rogue
          {
             private:
 
-               SockSd sock_;
+               SockSd     sock_;
                JtagDriver *drv_;
-               unsigned debug_;
-               unsigned maxMsgSize_;
-               bool once_;
+               unsigned   maxMsgSize_;
 
             public:
 
                XvcServer(
-                         uint16_t port,
-                         JtagDriver *drv,
-                         unsigned debug = 0,
-                         unsigned maxMsgSize = 32768,
-                         bool once = false);
+                         uint16_t    port,
+                         JtagDriver* drv,
+                         unsigned    maxMsgSize = 32768);
 
                virtual void run();
 
                virtual ~XvcServer(){};
 
                //! Setup class in python
-               static void setup_python();
+               //static void setup_python();
          };
       }
    }
