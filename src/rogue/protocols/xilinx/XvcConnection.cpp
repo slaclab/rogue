@@ -129,7 +129,6 @@ void rpx::XvcConnection::flush()
 
 void rpx::XvcConnection::run()
 {
-
    int got;
    uint32_t bits, bitsLeft, bitsSent;
    unsigned long bytes;

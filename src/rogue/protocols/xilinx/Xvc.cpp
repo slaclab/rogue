@@ -105,7 +105,7 @@ void rpx::Xvc::stop()
    if (threadEn_)  
    {
       threadEn_ = false;
-      //thread_->join();
+      thread_->join();
    }
 }
 
