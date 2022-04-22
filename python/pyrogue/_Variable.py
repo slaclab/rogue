@@ -1098,7 +1098,7 @@ class LinkVariable(BaseVariable):
         for d in self.dependencies:
             if isinstance(d, LinkVariable):
                 b.extend(d.getBlocks())
-            if hasattr(d, '_block') and d._block is not None:
+            elif hasattr(d, '_block') and d._block is not None:
                 b.append(d._block)
 
         return b
