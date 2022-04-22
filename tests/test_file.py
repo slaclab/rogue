@@ -15,6 +15,7 @@
 #-----------------------------------------------------------------------------
 import rogue.utilities
 import rogue.utilities.fileio
+import pyrogue.utilities.fileio
 import pyrogue
 import time
 import rogue
@@ -86,13 +87,22 @@ def read_files():
     if prbsC.getRxErrors() != 0:
         raise AssertionError('Read compressed error. PRBS Frame errors detected!')
 
+def file_reader():
+    print("pyrogue file reader")
+    with pyrogue.utilities.fileio.FileReader(files="uncompressed.dat.1") as fd:
+        for header,data in fd.records():
+            if header.size != FrameSize:
+                raise AssertionError('frame size mismatch detected in FileReader')
+            if header.error != 0:
+                raise AssertionError('Error Flag detected in FileReader')
+
 def test_file_compress():
     return
     write_files()
     read_files()
+    file_reader()
 
 if __name__ == "__main__":
     write_files()
     read_files()
-
-
+    file_reader()
