@@ -34,28 +34,28 @@ def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
         Allows a custom list of blocks to be efficiently written,
         similar to Device.writeBlocks(). """
     for b in blocks:
-        b._startTransaction(type=rim.Write, forceWr=force, checkEach=checkEach, index=index)
+        startTransaction(b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs)
 
 def verifyBlocks(blocks, checkEach=False, **kwargs):
     """ Helper function for verifying a list of blocks.
         Allows a custom list of blocks to be efficiently verified without blocking
         between each read, similar to Device.verifyBlocks(). """
     for b in blocks:
-        b._startTransaction(type=rim.Verify, checkEach=checkEach)
+        startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
 
 def readBlocks(blocks, checkEach=False, **kwargs):
     """ Helper function for reading a list of blocks.
         Allows a custom list of blocks to be efficiently read without blocking
         between each read, similar to Device.readBlocks(). """
     for b in blocks:
-        b._startTransaction(type=rim.Read, checkEach=checkEach)
+        startTransaction(b, type=rim.Read, checkEach=checkEach, **kwargs)
 
 def checkBlocks(blocks, **kwargs):
     """ Helper function for waiting on block transactions for a list of blocks
         Allows a custom list of blocks to be efficiently operated on without blocking
         between each transaction, similar to  Device.checkBlocks(). """
     for b in blocks:
-        b._checkTransaction()
+        checkTransaction(b)
 
 def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
     """ Helper function for writing and verifying a list of blocks.
@@ -265,4 +265,3 @@ class LocalBlock(object):
             self.set(None, self.get(None) | other)
             if self._enable:
                 self._variable._queueUpdate()
-
