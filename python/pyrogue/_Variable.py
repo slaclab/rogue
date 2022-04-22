@@ -18,6 +18,7 @@ import shlex
 import numpy as np
 import ast
 import sys
+import functools
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
@@ -1021,7 +1022,6 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
-
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -1091,3 +1091,14 @@ class LinkVariable(BaseVariable):
             pr.logException(self._log,e)
             self._log.error("Error getting link variable '{}'".format(self.path))
             raise e
+
+    @functools.cache
+    def getBlocks(self):
+        b = [] # list of blocks
+        for d in self.dependencies:
+            if isinstance(d, LinkVariable):
+                b.extend(d.getBlocks())
+            if hasattr(d, '_block') and d._block is not None:
+                b.append(d._block)
+
+        return b
