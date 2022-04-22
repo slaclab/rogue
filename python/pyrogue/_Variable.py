@@ -406,8 +406,8 @@ class BaseVariable(pr.Node):
         return VariableValue(self,read=read)
 
     @pr.expose
-    def value(self):
-        return self.get(read=False, index=-1)
+    def value(self, index=-1):
+        return self.get(read=False, index=index)
 
     @pr.expose
     def genDisp(self, value):
@@ -437,8 +437,8 @@ class BaseVariable(pr.Node):
         return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def valueDisp(self): #, read=True, index=-1):
-        return self.getDisp(read=False,index=-1)
+    def valueDisp(self, index=-1): #, read=True, index=-1):
+        return self.getDisp(read=False, index=index)
 
     @pr.expose
     def parseDisp(self, sValue):
