@@ -225,7 +225,7 @@ namespace rogue {
                 * Exposed as error() to Python
                 * @param error Transaction error message
                 */
-               void errorPy(std::string error);
+               void errorStr(std::string error);
 
                //! Complete transaction with passed error
                /** Lock must be held before calling this method.
