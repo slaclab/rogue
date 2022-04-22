@@ -171,7 +171,7 @@ void rim::Transaction::done() {
 
 //! Complete transaction with passed error, lock must be held
 void rim::Transaction::errorStr(std::string error) {
-   error_ = error;
+   error_ += error;
    done_  = true;
 
    log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ", error=%s",
@@ -189,7 +189,7 @@ void rim::Transaction::errorStr(std::string error) {
 
          // If this is the last sub-transaction, notify parent transaction it is all done
          if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
-             parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s", id_, error.c_str());
+             parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s.\n", id_, error.c_str());
       }
    }
 }
