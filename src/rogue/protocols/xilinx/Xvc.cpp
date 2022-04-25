@@ -78,7 +78,7 @@ rpx::Xvc::~Xvc()
 void rpx::Xvc::start() 
 {
    // Log starting the xvc server thread
-   log_->debug("Stopping the XVC server thread");
+   log_->debug("Starting the XVC server thread");
 
    // Start the thread
    threadEn_ = true;
@@ -94,12 +94,12 @@ void rpx::Xvc::stop()
    // Stop the queue 
    queue_.stop();
 
-   // Set done flag
-   done_ = true;
-
    // Empty the queue if necessary
    while (!queue_.empty())
       auto f = queue_.pop();
+
+   // Set done flag
+   done_ = true;
 
    // Stop the XVC server thread
    if (threadEn_)  

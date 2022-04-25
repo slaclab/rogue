@@ -215,7 +215,7 @@ int rpx::JtagDriver::xferRel(uint8_t *txb, unsigned txBytes, Header *phdr, uint8
    for (attempt = 0; attempt <= retry_; attempt++)
    {
       // Check if thread should exit
-      if (done_)
+      if (this->done_)
          break;
 
       // Start data transfer with retry and timeout
@@ -253,7 +253,7 @@ int rpx::JtagDriver::xferRel(uint8_t *txb, unsigned txBytes, Header *phdr, uint8
       {
       }
    }
-   if (!done_)
+   if (!this->done_)
       throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Timeout error"));
 
    return(0);
