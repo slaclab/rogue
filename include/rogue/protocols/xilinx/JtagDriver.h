@@ -221,7 +221,7 @@ namespace rogue
                virtual void dumpInfo(FILE *f = stdout);
 
                // Return 'done_' flag
-               bool isDone() {return done_;}
+               bool isDone() {return this->done_;}
          };
 
          static unsigned hdBufMax()

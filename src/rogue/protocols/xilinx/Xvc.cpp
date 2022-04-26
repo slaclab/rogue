@@ -167,7 +167,6 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
 
    log_->debug("Sending new frame of size %",PRIi32, frame->getSize());
 
-
    // Send frame
    if (txBytes)
       sendFrame(frame);
@@ -198,8 +197,6 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
       if (rxBuffer)
          ris::fromFrame(iter += hdBytes, frame->getPayload() - hdBytes, rxBuffer);
    }
-   else
-      throw(rogue::GeneralError::create("Xvc::xfer()", "Timeout error")); 
 
    return(0);
 }
