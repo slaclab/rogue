@@ -1093,19 +1093,21 @@ class LinkVariable(BaseVariable):
             raise e
 
 
-    def getBlocks(self):
+    def _getBlocks(self):
         b = [] # list of blocks
         for d in self.dependencies:
             if isinstance(d, LinkVariable):
-                b.extend(d.getBlocks())
+                b.extend(d._getBlocks())
             elif hasattr(d, '_block') and d._block is not None:
                 b.append(d._block)
 
         return b
 
     def _finishInit(self):
-        self._depBlocks = self.getBlocks()
+        super()._finishInit()        
+        self._depBlocks = self._getBlocks()
 
     @property
     def depBlocks(self):
+        """ Return a list of Blocks that this LinkVariable depends on """
         return self._depBlocks
