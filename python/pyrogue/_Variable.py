@@ -1092,7 +1092,7 @@ class LinkVariable(BaseVariable):
             self._log.error("Error getting link variable '{}'".format(self.path))
             raise e
 
-    @functools.lru_cache
+
     def getBlocks(self):
         b = [] # list of blocks
         for d in self.dependencies:
@@ -1102,3 +1102,10 @@ class LinkVariable(BaseVariable):
                 b.append(d._block)
 
         return b
+
+    def _finishInit(self):
+        self._depBlocks = self.getBlocks()
+
+    @property
+    def depBlocks(self):
+        return self._depBlocks
