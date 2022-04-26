@@ -23,7 +23,6 @@
 #include <pthread.h>
 #include <math.h>
 #include <string>
-#include <iostream>
 
 namespace rpx = rogue::protocols::xilinx;
 
@@ -273,8 +272,8 @@ rpx::JtagDriver::query()
 
    if (wordSize_ < sizeof(hdr))
    {
-      std::cerr << "Encountered a timeout error. Please ensure the board is powered up.\n";
-      throw(rogue::GeneralError::create("JtagDriver::query()", "Protocol error - Received invalid word size"));
+      log_->debug("Encountered an error. Please ensure the board is powered up.\n");
+      throw(rogue::GeneralError::create("JtagDriver::query()", "Received invalid word size. Please ensure the board is powered up.\n"));
    }
 
    memDepth_ = memDepth(hdr);

@@ -67,11 +67,8 @@ rpx::Xvc::Xvc(uint16_t port)
 //! Destructor
 rpx::Xvc::~Xvc()
 {
-   stop();
-
    rogue::GilRelease noGil;
    delete s_;
-   delete thread_;
 }
 
 //! Start the interface
@@ -106,6 +103,7 @@ void rpx::Xvc::stop()
    {
       threadEn_ = false;
       thread_->join();
+      delete thread_;
    }
 }
 
@@ -207,6 +205,7 @@ void rpx::Xvc::setup_python()
 
    bp::class_<rpx::Xvc, rpx::XvcPtr, bp::bases<ris::Master, ris::Slave, rpx::JtagDriver>, boost::noncopyable>("Xvc", bp::init<uint16_t>())
       .def("_start", &rpx::Xvc::start)
+      .def("_stop" , &rpx::Xvc::stop )
    ;
    bp::implicitly_convertible<rpx::XvcPtr, ris::MasterPtr>();
    bp::implicitly_convertible<rpx::XvcPtr, ris::SlavePtr>();
