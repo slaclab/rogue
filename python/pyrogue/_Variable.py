@@ -18,7 +18,6 @@ import shlex
 import numpy as np
 import ast
 import sys
-import functools
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
