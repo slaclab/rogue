@@ -135,6 +135,7 @@ void rpr::Controller::stop() {
       threadEn_ = false;
       thread_->join();
       delete thread_;
+      thread_ = NULL;
       state_ = StClosed;
    }
 }
