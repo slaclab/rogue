@@ -1021,7 +1021,6 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
-
 class LinkVariable(BaseVariable):
 
     def __init__(self, *,
@@ -1070,6 +1069,8 @@ class LinkVariable(BaseVariable):
             for d in dependencies:
                 self.addDependency(d)
 
+        self.__depBlocks = []
+
     def __getitem__(self, key):
         # Allow dependencies to be accessed as indices of self
         return self.dependencies[key]
@@ -1091,3 +1092,23 @@ class LinkVariable(BaseVariable):
             pr.logException(self._log,e)
             self._log.error("Error getting link variable '{}'".format(self.path))
             raise e
+
+
+    def __getBlocks(self):
+        b = []
+        for d in self.dependencies:
+            if isinstance(d, LinkVariable):
+                b.extend(d.__getBlocks())
+            elif hasattr(d, '_block') and d._block is not None:
+                b.append(d._block)
+
+        return b
+
+    def _finishInit(self):
+        super()._finishInit()
+        self.__depBlocks = self.__getBlocks()
+
+    @property
+    def depBlocks(self):
+        """ Return a list of Blocks that this LinkVariable depends on """
+        return self.__depBlocks
