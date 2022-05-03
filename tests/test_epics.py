@@ -46,9 +46,10 @@ class LocalRootWithEpics(LocalRoot):
 
         if use_map:
             # PV map
-            pv_map = { 'LocalRoot.myDevice.var'       : epics_prefix+':LocalRoot:myDevice:var', \
-                       'LocalRoot.myDevice.var_float' : epics_prefix+':LocalRoot:myDevice:var_float', \
-                    }
+            pv_map = {
+                'LocalRoot.myDevice.var'       : epics_prefix+':LocalRoot:myDevice:var',
+                'LocalRoot.myDevice.var_float' : epics_prefix+':LocalRoot:myDevice:var_float',
+            }
         else:
             pv_map=None
 
@@ -86,8 +87,7 @@ def test_local_root():
             time.sleep(1)
             test_result=caget(pv_name)
             if test_result != test_value:
-               raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(\
-                                       pv_name, test_value, test_result))
+                raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
 
             # Test RW a variable holding a float value
             pv_name=device_epics_prefix+':var_float'
@@ -96,8 +96,7 @@ def test_local_root():
             time.sleep(1)
             test_result=round(caget(pv_name),2)
             if test_result != test_value:
-               raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(\
-                                       s, pv_name, test_value, test_result))
+                raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
 
         # Allow epics client to reset
         time.sleep(5)
@@ -111,14 +110,15 @@ def test_local_root():
         root.epics.start()
         raise AssertionError('Attaching a pyrogue.epics to a non-started tree did not throw exception')
     except Exception as e:
+        print(type(e)) # do something with "e" variable so it is not unused for flake8 linter
         pass
 
     """
     Test createMaster and createSlave methods
     """
     with LocalRootWithEpics() as root:
-        slave=root.epics.createSlave(name='slave', maxSize=1000, type='UInt16')
-        master=root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
+        root.epics.createSlave(name='slave', maxSize=1000, type='UInt16')
+        root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
 
 if __name__ == "__main__":
     test_local_root()

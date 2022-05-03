@@ -10,12 +10,9 @@
 #-----------------------------------------------------------------------------
 
 # Comment added by rherbst for demonstration purposes.
-import datetime
-import parse
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
-import time
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
@@ -86,11 +83,11 @@ class DummyTree(pr.Root):
 
     def __init__(self):
         pr.Root.__init__(self,
-                         name='dummyTree',
-                         description="Dummy tree for example",
-                         timeout=2.0,
-                         pollEn=False,
-                         serverPort=None)
+            name='dummyTree',
+            description="Dummy tree for example",
+            timeout=2.0,
+            pollEn=False,
+            serverPort=None)
 
         # Use a memory space emulator
         #sim = pr.interfaces.simulation.MemEmulate()
@@ -98,10 +95,10 @@ class DummyTree(pr.Root):
         self.addInterface(sim)
 
         self.add(SimpleDev(
-                name       = 'SimpleDev',
-                offset     = 0x80000,
-                memBase    = sim,
-            ))
+            name    = 'SimpleDev',
+            offset  = 0x80000,
+            memBase = sim,
+        ))
 
 def test_int():
 
