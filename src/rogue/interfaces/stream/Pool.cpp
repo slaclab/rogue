@@ -47,7 +47,11 @@ ris::Pool::Pool() {
 }
 
 //! Destructor
-ris::Pool::~Pool() { }
+ris::Pool::~Pool() {
+    while (!dataQ_.empty()) {
+        free(dataQ_.front());
+    }
+}
 
 //! Get allocated memory
 uint32_t ris::Pool::getAllocBytes() {
