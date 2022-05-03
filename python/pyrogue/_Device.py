@@ -565,8 +565,8 @@ class Device(pr.Node,rim.Hub):
             newBlock._setSlave(self)
 
             # Verify the block is not too small or large for the memory interface
-            if newBlock.size > self._reqMaxAccess() or newBlock.size < self._reqMinAccess():
-                msg = f'Block size {newBlock.size} is not in the range: {self._reqMinAccess()} - {self._reqMaxAccess()}'
+            if newBlock.size > self._blkMaxAccess() or newBlock.size < self._blkMinAccess():
+                msg = f'Block size {newBlock.size} is not in the range: {self._blkMinAccess()} - {self._blkMaxAccess()}'
                 raise pr.MemoryError(name=self.path, address=self.address, msg=msg)
 
             # Add variables to the block

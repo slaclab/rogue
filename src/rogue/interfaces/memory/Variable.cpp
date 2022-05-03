@@ -700,7 +700,7 @@ std::string rim::Variable::getDumpValue(bool read) {
 // C++ Byte Array
 /////////////////////////////////
 
-void rim::Variable::setBytArray(uint8_t *data, int32_t index) {
+void rim::Variable::setByteArray(uint8_t *data, int32_t index) {
    if ( setByteArray_ == NULL )
       throw(rogue::GeneralError::create("Variable::setByteArray", "Wrong set type for variable %s",path_.c_str()));
 
