@@ -10,8 +10,6 @@
 #-----------------------------------------------------------------------------
 
 # Comment added by rherbst for demonstration purposes.
-import datetime
-import parse
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory

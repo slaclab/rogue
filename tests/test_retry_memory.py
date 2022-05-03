@@ -9,12 +9,8 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import datetime
-import parse
 import pyrogue as pr
 import pyrogue.interfaces.simulation
-import rogue.interfaces.memory
-import time
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
@@ -103,10 +99,10 @@ class DummyTree(pr.Root):
         self.addInterface(sim)
 
         self.add(SimpleDev(
-                name       = 'SimpleDev',
-                offset     = 0x80000,
-                memBase    = sim
-            ))
+            name    = 'SimpleDev',
+            offset  = 0x80000,
+            memBase = sim
+        ))
 
 def test_memory():
 
