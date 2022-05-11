@@ -52,7 +52,6 @@ rpx::XvcPtr rpx::Xvc::create(uint16_t port)
 //! Creator
 rpx::Xvc::Xvc(uint16_t port)
    : JtagDriver (port   ),
-     s_         (nullptr),
      thread_    (nullptr),
      threadEn_  (false  ),
      mtu_       (1450   ) {
@@ -67,7 +66,6 @@ rpx::Xvc::Xvc(uint16_t port)
 //! Destructor
 rpx::Xvc::~Xvc() {
    rogue::GilRelease noGil;
-   delete s_;
 }
 
 //! Start the interface
@@ -115,8 +113,8 @@ void rpx::Xvc::runThread() {
    this->init();
 
    // Start the XVC server on localhost
-   s_ = new XvcServer(port_, this, maxMsg);
-   s_->run(threadEn_, log_);
+   XvcServer s(port_, this, maxMsg);
+   s.run(threadEn_, log_);
 }
 
 //! Accept a frame

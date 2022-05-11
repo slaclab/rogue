@@ -3,7 +3,7 @@
  * Title      : XVC Server Class
  * ----------------------------------------------------------------------------
  * Description:
- * Rogue implementation of the XVC Server 
+ * Rogue implementation of the XVC Server
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -48,9 +48,6 @@ namespace rogue
          {
             protected:
 
-               //! Pointers to JTAG driver and XVC server
-               XvcServer  *s_;
-
                unsigned mtu_;
 
                // Use rogue frames to exchange data with other rogue objects
@@ -61,7 +58,7 @@ namespace rogue
 
                //! Thread background
                std::thread* thread_;
-               bool         threadEn_;            
+               bool         threadEn_;
 
                // Lock
                std::mutex mtx_;
