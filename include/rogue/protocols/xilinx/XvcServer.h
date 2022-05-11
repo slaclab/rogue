@@ -45,7 +45,7 @@ namespace rogue
 
                virtual void run(bool &threadEn, rogue::LoggingPtr log);
 
-               virtual ~XvcServer(){};
+               virtual ~XvcServer();
          };
       }
    }

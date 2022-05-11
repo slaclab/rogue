@@ -56,6 +56,11 @@ rpx::XvcServer::XvcServer(
       throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Unable to listen on socket"));
 }
 
+rpx::XvcServer::~XvcServer()
+{
+   ::close(sd_);
+}
+
 void rpx::XvcServer::run(bool &threadEn, rogue::LoggingPtr log)
 {
 
