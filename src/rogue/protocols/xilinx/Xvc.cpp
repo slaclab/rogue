@@ -55,9 +55,9 @@ rpx::Xvc::Xvc(uint16_t port)
      s_         (nullptr),
      thread_    (nullptr),
      threadEn_  (false  ),
-     mtu_       (1450   )
-{
-   // set queue capacity 
+     mtu_       (1450   ) {
+
+   // set queue capacity
    queue_.setThold(100);
 
    // create logger
@@ -65,15 +65,14 @@ rpx::Xvc::Xvc(uint16_t port)
 }
 
 //! Destructor
-rpx::Xvc::~Xvc()
-{
+rpx::Xvc::~Xvc() {
    rogue::GilRelease noGil;
    delete s_;
 }
 
 //! Start the interface
-void rpx::Xvc::start() 
-{
+void rpx::Xvc::start() {
+
    // Log starting the xvc server thread
    log_->debug("Starting the XVC server thread");
 
@@ -83,12 +82,12 @@ void rpx::Xvc::start()
 }
 
 //! Stop the interface
-void rpx::Xvc::stop() 
-{
+void rpx::Xvc::stop() {
+
    // Log stopping the xvc server thread
    log_->debug("Stopping the XVC server thread");
 
-   // Stop the queue 
+   // Stop the queue
    queue_.stop();
 
    // Empty the queue if necessary
@@ -99,8 +98,7 @@ void rpx::Xvc::stop()
    done_ = true;
 
    // Stop the XVC server thread
-   if (threadEn_)  
-   {
+   if (threadEn_) {
       threadEn_ = false;
       thread_->join();
       delete thread_;
@@ -108,8 +106,8 @@ void rpx::Xvc::stop()
 }
 
 //! Run driver initialization and XVC thread
-void rpx::Xvc::runThread()
-{
+void rpx::Xvc::runThread() {
+
    // Max message size
    unsigned maxMsg = 32768;
 
@@ -118,7 +116,7 @@ void rpx::Xvc::runThread()
 
    // Start the XVC server on localhost
    s_ = new XvcServer(port_, this, maxMsg);
-   s_->run();
+   s_->run(threadEn_);
 }
 
 //! Accept a frame
@@ -180,7 +178,7 @@ int rpx::Xvc::xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsig
    if (!queue_.empty() && (frame = queue_.pop()) != nullptr)
    {
       log_->debug("Receiving new frame of size %",PRIi32, frame->getSize());
-   
+
       // Read received data into the hdbuf and rxb buffers
       rogue::GilRelease noGil;
       ris::FrameLockPtr frLock = frame->lock();

@@ -17,7 +17,6 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
 
-#include <rogue/protocols/xilinx/SockSd.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
 #include <rogue/GeneralError.h>
 
@@ -32,7 +31,7 @@ namespace rogue
          {
             private:
 
-               SockSd     sock_;
+               int        sd_;
                JtagDriver *drv_;
                unsigned   maxMsgSize_;
 
@@ -43,7 +42,7 @@ namespace rogue
                          JtagDriver* drv,
                          unsigned    maxMsgSize = 32768);
 
-               virtual void run();
+               virtual void run(bool &threadEn);
 
                virtual ~XvcServer(){};
          };

@@ -26,16 +26,43 @@ rpx::XvcConnection::XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecL
      maxVecLen_ (maxVecLen),
      supVecLen_ (0        )
 {
+   int got;
    socklen_t sz = sizeof(peer_);
 
    // RAII for the sd_
    if ((sd_ = ::accept(sd, (struct sockaddr *)&peer_, &sz)) < 0)
       throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to accept connection"));
+
+   // XVC protocol is synchronous / not pipelined :-(
+   // use TCP_NODELAY to make sure our messages (many of which
+   // are small) are sent ASAP
+   got = 1;
+   if (setsockopt(sd_, IPPROTO_TCP, TCP_NODELAY, &got, sizeof(got)))
+      throw(rogue::GeneralError::create("XvcConnection::XvcConnection()", "Unable to get TCP_NODELAY"));
 }
 
 rpx::XvcConnection::~XvcConnection()
 {
    ::close(sd_);
+}
+
+ssize_t rps::XvcConnection::readTo(void *buf, size_t count) {
+   fd_set rset;
+   int maxFd;
+   int nready;
+   struct timeval timeout;
+
+   FD_ZERO(rset);
+   FD_SET(sd_, &rset);
+
+   // 1 Second Timeout
+   timeout.tv_sec = 1;
+   timeout.tv_usec = 0;
+
+   nready = ::select(sd_+1, &rset, NULL, NULL, &timeout);
+
+   if ( nready > 0 && FD_ISSET(sd_, &rset)) return ::read(sd_, buf, count);
+   else return 0;
 }
 
 // fill rx buffer to 'n' octets
@@ -51,7 +78,7 @@ void rpx::XvcConnection::fill(unsigned long n)
    k -= rl_;
    while (k > 0)
    {
-      got = read(sd_, p, k);
+      got = readTo(sd_, p, k);
 
       if (got <= 0)
          throw(rogue::GeneralError::create("XvcConnection::fill()", "Unable to read from socket"));
@@ -137,18 +164,10 @@ void rpx::XvcConnection::run()
 
    allocBufs();
 
-   // XVC protocol is synchronous / not pipelined :-(
-   // use TCP_NODELAY to make sure our messages (many of which
-   // are small) are sent ASAP
-   got = 1;
-
-   if (setsockopt(sd_, IPPROTO_TCP, TCP_NODELAY, &got, sizeof(got)))
-      throw(rogue::GeneralError::create("XvcConnection::run()", "Unable to get TCP_NODELAY"));
-
    while (!drv_->isDone())
    {
       // read stuff;
-      got = read(sd_, rp_, chunk_);
+      got = readTo(sd_, rp_, chunk_);
 
       if (got <= 0)
          throw(rogue::GeneralError::create("XvcConnection::run()", "Unable to read from socket"));
