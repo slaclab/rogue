@@ -18,6 +18,7 @@
 
 #include <netinet/tcp.h>
 #include <arpa/inet.h>
+#include <sys/select.h>
 
 namespace rpx = rogue::protocols::xilinx;
 
@@ -46,13 +47,13 @@ rpx::XvcConnection::~XvcConnection()
    ::close(sd_);
 }
 
-ssize_t rps::XvcConnection::readTo(void *buf, size_t count) {
+ssize_t rpx::XvcConnection::readTo(void *buf, size_t count) {
    fd_set rset;
    int maxFd;
    int nready;
    struct timeval timeout;
 
-   FD_ZERO(rset);
+   FD_ZERO(&rset);
    FD_SET(sd_, &rset);
 
    // 1 Second Timeout
@@ -78,7 +79,7 @@ void rpx::XvcConnection::fill(unsigned long n)
    k -= rl_;
    while (k > 0)
    {
-      got = readTo(sd_, p, k);
+      got = readTo(p, k);
 
       if (got <= 0)
          throw(rogue::GeneralError::create("XvcConnection::fill()", "Unable to read from socket"));
@@ -167,7 +168,7 @@ void rpx::XvcConnection::run()
    while (!drv_->isDone())
    {
       // read stuff;
-      got = readTo(sd_, rp_, chunk_);
+      got = readTo(rp_, chunk_);
 
       if (got <= 0)
          throw(rogue::GeneralError::create("XvcConnection::run()", "Unable to read from socket"));

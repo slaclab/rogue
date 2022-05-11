@@ -128,7 +128,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
      tran->doneSubTransactions();
 
      // Forward the subTransactions
-     for (TransactionMap::iterator it = tran->subTranMap_.begin(); it != tran->subTranMap_.end(); it++) {
+     for (rim::TransactionMap::iterator it = tran->subTranMap_.begin(); it != tran->subTranMap_.end(); it++) {
        getSlave()->doTransaction(it->second);
      }
    }

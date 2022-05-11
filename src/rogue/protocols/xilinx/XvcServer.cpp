@@ -18,6 +18,7 @@
 #include <rogue/protocols/xilinx/XvcConnection.h>
 
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <dlfcn.h>
@@ -55,7 +56,7 @@ rpx::XvcServer::XvcServer(
       throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Unable to listen on socket"));
 }
 
-void rpx::XvcServer::run(bool &threadEn)
+void rpx::XvcServer::run(bool &threadEn, rogue::LoggingPtr log)
 {
 
    fd_set rset;
@@ -65,7 +66,7 @@ void rpx::XvcServer::run(bool &threadEn)
 
    while(threadEn) {
 
-      FD_ZERO(rset);
+      FD_ZERO(&rset);
       FD_SET(sd_, &rset);
 
       // 1 Second Timeout
@@ -81,7 +82,7 @@ void rpx::XvcServer::run(bool &threadEn)
          }
          catch (rogue::GeneralError &e)
          {
-            log_->debug("Sub-connection failed");
+            log->debug("Sub-connection failed");
          }
       }
    }

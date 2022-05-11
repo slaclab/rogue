@@ -19,6 +19,7 @@
 
 #include <rogue/protocols/xilinx/JtagDriver.h>
 #include <rogue/GeneralError.h>
+#include <rogue/Logging.h>
 
 namespace rogue
 {
@@ -42,7 +43,7 @@ namespace rogue
                          JtagDriver* drv,
                          unsigned    maxMsgSize = 32768);
 
-               virtual void run(bool &threadEn);
+               virtual void run(bool &threadEn, rogue::LoggingPtr log);
 
                virtual ~XvcServer(){};
          };

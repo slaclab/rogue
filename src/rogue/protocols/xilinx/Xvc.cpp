@@ -116,7 +116,7 @@ void rpx::Xvc::runThread() {
 
    // Start the XVC server on localhost
    s_ = new XvcServer(port_, this, maxMsg);
-   s_->run(threadEn_);
+   s_->run(threadEn_, log_);
 }
 
 //! Accept a frame
