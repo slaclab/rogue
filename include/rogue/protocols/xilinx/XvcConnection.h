@@ -67,6 +67,8 @@ namespace rogue
 
                virtual void run();
 
+               ssize_t readTo(void *buf, size_t count);
+
                virtual ~XvcConnection();
          };
       }

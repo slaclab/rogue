@@ -18,6 +18,7 @@
 #include <rogue/protocols/xilinx/XvcConnection.h>
 
 #include <sys/socket.h>
+#include <sys/select.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <dlfcn.h>
@@ -32,8 +33,7 @@ rpx::XvcServer::XvcServer(
                            JtagDriver* drv,
                            unsigned    maxMsgSize
                          )
-   : sock_       (true      ),
-     drv_        (drv       ),
+   : drv_        (drv       ),
      maxMsgSize_ (maxMsgSize)
 {
    struct sockaddr_in a;
@@ -43,25 +43,52 @@ rpx::XvcServer::XvcServer(
    a.sin_addr.s_addr = INADDR_ANY;
    a.sin_port        = htons(port);
 
-   if (::setsockopt(sock_.getSd(), SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)))
+   if ((sd_ = ::socket(AF_INET, SOCK_STREAM, 0)) < 0)
+      throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Failed to create socket"));
+
+   if (::setsockopt(sd_, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)))
       throw(rogue::GeneralError::create("XvcServer::XvcServer()", "setsockopt(SO_REUSEADDR) failed"));
 
-   if (::bind(sock_.getSd(), (struct sockaddr *)&a, sizeof(a)))
+   if (::bind(sd_, (struct sockaddr *)&a, sizeof(a)))
       throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Unable to bind Stream socket to local address"));
 
-   if (::listen(sock_.getSd(), 1))
+   if (::listen(sd_, 1))
       throw(rogue::GeneralError::create("XvcServer::XvcServer()", "Unable to listen on socket"));
 }
 
-void rpx::XvcServer::run()
+rpx::XvcServer::~XvcServer()
 {
-   XvcConnection conn(sock_.getSd(), drv_, maxMsgSize_);
-   try
-   {
-      conn.run();
-   }
-   catch (rogue::GeneralError &e)
-   {
-      fprintf(stderr, "Closing connection (%s)\n", e.what());
+   ::close(sd_);
+}
+
+void rpx::XvcServer::run(bool &threadEn, rogue::LoggingPtr log)
+{
+
+   fd_set rset;
+   int maxFd;
+   int nready;
+   struct timeval timeout;
+
+   while(threadEn) {
+
+      FD_ZERO(&rset);
+      FD_SET(sd_, &rset);
+
+      // 1 Second Timeout
+      timeout.tv_sec = 1;
+      timeout.tv_usec = 0;
+
+      nready = ::select(sd_+1, &rset, NULL, NULL, &timeout);
+
+      if ( nready > 0 && FD_ISSET(sd_, &rset)) {
+         try {
+            XvcConnection conn(sd_, drv_, maxMsgSize_);
+            conn.run();
+         }
+         catch (rogue::GeneralError &e)
+         {
+            log->debug("Sub-connection failed");
+         }
+      }
    }
 }
