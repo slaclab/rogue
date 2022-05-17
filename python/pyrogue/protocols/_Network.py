@@ -286,6 +286,9 @@ class UdpRssiPack(pr.Device):
     def application(self,dest):
         return(self._pack.application(dest))
 
+    def countReset(self):
+        self._rssi.resetCounters()
+
     def _stop(self):
         self._rssi._stop()
 

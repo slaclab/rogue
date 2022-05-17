@@ -90,14 +90,17 @@ class DataWriter(PyDMFrame):
         w = PyRogueLineEdit(parent=None, init_channel=self._path + '.BufferSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        fl.addRow('Buffer Size:',w)
+        w.check_enable_state = lambda: None
+        w.setReadOnly(True)
+        if w.text().isnumeric() and w.text() != '0':
+            fl.addRow('Buffer Size:',w)
 
         w = PyDMLabel(parent=None, init_channel=self._path + '.IsOpen/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('File Open:',w)
 
-        w = PyDMLabel(parent=None, init_channel=self._path + '.CurrentSize')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.CurrentSize/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Current File Size:',w)
@@ -114,14 +117,17 @@ class DataWriter(PyDMFrame):
         w = PyRogueLineEdit(parent=None, init_channel=self._path + '.MaxFileSize')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        fl.addRow('Max Size:',w)
+        w.check_enable_state = lambda: None
+        w.setReadOnly(True)
+        if w.text().isnumeric() and w.text() != '0':
+            fl.addRow('Max Size:',w)
 
         w = PyDMLabel(parent=None, init_channel=self._path + '.FrameCount')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize')
+        w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Total File Size:',w)

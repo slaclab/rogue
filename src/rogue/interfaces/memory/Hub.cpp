@@ -26,6 +26,9 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <memory>
+#include <cmath>
+
+#include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -45,6 +48,7 @@ rim::HubPtr rim::Hub::create (uint64_t offset, uint32_t min, uint32_t max) {
 rim::Hub::Hub(uint64_t offset, uint32_t min, uint32_t max) : Master (), Slave(min,max) {
    offset_ = offset;
    root_   = (min != 0 && max != 0);
+   log_ = rogue::Logging::create("memory.Hub");
 }
 
 //! Destroy a block
@@ -72,16 +76,17 @@ std::string rim::Hub::doSlaveName() {
    else return(reqSlaveName());
 }
 
-//! Return min access size to requesting master
-uint32_t rim::Hub::doMinAccess() {
-   if ( root_ ) return(rim::Slave::doMinAccess());
-   else return(reqMinAccess());
-}
+ //! Return min access size to requesting master
+ uint32_t rim::Hub::doMinAccess() {
+    if ( root_ ) return(rim::Slave::doMinAccess());
+    else return(reqMinAccess());
+ }
 
 //! Return max access size to requesting master
 uint32_t rim::Hub::doMaxAccess() {
-   if ( root_ ) return(rim::Slave::doMaxAccess());
-   else return(reqMaxAccess());
+    // Transaction splitting allows for "unlimited" max access
+    if ( root_ ) return(rim::Slave::doMaxAccess());
+    else return 0xFFFFFFFF;
 }
 
 //! Return address
@@ -90,14 +95,47 @@ uint64_t rim::Hub::doAddress() {
    else return(reqAddress() | offset_);
 }
 
+
 //! Post a transaction. Master will call this method with the access attributes.
 void rim::Hub::doTransaction(rim::TransactionPtr tran) {
+  uint32_t maxAccess = getSlave()->doMaxAccess();
 
    // Adjust address
    tran->address_ |= offset_;
 
-   // Forward transaction
-   getSlave()->doTransaction(tran);
+   // Split into smaller transactions if necessary
+   if (tran->size() > maxAccess)  {
+
+     uint32_t numberOfTransactions = std::ceil(1.0*tran->size() / maxAccess);
+
+     log_->debug("Splitting transaction %" PRIu32 " into %" PRIu32 " subtransactions", tran->id_, numberOfTransactions);
+
+     for (unsigned int i=0; i<numberOfTransactions; ++i)  {
+       rim::TransactionPtr subTran = tran->createSubTransaction();
+       subTran->iter_    = (uint8_t *) (tran->begin() + i * maxAccess);
+       if (tran->size() >= ((i+1) * maxAccess)) {
+         subTran->size_ = maxAccess;
+       } else {
+         subTran->size_ = tran->size() % maxAccess;
+       }
+       subTran->address_ = tran->address_ + (i * maxAccess);
+       subTran->type_    = tran->type();
+
+       log_->debug("Created subTransaction %" PRIu32 ", parent=%" PRIu32 ", iter=%" PRIx32 ", size=%" PRIu32 ", address=%" PRIx64, subTran->id_, tran->id_, subTran->iter_, subTran->size_, subTran->address_);
+     }
+
+     // Declare all subTransactions have been created
+     tran->doneSubTransactions();
+
+     // Forward the subTransactions
+     for (rim::TransactionMap::iterator it = tran->subTranMap_.begin(); it != tran->subTranMap_.end(); it++) {
+       getSlave()->doTransaction(it->second);
+     }
+   }
+   else  {
+      // Forward transaction
+      getSlave()->doTransaction(tran);
+   }
 }
 
 void rim::Hub::setup_python() {
@@ -143,4 +181,3 @@ void rim::HubWrap::defDoTransaction(rim::TransactionPtr transaction) {
 }
 
 #endif
-

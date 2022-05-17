@@ -23,11 +23,10 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_HUB_H__
 #define __ROGUE_INTERFACES_MEMORY_HUB_H__
 #include <stdint.h>
-#include <vector>
-#include <memory>
 
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
+#include <rogue/Logging.h>
 #include <thread>
 
 #ifndef NO_PYTHON
@@ -64,6 +63,10 @@ namespace rogue {
                // Flag if this is a base slave
                bool root_;
 
+               //! Log
+               std::shared_ptr<rogue::Logging> log_;
+           
+
             public:
 
                //! Class factory which returns a pointer to a Hub (HubPtr)
@@ -73,13 +76,13 @@ namespace rogue {
                 * @param min The min transaction size, 0 if not a virtual memory space root
                 * @param min The max transaction size, 0 if not a virtual memory space root
                 */
-               static std::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset, uint32_t min, uint32_t max);
+           static std::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset, uint32_t min, uint32_t max);
 
                // Setup class for use in python
                static void setup_python();
 
                // Create a Hub device with a given offset
-               Hub(uint64_t offset, uint32_t min, uint32_t max);
+           Hub(uint64_t offset, uint32_t min, uint32_t max);
 
                // Destroy the Hub
                ~Hub();
@@ -159,6 +162,7 @@ namespace rogue {
                 * @param transaction Transaction pointer as TransactionPtr
                 */
                virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+
          };
 
          //! Alias for using shared pointer as HubPtr
@@ -174,7 +178,7 @@ namespace rogue {
             public:
 
                // Constructor
-               HubWrap(uint64_t offset, uint32_t min, uint32_t max);
+           HubWrap(uint64_t offset, uint32_t min, uint32_t max);
 
                // Post a transaction. Master will call this method with the access attributes.
                void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);

@@ -21,10 +21,13 @@ class DataReceiver(pr.Device,ris.Slave):
                  typeStr='UInt8[np]',
                  hideData=True,
                  value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 enableOnStart=True,
                  **kwargs):
 
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
+
+        self._enableOnStart = enableOnStart
 
         self.add(pr.LocalVariable(name='RxEnable',
                                   value=True,
@@ -62,7 +65,8 @@ class DataReceiver(pr.Device,ris.Slave):
         super().countReset()
 
     def _acceptFrame(self, frame):
-        if not self.RxEnable.get():
+        # Do nothing if not yet started or enabled
+        if self.running is False or self.RxEnable.value() is False:
             return
 
         # Lock frame
@@ -102,7 +106,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
     def _start(self):
         super()._start()
-        self.RxEnable.set(value=True)
+        self.RxEnable.set(value=self._enableOnStart)
 
     def _stop(self):
         self.RxEnable.set(value=False)

@@ -39,9 +39,16 @@ rim::TransactionLockPtr rim::TransactionLock::create (rim::TransactionPtr tran) 
 //! Constructor
 rim::TransactionLock::TransactionLock(rim::TransactionPtr tran) {
    rogue::GilRelease noGil;
+
    tran_ = tran;
+
+   while ( tran_->isSubTransaction_ ) {
+      rim::TransactionPtr parentTran = tran_->parentTransaction_.lock();
+      if (parentTran) tran_ = parentTran;
+      else break;
+   }
    tran_->lock_.lock();
-   locked_ = true;
+   locked_ = true;    
 }
 
 //! Setup class in python

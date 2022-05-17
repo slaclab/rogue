@@ -252,20 +252,20 @@ class DummyTree(pr.Root):
 
     def __init__(self):
         pr.Root.__init__(self,
-                         name='dummyTree',
-                         description="Dummy tree for example",
-                         timeout=2.0,
-                         pollEn=False,
-                         serverPort=None)
+            name='dummyTree',
+            description="Dummy tree for example",
+            timeout=2.0,
+            pollEn=False,
+            serverPort=None)
 
         # Use a memory space emulator
         sim = TestEmulate()
         self.addInterface(sim)
 
         self.add(HubTestDev(
-                offset     = 0x0,
-                memBase    = sim,
-            ))
+            offset  = 0x0,
+            memBase = sim,
+        ))
 
 def test_hub():
 

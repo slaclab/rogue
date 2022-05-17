@@ -21,7 +21,7 @@
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #include <memory>
 #include <stdint.h>
-#include <vector>
+#include <map>
 #include <thread>
 #include <mutex>
 #include <condition_variable>
@@ -38,8 +38,13 @@ namespace rogue {
       namespace memory {
 
          class TransactionLock;
+         class Transaction;
          class Master;
          class Hub;
+
+      //         using TransactionIDVec = std::vector<uint32_t>;
+      //         using TransactionQueue = std::queue<std::shared_ptr<rogue::interfaces::memory::Transaction>>;
+         using TransactionMap = std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction>>;
 
          //! Transaction Container
          /** The Transaction is passed between the Master and Slave to initiate a transaction.
@@ -115,8 +120,20 @@ namespace rogue {
                // Transaction lock
                std::mutex lock_;
 
+               // Sub-transactions vector
+           TransactionMap subTranMap_;
+
+           // Done creating subtransactions for this transaction
+           bool doneCreatingSubTransactions_;
+
+               // Identify if it's a parent or a sub transaction
+               bool isSubTransaction_;
+
                //! Log
                std::shared_ptr<rogue::Logging> log_;
+
+               // Weak pointer to parent transaction, where applicable
+               std::weak_ptr<rogue::interfaces::memory::Transaction> parentTransaction_;
 
                // Create a transaction container and return a TransactionPtr, called by Master
                static std::shared_ptr<rogue::interfaces::memory::Transaction> create (struct timeval timeout);
@@ -176,6 +193,14 @@ namespace rogue {
                 */
                uint32_t type();
 
+               //! Create a subtransaction
+               /** Create a new transaction and assign internal pointers linking it to this parent transaction
+                * @return A pointer to the newly created subtransaction
+                */
+           std::shared_ptr<rogue::interfaces::memory::Transaction> createSubTransaction ();
+
+           void doneSubTransactions();
+
                //! Refresh transaction timer
                /** Called to refresh the Transaction timer. If the passed reference
                 * Transaction is NULL or the Transaction start time is later than the
@@ -200,7 +225,7 @@ namespace rogue {
                 * Exposed as error() to Python
                 * @param error Transaction error message
                 */
-               void errorPy(std::string error);
+               void errorStr(std::string error);
 
                //! Complete transaction with passed error
                /** Lock must be held before calling this method.
@@ -259,4 +284,3 @@ namespace rogue {
 }
 
 #endif
-

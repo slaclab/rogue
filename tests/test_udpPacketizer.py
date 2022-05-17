@@ -14,7 +14,6 @@ import rogue.utilities
 import rogue.protocols.udp
 import rogue.interfaces.stream
 import rogue
-import pyrogue
 import time
 import threading
 
@@ -72,11 +71,11 @@ def data_path(ver,jumbo):
     print("Testing ver={} jumbo={}".format(ver,jumbo))
 
     # UDP Server
-    serv = rogue.protocols.udp.Server(0,jumbo);
+    serv = rogue.protocols.udp.Server(0,jumbo)
     port = serv.getPort()
 
     # UDP Client
-    client = rogue.protocols.udp.Client("127.0.0.1",port,jumbo);
+    client = rogue.protocols.udp.Client("127.0.0.1",port,jumbo)
 
     # RSSI
     sRssi = rogue.protocols.rssi.Server(serv.maxPayload())
@@ -157,4 +156,3 @@ def test_data_path():
 
 if __name__ == "__main__":
     test_data_path()
-

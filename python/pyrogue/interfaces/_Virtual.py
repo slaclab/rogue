@@ -185,6 +185,9 @@ class VirtualNode(pr.Node):
     def _setDict(self,*args,**kwargs):
         raise pr.NodeError('_setDict not supported in VirtualNode')
 
+    def printYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+        print(self.getYaml(readFirst=readFirst, modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse))
+
     def _doUpdate(self, val):
         for func in self._functions:
             func(self.path,val)

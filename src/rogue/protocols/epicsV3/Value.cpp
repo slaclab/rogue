@@ -24,6 +24,7 @@
 #include <memory>
 #include <memory>
 #include <aitTypes.h>
+#include <inttypes.h>
 
 #ifdef __MACH__
 #include <mach/clock.h>
@@ -107,8 +108,8 @@ rpe::Value::~Value () {
 void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool forceStr) {
    uint32_t bitSize;
 
-   log_->info("Init GDD for %s typeStr=%s, isEnum=%i, count=%i",
-         epicsName_.c_str(),typeStr.c_str(),isEnum,count);
+   log_->info("Init GDD for %s typeStr=%s, isEnum=%" PRIu8 ", count=%" PRIu32,
+         epicsName_.c_str(), typeStr.c_str(), isEnum, count);
 
    // Save current type
    typeStr_ = typeStr;
@@ -116,92 +117,92 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
    // Enum type
    if ( isEnum ) {
       epicsType_ = aitEnumEnum16;
-      log_->info("Detected enum for %s typeStr=%s", epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected enum for %s typeStr=%s", epicsName_.c_str(), typeStr.c_str());
    }
 
    // Force to string
    else if ( forceStr ) epicsType_ = aitEnumString;
 
    // Unsigned Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"UInt%i",&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"UInt%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8;}
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
       else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; }
       else { epicsType_ = aitEnumString; }
 
-      log_->info("Detected Rogue Uint with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue Uint with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
   }
 
    // Unsigned Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"uint%i",&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"uint%" SCNu32,&bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumUint8;}
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumUint16; }
       else if ( bitSize <= 32) { fSize_ = 4; epicsType_ = aitEnumUint32; }
       else { epicsType_ = aitEnumString; }
 
-      log_->info("Detected Rogue uint with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue uint with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
   }
 
    // Signed Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"Int%i",&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"Int%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; }
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; }
       else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; }
       else { epicsType_ = aitEnumString; }
 
-      log_->info("Detected Rogue Int with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue Int with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
    }
 
    // Signed Int types, > 32-bits treated as string
-   else if ( sscanf(typeStr.c_str(),"int%i",&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"int%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <=  8 ) { fSize_ = 1; epicsType_ = aitEnumInt8; }
       else if ( bitSize <= 16 ) { fSize_ = 2; epicsType_ = aitEnumInt16; }
       else if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumInt32; }
       else { epicsType_ = aitEnumString; }
 
-      log_->info("Detected Rogue int with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue int with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
    }
 
    // Python int
    else if ( typeStr.find("int") == 0 ) {
       fSize_ = 4;
       epicsType_ = aitEnumInt32;
-      log_->info("Detected python int with size %i for %s typeStr=%s",
+      log_->info("Detected python int with size %" PRIu32 " for %s typeStr=%s",
             bitSize, epicsName_.c_str(),typeStr.c_str());
    }
 
    // Floats with size included
-   else if ( sscanf(typeStr.c_str(),"float%i",&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"float%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumFloat32; }
       else { fSize_ = 8; epicsType_ = aitEnumFloat64; }
 
-      log_->info("Detected Rogue float with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue float with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
    }
 
    // Floats with size included
-   else if ( sscanf(typeStr.c_str(),"Float%i",&bitSize) == 1 ) {
+   else if ( sscanf(typeStr.c_str(),"Float%" SCNu32, &bitSize) == 1 ) {
       if ( bitSize <= 32 ) { fSize_ = 4; epicsType_ = aitEnumFloat32; }
       else { fSize_ = 8; epicsType_ = aitEnumFloat64; }
 
-      log_->info("Detected Rogue Float with size %i for %s typeStr=%s",
-            bitSize, epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected Rogue Float with size %" PRIu32 " for %s typeStr=%s",
+            bitSize, epicsName_.c_str(), typeStr.c_str());
    }
 
    // Treat other floats as 64-bit
    else if ( (typeStr.find("float") == 0) || ( typeStr.find("Double") == 0 ) || ( typeStr.find("Float") == 0 )) {
-      log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected 64-bit float %s: typeStr=%s", epicsName_.c_str(), typeStr.c_str());
       epicsType_ = aitEnumFloat64;
       fSize_ = 8;
    }
 
    // Unknown type maps to string
    if ( epicsType_ == aitEnumInvalid ) {
-      log_->info("Detected unknown type for %s typeStr=%s. It will be mapped to a string.", epicsName_.c_str(),typeStr.c_str());
+      log_->info("Detected unknown type for %s typeStr=%s. It will be mapped to a string.", epicsName_.c_str(), typeStr.c_str());
       epicsType_ = aitEnumString;
    }
 
@@ -212,7 +213,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
          log_->info("Vector of string not supported in EPICS. Treating as string: %s\n", epicsName_.c_str());
          count = 0;
       }
-      log_->info("Treating String as waveform of chars for %s typeStr=%s\n", epicsName_.c_str(),typeStr.c_str());
+      log_->info("Treating String as waveform of chars for %s typeStr=%s\n", epicsName_.c_str(), typeStr.c_str());
       epicsType_ = aitEnumUint8;
       count      = 300;
       isString_  = true;
@@ -220,7 +221,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
 
    // Vector
    if ( count != 0 ) {
-      log_->info("Create vector GDD for %s epicsType_=%i, size=%i",epicsName_.c_str(),epicsType_,count);
+      log_->info("Create vector GDD for %s epicsType_=%" PRIu32 ", size=%" PRIu32, epicsName_.c_str(), epicsType_, count);
       pValue_ = new gddAtomic (gddAppType_value, epicsType_, 1u, count);
       size_   = count;
       max_    = count;
@@ -229,7 +230,7 @@ void rpe::Value::initGdd(std::string typeStr, bool isEnum, uint32_t count, bool 
 
    // Scalar
    else {
-      log_->info("Create scalar GDD for %s epicsType_=%i",epicsName_.c_str(),epicsType_);
+      log_->info("Create scalar GDD for %s epicsType_=%" PRIu32, epicsName_.c_str(), epicsType_);
       pValue_ = new gddScalar(gddAppType_value, epicsType_);
    }
 

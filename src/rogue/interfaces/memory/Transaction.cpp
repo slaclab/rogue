@@ -29,6 +29,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <sys/time.h>
+#include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
@@ -59,7 +60,7 @@ void rim::Transaction::setup_python() {
       .def("size",    &rim::Transaction::size)
       .def("type",    &rim::Transaction::type)
       .def("done",    &rim::Transaction::done)
-      .def("error",   &rim::Transaction::errorPy)
+      .def("error",   &rim::Transaction::errorStr)
       .def("expired", &rim::Transaction::expired)
       .def("setData", &rim::Transaction::setData)
       .def("getData", &rim::Transaction::getData)
@@ -85,6 +86,9 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
    error_   = "";
    done_    = false;
 
+   isSubTransaction_ = false;
+   doneCreatingSubTransactions_ = false;
+
    log_ = rogue::Logging::create("memory.Transaction",true);
 
    classMtx_.lock();
@@ -104,7 +108,11 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 
 //! Get expired state
 bool rim::Transaction::expired() {
-   return (iter_ == NULL || done_);
+    bool done = false;
+    if (isSubTransaction_) {
+        done = parentTransaction_.expired();
+    }
+   return done || (iter_ == NULL || done_);
 }
 
 //! Get id
@@ -119,26 +127,71 @@ uint32_t rim::Transaction::size() { return size_; }
 //! Get type
 uint32_t rim::Transaction::type() { return type_; }
 
+//! Create a subtransaction
+rim::TransactionPtr rim::Transaction::createSubTransaction () {
+   // Create a new transaction and set up pointers back and forth
+   rim::TransactionPtr subTran = std::make_shared<rim::Transaction>(timeout_);
+   subTran->parentTransaction_ = shared_from_this();
+   subTran->isSubTransaction_ = true;
+   subTranMap_[subTran->id()] = subTran;
+   log_->debug("Created subTransaction id=%" PRIu32 ", parent=%" PRIu32, subTran->id_, this->id_);
+
+   // Should subtransactions be given default address identical to parent?
+   return(subTran);
+}
+
+void rim::Transaction::doneSubTransactions() {
+  doneCreatingSubTransactions_ = true;
+}
+
 //! Complete transaction without error, lock must be held
 void rim::Transaction::done() {
 
-   log_->debug("Transaction done. type=%i id=%i, address=0x%016x, size=0x%x",
+   log_->debug("Transaction done. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ,
          type_,id_,address_,size_);
 
    error_ = "";
    done_  = true;
    cond_.notify_all();
+
+   // If applicable, notify parent transaction about completion of a sub-transaction
+   if (isSubTransaction_)  {
+      // Get a shared_ptr to the parent transaction
+      rim::TransactionPtr parentTran = this->parentTransaction_.lock();
+      if (parentTran) {
+         // Remove own ID from parent subtransaction map
+        parentTran->subTranMap_.erase(id_);
+
+         // If this is the last sub-transaction, notify parent transaction it is all done
+         if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+            parentTran->done();
+      }
+   }
 }
 
 //! Complete transaction with passed error, lock must be held
-void rim::Transaction::errorPy(std::string error) {
-   error_ = error;
+void rim::Transaction::errorStr(std::string error) {
+   error_ += error;
    done_  = true;
 
-   log_->debug("Transaction error. type=%i id=%i, address=0x%016x, size=0x%x, error=%s",
+   log_->debug("Transaction error. type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32 ", error=%s",
          type_,id_,address_,size_,error_.c_str());
 
    cond_.notify_all();
+
+   // If applicable, notify parent transaction about completion of a sub-transaction
+   if (isSubTransaction_)  {
+      // Get a shared_ptr to the parent transaction
+      rim::TransactionPtr parentTran = parentTransaction_.lock();
+      if (parentTran) {
+         // Remove own ID from parent subtransaction map
+        parentTran->subTranMap_.erase(id_);
+
+         // If this is the last sub-transaction, notify parent transaction it is all done
+         if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+             parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s.\n", id_, error.c_str());
+      }
+   }
 }
 
 //! Complete transaction with passed error, lock must be held
@@ -150,13 +203,7 @@ void rim::Transaction::error(const char * fmt, ...) {
    vsnprintf(buffer,10000,fmt,args);
    va_end(args);
 
-   error_ = buffer;
-   done_  = true;
-
-   log_->debug("Transaction error. type=%i id=%i, address=0x%016x, size=0x%x, error=%s",
-         type_,id_,address_,size_,error_.c_str());
-
-   cond_.notify_all();
+   errorStr(std::string(buffer));
 }
 
 //! Wait for the transaction to complete
@@ -175,7 +222,7 @@ std::string rim::Transaction::wait() {
          done_  = true;
          error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
-         log_->debug("Transaction timeout. type=%i id=%i, address=0x%016x, size=0x%x",
+         log_->debug("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
                type_,id_,address_,size_);
       }
       else cond_.wait_for(lock,std::chrono::microseconds(1000));
@@ -208,7 +255,7 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
 
       if ( warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0 ) warnTime_ = endTime_;
       else if ( timercmp(&warnTime_,&currTime,>=) ) {
-            log_->warning("Transaction timer refresh! Possible slow link! type=%i id=%i, address=0x%016x, size=0x%x",
+            log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32,
                   type_,id_,address_,size_);
          warnTime_ = endTime_;
       }
@@ -241,7 +288,7 @@ void rim::Transaction::setData ( boost::python::object p, uint32_t offset ) {
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
       throw(rogue::GeneralError::create("Transaction::setData",
-               "Attempt to set %i bytes at offset %i to python buffer with size %i",
+               "Attempt to set %" PRIu32 " bytes at offset %" PRIu32 " to python buffer with size %" PRIu32,
                count,offset,size_));
    }
 
@@ -261,8 +308,8 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
    if ( (offset + count) > size_ ) {
       PyBuffer_Release(&pyBuf);
       throw(rogue::GeneralError::create("Transaction::getData",
-               "Attempt to get %i bytes from offset %i to python buffer with size %i",
-               count,offset,size_));
+               "Attempt to get %" PRIu32 " bytes from offset %" PRIu32 " to python buffer with size %" PRIu32,
+               count, offset, size_));
    }
 
    std::memcpy((uint8_t *)pyBuf.buf, begin()+offset, count);
@@ -270,4 +317,3 @@ void rim::Transaction::getData ( boost::python::object p, uint32_t offset ) {
 }
 
 #endif
-

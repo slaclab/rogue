@@ -15,7 +15,6 @@
 #-----------------------------------------------------------------------------
 import rogue.utilities
 import rogue.utilities.fileio
-import pyrogue
 import time
 import rogue
 
@@ -51,7 +50,8 @@ def read_files():
 
     prbsU = rogue.utilities.Prbs()
 
-    comp = rogue.utilities.StreamUnZip()
+    # Commented out because flake8 linter says "comp" is never used
+    # comp = rogue.utilities.StreamUnZip()
 
     frdU >> prbsU
 
@@ -74,4 +74,3 @@ def test_file_compress():
 if __name__ == "__main__":
     write_files()
     read_files()
-

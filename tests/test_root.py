@@ -19,6 +19,7 @@ def test_root():
         # - a non-default poll value
         # - set the initRead to true
         # - set the initWrite to true
+        print(root.path) # do something with "root" variable so it is not unused for flake8 linter
         pass
 
 if __name__ == "__main__":

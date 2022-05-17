@@ -31,6 +31,7 @@
 #include <rogue/protocols/srp/module.h>
 #include <rogue/protocols/udp/module.h>
 #include <rogue/protocols/batcher/module.h>
+#include <rogue/protocols/xilinx/module.h>
 
 #if DO_EPICS_V3
    #include <rogue/protocols/epicsV3/module.h>
@@ -54,6 +55,7 @@ void rogue::protocols::setup_module() {
    rogue::protocols::srp::setup_module();
    rogue::protocols::udp::setup_module();
    rogue::protocols::batcher::setup_module();
+   rogue::protocols::xilinx::setup_module();
 
 #if DO_EPICS_V3
    rogue::protocols::epicsV3::setup_module();

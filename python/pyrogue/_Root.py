@@ -381,6 +381,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
             self._serverPort = self._zmqServer.port()
             print(f"Start: Started zmqServer on ports {self._serverPort}-{self._serverPort+2}")
+            print(f"    To start a gui: python -m pyrogue gui --server='localhost:{self._serverPort}'")
+            print(f"    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port={self._serverPort})")
 
         # Start sql interface
         if self._sqlUrl is not None:
@@ -597,7 +599,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 data += "{}\t".format(v.maximum)
                 data += "{}\t".format(v.enum)
                 data += "{}\t".format(v.overlapEn)
-                data += "{}\t".format(v.verify)
+                data += "{}\t".format(v.verifyEn)
                 data += "{}\t".format(v._base.modelId)
                 data += "{}\t".format(v._base.isBigEndian)
                 data += "{}\t".format(v._base.bitReverse)
@@ -751,6 +753,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
+    @pr.expose
     def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
         """Save YAML configuration/status to a file. Called from command"""
 
@@ -848,15 +851,12 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def getYaml(self,readFirst,modes,incGroups,excGroups):
-        """
-        Get current values as yaml data.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
-        """
-        if readFirst:
-            self._read()
-        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
+    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
+        d = self._getDict(modes, incGroups, excGroups, properties=True)
+        return {self.name: d}
+
+    def treeYaml(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+        return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
         """
@@ -878,7 +878,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if self.InitAfterConfig.value():
             self.initialize()
-
 
     def remoteVariableDump(self,name,modes,readFirst):
         """Dump remote variable values to a file."""

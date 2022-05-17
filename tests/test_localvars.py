@@ -76,6 +76,7 @@ class myDevice(pyrogue.Device):
                 name='var_without_value'))
             raise AssertionError('Adding a local variable without value did not raise an exception')
         except Exception as e:
+            print(type(e)) # do something with "e" variable so it is not unused for flake8 linter
             pass
 
         # Test to define a variable with an invalid mode
@@ -86,6 +87,7 @@ class myDevice(pyrogue.Device):
                 mode='INV'))
             raise AssertionError('Adding a local variable with invalid mode did not raise an exception')
         except Exception as e:
+            print(type(e)) # do something with "e" variable so it is not unused for flake8 linter
             pass
 
 class LocalRoot(pyrogue.Root):
@@ -177,4 +179,3 @@ def test_local_root():
 
 if __name__ == "__main__":
     test_local_root()
-
