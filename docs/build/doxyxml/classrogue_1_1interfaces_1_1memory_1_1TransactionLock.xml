@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::memory::TransactionLock</compoundname>
+    <includes refid="TransactionLock_8h" local="no">TransactionLock.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a33d98fd2b8a866de030b555453521970" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt; rogue::interfaces::memory::TransactionLock::tran_</definition>
+        <argsstring></argsstring>
+        <name>tran_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="40" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a0d1bfa33547ed80b235ea82dbaad2829" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::memory::TransactionLock::locked_</definition>
+        <argsstring></argsstring>
+        <name>locked_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="41" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1afcfc735d126d5c65acac84743b43a624" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock" kindref="compound">rogue::interfaces::memory::TransactionLock</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::memory::TransactionLock&gt; rogue::interfaces::memory::TransactionLock::create</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; transaction)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>transaction</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="46" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1aa08c8dc0379360e45e81f2d5ed7fffb6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::TransactionLock::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="53" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a5d7e620f27ea521d4d77de3555b4e220" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::TransactionLock::TransactionLock</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; transaction)</argsstring>
+        <name>TransactionLock</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>transaction</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="50" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1ac6cdb3dfa5d808c3680a2b0868959dc0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::TransactionLock::~TransactionLock</definition>
+        <argsstring>()</argsstring>
+        <name>~TransactionLock</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="56" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TransactionLock::lock</definition>
+        <argsstring>()</argsstring>
+        <name>lock</name>
+        <briefdescription>
+<para>Lock associated <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> if not locked. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b" kindref="member">lock()</ref> to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="61" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TransactionLock::unlock</definition>
+        <argsstring>()</argsstring>
+        <name>unlock</name>
+        <briefdescription>
+<para>UnLock associated transaction if locked. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f" kindref="member">unlock()</ref> to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="66" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1abed16ae4763e8599bb796393bf9c2148" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TransactionLock::enter</definition>
+        <argsstring>()</argsstring>
+        <name>enter</name>
+        <briefdescription>
+<para>Enter method for python, does nothing. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This exists only to support the with call in python.</para>
+<para>Exposed as <bold>enter</bold>() to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="74" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1adf323de935a5893ecaa03c1d8e90088e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TransactionLock::exit</definition>
+        <argsstring>(void *, void *, void *)</argsstring>
+        <name>exit</name>
+        <param>
+          <type>void *</type>
+        </param>
+        <param>
+          <type>void *</type>
+        </param>
+        <param>
+          <type>void *</type>
+        </param>
+        <briefdescription>
+<para>Exit method for python, does nothing. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This exists only to support the with call in python.</para>
+<para>Exposed as <bold>exit</bold>() to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="82" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> Lock. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The <ref refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock" kindref="compound">TransactionLock</ref> is a container for holding a lock on <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> data while accessing that data. This lock ensures that <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> is not destroyed when the <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> is updating its data and result. This object is created by calling <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeaeb3980a9e5959eb23d2181eeeddc49" kindref="member">Transaction::lock()</ref>. </para>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="38" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" bodystart="38" bodyend="83"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1afcfc735d126d5c65acac84743b43a624" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1abed16ae4763e8599bb796393bf9c2148" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>enter</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1adf323de935a5893ecaa03c1d8e90088e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>exit</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a944eab05ce6a2ae233ce7110b4c00c0b" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>lock</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a0d1bfa33547ed80b235ea82dbaad2829" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>locked_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1aa08c8dc0379360e45e81f2d5ed7fffb6" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a33d98fd2b8a866de030b555453521970" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>tran_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a5d7e620f27ea521d4d77de3555b4e220" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>TransactionLock</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1a689be9da11fef5fa95bfdb4e39c6eb7f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>unlock</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock_1ac6cdb3dfa5d808c3680a2b0868959dc0" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TransactionLock</scope><name>~TransactionLock</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

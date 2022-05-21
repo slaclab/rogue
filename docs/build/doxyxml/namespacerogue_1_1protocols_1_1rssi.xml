@@ -1,0 +1,112 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1protocols_1_1rssi" kind="namespace" language="C++">
+    <compoundname>rogue::protocols::rssi</compoundname>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Application" prot="public">rogue::protocols::rssi::Application</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Client" prot="public">rogue::protocols::rssi::Client</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Controller" prot="public">rogue::protocols::rssi::Controller</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Header" prot="public">rogue::protocols::rssi::Header</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Server" prot="public">rogue::protocols::rssi::Server</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Transport" prot="public">rogue::protocols::rssi::Transport</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1rssi_1a3f35628c60465892f54a7653844e13ce" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">rogue::protocols::rssi::Application</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::rssi::Application&gt; rogue::protocols::rssi::ApplicationPtr</definition>
+        <argsstring></argsstring>
+        <name>ApplicationPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="73" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1rssi_1aef4933d196b1982bc11fa51173e75ff0" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Client" kindref="compound">rogue::protocols::rssi::Client</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::rssi::Client&gt; rogue::protocols::rssi::ClientPtr</definition>
+        <argsstring></argsstring>
+        <name>ClientPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="133" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" bodystart="133" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1rssi_1ab9e572ed9e6f11586dbe0029d4c9aaae" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Controller" kindref="compound">rogue::protocols::rssi::Controller</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::rssi::Controller&gt; rogue::protocols::rssi::ControllerPtr</definition>
+        <argsstring></argsstring>
+        <name>ControllerPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Controller.h" line="273" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Controller.h" bodystart="273" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1rssi_1a7c40e2fe0bc2c102751b8ba7d92e061e" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Header" kindref="compound">rogue::protocols::rssi::Header</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::rssi::Header&gt; rogue::protocols::rssi::HeaderPtr</definition>
+        <argsstring></argsstring>
+        <name>HeaderPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Header.h" line="152" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Header.h" bodystart="152" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1rssi_1a1e90e7e7bf1116a5772f637df2c6be20" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Server" kindref="compound">rogue::protocols::rssi::Server</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::rssi::Server&gt; rogue::protocols::rssi::ServerPtr</definition>
+        <argsstring></argsstring>
+        <name>ServerPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Server.h" line="132" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Server.h" bodystart="132" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1rssi_1a12eea2c159254ef846e6d2ab740ceb02" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Transport" kindref="compound">rogue::protocols::rssi::Transport</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::rssi::Transport&gt; rogue::protocols::rssi::TransportPtr</definition>
+        <argsstring></argsstring>
+        <name>TransportPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Transport.h" line="60" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Transport.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1protocols_1_1rssi_1af98eb3b55a6fd14a4c8ae0229b021b0d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/module.h" line="23" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/module.h" declline="23" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="26" column="20"/>
+  </compounddef>
+</doxygen>

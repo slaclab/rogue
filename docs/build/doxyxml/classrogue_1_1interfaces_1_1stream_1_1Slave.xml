@@ -1,0 +1,593 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1stream_1_1Slave" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::stream::Slave</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" prot="public" virt="non-virtual">rogue::interfaces::stream::Pool</basecompoundref>
+    <basecompoundref refid="classrogue_1_1EnableSharedFromThis" prot="public" virt="non-virtual">rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</basecompoundref>
+    <derivedcompoundref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" prot="public" virt="non-virtual">rogue::hardware::axi::AxiStreamDma</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard" prot="public" virt="non-virtual">rogue::hardware::pgp::PgpCard</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" prot="public" virt="non-virtual">rogue::interfaces::stream::Fifo</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Filter" prot="public" virt="non-virtual">rogue::interfaces::stream::Filter</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1stream_1_1RateDrop" prot="public" virt="non-virtual">rogue::interfaces::stream::RateDrop</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap" prot="public" virt="non-virtual">rogue::interfaces::stream::SlaveWrap</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore" prot="public" virt="non-virtual">rogue::interfaces::stream::TcpCore</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1batcher_1_1InverterV1" prot="public" virt="non-virtual">rogue::protocols::batcher::InverterV1</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1batcher_1_1SplitterV1" prot="public" virt="non-virtual">rogue::protocols::batcher::SplitterV1</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" prot="public" virt="non-virtual">rogue::protocols::packetizer::Application</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" prot="public" virt="non-virtual">rogue::protocols::packetizer::Transport</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1rssi_1_1Application" prot="public" virt="non-virtual">rogue::protocols::rssi::Application</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1rssi_1_1Transport" prot="public" virt="non-virtual">rogue::protocols::rssi::Transport</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1srp_1_1SrpV0" prot="public" virt="non-virtual">rogue::protocols::srp::SrpV0</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1srp_1_1SrpV3" prot="public" virt="non-virtual">rogue::protocols::srp::SrpV3</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1udp_1_1Client" prot="public" virt="non-virtual">rogue::protocols::udp::Client</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1udp_1_1Server" prot="public" virt="non-virtual">rogue::protocols::udp::Server</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel" prot="public" virt="non-virtual">rogue::utilities::fileio::StreamWriterChannel</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1utilities_1_1Prbs" prot="public" virt="non-virtual">rogue::utilities::Prbs</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1utilities_1_1StreamUnZip" prot="public" virt="non-virtual">rogue::utilities::StreamUnZip</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1utilities_1_1StreamZip" prot="public" virt="non-virtual">rogue::utilities::StreamZip</derivedcompoundref>
+    <includes refid="stream_2Slave_8h" local="no">Slave.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a74b7aff627815687efe60dbb0aafb49d" prot="private" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::interfaces::stream::Slave::mtx_</definition>
+        <argsstring></argsstring>
+        <name>mtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="53" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a284c996baa39922a0bb4945af1bb0da5" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Slave::debug_</definition>
+        <argsstring></argsstring>
+        <name>debug_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="56" column="33" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5c0c9e189676e16f224a817b647f203c" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::interfaces::stream::Slave::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="57" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a1099ee78965b6c62f6b9a97803b232b4" prot="private" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::stream::Slave::frameCount_</definition>
+        <argsstring></argsstring>
+        <name>frameCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="60" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1ad2fde19edd9bb5913995a25e7db6eeb2" prot="private" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::stream::Slave::frameBytes_</definition>
+        <argsstring></argsstring>
+        <name>frameBytes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="61" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a6cf859e90fb443f756bd49f86759cc08" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">rogue::interfaces::stream::Slave</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::stream::Slave&gt; rogue::interfaces::stream::Slave::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+<para>Class factory which returns a pointer to a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> (SlavePtr) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Create a new <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref></para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">rogue.interfaces.stream.Slave()</ref> to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="70" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a30f0cc8230b4a641c8622eef65399720" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::Slave::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="73" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Slave::Slave</definition>
+        <argsstring>()</argsstring>
+        <name>Slave</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="76" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual rogue::interfaces::stream::Slave::~Slave</definition>
+        <argsstring>()</argsstring>
+        <name>~Slave</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="79" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::interfaces::stream::Slave::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <reimplementedby refid="classrogue_1_1protocols_1_1udp_1_1Server_1a903aebdfbbdea18bfc1c04cf4aa804de">stop</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1udp_1_1Client_1a6861ceeb8e4b1ecfe00e0dc426c93eb8">stop</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ad58cf3a398ed54cb5e1a2a4fed4d64aa">stop</reimplementedby>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ac072dda120b0e860fbb456591b6bf8ce">stop</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a91de9045eecd13ce9a50ca77d37eb89d">stop</reimplementedby>
+        <briefdescription>
+<para>Shut down any threads associated with this object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method is called to stop any frames from being generated by this <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref> and shut down any threads, allowing for a clean program exit</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" kindref="member">stop()</ref> to Python Subclasses should override this method </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="88" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Slave::setDebug</definition>
+        <argsstring>(uint32_t debug, std::string name)</argsstring>
+        <name>setDebug</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>debug</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <briefdescription>
+<para>Set debug message size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method enables debug messages when using the base <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> class attached as a primary or secondary <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> on a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref>. Typically used when attaching a base <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> object for debug purposes.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" kindref="member">setDebug()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>debug</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Maximum number of bytes to print in debug message. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>name</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Name to included in the debug messages. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="99" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::interfaces::stream::Slave::acceptFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>acceptFrame</name>
+        <reimplementedby refid="classrogue_1_1utilities_1_1StreamZip_1a864f8325f7e23e9ada16d4bbf5a1f699">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1utilities_1_1StreamUnZip_1a54801e3d58e30959bfc6091fe902a0cc">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1batcher_1_1SplitterV1_1af671c15df4a9c5bd4e4a201cc97e4064">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1batcher_1_1InverterV1_1a02bddfe74707ac469149848010065bfd">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1rssi_1_1Transport_1a37c106c60bd45c71dc2a666496e6b7a6">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1Transport_1ac0761cebaa8cb8db28e23159738bd315">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel_1a160ea6df0c5d9a27a02df59d8aed67b3">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1udp_1_1Client_1a1875a7c4fa25f03106985fbccd621324">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a0fa38117ea451236409427b7db6c474b">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1stream_1_1Filter_1abeb699a41edb05626f38a14ae8752f1a">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1udp_1_1Server_1a4fce70a0661a6487c5860a90c1d797b5">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1srp_1_1SrpV3_1a41ac8df61aba4b8fe77955b316f0bce3">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1srp_1_1SrpV0_1aaa7ee8776cf36d98a63a5c0575c7c6b6">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1stream_1_1RateDrop_1ae763fab025cf0a3c94821b66435e8c59">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1Application_1a8dcc14a1211ff10194063657d63df543">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a301b2f55ce5802ce5aa9d6d3018288c0">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ab2d12bc359841fab8247229b3231fc89">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap_1aa6fcf412349c58e6dcbb8ccd70c6e090">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a55a9680c5372818a46b5603a95a803b0">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a43b47c4d46cc335c34b20c623f2602c2">acceptFrame</reimplementedby>
+        <reimplementedby refid="classrogue_1_1utilities_1_1Prbs_1a74121b33e5a84bdc57264119abb42f62">acceptFrame</reimplementedby>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+<para>Accept a frame from master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method is called by the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref> object to which this <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> is attached when passing a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. By default this method will print debug information if enabled and is typically re-implemented by a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> sub-class.</para>
+<para>Re-implemented as _acceptFrame() in a Python subclass <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>frame</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> pointer (FramePtr) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="109" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::stream::Slave::getFrameCount</definition>
+        <argsstring>()</argsstring>
+        <name>getFrameCount</name>
+        <briefdescription>
+<para>Get frame counter. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the total frames received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> object for debug purposes.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" kindref="member">getFrameCount()</ref> to Python <simplesect kind="return"><para>Total number of <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> objects received. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="118" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::stream::Slave::getByteCount</definition>
+        <argsstring>()</argsstring>
+        <name>getByteCount</name>
+        <briefdescription>
+<para>Get byte counter. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Returns the total bytes received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> object for debug purposes.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" kindref="member">getByteCount()</ref> to Python <simplesect kind="return"><para>Total number of bytes received. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="127" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::stream::Slave::lshiftPy</definition>
+        <argsstring>(boost::python::object p)</argsstring>
+        <name>lshiftPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Support &lt;&lt; operator in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="132" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">rogue::interfaces::stream::Master</ref> &gt; &amp;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Master&gt;&amp; rogue::interfaces::stream::Slave::operator&lt;&lt;</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Master &gt; &amp;other)</argsstring>
+        <name>operator&lt;&lt;</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">rogue::interfaces::stream::Master</ref> &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Support &lt;&lt; operator in C++. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="132" column="38"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Stream slave class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The stream slave accepts stream data from a master. It also can accept frame allocation requests through its <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> base class. A <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> object can be attached to multiple <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref> objects. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="12">
+        <label>rogue::interfaces::stream::SlaveWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>rogue::protocols::batcher::InverterV1</label>
+        <link refid="classrogue_1_1protocols_1_1batcher_1_1InverterV1"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>rogue::interfaces::stream::TcpServer</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1TcpServer"/>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>rogue::protocols::rssi::Transport</label>
+        <link refid="classrogue_1_1protocols_1_1rssi_1_1Transport"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::hardware::pgp::PgpCard</label>
+        <link refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>rogue::utilities::fileio::StreamWriterChannel</label>
+        <link refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>rogue::protocols::srp::SrpV0</label>
+        <link refid="classrogue_1_1protocols_1_1srp_1_1SrpV0"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>rogue::protocols::srp::SrpV3</label>
+        <link refid="classrogue_1_1protocols_1_1srp_1_1SrpV3"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>rogue::protocols::batcher::SplitterV1</label>
+        <link refid="classrogue_1_1protocols_1_1batcher_1_1SplitterV1"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::interfaces::stream::Fifo</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Fifo"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>rogue::utilities::StreamUnZip</label>
+        <link refid="classrogue_1_1utilities_1_1StreamUnZip"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>rogue::protocols::rssi::Application</label>
+        <link refid="classrogue_1_1protocols_1_1rssi_1_1Application"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>rogue::interfaces::stream::RateDrop</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1RateDrop"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="29">
+        <label>rogue::utilities::StreamZip</label>
+        <link refid="classrogue_1_1utilities_1_1StreamZip"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>rogue::protocols::packetizer::Application</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Application"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>rogue::protocols::udp::Server</label>
+        <link refid="classrogue_1_1protocols_1_1udp_1_1Server"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>rogue::protocols::packetizer::Transport</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Transport"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>rogue::protocols::udp::Client</label>
+        <link refid="classrogue_1_1protocols_1_1udp_1_1Client"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>rogue::utilities::Prbs</label>
+        <link refid="classrogue_1_1utilities_1_1Prbs"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>rogue::interfaces::stream::Filter</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Filter"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="13">
+        <label>rogue::interfaces::stream::TcpCore</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::hardware::axi::AxiStreamDma</label>
+        <link refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>rogue::interfaces::stream::TcpClient</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1TcpClient"/>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="50" column="59" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="49" bodyend="140"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>acceptFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>acceptReq</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>allocBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a6cf859e90fb443f756bd49f86759cc08" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>createBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a284c996baa39922a0bb4945af1bb0da5" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>debug_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>decCounter</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1ad2fde19edd9bb5913995a25e7db6eeb2" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>frameBytes_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a1099ee78965b6c62f6b9a97803b232b4" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>frameCount_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>getAllocBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>getAllocCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>getByteCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>getFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>getFrameCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>getPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5c0c9e189676e16f224a817b647f203c" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a74b7aff627815687efe60dbb0aafb49d" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>mtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>retBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>setDebug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>setFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>setPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a30f0cc8230b4a641c8622eef65399720" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::"><scope>rogue::interfaces::stream::Slave</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;::"><scope>rogue::interfaces::stream::Slave</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Slave</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>stop</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>~Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Slave</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

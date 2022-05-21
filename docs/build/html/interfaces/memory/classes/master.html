@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Master &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Slave" href="slave.html" />
+    <link rel="prev" title="TransactionLock" href="transactionLock.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../master.html">Memory Master Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../slave.html">Memory Slave Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hub.html">Memory Hub Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks.html">Blocks &amp; Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks_advanced.html">Advanced Usage Of Blocks</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Memory Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transaction.html">Transaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transactionLock.html">TransactionLock</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="block.html">Block</a></li>
+<li class="toctree-l4"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
+          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
+      <li>Master</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/interfaces/memory/classes/master.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="master">
+<span id="interfaces-memory-master"></span><h1>Master<a class="headerlink" href="#master" title="Permalink to this headline"></a></h1>
+<p>The memory interface Master class is the interface for initiating a memory transaction.
+Each Master class object will be coupled with one or more <a class="reference internal" href="slave.html#interfaces-memory-slave"><span class="std std-ref">Slave</span></a> objects.</p>
+<p>Master objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory9MasterPtrE">
+<span id="_CPPv3N5rogue10interfaces6memory9MasterPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory9MasterPtrE"></span><span id="rogue::interfaces::memory::MasterPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a102fe4dcab8755eeec15e5b5f7b21591"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">MasterPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory9MasterPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Alias for using shared pointer as MasterPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6MasterE">
+<span id="_CPPv3N5rogue10interfaces6memory6MasterE"></span><span id="_CPPv2N5rogue10interfaces6memory6MasterE"></span><span id="rogue::interfaces::memory::Master"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Master</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6MasterE" title="Permalink to this definition"></a><br /></dt>
+<dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> for a memory transaction interface. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> class is the initiator for any Memory transactions on a bus. Each master is connected to a single next level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> class. Multiple <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> levels are allowed in a memory tree. Each <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> has an offset which will be applied to the memory transaction address as it flows down to the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device. </p>
+<p>Subclassed by <a class="reference internal" href="block.html#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">rogue::interfaces::memory::Block</span></a>, <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue::interfaces::memory::Hub</span></a>, <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">rogue::interfaces::memory::TcpServer</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master4stopEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master4stopEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master4stopEv"></span><span id="rogue::interfaces::memory::Master::stop"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a59be941f83e4a39df917d5402557324e"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master4stopEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stop the interface. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE">
+<span id="_CPPv3N5rogue10interfaces6memory6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6memory6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE"></span><span id="rogue::interfaces::memory::Master::setSlave__std::shared_ptr:rogue::interfaces::memory::Slave:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a6de8890cdcdc2de6148283334c7b3413"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setSlave</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">slave</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master8setSlaveENSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set slave or <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> will pass the transaction data to this <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. This slave may be the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or a <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> which forwards transactions on to the lower <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>.</p>
+<p>Exposed to python as _setSlave() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>slave</strong> – <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device pointer SlavePtr </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master8getSlaveEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master8getSlaveEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master8getSlaveEv"></span><span id="rogue::interfaces::memory::Master::getSlave"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a20364eb7d4b6d3d666e434ac1fd77a7d"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getSlave</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master8getSlaveEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get next level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> device. </p>
+<p>Exposed to python as _getSlave() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device pointer SlavePtr </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master10reqSlaveIdEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master10reqSlaveIdEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master10reqSlaveIdEv"></span><span id="rogue::interfaces::memory::Master::reqSlaveId"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a442a5dc81c6f1bcabf2abf726e8f5a99"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqSlaveId</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master10reqSlaveIdEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query the slave ID. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master12reqSlaveNameEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master12reqSlaveNameEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master12reqSlaveNameEv"></span><span id="rogue::interfaces::memory::Master::reqSlaveName"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a615c288b0fdad6a5d1101479b9fb74d6"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqSlaveName</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master12reqSlaveNameEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query the slave Name. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master12reqMinAccessEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master12reqMinAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master12reqMinAccessEv"></span><span id="rogue::interfaces::memory::Master::reqMinAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a71984f8156f77b2b9066ef576c64a6a2"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqMinAccess</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master12reqMinAccessEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query the minimum access size in bytes for interface. </p>
+<p>This function will query the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device to determine the minimum size for a transaction.</p>
+<p>Exposed to python as _reqMinAccess() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Minimum transaction size </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master12reqMaxAccessEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master12reqMaxAccessEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master12reqMaxAccessEv"></span><span id="rogue::interfaces::memory::Master::reqMaxAccess"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1ae06e314257d14ff11f29c0b72118519a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqMaxAccess</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master12reqMaxAccessEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query the maximum access size in bytes for interface. </p>
+<p>This function will query the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device to determine the maximum size for a transaction.</p>
+<p>Exposed to python as _reqMaxAccess() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Maximum transaction size </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master10reqAddressEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master10reqAddressEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master10reqAddressEv"></span><span id="rogue::interfaces::memory::Master::reqAddress"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a777233e4f6f27148360effe500e9e957"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqAddress</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master10reqAddressEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query the address of the next layer down. </p>
+<p>This method will return the relative offset of the next level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> is attached to. This does not included the local <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> offset.</p>
+<p>Exposed to python as _reqAddress() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Address of next layer this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> is attached to </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master8getErrorEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master8getErrorEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master8getErrorEv"></span><span id="rogue::interfaces::memory::Master::getError"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a491fa0c7d4565146e8baafc7ffa73346"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getError</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master8getErrorEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get error of last <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a>. </p>
+<p>This method returns the error value of the last set of transactions initiated by this master.</p>
+<p>Exposed to python as _getError() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Error value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master10clearErrorEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master10clearErrorEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master10clearErrorEv"></span><span id="rogue::interfaces::memory::Master::clearError"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1ab94eee23b721f15501a90306f73837f5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">clearError</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master10clearErrorEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Clear the error value. </p>
+<p>This method clears the error value for this master.</p>
+<p>Exposed to python as _clearError() </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master10setTimeoutE8uint64_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master10setTimeoutE8uint64_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master10setTimeoutE8uint64_t"></span><span id="rogue::interfaces::memory::Master::setTimeout__uint64_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aab53da8b6940f03c7220b462c984fd12"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setTimeout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master10setTimeoutE8uint64_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set timeout value for transactions. </p>
+<p>Sets the timeout value for future transactions. THis is the amount of time to wait for a transaction to complete.</p>
+<p>Exposed to python as _setTimeout() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Timeout value </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master14reqTransactionE8uint64_t8uint32_tPv8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master14reqTransactionE8uint64_t8uint32_tPv8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master14reqTransactionE8uint64_t8uint32_tPv8uint32_t"></span><span id="rogue::interfaces::memory::Master::reqTransaction__uint64_t.uint32_t.voidP.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a06ef5ce0dae7d9b761bd3d363d6654ae"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqTransaction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">data</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master14reqTransactionE8uint64_t8uint32_tPv8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Start a new transaction. </p>
+<p>This method generates the creation of a <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> object which is then forwarded to the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> in the memory bus tree. The passed address is relative to the next layer in the memory tree. (local offset). More than one transaction can be pending for this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>.</p>
+<p>Not exposed to Python (see reqTransactionPy) </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> – Relative 64-bit transaction offset address </p></li>
+<li><p><strong>size</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size in bytes </p></li>
+<li><p><strong>data</strong> – Pointer to data array used for transaction. </p></li>
+<li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>32-bit transaction id </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master16reqTransactionPyE8uint64_tN5boost6python6objectE8uint32_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master16reqTransactionPyE8uint64_tN5boost6python6objectE8uint32_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master16reqTransactionPyE8uint64_tN5boost6python6objectE8uint32_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Master::reqTransactionPy__uint64_t.boost::python::object.uint32_t.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1afe115af98acf6bb16f7e831ff73ec69a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">reqTransactionPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">address</span></span>, <span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">type</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master16reqTransactionPyE8uint64_tN5boost6python6objectE8uint32_t8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Python version of reqTransaction. Takes a byte array instead of a data pointer. </p>
+<p>This method generates the creation of a <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> object which is then forwarded to the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> in the memory bus tree. The passed address is relative to the next layer in the memory tree. (local offset). More than one transaction can be pending for this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>.</p>
+<p>Exposed to Python as _reqTransaction() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>address</strong> – Relative 64-bit transaction offset address </p></li>
+<li><p><strong>p</strong> – Byte array used for transaction data </p></li>
+<li><p><strong>size</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size in bytes </p></li>
+<li><p><strong>offset</strong> – Offset within byte array for transaction </p></li>
+<li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>32-bit transaction id </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master8rshiftPyEN5boost6python6objectE">
+<span id="_CPPv3N5rogue10interfaces6memory6Master8rshiftPyEN5boost6python6objectE"></span><span id="_CPPv2N5rogue10interfaces6memory6Master8rshiftPyEN5boost6python6objectE"></span><span id="rogue::interfaces::memory::Master::rshiftPy__boost::python::object"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a47ff28f879439aa3909fec046b68b5c3"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">rshiftPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master8rshiftPyEN5boost6python6objectE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Support &gt;&gt; operator in python. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6MasterrsERNSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE">
+<span id="_CPPv3N5rogue10interfaces6memory6MasterrsERNSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE"></span><span id="_CPPv2N5rogue10interfaces6memory6MasterrsERNSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE"></span><span id="rogue::interfaces::memory::Master::rshift-operator__std::shared_ptr:rogue::interfaces::memory::Slave:R"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aa7eb8183583f6084fea07821eb7ff2af"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="sig-name descname"><span class="k"><span class="pre">operator</span></span><span class="o"><span class="pre">&gt;&gt;</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6memory5SlaveE" title="rogue::interfaces::memory::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">other</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6MasterrsERNSt10shared_ptrIN5rogue10interfaces6memory5SlaveEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Support &gt;&gt; operator in C++. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master15waitTransactionE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master15waitTransactionE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master15waitTransactionE8uint32_t"></span><span id="rogue::interfaces::memory::Master::waitTransaction__uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aad065c2019c8c9d5e0f7c53b1ea05591"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">waitTransaction</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master15waitTransactionE8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Wait for one or more transactions to complete. </p>
+<p>This method is called to wait on transaction completion or timeout. Passing an id of zero will wait for all current pending transactions to complete.</p>
+<p>Exposed as _waitTransaction to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> – Id of transaction to wait for, 0 to wait for all </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master6createEv">
+<span id="_CPPv3N5rogue10interfaces6memory6Master6createEv"></span><span id="_CPPv2N5rogue10interfaces6memory6Master6createEv"></span><span id="rogue::interfaces::memory::Master::create"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dd3efeb0123543b07db88eeace87d94"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master6createEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> (MasterPtr) </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">rogue.interfaces.memory.Master()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master8copyBitsEP7uint8_t8uint32_tP7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master8copyBitsEP7uint8_t8uint32_tP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master8copyBitsEP7uint8_t8uint32_tP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Master::copyBits__uint8_tP.uint32_t.uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aa37321dd4e1bc5889478bb8eca55a297"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">copyBits</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dstData</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dstLsb</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">srcData</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">srcLsb</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master8copyBitsEP7uint8_t8uint32_tP7uint8_t8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Helper function to optimize bit copies between byte arrays. </p>
+<p>This method will copy bits between two byte arrays.</p>
+<p>Exposed to python as _copyBits </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dst</strong> – Destination Python byte array </p></li>
+<li><p><strong>dstLsb</strong> – Least significant bit in destination byte array for copy </p></li>
+<li><p><strong>src</strong> – Source Python byte array </p></li>
+<li><p><strong>srcLsb</strong> – Least significant bit in source byte array for copy </p></li>
+<li><p><strong>size</strong> – Number of bits to copy </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master7setBitsEP7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master7setBitsEP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master7setBitsEP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Master::setBits__uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dac52c5af2fd91d17f8b10d0542330a"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setBits</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dstData</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lsb</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master7setBitsEP7uint8_t8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Helper function to optimize bit setting in a byte array. </p>
+<p>This method will set a range of bits in a byte array</p>
+<p>Exposed to python as _setBits </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dst</strong> – Destination Python byte array </p></li>
+<li><p><strong>lsb</strong> – Least significant bit in destination byte array for set </p></li>
+<li><p><strong>size</strong> – Number of bits to set </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6Master7anyBitsEP7uint8_t8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory6Master7anyBitsEP7uint8_t8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory6Master7anyBitsEP7uint8_t8uint32_t8uint32_t"></span><span id="rogue::interfaces::memory::Master::anyBits__uint8_tP.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aa316b88cca37ab6d999c399ba93b7254"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">anyBits</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">srcData</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lsb</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6Master7anyBitsEP7uint8_t8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Helper function to detect bits being set in a byte array. </p>
+<p>This method will return true if any bits in a range are set</p>
+<p>Exposed to python as _anyBits </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src</strong> – Source Python byte array to check </p></li>
+<li><p><strong>lsb</strong> – Least significant bit in source byte array to check </p></li>
+<li><p><strong>size</strong> – Number of bits to check </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="transactionLock.html" class="btn btn-neutral float-left" title="TransactionLock" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="slave.html" class="btn btn-neutral float-right" title="Slave" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

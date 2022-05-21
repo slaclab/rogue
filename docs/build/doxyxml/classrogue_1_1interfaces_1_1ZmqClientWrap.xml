@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1ZmqClientWrap" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::ZmqClientWrap</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1ZmqClient" prot="public" virt="non-virtual">rogue::interfaces::ZmqClient</basecompoundref>
+    <basecompoundref prot="public" virt="non-virtual">boost::python::wrapper&lt; rogue::interfaces::ZmqClient &gt;</basecompoundref>
+    <includes refid="ZmqClient_8h" local="no">ZmqClient.h</includes>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqClientWrap_1a162a846a487fa8d508ed98d41912f171" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::ZmqClientWrap::ZmqClientWrap</definition>
+        <argsstring>(std::string addr, uint16_t port, bool doString)</argsstring>
+        <name>ZmqClientWrap</name>
+        <param>
+          <type>std::string</type>
+          <declname>addr</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>port</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>doString</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqClient.h" line="99" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqClientWrap_1a588a20c532278a4740debba9c5bddd7f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::ZmqClientWrap::doUpdate</definition>
+        <argsstring>(boost::python::object data)</argsstring>
+        <name>doUpdate</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1ZmqClient_1a208d1f5c253dc60c2afb1095db0e468b">doUpdate</reimplements>
+        <param>
+          <type>boost::python::object</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqClient.h" line="101" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqClientWrap_1a1ffb834918aa27958c9bd54b561ffad5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::ZmqClientWrap::defDoUpdate</definition>
+        <argsstring>(boost::python::object data)</argsstring>
+        <name>defDoUpdate</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqClient.h" line="103" column="18"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Stream slave class, wrapper to enable python overload of virtual methods. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>rogue::interfaces::ZmqClient</label>
+        <link refid="classrogue_1_1interfaces_1_1ZmqClient"/>
+      </node>
+      <node id="3">
+        <label>boost::python::wrapper&lt; rogue::interfaces::ZmqClient &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::ZmqClientWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1ZmqClientWrap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>rogue::interfaces::ZmqClient</label>
+        <link refid="classrogue_1_1interfaces_1_1ZmqClient"/>
+      </node>
+      <node id="3">
+        <label>boost::python::wrapper&lt; rogue::interfaces::ZmqClient &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::ZmqClientWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1ZmqClientWrap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqClient.h" line="95" column="40" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqClient.h" bodystart="93" bodyend="104"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1abd8dc9be058b355f505ba42593bb00ba" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClientWrap_1a1ffb834918aa27958c9bd54b561ffad5" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>defDoUpdate</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClientWrap_1a588a20c532278a4740debba9c5bddd7f" prot="public" virt="virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>doUpdate</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1aebca5362d96da03500e3750f80487b65" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>exec</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1aa59c82ed58a79e939cf48563df16fffd" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>getDisp</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1a61e84cf5d8467fd1d9d3ec541e35ed29" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>send</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1a74ec3cacb970f93afaf7d733e6a2e979" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>sendString</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1a68bbb7ab63e020130176a2a78c6713ac" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>setDisp</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1a9efc4a2996c63962af726236b79b5762" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1a310d95cb2a19cb7849ef5b8eda8d4ae7" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1a16e1362d6a5f3b8c1ed9c5fa219ff20f" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1acb8b9d726109b0fc8dfaab46b61b9a8d" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>valueDisp</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1aa961629f8e1f8a30d0144259b43a9bcd" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>ZmqClient</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClientWrap_1a162a846a487fa8d508ed98d41912f171" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>ZmqClientWrap</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqClient_1abdcd2a807d1d07c89420983bc62146b7" prot="public" virt="virtual"><scope>rogue::interfaces::ZmqClientWrap</scope><name>~ZmqClient</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

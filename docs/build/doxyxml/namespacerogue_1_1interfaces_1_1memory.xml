@@ -1,0 +1,512 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1interfaces_1_1memory" kind="namespace" language="C++">
+    <compoundname>rogue::interfaces::memory</compoundname>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Block" prot="public">rogue::interfaces::memory::Block</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Emulate" prot="public">rogue::interfaces::memory::Emulate</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Hub" prot="public">rogue::interfaces::memory::Hub</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1HubWrap" prot="public">rogue::interfaces::memory::HubWrap</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Master" prot="public">rogue::interfaces::memory::Master</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Slave" prot="public">rogue::interfaces::memory::Slave</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap" prot="public">rogue::interfaces::memory::SlaveWrap</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient" prot="public">rogue::interfaces::memory::TcpClient</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer" prot="public">rogue::interfaces::memory::TcpServer</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" prot="public">rogue::interfaces::memory::Transaction</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock" prot="public">rogue::interfaces::memory::TransactionLock</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Variable" prot="public">rogue::interfaces::memory::Variable</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap" prot="public">rogue::interfaces::memory::VariableWrap</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a38bd2f3dab2a37acd41790d82373c692" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Block" kindref="compound">rogue::interfaces::memory::Block</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Block&gt; rogue::interfaces::memory::BlockPtr</definition>
+        <argsstring></argsstring>
+        <name>BlockPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as BlockPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" line="558" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" bodystart="558" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a74e8f83ba9768d708f0c62ef825ed414" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Emulate" kindref="compound">rogue::interfaces::memory::Emulate</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Emulate&gt; rogue::interfaces::memory::EmulatePtr</definition>
+        <argsstring></argsstring>
+        <name>EmulatePtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as EmulatePtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Emulate.h" line="76" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Emulate.h" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a411d37b0d28e6a762e9a69e214c73d3f" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">rogue::interfaces::memory::Hub</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Hub&gt; rogue::interfaces::memory::HubPtr</definition>
+        <argsstring></argsstring>
+        <name>HubPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as HubPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="165" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a8b3616c6b4ba3f878fea2c83c2f03165" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1HubWrap" kindref="compound">rogue::interfaces::memory::HubWrap</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::HubWrap&gt; rogue::interfaces::memory::HubWrapPtr</definition>
+        <argsstring></argsstring>
+        <name>HubWrapPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="187" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" bodystart="187" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a102fe4dcab8755eeec15e5b5f7b21591" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">rogue::interfaces::memory::Master</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Master&gt; rogue::interfaces::memory::MasterPtr</definition>
+        <argsstring></argsstring>
+        <name>MasterPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as MasterPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="304" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="304" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a0ae7d54d7f7d1fc7978fa98a10a80cad" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">rogue::interfaces::memory::Slave</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt; rogue::interfaces::memory::SlavePtr</definition>
+        <argsstring></argsstring>
+        <name>SlavePtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as SlavePtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Slave.h" line="223" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Slave.h" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a649038a61d3e58d82e5bb19065a006e3" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1SlaveWrap" kindref="compound">rogue::interfaces::memory::SlaveWrap</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::SlaveWrap&gt; rogue::interfaces::memory::SlaveWrapPtr</definition>
+        <argsstring></argsstring>
+        <name>SlaveWrapPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Slave.h" line="263" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Slave.h" bodystart="263" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1ae3b8248977242815af0b5a036d65d637" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient" kindref="compound">rogue::interfaces::memory::TcpClient</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::TcpClient&gt; rogue::interfaces::memory::TcpClientPtr</definition>
+        <argsstring></argsstring>
+        <name>TcpClientPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TcpClientPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="109" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a062fc93e42a8b365e7b7ec77cc396051" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer" kindref="compound">rogue::interfaces::memory::TcpServer</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::TcpServer&gt; rogue::interfaces::memory::TcpServerPtr</definition>
+        <argsstring></argsstring>
+        <name>TcpServerPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TcpServerPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpServer.h" line="102" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpServer.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a7c6250994b065d9570e27405efe61a13" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt; rogue::interfaces::memory::TransactionPtr</definition>
+        <argsstring></argsstring>
+        <name>TransactionPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TransactionPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h" line="255" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h" bodystart="255" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a00cf0577ef3f940f1090e53d30e53d8c" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock" kindref="compound">rogue::interfaces::memory::TransactionLock</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::TransactionLock&gt; rogue::interfaces::memory::TransactionLockPtr</definition>
+        <argsstring></argsstring>
+        <name>TransactionLockPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TransactionLockPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" line="86" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TransactionLock.h" bodystart="86" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1ad98157b92575d26262623f44284fe0a5" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Variable" kindref="compound">rogue::interfaces::memory::Variable</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::Variable&gt; rogue::interfaces::memory::VariablePtr</definition>
+        <argsstring></argsstring>
+        <name>VariablePtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as VariablePtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="43" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1memory_1a0301a9d8f2d94191de716674399d7830" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap" kindref="compound">rogue::interfaces::memory::VariableWrap</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::memory::VariableWrap&gt; rogue::interfaces::memory::VariableWrapPtr</definition>
+        <argsstring></argsstring>
+        <name>VariableWrapPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="608" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" bodystart="608" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="var">
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a406ea981edc535342fc2a3a3a9ce3573" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::interfaces::memory::Read</definition>
+        <argsstring></argsstring>
+        <name>Read</name>
+        <initializer>= 0x1</initializer>
+        <briefdescription>
+<para>Memory read transaction. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a406ea981edc535342fc2a3a3a9ce3573" kindref="member">rogue.interfaces.memory.Read</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="36" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a796fe0c4657923682a90289e6693c1c9" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::interfaces::memory::Write</definition>
+        <argsstring></argsstring>
+        <name>Write</name>
+        <initializer>= 0x2</initializer>
+        <briefdescription>
+<para>Memory write transaction. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a796fe0c4657923682a90289e6693c1c9" kindref="member">rogue.interfaces.memory.Write</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="42" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1ad08ddd52279b6001b8502c14264dbe4e" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::interfaces::memory::Post</definition>
+        <argsstring></argsstring>
+        <name>Post</name>
+        <initializer>= 0x3</initializer>
+        <briefdescription>
+<para>Memory posted write transaction. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1ad08ddd52279b6001b8502c14264dbe4e" kindref="member">rogue.interfaces.memory.Post</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="48" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1aa86de079c79f5b478b72cd482fe652e1" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::interfaces::memory::Verify</definition>
+        <argsstring></argsstring>
+        <name>Verify</name>
+        <initializer>= 0x4</initializer>
+        <briefdescription>
+<para>Memory verify readback transaction. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1aa86de079c79f5b478b72cd482fe652e1" kindref="member">rogue.interfaces.memory.Verify</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="54" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a66bcc0633a1c976886bb53a0acf779dc" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::PyFunc</definition>
+        <argsstring></argsstring>
+        <name>PyFunc</name>
+        <initializer>= 0x00</initializer>
+        <briefdescription>
+<para>Python Function. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a66bcc0633a1c976886bb53a0acf779dc" kindref="member">rogue.interfaces.memory.PyFunc</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="64" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a404a8f2fc08d338e0ec0cccff2bfea79" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Bytes</definition>
+        <argsstring></argsstring>
+        <name>Bytes</name>
+        <initializer>= 0x01</initializer>
+        <briefdescription>
+<para>Raw Bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a404a8f2fc08d338e0ec0cccff2bfea79" kindref="member">rogue.interfaces.memory.Bytes</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="70" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a4cef0a34f59b5ef9757f9dde581cb0cc" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::UInt</definition>
+        <argsstring></argsstring>
+        <name>UInt</name>
+        <initializer>= 0x02</initializer>
+        <briefdescription>
+<para>Unsigned Int. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a4cef0a34f59b5ef9757f9dde581cb0cc" kindref="member">rogue.interfaces.memory.UInt</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="76" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1af65253bafef6e439dec6b7851b872967" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Int</definition>
+        <argsstring></argsstring>
+        <name>Int</name>
+        <initializer>= 0x03</initializer>
+        <briefdescription>
+<para>Signed Int. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1af65253bafef6e439dec6b7851b872967" kindref="member">rogue.interfaces.memory.Int</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="82" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="82" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a6d3428f193fa2ad3ed4221ff55bb4add" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Bool</definition>
+        <argsstring></argsstring>
+        <name>Bool</name>
+        <initializer>= 0x04</initializer>
+        <briefdescription>
+<para>Bool. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a6d3428f193fa2ad3ed4221ff55bb4add" kindref="member">rogue.interfaces.memory.Bool</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="88" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="88" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a50f736a4dc2389bb44b68834c9c40ec0" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::String</definition>
+        <argsstring></argsstring>
+        <name>String</name>
+        <initializer>= 0x05</initializer>
+        <briefdescription>
+<para>String. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a50f736a4dc2389bb44b68834c9c40ec0" kindref="member">rogue.interfaces.memory.String</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="94" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1ac9bbd7fdae3a571730c96ac55352e5c4" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Float</definition>
+        <argsstring></argsstring>
+        <name>Float</name>
+        <initializer>= 0x06</initializer>
+        <briefdescription>
+<para>Float. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1ac9bbd7fdae3a571730c96ac55352e5c4" kindref="member">rogue.interfaces.memory.Float</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="100" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a38fdc37c1b259ba43c1f4701b74cd273" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Double</definition>
+        <argsstring></argsstring>
+        <name>Double</name>
+        <initializer>= 0x07</initializer>
+        <briefdescription>
+<para>Double. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a38fdc37c1b259ba43c1f4701b74cd273" kindref="member">rogue.interfaces.memory.Double</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="106" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1a0e8385c6526200bf42cbd903b9dd43e0" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Fixed</definition>
+        <argsstring></argsstring>
+        <name>Fixed</name>
+        <initializer>= 0x08</initializer>
+        <briefdescription>
+<para>Fixed. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1a0e8385c6526200bf42cbd903b9dd43e0" kindref="member">rogue.interfaces.memory.Fixed</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="112" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="112" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="namespacerogue_1_1interfaces_1_1memory_1ac0bd49290e1989ef43ca2b4555bbdc8d" prot="public" static="yes" mutable="no">
+        <type>const uint8_t</type>
+        <definition>const uint8_t rogue::interfaces::memory::Custom</definition>
+        <argsstring></argsstring>
+        <name>Custom</name>
+        <initializer>= 0x80</initializer>
+        <briefdescription>
+<para>Custom. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="namespacerogue_1_1interfaces_1_1memory_1ac0bd49290e1989ef43ca2b4555bbdc8d" kindref="member">rogue.interfaces.memory.Custom</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" line="118" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Constants.h" bodystart="118" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1memory_1aa2660ab61bcd82171251c9696373b499" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>std::vector&lt; T &gt;</type>
+        <definition>std::vector&lt; T &gt; rogue::interfaces::memory::py_list_to_std_vector</definition>
+        <argsstring>(const boost::python::object &amp;iterable)</argsstring>
+        <name>py_list_to_std_vector</name>
+        <param>
+          <type>const boost::python::object &amp;</type>
+          <declname>iterable</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" line="42" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" bodystart="42" bodyend="45"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1memory_1a08f6faf6cb33c8de22d70a86b852253d" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>class T</type>
+          </param>
+        </templateparamlist>
+        <type>boost::python::list</type>
+        <definition>boost::python::list rogue::interfaces::memory::std_vector_to_py_list</definition>
+        <argsstring>(std::vector&lt; T &gt; vector)</argsstring>
+        <name>std_vector_to_py_list</name>
+        <param>
+          <type>std::vector&lt; T &gt;</type>
+          <declname>vector</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" line="50" column="30" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" bodystart="50" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1memory_1a14eb6ab49053a07fdd0d556a3e2d8bd9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <templateparamlist>
+          <param>
+            <type>typename T</type>
+          </param>
+        </templateparamlist>
+        <type>T</type>
+        <definition>T rogue::interfaces::memory::py_object_convert</definition>
+        <argsstring>(const boost::python::object &amp;obj)</argsstring>
+        <name>py_object_convert</name>
+        <param>
+          <type>const boost::python::object &amp;</type>
+          <declname>obj</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" line="62" column="12" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" bodystart="62" bodyend="67"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1memory_1a16f2b5068d2564a2029b6ad2375779d7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/module.h" line="23" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/module.h" declline="23" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h" line="35" column="22"/>
+  </compounddef>
+</doxygen>

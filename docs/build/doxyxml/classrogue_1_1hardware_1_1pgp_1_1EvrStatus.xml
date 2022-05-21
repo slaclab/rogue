@@ -1,0 +1,79 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1hardware_1_1pgp_1_1EvrStatus" kind="class" language="C++" prot="public">
+    <compoundname>rogue::hardware::pgp::EvrStatus</compoundname>
+    <basecompoundref refid="structPgpEvrStatus" prot="public" virt="non-virtual">PgpEvrStatus</basecompoundref>
+    <includes refid="EvrStatus_8h" local="no">EvrStatus.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1pgp_1_1EvrStatus_1a423a61390d5640c2c02f25483175bc58" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1pgp_1_1EvrStatus" kindref="compound">rogue::hardware::pgp::EvrStatus</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::hardware::pgp::EvrStatus&gt; rogue::hardware::pgp::EvrStatus::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrStatus.h" line="37" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1pgp_1_1EvrStatus_1aced9acf2447210efba492c39bc79328b" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::hardware::pgp::EvrStatus::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrStatus.h" line="40" column="28"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>EVR <ref refid="classrogue_1_1hardware_1_1pgp_1_1Status" kindref="compound">Status</ref> Class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class contains the current EVR status for one of the 8 lanes on a PGP card. This class is a C++ wrapper around the <ref refid="structPgpEvrStatus" kindref="compound">PgpEvrStatus</ref> structure used by the lower level driver. All structure members are exposed to Python using their original names and can be read directly. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>PgpEvrStatus</label>
+        <link refid="structPgpEvrStatus"/>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::pgp::EvrStatus</label>
+        <link refid="classrogue_1_1hardware_1_1pgp_1_1EvrStatus"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>PgpEvrStatus</label>
+        <link refid="structPgpEvrStatus"/>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::pgp::EvrStatus</label>
+        <link refid="classrogue_1_1hardware_1_1pgp_1_1EvrStatus"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrStatus.h" line="33" column="45" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrStatus.h" bodystart="33" bodyend="42"/>
+    <listofallmembers>
+      <member refid="structPgpEvrStatus_1a26479ad6f9ee1f9ea7a68e832773c28e" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>acceptCounter</name></member>
+      <member refid="classrogue_1_1hardware_1_1pgp_1_1EvrStatus_1a423a61390d5640c2c02f25483175bc58" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>create</name></member>
+      <member refid="structPgpEvrStatus_1a37012a78f86b477aab0cb2eb8fdc7dda" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>evrSeconds</name></member>
+      <member refid="structPgpEvrStatus_1a5e697c01f40dcd30b96bbf8e5ff8d312" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>lane</name></member>
+      <member refid="structPgpEvrStatus_1a5d1be321e43d223d1f52acbf0d949b5a" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>linkErrors</name></member>
+      <member refid="structPgpEvrStatus_1ac03aaa471794d209a3382e04412cda72" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>linkUp</name></member>
+      <member refid="structPgpEvrStatus_1a0df4c95fc1067bc150424caafbc3768e" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>pad</name></member>
+      <member refid="structPgpEvrStatus_1a31fee3c7ee0dc27de3cf3a3c479416b1" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>runCounter</name></member>
+      <member refid="structPgpEvrStatus_1a1d9e303a2e82589f5b2ab040169f636e" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>runStatus</name></member>
+      <member refid="classrogue_1_1hardware_1_1pgp_1_1EvrStatus_1aced9acf2447210efba492c39bc79328b" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::EvrStatus</scope><name>setup_python</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

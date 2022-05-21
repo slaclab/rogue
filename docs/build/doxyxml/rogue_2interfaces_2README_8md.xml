@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="rogue_2interfaces_2README_8md" kind="file" language="Markdown">
+    <compoundname>README.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">Interfaces<sp/>directory.<sp/>Under<sp/>this<sp/>directory<sp/>are<sp/>the<sp/>various</highlight></codeline>
+<codeline><highlight class="normal">libraries<sp/>for<sp/>interfaces<sp/>between<sp/>major<sp/>modules.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">stream:<sp/></highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Interfaces<sp/>which<sp/>use<sp/>data<sp/>streams<sp/>consisting<sp/>of<sp/>buffer<sp/>chains.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">memory:</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">Interfaces<sp/>for<sp/>devices<sp/>which<sp/>use<sp/>memory<sp/>access<sp/>calls.</highlight></codeline>
+<codeline></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/README.md"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,1148 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1stream_1_1Frame" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::stream::Frame</compoundname>
+    <basecompoundref refid="classrogue_1_1EnableSharedFromThis" prot="public" virt="non-virtual">rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Frame &gt;</basecompoundref>
+    <includes refid="Frame_8h" local="no">Frame.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" prot="public" static="no">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt; &gt;::iterator</type>
+        <definition>typedef std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator rogue::interfaces::stream::Frame::BufferIterator</definition>
+        <argsstring></argsstring>
+        <name>BufferIterator</name>
+        <briefdescription>
+<para>Alias for using std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c" kindref="member">Buffer::iterator</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="94" column="47" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="94" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5ba04a2bf0ca34a0f845cd759950664d" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Buffer</definition>
+        <argsstring></argsstring>
+        <name>Buffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="56" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="friend" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1fb42462d0d47057a7bd7bef231d3b13" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class FrameLock</definition>
+        <argsstring></argsstring>
+        <name>FrameLock</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="57" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7133e68d4a68c137f2a68d347a0372a4" prot="private" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::interfaces::stream::Frame::flags_</definition>
+        <argsstring></argsstring>
+        <name>flags_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="60" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a0eadbf5a2bb9a04b027a75432561ca0e" prot="private" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::interfaces::stream::Frame::error_</definition>
+        <argsstring></argsstring>
+        <name>error_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="63" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad9bd341c018162978a4b1f751e3be60b" prot="private" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::interfaces::stream::Frame::chan_</definition>
+        <argsstring></argsstring>
+        <name>chan_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="66" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3aafbd55392e1b751664b4ad614f00bf" prot="private" static="no" mutable="no">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt; &gt;</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt; rogue::interfaces::stream::Frame::buffers_</definition>
+        <argsstring></argsstring>
+        <name>buffers_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="69" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6950d5ddcb45688b9ad08c01a1da12e2" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Frame::size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="72" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae08024c0e0f6f285e96ab15553a9d97b" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Frame::payload_</definition>
+        <argsstring></argsstring>
+        <name>payload_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="75" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6473035648b0b60f980b7acdc26f5df0" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::stream::Frame::sizeDirty_</definition>
+        <argsstring></argsstring>
+        <name>sizeDirty_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="81" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1358b7d84b56ab0fede239780217e5cb" prot="protected" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::interfaces::stream::Frame::lock_</definition>
+        <argsstring></argsstring>
+        <name>lock_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="89" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="89" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ab66935a94acbd82c2abb27f89590f441" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::updateSizes</definition>
+        <argsstring>()</argsstring>
+        <name>updateSizes</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="78" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a23dda24b4637347e60de536590f87467" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setSizeDirty</definition>
+        <argsstring>()</argsstring>
+        <name>setSizeDirty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="86" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad6c499960b9eb7de72b2feea900b3e37" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::Frame::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="97" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2de2680040af26d54dec8363858018dd" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::interfaces::stream::Frame::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+<para>Class factory which returns a FramePtr to an empty <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="102" column="39"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d63afba0513bee7ac5cafb60a0476b8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Frame::Frame</definition>
+        <argsstring>()</argsstring>
+        <name>Frame</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="105" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad929bf5a0ef04651a748a0a35feeebcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Frame::~Frame</definition>
+        <argsstring>()</argsstring>
+        <name>~Frame</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="108" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameLock" kindref="compound">rogue::interfaces::stream::FrameLock</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::FrameLock&gt; rogue::interfaces::stream::Frame::lock</definition>
+        <argsstring>()</argsstring>
+        <name>lock</name>
+        <briefdescription>
+<para>Lock frame and return a FrameLockPtr object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c" kindref="member">lock()</ref> to Python <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameLock" kindref="compound">FrameLock</ref> pointer (FrameLockPtr) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="114" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a727e017735940558dc1565de2a0632e7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt; &gt;::iterator</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator rogue::interfaces::stream::Frame::appendFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>appendFrame</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+<para>Append passed frame to the end of this frame. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Buffers from the passed frame are appended to the end of this frame and will be removed from the source frame.</para>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>frame</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Source frame pointer (FramePtr) to append </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list iterator (<ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" kindref="member">Frame::BufferIterator</ref>) pointing to the first inserted buffer from passed frame </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="125" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a80975cb7cf9ff70872a19e639f3a0403" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt; &gt;::iterator</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator rogue::interfaces::stream::Frame::appendBuffer</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Buffer &gt; buff)</argsstring>
+        <name>appendBuffer</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt;</type>
+          <declname>buff</declname>
+        </param>
+        <briefdescription>
+<para>Add a buffer to end of frame,. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python This is for advanced manipulation of the underlying buffers. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>buff</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The buffer pointer (BufferPtr) to append to the end of the frame </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list iterator (<ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" kindref="member">Frame::BufferIterator</ref>) pointing to the added buffer </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="134" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abed9660b581ae10e4e9f623176843a22" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt; &gt;::iterator</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator rogue::interfaces::stream::Frame::beginBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>beginBuffer</name>
+        <briefdescription>
+<para>Get <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list begin iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python This is for advanced manipulation of the underlying buffers. <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list iterator (<ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" kindref="member">Frame::BufferIterator</ref>) pointing to the start of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="141" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af7273739aa5c99529a0ec8e4f46cac36" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt; &gt;::iterator</type>
+        <definition>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; &gt;::iterator rogue::interfaces::stream::Frame::endBuffer</definition>
+        <argsstring>()</argsstring>
+        <name>endBuffer</name>
+        <briefdescription>
+<para>Get <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list end iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python This is for advanced manipulation of the underlying buffers. <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list iterator (<ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" kindref="member">Frame::BufferIterator</ref>) pointing to the end of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="148" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b21b83111b76963f8a0c487df5c154" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Frame::bufferCount</definition>
+        <argsstring>()</argsstring>
+        <name>bufferCount</name>
+        <briefdescription>
+<para>Get <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list count. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python This is for advanced manipulation of the underlying buffers. <simplesect kind="return"><para>Number of buffers in the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="155" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abb77abc689a3ce1f04e3a727490db83a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::clear</definition>
+        <argsstring>()</argsstring>
+        <name>clear</name>
+        <briefdescription>
+<para>Empty the frame, removing all buffers. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="160" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abeaa1812591830ce728a83075bcb400e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::stream::Frame::isEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>isEmpty</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list empty state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python <simplesect kind="return"><para>True if frame <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> list is empty. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="166" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Frame::getSize</definition>
+        <argsstring>()</argsstring>
+        <name>getSize</name>
+        <briefdescription>
+<para>Get total size of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function returns the full buffer size</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9" kindref="member">getSize()</ref> to Python <simplesect kind="return"><para>Total raw <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> size of <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> in bytes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="174" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Frame::getAvailable</definition>
+        <argsstring>()</argsstring>
+        <name>getAvailable</name>
+        <briefdescription>
+<para>Get total available size of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This is the space remaining for payload</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0" kindref="member">getAvailable()</ref> to Python <simplesect kind="return"><para>Remaining bytes available for payload in the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="182" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Frame::getPayload</definition>
+        <argsstring>()</argsstring>
+        <name>getPayload</name>
+        <briefdescription>
+<para>Get total payload size of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2" kindref="member">getPayload()</ref> to Python <simplesect kind="return"><para>Total payload bytes in the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="188" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setPayload</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>setPayload</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Set payload size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New payload size </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="194" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac371a2feba1fe233d0589e732928cd79" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::minPayload</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>minPayload</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Set payload size to at least the passed value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>If current payload size is larger then passed value, the payload size is unchanged.</para>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New minimum size </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="203" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac0a596f34fcbdcaf1488121a52ae989c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::adjustPayload</definition>
+        <argsstring>(int32_t value)</argsstring>
+        <name>adjustPayload</name>
+        <param>
+          <type>int32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Adjust payload size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Pass is a positive or negative size adjustment.</para>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Size adjustment value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="211" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aba2378680daedbcc5452cf474e06597e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setPayloadFull</definition>
+        <argsstring>()</argsstring>
+        <name>setPayloadFull</name>
+        <briefdescription>
+<para>Set the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> payload to full. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the current payload size to equal the total available size of the buffers.</para>
+<para>Not exposed to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="219" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aae025cc94c81b1d7c32174a5ab520354" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setPayloadEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>setPayloadEmpty</name>
+        <briefdescription>
+<para>Set the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> payload to zero. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="222" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::interfaces::stream::Frame::getFlags</definition>
+        <argsstring>()</argsstring>
+        <name>getFlags</name>
+        <briefdescription>
+<para>Get <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> flags. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> flags field is a 16-bit application specific field for passing data between a stream <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref> and <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref>. A typical use in Rogue is to pass the first and last user Axi-Stream fields.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b" kindref="member">getFlags()</ref> to Python <simplesect kind="return"><para>16-bit Flag value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="233" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setFlags</definition>
+        <argsstring>(uint16_t flags)</argsstring>
+        <name>setFlags</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>flags</declname>
+        </param>
+        <briefdescription>
+<para>Set <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> flags. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c" kindref="member">setFlags()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>flags</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>16-bit flag value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="239" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1acf5caf501e8f998b343e562e5432a946" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::interfaces::stream::Frame::getFirstUser</definition>
+        <argsstring>()</argsstring>
+        <name>getFirstUser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The first user value is stored in the lower 8-bits of the flag field.</para>
+<para>Exposed as getFirstuser() to Python <simplesect kind="return"><para>tuser 8-bit first user value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="247" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setFirstUser</definition>
+        <argsstring>(uint8_t fuser)</argsstring>
+        <name>setFirstUser</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>fuser</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a" kindref="member">setFirstUser()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tuser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>8-bit first user value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="253" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::interfaces::stream::Frame::getLastUser</definition>
+        <argsstring>()</argsstring>
+        <name>getLastUser</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>The last user value is stored in the upper 8-bits of the flag field.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9" kindref="member">getLastUser()</ref> to Python <simplesect kind="return"><para>tuser 8-bit last user value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="261" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setLastUser</definition>
+        <argsstring>(uint8_t fuser)</argsstring>
+        <name>setLastUser</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>fuser</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540" kindref="member">setLastUser()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>tuser</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>8-bit last user value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="267" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::interfaces::stream::Frame::getChannel</definition>
+        <argsstring>()</argsstring>
+        <name>getChannel</name>
+        <briefdescription>
+<para>Get channel. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Most Frames in Rogue will not use this channel field since most <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref> to <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> connections are not channelized. Exceptions include data coming out of a data file reader.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6" kindref="member">getChannel()</ref> to Python <simplesect kind="return"><para>8-bit channel ID </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="277" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setChannel</definition>
+        <argsstring>(uint8_t channel)</argsstring>
+        <name>setChannel</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>channel</declname>
+        </param>
+        <briefdescription>
+<para>Set channel. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106" kindref="member">setChannel()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>channel</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>8-bit channel ID </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="283" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::interfaces::stream::Frame::getError</definition>
+        <argsstring>()</argsstring>
+        <name>getError</name>
+        <briefdescription>
+<para>Get error state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The error value is application specific, depending on the stream <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref> implementation. A non-zero value is considered an error.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d" kindref="member">getError()</ref> to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="291" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::setError</definition>
+        <argsstring>(uint8_t error)</argsstring>
+        <name>setError</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>error</declname>
+        </param>
+        <briefdescription>
+<para>Set error state. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0" kindref="member">setError()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>error</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New error value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="297" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref></type>
+        <definition>rogue::interfaces::stream::FrameIterator rogue::interfaces::stream::Frame::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+<para>Get begin <ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return an iterator for accessing data within the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. This iterator assumes the payload size of the frame has already been set. This means the frame has either been received already containing data, or the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d" kindref="member">setPayload()</ref> method has been called.</para>
+<para>Not exposed to Python <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> pointing to beginning of payload </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="309" column="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref></type>
+        <definition>rogue::interfaces::stream::FrameIterator rogue::interfaces::stream::Frame::end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+<para>Get end <ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This iterator is used to detect when the end of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> payload is reached when iterating through the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>.</para>
+<para>Not exposed to Python <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> read end position </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="318" column="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3ce0fb9b3a6bce92a4da65cdc02c6e31" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref></type>
+        <definition>rogue::interfaces::stream::FrameIterator rogue::interfaces::stream::Frame::beginRead</definition>
+        <argsstring>()</argsstring>
+        <name>beginRead</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="321" column="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a999963d876be5bd5946fd1f9497611bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref></type>
+        <definition>rogue::interfaces::stream::FrameIterator rogue::interfaces::stream::Frame::endRead</definition>
+        <argsstring>()</argsstring>
+        <name>endRead</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="324" column="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d6b7dd95ee4300853fc13201342daed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref></type>
+        <definition>rogue::interfaces::stream::FrameIterator rogue::interfaces::stream::Frame::beginWrite</definition>
+        <argsstring>()</argsstring>
+        <name>beginWrite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="327" column="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a475dbc60413e797dc8e8e8f649ebf641" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref></type>
+        <definition>rogue::interfaces::stream::FrameIterator rogue::interfaces::stream::Frame::endWrite</definition>
+        <argsstring>()</argsstring>
+        <name>endWrite</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="330" column="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af320eb307d9043eb62fd137d807a62c7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::readPy</definition>
+        <argsstring>(boost::python::object p, uint32_t offset)</argsstring>
+        <name>readPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+<para>Python <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> data read function. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Read data from <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> into passed Python byte array.</para>
+<para>Exposed as read() to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Python object containing byte array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First location of <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> data to copy to byte array </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="341" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2d8dc04f70a9e8cc0274bd3763209604" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::writePy</definition>
+        <argsstring>(boost::python::object p, uint32_t offset)</argsstring>
+        <name>writePy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+<para>Python <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> data write function. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Write data into from <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> from passed Python byte array.</para>
+<para>Exposed as write() to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Python object containing byte array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>First location to write byte array into <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="350" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a9286f942e04b80bffc42becb23fb8ea6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::stream::Frame::getNumpy</definition>
+        <argsstring>(uint32_t offset, uint32_t size)</argsstring>
+        <name>getNumpy</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Python <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> data read returning a numpy array. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="363" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a8ff1ea661b1659ba36c1bbbec012c25e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::putNumpy</definition>
+        <argsstring>(boost::python::object np, uint32_t offset)</argsstring>
+        <name>putNumpy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>np</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>offset</declname>
+        </param>
+        <briefdescription>
+<para>Python <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> data write using a numpy array as the source. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="372" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1af031fdee7784958fb1bf7b8f35dde7b7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Frame::debug</definition>
+        <argsstring>()</argsstring>
+        <name>debug</name>
+        <briefdescription>
+<para>Debug <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="377" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> container. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>In the stream interface the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> class is a container for moving streaming data through the system. A single <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> instance exists for each frame of data being transferred. The frame object itself does not contain any data, instead it is a container for one or more blocks of data contained within the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> class.</para>
+<para>This class is a container for an array of <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> class objects which contain the stream data. A <ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> object is used to read and write data from and to the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Frame</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Frame"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Frame &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Frame</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Frame"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>lock_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Frame &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::mutex</label>
+      </node>
+      <node id="4">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="54" column="57" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="54" bodyend="379"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac0a596f34fcbdcaf1488121a52ae989c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>adjustPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a80975cb7cf9ff70872a19e639f3a0403" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>appendBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a727e017735940558dc1565de2a0632e7" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>appendFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>begin</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abed9660b581ae10e4e9f623176843a22" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>beginBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3ce0fb9b3a6bce92a4da65cdc02c6e31" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>beginRead</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d6b7dd95ee4300853fc13201342daed" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>beginWrite</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5ba04a2bf0ca34a0f845cd759950664d" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>Buffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b21b83111b76963f8a0c487df5c154" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>bufferCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>BufferIterator</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3aafbd55392e1b751664b4ad614f00bf" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>buffers_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad9bd341c018162978a4b1f751e3be60b" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>chan_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abb77abc689a3ce1f04e3a727490db83a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>clear</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2de2680040af26d54dec8363858018dd" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af031fdee7784958fb1bf7b8f35dde7b7" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>debug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>end</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af7273739aa5c99529a0ec8e4f46cac36" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>endBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a999963d876be5bd5946fd1f9497611bd" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>endRead</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a475dbc60413e797dc8e8e8f649ebf641" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>endWrite</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a0eadbf5a2bb9a04b027a75432561ca0e" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>error_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7133e68d4a68c137f2a68d347a0372a4" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>flags_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d63afba0513bee7ac5cafb60a0476b8" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>Frame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1fb42462d0d47057a7bd7bef231d3b13" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>FrameLock</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getAvailable</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getChannel</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getError</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1acf5caf501e8f998b343e562e5432a946" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getFirstUser</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getFlags</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getLastUser</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a9286f942e04b80bffc42becb23fb8ea6" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getNumpy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>getSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abeaa1812591830ce728a83075bcb400e" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>isEmpty</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>lock</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1358b7d84b56ab0fede239780217e5cb" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>lock_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac371a2feba1fe233d0589e732928cd79" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>minPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae08024c0e0f6f285e96ab15553a9d97b" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>payload_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a8ff1ea661b1659ba36c1bbbec012c25e" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>putNumpy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af320eb307d9043eb62fd137d807a62c7" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>readPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setChannel</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setError</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setFirstUser</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setFlags</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setLastUser</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aae025cc94c81b1d7c32174a5ab520354" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setPayloadEmpty</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aba2378680daedbcc5452cf474e06597e" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setPayloadFull</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a23dda24b4637347e60de536590f87467" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setSizeDirty</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad6c499960b9eb7de72b2feea900b3e37" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6950d5ddcb45688b9ad08c01a1da12e2" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>size_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6473035648b0b60f980b7acdc26f5df0" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>sizeDirty_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ab66935a94acbd82c2abb27f89590f441" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>updateSizes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2d8dc04f70a9e8cc0274bd3763209604" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>writePy</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Frame</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad929bf5a0ef04651a748a0a35feeebcc" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Frame</scope><name>~Frame</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

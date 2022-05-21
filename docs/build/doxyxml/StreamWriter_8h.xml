@@ -1,0 +1,242 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="StreamWriter_8h" kind="file" language="C++">
+    <compoundname>StreamWriter.h</compoundname>
+    <includes local="no">memory</includes>
+    <includes refid="Frame_8h" local="no">rogue/interfaces/stream/Frame.h</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">mutex</includes>
+    <includes local="no">condition_variable</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includes refid="EnableSharedFromThis_8h" local="no">rogue/EnableSharedFromThis.h</includes>
+    <includes local="no">map</includes>
+    <includedby refid="LegacyStreamWriter_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamWriter.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h</label>
+        <link refid="StreamWriter_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>stdint.h</label>
+      </node>
+      <node id="13">
+        <label>string</label>
+      </node>
+      <node id="14">
+        <label>map</label>
+      </node>
+      <node id="3">
+        <label>rogue/interfaces/stream/Frame.h</label>
+        <link refid="Frame_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>exception</label>
+      </node>
+      <node id="8">
+        <label>rogue/EnableSharedFromThis.h</label>
+        <link refid="EnableSharedFromThis_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>condition_variable</label>
+      </node>
+      <node id="9">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="6">
+        <label>vector</label>
+      </node>
+      <node id="7">
+        <label>mutex</label>
+      </node>
+      <node id="11">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>thread</label>
+      </node>
+      <node id="2">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h</label>
+        <link refid="StreamWriter_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamWriter.h</label>
+        <link refid="LegacyStreamWriter_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter" prot="public">rogue::utilities::fileio::StreamWriter</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1utilities">rogue::utilities</innernamespace>
+    <innernamespace refid="namespacerogue_1_1utilities_1_1fileio">rogue::utilities::fileio</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="31"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Frame_8h" kindref="compound">rogue/interfaces/stream/Frame.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;mutex&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;condition_variable&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="EnableSharedFromThis_8h" kindref="compound">rogue/EnableSharedFromThis.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;map&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">utilities<sp/>{</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">fileio<sp/>{</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">StreamWriterChannel;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter" kindref="compound">StreamWriter</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1EnableSharedFromThis" kindref="compound">rogue::EnableSharedFromThis</ref>&lt;rogue::utilities::fileio::StreamWriter&gt;<sp/>{</highlight></codeline>
+<codeline lineno="51" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a80828b2c8e360e4294a0f4eadd9375d5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel" kindref="compound">StreamWriterChannel</ref>;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Log</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1af9d02b47ecdc3cf086a58332fbd3c5c3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1af9d02b47ecdc3cf086a58332fbd3c5c3" kindref="member">log_</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a1718bebc343ecb13d23c5b930e412bf5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>int32_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a1718bebc343ecb13d23c5b930e412bf5" kindref="member">fd_</ref>;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1aaba89bffb920bd095b4ae14a33628028" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1aaba89bffb920bd095b4ae14a33628028" kindref="member">baseName_</ref>;</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a3563140171bdbc06b98cf1da994e3197" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a3563140171bdbc06b98cf1da994e3197" kindref="member">isOpen_</ref>;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a0cf8d2e2c62be9423292ffac374f31e3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a0cf8d2e2c62be9423292ffac374f31e3" kindref="member">fdIdx_</ref>;</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a4f4da28f3ca311883eac02c12f917af2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a4f4da28f3ca311883eac02c12f917af2" kindref="member">sizeLimit_</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a4977c6704d7a481f5d77a3b84fb0e861" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a4977c6704d7a481f5d77a3b84fb0e861" kindref="member">currSize_</ref>;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1ac07a361da2bb9533b218a683206036c0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1ac07a361da2bb9533b218a683206036c0" kindref="member">totSize_</ref>;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a9e4fec101f8848e93214a78c28d93535" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a9e4fec101f8848e93214a78c28d93535" kindref="member">buffSize_</ref>;</highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a8a1cef1f9fafd3293576b3ad7c133b96" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>*<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a8a1cef1f9fafd3293576b3ad7c133b96" kindref="member">buffer_</ref>;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a1a3f5b9cfcc51bbd911d184870551846" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a1a3f5b9cfcc51bbd911d184870551846" kindref="member">currBuffer_</ref>;</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a6d5bb7ac1320141ca59f8d836c041d21" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a6d5bb7ac1320141ca59f8d836c041d21" kindref="member">dropErrors_</ref>;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a7c1af31b21e6600a7d60f0eec1e9421d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a7c1af31b21e6600a7d60f0eec1e9421d" kindref="member">mtx_</ref>;</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a072f52e1ecd19f87b1d08e4903de0ec4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a072f52e1ecd19f87b1d08e4903de0ec4" kindref="member">frameCount_</ref>;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a7275075af6e5f273b98397883e2d02dd" kindref="member">intWrite</ref>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*data,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1af20e7f7ca2f7c8bd86216ce7bed22d52" kindref="member">checkSize</ref>(uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1ad4aceb631d5f52f4a1bbd04b266552bb" kindref="member">flush</ref>();</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="107" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1afc9080e5511c3261b5b779d16248af2a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::condition_variable<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1afc9080e5511c3261b5b779d16248af2a" kindref="member">cond_</ref>;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="109" refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a863196312c3bfd86a6f1bafbb0c14c41" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::map&lt;uint32_t,std::shared_ptr&lt;rogue::utilities::fileio::StreamWriterChannel&gt;&gt;<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a863196312c3bfd86a6f1bafbb0c14c41" kindref="member">channelMap_</ref>;</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="113"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a5c7b911f9c9bf186a736a22a64d4ad17" kindref="member">writeFile</ref><sp/>(<sp/>uint8_t<sp/>channel,<sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame);</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::utilities::fileio::StreamWriter&gt;<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1abb7d813c4ba73a7a8143f040206cddfa" kindref="member">create</ref><sp/>();</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1aaa6e070e475cd83010c13250e23363a9" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a2d7044dbb3e0ffb28a1acdaecaeb35b4" kindref="member">StreamWriter</ref>();</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a864e32f1a1dc8b3612cdb0fe963aefd8" kindref="member">~StreamWriter</ref>();</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a821ac01ec9f2dc77497e27826a869c17" kindref="member">open</ref>(std::string<sp/>file);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a2b136e732a5442717eaa5347acab4bf2" kindref="member">close</ref>();</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a2e66c4eaab26b80b11c9d3c15d45db17" kindref="member">isOpen</ref>();</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a3100de1c83bd2855d7937fb8ea273ad1" kindref="member">setBufferSize</ref>(uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="140"><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a1d27bfc8cf2b3216179f405cfec0b6ec" kindref="member">setMaxSize</ref>(uint64_t<sp/>size);</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a57dc96be1a68158a22e08ebfe5f1c32b" kindref="member">setDropErrors</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>drop);</highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::utilities::fileio::StreamWriterChannel&gt;<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1af5c4dbe850787cd507a028f11feb7996" kindref="member">getChannel</ref>(uint8_t<sp/>channel);</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a3e2464a1b50fc9cc3517628a4bbc2f41" kindref="member">getTotalSize</ref>();</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1acdef89a8feaf1bfb0d2292caabbe1b57" kindref="member">getCurrentSize</ref>();</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1ac9a5d6d215f3b382f097271dc1df3df2" kindref="member">getFrameCount</ref>();</highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a123d2a3aa007ad0d3f1bccdebfae375b" kindref="member">waitFrameCount</ref>(uint32_t<sp/>count,<sp/>uint64_t<sp/>timeout);</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convenience</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="165" refid="namespacerogue_1_1utilities_1_1fileio_1a4b90c6ae29de8a4d1a9b55be235decf4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::utilities::fileio::StreamWriter&gt;<sp/><ref refid="namespacerogue_1_1utilities_1_1fileio_1a4b90c6ae29de8a4d1a9b55be235decf4" kindref="member">StreamWriterPtr</ref>;</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="170"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h"/>
+  </compounddef>
+</doxygen>

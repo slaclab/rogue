@@ -1,0 +1,114 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="structDmaWriteData" kind="struct" language="C++" prot="public">
+    <compoundname>DmaWriteData</compoundname>
+    <includes refid="DmaDriver_8h" local="no">DmaDriver.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="structDmaWriteData_1a9f57e6a05e407ddf392ab4174c744e10" prot="public" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t DmaWriteData::data</definition>
+        <argsstring></argsstring>
+        <name>data</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="64" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structDmaWriteData_1ae251e9222bd752bf6de297c7cfb729b5" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t DmaWriteData::dest</definition>
+        <argsstring></argsstring>
+        <name>dest</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="65" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structDmaWriteData_1aca468ab95d99b3aefd9c552b08df7a2a" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t DmaWriteData::flags</definition>
+        <argsstring></argsstring>
+        <name>flags</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="66" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structDmaWriteData_1aaa897b0165287263ec00e152a9311c88" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t DmaWriteData::index</definition>
+        <argsstring></argsstring>
+        <name>index</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="67" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structDmaWriteData_1a26b28bdc8f1da01d873c2297b6655d15" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t DmaWriteData::size</definition>
+        <argsstring></argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="68" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structDmaWriteData_1a8e9774e1b90df054564ed7a99722559b" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t DmaWriteData::is32</definition>
+        <argsstring></argsstring>
+        <name>is32</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="69" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="structDmaWriteData_1a6a0b4f564bb87031e62115dfe8031f5d" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t DmaWriteData::pad</definition>
+        <argsstring></argsstring>
+        <name>pad</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="70" column="14" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" line="63" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/DmaDriver.h" bodystart="63" bodyend="71"/>
+    <listofallmembers>
+      <member refid="structDmaWriteData_1a9f57e6a05e407ddf392ab4174c744e10" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>data</name></member>
+      <member refid="structDmaWriteData_1ae251e9222bd752bf6de297c7cfb729b5" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>dest</name></member>
+      <member refid="structDmaWriteData_1aca468ab95d99b3aefd9c552b08df7a2a" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>flags</name></member>
+      <member refid="structDmaWriteData_1aaa897b0165287263ec00e152a9311c88" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>index</name></member>
+      <member refid="structDmaWriteData_1a8e9774e1b90df054564ed7a99722559b" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>is32</name></member>
+      <member refid="structDmaWriteData_1a6a0b4f564bb87031e62115dfe8031f5d" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>pad</name></member>
+      <member refid="structDmaWriteData_1a26b28bdc8f1da01d873c2297b6655d15" prot="public" virt="non-virtual"><scope>DmaWriteData</scope><name>size</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

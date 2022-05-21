@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_d29de0f652a45fcfaf9516837ed8018f" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory</compoundname>
+    <innerfile refid="Block_8h">Block.h</innerfile>
+    <innerfile refid="Constants_8h">Constants.h</innerfile>
+    <innerfile refid="Emulate_8h">Emulate.h</innerfile>
+    <innerfile refid="Hub_8h">Hub.h</innerfile>
+    <innerfile refid="memory_2Master_8h">Master.h</innerfile>
+    <innerfile refid="interfaces_2memory_2module_8h">module.h</innerfile>
+    <innerfile refid="memory_2Slave_8h">Slave.h</innerfile>
+    <innerfile refid="memory_2TcpClient_8h">TcpClient.h</innerfile>
+    <innerfile refid="memory_2TcpServer_8h">TcpServer.h</innerfile>
+    <innerfile refid="Transaction_8h">Transaction.h</innerfile>
+    <innerfile refid="TransactionLock_8h">TransactionLock.h</innerfile>
+    <innerfile refid="interfaces_2memory_2Variable_8h">Variable.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/"/>
+  </compounddef>
+</doxygen>

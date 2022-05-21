@@ -1,0 +1,962 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1memory_1_1Master" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::memory::Master</compoundname>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Block" prot="public" virt="non-virtual">rogue::interfaces::memory::Block</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" prot="public" virt="non-virtual">rogue::interfaces::memory::Hub</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer" prot="public" virt="non-virtual">rogue::interfaces::memory::TcpServer</derivedcompoundref>
+    <includes refid="memory_2Master_8h" local="no">Master.h</includes>
+      <sectiondef kind="private-type">
+      <memberdef kind="typedef" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a86943cb58f3db747829bbf5e652ce387" prot="private" static="no">
+        <type>std::map&lt; uint32_t, std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt; &gt;</type>
+        <definition>typedef std::map&lt;uint32_t, std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt; &gt; rogue::interfaces::memory::Master::TransactionMap</definition>
+        <argsstring></argsstring>
+        <name>TransactionMap</name>
+        <briefdescription>
+<para>Alias for map. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="54" column="33" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a49982aa325e19f0956d42fde9132caa2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class Transaction</definition>
+        <argsstring></argsstring>
+        <name>Transaction</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="49" column="13" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Master_1ac39a0198134f6134bad9f20b2441909a" prot="private" static="no" mutable="no">
+        <type>TransactionMap</type>
+        <definition>TransactionMap rogue::interfaces::memory::Master::tranMap_</definition>
+        <argsstring></argsstring>
+        <name>tranMap_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> map. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="57" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a5a753e587d6a521786e5d2ab8d7fc16f" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">rogue::interfaces::memory::Slave</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt; rogue::interfaces::memory::Master::slave_</definition>
+        <argsstring></argsstring>
+        <name>slave_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref>. Used for request forwards. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="60" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a4500d82a712fdf3b98900bc3e3b4a8ab" prot="private" static="no" mutable="no">
+        <type>struct timeval</type>
+        <definition>struct timeval rogue::interfaces::memory::Master::sumTime_</definition>
+        <argsstring></argsstring>
+        <name>sumTime_</name>
+        <briefdescription>
+<para>Timeout value. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="60" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a8b0af9382cc676d4e4756dc747b7181a" prot="private" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::interfaces::memory::Master::mastMtx_</definition>
+        <argsstring></argsstring>
+        <name>mastMtx_</name>
+        <briefdescription>
+<para>Mutex. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="66" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a8a4839c20d35aa8ce1a1905727a9b63d" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::memory::Master::error_</definition>
+        <argsstring></argsstring>
+        <name>error_</name>
+        <briefdescription>
+<para>Error status. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="69" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a726b79a5bf7b7d05dfed007fceba8d4c" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::interfaces::memory::Master::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+<para>Log. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="72" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dd3efeb0123543b07db88eeace87d94" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">rogue::interfaces::memory::Master</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::memory::Master&gt; rogue::interfaces::memory::Master::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+<para>Class factory which returns a pointer to a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> (MasterPtr) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">rogue.interfaces.memory.Master()</ref> to Python </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="79" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a86b7fc0c1e1f314d3b60cdbe29e9c19b" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::Master::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="82" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aa37321dd4e1bc5889478bb8eca55a297" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::Master::copyBits</definition>
+        <argsstring>(uint8_t *dstData, uint32_t dstLsb, uint8_t *srcData, uint32_t srcLsb, uint32_t size)</argsstring>
+        <name>copyBits</name>
+        <param>
+          <type>uint8_t *</type>
+          <declname>dstData</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>dstLsb</declname>
+        </param>
+        <param>
+          <type>uint8_t *</type>
+          <declname>srcData</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>srcLsb</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Helper function to optimize bit copies between byte arrays. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method will copy bits between two byte arrays.</para>
+<para>Exposed to python as _copyBits <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dst</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Destination Python byte array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dstLsb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Least significant bit in destination byte array for copy </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Source Python byte array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>srcLsb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Least significant bit in source byte array for copy </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to copy </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="231" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a55965b1cc0f77f427cb9d946cc4ccb8d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::Master::copyBitsPy</definition>
+        <argsstring>(boost::python::object dst, uint32_t dstLsb, boost::python::object src, uint32_t srcLsb, uint32_t size)</argsstring>
+        <name>copyBitsPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>dstLsb</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>srcLsb</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="236" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dac52c5af2fd91d17f8b10d0542330a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::Master::setBits</definition>
+        <argsstring>(uint8_t *dstData, uint32_t lsb, uint32_t size)</argsstring>
+        <name>setBits</name>
+        <param>
+          <type>uint8_t *</type>
+          <declname>dstData</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lsb</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Helper function to optimize bit setting in a byte array. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method will set a range of bits in a byte array</para>
+<para>Exposed to python as _setBits <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>dst</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Destination Python byte array </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lsb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Least significant bit in destination byte array for set </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to set </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="248" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a151cd43ee75c40a69722355aee868ca0" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::Master::setBitsPy</definition>
+        <argsstring>(boost::python::object dst, uint32_t lsb, uint32_t size)</argsstring>
+        <name>setBitsPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>dst</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lsb</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="253" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aa316b88cca37ab6d999c399ba93b7254" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool rogue::interfaces::memory::Master::anyBits</definition>
+        <argsstring>(uint8_t *srcData, uint32_t lsb, uint32_t size)</argsstring>
+        <name>anyBits</name>
+        <param>
+          <type>uint8_t *</type>
+          <declname>srcData</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lsb</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Helper function to detect bits being set in a byte array. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method will return true if any bits in a range are set</para>
+<para>Exposed to python as _anyBits <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Source Python byte array to check </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>lsb</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Least significant bit in source byte array to check </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of bits to check </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="265" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a041d0bc5879f24ca641346798a142fec" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>static bool rogue::interfaces::memory::Master::anyBitsPy</definition>
+        <argsstring>(boost::python::object src, uint32_t lsb, uint32_t size)</argsstring>
+        <name>anyBitsPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>src</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lsb</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="270" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a9899ebfecc6e7e35cebdbca4d0e40f6e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::Master::Master</definition>
+        <argsstring>()</argsstring>
+        <name>Master</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="85" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a80a2fce11f04d0e2dd6202958ef377a0" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual rogue::interfaces::memory::Master::~Master</definition>
+        <argsstring>()</argsstring>
+        <name>~Master</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="88" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a59be941f83e4a39df917d5402557324e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::interfaces::memory::Master::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer_1a046b13353374adac9bc11ea8d9254c45">stop</reimplementedby>
+        <briefdescription>
+<para>Stop the interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="91" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a6de8890cdcdc2de6148283334c7b3413" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::Master::setSlave</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Slave &gt; slave)</argsstring>
+        <name>setSlave</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">rogue::interfaces::memory::Slave</ref> &gt;</type>
+          <declname>slave</declname>
+        </param>
+        <briefdescription>
+<para>Set slave or <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> device. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> will pass the transaction data to this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> or <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> device. This slave may be the lowest level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> or a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> which forwards transactions on to the lower <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref>.</para>
+<para>Exposed to python as _setSlave() <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>slave</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> device pointer SlavePtr </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="101" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a20364eb7d4b6d3d666e434ac1fd77a7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">rogue::interfaces::memory::Slave</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt; rogue::interfaces::memory::Master::getSlave</definition>
+        <argsstring>()</argsstring>
+        <name>getSlave</name>
+        <briefdescription>
+<para>Get next level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> or <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> device. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as _getSlave() <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> device pointer SlavePtr </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="107" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a442a5dc81c6f1bcabf2abf726e8f5a99" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Master::reqSlaveId</definition>
+        <argsstring>()</argsstring>
+        <name>reqSlaveId</name>
+        <briefdescription>
+<para>Query the slave ID. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="119" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a615c288b0fdad6a5d1101479b9fb74d6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::memory::Master::reqSlaveName</definition>
+        <argsstring>()</argsstring>
+        <name>reqSlaveName</name>
+        <briefdescription>
+<para>Query the slave Name. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="131" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a71984f8156f77b2b9066ef576c64a6a2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Master::reqMinAccess</definition>
+        <argsstring>()</argsstring>
+        <name>reqMinAccess</name>
+        <briefdescription>
+<para>Query the minimum access size in bytes for interface. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function will query the lowest level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> device to determine the minimum size for a transaction.</para>
+<para>Exposed to python as _reqMinAccess() <simplesect kind="return"><para>Minimum transaction size </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="140" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1ae06e314257d14ff11f29c0b72118519a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Master::reqMaxAccess</definition>
+        <argsstring>()</argsstring>
+        <name>reqMaxAccess</name>
+        <briefdescription>
+<para>Query the maximum access size in bytes for interface. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function will query the lowest level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> device to determine the maximum size for a transaction.</para>
+<para>Exposed to python as _reqMaxAccess() <simplesect kind="return"><para>Maximum transaction size </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="149" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a777233e4f6f27148360effe500e9e957" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::memory::Master::reqAddress</definition>
+        <argsstring>()</argsstring>
+        <name>reqAddress</name>
+        <briefdescription>
+<para>Query the address of the next layer down. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method will return the relative offset of the next level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> or <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> is attached to. This does not included the local <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> offset.</para>
+<para>Exposed to python as _reqAddress() <simplesect kind="return"><para>Address of next layer this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> is attached to </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="159" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a491fa0c7d4565146e8baafc7ffa73346" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::memory::Master::getError</definition>
+        <argsstring>()</argsstring>
+        <name>getError</name>
+        <briefdescription>
+<para>Get error of last <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method returns the error value of the last set of transactions initiated by this master.</para>
+<para>Exposed to python as _getError() <simplesect kind="return"><para>Error value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="168" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1ab94eee23b721f15501a90306f73837f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::Master::clearError</definition>
+        <argsstring>()</argsstring>
+        <name>clearError</name>
+        <briefdescription>
+<para>Clear the error value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method clears the error value for this master.</para>
+<para>Exposed to python as _clearError() </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="175" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aab53da8b6940f03c7220b462c984fd12" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::Master::setTimeout</definition>
+        <argsstring>(uint64_t timeout)</argsstring>
+        <name>setTimeout</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Set timeout value for transactions. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Sets the timeout value for future transactions. THis is the amount of time to wait for a transaction to complete.</para>
+<para>Exposed to python as _setTimeout() <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Timeout value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="184" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a06ef5ce0dae7d9b761bd3d363d6654ae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Master::reqTransaction</definition>
+        <argsstring>(uint64_t address, uint32_t size, void *data, uint32_t type)</argsstring>
+        <name>reqTransaction</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>address</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Start a new transaction. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method generates the creation of a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> object which is then forwarded to the lowest level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> in the memory bus tree. The passed address is relative to the next layer in the memory tree. (local offset). More than one transaction can be pending for this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref>.</para>
+<para>Not exposed to Python (see reqTransactionPy) <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>address</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Relative 64-bit transaction offset address </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> size in bytes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to data array used for transaction. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>32-bit transaction id </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="199" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1afe115af98acf6bb16f7e831ff73ec69a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Master::reqTransactionPy</definition>
+        <argsstring>(uint64_t address, boost::python::object p, uint32_t size, uint32_t offset, uint32_t type)</argsstring>
+        <name>reqTransactionPy</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>address</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>p</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>type</declname>
+        </param>
+        <briefdescription>
+<para>Python version of reqTransaction. Takes a byte array instead of a data pointer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method generates the creation of a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> object which is then forwarded to the lowest level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> in the memory bus tree. The passed address is relative to the next layer in the memory tree. (local offset). More than one transaction can be pending for this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref>.</para>
+<para>Exposed to Python as _reqTransaction() <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>address</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Relative 64-bit transaction offset address </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>p</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Byte array used for transaction data </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> size in bytes </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Offset within byte array for transaction </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>type</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> type </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>32-bit transaction id </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="217" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a47ff28f879439aa3909fec046b68b5c3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::Master::rshiftPy</definition>
+        <argsstring>(boost::python::object p)</argsstring>
+        <name>rshiftPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Support &gt;&gt; operator in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="277" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aa7eb8183583f6084fea07821eb7ff2af" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">rogue::interfaces::memory::Slave</ref> &gt; &amp;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt;&amp; rogue::interfaces::memory::Master::operator&gt;&gt;</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Slave &gt; &amp;other)</argsstring>
+        <name>operator&gt;&gt;</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">rogue::interfaces::memory::Slave</ref> &gt; &amp;</type>
+          <declname>other</declname>
+        </param>
+        <briefdescription>
+<para>Support &gt;&gt; operator in C++. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="283" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1aad065c2019c8c9d5e0f7c53b1ea05591" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::Master::waitTransaction</definition>
+        <argsstring>(uint32_t id)</argsstring>
+        <name>waitTransaction</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Wait for one or more transactions to complete. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method is called to wait on transaction completion or timeout. Passing an id of zero will wait for all current pending transactions to complete.</para>
+<para>Exposed as _waitTransaction to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>id</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Id of transaction to wait for, 0 to wait for all </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="300" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Master_1a33ea89bb24e4d4115c8fef6c145c7a02" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Master::intTransaction</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; tran)</argsstring>
+        <name>intTransaction</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>tran</declname>
+        </param>
+        <briefdescription>
+<para>Internal transaction. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="288" column="25"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> for a memory transaction interface. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> class is the initiator for any Memory transactions on a bus. Each master is connected to a single next level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> or <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> class. Multiple <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> levels are allowed in a memory tree. Each <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> has an offset which will be applied to the memory transaction address as it flows down to the lowest level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> device. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>rogue::interfaces::memory::Hub</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Hub"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::interfaces::memory::HubWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1HubWrap"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::interfaces::memory::TcpServer</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::memory::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Master"/>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Block</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Block"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="48" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="48" bodyend="301"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa316b88cca37ab6d999c399ba93b7254" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>anyBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a041d0bc5879f24ca641346798a142fec" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>anyBitsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ab94eee23b721f15501a90306f73837f5" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>clearError</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa37321dd4e1bc5889478bb8eca55a297" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>copyBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a55965b1cc0f77f427cb9d946cc4ccb8d" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>copyBitsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dd3efeb0123543b07db88eeace87d94" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a8a4839c20d35aa8ce1a1905727a9b63d" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>error_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a491fa0c7d4565146e8baafc7ffa73346" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>getError</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a20364eb7d4b6d3d666e434ac1fd77a7d" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>getSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a33ea89bb24e4d4115c8fef6c145c7a02" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>intTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a726b79a5bf7b7d05dfed007fceba8d4c" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a9899ebfecc6e7e35cebdbca4d0e40f6e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a8b0af9382cc676d4e4756dc747b7181a" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>mastMtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa7eb8183583f6084fea07821eb7ff2af" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a777233e4f6f27148360effe500e9e957" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ae06e314257d14ff11f29c0b72118519a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqMaxAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a71984f8156f77b2b9066ef576c64a6a2" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqMinAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a442a5dc81c6f1bcabf2abf726e8f5a99" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqSlaveId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a615c288b0fdad6a5d1101479b9fb74d6" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqSlaveName</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a06ef5ce0dae7d9b761bd3d363d6654ae" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1afe115af98acf6bb16f7e831ff73ec69a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>reqTransactionPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a47ff28f879439aa3909fec046b68b5c3" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dac52c5af2fd91d17f8b10d0542330a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>setBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a151cd43ee75c40a69722355aee868ca0" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>setBitsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a6de8890cdcdc2de6148283334c7b3413" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>setSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aab53da8b6940f03c7220b462c984fd12" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a86b7fc0c1e1f314d3b60cdbe29e9c19b" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5a753e587d6a521786e5d2ab8d7fc16f" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>slave_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a59be941f83e4a39df917d5402557324e" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Master</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a4500d82a712fdf3b98900bc3e3b4a8ab" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>sumTime_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ac39a0198134f6134bad9f20b2441909a" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>tranMap_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a49982aa325e19f0956d42fde9132caa2" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>Transaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a86943cb58f3db747829bbf5e652ce387" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>TransactionMap</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aad065c2019c8c9d5e0f7c53b1ea05591" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Master</scope><name>waitTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a80a2fce11f04d0e2dd6202958ef377a0" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Master</scope><name>~Master</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

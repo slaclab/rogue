@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_fe4a46994a67d46614d4147fdfa2eb40" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi</compoundname>
+    <innerfile refid="rssi_2Application_8h">Application.h</innerfile>
+    <innerfile refid="rssi_2Client_8h">Client.h</innerfile>
+    <innerfile refid="rssi_2Controller_8h">Controller.h</innerfile>
+    <innerfile refid="Header_8h">Header.h</innerfile>
+    <innerfile refid="protocols_2rssi_2module_8h">module.h</innerfile>
+    <innerfile refid="rssi_2Server_8h">Server.h</innerfile>
+    <innerfile refid="rssi_2Transport_8h">Transport.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/"/>
+  </compounddef>
+</doxygen>

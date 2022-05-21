@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1utilities_1_1fileio" kind="namespace" language="C++">
+    <compoundname>rogue::utilities::fileio</compoundname>
+    <innerclass refid="classrogue_1_1utilities_1_1fileio_1_1LegacyStreamReader" prot="public">rogue::utilities::fileio::LegacyStreamReader</innerclass>
+    <innerclass refid="classrogue_1_1utilities_1_1fileio_1_1LegacyStreamWriter" prot="public">rogue::utilities::fileio::LegacyStreamWriter</innerclass>
+    <innerclass refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader" prot="public">rogue::utilities::fileio::StreamReader</innerclass>
+    <innerclass refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter" prot="public">rogue::utilities::fileio::StreamWriter</innerclass>
+    <innerclass refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel" prot="public">rogue::utilities::fileio::StreamWriterChannel</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1utilities_1_1fileio_1a5d79cc14888160011c0f918f0e7ca49b" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1fileio_1_1LegacyStreamReader" kindref="compound">rogue::utilities::fileio::LegacyStreamReader</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::utilities::fileio::LegacyStreamReader&gt; rogue::utilities::fileio::LegacyStreamReaderPtr</definition>
+        <argsstring></argsstring>
+        <name>LegacyStreamReaderPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamReader.h" line="92" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamReader.h" bodystart="92" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1utilities_1_1fileio_1adda63a0938f43bea173f1f1bc90e3c9e" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1fileio_1_1LegacyStreamWriter" kindref="compound">rogue::utilities::fileio::LegacyStreamWriter</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::utilities::fileio::LegacyStreamWriter&gt; rogue::utilities::fileio::LegacyStreamWriterPtr</definition>
+        <argsstring></argsstring>
+        <name>LegacyStreamWriterPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamWriter.h" line="80" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamWriter.h" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1utilities_1_1fileio_1a878055c9cf70b6b55575671d1692411c" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader" kindref="compound">rogue::utilities::fileio::StreamReader</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::utilities::fileio::StreamReader&gt; rogue::utilities::fileio::StreamReaderPtr</definition>
+        <argsstring></argsstring>
+        <name>StreamReaderPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="96" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1utilities_1_1fileio_1a4b90c6ae29de8a4d1a9b55be235decf4" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriter" kindref="compound">rogue::utilities::fileio::StreamWriter</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::utilities::fileio::StreamWriter&gt; rogue::utilities::fileio::StreamWriterPtr</definition>
+        <argsstring></argsstring>
+        <name>StreamWriterPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h" line="165" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h" bodystart="165" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1utilities_1_1fileio_1ae87d05b87d4555daf8320e49c5834bd9" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel" kindref="compound">rogue::utilities::fileio::StreamWriterChannel</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::utilities::fileio::StreamWriterChannel&gt; rogue::utilities::fileio::StreamWriterChannelPtr</definition>
+        <argsstring></argsstring>
+        <name>StreamWriterChannelPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriterChannel.h" line="79" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriterChannel.h" bodystart="79" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1utilities_1_1fileio_1aa1eb6131f7d101ce4bf910064dc8912c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::fileio::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/module.h" line="23" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/module.h" declline="23" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamReader.h" line="28" column="22"/>
+  </compounddef>
+</doxygen>

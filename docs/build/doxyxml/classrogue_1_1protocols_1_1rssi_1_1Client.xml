@@ -1,0 +1,701 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1protocols_1_1rssi_1_1Client" kind="class" language="C++" prot="public">
+    <compoundname>rogue::protocols::rssi::Client</compoundname>
+    <includes refid="rssi_2Client_8h" local="no">Client.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5ec2c7bcc6bd59b50a3573df8f4ea5db" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Transport" kindref="compound">rogue::protocols::rssi::Transport</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::rssi::Transport&gt; rogue::protocols::rssi::Client::tran_</definition>
+        <argsstring></argsstring>
+        <name>tran_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1rssi_1_1Transport" kindref="compound">Transport</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="35" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a32c35988a2ae1bf87e2ace3c40d84027" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">rogue::protocols::rssi::Application</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::rssi::Application&gt; rogue::protocols::rssi::Client::app_</definition>
+        <argsstring></argsstring>
+        <name>app_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">Application</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="38" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a661956625d83e1a1a7006553d58e3acd" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Controller" kindref="compound">rogue::protocols::rssi::Controller</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::rssi::Controller&gt; rogue::protocols::rssi::Client::cntl_</definition>
+        <argsstring></argsstring>
+        <name>cntl_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1rssi_1_1Client" kindref="compound">Client</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="41" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a34da7e05d4325bff90dfb8c40dd28ae2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Client" kindref="compound">rogue::protocols::rssi::Client</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::protocols::rssi::Client&gt; rogue::protocols::rssi::Client::create</definition>
+        <argsstring>(uint32_t segSize)</argsstring>
+        <name>create</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>segSize</declname>
+        </param>
+        <briefdescription>
+<para>Class creation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="46" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1af00a09b8990d60a1a3dae5fe93bbee4e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::protocols::rssi::Client::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="49" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a95fd0f8901f85ab5962957b786c836ec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::rssi::Client::Client</definition>
+        <argsstring>(uint32_t segSize)</argsstring>
+        <name>Client</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>segSize</declname>
+        </param>
+        <briefdescription>
+<para>Creator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="52" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ae8f9b6758eac34dea24f53b7f6ad9641" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::rssi::Client::~Client</definition>
+        <argsstring>()</argsstring>
+        <name>~Client</name>
+        <briefdescription>
+<para>Destructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="55" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ad4ef5bf7cdc6159e651f99db3878a9a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Transport" kindref="compound">rogue::protocols::rssi::Transport</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::rssi::Transport&gt; rogue::protocols::rssi::Client::transport</definition>
+        <argsstring>()</argsstring>
+        <name>transport</name>
+        <briefdescription>
+<para>Get transport interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="58" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aa91dc1661c7ae46e424212b804069dd5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">rogue::protocols::rssi::Application</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::rssi::Application&gt; rogue::protocols::rssi::Client::application</definition>
+        <argsstring>()</argsstring>
+        <name>application</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">Application</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="61" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1adb05be0f0a395f5bb28454a410814396" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::protocols::rssi::Client::getOpen</definition>
+        <argsstring>()</argsstring>
+        <name>getOpen</name>
+        <briefdescription>
+<para>Get state. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="64" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aef74a805394819e859d43c9fb09e3e88" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::rssi::Client::getDownCount</definition>
+        <argsstring>()</argsstring>
+        <name>getDownCount</name>
+        <briefdescription>
+<para>Get Down Count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="67" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a4f2f47096b7a0456e8b42f8bb2b28b51" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::rssi::Client::getDropCount</definition>
+        <argsstring>()</argsstring>
+        <name>getDropCount</name>
+        <briefdescription>
+<para>Get Drop Count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="70" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a0defc185973a238b699aa95706eb0f8f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::rssi::Client::getRetranCount</definition>
+        <argsstring>()</argsstring>
+        <name>getRetranCount</name>
+        <briefdescription>
+<para>Get Retransmit Count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="73" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1adeef764967930a77980c7365755f9eae" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::protocols::rssi::Client::getLocBusy</definition>
+        <argsstring>()</argsstring>
+        <name>getLocBusy</name>
+        <briefdescription>
+<para>Get locBusy. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="76" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1afd1ebb01a55d617a0d225dbbff7e5e76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::rssi::Client::getLocBusyCnt</definition>
+        <argsstring>()</argsstring>
+        <name>getLocBusyCnt</name>
+        <briefdescription>
+<para>Get locBusyCnt. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="79" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a1f7d4f6049d9b3df1d9826f3bbe9c8d2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::protocols::rssi::Client::getRemBusy</definition>
+        <argsstring>()</argsstring>
+        <name>getRemBusy</name>
+        <briefdescription>
+<para>Get remBusy. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="82" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a105074529f5dd9acebd79a4ef24e1787" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::rssi::Client::getRemBusyCnt</definition>
+        <argsstring>()</argsstring>
+        <name>getRemBusyCnt</name>
+        <briefdescription>
+<para>Get remBusyCnt. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="85" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1af5a2867072e287434c0e4fe9fd822e71" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocTryPeriod</definition>
+        <argsstring>(uint32_t val)</argsstring>
+        <name>setLocTryPeriod</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="87" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5d25d96232887c134a9373c32d8d3bac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::rssi::Client::getLocTryPeriod</definition>
+        <argsstring>()</argsstring>
+        <name>getLocTryPeriod</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="88" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a80d36dafe72e271e14f76ef5a6fddac1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocMaxBuffers</definition>
+        <argsstring>(uint8_t val)</argsstring>
+        <name>setLocMaxBuffers</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="90" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a85e28a5cf6d85024bf5057f4f3d0b82c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::rssi::Client::getLocMaxBuffers</definition>
+        <argsstring>()</argsstring>
+        <name>getLocMaxBuffers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="91" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab991c1709c5312214c41524beeddb038" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocMaxSegment</definition>
+        <argsstring>(uint16_t val)</argsstring>
+        <name>setLocMaxSegment</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="93" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0eb63c5026b99da0e963ff77717fadb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::getLocMaxSegment</definition>
+        <argsstring>()</argsstring>
+        <name>getLocMaxSegment</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="94" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aad279848bf8f2fe3731d093deefe4878" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocCumAckTout</definition>
+        <argsstring>(uint16_t val)</argsstring>
+        <name>setLocCumAckTout</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="96" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a6d532b0332d73d4c0d2b4ce0d3f957fd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::getLocCumAckTout</definition>
+        <argsstring>()</argsstring>
+        <name>getLocCumAckTout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="97" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a5f46f9c559a093d0543d4a814051bb60" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocRetranTout</definition>
+        <argsstring>(uint16_t val)</argsstring>
+        <name>setLocRetranTout</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="99" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1abc76fe6e670cd83f5fd5dbef6837dfcc" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::getLocRetranTout</definition>
+        <argsstring>()</argsstring>
+        <name>getLocRetranTout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="100" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0befd5f73ef70846a735f101ada5210" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocNullTout</definition>
+        <argsstring>(uint16_t val)</argsstring>
+        <name>setLocNullTout</name>
+        <param>
+          <type>uint16_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="102" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aee11b9f5fe8490ac198db25f199c3d20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::getLocNullTout</definition>
+        <argsstring>()</argsstring>
+        <name>getLocNullTout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="103" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a7befbcf70a3107629fe478b7cf56b454" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocMaxRetran</definition>
+        <argsstring>(uint8_t val)</argsstring>
+        <name>setLocMaxRetran</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="105" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a3491b4558abcce9f40db4f9ea3952aa5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::rssi::Client::getLocMaxRetran</definition>
+        <argsstring>()</argsstring>
+        <name>getLocMaxRetran</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="106" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aae431656a2241c7cb5f6f242f64b7f76" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setLocMaxCumAck</definition>
+        <argsstring>(uint8_t val)</argsstring>
+        <name>setLocMaxCumAck</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="108" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a312c0903bce637977f7a03b9d8d2330c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::rssi::Client::getLocMaxCumAck</definition>
+        <argsstring>()</argsstring>
+        <name>getLocMaxCumAck</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="109" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1ad6b8a61ae890f783005da3f87f60b7f1" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::rssi::Client::curMaxBuffers</definition>
+        <argsstring>()</argsstring>
+        <name>curMaxBuffers</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="111" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aadeb507fe0fcd9a75119f6cab167cb3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::curMaxSegment</definition>
+        <argsstring>()</argsstring>
+        <name>curMaxSegment</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="112" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1abc80f072aea0468b955f646534eced37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::curCumAckTout</definition>
+        <argsstring>()</argsstring>
+        <name>curCumAckTout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="113" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a4bd5dd46e13cac5784a22640d7ce00ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::curRetranTout</definition>
+        <argsstring>()</argsstring>
+        <name>curRetranTout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="114" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a9f1cb222a7bb86d9e09f049d9d3e3d77" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::protocols::rssi::Client::curNullTout</definition>
+        <argsstring>()</argsstring>
+        <name>curNullTout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="115" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a32daac8d7e69a07dc3f8d19e2b91f86f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::rssi::Client::curMaxRetran</definition>
+        <argsstring>()</argsstring>
+        <name>curMaxRetran</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="116" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a007e0d712f509c6ab504a9481d12514c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::rssi::Client::curMaxCumAck</definition>
+        <argsstring>()</argsstring>
+        <name>curMaxCumAck</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="117" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1aa0646da1ae1175679c2cdec329b8744b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::resetCounters</definition>
+        <argsstring>()</argsstring>
+        <name>resetCounters</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="119" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a6e29fca12590fd213ad680b970d7061f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::setTimeout</definition>
+        <argsstring>(uint32_t timeout)</argsstring>
+        <name>setTimeout</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Set timeout in microseconds for frame transmits. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="122" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a01a7b1d8e4688abee7796d4b82d9d42d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <briefdescription>
+<para>Stop connection. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="125" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Client_1a89c5fb6fe44563cbf4eae460e04d6c22" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Client::start</definition>
+        <argsstring>()</argsstring>
+        <name>start</name>
+        <briefdescription>
+<para>Start connection. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="128" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>RSSI <ref refid="classrogue_1_1protocols_1_1rssi_1_1Client" kindref="compound">Client</ref> Class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" line="32" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Client.h" bodystart="32" bodyend="130"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a32c35988a2ae1bf87e2ace3c40d84027" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>app_</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aa91dc1661c7ae46e424212b804069dd5" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>application</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a95fd0f8901f85ab5962957b786c836ec" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>Client</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a661956625d83e1a1a7006553d58e3acd" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>cntl_</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a34da7e05d4325bff90dfb8c40dd28ae2" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>create</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1abc80f072aea0468b955f646534eced37" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curCumAckTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1ad6b8a61ae890f783005da3f87f60b7f1" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curMaxBuffers</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a007e0d712f509c6ab504a9481d12514c" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curMaxCumAck</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a32daac8d7e69a07dc3f8d19e2b91f86f" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curMaxRetran</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aadeb507fe0fcd9a75119f6cab167cb3f" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curMaxSegment</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a9f1cb222a7bb86d9e09f049d9d3e3d77" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curNullTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a4bd5dd46e13cac5784a22640d7ce00ef" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>curRetranTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aef74a805394819e859d43c9fb09e3e88" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getDownCount</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a4f2f47096b7a0456e8b42f8bb2b28b51" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getDropCount</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1adeef764967930a77980c7365755f9eae" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocBusy</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1afd1ebb01a55d617a0d225dbbff7e5e76" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocBusyCnt</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a6d532b0332d73d4c0d2b4ce0d3f957fd" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocCumAckTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a85e28a5cf6d85024bf5057f4f3d0b82c" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocMaxBuffers</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a312c0903bce637977f7a03b9d8d2330c" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocMaxCumAck</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a3491b4558abcce9f40db4f9ea3952aa5" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocMaxRetran</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0eb63c5026b99da0e963ff77717fadb" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocMaxSegment</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aee11b9f5fe8490ac198db25f199c3d20" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocNullTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1abc76fe6e670cd83f5fd5dbef6837dfcc" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocRetranTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a5d25d96232887c134a9373c32d8d3bac" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getLocTryPeriod</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1adb05be0f0a395f5bb28454a410814396" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getOpen</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a1f7d4f6049d9b3df1d9826f3bbe9c8d2" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getRemBusy</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a105074529f5dd9acebd79a4ef24e1787" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getRemBusyCnt</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a0defc185973a238b699aa95706eb0f8f" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>getRetranCount</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aa0646da1ae1175679c2cdec329b8744b" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>resetCounters</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aad279848bf8f2fe3731d093deefe4878" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocCumAckTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a80d36dafe72e271e14f76ef5a6fddac1" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocMaxBuffers</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1aae431656a2241c7cb5f6f242f64b7f76" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocMaxCumAck</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a7befbcf70a3107629fe478b7cf56b454" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocMaxRetran</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1ab991c1709c5312214c41524beeddb038" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocMaxSegment</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1ab0befd5f73ef70846a735f101ada5210" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocNullTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a5f46f9c559a093d0543d4a814051bb60" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocRetranTout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1af5a2867072e287434c0e4fe9fd822e71" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setLocTryPeriod</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a6e29fca12590fd213ad680b970d7061f" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1af00a09b8990d60a1a3dae5fe93bbee4e" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a89c5fb6fe44563cbf4eae460e04d6c22" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>start</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a01a7b1d8e4688abee7796d4b82d9d42d" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>stop</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1a5ec2c7bcc6bd59b50a3573df8f4ea5db" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>tran_</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1ad4ef5bf7cdc6159e651f99db3878a9a6" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>transport</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Client_1ae8f9b6758eac34dea24f53b7f6ad9641" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Client</scope><name>~Client</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

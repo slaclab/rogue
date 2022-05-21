@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="md__afs_slac_8stanford_8edu_u_gu_cdollar_rogue_include_rogue_protocols_srp_README" kind="page">
+    <compoundname>md__afs_slac.stanford.edu_u_gu_cdollar_rogue_include_rogue_protocols_srp_README</compoundname>
+    <title>README</title>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+<para>SLAC register access protocol.</para>
+<para><ulink url="https://confluence.slac.stanford.edu/x/WRmVD">https://confluence.slac.stanford.edu/x/WRmVD</ulink> </para>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

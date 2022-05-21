@@ -31,7 +31,8 @@ from contextlib import contextmanager
 SystemLogInit = '[]'
 
 class UpdateTracker(object):
-    """ """
+    """
+    """
     def __init__(self,q):
         self._count = 0
         self._list = {}
@@ -40,8 +41,7 @@ class UpdateTracker(object):
         self._q = q
 
     def increment(self, period):
-        """
-
+"""
 
         Parameters
         ----------
@@ -50,21 +50,23 @@ class UpdateTracker(object):
 
         Returns
         -------
+"""
 
-        """
         if self._count == 0 or self._period < period:
             self._period = period
         self._count +=1
 
     def decrement(self):
-        """ """
+"""
+"""
         if self._count != 0:
             self._count -= 1
 
         self._check()
 
     def _check(self):
-        """ """
+        """
+        """
         if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
             #print(f"Update fired {time.time()}")
             self._last = time.time()
@@ -487,13 +489,15 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @property
     def serverPort(self):
-        """ """
+        """ 
+"""
         return self._serverPort
 
     @pr.expose
     @property
     def running(self):
-        """ """
+        """ 
+"""
         return self._running
 
     def addVarListener(self,func):
@@ -504,18 +508,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         func :
-
+"""
 
         Returns
         -------
 
-        """
+        
         with self._varListenLock:
             self._varListeners.append(func)
 
     @pr.expose
     def get(self,path):
-        """
+        
+"""
 
 
         Parameters
@@ -671,7 +676,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @contextmanager
     def pollBlock(self):
-        """ """
+        """ 
+"""
 
         # At with call
         self._pollQueue._blockIncrement()
@@ -869,7 +875,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
     def _hbeatWorker(self):
-        """ """
+        """ 
+"""
         while self._running:
             time.sleep(1)
 
@@ -886,7 +893,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     #    os.execl(py, py, *sys.argv)
 
     def _rootAttached(self):
-        """ """
+        """ 
+"""
         self._parent = self
         self._root   = self
         self._path   = self.name

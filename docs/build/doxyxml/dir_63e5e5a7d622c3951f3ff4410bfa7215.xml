@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_63e5e5a7d622c3951f3ff4410bfa7215" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp</compoundname>
+    <innerfile refid="udp_2Client_8h">Client.h</innerfile>
+    <innerfile refid="udp_2Core_8h">Core.h</innerfile>
+    <innerfile refid="protocols_2udp_2module_8h">module.h</innerfile>
+    <innerfile refid="udp_2Server_8h">Server.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp/"/>
+  </compounddef>
+</doxygen>

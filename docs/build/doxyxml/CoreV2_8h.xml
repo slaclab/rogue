@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="CoreV2_8h" kind="file" language="C++">
+    <compoundname>CoreV2.h</compoundname>
+    <includes local="no">thread</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">memory</includes>
+    <incdepgraph>
+      <node id="3">
+        <label>stdint.h</label>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h</label>
+        <link refid="CoreV2_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>thread</label>
+      </node>
+      <node id="4">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2" prot="public">rogue::protocols::packetizer::CoreV2</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols">rogue::protocols</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols_1_1packetizer">rogue::protocols::packetizer</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="20"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">protocols<sp/>{</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">packetizer<sp/>{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Transport;</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Application;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">ControllerV2;</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35" refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2" kindref="compound">CoreV2</ref><sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::Transport&gt;<sp/>tran_;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::Application&gt;<sp/>app_[256];</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::ControllerV2&gt;<sp/>cntl_;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::CoreV2&gt;<sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1acf4adb40e6f718d96bc87403fb8295de" kindref="member">create</ref><sp/>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>enIbCrc,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>enObCrc,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>enSsi);</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a1ee0a0b6193325e9c08ff0b56154238a" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a935a1d916e1f5f4a72aecbe0c258872e" kindref="member">CoreV2</ref>(</highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>enIbCrc,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>enObCrc,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>enSsi);</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a3ad92d4a7a2c3057956d201c42f52cf9" kindref="member">~CoreV2</ref>();</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::Transport&gt;<sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a02436af3f0e001c2e43fbacd836b594a" kindref="member">transport</ref>();</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::Application&gt;<sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a356696a1974cc2f3c3e6e9f692b57d05" kindref="member">application</ref>(uint8_t<sp/>dest);</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1af69fbdcbf96d18bfecafd5d62683c5bf" kindref="member">getDropCount</ref>();</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a2691685bfb26fdef0289ced3f518aa46" kindref="member">setTimeout</ref>(uint32_t<sp/>timeout);</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convenience</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="74" refid="namespacerogue_1_1protocols_1_1packetizer_1a40fd02e2219a5da68d0063596f20bb70" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::protocols::packetizer::CoreV2&gt;<sp/><ref refid="namespacerogue_1_1protocols_1_1packetizer_1a40fd02e2219a5da68d0063596f20bb70" kindref="member">CoreV2Ptr</ref>;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="78"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h"/>
+  </compounddef>
+</doxygen>

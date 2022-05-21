@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1protocols_1_1srp" kind="namespace" language="C++">
+    <compoundname>rogue::protocols::srp</compoundname>
+    <innerclass refid="classrogue_1_1protocols_1_1srp_1_1Cmd" prot="public">rogue::protocols::srp::Cmd</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1srp_1_1SrpV0" prot="public">rogue::protocols::srp::SrpV0</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1srp_1_1SrpV3" prot="public">rogue::protocols::srp::SrpV3</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1srp_1a36d964810dbe29513a5a0f740b497478" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1srp_1_1Cmd" kindref="compound">rogue::protocols::srp::Cmd</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::srp::Cmd&gt; rogue::protocols::srp::CmdPtr</definition>
+        <argsstring></argsstring>
+        <name>CmdPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/Cmd.h" line="55" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/Cmd.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1srp_1a28c6fac59fb7ec0991609dab2f02fcc9" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1srp_1_1SrpV0" kindref="compound">rogue::protocols::srp::SrpV0</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::srp::SrpV0&gt; rogue::protocols::srp::SrpV0Ptr</definition>
+        <argsstring></argsstring>
+        <name>SrpV0Ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV0.h" line="75" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV0.h" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1srp_1a0016493e1e5f88c7891abe142b4a5ca1" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1srp_1_1SrpV3" kindref="compound">rogue::protocols::srp::SrpV3</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::srp::SrpV3&gt; rogue::protocols::srp::SrpV3Ptr</definition>
+        <argsstring></argsstring>
+        <name>SrpV3Ptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV3.h" line="77" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV3.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1protocols_1_1srp_1a781a23422aa7466e70fb229178ec576a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::srp::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/module.h" line="23" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/module.h" declline="23" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/Cmd.h" line="26" column="19"/>
+  </compounddef>
+</doxygen>

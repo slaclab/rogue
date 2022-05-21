@@ -15,7 +15,9 @@ import threading
 
 
 class MemoryDevice(pr.Device):
-    """ """
+    """
+    
+    """
     def __init__(self, *,
                  name=None,
                  description='',
@@ -30,6 +32,54 @@ class MemoryDevice(pr.Device):
                  wordBitSize=32,
                  stride=4,
                  verify=True):
+        """
+        Assigns numerical and categorical values to the MemoryDevice class object
+
+        Parameters
+        ----------
+        name : str
+             (Default value = None)
+
+        description : str
+             (Default value = '')
+
+        memBase :
+             (Default value = None)
+
+        offset : int
+             (Default value = 0)
+
+        size : int
+             (Default value = 0)
+
+        hidden : bool
+             (Default value = False)
+
+        groups : str
+             (Default value = None)
+
+        expand : bool
+             (Default value = True)
+
+        enabled : bool
+             (Default value = True)
+
+        base :
+
+
+        wordBitSize :
+
+
+        stride :
+
+
+        verify : int
+             (Default value = True)
+
+        returns
+        -------
+
+        """
 
         super().__init__(
             name=name,
@@ -62,13 +112,15 @@ class MemoryDevice(pr.Device):
 
 
     def _buildBlocks(self):
-        """ """
+        """
+        passes the buildBlocks function
+        """
         pass
 
     @pr.expose
     def set(self, offset, values, write=False):
         """
-
+        
 
         Parameters
         ----------
@@ -93,7 +145,7 @@ class MemoryDevice(pr.Device):
     @pr.expose
     def get(self, offset, numWords):
         """
-
+        gets offset and numWords parameters
 
         Parameters
         ----------
@@ -198,7 +250,7 @@ class MemoryDevice(pr.Device):
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
         """
-
+        If fall listed functions 
 
         Parameters
         ----------
@@ -223,12 +275,13 @@ class MemoryDevice(pr.Device):
 
     def checkBlocks(self, recurse=True, variable=None):
         """
-
+        Converts the read verify data back into the native type, compares data and verifies it if necessary, then destroys txn maps when finished.
 
         Parameters
         ----------
         recurse : bool
              (Default value = True)
+
         variable : str
              (Default value = None)
 
@@ -268,7 +321,7 @@ class MemoryDevice(pr.Device):
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         """
-
+        
 
         Parameters
         ----------

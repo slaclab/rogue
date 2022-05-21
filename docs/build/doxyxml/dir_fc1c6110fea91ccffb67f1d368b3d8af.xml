@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_fc1c6110fea91ccffb67f1d368b3d8af" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio</compoundname>
+    <innerfile refid="LegacyStreamReader_8h">LegacyStreamReader.h</innerfile>
+    <innerfile refid="LegacyStreamWriter_8h">LegacyStreamWriter.h</innerfile>
+    <innerfile refid="utilities_2fileio_2module_8h">module.h</innerfile>
+    <innerfile refid="StreamReader_8h">StreamReader.h</innerfile>
+    <innerfile refid="StreamWriter_8h">StreamWriter.h</innerfile>
+    <innerfile refid="StreamWriterChannel_8h">StreamWriterChannel.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/"/>
+  </compounddef>
+</doxygen>

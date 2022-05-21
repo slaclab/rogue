@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_7c787b6219ce28fdb779ada2087be948" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware</compoundname>
+    <innerdir refid="dir_f8eedd23efcd078c963f3ef5ecda1b96">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi</innerdir>
+    <innerdir refid="dir_cde0769390171c46783a565ce3a481b1">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers</innerdir>
+    <innerdir refid="dir_f069176c86643157902f7598b4aad386">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp</innerdir>
+    <innerfile refid="MemMap_8h">MemMap.h</innerfile>
+    <innerfile refid="hardware_2module_8h">module.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame Helpers &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Master" href="master.html" />
+    <link rel="prev" title="Frame Accessor" href="frameAccessor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sending.html">Sending Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../receiving.html">Receiving Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFifo.html">Using A Fifo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingRateDrop.html">Using A Rate Drop Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugStreams.html">Debugging Streams</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Stream Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameLock.html">Frame Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameAccessor.html">Frame Accessor</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Frame Helpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../memory/index.html">Memory Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
+          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
+      <li>Frame Helpers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/interfaces/stream/classes/helpers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frame-helpers">
+<span id="interfaces-stream-helpers"></span><h1>Frame Helpers<a class="headerlink" href="#frame-helpers" title="Permalink to this headline"></a></h1>
+<p>The following inline functions are provided to assist in moving single data values into
+and out of a <a class="reference internal" href="frame.html#interfaces-stream-frame"><span class="std std-ref">Frame</span></a> using a <a class="reference internal" href="frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a>.</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream7toFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv">
+<span id="_CPPv3N5rogue10interfaces6stream7toFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv"></span><span id="_CPPv2N5rogue10interfaces6stream7toFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv"></span><span id="rogue::interfaces::stream::toFrame__rogue::interfaces::stream::FrameIteratorR.uint32_t.voidP"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1ad087a49fb5b902bdb0dddb27ce200d40"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">toFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">iter</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">src</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7toFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Inline helper function to copy values to a frame iterator. </p>
+<p>This helper function copies from the passed data pointer into the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> at the iterator position. The iterator is incremented by the copy size. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iter</strong> – <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> at position to copy the data to </p></li>
+<li><p><strong>size</strong> – The number of bytes to copy </p></li>
+<li><p><strong>src</strong> – Pointer to data source </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9fromFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv">
+<span id="_CPPv3N5rogue10interfaces6stream9fromFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv"></span><span id="_CPPv2N5rogue10interfaces6stream9fromFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv"></span><span id="rogue::interfaces::stream::fromFrame__rogue::interfaces::stream::FrameIteratorR.uint32_t.voidP"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a44b182ebf9441b63897941994d6f0681"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">fromFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">iter</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">dst</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9fromFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tPv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Inline helper function to copy values from a frame iterator. </p>
+<p>This helper function copies data <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> at the iterator location into the passed data pointer. The iterator is updated by byte copy size. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iter</strong> – <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> at position to copy the data from </p></li>
+<li><p><strong>size</strong> – The number of bytes to copy </p></li>
+<li><p><strong>dst</strong> – Pointer to data destination </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9copyFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tRN5rogue10interfaces6stream13FrameIteratorE">
+<span id="_CPPv3N5rogue10interfaces6stream9copyFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tRN5rogue10interfaces6stream13FrameIteratorE"></span><span id="_CPPv2N5rogue10interfaces6stream9copyFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tRN5rogue10interfaces6stream13FrameIteratorE"></span><span id="rogue::interfaces::stream::copyFrame__rogue::interfaces::stream::FrameIteratorR.uint32_t.rogue::interfaces::stream::FrameIteratorR"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1a95b0299fc89960f9b83c1b5faa905d45"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="k"><span class="pre">inline</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">copyFrame</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">srcIter</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">dstIter</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9copyFrameERN5rogue10interfaces6stream13FrameIteratorE8uint32_tRN5rogue10interfaces6stream13FrameIteratorE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Inline helper function to copy frame data between frames. </p>
+<p>This helper function copies data from the source <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> at the iterator location into the dest frame at the iterator location. Both iterators are updated by byte copy size. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>srcIter</strong> – <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> at position to copy the data from </p></li>
+<li><p><strong>size</strong> – The number of bytes to copy </p></li>
+<li><p><strong>dstIter</strong> – <a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> at position to copy the data to </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="frameAccessor.html" class="btn btn-neutral float-left" title="Frame Accessor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="master.html" class="btn btn-neutral float-right" title="Master" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

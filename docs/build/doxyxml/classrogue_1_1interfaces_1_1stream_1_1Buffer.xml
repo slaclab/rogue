@@ -1,0 +1,674 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1stream_1_1Buffer" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::stream::Buffer</compoundname>
+    <includes refid="Buffer_8h" local="no">Buffer.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c" prot="public" static="no">
+        <type>uint8_t *</type>
+        <definition>typedef uint8_t* rogue::interfaces::stream::Buffer::iterator</definition>
+        <argsstring></argsstring>
+        <name>iterator</name>
+        <briefdescription>
+<para>Alias for using uint8_t * as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c" kindref="member">Buffer::iterator</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="81" column="33" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7d3820be3f1c178924f7fc006205c79d" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">rogue::interfaces::stream::Pool</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Pool&gt; rogue::interfaces::stream::Buffer::source_</definition>
+        <argsstring></argsstring>
+        <name>source_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="46" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6c53a95a81eb357e7d9dc8357e4e3a64" prot="private" static="no" mutable="no">
+        <type>std::weak_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>std::weak_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::interfaces::stream::Buffer::frame_</definition>
+        <argsstring></argsstring>
+        <name>frame_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="49" column="30" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a508049746dfde8a925ba6e42a24fcfea" prot="private" static="no" mutable="no">
+        <type>uint8_t *</type>
+        <definition>uint8_t* rogue::interfaces::stream::Buffer::data_</definition>
+        <argsstring></argsstring>
+        <name>data_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="52" column="26" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a668ee8ea58143d0c7c53310f79a99a71" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::meta_</definition>
+        <argsstring></argsstring>
+        <name>meta_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="55" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a3cbd73d8bfeac929f5d2c95e258854fa" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::allocSize_</definition>
+        <argsstring></argsstring>
+        <name>allocSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="58" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a3d440b9cd3db18c5076087ea39a80628" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::rawSize_</definition>
+        <argsstring></argsstring>
+        <name>rawSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="61" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe2a5aa508f2b7edbc434f8858e6ab8c" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::headRoom_</definition>
+        <argsstring></argsstring>
+        <name>headRoom_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="64" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a45c8d9412074648e9a313ca9846ef193" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::tailRoom_</definition>
+        <argsstring></argsstring>
+        <name>tailRoom_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="67" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1abfdbeff2320c23d84d19e25280d82151" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::payload_</definition>
+        <argsstring></argsstring>
+        <name>payload_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="70" column="26" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a95c30654f80f0f1aa139452f4b6d7b73" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::flags_</definition>
+        <argsstring></argsstring>
+        <name>flags_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="73" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="73" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4b7ec9e2e79f33aa4e6f311a61a16582" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::error_</definition>
+        <argsstring></argsstring>
+        <name>error_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="76" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="76" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6b83c53d1f3184e52ddf8faeffb31609" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; rogue::interfaces::stream::Buffer::create</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Pool &gt; source, void *data, uint32_t meta, uint32_t size, uint32_t alloc)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">rogue::interfaces::stream::Pool</ref> &gt;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>meta</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>alloc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="92" column="39"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a34f8ecee20bbb106846ee1633c443f0d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Buffer::Buffer</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Pool &gt; source, void *data, uint32_t meta, uint32_t size, uint32_t alloc)</argsstring>
+        <name>Buffer</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">rogue::interfaces::stream::Pool</ref> &gt;</type>
+          <declname>source</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>meta</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>alloc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="97" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4328cb4b3779eb6bd029adbd089efaab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Buffer::~Buffer</definition>
+        <argsstring>()</argsstring>
+        <name>~Buffer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="101" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5835a099cf5031775a581417d0e64dd5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::setFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>setFrame</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="104" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5c58ff0316038b86e7d84140c0a16ec8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::getMeta</definition>
+        <argsstring>()</argsstring>
+        <name>getMeta</name>
+        <briefdescription>
+<para>Get meta data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The meta data field is used by the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> class or sub-class to track the allocated data. <simplesect kind="return"><para>Meta data value </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="111" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae00087e5ad6c7f0ea382bd930a9c3d7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::setMeta</definition>
+        <argsstring>(uint32_t meta)</argsstring>
+        <name>setMeta</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>meta</declname>
+        </param>
+        <briefdescription>
+<para>Set meta data. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The meta data field is used by the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> class or sub-class to track the allocated data. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>meta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Meta data value </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="118" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a0d894947e2006509b5e7b1216395be35" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::adjustHeader</definition>
+        <argsstring>(int32_t value)</argsstring>
+        <name>adjustHeader</name>
+        <param>
+          <type>int32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Adjust header by passed value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Head adjustment amount </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="123" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a760e05b1bfc0ddcef2d9c495c8355eac" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::zeroHeader</definition>
+        <argsstring>()</argsstring>
+        <name>zeroHeader</name>
+        <briefdescription>
+<para>Clear the header reservation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="126" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad3b1a80aa1d347a11b9cecf1b5246365" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::adjustTail</definition>
+        <argsstring>(int32_t value)</argsstring>
+        <name>adjustTail</name>
+        <param>
+          <type>int32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Adjust tail reservation by passed value. </para>
+        </briefdescription>
+        <detaileddescription>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Tail adjustment amount </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="131" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afc6fc6858e801c86807ce06c293d777a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::zeroTail</definition>
+        <argsstring>()</argsstring>
+        <name>zeroTail</name>
+        <briefdescription>
+<para>Clear the tail reservation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="134" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4947ecae5309f8856af71f858f9c6027" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t *</type>
+        <definition>uint8_t* rogue::interfaces::stream::Buffer::begin</definition>
+        <argsstring>()</argsstring>
+        <name>begin</name>
+        <briefdescription>
+<para>Get beginning buffer iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Get an iterator which indicates the start of the buffer space, not including the header reservation. <simplesect kind="return"><para>Begin buffer iterator </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="141" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ac9673e236ed535ed34f8b62a49bed18f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t *</type>
+        <definition>uint8_t* rogue::interfaces::stream::Buffer::end</definition>
+        <argsstring>()</argsstring>
+        <name>end</name>
+        <briefdescription>
+<para>Get end buffer iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Get an iterator which indicates the end of the the buffer minus the tail reservation. <simplesect kind="return"><para>End buffer iterator </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="148" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7b8bdb8a036cd07a37abdc264062674e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint8_t *</type>
+        <definition>uint8_t* rogue::interfaces::stream::Buffer::endPayload</definition>
+        <argsstring>()</argsstring>
+        <name>endPayload</name>
+        <briefdescription>
+<para>Get end payload iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Get an iterator which indicates the end of the the payload space. <simplesect kind="return"><para>End payload iterator </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="154" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad1ec48abd5130b0a27ca29b0531f3056" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::getSize</definition>
+        <argsstring>()</argsstring>
+        <name>getSize</name>
+        <briefdescription>
+<para>Get <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Get size of buffer that can hold payload data. This function returns the full buffer size minus the head and tail reservation. <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> size in bytes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="161" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe0695dfc15bfb9aa9ec56422d9ec8d4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::getAvailable</definition>
+        <argsstring>()</argsstring>
+        <name>getAvailable</name>
+        <briefdescription>
+<para>Get the available space for payload. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Get the remaining data available for payload. <simplesect kind="return"><para>The amount of available space for payload in bytes. </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="167" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6611f5eb03f917084fb8126dd8e8cdab" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Buffer::getPayload</definition>
+        <argsstring>()</argsstring>
+        <name>getPayload</name>
+        <briefdescription>
+<para>Get the payload size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method will return the amount of payload data in the buffer. <simplesect kind="return"><para>Payload size in bytes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="174" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a80cff5ea63a8b59613ecdabb6d530284" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::setPayload</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>setPayload</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Set the payload size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the payload size to the passed value. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>New payload size in bytes </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="180" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6af037726f7e21711076f5d88f7fd1eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::minPayload</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>minPayload</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Set minimum payload size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method sets the payload size to be at least the passed value. If the current payload size exceeds the passed value, the size is unchanged. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Min payload size in bytes </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="188" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a1044d049468871e51ff4410a8f4a731c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::adjustPayload</definition>
+        <argsstring>(int32_t value)</argsstring>
+        <name>adjustPayload</name>
+        <param>
+          <type>int32_t</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>Adjust the payload size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method adjusts the payload size by the passed positive or negative value. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Value to adjust payload by in bytes </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="195" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1af635d4907cefd01f9f3b259ffa7f94bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::setPayloadFull</definition>
+        <argsstring>()</argsstring>
+        <name>setPayloadFull</name>
+        <briefdescription>
+<para>Set the payload size to fill the buffer. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method sets the buffer payload size to fill the buffer, minus the header and tail reservation. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="201" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae7917be9fec791c2df18b57e624d91f2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::setPayloadEmpty</definition>
+        <argsstring>()</argsstring>
+        <name>setPayloadEmpty</name>
+        <briefdescription>
+<para>Set the buffer as empty. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method sets the buffer payload size as empty. </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="206" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4270427c65bb0570494adc8c0455fc7e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Buffer::debug</definition>
+        <argsstring>(uint32_t idx)</argsstring>
+        <name>debug</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>idx</declname>
+        </param>
+        <briefdescription>
+<para>Debug <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="209" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> buffer. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class is a container for buffers which make up a frame. Each buffer is associated with a contiguous block of memory allocated by an instance of the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> class. Each buffer within the frame has a reserved header and tail area to pre-reserve space which may be required by protocol layers. Direct interaction with the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> class is an advanced topic, most users will simply use a <ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> to access <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> and <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> data. The <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> class is not available in Python. </para>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="43" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="43" bodyend="210"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a0d894947e2006509b5e7b1216395be35" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>adjustHeader</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a1044d049468871e51ff4410a8f4a731c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>adjustPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad3b1a80aa1d347a11b9cecf1b5246365" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>adjustTail</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a3cbd73d8bfeac929f5d2c95e258854fa" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>allocSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4947ecae5309f8856af71f858f9c6027" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>begin</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a34f8ecee20bbb106846ee1633c443f0d" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>Buffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6b83c53d1f3184e52ddf8faeffb31609" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a508049746dfde8a925ba6e42a24fcfea" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>data_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4270427c65bb0570494adc8c0455fc7e" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>debug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ac9673e236ed535ed34f8b62a49bed18f" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>end</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7b8bdb8a036cd07a37abdc264062674e" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>endPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4b7ec9e2e79f33aa4e6f311a61a16582" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>error_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a95c30654f80f0f1aa139452f4b6d7b73" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>flags_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6c53a95a81eb357e7d9dc8357e4e3a64" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>frame_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe0695dfc15bfb9aa9ec56422d9ec8d4" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>getAvailable</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5c58ff0316038b86e7d84140c0a16ec8" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>getMeta</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6611f5eb03f917084fb8126dd8e8cdab" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>getPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad1ec48abd5130b0a27ca29b0531f3056" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>getSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afe2a5aa508f2b7edbc434f8858e6ab8c" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>headRoom_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a2b3f008693138808f09617dc9c6a1c3c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>iterator</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a668ee8ea58143d0c7c53310f79a99a71" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>meta_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a6af037726f7e21711076f5d88f7fd1eb" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>minPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1abfdbeff2320c23d84d19e25280d82151" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>payload_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a3d440b9cd3db18c5076087ea39a80628" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>rawSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a5835a099cf5031775a581417d0e64dd5" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>setFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae00087e5ad6c7f0ea382bd930a9c3d7d" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>setMeta</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a80cff5ea63a8b59613ecdabb6d530284" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>setPayload</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ae7917be9fec791c2df18b57e624d91f2" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>setPayloadEmpty</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1af635d4907cefd01f9f3b259ffa7f94bf" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>setPayloadFull</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a7d3820be3f1c178924f7fc006205c79d" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>source_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a45c8d9412074648e9a313ca9846ef193" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>tailRoom_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a760e05b1bfc0ddcef2d9c495c8355eac" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>zeroHeader</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1afc6fc6858e801c86807ce06c293d777a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>zeroTail</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a4328cb4b3779eb6bd029adbd089efaab" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Buffer</scope><name>~Buffer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

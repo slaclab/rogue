@@ -1,0 +1,380 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1interfaces_1_1stream" kind="namespace" language="C++">
+    <compoundname>rogue::interfaces::stream</compoundname>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" prot="public">rogue::interfaces::stream::Buffer</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" prot="public">rogue::interfaces::stream::Fifo</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Filter" prot="public">rogue::interfaces::stream::Filter</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Frame" prot="public">rogue::interfaces::stream::Frame</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1FrameAccessor" prot="public">rogue::interfaces::stream::FrameAccessor</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" prot="public">rogue::interfaces::stream::FrameIterator</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1FrameLock" prot="public">rogue::interfaces::stream::FrameLock</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Master" prot="public">rogue::interfaces::stream::Master</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Pool" prot="public">rogue::interfaces::stream::Pool</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1RateDrop" prot="public">rogue::interfaces::stream::RateDrop</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public">rogue::interfaces::stream::Slave</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap" prot="public">rogue::interfaces::stream::SlaveWrap</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1TcpClient" prot="public">rogue::interfaces::stream::TcpClient</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore" prot="public">rogue::interfaces::stream::TcpCore</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1TcpServer" prot="public">rogue::interfaces::stream::TcpServer</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a824a61cf20fd9ff702587cafaeb7c15f" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; rogue::interfaces::stream::BufferPtr</definition>
+        <argsstring></argsstring>
+        <name>BufferPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as BufferPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="213" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" bodystart="213" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a1781f0b2c229df84c6aa57a5c731b897" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">rogue::interfaces::stream::Fifo</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Fifo&gt; rogue::interfaces::stream::FifoPtr</definition>
+        <argsstring></argsstring>
+        <name>FifoPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as FifoPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="107" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="107" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1ac883d5a89b32fb55284acc3a3176c4a8" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Filter" kindref="compound">rogue::interfaces::stream::Filter</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Filter&gt; rogue::interfaces::stream::FilterPtr</definition>
+        <argsstring></argsstring>
+        <name>FilterPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as FilterPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Filter.h" line="74" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Filter.h" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1aabbfca1143d6d05a2bb0afc11e667778" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::interfaces::stream::FramePtr</definition>
+        <argsstring></argsstring>
+        <name>FramePtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as FramePtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="382" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="382" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1ad282a6c7aa64c4607580c16125f88308" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameLock" kindref="compound">rogue::interfaces::stream::FrameLock</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::FrameLock&gt; rogue::interfaces::stream::FrameLockPtr</definition>
+        <argsstring></argsstring>
+        <name>FrameLockPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as FrameLockPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameLock.h" line="93" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameLock.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a5e1c0c07c5beb7b2734a2821d022c530" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">rogue::interfaces::stream::Master</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Master&gt; rogue::interfaces::stream::MasterPtr</definition>
+        <argsstring></argsstring>
+        <name>MasterPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as MasterPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Master.h" line="166" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Master.h" bodystart="166" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a4ed9c7b624c6fb5aa4152b3a09bdd7c2" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">rogue::interfaces::stream::Pool</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Pool&gt; rogue::interfaces::stream::PoolPtr</definition>
+        <argsstring></argsstring>
+        <name>PoolPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as PoolPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="203" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="203" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a8e46b9385767d501c829f098eb9c150e" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1RateDrop" kindref="compound">rogue::interfaces::stream::RateDrop</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::RateDrop&gt; rogue::interfaces::stream::RateDropPtr</definition>
+        <argsstring></argsstring>
+        <name>RateDropPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as RateDropPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/RateDrop.h" line="78" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/RateDrop.h" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a62f9a9320c2fd274e6b34855c70d0a9d" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">rogue::interfaces::stream::Slave</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::Slave&gt; rogue::interfaces::stream::SlavePtr</definition>
+        <argsstring></argsstring>
+        <name>SlavePtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as SlavePtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="143" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a14d97174fcbb15c281155ba76b7bd4de" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap" kindref="compound">rogue::interfaces::stream::SlaveWrap</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::SlaveWrap&gt; rogue::interfaces::stream::SlaveWrapPtr</definition>
+        <argsstring></argsstring>
+        <name>SlaveWrapPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="162" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="162" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1abfe05adf801e128fd4798344ed1dbd7a" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpClient" kindref="compound">rogue::interfaces::stream::TcpClient</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::TcpClient&gt; rogue::interfaces::stream::TcpClientPtr</definition>
+        <argsstring></argsstring>
+        <name>TcpClientPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TcpClientPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h" line="67" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1a4c480bc72405a3a5150cb02f4dcdcdd3" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore" kindref="compound">rogue::interfaces::stream::TcpCore</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::TcpCore&gt; rogue::interfaces::stream::TcpCorePtr</definition>
+        <argsstring></argsstring>
+        <name>TcpCorePtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TcpCorePtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h" line="119" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h" bodystart="119" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1interfaces_1_1stream_1ad67bbfe0cf12dcf8c73d8d3f1e2192b8" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpServer" kindref="compound">rogue::interfaces::stream::TcpServer</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::interfaces::stream::TcpServer&gt; rogue::interfaces::stream::TcpServerPtr</definition>
+        <argsstring></argsstring>
+        <name>TcpServerPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TcpServerPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h" line="69" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1stream_1ad087a49fb5b902bdb0dddb27ce200d40" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::toFrame</definition>
+        <argsstring>(rogue::interfaces::stream::FrameIterator &amp;iter, uint32_t size, void *src)</argsstring>
+        <name>toFrame</name>
+        <param>
+          <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref> &amp;</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>src</declname>
+        </param>
+        <briefdescription>
+<para>Inline helper function to copy values to a frame iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This helper function copies from the passed data pointer into the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> at the iterator position. The iterator is incremented by the copy size. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> at position to copy the data to </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to copy </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>src</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to data source </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameIterator.h" line="247" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameIterator.h" bodystart="247" bodyend="258"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1stream_1a44b182ebf9441b63897941994d6f0681" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::fromFrame</definition>
+        <argsstring>(rogue::interfaces::stream::FrameIterator &amp;iter, uint32_t size, void *dst)</argsstring>
+        <name>fromFrame</name>
+        <param>
+          <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref> &amp;</type>
+          <declname>iter</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>void *</type>
+          <declname>dst</declname>
+        </param>
+        <briefdescription>
+<para>Inline helper function to copy values from a frame iterator. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This helper function copies data <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> at the iterator location into the passed data pointer. The iterator is updated by byte copy size. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>iter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> at position to copy the data from </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to copy </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dst</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to data destination </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameIterator.h" line="267" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameIterator.h" bodystart="267" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1stream_1a95b0299fc89960f9b83c1b5faa905d45" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::copyFrame</definition>
+        <argsstring>(rogue::interfaces::stream::FrameIterator &amp;srcIter, uint32_t size, rogue::interfaces::stream::FrameIterator &amp;dstIter)</argsstring>
+        <name>copyFrame</name>
+        <param>
+          <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref> &amp;</type>
+          <declname>srcIter</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref> &amp;</type>
+          <declname>dstIter</declname>
+        </param>
+        <briefdescription>
+<para>Inline helper function to copy frame data between frames. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This helper function copies data from the source <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> at the iterator location into the dest frame at the iterator location. Both iterators are updated by byte copy size. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>srcIter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> at position to copy the data from </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The number of bytes to copy </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dstIter</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">FrameIterator</ref> at position to copy the data to </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameIterator.h" line="288" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameIterator.h" bodystart="288" bodyend="300"/>
+      </memberdef>
+      <memberdef kind="function" id="namespacerogue_1_1interfaces_1_1stream_1abf545698ff752ba3974548b08bfcccec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/module.h" line="23" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/module.h" declline="23" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h" line="30" column="22"/>
+  </compounddef>
+</doxygen>

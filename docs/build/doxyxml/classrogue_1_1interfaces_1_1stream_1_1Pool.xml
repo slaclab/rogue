@@ -1,0 +1,694 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1stream_1_1Pool" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::stream::Pool</compoundname>
+    <basecompoundref refid="classrogue_1_1EnableSharedFromThis" prot="public" virt="non-virtual">rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</basecompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::stream::Slave</derivedcompoundref>
+    <includes refid="Pool_8h" local="no">Pool.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1adbb19045503e76f7fed1174c321e39f6" prot="private" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::interfaces::stream::Pool::mtx_</definition>
+        <argsstring></argsstring>
+        <name>mtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="54" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9b22b55b1845f5803fd96549e752490e" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::allocMeta_</definition>
+        <argsstring></argsstring>
+        <name>allocMeta_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="57" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ae0f594a6463783bd58109eb4442118a6" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::allocBytes_</definition>
+        <argsstring></argsstring>
+        <name>allocBytes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="60" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1aaf01b95b1cbe3ff1b86f32dacf567d87" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::allocCount_</definition>
+        <argsstring></argsstring>
+        <name>allocCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="63" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a44aac22ca2234bb96acd59c304c7c7a2" prot="private" static="no" mutable="no">
+        <type>std::queue&lt; uint8_t * &gt;</type>
+        <definition>std::queue&lt;uint8_t *&gt; rogue::interfaces::stream::Pool::dataQ_</definition>
+        <argsstring></argsstring>
+        <name>dataQ_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="66" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ad26939216199c045505cac619d063ff6" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::fixedSize_</definition>
+        <argsstring></argsstring>
+        <name>fixedSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="69" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a602b07ab23d03ef54cd7eafbcb8bb59e" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::poolSize_</definition>
+        <argsstring></argsstring>
+        <name>poolSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="72" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Pool::Pool</definition>
+        <argsstring>()</argsstring>
+        <name>Pool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="77" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual rogue::interfaces::stream::Pool::~Pool</definition>
+        <argsstring>()</argsstring>
+        <name>~Pool</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="80" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::getAllocBytes</definition>
+        <argsstring>()</argsstring>
+        <name>getAllocBytes</name>
+        <briefdescription>
+<para>Get allocated memory. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the total bytes currently allocated. This value is incremented as buffers are allocated and decremented as buffers are freed.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" kindref="member">getAllocBytes()</ref> to Python <simplesect kind="return"><para>Total currently allocated bytes </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="89" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::getAllocCount</definition>
+        <argsstring>()</argsstring>
+        <name>getAllocCount</name>
+        <briefdescription>
+<para>Get allocated buffer count. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the total number of buffers currently allocated. This value is incremented as buffers are allocated and decremented as buffers are freed.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" kindref="member">getAllocCount()</ref> to Python <simplesect kind="return"><para>Total currently allocated buffers </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="98" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>virtual std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::interfaces::stream::Pool::acceptReq</definition>
+        <argsstring>(uint32_t size, bool zeroCopyEn)</argsstring>
+        <name>acceptReq</name>
+        <reimplementedby refid="classrogue_1_1utilities_1_1StreamZip_1a5af931c1e4694b148d448d03eb48152d">acceptReq</reimplementedby>
+        <reimplementedby refid="classrogue_1_1utilities_1_1StreamUnZip_1ab3b552c1b4e0c86988f2389305aaa754">acceptReq</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a26272091ed3e4c523aa7d2c75fa651ac">acceptReq</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1Application_1a70ce12f5183448e940dc68a00482ecf0">acceptReq</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a251889fbf2b5c0790aa4ddc9208331b9">acceptReq</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a56b0b59c59a62a5c3312a0c57663739f">acceptReq</reimplementedby>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>zeroCopyEn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="108" column="40"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::interfaces::stream::Pool::retBuffer</definition>
+        <argsstring>(uint8_t *data, uint32_t meta, uint32_t size)</argsstring>
+        <name>retBuffer</name>
+        <reimplementedby refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a21f3cde9f41ada7a96bd524ab3b2fda6">retBuffer</reimplementedby>
+        <reimplementedby refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa7e78f8988db5329fe739ef1f415aa71">retBuffer</reimplementedby>
+        <param>
+          <type>uint8_t *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>meta</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Method called to return <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> data. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="119" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Pool::setFixedSize</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>setFixedSize</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Set fixed size mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method puts the allocator into fixed size mode.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" kindref="member">setFixedSize()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Fixed size value. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="130" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::getFixedSize</definition>
+        <argsstring>()</argsstring>
+        <name>getFixedSize</name>
+        <briefdescription>
+<para>Get fixed size mode. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return state of fixed size mode.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" kindref="member">getFixedSize()</ref> to Python <simplesect kind="return"><para>Fixed size value or 0 if not in fixed size mode </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="138" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Pool::setPoolSize</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>setPoolSize</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Set buffer pool size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the buffer pool size.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" kindref="member">setPoolSize()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Number of entries to keep in the pool </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="146" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Pool::getPoolSize</definition>
+        <argsstring>()</argsstring>
+        <name>getPoolSize</name>
+        <briefdescription>
+<para>Get pool size. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return configured pool size</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" kindref="member">getPoolSize()</ref> to Python <simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> size </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="154" column="25"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac3107fc197e5acdc1c6d559cf5455f6e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::Pool::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="122" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; rogue::interfaces::stream::Pool::allocBuffer</definition>
+        <argsstring>(uint32_t size, uint32_t *total)</argsstring>
+        <name>allocBuffer</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>uint32_t *</type>
+          <declname>total</declname>
+        </param>
+        <briefdescription>
+<para>Allocate and Create a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method is the default <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> allocator. The requested buffer is created from either a malloc call or fulling a free entry from the memory pool if it is enabled. If fixed size is configured the size parameter is ignored and a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> is returned with the fixed size amount of memory. The passed total value is incremented by the allocated <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> size. This method is protected to allow it to be called by a sub-class of <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref>.</para>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> size requested </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>total</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Pointer to current total size </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Allocated <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> pointer as BufferPtr </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="172" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">rogue::interfaces::stream::Buffer</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt; rogue::interfaces::stream::Pool::createBuffer</definition>
+        <argsstring>(void *data, uint32_t meta, uint32_t size, uint32_t alloc)</argsstring>
+        <name>createBuffer</name>
+        <param>
+          <type>void *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>meta</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>alloc</declname>
+        </param>
+        <briefdescription>
+<para>Create a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> with passed data block. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method is used to create a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> with a pre-allocated block of memory. This can be used when the block of memory is allocated by a hardware DMA driver. This method is protected to allow it to be called by a sub-class of <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref>.</para>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>data</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Data pointer to pre-allocated memory block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>meta</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Meta data associated with pre-allocated memory block </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Usable size of memory block (may be smaller than allocated size) </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>alloc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Allocated size of memory block (may be greater than requested size) </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para>Allocated <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> pointer as BufferPtr </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="187" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Pool::decCounter</definition>
+        <argsstring>(uint32_t alloc)</argsstring>
+        <name>decCounter</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>alloc</declname>
+        </param>
+        <briefdescription>
+<para>Decrement Allocation counter. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Called in a sub-class to decrement the allocated byte count</para>
+<para>Not exposed to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>alloc</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Amount of memory be de-allocated. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="198" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Stream pool class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The stream <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> class is responsible for allocating and garbage collecting <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> objects and the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> objects they contain. The default mode is to allocate a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> with a single <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> of the requested sized. Alternatively the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> class can operate in fixed buffer size mode. In this mode <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> objects of a fixed sized are allocated, with a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> containing enough <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> to satisfy the original request. Normally <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> data is freed when returned back to the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">Pool</ref> class. Alternatively a pool can be enabled if operating in fixed size mode. When a pool is enabled returned buffer data is stored in the pool for later allocation to a new requester. The pool size defines the maximum number of entries to allow in the pool.</para>
+<para>A subclass can be created with intercepts the <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> requests and allocates <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> and <ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref> objects from an alternative source such as a hardware DMA driver. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="11">
+        <label>rogue::interfaces::stream::SlaveWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>rogue::protocols::batcher::InverterV1</label>
+        <link refid="classrogue_1_1protocols_1_1batcher_1_1InverterV1"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>rogue::interfaces::stream::TcpServer</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1TcpServer"/>
+        <childnode refid="12" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="20">
+        <label>rogue::protocols::rssi::Transport</label>
+        <link refid="classrogue_1_1protocols_1_1rssi_1_1Transport"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::hardware::pgp::PgpCard</label>
+        <link refid="classrogue_1_1hardware_1_1pgp_1_1PgpCard"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="25">
+        <label>rogue::utilities::fileio::StreamWriterChannel</label>
+        <link refid="classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="21">
+        <label>rogue::protocols::srp::SrpV0</label>
+        <link refid="classrogue_1_1protocols_1_1srp_1_1SrpV0"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>rogue::protocols::srp::SrpV3</label>
+        <link refid="classrogue_1_1protocols_1_1srp_1_1SrpV3"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>rogue::protocols::batcher::SplitterV1</label>
+        <link refid="classrogue_1_1protocols_1_1batcher_1_1SplitterV1"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::interfaces::stream::Fifo</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Fifo"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>rogue::utilities::StreamUnZip</label>
+        <link refid="classrogue_1_1utilities_1_1StreamUnZip"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>rogue::protocols::rssi::Application</label>
+        <link refid="classrogue_1_1protocols_1_1rssi_1_1Application"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>rogue::interfaces::stream::RateDrop</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1RateDrop"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="28">
+        <label>rogue::utilities::StreamZip</label>
+        <link refid="classrogue_1_1utilities_1_1StreamZip"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>rogue::protocols::packetizer::Application</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Application"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="24">
+        <label>rogue::protocols::udp::Server</label>
+        <link refid="classrogue_1_1protocols_1_1udp_1_1Server"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>rogue::protocols::packetizer::Transport</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Transport"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="23">
+        <label>rogue::protocols::udp::Client</label>
+        <link refid="classrogue_1_1protocols_1_1udp_1_1Client"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="26">
+        <label>rogue::utilities::Prbs</label>
+        <link refid="classrogue_1_1utilities_1_1Prbs"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::interfaces::stream::Filter</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Filter"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="12">
+        <label>rogue::interfaces::stream::TcpCore</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>rogue::hardware::axi::AxiStreamDma</label>
+        <link refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>rogue::interfaces::stream::TcpClient</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1TcpClient"/>
+        <childnode refid="12" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" line="51" column="56" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Pool.h" bodystart="51" bodyend="200"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Pool</scope><name>acceptReq</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>allocBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ae0f594a6463783bd58109eb4442118a6" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>allocBytes_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aaf01b95b1cbe3ff1b86f32dacf567d87" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>allocCount_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9b22b55b1845f5803fd96549e752490e" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>allocMeta_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>createBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a44aac22ca2234bb96acd59c304c7c7a2" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>dataQ_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>decCounter</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ad26939216199c045505cac619d063ff6" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>fixedSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>getAllocBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>getAllocCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>getFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>getPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1adbb19045503e76f7fed1174c321e39f6" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>mtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a602b07ab23d03ef54cd7eafbcb8bb59e" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>poolSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Pool</scope><name>retBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>setFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>setPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac3107fc197e5acdc1c6d559cf5455f6e" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Pool</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Pool</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Pool</scope><name>~Pool</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

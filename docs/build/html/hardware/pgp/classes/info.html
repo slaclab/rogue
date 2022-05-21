@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Info &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="PciStatus" href="pciStatus.html" />
+    <link rel="prev" title="Status" href="status.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../axi/index.html">Generic AXI Hardware Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">PGP Card Hardware Interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">PGP Hardware Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="pgpCard.html">PgpCard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="status.html">Status</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pciStatus.html">PciStatus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="evrStatus.html">EvrStatus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="evrControl.html">EvrControl</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../raw/index.html">Raw Hardware Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Hardware</a> &raquo;</li>
+          <li><a href="../index.html">PGP Card Hardware Interface</a> &raquo;</li>
+          <li><a href="index.html">PGP Hardware Interface Class Descriptions</a> &raquo;</li>
+      <li>Info</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/hardware/pgp/classes/info.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="info">
+<span id="hardware-pgp-info"></span><h1>Info<a class="headerlink" href="#info" title="Permalink to this headline"></a></h1>
+<p>Info objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7InfoPtrE">
+<span id="_CPPv3N5rogue8hardware3pgp7InfoPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp7InfoPtrE"></span><span id="rogue::hardware::pgp::InfoPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1a0e503d85845ab6a97b425b27d1e09e98"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp4InfoE" title="rogue::hardware::pgp::Info"><span class="n"><span class="pre">Info</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">InfoPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7InfoPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Alias for using shared pointer as InfoPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp4InfoE">
+<span id="_CPPv3N5rogue8hardware3pgp4InfoE"></span><span id="_CPPv2N5rogue8hardware3pgp4InfoE"></span><span id="rogue::hardware::pgp::Info"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1Info"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Info</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv47PgpInfo" title="PgpInfo"><span class="n"><span class="pre">PgpInfo</span></span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp4InfoE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Info"><span class="std std-ref">Info</span></a>. </p>
+<p>This class contains the build &amp; version information for the PGP card. This class is a C++ wrapper around the <a class="reference internal" href="#structPgpInfo"><span class="std std-ref">PgpInfo</span></a> structure used by the lower level driver. All structure members are exposed to Python using their original names and can be read directly. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp4Info11buildStringEv">
+<span id="_CPPv3N5rogue8hardware3pgp4Info11buildStringEv"></span><span id="_CPPv2N5rogue8hardware3pgp4Info11buildStringEv"></span><span id="rogue::hardware::pgp::Info::buildString"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1Info_1aad7946ea6acc810b4756058fe0553991"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">buildString</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp4Info11buildStringEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">build</span> <span class="pre">string</span></code> in string format. </p>
+<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Info_1aad7946ea6acc810b4756058fe0553991"><span class="std std-ref">buildString()</span></a> </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<p>The structure which the above class wraps is shown below. All of these
+members are exposed in the above class.</p>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv47PgpInfo">
+<span id="_CPPv37PgpInfo"></span><span id="_CPPv27PgpInfo"></span><span id="PgpInfo"></span><span class="target" id="structPgpInfo"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PgpInfo</span></span></span><a class="headerlink" href="#_CPPv47PgpInfo" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Info. </p>
+<p><em>Title : PGP Card Driver, Shared Header </em></p>
+<p>Description: <em>Definitions and inline functions for interacting with PGP driver. </em></p>
+<p>This file is part of the aes_stream_drivers package. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the aes_stream_drivers package, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
+<p>Subclassed by <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Info"><span class="std std-ref">rogue::hardware::pgp::Info</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo6serialE">
+<span id="_CPPv3N7PgpInfo6serialE"></span><span id="_CPPv2N7PgpInfo6serialE"></span><span id="PgpInfo::serial__uint64_t"></span><span class="target" id="structPgpInfo_1ae03aaea2ccc8d51413da8455fc9d13ec"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">serial</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo6serialE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Serial #. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo4typeE">
+<span id="_CPPv3N7PgpInfo4typeE"></span><span id="_CPPv2N7PgpInfo4typeE"></span><span id="PgpInfo::type__uint32_t"></span><span class="target" id="structPgpInfo_1aa863b929ab81ac98edd6502845cae300"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo4typeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Type. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo7versionE">
+<span id="_CPPv3N7PgpInfo7versionE"></span><span id="_CPPv2N7PgpInfo7versionE"></span><span id="PgpInfo::version__uint32_t"></span><span class="target" id="structPgpInfo_1a85be0f2f33fec3bc4dd36bbefb8f86e4"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo7versionE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Version. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo8laneMaskE">
+<span id="_CPPv3N7PgpInfo8laneMaskE"></span><span id="_CPPv2N7PgpInfo8laneMaskE"></span><span id="PgpInfo::laneMask__uint32_t"></span><span class="target" id="structPgpInfo_1aeab2a4b1850d18107d8a71f08b1fd4fe"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">laneMask</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo8laneMaskE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Lane Mask. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo9vcPerMaskE">
+<span id="_CPPv3N7PgpInfo9vcPerMaskE"></span><span id="_CPPv2N7PgpInfo9vcPerMaskE"></span><span id="PgpInfo::vcPerMask__uint32_t"></span><span class="target" id="structPgpInfo_1a369ea4f176d759151e29e93465740b8e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vcPerMask</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo9vcPerMaskE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card VCs per Lane Mask. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo7pgpRateE">
+<span id="_CPPv3N7PgpInfo7pgpRateE"></span><span id="_CPPv2N7PgpInfo7pgpRateE"></span><span id="PgpInfo::pgpRate__uint32_t"></span><span class="target" id="structPgpInfo_1a3632a6cba8695010ac4cbc9bf395fa47"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pgpRate</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo7pgpRateE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Line Rate. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo9promPrgEnE">
+<span id="_CPPv3N7PgpInfo9promPrgEnE"></span><span id="_CPPv2N7PgpInfo9promPrgEnE"></span><span id="PgpInfo::promPrgEn__uint32_t"></span><span class="target" id="structPgpInfo_1afa24a3907803d68acbbf6aa65f706733"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">promPrgEn</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo9promPrgEnE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card Prom Programming Support Flag. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo10evrSupportE">
+<span id="_CPPv3N7PgpInfo10evrSupportE"></span><span id="_CPPv2N7PgpInfo10evrSupportE"></span><span id="PgpInfo::evrSupport__uint32_t"></span><span class="target" id="structPgpInfo_1aa2d3a745069730ee1be6fc6c0af1a786"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrSupport</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo10evrSupportE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PGP Card EVR Support Flag. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="status.html" class="btn btn-neutral float-left" title="Status" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pciStatus.html" class="btn btn-neutral float-right" title="PciStatus" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

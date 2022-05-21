@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Transaction &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="TransactionLock" href="transactionLock.html" />
+    <link rel="prev" title="Constants" href="constants.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../master.html">Memory Master Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../slave.html">Memory Slave Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../hub.html">Memory Hub Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks.html">Blocks &amp; Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../blocks_advanced.html">Advanced Usage Of Blocks</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Memory Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="constants.html">Constants</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Transaction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transactionLock.html">TransactionLock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="block.html">Block</a></li>
+<li class="toctree-l4"><a class="reference internal" href="model.html">Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="hub.html">Hub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
+          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
+      <li>Transaction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/interfaces/memory/classes/transaction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="transaction">
+<span id="interfaces-memory-transaction"></span><h1>Transaction<a class="headerlink" href="#transaction" title="Permalink to this headline"></a></h1>
+<p>Transaction objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory14TransactionPtrE">
+<span id="_CPPv3N5rogue10interfaces6memory14TransactionPtrE"></span><span id="_CPPv2N5rogue10interfaces6memory14TransactionPtrE"></span><span id="rogue::interfaces::memory::TransactionPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1memory_1a7c6250994b065d9570e27405efe61a13"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TransactionPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory14TransactionPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Alias for using shared pointer as TransactionPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11TransactionE">
+<span id="_CPPv3N5rogue10interfaces6memory11TransactionE"></span><span id="_CPPv2N5rogue10interfaces6memory11TransactionE"></span><span id="rogue::interfaces::memory::Transaction"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Transaction</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11TransactionE" title="Permalink to this definition"></a><br /></dt>
+<dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> Container. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is passed between the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> and <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> to initiate a transaction. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> class contains information about the transaction as well as the transaction data pointer. Each created transaction object has a unique 32-bit transaction ID which is used to track the transaction. Transactions are never created directly, instead they are created in the Master() class. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-types">Public Types</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction8iteratorE">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction8iteratorE"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction8iteratorE"></span><span id="rogue::interfaces::memory::Transaction::iterator"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">iterator</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction8iteratorE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Alias for using uint8_t * as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a>. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction4lockEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction4lockEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4lockEv"></span><span id="rogue::interfaces::memory::Transaction::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeaeb3980a9e5959eb23d2181eeeddc49"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transactionLock.html#_CPPv4N5rogue10interfaces6memory15TransactionLockE" title="rogue::interfaces::memory::TransactionLock"><span class="n"><span class="pre">TransactionLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4lockEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Lock <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> and return a TransactionLockPtr object. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeaeb3980a9e5959eb23d2181eeeddc49"><span class="std std-ref">lock()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="transactionLock.html#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> pointer (TransactonLockPtr) </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction7expiredEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction7expiredEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7expiredEv"></span><span id="rogue::interfaces::memory::Transaction::expired"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a35616717f6d15c8978ba296b7fce816c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">expired</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7expiredEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get expired flag. </p>
+<p>The expired flag is set by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> times out and the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> is no longer waiting for the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to complete. Lock must be held before checking the expired status.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a35616717f6d15c8978ba296b7fce816c"><span class="std std-ref">expired()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if transaction is expired. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction2idEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction2idEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction2idEv"></span><span id="rogue::interfaces::memory::Transaction::id"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a1f14874141680a7184b8277c61444d5b"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">id</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction2idEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get 32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> ID. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a1f14874141680a7184b8277c61444d5b"><span class="std std-ref">id()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>32-bit transaction ID </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction7addressEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction7addressEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7addressEv"></span><span id="rogue::interfaces::memory::Transaction::address"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07b199ad3b8c4fec6ab3e7a334722aad"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">address</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7addressEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> address. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07b199ad3b8c4fec6ab3e7a334722aad"><span class="std std-ref">address()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>64-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> ID </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction4sizeEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction4sizeEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4sizeEv"></span><span id="rogue::interfaces::memory::Transaction::size"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a7c0e8ed1b737a70043b5e8f4c5eb4153"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4sizeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a7c0e8ed1b737a70043b5e8f4c5eb4153"><span class="std std-ref">size()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction4typeEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction4typeEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4typeEv"></span><span id="rogue::interfaces::memory::Transaction::type"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4typeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type. </p>
+<p>The transaction type values are defined in Constants Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e"><span class="std std-ref">type()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction12refreshTimerENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction12refreshTimerENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction12refreshTimerENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE"></span><span id="rogue::interfaces::memory::Transaction::refreshTimer__std::shared_ptr:rogue::interfaces::memory::Transaction:"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a6c0d228b3631ba8c038a8491a6518022"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">refreshTimer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6memory11TransactionE" title="rogue::interfaces::memory::Transaction"><span class="n"><span class="pre">Transaction</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reference</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction12refreshTimerENSt10shared_ptrIN5rogue10interfaces6memory11TransactionEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Refresh transaction timer. </p>
+<p>Called to refresh the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> timer. If the passed reference <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is NULL or the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> start time is later than the reference transaction, the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> timer will be refreshed.</p>
+<p>Not exposed to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>reference</strong> – Reference TransactionPtr </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction4doneEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction4doneEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction4doneEv"></span><span id="rogue::interfaces::memory::Transaction::done"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1af6331d51aebb4d0cf07ea55b62de7f21"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">done</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction4doneEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Complete transaction without error. </p>
+<p>Lock must be held before calling this method. The error types are defined in Constants.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1af6331d51aebb4d0cf07ea55b62de7f21"><span class="std std-ref">done()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE"></span><span id="rogue::interfaces::memory::Transaction::errorPy__ss"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1acc83400c79ebb69dd1f1ecd6e2fda07d"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">errorPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">error</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7errorPyENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Complete transaction with passed error, python interface. </p>
+<p>Lock must be held before calling this method.</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da"><span class="std std-ref">error()</span></a> to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error</strong> – <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> error message </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction5errorEPKcz">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction5errorEPKcz"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction5errorEPKcz"></span><span id="rogue::interfaces::memory::Transaction::error__cCP.z"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">error</span></span></span><span class="sig-paren">(</span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">fmt</span></span>, <span class="p"><span class="pre">...</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction5errorEPKcz" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Complete transaction with passed error. </p>
+<p>Lock must be held before calling this method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error</strong> – <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> error message </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction5beginEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction5beginEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction5beginEv"></span><span id="rogue::interfaces::memory::Transaction::begin"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ae7f4fa7ac6a43bcc2d6b75dcb7d2faaa"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction5beginEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get start iterator for <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data. </p>
+<p>Not exposed to Python</p>
+<p>Lock must be held before calling this method and while updating <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Data iterator as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction3endEv">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction3endEv"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction3endEv"></span><span id="rogue::interfaces::memory::Transaction::end"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1add2caaa7f03d3b4a580dfdbd06922cfe"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction3endEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get end iterator for <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data. </p>
+<p>Not exposed to Python</p>
+<p>Lock must be held before calling this method and while updating <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Data iterator as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a> </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::memory::Transaction::getData__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7getDataEN5boost6python6objectE8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Method for copying transaction data to Python byte array. </p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff"><span class="std std-ref">getData()</span></a></p>
+<p>The size of the data to be copied is defined by the size of the passed data buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Python byte array object </p></li>
+<li><p><strong>offset</strong> – Offset for <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data access. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::memory::Transaction::setData__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory11Transaction7setDataEN5boost6python6objectE8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Method for copying transaction data from Python byte array. </p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75"><span class="std std-ref">setData()</span></a></p>
+<p>The size of the data to be copied is defined by the size of the passed data buffer. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> – Python byte array object </p></li>
+<li><p><strong>offset</strong> – Offset for <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data access. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="constants.html" class="btn btn-neutral float-left" title="Constants" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="transactionLock.html" class="btn btn-neutral float-right" title="TransactionLock" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

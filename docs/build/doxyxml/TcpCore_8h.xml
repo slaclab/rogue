@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="TcpCore_8h" kind="file" language="C++">
+    <compoundname>TcpCore.h</compoundname>
+    <includes refid="stream_2Master_8h" local="no">rogue/interfaces/stream/Master.h</includes>
+    <includes refid="stream_2Slave_8h" local="no">rogue/interfaces/stream/Slave.h</includes>
+    <includes refid="Frame_8h" local="no">rogue/interfaces/stream/Frame.h</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">memory</includes>
+    <includes local="no">stdint.h</includes>
+    <includedby refid="stream_2TcpClient_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h</includedby>
+    <includedby refid="stream_2TcpServer_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h</includedby>
+    <incdepgraph>
+      <node id="12">
+        <label>rogue/interfaces/stream/Slave.h</label>
+        <link refid="stream_2Slave_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="16">
+        <label>queue</label>
+      </node>
+      <node id="3">
+        <label>stdint.h</label>
+      </node>
+      <node id="5">
+        <label>string</label>
+      </node>
+      <node id="19">
+        <label>rogue/interfaces/stream/Frame.h</label>
+        <link refid="Frame_8h"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>exception</label>
+      </node>
+      <node id="13">
+        <label>rogue/interfaces/stream/Pool.h</label>
+        <link refid="Pool_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>rogue/EnableSharedFromThis.h</label>
+        <link refid="EnableSharedFromThis_8h"/>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h</label>
+        <link refid="TcpCore_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue/interfaces/stream/Master.h</label>
+        <link refid="stream_2Master_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>condition_variable</label>
+      </node>
+      <node id="11">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="6">
+        <label>vector</label>
+      </node>
+      <node id="14">
+        <label>rogue/Queue.h</label>
+        <link refid="Queue_8h"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>mutex</label>
+      </node>
+      <node id="17">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>thread</label>
+      </node>
+      <node id="4">
+        <label>stdio.h</label>
+      </node>
+      <node id="9">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h</label>
+        <link refid="TcpCore_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h</label>
+        <link refid="stream_2TcpClient_8h"/>
+      </node>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h</label>
+        <link refid="stream_2TcpServer_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore" prot="public">rogue::interfaces::stream::TcpCore</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces">rogue::interfaces</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces_1_1stream">rogue::interfaces::stream</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="20"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_INTERFACES_STREAM_TCP_CORE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_INTERFACES_STREAM_TCP_CORE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="stream_2Master_8h" kindref="compound">rogue/interfaces/stream/Master.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="stream_2Slave_8h" kindref="compound">rogue/interfaces/stream/Slave.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Frame_8h" kindref="compound">rogue/interfaces/stream/Frame.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">interfaces<sp/>{</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">stream<sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"></codeline>
+<codeline lineno="46" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore" kindref="compound">TcpCore</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">rogue::interfaces::stream::Master</ref>,</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">rogue::interfaces::stream::Slave</ref><sp/>{</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Inbound<sp/>Address</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="52" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a289f9a1d6a24874b6a8a6203d4bdb929" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a289f9a1d6a24874b6a8a6203d4bdb929" kindref="member">pullAddr_</ref>;</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Outbound<sp/>Address</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="55" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ab083f5abf65daaa26b6fc511e68bc5d1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ab083f5abf65daaa26b6fc511e68bc5d1" kindref="member">pushAddr_</ref>;</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>Context</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="58" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1aa990bd53656337bcd942e32412da5d80" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1aa990bd53656337bcd942e32412da5d80" kindref="member">zmqCtx_</ref>;</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>inbound<sp/>port</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ad57f897d469e88b3c2c20ee4f834d2cf" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ad57f897d469e88b3c2c20ee4f834d2cf" kindref="member">zmqPull_</ref>;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>outbound<sp/>port</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1af7e77441ab738fda309c3e05ec952511" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1af7e77441ab738fda309c3e05ec952511" kindref="member">zmqPush_</ref>;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Thread<sp/>background</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a7e32699ee1897f215918bc2338d7eee5" kindref="member">runThread</ref>();</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Log</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a3c4468013134ae6f15f6b6e1e8b7e1d0" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a3c4468013134ae6f15f6b6e1e8b7e1d0" kindref="member">bridgeLog_</ref>;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Thread</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a561760a5fadc6285ca9ec4d59d66a22b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::thread<sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a561760a5fadc6285ca9ec4d59d66a22b" kindref="member">thread_</ref>;</highlight></codeline>
+<codeline lineno="74" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1aaaf2c0ba3ce0f99eb3e601ac1dfce3b6" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1aaaf2c0ba3ce0f99eb3e601ac1dfce3b6" kindref="member">threadEn_</ref>;</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Lock</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="77" refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1afe3003e49a8edd54a9d4a5e70ba3a483" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1afe3003e49a8edd54a9d4a5e70ba3a483" kindref="member">bridgeMtx_</ref>;</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::TcpCore&gt;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af0ad7b7652bfeb6c1bbef7062245c1ec" kindref="member">create</ref><sp/>(std::string<sp/>addr,<sp/>uint16_t<sp/>port,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>server);</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>class<sp/>for<sp/>use<sp/>in<sp/>python</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1aaae8e2ea22a555813919872009af17ee" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>TcpCore<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a78f4c472b29c40554cb696e8520f0aa2" kindref="member">TcpCore</ref>(std::string<sp/>addr,<sp/>uint16_t<sp/>port,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>server);</highlight></codeline>
+<codeline lineno="104"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Destroy<sp/>the<sp/>TcpCore</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ac01385174662946a7ee5af18614e1fd8" kindref="member">~TcpCore</ref>();</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Close<sp/>the<sp/>connections</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1a13b021a080fbfed8c5172c48eabd1969" kindref="member">close</ref>();</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Stop<sp/><sp/>the<sp/>interface</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ac072dda120b0e860fbb456591b6bf8ce" kindref="member">stop</ref>();</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Receive<sp/>frame<sp/>from<sp/>Master</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1TcpCore_1ab2d12bc359841fab8247229b3231fc89" kindref="member">acceptFrame</ref><sp/>(<sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame<sp/>);</highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="namespacerogue_1_1interfaces_1_1stream_1a4c480bc72405a3a5150cb02f4dcdcdd3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::TcpCore&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1_1stream_1a4c480bc72405a3a5150cb02f4dcdcdd3" kindref="member">TcpCorePtr</ref>;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="123"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h"/>
+  </compounddef>
+</doxygen>

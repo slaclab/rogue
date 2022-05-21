@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="protocols_2epicsV3_2module_8h" kind="file" language="C++">
+    <compoundname>module.h</compoundname>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols">rogue::protocols</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols_1_1epicsV3">rogue::protocols::epicsV3</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="21"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_PROTOCOLS_EPICSV3_MODULE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_PROTOCOLS_EPICSV3_MODULE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">protocols<sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">epicsV3<sp/>{</highlight></codeline>
+<codeline lineno="27"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacerogue_1_1protocols_1_1epicsV3_1aa5e88e2e0a6a1d286fbb9ea8349e07f7" kindref="member">setup_module</ref>();</highlight></codeline>
+<codeline lineno="28"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="30"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/module.h"/>
+  </compounddef>
+</doxygen>

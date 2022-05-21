@@ -1,0 +1,451 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1memory_1_1Hub" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::memory::Hub</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Master" prot="public" virt="non-virtual">rogue::interfaces::memory::Master</basecompoundref>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::memory::Slave</basecompoundref>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1memory_1_1HubWrap" prot="public" virt="non-virtual">rogue::interfaces::memory::HubWrap</derivedcompoundref>
+    <includes refid="Hub_8h" local="no">Hub.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a756cd852890b1e490fc8389cc62a911f" prot="private" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::memory::Hub::offset_</definition>
+        <argsstring></argsstring>
+        <name>offset_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="62" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a5df7149efec299e9962a7d76a39d1e3b" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::memory::Hub::root_</definition>
+        <argsstring></argsstring>
+        <name>root_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="65" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a3230fb6e06df353588dc61d4db0aa703" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">rogue::interfaces::memory::Hub</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::memory::Hub&gt; rogue::interfaces::memory::Hub::create</definition>
+        <argsstring>(uint64_t offset, uint32_t min, uint32_t max)</argsstring>
+        <name>create</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>min</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+<para>Class factory which returns a pointer to a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> (HubPtr) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to Python as <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">rogue.interfaces.memory.Hub()</ref></para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>offset</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The offset of this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> device </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>min</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The min transaction size, 0 if not a virtual memory space root </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>min</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>The max transaction size, 0 if not a virtual memory space root </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="76" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb928b036cf30e48bd0d84e048023015" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::Hub::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="79" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2f87f8590c4ceaca92176e62cbca1b8e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::Hub::Hub</definition>
+        <argsstring>(uint64_t offset, uint32_t min, uint32_t max)</argsstring>
+        <name>Hub</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>min</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="82" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a04a81f6ec684782adc80df11de4f3e7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::Hub::~Hub</definition>
+        <argsstring>()</argsstring>
+        <name>~Hub</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="85" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a276ca14dadf9aee86764d0a9a78a75fa" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::memory::Hub::getOffset</definition>
+        <argsstring>()</argsstring>
+        <name>getOffset</name>
+        <briefdescription>
+<para>Get offset of this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the offset address of this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref></para>
+<para>Exposed as _getOffset() to Python <simplesect kind="return"><para>64-bit address offset </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="93" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a61e0a391dee817370a8733a29559032e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::memory::Hub::getAddress</definition>
+        <argsstring>()</argsstring>
+        <name>getAddress</name>
+        <briefdescription>
+<para>Get full address of this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref>. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Return the full address of this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref>, including local offset.</para>
+<para>Exposed as _getAddress() to Python <simplesect kind="return"><para>64-bit address </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="101" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2192bbbcdca36e580095d8f7de584a83" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Hub::doSlaveId</definition>
+        <argsstring>()</argsstring>
+        <name>doSlaveId</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1af5ce81bef7de4de74c1e3cede21d8919">doSlaveId</reimplements>
+        <briefdescription>
+<para>Interface to service the getSlaveId request from an attached master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>By default the <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will forward this request to the next level. A hub may want to override this when mastering a virtual address space such as a paged address map. Otherwise incorrect overlap errors may be generated by the PyRogue Root.</para>
+<para>Not exposed to Python <simplesect kind="return"><para>32-bit slave ID </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="112" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1ac82017f09bd5f93bc20355949cb5d69e" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::memory::Hub::doSlaveName</definition>
+        <argsstring>()</argsstring>
+        <name>doSlaveName</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a46c858794b25f486c4909cbbef5df5f4">doSlaveName</reimplements>
+        <briefdescription>
+<para>Interface to service the getSlaveName request from an attached master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>By default the <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will forward this request to the next level. A hub may want to override this when mastering a virtual address space such as a paged address map. Otherwise incorrect overlap errors may be generated by the PyRogue Root.</para>
+<para>Not exposed to Python <simplesect kind="return"><para>slave name </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="123" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1adafcf767f51ec3d82511c1fe9772e433" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Hub::doMinAccess</definition>
+        <argsstring>()</argsstring>
+        <name>doMinAccess</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1ae690bb54ec073edbd751d8362617a7f9">doMinAccess</reimplements>
+        <briefdescription>
+<para>Interface to service the getMinAccess request from an attached master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will forward this request to the next level device. * Not exposed to Python <simplesect kind="return"><para>Min transaction access size </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="130" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aeed19f9acc23e3a2a67ef59b9b714ca8" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::memory::Hub::doMaxAccess</definition>
+        <argsstring>()</argsstring>
+        <name>doMaxAccess</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aaa9fdbb5cc041f56343344e1c32db679">doMaxAccess</reimplements>
+        <briefdescription>
+<para>Interface to service the getMaxAccess request from an attached master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will forward this request to the next level device. A <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> sub-class is allowed to override this method.</para>
+<para>Not exposed to Python <simplesect kind="return"><para>Max transaction access size </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="139" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb54adf64d4dff8709151abf041d5288" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::interfaces::memory::Hub::doAddress</definition>
+        <argsstring>()</argsstring>
+        <name>doAddress</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a435848e7e20020e67ec76a9ef157b990">doAddress</reimplements>
+        <briefdescription>
+<para>Interface to service the getAddress request from an attached master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will forward this request to the next level device and apply the local address offset. A <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> sub-class is allowed to override this method.</para>
+<para>Not exposed to Python <simplesect kind="return"><para>Max transaction access size </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="148" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1Hub_1aa3fc493ad646e9ca60e2dd31e069b296" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::interfaces::memory::Hub::doTransaction</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; transaction)</argsstring>
+        <name>doTransaction</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a43c5e62dd732c5ecff7dadb0a5a8bfa2">doTransaction</reimplements>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1memory_1_1HubWrap_1ac5d078dc3c0f86d8d59caa7c1098c12d">doTransaction</reimplementedby>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>transaction</declname>
+        </param>
+        <briefdescription>
+<para>Interface to service the transaction request from an attached master. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will forward this request to the next level device and apply the local address offset.</para>
+<para>It is possible for this method to be overridden in either a Python or C++ subclass. Examples of sub-classing a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> are included elsewhere in this document.</para>
+<para>Exposed to Python as _doTransaction() <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>transaction</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> pointer as TransactionPtr </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="161" column="29"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Memory interface <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> device. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The memory bus <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> serves as both a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> and a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> for memory transactions. It will accept a <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> from an attached <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> and pass it down to the next level <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> or <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> device. It will apply its local offset address to the transaction as it is passed down to the next level.</para>
+<para>A <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> can be sub-classed in either Python or C++ is order to further manipulate the transaction data on the way down or convert the initial <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> into multiple transactions to the next level. This can be useful to hide complex windows memory spaces or transactions that require multiplied steps be performed in hardware.</para>
+<para>If a non zero min and max transaction size are passed at creation this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will behave as if it is a new root <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref> memory device in the tree. This is useful in cases where this <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> will master a paged address or other virtual address space.</para>
+<para>A pyrogue.Device instance is the most typical <ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref> used in Rogue. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::interfaces::memory::Hub</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Hub"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::memory::HubWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1HubWrap"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Master"/>
+      </node>
+      <node id="6">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="3">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>rogue::interfaces::memory::Hub</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Hub"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Master"/>
+      </node>
+      <node id="6">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="3">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" line="59" column="47" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h" bodystart="59" bodyend="162"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a97ac9ad623a4920c6ebf58bc18e7ec7f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>addTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa316b88cca37ab6d999c399ba93b7254" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>anyBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a041d0bc5879f24ca641346798a142fec" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>anyBitsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ab94eee23b721f15501a90306f73837f5" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>clearError</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa37321dd4e1bc5889478bb8eca55a297" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>copyBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a55965b1cc0f77f427cb9d946cc4ccb8d" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>copyBitsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a3230fb6e06df353588dc61d4db0aa703" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dd3efeb0123543b07db88eeace87d94" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::memory::Master::"><scope>rogue::interfaces::memory::Hub</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a2cfe1d611cc9cb725acf98b9dd78bf21" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::memory::Slave::"><scope>rogue::interfaces::memory::Hub</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb54adf64d4dff8709151abf041d5288" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>doAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1aeed19f9acc23e3a2a67ef59b9b714ca8" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>doMaxAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1adafcf767f51ec3d82511c1fe9772e433" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>doMinAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2192bbbcdca36e580095d8f7de584a83" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>doSlaveId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1ac82017f09bd5f93bc20355949cb5d69e" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>doSlaveName</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1aa3fc493ad646e9ca60e2dd31e069b296" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>doTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a61e0a391dee817370a8733a29559032e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>getAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a491fa0c7d4565146e8baafc7ffa73346" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>getError</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a276ca14dadf9aee86764d0a9a78a75fa" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>getOffset</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a20364eb7d4b6d3d666e434ac1fd77a7d" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>getSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a4bf250f6776be14c6d8ed924807eba82" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>getTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a2f87f8590c4ceaca92176e62cbca1b8e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>Hub</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a470bd4cecb4444fd59b553825cd67129" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>id</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a33ea89bb24e4d4115c8fef6c145c7a02" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>intTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aa934540c189dc41ee19f7124e7526f85" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a9899ebfecc6e7e35cebdbca4d0e40f6e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a7214283697192866d04f4fd84e6952d5" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>max</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1afcc3624c3622839e96cf5861593c255c" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>min</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a282550bb08cdd6f5e06db13835bd5f6f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>name</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a756cd852890b1e490fc8389cc62a911f" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>offset_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a633b040c861b41682af1b8f549223631" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa7eb8183583f6084fea07821eb7ff2af" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a777233e4f6f27148360effe500e9e957" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ae06e314257d14ff11f29c0b72118519a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqMaxAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a71984f8156f77b2b9066ef576c64a6a2" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqMinAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a442a5dc81c6f1bcabf2abf726e8f5a99" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqSlaveId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a615c288b0fdad6a5d1101479b9fb74d6" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqSlaveName</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a06ef5ce0dae7d9b761bd3d363d6654ae" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1afe115af98acf6bb16f7e831ff73ec69a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>reqTransactionPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a5df7149efec299e9962a7d76a39d1e3b" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>root_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a47ff28f879439aa3909fec046b68b5c3" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dac52c5af2fd91d17f8b10d0542330a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>setBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a151cd43ee75c40a69722355aee868ca0" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>setBitsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1adabad1d0e8d40325ca6dfeeeb6df19ac" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>setName</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a6de8890cdcdc2de6148283334c7b3413" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>setSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aab53da8b6940f03c7220b462c984fd12" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1acb928b036cf30e48bd0d84e048023015" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a8957d9bc3be4fd66028d296f03a2db94" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a59be941f83e4a39df917d5402557324e" prot="public" virt="virtual" ambiguityscope="rogue::"><scope>rogue::interfaces::memory::Hub</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a22bce0d8c63db18645e193f27b4eca5d" prot="public" virt="virtual" ambiguityscope="rogue::interfaces::memory::Slave::"><scope>rogue::interfaces::memory::Hub</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aad065c2019c8c9d5e0f7c53b1ea05591" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>waitTransaction</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Hub_1a04a81f6ec684782adc80df11de4f3e7c" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::Hub</scope><name>~Hub</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a80a2fce11f04d0e2dd6202958ef377a0" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>~Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a0b97756687857c4825e02b7538eb4ae5" prot="public" virt="virtual"><scope>rogue::interfaces::memory::Hub</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,455 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="stream_2Slave_8h" kind="file" language="C++">
+    <compoundname>Slave.h</compoundname>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">memory</includes>
+    <includes refid="Pool_8h" local="no">rogue/interfaces/stream/Pool.h</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includes refid="EnableSharedFromThis_8h" local="no">rogue/EnableSharedFromThis.h</includes>
+    <includes local="no">boost/python.hpp</includes>
+    <includedby refid="AxiStreamDma_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h</includedby>
+    <includedby refid="PgpCard_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/PgpCard.h</includedby>
+    <includedby refid="Fifo_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h</includedby>
+    <includedby refid="Filter_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Filter.h</includedby>
+    <includedby refid="RateDrop_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/RateDrop.h</includedby>
+    <includedby refid="stream_2TcpClient_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h</includedby>
+    <includedby refid="TcpCore_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h</includedby>
+    <includedby refid="stream_2TcpServer_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h</includedby>
+    <includedby refid="LibraryBase_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/LibraryBase.h</includedby>
+    <includedby refid="InverterV1_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/InverterV1.h</includedby>
+    <includedby refid="SplitterV1_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/SplitterV1.h</includedby>
+    <includedby refid="packetizer_2Application_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Application.h</includedby>
+    <includedby refid="packetizer_2Controller_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h</includedby>
+    <includedby refid="ControllerV1_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/ControllerV1.h</includedby>
+    <includedby refid="ControllerV2_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/ControllerV2.h</includedby>
+    <includedby refid="packetizer_2Transport_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Transport.h</includedby>
+    <includedby refid="rssi_2Application_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h</includedby>
+    <includedby refid="rssi_2Controller_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Controller.h</includedby>
+    <includedby refid="rssi_2Transport_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Transport.h</includedby>
+    <includedby refid="SrpV0_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV0.h</includedby>
+    <includedby refid="SrpV3_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV3.h</includedby>
+    <includedby refid="udp_2Client_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp/Client.h</includedby>
+    <includedby refid="udp_2Server_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp/Server.h</includedby>
+    <includedby refid="StreamWriterChannel_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriterChannel.h</includedby>
+    <includedby refid="Prbs_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h</includedby>
+    <includedby refid="StreamUnZip_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/StreamUnZip.h</includedby>
+    <includedby refid="StreamZip_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/StreamZip.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h</label>
+        <link refid="stream_2Slave_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>queue</label>
+      </node>
+      <node id="2">
+        <label>stdint.h</label>
+      </node>
+      <node id="14">
+        <label>string</label>
+      </node>
+      <node id="12">
+        <label>exception</label>
+      </node>
+      <node id="5">
+        <label>rogue/interfaces/stream/Pool.h</label>
+        <link refid="Pool_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>rogue/EnableSharedFromThis.h</label>
+        <link refid="EnableSharedFromThis_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>condition_variable</label>
+      </node>
+      <node id="15">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="13">
+        <label>vector</label>
+      </node>
+      <node id="6">
+        <label>rogue/Queue.h</label>
+        <link refid="Queue_8h"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>mutex</label>
+      </node>
+      <node id="11">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>thread</label>
+      </node>
+      <node id="4">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h</label>
+        <link refid="stream_2Slave_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+        <childnode refid="17" relation="include">
+        </childnode>
+        <childnode refid="18" relation="include">
+        </childnode>
+        <childnode refid="19" relation="include">
+        </childnode>
+        <childnode refid="20" relation="include">
+        </childnode>
+        <childnode refid="21" relation="include">
+        </childnode>
+        <childnode refid="22" relation="include">
+        </childnode>
+        <childnode refid="23" relation="include">
+        </childnode>
+        <childnode refid="24" relation="include">
+        </childnode>
+        <childnode refid="25" relation="include">
+        </childnode>
+        <childnode refid="26" relation="include">
+        </childnode>
+        <childnode refid="27" relation="include">
+        </childnode>
+        <childnode refid="28" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/PgpCard.h</label>
+        <link refid="PgpCard_8h"/>
+      </node>
+      <node id="26">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h</label>
+        <link refid="Prbs_8h"/>
+      </node>
+      <node id="4">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h</label>
+        <link refid="Fifo_8h"/>
+      </node>
+      <node id="11">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/InverterV1.h</label>
+        <link refid="InverterV1_8h"/>
+      </node>
+      <node id="20">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Transport.h</label>
+        <link refid="rssi_2Transport_8h"/>
+      </node>
+      <node id="22">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV3.h</label>
+        <link refid="SrpV3_8h"/>
+      </node>
+      <node id="28">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/StreamZip.h</label>
+        <link refid="StreamZip_8h"/>
+      </node>
+      <node id="12">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/SplitterV1.h</label>
+        <link refid="SplitterV1_8h"/>
+      </node>
+      <node id="19">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Controller.h</label>
+        <link refid="rssi_2Controller_8h"/>
+      </node>
+      <node id="24">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp/Server.h</label>
+        <link refid="udp_2Server_8h"/>
+      </node>
+      <node id="8">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h</label>
+        <link refid="TcpCore_8h"/>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="27">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/StreamUnZip.h</label>
+        <link refid="StreamUnZip_8h"/>
+      </node>
+      <node id="13">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Application.h</label>
+        <link refid="packetizer_2Application_8h"/>
+      </node>
+      <node id="6">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/RateDrop.h</label>
+        <link refid="RateDrop_8h"/>
+      </node>
+      <node id="17">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Transport.h</label>
+        <link refid="packetizer_2Transport_8h"/>
+      </node>
+      <node id="25">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriterChannel.h</label>
+        <link refid="StreamWriterChannel_8h"/>
+      </node>
+      <node id="16">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/ControllerV2.h</label>
+        <link refid="ControllerV2_8h"/>
+      </node>
+      <node id="7">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h</label>
+        <link refid="stream_2TcpClient_8h"/>
+      </node>
+      <node id="23">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp/Client.h</label>
+        <link refid="udp_2Client_8h"/>
+      </node>
+      <node id="9">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h</label>
+        <link refid="stream_2TcpServer_8h"/>
+      </node>
+      <node id="10">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/LibraryBase.h</label>
+        <link refid="LibraryBase_8h"/>
+      </node>
+      <node id="14">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h</label>
+        <link refid="packetizer_2Controller_8h"/>
+        <childnode refid="15" relation="include">
+        </childnode>
+        <childnode refid="16" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h</label>
+        <link refid="AxiStreamDma_8h"/>
+      </node>
+      <node id="15">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/ControllerV1.h</label>
+        <link refid="ControllerV1_8h"/>
+      </node>
+      <node id="18">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h</label>
+        <link refid="rssi_2Application_8h"/>
+      </node>
+      <node id="21">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV0.h</label>
+        <link refid="SrpV0_8h"/>
+      </node>
+      <node id="5">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Filter.h</label>
+        <link refid="Filter_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public">rogue::interfaces::stream::Slave</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap" prot="public">rogue::interfaces::stream::SlaveWrap</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces">rogue::interfaces</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces_1_1stream">rogue::interfaces::stream</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="stream_2Slave_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Stream interface slave </heading>
+</para>
+<para>File : Slave.h Author : Ryan Herbst, <ulink url="mailto:rherbst@slac.stanford.edu">rherbst@slac.stanford.edu</ulink> <heading level="2">Created : 2016-09-16 </heading>
+</para>
+<para>Description: <heading level="2">Stream interface slave </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" line="32" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="21"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_INTERFACES_STREAM_SLAVE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_INTERFACES_STREAM_SLAVE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Pool_8h" kindref="compound">rogue/interfaces/stream/Pool.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="EnableSharedFromThis_8h" kindref="compound">rogue/EnableSharedFromThis.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="stream_2Slave_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">interfaces<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">stream<sp/>{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Frame;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Buffer;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Master;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"></codeline>
+<codeline lineno="49" refid="classrogue_1_1interfaces_1_1stream_1_1Slave" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Pool" kindref="compound">rogue::interfaces::stream::Pool</ref>,</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1EnableSharedFromThis" kindref="compound">rogue::EnableSharedFromThis</ref>&lt;rogue::interfaces::stream::Slave&gt;<sp/>{</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Mutex</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/>mtx_;</highlight></codeline>
+<codeline lineno="54"><highlight class="normal"></highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Debug<sp/>control</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>debug_;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/>log_;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Counters</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/>frameCount_;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/>frameBytes_;</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Slave&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a6cf859e90fb443f756bd49f86759cc08" kindref="member">create</ref><sp/>();</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>class<sp/>for<sp/>use<sp/>in<sp/>python</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a30f0cc8230b4a641c8622eef65399720" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Class<sp/>creator</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" kindref="member">Slave</ref>();</highlight></codeline>
+<codeline lineno="77"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Destroy<sp/>the<sp/>object</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" kindref="member">~Slave</ref>();</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" kindref="member">stop</ref>();</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" kindref="member">setDebug</ref>(uint32_t<sp/>debug,<sp/>std::string<sp/>name);</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6" kindref="member">acceptFrame</ref><sp/>(<sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame<sp/>);</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" kindref="member">getFrameCount</ref>();</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" kindref="member">getByteCount</ref>();</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boost::python::object<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" kindref="member">lshiftPy</ref><sp/>(<sp/>boost::python::object<sp/>p<sp/>);</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Master&gt;<sp/>&amp;</highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" kindref="member">operator &lt;&lt;</ref>(std::shared_ptr&lt;rogue::interfaces::stream::Master&gt;<sp/>&amp;<sp/>other);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143" refid="namespacerogue_1_1interfaces_1_1stream_1a62f9a9320c2fd274e6b34855c70d0a9d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Slave&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1_1stream_1a62f9a9320c2fd274e6b34855c70d0a9d" kindref="member">SlavePtr</ref>;</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Stream<sp/>slave<sp/>class,<sp/>wrapper<sp/>to<sp/>enable<sp/>python<sp/>overload<sp/>of<sp/>virtual<sp/>methods</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148" refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap" kindref="compound">SlaveWrap</ref><sp/>:</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">rogue::interfaces::stream::Slave</ref>,</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>boost::python::wrapper&lt;rogue::interfaces::stream::Slave&gt;<sp/>{</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Accept<sp/>frame</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="156"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap_1aa6fcf412349c58e6dcbb8ccd70c6e090" kindref="member">acceptFrame</ref><sp/>(<sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame<sp/>);</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Default<sp/>accept<sp/>frame<sp/>call</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1SlaveWrap_1a2733364a91652da4781911dac7911d4b" kindref="member">defAcceptFrame</ref><sp/>(<sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame<sp/>);</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight></codeline>
+<codeline lineno="162" refid="namespacerogue_1_1interfaces_1_1stream_1a14d97174fcbb15c281155ba76b7bd4de" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::SlaveWrap&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1_1stream_1a14d97174fcbb15c281155ba76b7bd4de" kindref="member">SlaveWrapPtr</ref>;</highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="164"><highlight class="normal"></highlight></codeline>
+<codeline lineno="165"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="167"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="168"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Slave.h"/>
+  </compounddef>
+</doxygen>

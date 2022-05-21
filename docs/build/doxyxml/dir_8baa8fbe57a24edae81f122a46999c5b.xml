@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_8baa8fbe57a24edae81f122a46999c5b" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp</compoundname>
+    <innerfile refid="Cmd_8h">Cmd.h</innerfile>
+    <innerfile refid="protocols_2srp_2module_8h">module.h</innerfile>
+    <innerfile refid="SrpV0_8h">SrpV0.h</innerfile>
+    <innerfile refid="SrpV3_8h">SrpV3.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/"/>
+  </compounddef>
+</doxygen>

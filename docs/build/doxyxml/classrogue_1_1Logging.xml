@@ -1,0 +1,476 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1Logging" kind="class" language="C++" prot="public">
+    <compoundname>rogue::Logging</compoundname>
+    <includes refid="Logging_8h" local="no">Logging.h</includes>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classrogue_1_1Logging_1a96678661ec29c6b70b048e5edfab1db0" prot="private" static="yes" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::Logging::gblLevel_</definition>
+        <argsstring></argsstring>
+        <name>gblLevel_</name>
+        <briefdescription>
+<para>Global <ref refid="classrogue_1_1Logging" kindref="compound">Logging</ref> level. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="49" column="26" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1a95d6ea6156ce493d6530a25330a90479" prot="private" static="yes" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::Logging::levelMtx_</definition>
+        <argsstring></argsstring>
+        <name>levelMtx_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1Logging" kindref="compound">Logging</ref> level lock. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="52" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1a36374e33e09d56d93a0a24f39c783762" prot="private" static="yes" mutable="no">
+        <type>std::vector&lt; <ref refid="classrogue_1_1LogFilter" kindref="compound">rogue::LogFilter</ref> * &gt;</type>
+        <definition>std::vector&lt;rogue::LogFilter *&gt; rogue::Logging::filters_</definition>
+        <argsstring></argsstring>
+        <name>filters_</name>
+        <briefdescription>
+<para>List of filters. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="55" column="30" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1Logging_1a54044b5c47064c6779bd4ac6f93bfcb2" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::Logging::level_</definition>
+        <argsstring></argsstring>
+        <name>level_</name>
+        <briefdescription>
+<para>Local logging level. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="60" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1a46fb804237201ac641e3480f5aa2321e" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::Logging::name_</definition>
+        <argsstring></argsstring>
+        <name>name_</name>
+        <briefdescription>
+<para>Logger name. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="63" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-attrib">
+      <memberdef kind="variable" id="classrogue_1_1Logging_1aed16487e03a66834d8c4f0e46bdff015" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::Logging::Critical</definition>
+        <argsstring></argsstring>
+        <name>Critical</name>
+        <initializer>= 50</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="67" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1ace312bc00d8e73fd3aeaef993c6da7dd" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::Logging::Error</definition>
+        <argsstring></argsstring>
+        <name>Error</name>
+        <initializer>= 40</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="68" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1a47061fd0b1174868ccee8cd1830026b0" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::Logging::Thread</definition>
+        <argsstring></argsstring>
+        <name>Thread</name>
+        <initializer>= 35</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="69" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1adba5171ba919a7e011cdb080431f4df2" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::Logging::Warning</definition>
+        <argsstring></argsstring>
+        <name>Warning</name>
+        <initializer>= 30</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="70" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1ad5656a7605b2ed9299c8da43f8aea4b9" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::Logging::Info</definition>
+        <argsstring></argsstring>
+        <name>Info</name>
+        <initializer>= 20</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="71" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Logging_1abb614c55e33efefc9c45f2aaefe4633f" prot="public" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::Logging::Debug</definition>
+        <argsstring></argsstring>
+        <name>Debug</name>
+        <initializer>= 10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="72" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1Logging_1a03de40af772481d9f9466723120ad4ee" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::intLog</definition>
+        <argsstring>(uint32_t level, const char *format, va_list args)</argsstring>
+        <name>intLog</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>level</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>format</declname>
+        </param>
+        <param>
+          <type>va_list</type>
+          <declname>args</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="57" column="15"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1Logging_1a72329522b935ff804b59443d465cc741" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::Logging&gt; rogue::Logging::create</definition>
+        <argsstring>(std::string name, bool quiet=false)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>quiet</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="74" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1aba00817558d5ae9c6d3e6c265ad148b0" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::Logging::setLevel</definition>
+        <argsstring>(uint32_t level)</argsstring>
+        <name>setLevel</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>level</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="79" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1a32a04dfc80bbe649dc92b7d0fc52708a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::Logging::setFilter</definition>
+        <argsstring>(std::string filter, uint32_t level)</argsstring>
+        <name>setFilter</name>
+        <param>
+          <type>std::string</type>
+          <declname>filter</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>level</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="80" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1a1eb8cdc2bfec70d9102f02c5168ef9e4" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::Logging::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="91" column="22"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1Logging_1a3ad41b157deb3f273bd165a791683594" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::Logging::Logging</definition>
+        <argsstring>(std::string name, bool quiet=false)</argsstring>
+        <name>Logging</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>quiet</declname>
+          <defval>false</defval>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="76" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1a2a0ec08a9e0777ad573aee4b52e9ebbd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::Logging::~Logging</definition>
+        <argsstring>()</argsstring>
+        <name>~Logging</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="77" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1ac8de68ce385f1d8c76ff59a62815871e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::log</definition>
+        <argsstring>(uint32_t level, const char *fmt,...)</argsstring>
+        <name>log</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>level</declname>
+        </param>
+        <param>
+          <type>const char *</type>
+          <declname>fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="82" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1ae0b3c24fb0692926a1025533c7e0cc52" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::critical</definition>
+        <argsstring>(const char *fmt,...)</argsstring>
+        <name>critical</name>
+        <param>
+          <type>const char *</type>
+          <declname>fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="83" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1aefd892dca2f4ac8e140ee307f5549dce" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::error</definition>
+        <argsstring>(const char *fmt,...)</argsstring>
+        <name>error</name>
+        <param>
+          <type>const char *</type>
+          <declname>fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="84" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1aadd1a774af585341899630409c6b8161" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::warning</definition>
+        <argsstring>(const char *fmt,...)</argsstring>
+        <name>warning</name>
+        <param>
+          <type>const char *</type>
+          <declname>fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="85" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1a342a215d9d74f30afd747061c977cb0d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::info</definition>
+        <argsstring>(const char *fmt,...)</argsstring>
+        <name>info</name>
+        <param>
+          <type>const char *</type>
+          <declname>fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="86" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1ae11fd0f728b1afe121cc40ec3ac761bd" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::debug</definition>
+        <argsstring>(const char *fmt,...)</argsstring>
+        <name>debug</name>
+        <param>
+          <type>const char *</type>
+          <declname>fmt</declname>
+        </param>
+        <param>
+          <type>...</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="87" column="15"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Logging_1a7ccc389b1db9a20d4b5085533600350b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Logging::logThreadId</definition>
+        <argsstring>()</argsstring>
+        <name>logThreadId</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="89" column="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1Logging" kindref="compound">Logging</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="46" column="17" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="46" bodyend="92"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1Logging_1a72329522b935ff804b59443d465cc741" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>create</name></member>
+      <member refid="classrogue_1_1Logging_1ae0b3c24fb0692926a1025533c7e0cc52" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>critical</name></member>
+      <member refid="classrogue_1_1Logging_1aed16487e03a66834d8c4f0e46bdff015" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Critical</name></member>
+      <member refid="classrogue_1_1Logging_1abb614c55e33efefc9c45f2aaefe4633f" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Debug</name></member>
+      <member refid="classrogue_1_1Logging_1ae11fd0f728b1afe121cc40ec3ac761bd" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>debug</name></member>
+      <member refid="classrogue_1_1Logging_1aefd892dca2f4ac8e140ee307f5549dce" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>error</name></member>
+      <member refid="classrogue_1_1Logging_1ace312bc00d8e73fd3aeaef993c6da7dd" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Error</name></member>
+      <member refid="classrogue_1_1Logging_1a36374e33e09d56d93a0a24f39c783762" prot="private" virt="non-virtual"><scope>rogue::Logging</scope><name>filters_</name></member>
+      <member refid="classrogue_1_1Logging_1a96678661ec29c6b70b048e5edfab1db0" prot="private" virt="non-virtual"><scope>rogue::Logging</scope><name>gblLevel_</name></member>
+      <member refid="classrogue_1_1Logging_1ad5656a7605b2ed9299c8da43f8aea4b9" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Info</name></member>
+      <member refid="classrogue_1_1Logging_1a342a215d9d74f30afd747061c977cb0d" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>info</name></member>
+      <member refid="classrogue_1_1Logging_1a03de40af772481d9f9466723120ad4ee" prot="private" virt="non-virtual"><scope>rogue::Logging</scope><name>intLog</name></member>
+      <member refid="classrogue_1_1Logging_1a54044b5c47064c6779bd4ac6f93bfcb2" prot="private" virt="non-virtual"><scope>rogue::Logging</scope><name>level_</name></member>
+      <member refid="classrogue_1_1Logging_1a95d6ea6156ce493d6530a25330a90479" prot="private" virt="non-virtual"><scope>rogue::Logging</scope><name>levelMtx_</name></member>
+      <member refid="classrogue_1_1Logging_1ac8de68ce385f1d8c76ff59a62815871e" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>log</name></member>
+      <member refid="classrogue_1_1Logging_1a3ad41b157deb3f273bd165a791683594" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Logging</name></member>
+      <member refid="classrogue_1_1Logging_1a7ccc389b1db9a20d4b5085533600350b" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>logThreadId</name></member>
+      <member refid="classrogue_1_1Logging_1a46fb804237201ac641e3480f5aa2321e" prot="private" virt="non-virtual"><scope>rogue::Logging</scope><name>name_</name></member>
+      <member refid="classrogue_1_1Logging_1a32a04dfc80bbe649dc92b7d0fc52708a" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>setFilter</name></member>
+      <member refid="classrogue_1_1Logging_1aba00817558d5ae9c6d3e6c265ad148b0" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>setLevel</name></member>
+      <member refid="classrogue_1_1Logging_1a1eb8cdc2bfec70d9102f02c5168ef9e4" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1Logging_1a47061fd0b1174868ccee8cd1830026b0" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Thread</name></member>
+      <member refid="classrogue_1_1Logging_1aadd1a774af585341899630409c6b8161" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>warning</name></member>
+      <member refid="classrogue_1_1Logging_1adba5171ba919a7e011cdb080431f4df2" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>Warning</name></member>
+      <member refid="classrogue_1_1Logging_1a2a0ec08a9e0777ad573aee4b52e9ebbd" prot="public" virt="non-virtual"><scope>rogue::Logging</scope><name>~Logging</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

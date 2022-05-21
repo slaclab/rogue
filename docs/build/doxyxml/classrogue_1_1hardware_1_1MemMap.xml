@@ -1,0 +1,345 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1hardware_1_1MemMap" kind="class" language="C++" prot="public">
+    <compoundname>rogue::hardware::MemMap</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::memory::Slave</basecompoundref>
+    <includes refid="MemMap_8h" local="no">MemMap.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1af6c65565b775e21b667c251568cef645" prot="private" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t rogue::hardware::MemMap::fd_</definition>
+        <argsstring></argsstring>
+        <name>fd_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1hardware_1_1MemMap" kindref="compound">MemMap</ref> file descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="40" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1ad4879628537a5b329757d68dd7f6ee73" prot="private" static="no" mutable="no">
+        <type>uint64_t</type>
+        <definition>uint64_t rogue::hardware::MemMap::size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+<para>Size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="43" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1a6bd57aa5960bcbb8ec08055836bace6c" prot="private" static="no" mutable="no">
+        <type>uint8_t *</type>
+        <definition>volatile uint8_t* rogue::hardware::MemMap::map_</definition>
+        <argsstring></argsstring>
+        <name>map_</name>
+        <briefdescription>
+<para>Memory Mapped Pointer. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="46" column="31" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1a57348969950f9f1a92b0760d35d3f049" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::hardware::MemMap::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="49" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1a48754e4d26864ec9dcce4fd7f75799e4" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::hardware::MemMap::thread_</definition>
+        <argsstring></argsstring>
+        <name>thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="51" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1a4a28874705a13806664cad1f1a5f5c0a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::hardware::MemMap::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="52" column="18" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1MemMap_1a33e98574e66da104fb16ca3336cc0cec" prot="private" static="no" mutable="no">
+        <type><ref refid="classrogue_1_1Queue" kindref="compound">rogue::Queue</ref>&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt; &gt;</type>
+        <definition>rogue::Queue&lt;std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt; &gt; rogue::hardware::MemMap::queue_</definition>
+        <argsstring></argsstring>
+        <name>queue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="58" column="26" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1a415674dee81b5f617ff0ab146fac7761" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::MemMap::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+<para>Thread background. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="55" column="18"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1aad75cd246f3d0a31178187375f011943" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1MemMap" kindref="compound">rogue::hardware::MemMap</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::hardware::MemMap&gt; rogue::hardware::MemMap::create</definition>
+        <argsstring>(uint64_t base, uint32_t size)</argsstring>
+        <name>create</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>base</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Class factory which returns a MemMapPtr to a newly created <ref refid="classrogue_1_1hardware_1_1MemMap" kindref="compound">MemMap</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to Python as <ref refid="classrogue_1_1hardware_1_1MemMap" kindref="compound">rogue.hardware.MemMap()</ref> <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>base</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Base address to map </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>size</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Size of address space to map </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1hardware_1_1MemMap" kindref="compound">MemMap</ref> pointer (MemMapPtr) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="68" column="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1a820f47a00817469cc0c76b42ab949e0c" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::hardware::MemMap::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="71" column="25"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1a5a2e1331aff728a874a141d0941ebf31" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::hardware::MemMap::MemMap</definition>
+        <argsstring>(uint64_t base, uint32_t size)</argsstring>
+        <name>MemMap</name>
+        <param>
+          <type>uint64_t</type>
+          <declname>base</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="74" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1ae580af5fbc98022db95f75e90a2fc472" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::hardware::MemMap::~MemMap</definition>
+        <argsstring>()</argsstring>
+        <name>~MemMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="77" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1a5b418a9ac5e1dc9ceb0bc63635efaf40" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::MemMap::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a22bce0d8c63db18645e193f27b4eca5d">stop</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="80" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1MemMap_1a49451bcb4e20bf4238828ae332d07b3f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::MemMap::doTransaction</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; tran)</argsstring>
+        <name>doTransaction</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a43c5e62dd732c5ecff7dadb0a5a8bfa2">doTransaction</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>tran</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="83" column="18"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Raw Memory Map Class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class provides a bridge between the Rogue memory interface and a standard Linux /dev/map interface. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::hardware::MemMap</label>
+        <link refid="classrogue_1_1hardware_1_1MemMap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>rogue::hardware::MemMap</label>
+        <link refid="classrogue_1_1hardware_1_1MemMap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" line="37" column="59" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h" bodystart="37" bodyend="84"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a97ac9ad623a4920c6ebf58bc18e7ec7f" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>addTransaction</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1aad75cd246f3d0a31178187375f011943" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a2cfe1d611cc9cb725acf98b9dd78bf21" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::memory::Slave::"><scope>rogue::hardware::MemMap</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a435848e7e20020e67ec76a9ef157b990" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>doAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aaa9fdbb5cc041f56343344e1c32db679" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>doMaxAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1ae690bb54ec073edbd751d8362617a7f9" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>doMinAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1af5ce81bef7de4de74c1e3cede21d8919" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>doSlaveId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a46c858794b25f486c4909cbbef5df5f4" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>doSlaveName</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a49451bcb4e20bf4238828ae332d07b3f" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>doTransaction</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1af6c65565b775e21b667c251568cef645" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>fd_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a4bf250f6776be14c6d8ed924807eba82" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>getTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a470bd4cecb4444fd59b553825cd67129" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>id</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a57348969950f9f1a92b0760d35d3f049" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aa934540c189dc41ee19f7124e7526f85" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a6bd57aa5960bcbb8ec08055836bace6c" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>map_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a7214283697192866d04f4fd84e6952d5" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>max</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a5a2e1331aff728a874a141d0941ebf31" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>MemMap</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1afcc3624c3622839e96cf5861593c255c" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>min</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a282550bb08cdd6f5e06db13835bd5f6f" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>name</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a633b040c861b41682af1b8f549223631" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a33e98574e66da104fb16ca3336cc0cec" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>queue_</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a415674dee81b5f617ff0ab146fac7761" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1adabad1d0e8d40325ca6dfeeeb6df19ac" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>setName</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a820f47a00817469cc0c76b42ab949e0c" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1ad4879628537a5b329757d68dd7f6ee73" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>size_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a8957d9bc3be4fd66028d296f03a2db94" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a5b418a9ac5e1dc9ceb0bc63635efaf40" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>stop</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a48754e4d26864ec9dcce4fd7f75799e4" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>thread_</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1a4a28874705a13806664cad1f1a5f5c0a" prot="private" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1hardware_1_1MemMap_1ae580af5fbc98022db95f75e90a2fc472" prot="public" virt="non-virtual"><scope>rogue::hardware::MemMap</scope><name>~MemMap</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a0b97756687857c4825e02b7538eb4ae5" prot="public" virt="virtual"><scope>rogue::hardware::MemMap</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

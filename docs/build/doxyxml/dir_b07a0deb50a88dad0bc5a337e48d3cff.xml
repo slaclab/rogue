@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_b07a0deb50a88dad0bc5a337e48d3cff" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue</compoundname>
+    <innerdir refid="dir_7c787b6219ce28fdb779ada2087be948">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware</innerdir>
+    <innerdir refid="dir_fec1f2720b1031b397fa94d4f16e5b04">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces</innerdir>
+    <innerdir refid="dir_ad0849b33cec7bfd9a3ed1e0cc9ca83f">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols</innerdir>
+    <innerdir refid="dir_6d012e480538a60ef41438807a430480">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities</innerdir>
+    <innerfile refid="EnableSharedFromThis_8h">EnableSharedFromThis.h</innerfile>
+    <innerfile refid="GeneralError_8h">GeneralError.h</innerfile>
+    <innerfile refid="GilRelease_8h">GilRelease.h</innerfile>
+    <innerfile refid="Helpers_8h">Helpers.h</innerfile>
+    <innerfile refid="LibraryBase_8h">LibraryBase.h</innerfile>
+    <innerfile refid="Logging_8h">Logging.h</innerfile>
+    <innerfile refid="module_8h">module.h</innerfile>
+    <innerfile refid="Queue_8h">Queue.h</innerfile>
+    <innerfile refid="ScopedGil_8h">ScopedGil.h</innerfile>
+    <innerfile refid="Version_8h">Version.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/"/>
+  </compounddef>
+</doxygen>

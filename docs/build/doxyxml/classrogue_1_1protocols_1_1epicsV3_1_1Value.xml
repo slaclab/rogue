@@ -1,0 +1,955 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1protocols_1_1epicsV3_1_1Value" kind="class" language="C++" prot="public">
+    <compoundname>rogue::protocols::epicsV3::Value</compoundname>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1epicsV3_1_1Variable" prot="public" virt="non-virtual">rogue::protocols::epicsV3::Variable</derivedcompoundref>
+    <includes refid="Value_8h" local="no">Value.h</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1a2b7f392979dd919fe8800a5fb978ae" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::protocols::epicsV3::Value::epicsName_</definition>
+        <argsstring></argsstring>
+        <name>epicsName_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="43" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a82ee83dd7caeca1f6a599f6c69490616" prot="protected" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::protocols::epicsV3::Value::typeStr_</definition>
+        <argsstring></argsstring>
+        <name>typeStr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="44" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a66712cd2c6d57f279459e7be73e11701" prot="protected" static="no" mutable="no">
+        <type>aitEnum</type>
+        <definition>aitEnum rogue::protocols::epicsV3::Value::epicsType_</definition>
+        <argsstring></argsstring>
+        <name>epicsType_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="45" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a3acf1697a938a21d7fe05c640f803726" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::pValue_</definition>
+        <argsstring></argsstring>
+        <name>pValue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="46" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a12ae7b2471cc66ffd4e8e8e98d7173c2" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::epicsV3::Value::max_</definition>
+        <argsstring></argsstring>
+        <name>max_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="47" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a396adc86bda7f32c123c15e8b1a79d45" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::epicsV3::Value::size_</definition>
+        <argsstring></argsstring>
+        <name>size_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="48" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04ccd04557d625b8777c4cd129008f27" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::epicsV3::Value::fSize_</definition>
+        <argsstring></argsstring>
+        <name>fSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="49" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a175436a007a0ca5082ee1160ec529f17" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::protocols::epicsV3::Value::array_</definition>
+        <argsstring></argsstring>
+        <name>array_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="50" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a9809624e8aa27312857eaceeb5800006" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::protocols::epicsV3::Value::isString_</definition>
+        <argsstring></argsstring>
+        <name>isString_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="51" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03878faabf2595a0d3bc947633c7e923" prot="protected" static="no" mutable="no">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; rogue::protocols::epicsV3::Value::enums_</definition>
+        <argsstring></argsstring>
+        <name>enums_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="53" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2910a88acf4f7dc0fc144ee8edc40ca" prot="protected" static="no" mutable="no">
+        <type><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" kindref="compound">rogue::protocols::epicsV3::Pv</ref> *</type>
+        <definition>rogue::protocols::epicsV3::Pv* rogue::protocols::epicsV3::Value::pv_</definition>
+        <argsstring></argsstring>
+        <name>pv_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="54" column="47" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04f7706bb21c1594b4cc5d4296cf4a62" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::protocols::epicsV3::Value::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="56" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae7c649a8cfc3fa7fad45dd157e66a4ad" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::units_</definition>
+        <argsstring></argsstring>
+        <name>units_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="58" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1add145e3bf832d7aadba8fa388b668cf9" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::precision_</definition>
+        <argsstring></argsstring>
+        <name>precision_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="59" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1afbd34e915d2be2943a26c4d0d60573be" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::hopr_</definition>
+        <argsstring></argsstring>
+        <name>hopr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="60" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1ed79f735ea5e8ddebfd27219e9a4157" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::lopr_</definition>
+        <argsstring></argsstring>
+        <name>lopr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="61" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0e8a72abb165ec761c07222442718c0c" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::highAlarm_</definition>
+        <argsstring></argsstring>
+        <name>highAlarm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="62" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7c0aa2e7631a9e5e3488c562797cbbf1" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::highWarning_</definition>
+        <argsstring></argsstring>
+        <name>highWarning_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="63" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1abf72636f8e34d9171232ffd7eeac051a" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::lowWarning_</definition>
+        <argsstring></argsstring>
+        <name>lowWarning_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="64" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae3c9dfb647db7533b688b3dd5f20e096" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::lowAlarm_</definition>
+        <argsstring></argsstring>
+        <name>lowAlarm_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="65" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac14044718fa0cd98158b7b292c78c20d" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::highCtrlLimit_</definition>
+        <argsstring></argsstring>
+        <name>highCtrlLimit_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="66" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7666fe7eaf5a9164219c948fb1a275fb" prot="protected" static="no" mutable="no">
+        <type>gdd *</type>
+        <definition>gdd* rogue::protocols::epicsV3::Value::lowCtrlLimit_</definition>
+        <argsstring></argsstring>
+        <name>lowCtrlLimit_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="67" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5d34804e91f3b78122fa47ee00dbb0a6" prot="protected" static="no" mutable="no">
+        <type>gddAppFuncTable&lt; <ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value" kindref="compound">rogue::protocols::epicsV3::Value</ref> &gt;</type>
+        <definition>gddAppFuncTable&lt;rogue::protocols::epicsV3::Value&gt; rogue::protocols::epicsV3::Value::funcTable_</definition>
+        <argsstring></argsstring>
+        <name>funcTable_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="69" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6dfe5bc63bad685a66b86b947338dd9d" prot="protected" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::protocols::epicsV3::Value::mtx_</definition>
+        <argsstring></argsstring>
+        <name>mtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="71" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="protected-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a05aecfc856c3a924c18320622e31bd07" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::epicsV3::Value::initGdd</definition>
+        <argsstring>(std::string typeStr, bool isEnum, uint32_t count, bool forceStr)</argsstring>
+        <name>initGdd</name>
+        <param>
+          <type>std::string</type>
+          <declname>typeStr</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>isEnum</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>count</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>forceStr</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="73" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2ac469fe77298f490aae762be3523f9" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::epicsV3::Value::updated</definition>
+        <argsstring>()</argsstring>
+        <name>updated</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="75" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03e1aec9cbba93280c55b2633aeca262" prot="protected" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::epicsV3::Value::revEnum</definition>
+        <argsstring>(std::string val)</argsstring>
+        <name>revEnum</name>
+        <param>
+          <type>std::string</type>
+          <declname>val</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="77" column="25"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0d5bf502296ecb70510d68a663dd3bdf" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::protocols::epicsV3::Value::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="82" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1acbc2958417626ca5c8e0ddc3b03b7bec" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::epicsV3::Value::Value</definition>
+        <argsstring>(std::string epicsName)</argsstring>
+        <name>Value</name>
+        <param>
+          <type>std::string</type>
+          <declname>epicsName</declname>
+        </param>
+        <briefdescription>
+<para>Class creation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="85" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a11cd5902f2fb7a91e80d0c3e30dccc07" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::epicsV3::Value::~Value</definition>
+        <argsstring>()</argsstring>
+        <name>~Value</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="87" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7eb57d6c86de09c845dd9e7bd63b8e30" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string rogue::protocols::epicsV3::Value::epicsName</definition>
+        <argsstring>()</argsstring>
+        <name>epicsName</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="89" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab0dba925bddaf146b7ad94beffa464ae" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool rogue::protocols::epicsV3::Value::valueSet</definition>
+        <argsstring>()</argsstring>
+        <name>valueSet</name>
+        <reimplementedby refid="classrogue_1_1protocols_1_1epicsV3_1_1Variable_1a27794f3ff52145c7e4fd9caa56b20057">valueSet</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="91" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac255f8ddb504de3b760f0fec1d5eb0bb" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>bool</type>
+        <definition>virtual bool rogue::protocols::epicsV3::Value::valueGet</definition>
+        <argsstring>()</argsstring>
+        <name>valueGet</name>
+        <reimplementedby refid="classrogue_1_1protocols_1_1epicsV3_1_1Variable_1a52e40c7959126fbeabba5c34ebe489bc">valueGet</reimplementedby>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="93" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a80fdc63636e79d8fbffe19286e106d50" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::epicsV3::Value::setPv</definition>
+        <argsstring>(rogue::protocols::epicsV3::Pv *pv)</argsstring>
+        <name>setPv</name>
+        <param>
+          <type><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" kindref="compound">rogue::protocols::epicsV3::Pv</ref> *</type>
+          <declname>pv</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="95" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1af0a030e267f086e7c6ac0781b7964530" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" kindref="compound">rogue::protocols::epicsV3::Pv</ref> *</type>
+        <definition>rogue::protocols::epicsV3::Pv* rogue::protocols::epicsV3::Value::getPv</definition>
+        <argsstring>()</argsstring>
+        <name>getPv</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="97" column="47"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1acee697f706c7e9b77c8b1d35feeb7aca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>caStatus</type>
+        <definition>caStatus rogue::protocols::epicsV3::Value::read</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>read</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="102" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae1ef6da5684cd6ffa3dbe0f27af7a42b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readValue</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readValue</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="104" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5cf06e834209c0a2c2a1c7e0af6e79d5" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>caStatus</type>
+        <definition>caStatus rogue::protocols::epicsV3::Value::write</definition>
+        <argsstring>(const gdd &amp;value)</argsstring>
+        <name>write</name>
+        <param>
+          <type>const gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="106" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6825b9a5bd89c397cc63233708724896" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>aitEnum</type>
+        <definition>aitEnum rogue::protocols::epicsV3::Value::bestExternalType</definition>
+        <argsstring>()</argsstring>
+        <name>bestExternalType</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="108" column="24"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0a84b4a44a4fcd70911ec0c07c6f8eed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>unsigned</type>
+        <definition>unsigned rogue::protocols::epicsV3::Value::maxDimension</definition>
+        <argsstring>()</argsstring>
+        <name>maxDimension</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="110" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a44f6754e808121dca6b9ab52a7d6628d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>aitIndex</type>
+        <definition>aitIndex rogue::protocols::epicsV3::Value::maxBound</definition>
+        <argsstring>(unsigned dimension)</argsstring>
+        <name>maxBound</name>
+        <param>
+          <type>unsigned</type>
+          <declname>dimension</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="112" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a06d377c5d0deb7c6d8f3ec3cc859cc66" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readStatus</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readStatus</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="114" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1aa457add8c686fae769dd971045803af0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readSeverity</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readSeverity</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="116" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1af5301cb84d1380040842bb42fae47e1b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readPrecision</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readPrecision</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="118" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a09a23c560301e1a878593788077c123a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readHopr</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readHopr</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="120" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a83b5cb3c9b83ea0e8d753b327405b168" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readLopr</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readLopr</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="122" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a8d18a5af7578ffe8f13e286785c53223" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readHighAlarm</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readHighAlarm</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="124" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae8b9e84cf806a0dadd95b2441c10de3e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readHighWarn</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readHighWarn</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="126" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1aca888b5a0d1e0b5781a24ff4b0b9f845" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readLowWarn</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readLowWarn</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="128" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac2e34c643275d1af817f4a21f2a8cfe0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readLowAlarm</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readLowAlarm</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="130" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1bb28a147155c7f42ebdfd408a61c0f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readHighCtrl</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readHighCtrl</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="132" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab4bacdecb7c60e991576b6725072806b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readLowCtrl</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readLowCtrl</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="134" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7216f298dcf09ad4c33b69189b3c5318" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readUnits</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readUnits</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="136" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ad3bac61dc336b1fdec0e0c0f3aa32913" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>gddAppFuncTableStatus</type>
+        <definition>gddAppFuncTableStatus rogue::protocols::epicsV3::Value::readEnums</definition>
+        <argsstring>(gdd &amp;value)</argsstring>
+        <name>readEnums</name>
+        <param>
+          <type>gdd &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="138" column="38"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::protocols::epicsV3::Value</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Value"/>
+      </node>
+      <node id="2">
+        <label>rogue::protocols::epicsV3::Variable</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Variable"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::protocols::epicsV3::Command</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Command"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>rogue::protocols::epicsV3::Value</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Value"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>mtx_</edgelabel>
+        </childnode>
+        <childnode refid="3" relation="usage">
+          <edgelabel>pv_</edgelabel>
+        </childnode>
+        <childnode refid="5" relation="usage">
+          <edgelabel>epicsName_</edgelabel>
+          <edgelabel>typeStr_</edgelabel>
+        </childnode>
+        <childnode refid="7" relation="usage">
+          <edgelabel>log_</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>enums_</edgelabel>
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::protocols::epicsV3::Pv</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>casPV</label>
+      </node>
+      <node id="6">
+        <label>std::basic_string&lt; char &gt;</label>
+      </node>
+      <node id="2">
+        <label>std::mutex</label>
+      </node>
+      <node id="9">
+        <label>std::vector&lt; std::string &gt;</label>
+        <childnode refid="5" relation="usage">
+          <edgelabel>elements</edgelabel>
+        </childnode>
+      </node>
+      <node id="7">
+        <label>std::shared_ptr&lt; rogue::Logging &gt;</label>
+        <childnode refid="8" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::Logging</label>
+        <link refid="classrogue_1_1Logging"/>
+      </node>
+      <node id="5">
+        <label>std::string</label>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="40" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="40" bodyend="140"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a175436a007a0ca5082ee1160ec529f17" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>array_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6825b9a5bd89c397cc63233708724896" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>bestExternalType</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03878faabf2595a0d3bc947633c7e923" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>enums_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7eb57d6c86de09c845dd9e7bd63b8e30" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>epicsName</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1a2b7f392979dd919fe8800a5fb978ae" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>epicsName_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a66712cd2c6d57f279459e7be73e11701" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>epicsType_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04ccd04557d625b8777c4cd129008f27" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>fSize_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5d34804e91f3b78122fa47ee00dbb0a6" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>funcTable_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1af0a030e267f086e7c6ac0781b7964530" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>getPv</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0e8a72abb165ec761c07222442718c0c" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>highAlarm_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac14044718fa0cd98158b7b292c78c20d" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>highCtrlLimit_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7c0aa2e7631a9e5e3488c562797cbbf1" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>highWarning_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1afbd34e915d2be2943a26c4d0d60573be" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>hopr_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a05aecfc856c3a924c18320622e31bd07" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>initGdd</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a9809624e8aa27312857eaceeb5800006" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>isString_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04f7706bb21c1594b4cc5d4296cf4a62" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>log_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1ed79f735ea5e8ddebfd27219e9a4157" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>lopr_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae3c9dfb647db7533b688b3dd5f20e096" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>lowAlarm_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7666fe7eaf5a9164219c948fb1a275fb" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>lowCtrlLimit_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1abf72636f8e34d9171232ffd7eeac051a" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>lowWarning_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a12ae7b2471cc66ffd4e8e8e98d7173c2" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>max_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a44f6754e808121dca6b9ab52a7d6628d" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>maxBound</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0a84b4a44a4fcd70911ec0c07c6f8eed" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>maxDimension</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6dfe5bc63bad685a66b86b947338dd9d" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>mtx_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1add145e3bf832d7aadba8fa388b668cf9" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>precision_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2910a88acf4f7dc0fc144ee8edc40ca" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>pv_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a3acf1697a938a21d7fe05c640f803726" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>pValue_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1acee697f706c7e9b77c8b1d35feeb7aca" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>read</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ad3bac61dc336b1fdec0e0c0f3aa32913" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readEnums</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a8d18a5af7578ffe8f13e286785c53223" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readHighAlarm</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1bb28a147155c7f42ebdfd408a61c0f7" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readHighCtrl</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae8b9e84cf806a0dadd95b2441c10de3e" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readHighWarn</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a09a23c560301e1a878593788077c123a" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readHopr</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a83b5cb3c9b83ea0e8d753b327405b168" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readLopr</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac2e34c643275d1af817f4a21f2a8cfe0" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readLowAlarm</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab4bacdecb7c60e991576b6725072806b" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readLowCtrl</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1aca888b5a0d1e0b5781a24ff4b0b9f845" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readLowWarn</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1af5301cb84d1380040842bb42fae47e1b" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readPrecision</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1aa457add8c686fae769dd971045803af0" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readSeverity</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a06d377c5d0deb7c6d8f3ec3cc859cc66" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readStatus</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7216f298dcf09ad4c33b69189b3c5318" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readUnits</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae1ef6da5684cd6ffa3dbe0f27af7a42b" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>readValue</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03e1aec9cbba93280c55b2633aeca262" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>revEnum</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a80fdc63636e79d8fbffe19286e106d50" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>setPv</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0d5bf502296ecb70510d68a663dd3bdf" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a396adc86bda7f32c123c15e8b1a79d45" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>size_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a82ee83dd7caeca1f6a599f6c69490616" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>typeStr_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae7c649a8cfc3fa7fad45dd157e66a4ad" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>units_</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2ac469fe77298f490aae762be3523f9" prot="protected" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>updated</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1acbc2958417626ca5c8e0ddc3b03b7bec" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>Value</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac255f8ddb504de3b760f0fec1d5eb0bb" prot="public" virt="virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>valueGet</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab0dba925bddaf146b7ad94beffa464ae" prot="public" virt="virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>valueSet</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5cf06e834209c0a2c2a1c7e0af6e79d5" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>write</name></member>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a11cd5902f2fb7a91e80d0c3e30dccc07" prot="public" virt="non-virtual"><scope>rogue::protocols::epicsV3::Value</scope><name>~Value</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

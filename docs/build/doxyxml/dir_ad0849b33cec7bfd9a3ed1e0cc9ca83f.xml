@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_ad0849b33cec7bfd9a3ed1e0cc9ca83f" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols</compoundname>
+    <innerdir refid="dir_672cdba46f43dd35265887345f5d8293">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher</innerdir>
+    <innerdir refid="dir_9be0849b97bc7ac010336307ec203f47">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3</innerdir>
+    <innerdir refid="dir_59cb3434242d98429074152e07405cd7">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer</innerdir>
+    <innerdir refid="dir_fe4a46994a67d46614d4147fdfa2eb40">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi</innerdir>
+    <innerdir refid="dir_8baa8fbe57a24edae81f122a46999c5b">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp</innerdir>
+    <innerdir refid="dir_63e5e5a7d622c3951f3ff4410bfa7215">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/udp</innerdir>
+    <innerfile refid="protocols_2module_8h">module.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/"/>
+  </compounddef>
+</doxygen>

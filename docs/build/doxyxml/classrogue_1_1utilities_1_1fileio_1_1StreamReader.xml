@@ -1,0 +1,399 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1utilities_1_1fileio_1_1StreamReader" kind="class" language="C++" prot="public">
+    <compoundname>rogue::utilities::fileio::StreamReader</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Master" prot="public" virt="non-virtual">rogue::interfaces::stream::Master</basecompoundref>
+    <includes refid="StreamReader_8h" local="no">StreamReader.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a4684f8573d60a755e59afcb67fce3b6a" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::utilities::fileio::StreamReader::baseName_</definition>
+        <argsstring></argsstring>
+        <name>baseName_</name>
+        <briefdescription>
+<para>Base file name. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="35" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a5adc83b60937cb6a59c32d1bd5b997a8" prot="private" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t rogue::utilities::fileio::StreamReader::fd_</definition>
+        <argsstring></argsstring>
+        <name>fd_</name>
+        <briefdescription>
+<para>File descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="38" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1afc946423caf65fbfe894671f022a8c1d" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::fileio::StreamReader::fdIdx_</definition>
+        <argsstring></argsstring>
+        <name>fdIdx_</name>
+        <briefdescription>
+<para>File index. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="41" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9bd919207582572e3e8131bc5c41d243" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::fileio::StreamReader::active_</definition>
+        <argsstring></argsstring>
+        <name>active_</name>
+        <briefdescription>
+<para>Active. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="44" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a6b88f12d7353fc6ad014b2065bb6dbe1" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::utilities::fileio::StreamReader::readThread_</definition>
+        <argsstring></argsstring>
+        <name>readThread_</name>
+        <briefdescription>
+<para>Read thread. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="47" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a51d83df51367ade25db6576be70ed520" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::fileio::StreamReader::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="48" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a15b9cb11c8b302131f422e90ec95052b" prot="private" static="no" mutable="no">
+        <type>std::condition_variable</type>
+        <definition>std::condition_variable rogue::utilities::fileio::StreamReader::cond_</definition>
+        <argsstring></argsstring>
+        <name>cond_</name>
+        <briefdescription>
+<para>Active condition. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="60" column="40" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a4c36de41ebd77b54d27a1c384f329166" prot="private" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::utilities::fileio::StreamReader::mtx_</definition>
+        <argsstring></argsstring>
+        <name>mtx_</name>
+        <briefdescription>
+<para>Active lock. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="63" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1aa6aa542d7f830fc044636078f47464f2" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::fileio::StreamReader::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+<para>Thread background. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="51" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a0e18c15acfac665d29c3d1c06d00feb4" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::utilities::fileio::StreamReader::nextFile</definition>
+        <argsstring>()</argsstring>
+        <name>nextFile</name>
+        <briefdescription>
+<para>Open file. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="54" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a019dad13114bc91dc183b54568503678" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::fileio::StreamReader::intClose</definition>
+        <argsstring>()</argsstring>
+        <name>intClose</name>
+        <briefdescription>
+<para>Internal close. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="57" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a196544100e0659dc1521e95dfff24364" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader" kindref="compound">rogue::utilities::fileio::StreamReader</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::utilities::fileio::StreamReader&gt; rogue::utilities::fileio::StreamReader::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+<para>Class creation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="68" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a5013121a68a8a9b782dca6bfa245cd80" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::utilities::fileio::StreamReader::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="71" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ab0acb81c3e07de450f1319d6d585347f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::utilities::fileio::StreamReader::StreamReader</definition>
+        <argsstring>()</argsstring>
+        <name>StreamReader</name>
+        <briefdescription>
+<para>Creator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="74" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a2b14863975f0d7acaf00e6446d174de8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::utilities::fileio::StreamReader::~StreamReader</definition>
+        <argsstring>()</argsstring>
+        <name>~StreamReader</name>
+        <briefdescription>
+<para>Deconstructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="77" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a8282e867ca83ec89181a03cf1fdb2009" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::fileio::StreamReader::open</definition>
+        <argsstring>(std::string file)</argsstring>
+        <name>open</name>
+        <param>
+          <type>std::string</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+<para>Read from the data file. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="80" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a443b4f30a5b4e6a97c16afd22ca27355" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::fileio::StreamReader::close</definition>
+        <argsstring>()</argsstring>
+        <name>close</name>
+        <briefdescription>
+<para>Close and stop thread. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="83" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9290704af6468aa0707d90a5d9ef8f7d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::utilities::fileio::StreamReader::isOpen</definition>
+        <argsstring>()</argsstring>
+        <name>isOpen</name>
+        <briefdescription>
+<para>Get open status. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="86" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ababff3960108dd630cffd9cd3abce191" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::fileio::StreamReader::closeWait</definition>
+        <argsstring>()</argsstring>
+        <name>closeWait</name>
+        <briefdescription>
+<para>Close when done. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="89" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1af310a52ac05d8a0b58518961894625de" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::utilities::fileio::StreamReader::isActive</definition>
+        <argsstring>()</argsstring>
+        <name>isActive</name>
+        <briefdescription>
+<para>Return true while reading. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="92" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Stream writer central class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::utilities::fileio::StreamReader</label>
+        <link refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::utilities::fileio::StreamReader</label>
+        <link refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" line="32" column="69" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamReader.h" bodystart="32" bodyend="93"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9bd919207582572e3e8131bc5c41d243" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>active_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a4454d19c72c99a76b8b446fb6afa72e2" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>addSlave</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a4684f8573d60a755e59afcb67fce3b6a" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>baseName_</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a443b4f30a5b4e6a97c16afd22ca27355" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>close</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ababff3960108dd630cffd9cd3abce191" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>closeWait</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a15b9cb11c8b302131f422e90ec95052b" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>cond_</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a196544100e0659dc1521e95dfff24364" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a80fb7808644726ddca72e8e196477229" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>ensureSingleBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a913f40b8d390d1b2f26fa0aecfea34eb" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>equalsPy</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a5adc83b60937cb6a59c32d1bd5b997a8" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>fd_</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1afc946423caf65fbfe894671f022a8c1d" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>fdIdx_</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a019dad13114bc91dc183b54568503678" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>intClose</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1af310a52ac05d8a0b58518961894625de" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>isActive</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a9290704af6468aa0707d90a5d9ef8f7d" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>isOpen</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af6f5b686d275b5545ac7feefceab8dd3" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>Master</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a4c36de41ebd77b54d27a1c384f329166" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>mtx_</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a0e18c15acfac665d29c3d1c06d00feb4" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>nextFile</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a8282e867ca83ec89181a03cf1fdb2009" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>open</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a76dbb1a62ce29ae6d130e11714a37f2f" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>operator==</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a3c410af1f0beab25864711c1be54b336" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a6b88f12d7353fc6ad014b2065bb6dbe1" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>readThread_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>reqFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a98f9088c1a19f7875001c8f782df0265" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1aa6aa542d7f830fc044636078f47464f2" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>sendFrame</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a5013121a68a8a9b782dca6bfa245cd80" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a69faa639115fd3108de75da01b802720" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>slaveCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a212216679fa253e58bda52b621a66dd5" prot="public" virt="virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>stop</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1ab0acb81c3e07de450f1319d6d585347f" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>StreamReader</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a51d83df51367ade25db6576be70ed520" prot="private" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af391073d7d1e1125e9563991de0b0991" prot="public" virt="virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>~Master</name></member>
+      <member refid="classrogue_1_1utilities_1_1fileio_1_1StreamReader_1a2b14863975f0d7acaf00e6446d174de8" prot="public" virt="non-virtual"><scope>rogue::utilities::fileio::StreamReader</scope><name>~StreamReader</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

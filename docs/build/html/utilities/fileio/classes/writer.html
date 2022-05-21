@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StreamWriter &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="StreamWriterChannel" href="channel.html" />
+    <link rel="prev" title="File Operation Classes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Utilities</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">File I/O Utilities</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../writing.html">Writing Frames To A File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reading.html">Reading Frames From A File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../custom.html">Custom Writers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../python_reader.html">Python File Reader</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">File Operation Classes</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">StreamWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="channel.html">StreamWriterChannel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="reader.html">StreamReader</a></li>
+<li class="toctree-l4"><a class="reference internal" href="legacy_writer.html">LegacyStreamWriter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="legacy_reader.html">LegacyStreamReader</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../prbs/index.html">PRBS Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../compression/index.html">Compression Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Utilities</a> &raquo;</li>
+          <li><a href="../index.html">File I/O Utilities</a> &raquo;</li>
+          <li><a href="index.html">File Operation Classes</a> &raquo;</li>
+      <li>StreamWriter</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/utilities/fileio/classes/writer.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="streamwriter">
+<span id="utilities-fileio-writer"></span><h1>StreamWriter<a class="headerlink" href="#streamwriter" title="Permalink to this headline"></a></h1>
+<p>The StreamWriter class is the utilitiy for writing Rogue data to a file. The writer class
+can accept streams from multiple sources, with the <a class="reference internal" href="channel.html#utilities-fileio-writer-channel"><span class="std std-ref">StreamWriterChannel</span></a> serving
+as the interface to each incoming stream. This class can be sub-classed to support custom formats,
+by overriding the writeFile method.</p>
+<p>The default format is the following:</p>
+<p>The data file is a written as a series of banks, each associated with a written Frame.
+Each bank has a channel and frame flags. The channel is per source and the
+lower 24 bits of the incoming Frame flags are used as the flags.</p>
+<p>The bank is proceeded by 2 - 32-bit headers to indicate bank information and length:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="nl">headerA</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="mi">31</span><span class="o">:</span><span class="mi">0</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Length</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">block</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">bytes</span><span class="w"></span>
+<span class="nl">headerB</span><span class="p">:</span><span class="w"></span>
+<span class="w">   </span><span class="mi">31</span><span class="o">:</span><span class="mi">24</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Channel</span><span class="w"> </span><span class="n">ID</span><span class="w"></span>
+<span class="w">   </span><span class="mi">23</span><span class="o">:</span><span class="mi">16</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Frame</span><span class="w"> </span><span class="n">error</span><span class="w"></span>
+<span class="w">    </span><span class="mi">15</span><span class="o">:</span><span class="mi">0</span><span class="w">  </span><span class="o">=</span><span class="w"> </span><span class="n">Frame</span><span class="w"> </span><span class="n">flags</span><span class="w"></span>
+</pre></div>
+</div>
+<p>StreamWriter objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio15StreamWriterPtrE">
+<span id="_CPPv3N5rogue9utilities6fileio15StreamWriterPtrE"></span><span id="_CPPv2N5rogue9utilities6fileio15StreamWriterPtrE"></span><span id="rogue::utilities::fileio::StreamWriterPtr"></span><span class="target" id="namespacerogue_1_1utilities_1_1fileio_1a4b90c6ae29de8a4d1a9b55be235decf4"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities6fileio12StreamWriterE" title="rogue::utilities::fileio::StreamWriter"><span class="n"><span class="pre">StreamWriter</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">StreamWriterPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio15StreamWriterPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriterE">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriterE"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriterE"></span><span id="rogue::utilities::fileio::StreamWriter"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">StreamWriter</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities6fileio12StreamWriterE" title="rogue::utilities::fileio::StreamWriter"><span class="n"><span class="pre">StreamWriter</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriterE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stream writer central class. </p>
+<p>Subclassed by <a class="reference internal" href="legacy_writer.html#classrogue_1_1utilities_1_1fileio_1_1LegacyStreamWriter"><span class="std std-ref">rogue::utilities::fileio::LegacyStreamWriter</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter12StreamWriterEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter12StreamWriterEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter12StreamWriterEv"></span><span id="rogue::utilities::fileio::StreamWriter::StreamWriter"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a2d7044dbb3e0ffb28a1acdaecaeb35b4"></span><span class="sig-name descname"><span class="n"><span class="pre">StreamWriter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter12StreamWriterEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriterD0Ev">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriterD0Ev"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriterD0Ev"></span><span id="rogue::utilities::fileio::StreamWriter::~StreamWriter"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a864e32f1a1dc8b3612cdb0fe963aefd8"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">~StreamWriter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriterD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Deconstructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter4openENSt6stringE">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter4openENSt6stringE"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter4openENSt6stringE"></span><span id="rogue::utilities::fileio::StreamWriter::open__ss"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a821ac01ec9f2dc77497e27826a869c17"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">open</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">file</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter4openENSt6stringE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Open a data file. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter5closeEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter5closeEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter5closeEv"></span><span id="rogue::utilities::fileio::StreamWriter::close"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a2b136e732a5442717eaa5347acab4bf2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">close</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter5closeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Close a data file. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter6isOpenEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter6isOpenEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter6isOpenEv"></span><span id="rogue::utilities::fileio::StreamWriter::isOpen"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a2e66c4eaab26b80b11c9d3c15d45db17"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isOpen</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter6isOpenEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get open status. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter13setBufferSizeE8uint32_t">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter13setBufferSizeE8uint32_t"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter13setBufferSizeE8uint32_t"></span><span id="rogue::utilities::fileio::StreamWriter::setBufferSize__uint32_t"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a3100de1c83bd2855d7937fb8ea273ad1"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setBufferSize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter13setBufferSizeE8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set buffering size, 0 to disable. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter10setMaxSizeE8uint64_t">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter10setMaxSizeE8uint64_t"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter10setMaxSizeE8uint64_t"></span><span id="rogue::utilities::fileio::StreamWriter::setMaxSize__uint64_t"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a1d27bfc8cf2b3216179f405cfec0b6ec"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setMaxSize</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter10setMaxSizeE8uint64_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set max file size, 0 for unlimited. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter13setDropErrorsEb">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter13setDropErrorsEb"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter13setDropErrorsEb"></span><span id="rogue::utilities::fileio::StreamWriter::setDropErrors__b"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a57dc96be1a68158a22e08ebfe5f1c32b"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setDropErrors</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">drop</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter13setDropErrorsEb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set drop errors flag. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter10getChannelE7uint8_t">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter10getChannelE7uint8_t"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter10getChannelE7uint8_t"></span><span id="rogue::utilities::fileio::StreamWriter::getChannel__uint8_t"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1af5c4dbe850787cd507a028f11feb7996"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="channel.html#_CPPv4N5rogue9utilities6fileio19StreamWriterChannelE" title="rogue::utilities::fileio::StreamWriterChannel"><span class="n"><span class="pre">StreamWriterChannel</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getChannel</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">channel</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter10getChannelE7uint8_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get a port. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter12getTotalSizeEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter12getTotalSizeEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter12getTotalSizeEv"></span><span id="rogue::utilities::fileio::StreamWriter::getTotalSize"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a3e2464a1b50fc9cc3517628a4bbc2f41"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTotalSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter12getTotalSizeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get total file size. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter14getCurrentSizeEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter14getCurrentSizeEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter14getCurrentSizeEv"></span><span id="rogue::utilities::fileio::StreamWriter::getCurrentSize"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1acdef89a8feaf1bfb0d2292caabbe1b57"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getCurrentSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter14getCurrentSizeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get current file size. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter13getFrameCountEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter13getFrameCountEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter13getFrameCountEv"></span><span id="rogue::utilities::fileio::StreamWriter::getFrameCount"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1ac9a5d6d215f3b382f097271dc1df3df2"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getFrameCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter13getFrameCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get current frame count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter14waitFrameCountE8uint32_t8uint64_t">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter14waitFrameCountE8uint32_t8uint64_t"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter14waitFrameCountE8uint32_t8uint64_t"></span><span id="rogue::utilities::fileio::StreamWriter::waitFrameCount__uint32_t.uint64_t"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1a123d2a3aa007ad0d3f1bccdebfae375b"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">waitFrameCount</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span>, <span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter14waitFrameCountE8uint32_t8uint64_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Block until a frame count is reached. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter6createEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter6createEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter6createEv"></span><span id="rogue::utilities::fileio::StreamWriter::create"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1abb7d813c4ba73a7a8143f040206cddfa"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">utilities</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">fileio</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9utilities6fileio12StreamWriterE" title="rogue::utilities::fileio::StreamWriter"><span class="n"><span class="pre">StreamWriter</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter6createEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Class creation. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9utilities6fileio12StreamWriter12setup_pythonEv">
+<span id="_CPPv3N5rogue9utilities6fileio12StreamWriter12setup_pythonEv"></span><span id="_CPPv2N5rogue9utilities6fileio12StreamWriter12setup_pythonEv"></span><span id="rogue::utilities::fileio::StreamWriter::setup_python"></span><span class="target" id="classrogue_1_1utilities_1_1fileio_1_1StreamWriter_1aaa6e070e475cd83010c13250e23363a9"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9utilities6fileio12StreamWriter12setup_pythonEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="File Operation Classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="channel.html" class="btn btn-neutral float-right" title="StreamWriterChannel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

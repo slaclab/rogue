@@ -1,0 +1,189 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="ZmqServer_8h" kind="file" language="C++">
+    <compoundname>ZmqServer.h</compoundname>
+    <includes local="no">thread</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includes local="no">memory</includes>
+    <includes local="no">boost/python.hpp</includes>
+    <incdepgraph>
+      <node id="5">
+        <label>stdint.h</label>
+      </node>
+      <node id="8">
+        <label>string</label>
+      </node>
+      <node id="4">
+        <label>exception</label>
+      </node>
+      <node id="10">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="7">
+        <label>vector</label>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h</label>
+        <link refid="ZmqServer_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>mutex</label>
+      </node>
+      <node id="3">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>thread</label>
+      </node>
+      <node id="9">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classrogue_1_1interfaces_1_1ZmqServer" prot="public">rogue::interfaces::ZmqServer</innerclass>
+    <innerclass refid="classrogue_1_1interfaces_1_1ZmqServerWrap" prot="public">rogue::interfaces::ZmqServerWrap</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces">rogue::interfaces</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="ZmqServer_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Rogue ZMQ Control Interface </heading>
+</para>
+<para>File : <ref refid="ZmqServer_8h" kindref="compound">ZmqServer.h</ref> <heading level="2">Created : 2019-05-02 </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="24" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="17"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_ZMQ_SERVER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_ZMQ_SERVER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="ZmqServer_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">interfaces<sp/>{</highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="classrogue_1_1interfaces_1_1ZmqServer" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1ZmqServer" kindref="compound">ZmqServer</ref><sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>Context</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>zmqCtx_;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>publish<sp/>port</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>zmqPub_;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>response<sp/>port</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>zmqRep_;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Zeromq<sp/>string<sp/>response<sp/>port</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>zmqStr_;</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::thread<sp/><sp/><sp/>*<sp/>rThread_;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::thread<sp/><sp/><sp/>*<sp/>sThread_;</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>threadEn_;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>addr_;</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/>basePort_;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/>log_;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>runThread();</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>strThread();</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>tryConnect();</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::ZmqServer&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a816026f7e333039163c8899c77e234a6" kindref="member">create</ref>(std::string<sp/>addr,<sp/>uint16_t<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a2c1f509a59616310a6dfdd254fe8b084" kindref="member">port</ref>);</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1ac563338a08e26d25ce9e680be200640e" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1aafaa54cb6657c3fd1cfcda0ccb6c9dbf" kindref="member">ZmqServer</ref><sp/>(std::string<sp/>addr,<sp/>uint16_t<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a2c1f509a59616310a6dfdd254fe8b084" kindref="member">port</ref>);</highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a6eecfe871882a2d7711100f002f0bda8" kindref="member">~ZmqServer</ref>();</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1adf5d3b472e46fc2f2deca0b33d80bcb2" kindref="member">publish</ref>(boost::python::object<sp/>data);</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>boost::python::object<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1aa97f55d7427ccef0a688a2a077c3f4da" kindref="member">doRequest</ref><sp/>(boost::python::object<sp/>data);</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a9d82e86302172f331513727c15b81371" kindref="member">doString</ref><sp/>(std::string<sp/>data);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a2c1f509a59616310a6dfdd254fe8b084" kindref="member">port</ref>();</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a9d23178de8b07701502b705373a0e261" kindref="member">stop</ref>();</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="83" refid="namespacerogue_1_1interfaces_1a711b306b7833de93fab7f1ff1aa75ca2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::ZmqServer&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1a711b306b7833de93fab7f1ff1aa75ca2" kindref="member">ZmqServerPtr</ref>;</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="classrogue_1_1interfaces_1_1ZmqServerWrap" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1ZmqServerWrap" kindref="compound">ZmqServerWrap</ref><sp/>:</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer" kindref="compound">rogue::interfaces::ZmqServer</ref>,</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>boost::python::wrapper&lt;rogue::interfaces::ZmqServer&gt;<sp/>{</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="92"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1aaef0590b73ba00d7cf94240d0faacafb" kindref="member">ZmqServerWrap</ref><sp/>(std::string<sp/>addr,<sp/>uint16_t<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServer_1a2c1f509a59616310a6dfdd254fe8b084" kindref="member">port</ref>);</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boost::python::object<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1a8e89b3a65d97e20358ca12c5a96eec31" kindref="member">doRequest</ref><sp/>(<sp/>boost::python::object<sp/>data<sp/>);</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="98"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boost::python::object<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1a363dfaa619dee0f5547ec50367e217c8" kindref="member">defDoRequest</ref><sp/>(<sp/>boost::python::object<sp/>data<sp/>);</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1abc206d6d43bf6bab2332897832b918ad" kindref="member">doString</ref><sp/>(<sp/>std::string<sp/>data<sp/>);</highlight></codeline>
+<codeline lineno="101"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1a4be2c5c3f54f3cabd65e56e218a72985" kindref="member">defDoString</ref><sp/>(<sp/>std::string<sp/>data<sp/>);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106" refid="namespacerogue_1_1interfaces_1a15da7ee0af51ec76504ee4e7a53a5ed8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::ZmqServerWrap&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1a15da7ee0af51ec76504ee4e7a53a5ed8" kindref="member">ZmqServerWrapPtr</ref>;</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="109"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="110"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h"/>
+  </compounddef>
+</doxygen>

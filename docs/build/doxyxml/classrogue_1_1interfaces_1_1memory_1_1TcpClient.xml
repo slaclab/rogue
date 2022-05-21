@@ -1,0 +1,385 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1memory_1_1TcpClient" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::memory::TcpClient</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::memory::Slave</basecompoundref>
+    <includes refid="memory_2TcpClient_8h" local="no">TcpClient.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a76082b9ee0a21defa9fa59c08f3cb10c" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::memory::TcpClient::reqAddr_</definition>
+        <argsstring></argsstring>
+        <name>reqAddr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="45" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a6769ed8a6d6d7ea6e84be9942863a8ad" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::memory::TcpClient::respAddr_</definition>
+        <argsstring></argsstring>
+        <name>respAddr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="48" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a3c7bddce0ca890b92350295a986e315f" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::memory::TcpClient::zmqCtx_</definition>
+        <argsstring></argsstring>
+        <name>zmqCtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="51" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a05e1d670c02286b32f36d43cfec95dc5" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::memory::TcpClient::zmqReq_</definition>
+        <argsstring></argsstring>
+        <name>zmqReq_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="54" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1aaee9f52a5e8b3ead83e0b8afa621b304" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::memory::TcpClient::zmqResp_</definition>
+        <argsstring></argsstring>
+        <name>zmqResp_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="57" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a8ae6add5f8aa58711984edae6bce239d" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::interfaces::memory::TcpClient::bridgeLog_</definition>
+        <argsstring></argsstring>
+        <name>bridgeLog_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="63" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a9e71d38854675376d5cb749c2c6e1344" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::interfaces::memory::TcpClient::thread_</definition>
+        <argsstring></argsstring>
+        <name>thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="66" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a44f9b15882b9068249378e208e068df3" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::memory::TcpClient::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="67" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="67" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a1973535559daadf4d6f14b3e5f7426f0" prot="private" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::interfaces::memory::TcpClient::bridgeMtx_</definition>
+        <argsstring></argsstring>
+        <name>bridgeMtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="70" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="70" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a76e81c98cfb113c1b7988d3193d07a44" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TcpClient::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="60" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a784ea00a577ddec3c22954e15c536a6a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient" kindref="compound">rogue::interfaces::memory::TcpClient</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::memory::TcpClient&gt; rogue::interfaces::memory::TcpClient::create</definition>
+        <argsstring>(std::string addr, uint16_t port)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::string</type>
+          <declname>addr</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>port</declname>
+        </param>
+        <briefdescription>
+<para>Create a <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient" kindref="compound">TcpClient</ref> object and return as a TcpServerPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>The creator takes an address and port. The passed address is the address of the remote <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer" kindref="compound">TcpServer</ref> to connect to, and can either be an IP address or hostname. The memory bridge requires two TCP ports. The passed port is the base number of these two ports. A passed value of 8000 will result in both 8000 and 8001 being used by this bridge.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient" kindref="compound">rogue.interfaces.memory.TcpClient()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>addr</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Interface address </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>port</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Base port number to use for connection. </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer" kindref="compound">TcpServer</ref> object as a TcpServerPtr </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="87" column="23"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1ab9cd5e9fd9a593a67b8997c7d51923e8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::memory::TcpClient::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="90" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1aa02f80051d173065c727830c3d950307" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::TcpClient::TcpClient</definition>
+        <argsstring>(std::string addr, uint16_t port)</argsstring>
+        <name>TcpClient</name>
+        <param>
+          <type>std::string</type>
+          <declname>addr</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>port</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="93" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a320e732a8c2796339534be197817e790" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::TcpClient::~TcpClient</definition>
+        <argsstring>()</argsstring>
+        <name>~TcpClient</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="96" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a0a805790fe809ddd17d55b3837370a03" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TcpClient::close</definition>
+        <argsstring>()</argsstring>
+        <name>close</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="99" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a9dfc1a3b42872a8aacbb8fe4ee067123" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TcpClient::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a22bce0d8c63db18645e193f27b4eca5d">stop</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="102" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1ae75a51930d7e3772ee39125a0ee4d30f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::TcpClient::doTransaction</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; tran)</argsstring>
+        <name>doTransaction</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a43c5e62dd732c5ecff7dadb0a5a8bfa2">doTransaction</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>tran</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="105" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Memory TCP Bridge Client. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class implements a TCP bridge between a memory <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> and a memory <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref>. The client side of the TCP bridge accepts a memory <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> from an attached master and forwards that <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> to a remote <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpServer" kindref="compound">TcpServer</ref>. The server side of the TCP bridge implements a memory <ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref> device which executes the memory <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref> to an attached <ref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" kindref="compound">Slave</ref>.</para>
+<para>The <ref refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient" kindref="compound">TcpClient</ref> memory interface will drop transactions when the remote server is not present or when the pipeline backs up. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::memory::TcpClient</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::memory::TcpClient</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" line="42" column="65" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h" bodystart="42" bodyend="106"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a97ac9ad623a4920c6ebf58bc18e7ec7f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>addTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a8ae6add5f8aa58711984edae6bce239d" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>bridgeLog_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a1973535559daadf4d6f14b3e5f7426f0" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>bridgeMtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a0a805790fe809ddd17d55b3837370a03" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>close</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a784ea00a577ddec3c22954e15c536a6a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a2cfe1d611cc9cb725acf98b9dd78bf21" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::memory::Slave::"><scope>rogue::interfaces::memory::TcpClient</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a435848e7e20020e67ec76a9ef157b990" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>doAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aaa9fdbb5cc041f56343344e1c32db679" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>doMaxAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1ae690bb54ec073edbd751d8362617a7f9" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>doMinAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1af5ce81bef7de4de74c1e3cede21d8919" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>doSlaveId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a46c858794b25f486c4909cbbef5df5f4" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>doSlaveName</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1ae75a51930d7e3772ee39125a0ee4d30f" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>doTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a4bf250f6776be14c6d8ed924807eba82" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>getTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a470bd4cecb4444fd59b553825cd67129" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>id</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aa934540c189dc41ee19f7124e7526f85" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a7214283697192866d04f4fd84e6952d5" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>max</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1afcc3624c3622839e96cf5861593c255c" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>min</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a282550bb08cdd6f5e06db13835bd5f6f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>name</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a633b040c861b41682af1b8f549223631" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a76082b9ee0a21defa9fa59c08f3cb10c" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>reqAddr_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a6769ed8a6d6d7ea6e84be9942863a8ad" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>respAddr_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a76e81c98cfb113c1b7988d3193d07a44" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1adabad1d0e8d40325ca6dfeeeb6df19ac" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>setName</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1ab9cd5e9fd9a593a67b8997c7d51923e8" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a8957d9bc3be4fd66028d296f03a2db94" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a9dfc1a3b42872a8aacbb8fe4ee067123" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1aa02f80051d173065c727830c3d950307" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>TcpClient</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a9e71d38854675376d5cb749c2c6e1344" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>thread_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a44f9b15882b9068249378e208e068df3" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a3c7bddce0ca890b92350295a986e315f" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>zmqCtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a05e1d670c02286b32f36d43cfec95dc5" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>zmqReq_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1aaee9f52a5e8b3ead83e0b8afa621b304" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>zmqResp_</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a0b97756687857c4825e02b7538eb4ae5" prot="public" virt="virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>~Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1TcpClient_1a320e732a8c2796339534be197817e790" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::TcpClient</scope><name>~TcpClient</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

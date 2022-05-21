@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_f069176c86643157902f7598b4aad386" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp</compoundname>
+    <innerfile refid="EvrControl_8h">EvrControl.h</innerfile>
+    <innerfile refid="EvrStatus_8h">EvrStatus.h</innerfile>
+    <innerfile refid="Info_8h">Info.h</innerfile>
+    <innerfile refid="hardware_2pgp_2module_8h">module.h</innerfile>
+    <innerfile refid="PciStatus_8h">PciStatus.h</innerfile>
+    <innerfile refid="PgpCard_8h">PgpCard.h</innerfile>
+    <innerfile refid="Status_8h">Status.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/"/>
+  </compounddef>
+</doxygen>

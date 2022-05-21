@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2" kind="class" language="C++" prot="public">
+    <compoundname>rogue::protocols::packetizer::CoreV2</compoundname>
+    <includes refid="CoreV2_8h" local="no">CoreV2.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a77dd1c51981ca52a09821d1a9e9000f9" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" kindref="compound">rogue::protocols::packetizer::Transport</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::Transport&gt; rogue::protocols::packetizer::CoreV2::tran_</definition>
+        <argsstring></argsstring>
+        <name>tran_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" kindref="compound">Transport</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="38" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a4790ca55b4be5c7a614ea4e48ee063b5" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" kindref="compound">rogue::protocols::packetizer::Application</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::Application&gt; rogue::protocols::packetizer::CoreV2::app_[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>app_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" kindref="compound">Application</ref> modules. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="41" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1ab1e8e57dad6a4b23d81b8d5b176d3c44" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2" kindref="compound">rogue::protocols::packetizer::ControllerV2</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::ControllerV2&gt; rogue::protocols::packetizer::CoreV2::cntl_</definition>
+        <argsstring></argsstring>
+        <name>cntl_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1packetizer_1_1Core" kindref="compound">Core</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="44" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1acf4adb40e6f718d96bc87403fb8295de" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2" kindref="compound">rogue::protocols::packetizer::CoreV2</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::protocols::packetizer::CoreV2&gt; rogue::protocols::packetizer::CoreV2::create</definition>
+        <argsstring>(bool enIbCrc, bool enObCrc, bool enSsi)</argsstring>
+        <name>create</name>
+        <param>
+          <type>bool</type>
+          <declname>enIbCrc</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enObCrc</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enSsi</declname>
+        </param>
+        <briefdescription>
+<para>Class creation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="49" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a1ee0a0b6193325e9c08ff0b56154238a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::protocols::packetizer::CoreV2::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="52" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a935a1d916e1f5f4a72aecbe0c258872e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::packetizer::CoreV2::CoreV2</definition>
+        <argsstring>(bool enIbCrc, bool enObCrc, bool enSsi)</argsstring>
+        <name>CoreV2</name>
+        <param>
+          <type>bool</type>
+          <declname>enIbCrc</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enObCrc</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enSsi</declname>
+        </param>
+        <briefdescription>
+<para>Creator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="55" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a3ad92d4a7a2c3057956d201c42f52cf9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::packetizer::CoreV2::~CoreV2</definition>
+        <argsstring>()</argsstring>
+        <name>~CoreV2</name>
+        <briefdescription>
+<para>Destructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="58" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a02436af3f0e001c2e43fbacd836b594a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" kindref="compound">rogue::protocols::packetizer::Transport</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::Transport&gt; rogue::protocols::packetizer::CoreV2::transport</definition>
+        <argsstring>()</argsstring>
+        <name>transport</name>
+        <briefdescription>
+<para>Get transport interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="61" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a356696a1974cc2f3c3e6e9f692b57d05" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" kindref="compound">rogue::protocols::packetizer::Application</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::Application&gt; rogue::protocols::packetizer::CoreV2::application</definition>
+        <argsstring>(uint8_t dest)</argsstring>
+        <name>application</name>
+        <param>
+          <type>uint8_t</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" kindref="compound">Application</ref> module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="64" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1af69fbdcbf96d18bfecafd5d62683c5bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::CoreV2::getDropCount</definition>
+        <argsstring>()</argsstring>
+        <name>getDropCount</name>
+        <briefdescription>
+<para>Get drop count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="67" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a2691685bfb26fdef0289ced3f518aa46" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::packetizer::CoreV2::setTimeout</definition>
+        <argsstring>(uint32_t timeout)</argsstring>
+        <name>setTimeout</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Set timeout. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="70" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1packetizer_1_1Core" kindref="compound">Core</ref> Class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" line="35" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/CoreV2.h" bodystart="35" bodyend="71"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a4790ca55b4be5c7a614ea4e48ee063b5" prot="private" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>app_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a356696a1974cc2f3c3e6e9f692b57d05" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>application</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1ab1e8e57dad6a4b23d81b8d5b176d3c44" prot="private" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>cntl_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a935a1d916e1f5f4a72aecbe0c258872e" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>CoreV2</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1acf4adb40e6f718d96bc87403fb8295de" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>create</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1af69fbdcbf96d18bfecafd5d62683c5bf" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>getDropCount</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a2691685bfb26fdef0289ced3f518aa46" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a1ee0a0b6193325e9c08ff0b56154238a" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a77dd1c51981ca52a09821d1a9e9000f9" prot="private" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>tran_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a02436af3f0e001c2e43fbacd836b594a" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>transport</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1CoreV2_1a3ad92d4a7a2c3057956d201c42f52cf9" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::CoreV2</scope><name>~CoreV2</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

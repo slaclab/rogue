@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="Helpers_8h" kind="file" language="C++">
+    <compoundname>Helpers.h</compoundname>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="Helpers_8h_1ae29e1293fab82ca91ba1699a4945ec85" prot="public" static="no">
+        <name>rogueStreamConnect</name>
+        <param><defname>src</defname></param>
+        <param><defname>dst</defname></param>
+        <initializer>src-&gt;addSlave(dst);</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Helpful Functions </heading>
+</para>
+<para>File : <ref refid="Helpers_8h" kindref="compound">Helpers.h</ref> <heading level="2">Created : 2018-11-28 </heading>
+</para>
+<para>Description: <heading level="2">Helper functions for Rogue </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" line="24" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="Helpers_8h_1acb70c2ccd98c2c52e136683c87f4e78d" prot="public" static="no">
+        <name>rogueStreamTap</name>
+        <param><defname>src</defname></param>
+        <param><defname>dst</defname></param>
+        <initializer>src-&gt;addSlave(dst);</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" line="27" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" bodystart="27" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="Helpers_8h_1a1c2362c2486a61cca2a0fec76b4c4a79" prot="public" static="no">
+        <name>rogueStreamConnectBiDir</name>
+        <param><defname>devA</defname></param>
+        <param><defname>devB</defname></param>
+        <initializer>   devA-&gt;addSlave(devB); \
+   devB-&gt;addSlave(devA);</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" line="30" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="Helpers_8h_1a79709cd6a7b31280894f702d7b3e8203" prot="public" static="no">
+        <name>rogueBusConnect</name>
+        <param><defname>src</defname></param>
+        <param><defname>dst</defname></param>
+        <initializer>src-&gt;setSlave(dst);</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" line="35" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="Helpers_8h_1ab61e2ad25fcc1138d991d9a4bbc68e97" prot="public" static="no">
+        <name>ROGUE_DEFAULT_TIMEOUT</name>
+        <initializer>1000000</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" line="38" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="20"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_HELPERS_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_HELPERS_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Connect<sp/>stream</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="Helpers_8h_1ae29e1293fab82ca91ba1699a4945ec85" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>rogueStreamConnect(src,dst)<sp/>src-&gt;addSlave(dst);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Add<sp/>stream<sp/>tap,<sp/>DEPRECATED</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27" refid="Helpers_8h_1acb70c2ccd98c2c52e136683c87f4e78d" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>rogueStreamTap(src,dst)<sp/>src-&gt;addSlave(dst);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Connect<sp/>stream<sp/>bi-directionally</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30" refid="Helpers_8h_1a1c2362c2486a61cca2a0fec76b4c4a79" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>rogueStreamConnectBiDir(devA,devB)<sp/>\</highlight></codeline>
+<codeline lineno="31"><highlight class="preprocessor"><sp/><sp/><sp/>devA-&gt;addSlave(devB);<sp/>\</highlight></codeline>
+<codeline lineno="32"><highlight class="preprocessor"><sp/><sp/><sp/>devB-&gt;addSlave(devA);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Connect<sp/>memory<sp/>bus</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35" refid="Helpers_8h_1a79709cd6a7b31280894f702d7b3e8203" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>rogueBusConnect(src,dst)<sp/>src-&gt;setSlave(dst);</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Global<sp/>default<sp/>timeout<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="38" refid="Helpers_8h_1ab61e2ad25fcc1138d991d9a4bbc68e97" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>ROGUE_DEFAULT_TIMEOUT<sp/>1000000</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Return<sp/>default<sp/>timeout<sp/>value</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="namespacerogue_1ad9c9c8610f0fbf0677311aea1ee0b1b0" refkind="member"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="namespacerogue_1ad9c9c8610f0fbf0677311aea1ee0b1b0" kindref="member">defaultTimeout</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>&amp;tout)<sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>div_t<sp/>divResult<sp/>=<sp/>div(<ref refid="Helpers_8h_1ab61e2ad25fcc1138d991d9a4bbc68e97" kindref="member">ROGUE_DEFAULT_TIMEOUT</ref>,1000000);</highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>tout.tv_sec<sp/><sp/>=<sp/>divResult.quot;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>tout.tv_usec<sp/>=<sp/>divResult.rem;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="48"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Helpers.h"/>
+  </compounddef>
+</doxygen>

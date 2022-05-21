@@ -1,0 +1,299 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kind="class" language="C++" prot="public">
+    <compoundname>rogue::hardware::axi::AxiMemMap</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::memory::Slave</basecompoundref>
+    <includes refid="AxiMemMap_8h" local="no">AxiMemMap.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a30d479a9debc51b52c20360cbd41ee5f" prot="private" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t rogue::hardware::axi::AxiMemMap::fd_</definition>
+        <argsstring></argsstring>
+        <name>fd_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">AxiMemMap</ref> file descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="43" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1af20c1cf4567a22b4be5587c591d087a0" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::hardware::axi::AxiMemMap::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="46" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a49a49978662b868cd64c95a438f59141" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::hardware::axi::AxiMemMap::thread_</definition>
+        <argsstring></argsstring>
+        <name>thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="48" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a9423459f775c333aae09bfad89ef7c42" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::hardware::axi::AxiMemMap::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="49" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1acd369f1c5b9d1c0bb12e0bc27d02fc9d" prot="private" static="no" mutable="no">
+        <type><ref refid="classrogue_1_1Queue" kindref="compound">rogue::Queue</ref>&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt; &gt;</type>
+        <definition>rogue::Queue&lt;std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt; &gt; rogue::hardware::axi::AxiMemMap::queue_</definition>
+        <argsstring></argsstring>
+        <name>queue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="55" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ae1dab5d8aa20418dc36a5d26a4f25e0c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiMemMap::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+<para>Thread background. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="52" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a133cde6cddb9d9ea9f4d0b71dc737a35" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">rogue::hardware::axi::AxiMemMap</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::hardware::axi::AxiMemMap&gt; rogue::hardware::axi::AxiMemMap::create</definition>
+        <argsstring>(std::string path)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::string</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+<para>Class factory which returns a AxiMemMapPtr to a newly created <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">AxiMemMap</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to Python as <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">rogue.hardware.axi.AxiMemMap()</ref> <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to device. i.e /dev/datadev_0 </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">AxiMemMap</ref> pointer (AxiMemMapPtr) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="64" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a05a4a55982fe71044be0ebefb779e5db" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::hardware::axi::AxiMemMap::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="67" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ab7ca9270e4dd85199f95b82fabcc7e89" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::hardware::axi::AxiMemMap::AxiMemMap</definition>
+        <argsstring>(std::string path)</argsstring>
+        <name>AxiMemMap</name>
+        <param>
+          <type>std::string</type>
+          <declname>path</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="70" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a407b4fa6b6dddacc8c6034841e4c466d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::hardware::axi::AxiMemMap::~AxiMemMap</definition>
+        <argsstring>()</argsstring>
+        <name>~AxiMemMap</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="73" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a1d6248b5e9ae079fe5c2e9342595111f" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiMemMap::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a22bce0d8c63db18645e193f27b4eca5d">stop</reimplements>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="76" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1abc238025f5fc09aa8c4f749de82c0771" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiMemMap::doTransaction</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::memory::Transaction &gt; tran)</argsstring>
+        <name>doTransaction</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a43c5e62dd732c5ecff7dadb0a5a8bfa2">doTransaction</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">rogue::interfaces::memory::Transaction</ref> &gt;</type>
+          <declname>tran</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="79" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>AXI Memory Map Class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class provides a bridge between the Rogue memory interface and one of the AES Stream Drivers device drivers. This bridge allows for read and write transactions to PCI Express boards (using the data_dev driver) or Zynq AXI4 register space (using the rce_memmap driver). The driver controls which space is available to the user. Multiple <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">AxiMemMap</ref> classes are allowed to be attached to the driver at the same time. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::axi::AxiMemMap</label>
+        <link refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::axi::AxiMemMap</label>
+        <link refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::memory::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="40" column="65" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="40" bodyend="80"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a97ac9ad623a4920c6ebf58bc18e7ec7f" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>addTransaction</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ab7ca9270e4dd85199f95b82fabcc7e89" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>AxiMemMap</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a133cde6cddb9d9ea9f4d0b71dc737a35" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a2cfe1d611cc9cb725acf98b9dd78bf21" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::memory::Slave::"><scope>rogue::hardware::axi::AxiMemMap</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a435848e7e20020e67ec76a9ef157b990" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>doAddress</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aaa9fdbb5cc041f56343344e1c32db679" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>doMaxAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1ae690bb54ec073edbd751d8362617a7f9" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>doMinAccess</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1af5ce81bef7de4de74c1e3cede21d8919" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>doSlaveId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a46c858794b25f486c4909cbbef5df5f4" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>doSlaveName</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1abc238025f5fc09aa8c4f749de82c0771" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>doTransaction</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a30d479a9debc51b52c20360cbd41ee5f" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>fd_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a4bf250f6776be14c6d8ed924807eba82" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>getTransaction</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a470bd4cecb4444fd59b553825cd67129" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>id</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1af20c1cf4567a22b4be5587c591d087a0" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1aa934540c189dc41ee19f7124e7526f85" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a7214283697192866d04f4fd84e6952d5" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>max</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1afcc3624c3622839e96cf5861593c255c" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>min</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a282550bb08cdd6f5e06db13835bd5f6f" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>name</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a633b040c861b41682af1b8f549223631" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1acd369f1c5b9d1c0bb12e0bc27d02fc9d" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>queue_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1ae1dab5d8aa20418dc36a5d26a4f25e0c" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1adabad1d0e8d40325ca6dfeeeb6df19ac" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>setName</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a05a4a55982fe71044be0ebefb779e5db" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a8957d9bc3be4fd66028d296f03a2db94" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a1d6248b5e9ae079fe5c2e9342595111f" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>stop</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a49a49978662b868cd64c95a438f59141" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>thread_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a9423459f775c333aae09bfad89ef7c42" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap_1a407b4fa6b6dddacc8c6034841e4c466d" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>~AxiMemMap</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Slave_1a0b97756687857c4825e02b7538eb4ae5" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiMemMap</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

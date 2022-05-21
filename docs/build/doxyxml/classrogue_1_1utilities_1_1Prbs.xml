@@ -1,0 +1,1180 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1utilities_1_1Prbs" kind="class" language="C++" prot="public">
+    <compoundname>rogue::utilities::Prbs</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::stream::Slave</basecompoundref>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Master" prot="public" virt="non-virtual">rogue::interfaces::stream::Master</basecompoundref>
+    <includes refid="Prbs_8h" local="no">Prbs.h</includes>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a542e72ed0f65316f4a5d181672186d60" prot="private" static="yes" mutable="no">
+        <type>const static uint32_t</type>
+        <definition>const static uint32_t rogue::utilities::Prbs::MaxBytes</definition>
+        <argsstring></argsstring>
+        <name>MaxBytes</name>
+        <initializer>= 64</initializer>
+        <briefdescription>
+<para>Max size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="36" column="35" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1abb8956cf04ef07c7d988d5ec1c02171a" prot="private" static="no" mutable="no">
+        <type>uint8_t *</type>
+        <definition>uint8_t* rogue::utilities::Prbs::taps_</definition>
+        <argsstring></argsstring>
+        <name>taps_</name>
+        <briefdescription>
+<para>PRBS taps. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="39" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a34015da0ec3371fad18897a89e55bdd2" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::tapCnt_</definition>
+        <argsstring></argsstring>
+        <name>tapCnt_</name>
+        <briefdescription>
+<para>PRBS tap count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="42" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a70a3c471ce1330ad8230840ab30ae928" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::width_</definition>
+        <argsstring></argsstring>
+        <name>width_</name>
+        <briefdescription>
+<para>Data width in bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="45" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a3a71d3ad8c8c9c3a166ef48e95075ea6" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::byteWidth_</definition>
+        <argsstring></argsstring>
+        <name>byteWidth_</name>
+        <briefdescription>
+<para>Data width in bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="48" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ad40df255a951041aff422729ed8ff6bc" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::minSize_</definition>
+        <argsstring></argsstring>
+        <name>minSize_</name>
+        <briefdescription>
+<para>Min size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="51" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a5bc388ad59f4599afbdd48ee2fef47ca" prot="private" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::utilities::Prbs::pMtx_</definition>
+        <argsstring></argsstring>
+        <name>pMtx_</name>
+        <briefdescription>
+<para>Lock. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="54" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ab1a40ff5d062877203d51a779b58f61d" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::rxSeq_</definition>
+        <argsstring></argsstring>
+        <name>rxSeq_</name>
+        <briefdescription>
+<para>rx sequence tracking </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="57" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="57" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a883666b2c9246364e43d1ff80554a9ba" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::rxErrCount_</definition>
+        <argsstring></argsstring>
+        <name>rxErrCount_</name>
+        <briefdescription>
+<para>RX Error count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="60" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="60" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a98e73f695025abacb08885ff0be7ab8b" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::rxCount_</definition>
+        <argsstring></argsstring>
+        <name>rxCount_</name>
+        <briefdescription>
+<para>Rx count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="63" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="63" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a0f0f128ffc329bf11892a5f4ecb500a1" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::rxBytes_</definition>
+        <argsstring></argsstring>
+        <name>rxBytes_</name>
+        <briefdescription>
+<para>Rx bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="66" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a55708bd1b138fe7c72191984323d19f2" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::txSeq_</definition>
+        <argsstring></argsstring>
+        <name>txSeq_</name>
+        <briefdescription>
+<para>tx sequence tracking </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="69" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="69" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a1fd70eb2ce69a758d9d73f15c8945e7b" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::txSize_</definition>
+        <argsstring></argsstring>
+        <name>txSize_</name>
+        <briefdescription>
+<para>Transmit size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="72" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="72" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ac2d16591279ea2d7864bada77dc962fb" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::txErrCount_</definition>
+        <argsstring></argsstring>
+        <name>txErrCount_</name>
+        <briefdescription>
+<para>TX Error count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="75" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="75" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1aed7e7ad830f4d6868cdec1c66b06e4ce" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::txCount_</definition>
+        <argsstring></argsstring>
+        <name>txCount_</name>
+        <briefdescription>
+<para>TX count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="78" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ab9fd517593eac3a497a4d1e863a22ce5" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::txBytes_</definition>
+        <argsstring></argsstring>
+        <name>txBytes_</name>
+        <briefdescription>
+<para>TX bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="81" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="81" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1af0248a599395aa5c16f6aa526673959c" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::Prbs::checkPl_</definition>
+        <argsstring></argsstring>
+        <name>checkPl_</name>
+        <briefdescription>
+<para>Check payload. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="84" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="84" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a604bcea5047f80bed430c869f9d6be3b" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::Prbs::genPl_</definition>
+        <argsstring></argsstring>
+        <name>genPl_</name>
+        <briefdescription>
+<para>Gen payload. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="87" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="87" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1af0386d5133638db437daa95792287e7b" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::Prbs::sendCount_</definition>
+        <argsstring></argsstring>
+        <name>sendCount_</name>
+        <briefdescription>
+<para>Send count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="90" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="90" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ac757fba8a2f586a62c6d3a2a6cd4faad" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::Prbs::rxEnable_</definition>
+        <argsstring></argsstring>
+        <name>rxEnable_</name>
+        <briefdescription>
+<para>Receive enable. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="93" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="93" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a46495141eb422b0572c6cf24dc20f578" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::lastRxCount_</definition>
+        <argsstring></argsstring>
+        <name>lastRxCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="96" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a0b948f359ada4d3025f556653c1aadcc" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::lastRxBytes_</definition>
+        <argsstring></argsstring>
+        <name>lastRxBytes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="97" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="97" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a778c7900f111f70bc13f9b4b1b055cab" prot="private" static="no" mutable="no">
+        <type>struct timeval</type>
+        <definition>struct timeval rogue::utilities::Prbs::lastRxTime_</definition>
+        <argsstring></argsstring>
+        <name>lastRxTime_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="97" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="98" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a4e25a95c93b6d2aa1994de52d0cda745" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::rxRate_</definition>
+        <argsstring></argsstring>
+        <name>rxRate_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="99" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="99" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1aef94bf018ff81d81a5ccb9370ca43d59" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::rxBw_</definition>
+        <argsstring></argsstring>
+        <name>rxBw_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="100" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="100" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a33659aa2d2878a3509d051b4fb4483f1" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::lastTxCount_</definition>
+        <argsstring></argsstring>
+        <name>lastTxCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="102" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="102" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1aabd30983dc3977d91456f770fcb55781" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::lastTxBytes_</definition>
+        <argsstring></argsstring>
+        <name>lastTxBytes_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="103" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="103" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a026372339189de28c9f50708ceebef66" prot="private" static="no" mutable="no">
+        <type>struct timeval</type>
+        <definition>struct timeval rogue::utilities::Prbs::lastTxTime_</definition>
+        <argsstring></argsstring>
+        <name>lastTxTime_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="103" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="104" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a496a9e65f8c47d32b72d84e3a842a3f8" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::txRate_</definition>
+        <argsstring></argsstring>
+        <name>txRate_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="105" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="105" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ab25fd514f51a0a0869507277f64fd834" prot="private" static="no" mutable="no">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::txBw_</definition>
+        <argsstring></argsstring>
+        <name>txBw_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="106" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="106" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a83dd60c34ab9f656d9fbedb090cacf76" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::utilities::Prbs::rxLog_</definition>
+        <argsstring></argsstring>
+        <name>rxLog_</name>
+        <briefdescription>
+<para>Logger. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="109" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="109" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a6bca1e6c62c8f8f15fc38bce908a35df" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::utilities::Prbs::txLog_</definition>
+        <argsstring></argsstring>
+        <name>txLog_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="110" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="110" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1a09d8d881f77c5ce9fd0ba3ff3ff90707" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::utilities::Prbs::txThread_</definition>
+        <argsstring></argsstring>
+        <name>txThread_</name>
+        <briefdescription>
+<para>TX thread. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="113" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="113" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1utilities_1_1Prbs_1ae47c01643641a120c0c098d47244a31c" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::utilities::Prbs::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="114" column="18" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="114" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a6c93df31b4db5b78df719a87cca405d5" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::flfsr</definition>
+        <argsstring>(uint8_t *data)</argsstring>
+        <name>flfsr</name>
+        <param>
+          <type>uint8_t *</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+<para>Internal computation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="117" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1adf7934c5a6c3edd7ed5c14622c2ec3d0" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+<para>Thread background. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="120" column="18"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-static-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1aac4c92c7984a8a667d1806684ad36709" prot="private" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>static double rogue::utilities::Prbs::updateTime</definition>
+        <argsstring>(struct timeval *last)</argsstring>
+        <name>updateTime</name>
+        <param>
+          <type>struct timeval *</type>
+          <declname>last</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="122" column="27"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1ab8c898e2a47973bee1d5adbcd621c8a7" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1utilities_1_1Prbs" kindref="compound">rogue::utilities::Prbs</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::utilities::Prbs&gt; rogue::utilities::Prbs::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+<para>Class creation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="127" column="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a1a6217a37c64a92ea25f3be8578b7d4d" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::utilities::Prbs::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="130" column="25"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a49029f88c04ec69691d8af4ffeef4993" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::utilities::Prbs::Prbs</definition>
+        <argsstring>()</argsstring>
+        <name>Prbs</name>
+        <briefdescription>
+<para>Creator with default taps and size. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="133" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1af74c32c81d4db89cb7339636fd6d267a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::utilities::Prbs::~Prbs</definition>
+        <argsstring>()</argsstring>
+        <name>~Prbs</name>
+        <briefdescription>
+<para>Deconstructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="136" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1ae96e81ef6f67ccbb743290bd693eddad" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::setWidth</definition>
+        <argsstring>(uint32_t width)</argsstring>
+        <name>setWidth</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>width</declname>
+        </param>
+        <briefdescription>
+<para>Set width. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="139" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a2460396faae5d8fd85f45bfce00a5235" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::setTaps</definition>
+        <argsstring>(uint32_t tapCnt, uint8_t *taps)</argsstring>
+        <name>setTaps</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>tapCnt</declname>
+        </param>
+        <param>
+          <type>uint8_t *</type>
+          <declname>taps</declname>
+        </param>
+        <briefdescription>
+<para>Set taps. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="142" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1aea342bc192c60f706c2f36f43ddbade8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::setTapsPy</definition>
+        <argsstring>(boost::python::object p)</argsstring>
+        <name>setTapsPy</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>p</declname>
+        </param>
+        <briefdescription>
+<para>Set taps, python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="146" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a9ff512d80bb9fa4230aef876e75a1e7a" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::sendCount</definition>
+        <argsstring>(bool state)</argsstring>
+        <name>sendCount</name>
+        <param>
+          <type>bool</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+<para>Send counter value. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="150" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a87c97b5cf7ac9b594d26a8df8962d33e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::genFrame</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>genFrame</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Generate a data frame. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="153" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a100fb8d14015c89c94fe74353c7eaf49" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::enable</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>enable</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para>Auto run data generation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="156" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a9a4d9122a3fb2bec72c00b7c908e837b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::disable</definition>
+        <argsstring>()</argsstring>
+        <name>disable</name>
+        <briefdescription>
+<para>Disable auto generation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="159" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1acc133983db1928dbdd6411be5368610f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::utilities::Prbs::getRxEnable</definition>
+        <argsstring>()</argsstring>
+        <name>getRxEnable</name>
+        <briefdescription>
+<para>Get rx enable. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="162" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1aaca466c2ffcc8a37986db3808bd27e1f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::setRxEnable</definition>
+        <argsstring>(bool)</argsstring>
+        <name>setRxEnable</name>
+        <param>
+          <type>bool</type>
+        </param>
+        <briefdescription>
+<para>Set rx enable. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="165" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1acf198e151bdbd225660207227fb0d8ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::getRxErrors</definition>
+        <argsstring>()</argsstring>
+        <name>getRxErrors</name>
+        <briefdescription>
+<para>Get rx errors. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="168" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a3276358b57b60fcc755799c20d653f08" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::getRxCount</definition>
+        <argsstring>()</argsstring>
+        <name>getRxCount</name>
+        <briefdescription>
+<para>Get rx count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="171" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a60ccecd207e24f47db4eab10b2db74eb" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::getRxBytes</definition>
+        <argsstring>()</argsstring>
+        <name>getRxBytes</name>
+        <briefdescription>
+<para>Get rx total bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="174" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1af5845070e3a444ee4d209094f911d861" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::getRxRate</definition>
+        <argsstring>()</argsstring>
+        <name>getRxRate</name>
+        <briefdescription>
+<para>Get rx rate. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="177" column="20"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a41dbfc1a049d58c5969a8f52c1d16f2d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::getRxBw</definition>
+        <argsstring>()</argsstring>
+        <name>getRxBw</name>
+        <briefdescription>
+<para>Get rx bw. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="180" column="20"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a6be6d281856fee9cdea4bdd338841ec2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::getTxRate</definition>
+        <argsstring>()</argsstring>
+        <name>getTxRate</name>
+        <briefdescription>
+<para>Get tx rate. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="183" column="20"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1ae859c2885e4384070ce2fbe144722b34" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>double</type>
+        <definition>double rogue::utilities::Prbs::getTxBw</definition>
+        <argsstring>()</argsstring>
+        <name>getTxBw</name>
+        <briefdescription>
+<para>Get tx bw. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="186" column="20"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a541016d2e1fe3f2cbd92ed9579fd467b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::getTxErrors</definition>
+        <argsstring>()</argsstring>
+        <name>getTxErrors</name>
+        <briefdescription>
+<para>Get tx errors. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="189" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a244cb4a7e1f24d44e808942d0584d247" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::getTxCount</definition>
+        <argsstring>()</argsstring>
+        <name>getTxCount</name>
+        <briefdescription>
+<para>Get tx count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="192" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a78da51d0e97a2a96dcce5f87e76d618d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::utilities::Prbs::getTxBytes</definition>
+        <argsstring>()</argsstring>
+        <name>getTxBytes</name>
+        <briefdescription>
+<para>Get tx total bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="195" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a22a93a0f4602b8dc3fd874858c3df328" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::checkPayload</definition>
+        <argsstring>(bool state)</argsstring>
+        <name>checkPayload</name>
+        <param>
+          <type>bool</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+<para>Set check payload flag, default = true. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="198" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1ad98ac2d556bb4da646888baa840c6eea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::genPayload</definition>
+        <argsstring>(bool state)</argsstring>
+        <name>genPayload</name>
+        <param>
+          <type>bool</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+<para>Set check generate flag, default = true. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="201" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a02528db97122488387e2c45049e68b4d" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::resetCount</definition>
+        <argsstring>()</argsstring>
+        <name>resetCount</name>
+        <briefdescription>
+<para>Reset counters. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="204" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1utilities_1_1Prbs_1a74121b33e5a84bdc57264119abb42f62" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::utilities::Prbs::acceptFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>acceptFrame</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6">acceptFrame</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+<para>Accept a frame from master. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="207" column="18"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>PRBS master / slave class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::utilities::Prbs</label>
+        <link refid="classrogue_1_1utilities_1_1Prbs"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::utilities::Prbs</label>
+        <link refid="classrogue_1_1utilities_1_1Prbs"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" line="33" column="99" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/Prbs.h" bodystart="33" bodyend="208"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a74121b33e5a84bdc57264119abb42f62" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>acceptFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>acceptReq</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a4454d19c72c99a76b8b446fb6afa72e2" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>addSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>allocBuffer</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a3a71d3ad8c8c9c3a166ef48e95075ea6" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>byteWidth_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a22a93a0f4602b8dc3fd874858c3df328" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>checkPayload</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1af0248a599395aa5c16f6aa526673959c" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>checkPl_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ab8c898e2a47973bee1d5adbcd621c8a7" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>createBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>decCounter</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a9a4d9122a3fb2bec72c00b7c908e837b" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>disable</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a100fb8d14015c89c94fe74353c7eaf49" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>enable</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a80fb7808644726ddca72e8e196477229" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>ensureSingleBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a913f40b8d390d1b2f26fa0aecfea34eb" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>equalsPy</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a6c93df31b4db5b78df719a87cca405d5" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>flfsr</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a87c97b5cf7ac9b594d26a8df8962d33e" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>genFrame</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ad98ac2d556bb4da646888baa840c6eea" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>genPayload</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a604bcea5047f80bed430c869f9d6be3b" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>genPl_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getAllocBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getAllocCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getByteCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getFrameCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getPoolSize</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a41dbfc1a049d58c5969a8f52c1d16f2d" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getRxBw</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a60ccecd207e24f47db4eab10b2db74eb" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getRxBytes</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a3276358b57b60fcc755799c20d653f08" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getRxCount</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1acc133983db1928dbdd6411be5368610f" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getRxEnable</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1acf198e151bdbd225660207227fb0d8ef" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getRxErrors</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1af5845070e3a444ee4d209094f911d861" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getRxRate</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ae859c2885e4384070ce2fbe144722b34" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getTxBw</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a78da51d0e97a2a96dcce5f87e76d618d" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getTxBytes</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a244cb4a7e1f24d44e808942d0584d247" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getTxCount</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a541016d2e1fe3f2cbd92ed9579fd467b" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getTxErrors</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a6be6d281856fee9cdea4bdd338841ec2" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>getTxRate</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a0b948f359ada4d3025f556653c1aadcc" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lastRxBytes_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a46495141eb422b0572c6cf24dc20f578" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lastRxCount_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a778c7900f111f70bc13f9b4b1b055cab" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lastRxTime_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1aabd30983dc3977d91456f770fcb55781" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lastTxBytes_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a33659aa2d2878a3509d051b4fb4483f1" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lastTxCount_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a026372339189de28c9f50708ceebef66" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lastTxTime_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af6f5b686d275b5545ac7feefceab8dd3" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>Master</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a542e72ed0f65316f4a5d181672186d60" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>MaxBytes</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ad40df255a951041aff422729ed8ff6bc" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>minSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a76dbb1a62ce29ae6d130e11714a37f2f" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>operator==</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a3c410af1f0beab25864711c1be54b336" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a5bc388ad59f4599afbdd48ee2fef47ca" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>pMtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>Pool</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a49029f88c04ec69691d8af4ffeef4993" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>Prbs</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>reqFrame</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a02528db97122488387e2c45049e68b4d" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>resetCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>retBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a98f9088c1a19f7875001c8f782df0265" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1adf7934c5a6c3edd7ed5c14622c2ec3d0" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1aef94bf018ff81d81a5ccb9370ca43d59" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxBw_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a0f0f128ffc329bf11892a5f4ecb500a1" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxBytes_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a98e73f695025abacb08885ff0be7ab8b" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxCount_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ac757fba8a2f586a62c6d3a2a6cd4faad" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxEnable_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a883666b2c9246364e43d1ff80554a9ba" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxErrCount_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a83dd60c34ab9f656d9fbedb090cacf76" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxLog_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a4e25a95c93b6d2aa1994de52d0cda745" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxRate_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ab1a40ff5d062877203d51a779b58f61d" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>rxSeq_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a9ff512d80bb9fa4230aef876e75a1e7a" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>sendCount</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1af0386d5133638db437daa95792287e7b" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>sendCount_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>sendFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setDebug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setPoolSize</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1aaca466c2ffcc8a37986db3808bd27e1f" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setRxEnable</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a2460396faae5d8fd85f45bfce00a5235" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setTaps</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1aea342bc192c60f706c2f36f43ddbade8" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setTapsPy</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a1a6217a37c64a92ea25f3be8578b7d4d" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ae96e81ef6f67ccbb743290bd693eddad" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>setWidth</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::"><scope>rogue::utilities::Prbs</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;::"><scope>rogue::utilities::Prbs</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Master::"><scope>rogue::utilities::Prbs</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a69faa639115fd3108de75da01b802720" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>slaveCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" prot="public" virt="virtual" ambiguityscope="rogue::"><scope>rogue::utilities::Prbs</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a212216679fa253e58bda52b621a66dd5" prot="public" virt="virtual" ambiguityscope="rogue::interfaces::stream::Master::"><scope>rogue::utilities::Prbs</scope><name>stop</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a34015da0ec3371fad18897a89e55bdd2" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>tapCnt_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1abb8956cf04ef07c7d988d5ec1c02171a" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>taps_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ae47c01643641a120c0c098d47244a31c" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ab25fd514f51a0a0869507277f64fd834" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txBw_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ab9fd517593eac3a497a4d1e863a22ce5" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txBytes_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1aed7e7ad830f4d6868cdec1c66b06e4ce" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txCount_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1ac2d16591279ea2d7864bada77dc962fb" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txErrCount_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a6bca1e6c62c8f8f15fc38bce908a35df" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txLog_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a496a9e65f8c47d32b72d84e3a842a3f8" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txRate_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a55708bd1b138fe7c72191984323d19f2" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txSeq_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a1fd70eb2ce69a758d9d73f15c8945e7b" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txSize_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a09d8d881f77c5ce9fd0ba3ff3ff90707" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>txThread_</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1aac4c92c7984a8a667d1806684ad36709" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>updateTime</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1a70a3c471ce1330ad8230840ab30ae928" prot="private" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>width_</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af391073d7d1e1125e9563991de0b0991" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>~Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>~Pool</name></member>
+      <member refid="classrogue_1_1utilities_1_1Prbs_1af74c32c81d4db89cb7339636fd6d267a" prot="public" virt="non-virtual"><scope>rogue::utilities::Prbs</scope><name>~Prbs</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" prot="public" virt="virtual"><scope>rogue::utilities::Prbs</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,511 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::memory::VariableWrap</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1memory_1_1Variable" prot="public" virt="non-virtual">rogue::interfaces::memory::Variable</basecompoundref>
+    <basecompoundref prot="public" virt="non-virtual">boost::python::wrapper&lt; rogue::interfaces::memory::Variable &gt;</basecompoundref>
+    <includes refid="interfaces_2memory_2Variable_8h" local="no">Variable.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1adc2dd28f22700cb24f7d36574b8e7cd8" prot="private" static="no" mutable="no">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::memory::VariableWrap::model_</definition>
+        <argsstring></argsstring>
+        <name>model_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="547" column="38" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" bodystart="547" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a72567041c0dc06de11366d84b6f9c0e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::memory::VariableWrap::VariableWrap</definition>
+        <argsstring>(std::string name, std::string mode, boost::python::object minimum, boost::python::object maximum, uint64_t offset, boost::python::object bitOffset, boost::python::object bitSize, bool overlapEn, bool verify, bool bulkOpEn, bool updateNotify, boost::python::object model, boost::python::object listData, uint32_t retryCount)</argsstring>
+        <name>VariableWrap</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>std::string</type>
+          <declname>mode</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>minimum</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>maximum</declname>
+        </param>
+        <param>
+          <type>uint64_t</type>
+          <declname>offset</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>bitOffset</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>bitSize</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>overlapEn</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>verify</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>bulkOpEn</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>updateNotify</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>model</declname>
+        </param>
+        <param>
+          <type>boost::python::object</type>
+          <declname>listData</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>retryCount</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="552" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a9192f165c11365f8c74d5e81518c480f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::VariableWrap::updateOffset</definition>
+        <argsstring>(boost::python::object &amp;bitOffset)</argsstring>
+        <name>updateOffset</name>
+        <param>
+          <type>boost::python::object &amp;</type>
+          <declname>bitOffset</declname>
+        </param>
+        <briefdescription>
+<para>Update the bit offsets. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="568" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1ac4a406e482b23db29824e33101c26199" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::VariableWrap::set</definition>
+        <argsstring>(boost::python::object &amp;value, int32_t index)</argsstring>
+        <name>set</name>
+        <param>
+          <type>boost::python::object &amp;</type>
+          <declname>value</declname>
+        </param>
+        <param>
+          <type>int32_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>Set value from RemoteVariable. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Set the internal shadow memory with the requested variable value</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1ac4a406e482b23db29824e33101c26199" kindref="member">set()</ref> method to Python</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>value</parametername>
+</parameternamelist>
+<parameterdescription>
+<para><ref refid="classrogue_1_1interfaces_1_1memory_1_1Variable" kindref="compound">Variable</ref> value </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Index of value, -1 to set full list </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="578" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0766376f9792779e89383659a18d5237" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::memory::VariableWrap::get</definition>
+        <argsstring>(int32_t index)</argsstring>
+        <name>get</name>
+        <param>
+          <type>int32_t</type>
+          <declname>index</declname>
+        </param>
+        <briefdescription>
+<para>Get value from RemoteVariable. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Copy the shadow memory value into the passed byte array.</para>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0766376f9792779e89383659a18d5237" kindref="member">get()</ref> method to Python</para>
+<para><parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>index</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Index of value, -1 to get full list </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="587" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1acc4945a5c019f8cc54ecc57e81173bf9" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::memory::VariableWrap::toBytes</definition>
+        <argsstring>(boost::python::object &amp;value)</argsstring>
+        <name>toBytes</name>
+        <param>
+          <type>boost::python::object &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>To Bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="590" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0a1c1b6f65c6892e76bb23f9eb165226" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::memory::VariableWrap::fromBytes</definition>
+        <argsstring>(boost::python::object &amp;value)</argsstring>
+        <name>fromBytes</name>
+        <param>
+          <type>boost::python::object &amp;</type>
+          <declname>value</declname>
+        </param>
+        <briefdescription>
+<para>From Bytes. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="593" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0c24cc77a8be9031969489a859bd6d16" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::VariableWrap::defQueueUpdate</definition>
+        <argsstring>()</argsstring>
+        <name>defQueueUpdate</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1Queue" kindref="compound">Queue</ref> update to python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="596" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a2cf69a9374f0700c970f36acb8fb3468" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::memory::VariableWrap::queueUpdate</definition>
+        <argsstring>()</argsstring>
+        <name>queueUpdate</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a9b91ac60e61161fcc21011eaef498587">queueUpdate</reimplements>
+        <briefdescription>
+<para><ref refid="classrogue_1_1Queue" kindref="compound">Queue</ref> update to python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="599" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a4a970e4ef5611eb10921157fe82483ea" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::memory::VariableWrap::bitOffset</definition>
+        <argsstring>()</argsstring>
+        <name>bitOffset</name>
+        <briefdescription>
+<para>Return bit offset. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="602" column="38"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a74e023c01453c54ecd51605c9133bdc7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>boost::python::object</type>
+        <definition>boost::python::object rogue::interfaces::memory::VariableWrap::bitSize</definition>
+        <argsstring>()</argsstring>
+        <name>bitSize</name>
+        <briefdescription>
+<para>Return bit size array. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="605" column="38"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::interfaces::memory::VariableWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>boost::python::wrapper&lt; rogue::interfaces::memory::Variable &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Variable</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Variable"/>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>std::vector&lt; uint32_t &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::memory::VariableWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>boost::python::wrapper&lt; rogue::interfaces::memory::Variable &gt;</label>
+      </node>
+      <node id="5">
+        <label>std::basic_string&lt; char &gt;</label>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::memory::Variable</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Variable"/>
+        <childnode refid="3" relation="usage">
+          <edgelabel>bitSize_</edgelabel>
+          <edgelabel>bitOffset_</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>path_</edgelabel>
+          <edgelabel>mode_</edgelabel>
+          <edgelabel>getString_</edgelabel>
+          <edgelabel>name_</edgelabel>
+        </childnode>
+        <childnode refid="6" relation="usage">
+          <edgelabel>block_</edgelabel>
+        </childnode>
+      </node>
+      <node id="8">
+        <label>std::mutex</label>
+      </node>
+      <node id="10">
+        <label>std::shared_ptr&lt; rogue::interfaces::memory::Variable &gt;</label>
+        <childnode refid="2" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="11">
+        <label>std::shared_ptr&lt; rogue::Logging &gt;</label>
+        <childnode refid="12" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>rogue::Logging</label>
+        <link refid="classrogue_1_1Logging"/>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::memory::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Master"/>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::memory::Block</label>
+        <link refid="classrogue_1_1interfaces_1_1memory_1_1Block"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="8" relation="usage">
+          <edgelabel>mtx_</edgelabel>
+        </childnode>
+        <childnode refid="9" relation="usage">
+          <edgelabel>variables_</edgelabel>
+        </childnode>
+        <childnode refid="4" relation="usage">
+          <edgelabel>path_</edgelabel>
+          <edgelabel>mode_</edgelabel>
+        </childnode>
+        <childnode refid="11" relation="usage">
+          <edgelabel>bLog_</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>std::string</label>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>std::vector&lt; std::shared_ptr&lt; rogue::interfaces::memory::Variable &gt; &gt;</label>
+        <childnode refid="10" relation="usage">
+          <edgelabel>elements</edgelabel>
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" line="545" column="43" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Variable.h" bodystart="543" bodyend="606"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6dc293a38e921c143629acc777e3c778" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>binPoint_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a4a970e4ef5611eb10921157fe82483ea" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitOffset</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1af2fe7c0b485d3e8899c9c9b2769055e1" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitOffset_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a476b86a1c45d53166a33ff80e3992ac0" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitReverse_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a74e023c01453c54ecd51605c9133bdc7" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a9edb120db42ad8a12ee692838f417ffc" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a513ca4ca4411612f1d860946f2b63caf" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitTotal</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a8d6d6e01491245ad0b7434d09ad7768b" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bitTotal_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6ac0ce2a4651f3ef43d38856da5d90e4" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>block_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a67462a415062bb58e20319644321f7c0" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bulkOpEn</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a003e1dd8f001ff360b0c51d977ae3aac" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>bulkOpEn_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1af0bd64ec3fce3e19f8e153f250f4a5f1" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>byteReverse_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aa8c8c1c551df5a95df41d82c57622786" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>byteSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ad7099d0d1b7843da44528c280751ea94" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>byteSize_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1abb5473a0e7a5f45dc5701fdda9f030b3" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aa0c1709bbef0cf9f9698bd7382254892" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>customData_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0c24cc77a8be9031969489a859bd6d16" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>defQueueUpdate</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a0c82a0639bf9009258375b40442c9748" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>fastByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0a1c1b6f65c6892e76bb23f9eb165226" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>fromBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a0766376f9792779e89383659a18d5237" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>get</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a3bde157bd45661a7adf696eb8e1216f6" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getBool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a8c7059a976696e0dbd1046bea01a4bee" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getBool_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a4bb36ceb3bf08479392951628cb58c97" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getByteArray</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a155a17971cdbb479d4f11bbc9a16050c" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getByteArray_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a2e466dbcd686b04e1410c226966c88c9" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getDouble</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a4820fd984ebf924dcca778f0289d3b6d" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getDouble_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac54f08bdfdb28a381681441507ccfc51" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getDumpValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a8856f7a287328efb2f878f0dd8e5bebf" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getFixed</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ada0923405e98d316180d1f002177de56" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getFixed_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a3cb5c08154f7ab0393cc714ef4a2fc0b" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getFloat</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6c9adcda66d79bebc44688ff25a704e9" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getFloat_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a104a4f67790d3a1a316011e78b31c38b" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getFuncPy_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a7e782cafa3cd67f3928346dc41839ff6" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getInt</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a28c1e6e212b120b68ce0dd73930c02c1" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getInt_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aa30bfd2e99b1e44dc2c5728c04d8a364" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getString</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac79d9f279b76a5492022b7b34710733e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getString</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a8a5f7894b26c45d8c1f9b6625afef853" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getString_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6ed4d4a541b7df27a1a7eeabe81dafe8" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getUInt</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1af87f7376cdc154f51cc8b579c8d4f632" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getUInt_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ad3552f251aa5027251801ceaa76fa55e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a331ddd39ac31f92072fdefec84f99cdb" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a0e2167fe9e5ce6ae317bdeb67551ae22" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aef290d556ec54e359a45e6d9db1d5f26" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a3242c3dd039dd93be74d3c34821343dc" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a5ea59e525b0be18c686862828f9181de" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>getValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a502cb01cdc3fa903e44fef8582693837" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>highTranByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a82a98f369f387869f577672713bc75d8" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>listHighTranByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1abed8c7f96eaad01a76a710daa9eab405" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>listLowTranByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac19dc6ffee6e3f638cf87b60ee4dc223" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>lowTranByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a7a8b7228a25a8dd21c57630de5a7484e" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>maximum</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a0021014fa4c84c2baeafe86684d3ced9" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>maxValue_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a8a727286564f8ecab8875f33011407c4" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>minimum</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a70037a68f5993de356a3170aef119e82" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>minValue_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a7967cd044480fe8546de9674b899dce9" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>mode</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ae2a20cc65193482cb7ab629db59280cb" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>mode_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1adc2dd28f22700cb24f7d36574b8e7cd8" prot="private" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>model_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a3b23cd2f3735ae0bdaa0772224fc8b3d" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>modelId</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a55eeb796f2221b53195f3be69da65285" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>modelId_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a42e5d048ab3b2c97c7248ac4ee8fcc8b" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>name</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a684a93caf2a950c67e30a886e3e7255b" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>name_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac51bf1ef8863502e0d61c7e473479483" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>numValues</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a7d1e7d87b300323a5d56f9a1343653c5" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>numValues_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a32169bdd341de9e05c220c663685a972" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>offset</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ad05a532cfd6ad5cb995fd26ab093095f" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>offset_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a90b709ffa9c3ad12d83019e88366e956" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>overlapEn</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a134f9f8116707efd63d9717e75cba5fc" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>overlapEn_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a7922c23c15cca8ddc6caecddb14f91d1" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>path</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a83d92a8b2ce65748e18e52b4b2437c30" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>path_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a2cf69a9374f0700c970f36acb8fb3468" prot="public" virt="virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>queueUpdate</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1adcaa3bb60aaa50a67df13687b63f7834" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>rateTest</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6c4a1a9c2470ced48d8ff4d1c3872927" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>read</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a3097c2dc94ac7dc8f45e8e25c0cf47d4" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>retryCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a1b8e69e9a0d0c98da1b0018fefbe04db" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>retryCount_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1ac4a406e482b23db29824e33101c26199" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>set</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a088b3c3606546406858b16e5be692ad1" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setBool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ad9963080336320ba4287eda422891f46" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setBool_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a93e95b6a672941268c4ed60a319aef01" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setBytArray</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a04b82c126919108d79df768df14bfcf2" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setByteArray_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a52972ec8a0141989f03077ef7cc82536" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setDouble</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6a9ea05e6ec7242ff02a0c85db3f5860" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setDouble_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a769ffac1352deb99e721504ad7d65e24" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setFixed</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a9f297bba171117be9bcfdfc6942d4490" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setFixed_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a9f6777fcbc94f0ac3b8e255f0c92eb38" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setFloat</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a79547ed18634626371bfd224efb1919c" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setFloat_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a5989082d1c8a14b038fa4c58d0bbdcc1" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setFuncPy_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a208b636658523f237603a29385c88ee2" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setInt</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a79ff436c0313d409707a839950b7005a" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setInt_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a1251866760d3514121d910ec01772b87" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setLogLevel</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac2692156ebd51ab95b5ec25f9b806401" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setString</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aa6bc0138acaae2aac883524556d94a45" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setString_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a30606679474cf59ea1e0cf2a63a9f5fd" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setUInt</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a6dd26b22a966236ec7aeb50dded594e1" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setUInt_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1afaeb271570862677f5ae9c9074b06751" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aff181b3532aaebc2cc5025a3c7485117" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a32417e23ccd6e8e1b5a057499d6e5d90" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1af5130e4e50159fc41f983bb4c5ee291d" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ab6f30ccc29fa26a9400e49ba0f755158" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a2fdf3c6b43e36288a3ad7719a77dbe33" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac8b98e9832fe0a6a7d8d72aeb156e8fd" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>setValue</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aed0bd671a7a626aa0cdbb72c983e196b" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>shiftOffsetDown</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aeee27231246578a29d687044abc3fbee" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>stale_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ab69f7b02f8bad4f264602a37b0d799b5" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>staleHighByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a393bb6942396af03e769b16ee1827ff0" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>staleLowByte_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1acc4945a5c019f8cc54ecc57e81173bf9" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>toBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a943c35b4dc6a2c41c3b74409993a6cd8" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>updateNotify_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a9192f165c11365f8c74d5e81518c480f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>updateOffset</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ab38b69b02a3883defda96fdc66d3758a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>updatePath</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aa1cb77b8c1863abbbc90f665ce33ac94" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>valueBits</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aa7b083febabd1b2e76e22de001de3b05" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>valueBits_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aedd69fdcb8f545fc6e2c6e2dc8cdc5d5" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>valueBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a3b292c36c2c04eacd1db66562feab4c1" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>valueBytes_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1aea837bc20d3b754afc47603c36849b9a" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>valueStride</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a5422ba5ce4eee30c5660bd93fe82c222" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>valueStride_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a5bc7d25ff095e45b18c40a69d5830850" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>varBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a08ebcf5c2fe12b3172ca1677447f5320" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>varBytes_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ad04c28a81cad95467f63d1aa2dda6644" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>Variable</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1VariableWrap_1a72567041c0dc06de11366d84b6f9c0e4" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>VariableWrap</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a5a46dd3b3b7ed2e1406be8d0cbff891f" prot="public" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>verifyEn</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1ac232bd5b5c62c73f448b42d62d0ea2d8" prot="protected" virt="non-virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>verifyEn_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1memory_1_1Variable_1a5bd819a08b10c7b75c150c2284c1682a" prot="public" virt="virtual"><scope>rogue::interfaces::memory::VariableWrap</scope><name>~Variable</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

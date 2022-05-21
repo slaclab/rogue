@@ -1,0 +1,991 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="PgpDriver_8h" kind="file" language="C++">
+    <compoundname>PgpDriver.h</compoundname>
+    <includes refid="DmaDriver_8h" local="yes">DmaDriver.h</includes>
+    <includedby refid="EvrControl_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrControl.h</includedby>
+    <includedby refid="EvrStatus_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrStatus.h</includedby>
+    <includedby refid="Info_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h</includedby>
+    <includedby refid="PciStatus_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/PciStatus.h</includedby>
+    <includedby refid="PgpCard_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/PgpCard.h</includedby>
+    <includedby refid="Status_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Status.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h</label>
+        <link refid="PgpDriver_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>stdint.h</label>
+      </node>
+      <node id="6">
+        <label>sys/mman.h</label>
+      </node>
+      <node id="4">
+        <label>stdlib.h</label>
+      </node>
+      <node id="10">
+        <label>sys/ioctl.h</label>
+      </node>
+      <node id="12">
+        <label>sys/fcntl.h</label>
+      </node>
+      <node id="2">
+        <label>DmaDriver.h</label>
+        <link refid="DmaDriver_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>sys/signal.h</label>
+      </node>
+      <node id="5">
+        <label>string.h</label>
+      </node>
+      <node id="8">
+        <label>unistd.h</label>
+      </node>
+      <node id="9">
+        <label>signal.h</label>
+      </node>
+      <node id="13">
+        <label>sys/socket.h</label>
+      </node>
+      <node id="7">
+        <label>stdio.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="6">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/PgpCard.h</label>
+        <link refid="PgpCard_8h"/>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h</label>
+        <link refid="PgpDriver_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/PciStatus.h</label>
+        <link refid="PciStatus_8h"/>
+      </node>
+      <node id="4">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h</label>
+        <link refid="Info_8h"/>
+      </node>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrStatus.h</label>
+        <link refid="EvrStatus_8h"/>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/EvrControl.h</label>
+        <link refid="EvrControl_8h"/>
+      </node>
+      <node id="7">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Status.h</label>
+        <link refid="Status_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="structPgpInfo" prot="public">PgpInfo</innerclass>
+    <innerclass refid="structPciStatus" prot="public">PciStatus</innerclass>
+    <innerclass refid="structPgpStatus" prot="public">PgpStatus</innerclass>
+    <innerclass refid="structPgpEvrControl" prot="public">PgpEvrControl</innerclass>
+    <innerclass refid="structPgpEvrStatus" prot="public">PgpEvrStatus</innerclass>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="PgpDriver_8h_1a1b4ae5703d868edf4bc0ad8cc7bcea7f" prot="public" static="no">
+        <name>PGP_NONE</name>
+        <initializer>0x00</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="204" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="204" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1ad8d9da26d005e521d681945efb527d32" prot="public" static="no">
+        <name>PGP_GEN1</name>
+        <initializer>0x01</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="205" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="205" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1aa677e83e368d12b351f3eae9da0e8af7" prot="public" static="no">
+        <name>PGP_GEN2</name>
+        <initializer>0x02</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="206" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="206" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a5790bbec3e1e549cb105780f5a323760" prot="public" static="no">
+        <name>PGP_GEN2_VCI</name>
+        <initializer>0x12</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="207" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="207" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a67cdfbd9f4a322d439b4038005198949" prot="public" static="no">
+        <name>PGP_GEN3</name>
+        <initializer>0x03</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="208" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="208" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a34bc2f0b20bc339dc4297b86386ec106" prot="public" static="no">
+        <name>PGP_GEN3_VCI</name>
+        <initializer>0x13</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="209" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="209" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a7698ddd22a9539039623c0823c9fda47" prot="public" static="no">
+        <name>PGP_ERR_EOFE</name>
+        <initializer>0x10</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="212" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="212" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a9d6fac1fc14ad458771babff01733531" prot="public" static="no">
+        <name>PGP_Read_Info</name>
+        <initializer>0x2001</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="215" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="215" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1ab95640b50622a1f2061a9f295afe0d5c" prot="public" static="no">
+        <name>PGP_Read_Pci</name>
+        <initializer>0x2002</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="216" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="216" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a77bb2cc7bc29f14a37e644eea1477de7" prot="public" static="no">
+        <name>PGP_Read_Status</name>
+        <initializer>0x2003</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="217" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="217" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1ac0b380ff898829fb2c05be171104ff1a" prot="public" static="no">
+        <name>PGP_Set_Loop</name>
+        <initializer>0x2004</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="218" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="218" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a820560db9493bc7a8c27a92f21a7ef97" prot="public" static="no">
+        <name>PGP_Count_Reset</name>
+        <initializer>0x2005</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="219" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="219" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a320c4829dcc598813079ba48ff59d8d4" prot="public" static="no">
+        <name>PGP_Send_OpCode</name>
+        <initializer>0x2006</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="220" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="220" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a794d40988239b572262fcf4232219f3a" prot="public" static="no">
+        <name>PGP_Set_Data</name>
+        <initializer>0x2007</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="221" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="221" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a21d9747e054582739946ac1277708e77" prot="public" static="no">
+        <name>PGP_Set_Evr_Cntrl</name>
+        <initializer>0x3001</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="222" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="222" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1ac1b95c8f10dd1cd592989c220d2274e3" prot="public" static="no">
+        <name>PGP_Get_Evr_Cntrl</name>
+        <initializer>0x3002</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="223" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="223" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a0d0a3ae561a51b61f7e8c7bf2fd53eb4" prot="public" static="no">
+        <name>PGP_Get_Evr_Status</name>
+        <initializer>0x3003</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="224" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="224" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="PgpDriver_8h_1a2736426ddeee0784c410d43d5b5d8cbb" prot="public" static="no">
+        <name>PGP_Rst_Evr_Count</name>
+        <initializer>0x3004</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="225" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="225" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="PgpDriver_8h_1a8d5ecb2a0c0f7a478d2e40473f3c1a88" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t pgpSetDest</definition>
+        <argsstring>(uint32_t lane, uint32_t vc)</argsstring>
+        <name>pgpSetDest</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>vc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="230" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="230" bodyend="236"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1ab741d37c1f9a10d9a0d6bb17a952d877" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t pgpSetFlags</definition>
+        <argsstring>(uint32_t cont)</argsstring>
+        <name>pgpSetFlags</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>cont</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="238" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="238" bodyend="240"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a3d4662680250153a0feb3388571c0ab2" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t pgpGetLane</definition>
+        <argsstring>(uint32_t dest)</argsstring>
+        <name>pgpGetLane</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="242" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="242" bodyend="244"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1ae74fa6bd4ff6cb21717f52147aab785b" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t pgpGetVc</definition>
+        <argsstring>(uint32_t dest)</argsstring>
+        <name>pgpGetVc</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>dest</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="246" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="246" bodyend="248"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a79203e831a334f6cce6dbcc498957344" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>static uint32_t pgpGetCont</definition>
+        <argsstring>(uint32_t flags)</argsstring>
+        <name>pgpGetCont</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>flags</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="250" column="24" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="250" bodyend="252"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a4edd1ceb4895e1b4da1613227d535cb7" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpGetInfo</definition>
+        <argsstring>(int32_t fd, struct PgpInfo *info)</argsstring>
+        <name>pgpGetInfo</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>struct <ref refid="structPgpInfo" kindref="compound">PgpInfo</ref> *</type>
+          <declname>info</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="255" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="255" bodyend="257"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1ad899510626a0572351a3d3cca550d05c" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpGetPci</definition>
+        <argsstring>(int32_t fd, struct PciStatus *status)</argsstring>
+        <name>pgpGetPci</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>struct <ref refid="structPciStatus" kindref="compound">PciStatus</ref> *</type>
+          <declname>status</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="260" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="260" bodyend="262"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1aabb18e2a33988bc3a4b82b9824784e21" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpGetStatus</definition>
+        <argsstring>(int32_t fd, uint32_t lane, struct PgpStatus *status)</argsstring>
+        <name>pgpGetStatus</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>struct <ref refid="structPgpStatus" kindref="compound">PgpStatus</ref> *</type>
+          <declname>status</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="265" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="265" bodyend="268"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1abcdbc5a6305e885dd859ce92d1121871" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpSetLoop</definition>
+        <argsstring>(int32_t fd, uint32_t lane, uint32_t state)</argsstring>
+        <name>pgpSetLoop</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="271" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="271" bodyend="278"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a61c513a9f9056b801ec9dafb1067b0a6" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpCountReset</definition>
+        <argsstring>(int32_t fd)</argsstring>
+        <name>pgpCountReset</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="281" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="281" bodyend="283"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a2daeecba9c3e9b7b631bab6901f6124e" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpSetData</definition>
+        <argsstring>(int32_t fd, uint32_t lane, uint32_t data)</argsstring>
+        <name>pgpSetData</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="286" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="286" bodyend="293"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a150aec83414325cf6147acaa15f6d3c0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpSendOpCode</definition>
+        <argsstring>(int32_t fd, uint32_t code)</argsstring>
+        <name>pgpSendOpCode</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="296" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="296" bodyend="298"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1affbc77435a32003bc609038c81abd896" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpSetEvrControl</definition>
+        <argsstring>(int32_t fd, uint32_t lane, struct PgpEvrControl *control)</argsstring>
+        <name>pgpSetEvrControl</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>struct <ref refid="structPgpEvrControl" kindref="compound">PgpEvrControl</ref> *</type>
+          <declname>control</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="301" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="301" bodyend="304"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a1693fdb55d9b2624c3f6b1fb80950e96" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpGetEvrControl</definition>
+        <argsstring>(int32_t fd, uint32_t lane, struct PgpEvrControl *control)</argsstring>
+        <name>pgpGetEvrControl</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>struct <ref refid="structPgpEvrControl" kindref="compound">PgpEvrControl</ref> *</type>
+          <declname>control</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="307" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="307" bodyend="310"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1af14c8f3bfaa0e9f1c97f6b5b75811b17" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpGetEvrStatus</definition>
+        <argsstring>(int32_t fd, uint32_t lane, struct PgpEvrStatus *status)</argsstring>
+        <name>pgpGetEvrStatus</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>struct <ref refid="structPgpEvrStatus" kindref="compound">PgpEvrStatus</ref> *</type>
+          <declname>status</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="313" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="313" bodyend="316"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a5d3e3ad40650050eba69c24e638ebbe0" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpResetEvrCount</definition>
+        <argsstring>(int32_t fd, uint32_t lane)</argsstring>
+        <name>pgpResetEvrCount</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="319" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="319" bodyend="321"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1a38ea6066319b4f3438ff3bc1afd176ae" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>static void pgpAddMaskBytes</definition>
+        <argsstring>(uint8_t *mask, uint32_t lane, uint32_t vc)</argsstring>
+        <name>pgpAddMaskBytes</name>
+        <param>
+          <type>uint8_t *</type>
+          <declname>mask</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>vc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="324" column="20" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="324" bodyend="326"/>
+      </memberdef>
+      <memberdef kind="function" id="PgpDriver_8h_1ac13aec6fa8dc60d7f1245a3a8a356057" prot="public" static="yes" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>ssize_t</type>
+        <definition>static ssize_t pgpSetMask</definition>
+        <argsstring>(int32_t fd, uint32_t lane, uint32_t vc)</argsstring>
+        <name>pgpSetMask</name>
+        <param>
+          <type>int32_t</type>
+          <declname>fd</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>lane</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>vc</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" line="329" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h" bodystart="329" bodyend="331"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="17"><highlight class="preprocessor">#ifndef<sp/>__PGP_DRIVER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__PGP_DRIVER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&quot;<ref refid="DmaDriver_8h" kindref="compound">DmaDriver.h</ref>&quot;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight></codeline>
+<codeline lineno="22" refid="structPgpInfo" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structPgpInfo" kindref="compound">PgpInfo</ref><sp/>{</highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="25" refid="structPgpInfo_1ae03aaea2ccc8d51413da8455fc9d13ec" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint64_t<sp/><ref refid="structPgpInfo_1ae03aaea2ccc8d51413da8455fc9d13ec" kindref="member">serial</ref>;</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28" refid="structPgpInfo_1aa863b929ab81ac98edd6502845cae300" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1aa863b929ab81ac98edd6502845cae300" kindref="member">type</ref>;</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="structPgpInfo_1a85be0f2f33fec3bc4dd36bbefb8f86e4" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1a85be0f2f33fec3bc4dd36bbefb8f86e4" kindref="member">version</ref>;</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34" refid="structPgpInfo_1aeab2a4b1850d18107d8a71f08b1fd4fe" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1aeab2a4b1850d18107d8a71f08b1fd4fe" kindref="member">laneMask</ref>;</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37" refid="structPgpInfo_1a369ea4f176d759151e29e93465740b8e" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1a369ea4f176d759151e29e93465740b8e" kindref="member">vcPerMask</ref>;</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="structPgpInfo_1a3632a6cba8695010ac4cbc9bf395fa47" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1a3632a6cba8695010ac4cbc9bf395fa47" kindref="member">pgpRate</ref>;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="structPgpInfo_1afa24a3907803d68acbbf6aa65f706733" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1afa24a3907803d68acbbf6aa65f706733" kindref="member">promPrgEn</ref>;</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="46" refid="structPgpInfo_1aa2d3a745069730ee1be6fc6c0af1a786" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1aa2d3a745069730ee1be6fc6c0af1a786" kindref="member">evrSupport</ref>;</highlight></codeline>
+<codeline lineno="47"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="structPgpInfo_1ac59642e4c497d2d5a0f311c11903b9a1" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpInfo_1ac59642e4c497d2d5a0f311c11903b9a1" kindref="member">pad</ref>;</highlight></codeline>
+<codeline lineno="49"><highlight class="normal"></highlight></codeline>
+<codeline lineno="50" refid="structPgpInfo_1a763195a2777e4c7d56a88b5a9d7744e6" refkind="member"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><ref refid="structPgpInfo_1a763195a2777e4c7d56a88b5a9d7744e6" kindref="member">buildStamp</ref>[256];</highlight></codeline>
+<codeline lineno="51"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54" refid="structPciStatus" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structPciStatus" kindref="compound">PciStatus</ref><sp/>{</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57" refid="structPciStatus_1a7b024fc99f5d8c1f9b88019e2960eeda" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a7b024fc99f5d8c1f9b88019e2960eeda" kindref="member">pciCommand</ref>;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60" refid="structPciStatus_1a4ce90cffa44b17f23be3e0c710d62dd7" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a4ce90cffa44b17f23be3e0c710d62dd7" kindref="member">pciStatus</ref>;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63" refid="structPciStatus_1a7ad25aabd3c3e8ea9e82b04c82923ada" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a7ad25aabd3c3e8ea9e82b04c82923ada" kindref="member">pciDCommand</ref>;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66" refid="structPciStatus_1a6c76a27b2c9046b1ceb4485e2c08980c" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a6c76a27b2c9046b1ceb4485e2c08980c" kindref="member">pciDStatus</ref>;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="structPciStatus_1aeed9406f996fe3815ede5be88e4c3a17" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1aeed9406f996fe3815ede5be88e4c3a17" kindref="member">pciLCommand</ref>;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72" refid="structPciStatus_1ad7c804a2831d46bf3c312df216c0e6e4" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1ad7c804a2831d46bf3c312df216c0e6e4" kindref="member">pciLStatus</ref>;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="structPciStatus_1a07ce359835c8fdb61b96be54402909f4" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a07ce359835c8fdb61b96be54402909f4" kindref="member">pciLinkState</ref>;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78" refid="structPciStatus_1ae090276776b46e99145ee82f70ff2b05" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1ae090276776b46e99145ee82f70ff2b05" kindref="member">pciFunction</ref>;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="structPciStatus_1a45f4b8d9ff605a84bd355752276e146e" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a45f4b8d9ff605a84bd355752276e146e" kindref="member">pciDevice</ref>;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84" refid="structPciStatus_1aa3977af2630a74357fa45ddd5437771a" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1aa3977af2630a74357fa45ddd5437771a" kindref="member">pciBus</ref>;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87" refid="structPciStatus_1abaaa75527ce48eb386f2736cb2a664ba" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1abaaa75527ce48eb386f2736cb2a664ba" kindref="member">pciLanes</ref>;</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="structPciStatus_1a9f43dc2c2eb2bcd5c095767d15e5ebe7" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPciStatus_1a9f43dc2c2eb2bcd5c095767d15e5ebe7" kindref="member">pad</ref>;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93" refid="structPgpStatus" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structPgpStatus" kindref="compound">PgpStatus</ref><sp/>{</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="structPgpStatus_1a639debf6885a11b2881e540eb9b98804" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a639debf6885a11b2881e540eb9b98804" kindref="member">lane</ref>;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99" refid="structPgpStatus_1a4dabfdd4a86cdc196aa0e9ebd665ad7f" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a4dabfdd4a86cdc196aa0e9ebd665ad7f" kindref="member">loopBack</ref>;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="structPgpStatus_1a69c11cd82dbf65ab973fecd3b1f76979" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a69c11cd82dbf65ab973fecd3b1f76979" kindref="member">locLinkReady</ref>;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105" refid="structPgpStatus_1ac6f803bcff9e8b5c38837c835da4126c" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1ac6f803bcff9e8b5c38837c835da4126c" kindref="member">remLinkReady</ref>;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108" refid="structPgpStatus_1a538ddd4907114fabc9e4981dfe65b1f5" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a538ddd4907114fabc9e4981dfe65b1f5" kindref="member">rxReady</ref>;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111" refid="structPgpStatus_1a4b37d770d34dbaef7c785654a6fbdc9b" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a4b37d770d34dbaef7c785654a6fbdc9b" kindref="member">txReady</ref>;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114" refid="structPgpStatus_1a1d18d8708b0a49c6fa9f9223e7767bf5" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a1d18d8708b0a49c6fa9f9223e7767bf5" kindref="member">rxCount</ref>;</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117" refid="structPgpStatus_1a64a56905c81df659185830d41e78a772" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a64a56905c81df659185830d41e78a772" kindref="member">cellErrCnt</ref>;</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="120" refid="structPgpStatus_1ada4246e26f3045fddfc594b8bbf52b63" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1ada4246e26f3045fddfc594b8bbf52b63" kindref="member">linkDownCnt</ref>;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="structPgpStatus_1ae12bd0051f36520c504ba2178bc8320b" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1ae12bd0051f36520c504ba2178bc8320b" kindref="member">linkErrCnt</ref>;</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126" refid="structPgpStatus_1a1eb77ca22240cc8366582e977a260a66" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a1eb77ca22240cc8366582e977a260a66" kindref="member">fifoErr</ref>;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129" refid="structPgpStatus_1a9a827b9ac5ba9e2bb2063b22d9b2cc54" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a9a827b9ac5ba9e2bb2063b22d9b2cc54" kindref="member">remData</ref>;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132" refid="structPgpStatus_1a87c47b323c51acc49f310df6fd5ed5a4" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1a87c47b323c51acc49f310df6fd5ed5a4" kindref="member">remBuffStatus</ref>;</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134" refid="structPgpStatus_1aead08661fa8507168774e2d41ce999e9" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><ref refid="structPgpStatus_1aead08661fa8507168774e2d41ce999e9" kindref="member">pad</ref>;</highlight></codeline>
+<codeline lineno="135"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138" refid="structPgpEvrControl" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structPgpEvrControl" kindref="compound">PgpEvrControl</ref><sp/>{</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="141" refid="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1" kindref="member">lane</ref>;</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="144" refid="structPgpEvrControl_1ad513daf7da80f9963418aa0f00db6e44" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1ad513daf7da80f9963418aa0f00db6e44" kindref="member">evrEnable</ref>;<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Global<sp/>flag</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147" refid="structPgpEvrControl_1a294feacc679669cea2a340c6ecd5e6cd" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a294feacc679669cea2a340c6ecd5e6cd" kindref="member">laneRunMask</ref>;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>1<sp/>=<sp/>Run<sp/>trigger<sp/>enable</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="150" refid="structPgpEvrControl_1aec3d01258c4deb856f9cb44bcb3a1e92" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1aec3d01258c4deb856f9cb44bcb3a1e92" kindref="member">evrSyncEn</ref>;<sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>1<sp/>=<sp/>Start,<sp/>0<sp/>=<sp/>Stop</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"></highlight></codeline>
+<codeline lineno="153" refid="structPgpEvrControl_1a78a08f0fb2007869027483428309a936" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a78a08f0fb2007869027483428309a936" kindref="member">evrSyncSel</ref>;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>0<sp/>=<sp/>async,<sp/>1<sp/>=<sp/>sync<sp/>for<sp/>start/stop</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"></highlight></codeline>
+<codeline lineno="156" refid="structPgpEvrControl_1a1f1af2399b15ffb671cd9024ef6a530d" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a1f1af2399b15ffb671cd9024ef6a530d" kindref="member">headerMask</ref>;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>1<sp/>=<sp/>Enable<sp/>header<sp/>data<sp/>checking,<sp/>one<sp/>bit<sp/>per<sp/>VC<sp/>(4<sp/>bits)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight></codeline>
+<codeline lineno="159" refid="structPgpEvrControl_1aff639156d1b8479e0188d51464f54830" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1aff639156d1b8479e0188d51464f54830" kindref="member">evrSyncWord</ref>;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>fiducial<sp/>to<sp/>transition<sp/>start<sp/>stop</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+<codeline lineno="162" refid="structPgpEvrControl_1a0e616cde63ad93e83c19e44501dc44a9" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a0e616cde63ad93e83c19e44501dc44a9" kindref="member">runCode</ref>;<sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Run<sp/>code</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"><highlight class="normal"></highlight></codeline>
+<codeline lineno="165" refid="structPgpEvrControl_1a6e55bb57203eb534198591d933343cbd" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a6e55bb57203eb534198591d933343cbd" kindref="member">runDelay</ref>;<sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Run<sp/>delay</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="166"><highlight class="normal"></highlight></codeline>
+<codeline lineno="168" refid="structPgpEvrControl_1a0183de708c213b2c800f006f6db322eb" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a0183de708c213b2c800f006f6db322eb" kindref="member">acceptCode</ref>;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Accept<sp/>code</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight></codeline>
+<codeline lineno="171" refid="structPgpEvrControl_1ae4c184800f1ecb4a5a5d4111203c5f53" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1ae4c184800f1ecb4a5a5d4111203c5f53" kindref="member">acceptDelay</ref>;<sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Accept<sp/>delay</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="172"><highlight class="normal"></highlight></codeline>
+<codeline lineno="173" refid="structPgpEvrControl_1a66aff55d352c55f591393b0c8344da73" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrControl_1a66aff55d352c55f591393b0c8344da73" kindref="member">pad</ref>;</highlight></codeline>
+<codeline lineno="174"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight></codeline>
+<codeline lineno="177" refid="structPgpEvrStatus" refkind="compound"><highlight class="keyword">struct<sp/></highlight><highlight class="normal"><ref refid="structPgpEvrStatus" kindref="compound">PgpEvrStatus</ref><sp/>{</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180" refid="structPgpEvrStatus_1a5e697c01f40dcd30b96bbf8e5ff8d312" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a5e697c01f40dcd30b96bbf8e5ff8d312" kindref="member">lane</ref>;</highlight></codeline>
+<codeline lineno="181"><highlight class="normal"></highlight></codeline>
+<codeline lineno="183" refid="structPgpEvrStatus_1a5d1be321e43d223d1f52acbf0d949b5a" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a5d1be321e43d223d1f52acbf0d949b5a" kindref="member">linkErrors</ref>;</highlight></codeline>
+<codeline lineno="184"><highlight class="normal"></highlight></codeline>
+<codeline lineno="186" refid="structPgpEvrStatus_1ac03aaa471794d209a3382e04412cda72" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1ac03aaa471794d209a3382e04412cda72" kindref="member">linkUp</ref>;</highlight></codeline>
+<codeline lineno="187"><highlight class="normal"></highlight></codeline>
+<codeline lineno="189" refid="structPgpEvrStatus_1a1d9e303a2e82589f5b2ab040169f636e" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a1d9e303a2e82589f5b2ab040169f636e" kindref="member">runStatus</ref>;<sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>1<sp/>=<sp/>Running,<sp/>0<sp/>=<sp/>Stopped</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="190"><highlight class="normal"></highlight></codeline>
+<codeline lineno="192" refid="structPgpEvrStatus_1a37012a78f86b477aab0cb2eb8fdc7dda" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a37012a78f86b477aab0cb2eb8fdc7dda" kindref="member">evrSeconds</ref>;</highlight></codeline>
+<codeline lineno="193"><highlight class="normal"></highlight></codeline>
+<codeline lineno="195" refid="structPgpEvrStatus_1a31fee3c7ee0dc27de3cf3a3c479416b1" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a31fee3c7ee0dc27de3cf3a3c479416b1" kindref="member">runCounter</ref>;</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198" refid="structPgpEvrStatus_1a26479ad6f9ee1f9ea7a68e832773c28e" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a26479ad6f9ee1f9ea7a68e832773c28e" kindref="member">acceptCounter</ref>;</highlight></codeline>
+<codeline lineno="199"><highlight class="normal"></highlight></codeline>
+<codeline lineno="200" refid="structPgpEvrStatus_1a0df4c95fc1067bc150424caafbc3768e" refkind="member"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/><sp/><ref refid="structPgpEvrStatus_1a0df4c95fc1067bc150424caafbc3768e" kindref="member">pad</ref>;</highlight></codeline>
+<codeline lineno="201"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight></codeline>
+<codeline lineno="203"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Card<sp/>Types</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="204" refid="PgpDriver_8h_1a1b4ae5703d868edf4bc0ad8cc7bcea7f" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_NONE<sp/><sp/><sp/><sp/><sp/>0x00</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="205" refid="PgpDriver_8h_1ad8d9da26d005e521d681945efb527d32" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_GEN1<sp/><sp/><sp/><sp/><sp/>0x01</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="206" refid="PgpDriver_8h_1aa677e83e368d12b351f3eae9da0e8af7" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_GEN2<sp/><sp/><sp/><sp/><sp/>0x02</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="207" refid="PgpDriver_8h_1a5790bbec3e1e549cb105780f5a323760" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_GEN2_VCI<sp/>0x12</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="208" refid="PgpDriver_8h_1a67cdfbd9f4a322d439b4038005198949" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_GEN3<sp/><sp/><sp/><sp/><sp/>0x03</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="209" refid="PgpDriver_8h_1a34bc2f0b20bc339dc4297b86386ec106" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_GEN3_VCI<sp/>0x13</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="210"><highlight class="normal"></highlight></codeline>
+<codeline lineno="211"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Error<sp/>values</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="212" refid="PgpDriver_8h_1a7698ddd22a9539039623c0823c9fda47" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_ERR_EOFE<sp/>0x10</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Commands</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="215" refid="PgpDriver_8h_1a9d6fac1fc14ad458771babff01733531" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Read_Info<sp/><sp/><sp/><sp/><sp/><sp/>0x2001</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="216" refid="PgpDriver_8h_1ab95640b50622a1f2061a9f295afe0d5c" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Read_Pci<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2002</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="217" refid="PgpDriver_8h_1a77bb2cc7bc29f14a37e644eea1477de7" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Read_Status<sp/><sp/><sp/><sp/>0x2003</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="218" refid="PgpDriver_8h_1ac0b380ff898829fb2c05be171104ff1a" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Set_Loop<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2004</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="219" refid="PgpDriver_8h_1a820560db9493bc7a8c27a92f21a7ef97" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Count_Reset<sp/><sp/><sp/><sp/>0x2005</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220" refid="PgpDriver_8h_1a320c4829dcc598813079ba48ff59d8d4" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Send_OpCode<sp/><sp/><sp/><sp/>0x2006</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="221" refid="PgpDriver_8h_1a794d40988239b572262fcf4232219f3a" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Set_Data<sp/><sp/><sp/><sp/><sp/><sp/><sp/>0x2007</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="222" refid="PgpDriver_8h_1a21d9747e054582739946ac1277708e77" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Set_Evr_Cntrl<sp/><sp/>0x3001</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="223" refid="PgpDriver_8h_1ac1b95c8f10dd1cd592989c220d2274e3" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Get_Evr_Cntrl<sp/><sp/>0x3002</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="224" refid="PgpDriver_8h_1a0d0a3ae561a51b61f7e8c7bf2fd53eb4" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Get_Evr_Status<sp/>0x3003</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="225" refid="PgpDriver_8h_1a2736426ddeee0784c410d43d5b5d8cbb" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>PGP_Rst_Evr_Count<sp/><sp/>0x3004</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="226"><highlight class="normal"></highlight></codeline>
+<codeline lineno="227"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Everything<sp/>below<sp/>is<sp/>hidden<sp/>during<sp/>kernel<sp/>module<sp/>compile</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="228"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>DMA_IN_KERNEL</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230" refid="PgpDriver_8h_1a8d5ecb2a0c0f7a478d2e40473f3c1a88" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="PgpDriver_8h_1a8d5ecb2a0c0f7a478d2e40473f3c1a88" kindref="member">pgpSetDest</ref>(uint32_t<sp/>lane,<sp/>uint32_t<sp/>vc)<sp/>{</highlight></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/>dest;</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/>dest<sp/><sp/>=<sp/>lane<sp/>*<sp/>4;</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"><sp/><sp/><sp/>dest<sp/>+=<sp/>vc;</highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(dest);</highlight></codeline>
+<codeline lineno="236"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"></highlight></codeline>
+<codeline lineno="238" refid="PgpDriver_8h_1ab741d37c1f9a10d9a0d6bb17a952d877" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="PgpDriver_8h_1ab741d37c1f9a10d9a0d6bb17a952d877" kindref="member">pgpSetFlags</ref>(uint32_t<sp/>cont){</highlight></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(cont<sp/>&amp;<sp/>0x1);</highlight></codeline>
+<codeline lineno="240"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"></highlight></codeline>
+<codeline lineno="242" refid="PgpDriver_8h_1a3d4662680250153a0feb3388571c0ab2" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="PgpDriver_8h_1a3d4662680250153a0feb3388571c0ab2" kindref="member">pgpGetLane</ref>(uint32_t<sp/>dest)<sp/>{</highlight></codeline>
+<codeline lineno="243"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(dest<sp/>/<sp/>4);</highlight></codeline>
+<codeline lineno="244"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="245"><highlight class="normal"></highlight></codeline>
+<codeline lineno="246" refid="PgpDriver_8h_1ae74fa6bd4ff6cb21717f52147aab785b" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="PgpDriver_8h_1ae74fa6bd4ff6cb21717f52147aab785b" kindref="member">pgpGetVc</ref>(uint32_t<sp/>dest)<sp/>{</highlight></codeline>
+<codeline lineno="247"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(dest<sp/>%<sp/>4);</highlight></codeline>
+<codeline lineno="248"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"></highlight></codeline>
+<codeline lineno="250" refid="PgpDriver_8h_1a79203e831a334f6cce6dbcc498957344" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="PgpDriver_8h_1a79203e831a334f6cce6dbcc498957344" kindref="member">pgpGetCont</ref>(uint32_t<sp/>flags)<sp/>{</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(flags<sp/>&amp;<sp/>0x1);</highlight></codeline>
+<codeline lineno="252"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight></codeline>
+<codeline lineno="254"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Read<sp/>Card<sp/>Info</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="255" refid="PgpDriver_8h_1a4edd1ceb4895e1b4da1613227d535cb7" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1a4edd1ceb4895e1b4da1613227d535cb7" kindref="member">pgpGetInfo</ref>(int32_t<sp/>fd,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structPgpInfo" kindref="compound">PgpInfo</ref><sp/>*<sp/>info)<sp/>{</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a9d6fac1fc14ad458771babff01733531" kindref="member">PGP_Read_Info</ref>,info));</highlight></codeline>
+<codeline lineno="257"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"></highlight></codeline>
+<codeline lineno="259"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Read<sp/>PCI<sp/>Status</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="260" refid="PgpDriver_8h_1ad899510626a0572351a3d3cca550d05c" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1ad899510626a0572351a3d3cca550d05c" kindref="member">pgpGetPci</ref>(int32_t<sp/>fd,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structPciStatus" kindref="compound">PciStatus</ref><sp/>*<sp/>status)<sp/>{</highlight></codeline>
+<codeline lineno="261"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1ab95640b50622a1f2061a9f295afe0d5c" kindref="member">PGP_Read_Pci</ref>,status));</highlight></codeline>
+<codeline lineno="262"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="263"><highlight class="normal"></highlight></codeline>
+<codeline lineno="264"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Read<sp/>Lane<sp/>Status</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="265" refid="PgpDriver_8h_1aabb18e2a33988bc3a4b82b9824784e21" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1aabb18e2a33988bc3a4b82b9824784e21" kindref="member">pgpGetStatus</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structPgpStatus" kindref="compound">PgpStatus</ref><sp/>*<sp/>status)<sp/>{</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"><sp/><sp/><sp/>status-&gt;<ref refid="structPgpStatus_1a639debf6885a11b2881e540eb9b98804" kindref="member">lane</ref><sp/>=<sp/>lane;</highlight></codeline>
+<codeline lineno="267"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a77bb2cc7bc29f14a37e644eea1477de7" kindref="member">PGP_Read_Status</ref>,status));</highlight></codeline>
+<codeline lineno="268"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="269"><highlight class="normal"></highlight></codeline>
+<codeline lineno="270"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Set<sp/>Loopback<sp/>State<sp/>For<sp/>Lane</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="271" refid="PgpDriver_8h_1abcdbc5a6305e885dd859ce92d1121871" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1abcdbc5a6305e885dd859ce92d1121871" kindref="member">pgpSetLoop</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/>uint32_t<sp/>state)<sp/>{</highlight></codeline>
+<codeline lineno="272"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/>temp;</highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"><sp/><sp/><sp/>temp<sp/>=<sp/>lane<sp/>&amp;<sp/>0xFF;</highlight></codeline>
+<codeline lineno="275"><highlight class="normal"><sp/><sp/><sp/>temp<sp/>|=<sp/>((state<sp/>&lt;&lt;<sp/>8)<sp/>&amp;<sp/>0x100);</highlight></codeline>
+<codeline lineno="276"><highlight class="normal"></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1ac0b380ff898829fb2c05be171104ff1a" kindref="member">PGP_Set_Loop</ref>,temp));</highlight></codeline>
+<codeline lineno="278"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="279"><highlight class="normal"></highlight></codeline>
+<codeline lineno="280"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Reset<sp/>counters</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="281" refid="PgpDriver_8h_1a61c513a9f9056b801ec9dafb1067b0a6" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1a61c513a9f9056b801ec9dafb1067b0a6" kindref="member">pgpCountReset</ref>(int32_t<sp/>fd)<sp/>{</highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a820560db9493bc7a8c27a92f21a7ef97" kindref="member">PGP_Count_Reset</ref>,0));</highlight></codeline>
+<codeline lineno="283"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight></codeline>
+<codeline lineno="285"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Set<sp/>Sideband<sp/>Data</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="286" refid="PgpDriver_8h_1a2daeecba9c3e9b7b631bab6901f6124e" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1a2daeecba9c3e9b7b631bab6901f6124e" kindref="member">pgpSetData</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/>uint32_t<sp/>data)<sp/>{</highlight></codeline>
+<codeline lineno="287"><highlight class="normal"><sp/><sp/><sp/>uint32_t<sp/>temp;</highlight></codeline>
+<codeline lineno="288"><highlight class="normal"></highlight></codeline>
+<codeline lineno="289"><highlight class="normal"><sp/><sp/><sp/>temp<sp/>=<sp/>lane<sp/>&amp;<sp/>0xFF;</highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/>temp<sp/>|=<sp/>((data<sp/>&lt;&lt;<sp/>8)<sp/>&amp;<sp/>0xFF00);</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight></codeline>
+<codeline lineno="292"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a794d40988239b572262fcf4232219f3a" kindref="member">PGP_Set_Data</ref>,temp));</highlight></codeline>
+<codeline lineno="293"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="294"><highlight class="normal"></highlight></codeline>
+<codeline lineno="295"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Send<sp/>OpCode</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="296" refid="PgpDriver_8h_1a150aec83414325cf6147acaa15f6d3c0" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1a150aec83414325cf6147acaa15f6d3c0" kindref="member">pgpSendOpCode</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>code)<sp/>{</highlight></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a320c4829dcc598813079ba48ff59d8d4" kindref="member">PGP_Send_OpCode</ref>,code));</highlight></codeline>
+<codeline lineno="298"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="299"><highlight class="normal"></highlight></codeline>
+<codeline lineno="300"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Set<sp/>EVR<sp/>Control</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="301" refid="PgpDriver_8h_1affbc77435a32003bc609038c81abd896" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1affbc77435a32003bc609038c81abd896" kindref="member">pgpSetEvrControl</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structPgpEvrControl" kindref="compound">PgpEvrControl</ref><sp/>*<sp/>control)<sp/>{</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"><sp/><sp/><sp/>control-&gt;<ref refid="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1" kindref="member">lane</ref><sp/>=<sp/>lane;</highlight></codeline>
+<codeline lineno="303"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a21d9747e054582739946ac1277708e77" kindref="member">PGP_Set_Evr_Cntrl</ref>,control));</highlight></codeline>
+<codeline lineno="304"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"></highlight></codeline>
+<codeline lineno="306"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Get<sp/>EVR<sp/>Control</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="307" refid="PgpDriver_8h_1a1693fdb55d9b2624c3f6b1fb80950e96" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1a1693fdb55d9b2624c3f6b1fb80950e96" kindref="member">pgpGetEvrControl</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structPgpEvrControl" kindref="compound">PgpEvrControl</ref><sp/>*<sp/>control)<sp/>{</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"><sp/><sp/><sp/>control-&gt;<ref refid="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1" kindref="member">lane</ref><sp/>=<sp/>lane;</highlight></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1ac1b95c8f10dd1cd592989c220d2274e3" kindref="member">PGP_Get_Evr_Cntrl</ref>,control));</highlight></codeline>
+<codeline lineno="310"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="311"><highlight class="normal"></highlight></codeline>
+<codeline lineno="312"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Get<sp/>EVR<sp/>Status</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="313" refid="PgpDriver_8h_1af14c8f3bfaa0e9f1c97f6b5b75811b17" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1af14c8f3bfaa0e9f1c97f6b5b75811b17" kindref="member">pgpGetEvrStatus</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/></highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/><ref refid="structPgpEvrStatus" kindref="compound">PgpEvrStatus</ref><sp/>*<sp/>status)<sp/>{</highlight></codeline>
+<codeline lineno="314"><highlight class="normal"><sp/><sp/><sp/>status-&gt;<ref refid="structPgpEvrStatus_1a5e697c01f40dcd30b96bbf8e5ff8d312" kindref="member">lane</ref><sp/>=<sp/>lane;</highlight></codeline>
+<codeline lineno="315"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a0d0a3ae561a51b61f7e8c7bf2fd53eb4" kindref="member">PGP_Get_Evr_Status</ref>,status));</highlight></codeline>
+<codeline lineno="316"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="317"><highlight class="normal"></highlight></codeline>
+<codeline lineno="318"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Reset<sp/>EVR<sp/>Counters</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="319" refid="PgpDriver_8h_1a5d3e3ad40650050eba69c24e638ebbe0" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1a5d3e3ad40650050eba69c24e638ebbe0" kindref="member">pgpResetEvrCount</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane)<sp/>{</highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(ioctl(fd,<ref refid="PgpDriver_8h_1a2736426ddeee0784c410d43d5b5d8cbb" kindref="member">PGP_Rst_Evr_Count</ref>,lane));</highlight></codeline>
+<codeline lineno="321"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"></highlight></codeline>
+<codeline lineno="323"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Add<sp/>destination<sp/>to<sp/>mask<sp/>byte<sp/>array</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="324" refid="PgpDriver_8h_1a38ea6066319b4f3438ff3bc1afd176ae" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="PgpDriver_8h_1a38ea6066319b4f3438ff3bc1afd176ae" kindref="member">pgpAddMaskBytes</ref>(uint8_t<sp/>*<sp/>mask,<sp/>uint32_t<sp/>lane,<sp/>uint32_t<sp/>vc)<sp/>{</highlight></codeline>
+<codeline lineno="325"><highlight class="normal"><sp/><sp/><sp/><ref refid="DmaDriver_8h_1a6b90f7249599dd58daa55b03a828f9f9" kindref="member">dmaAddMaskBytes</ref>(mask,lane*4+vc);</highlight></codeline>
+<codeline lineno="326"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="327"><highlight class="normal"></highlight></codeline>
+<codeline lineno="328"><highlight class="normal"></highlight><highlight class="comment">//<sp/>set<sp/>lane/vc<sp/>rx<sp/>mask,<sp/>one<sp/>bit<sp/>per<sp/>vc</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="329" refid="PgpDriver_8h_1ac13aec6fa8dc60d7f1245a3a8a356057" refkind="member"><highlight class="normal"></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>ssize_t<sp/><ref refid="PgpDriver_8h_1ac13aec6fa8dc60d7f1245a3a8a356057" kindref="member">pgpSetMask</ref>(int32_t<sp/>fd,<sp/>uint32_t<sp/>lane,<sp/>uint32_t<sp/>vc)<sp/>{</highlight></codeline>
+<codeline lineno="330"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keywordflow">return</highlight><highlight class="normal">(<ref refid="DmaDriver_8h_1a00050427095a8a97a16628167a9b8411" kindref="member">dmaSetMask</ref>(fd,<sp/>lane*4+vc));</highlight></codeline>
+<codeline lineno="331"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="332"><highlight class="normal"></highlight></codeline>
+<codeline lineno="333"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="334"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="335"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/drivers/PgpDriver.h"/>
+  </compounddef>
+</doxygen>

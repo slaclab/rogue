@@ -1,0 +1,376 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1ZmqServer" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::ZmqServer</compoundname>
+    <derivedcompoundref refid="classrogue_1_1interfaces_1_1ZmqServerWrap" prot="public" virt="non-virtual">rogue::interfaces::ZmqServerWrap</derivedcompoundref>
+    <includes refid="ZmqServer_8h" local="no">ZmqServer.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a19bfc4c4f39ab62e1eebbf26cc46e6c3" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::ZmqServer::zmqCtx_</definition>
+        <argsstring></argsstring>
+        <name>zmqCtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="35" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1acc259cb01298cee7c92fe2dc83be1c62" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::ZmqServer::zmqPub_</definition>
+        <argsstring></argsstring>
+        <name>zmqPub_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="38" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a5f7b6cb55a2a6003218c91fa2bd72530" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::ZmqServer::zmqRep_</definition>
+        <argsstring></argsstring>
+        <name>zmqRep_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="41" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a3d875bac3f6c943bc3c3c1078512547b" prot="private" static="no" mutable="no">
+        <type>void *</type>
+        <definition>void* rogue::interfaces::ZmqServer::zmqStr_</definition>
+        <argsstring></argsstring>
+        <name>zmqStr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="44" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a53081b7b52b29f20364374d3c7b24a65" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::interfaces::ZmqServer::rThread_</definition>
+        <argsstring></argsstring>
+        <name>rThread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="46" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a3b5902494d7f96909d9eef9125385c38" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::interfaces::ZmqServer::sThread_</definition>
+        <argsstring></argsstring>
+        <name>sThread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="47" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1aeecfd865ef4ba17dd2959c7bd8fc0e83" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::ZmqServer::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="48" column="18" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a0a1e5c5d2fb6dda53e479b805fcd4d2d" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::interfaces::ZmqServer::addr_</definition>
+        <argsstring></argsstring>
+        <name>addr_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="50" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1a0c3ec74d6f58567ec9c2732e39a1e6f3" prot="private" static="no" mutable="no">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::interfaces::ZmqServer::basePort_</definition>
+        <argsstring></argsstring>
+        <name>basePort_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="51" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1ZmqServer_1af219608456668dd0890fb1d133cc72bf" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::interfaces::ZmqServer::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+<para>Log. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="54" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1ac60f2a740db9bac81fc587433b4fba1e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::ZmqServer::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="56" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1a8413a6e5285cfb5d86f46d926a904ee0" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::ZmqServer::strThread</definition>
+        <argsstring>()</argsstring>
+        <name>strThread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="57" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1aa13e989bfc60b02cd6b362f16bbdc18e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::ZmqServer::tryConnect</definition>
+        <argsstring>()</argsstring>
+        <name>tryConnect</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="59" column="18"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1a816026f7e333039163c8899c77e234a6" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1ZmqServer" kindref="compound">rogue::interfaces::ZmqServer</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::ZmqServer&gt; rogue::interfaces::ZmqServer::create</definition>
+        <argsstring>(std::string addr, uint16_t port)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::string</type>
+          <declname>addr</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>port</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="63" column="36"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1ac563338a08e26d25ce9e680be200640e" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::ZmqServer::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="66" column="25"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1aafaa54cb6657c3fd1cfcda0ccb6c9dbf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::ZmqServer::ZmqServer</definition>
+        <argsstring>(std::string addr, uint16_t port)</argsstring>
+        <name>ZmqServer</name>
+        <param>
+          <type>std::string</type>
+          <declname>addr</declname>
+        </param>
+        <param>
+          <type>uint16_t</type>
+          <declname>port</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="68" column="13"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1a6eecfe871882a2d7711100f002f0bda8" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual rogue::interfaces::ZmqServer::~ZmqServer</definition>
+        <argsstring>()</argsstring>
+        <name>~ZmqServer</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="69" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1adf5d3b472e46fc2f2deca0b33d80bcb2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::ZmqServer::publish</definition>
+        <argsstring>(boost::python::object data)</argsstring>
+        <name>publish</name>
+        <param>
+          <type>boost::python::object</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="72" column="18"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1aa97f55d7427ccef0a688a2a077c3f4da" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>boost::python::object</type>
+        <definition>virtual boost::python::object rogue::interfaces::ZmqServer::doRequest</definition>
+        <argsstring>(boost::python::object data)</argsstring>
+        <name>doRequest</name>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1a8e89b3a65d97e20358ca12c5a96eec31">doRequest</reimplementedby>
+        <param>
+          <type>boost::python::object</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="74" column="43"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1a9d82e86302172f331513727c15b81371" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::string</type>
+        <definition>virtual std::string rogue::interfaces::ZmqServer::doString</definition>
+        <argsstring>(std::string data)</argsstring>
+        <name>doString</name>
+        <reimplementedby refid="classrogue_1_1interfaces_1_1ZmqServerWrap_1abc206d6d43bf6bab2332897832b918ad">doString</reimplementedby>
+        <param>
+          <type>std::string</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="77" column="33"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1a2c1f509a59616310a6dfdd254fe8b084" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint16_t</type>
+        <definition>uint16_t rogue::interfaces::ZmqServer::port</definition>
+        <argsstring>()</argsstring>
+        <name>port</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="79" column="22"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1ZmqServer_1a9d23178de8b07701502b705373a0e261" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::ZmqServer::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="81" column="18"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para><ref refid="classrogue_1_1Logging" kindref="compound">Logging</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::interfaces::ZmqServer</label>
+        <link refid="classrogue_1_1interfaces_1_1ZmqServer"/>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::ZmqServerWrap</label>
+        <link refid="classrogue_1_1interfaces_1_1ZmqServerWrap"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" line="32" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/ZmqServer.h" bodystart="32" bodyend="82"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a0a1e5c5d2fb6dda53e479b805fcd4d2d" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>addr_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a0c3ec74d6f58567ec9c2732e39a1e6f3" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>basePort_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a816026f7e333039163c8899c77e234a6" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1aa97f55d7427ccef0a688a2a077c3f4da" prot="public" virt="virtual"><scope>rogue::interfaces::ZmqServer</scope><name>doRequest</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a9d82e86302172f331513727c15b81371" prot="public" virt="virtual"><scope>rogue::interfaces::ZmqServer</scope><name>doString</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1af219608456668dd0890fb1d133cc72bf" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a2c1f509a59616310a6dfdd254fe8b084" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>port</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1adf5d3b472e46fc2f2deca0b33d80bcb2" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>publish</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a53081b7b52b29f20364374d3c7b24a65" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>rThread_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1ac60f2a740db9bac81fc587433b4fba1e" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1ac563338a08e26d25ce9e680be200640e" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a3b5902494d7f96909d9eef9125385c38" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>sThread_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a9d23178de8b07701502b705373a0e261" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a8413a6e5285cfb5d86f46d926a904ee0" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>strThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1aeecfd865ef4ba17dd2959c7bd8fc0e83" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1aa13e989bfc60b02cd6b362f16bbdc18e" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>tryConnect</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a19bfc4c4f39ab62e1eebbf26cc46e6c3" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>zmqCtx_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1acc259cb01298cee7c92fe2dc83be1c62" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>zmqPub_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a5f7b6cb55a2a6003218c91fa2bd72530" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>zmqRep_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1aafaa54cb6657c3fd1cfcda0ccb6c9dbf" prot="public" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>ZmqServer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a3d875bac3f6c943bc3c3c1078512547b" prot="private" virt="non-virtual"><scope>rogue::interfaces::ZmqServer</scope><name>zmqStr_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1ZmqServer_1a6eecfe871882a2d7711100f002f0bda8" prot="public" virt="virtual"><scope>rogue::interfaces::ZmqServer</scope><name>~ZmqServer</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

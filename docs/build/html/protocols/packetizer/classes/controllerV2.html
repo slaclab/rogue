@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ControllerV2 &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Application" href="application.html" />
+    <link rel="prev" title="ControllerV1" href="controllerV1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Packetizer Protocol</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../core.html">Packetizer Protocol Core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../coreV2.html">Packetizer Protocol CoreV2</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Packetizer Protocol Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="core.html">Core</a></li>
+<li class="toctree-l4"><a class="reference internal" href="coreV2.html">CoreV2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="controller.html">Controller</a></li>
+<li class="toctree-l4"><a class="reference internal" href="controllerV1.html">ControllerV1</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">ControllerV2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="application.html">Application</a></li>
+<li class="toctree-l4"><a class="reference internal" href="transport.html">Transport</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../batcher/index.html">Batcher Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV3/index.html">EPICSV3 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Protocols</a> &raquo;</li>
+          <li><a href="../index.html">Packetizer Protocol</a> &raquo;</li>
+          <li><a href="index.html">Packetizer Protocol Class Descriptions</a> &raquo;</li>
+      <li>ControllerV2</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/protocols/packetizer/classes/controllerV2.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="controllerv2">
+<span id="protocols-packetizer-classes-controllerv2"></span><h1>ControllerV2<a class="headerlink" href="#controllerv2" title="Permalink to this headline"></a></h1>
+<p>TODO</p>
+<p>ControllerV2 objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer15ControllerV2PtrE">
+<span id="_CPPv3N5rogue9protocols10packetizer15ControllerV2PtrE"></span><span id="_CPPv2N5rogue9protocols10packetizer15ControllerV2PtrE"></span><span id="rogue::protocols::packetizer::ControllerV2Ptr"></span><span class="target" id="namespacerogue_1_1protocols_1_1packetizer_1ac2bca685814f0144765f3b1ea82abf64"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV2E" title="rogue::protocols::packetizer::ControllerV2"><span class="n"><span class="pre">ControllerV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ControllerV2Ptr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer15ControllerV2PtrE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<p>The ControllerV2 class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer12ControllerV2E">
+<span id="_CPPv3N5rogue9protocols10packetizer12ControllerV2E"></span><span id="_CPPv2N5rogue9protocols10packetizer12ControllerV2E"></span><span id="rogue::protocols::packetizer::ControllerV2"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">ControllerV2</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="controller.html#_CPPv4N5rogue9protocols10packetizer10ControllerE" title="rogue::protocols::packetizer::Controller"><span class="n"><span class="pre">Controller</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV2E" title="rogue::protocols::packetizer::ControllerV2"><span class="n"><span class="pre">ControllerV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV2E" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Packetizer <a class="reference internal" href="controller.html#classrogue_1_1protocols_1_1packetizer_1_1Controller"><span class="std std-ref">Controller</span></a> Class. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer12ControllerV212ControllerV2EbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE">
+<span id="_CPPv3N5rogue9protocols10packetizer12ControllerV212ControllerV2EbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE"></span><span id="_CPPv2N5rogue9protocols10packetizer12ControllerV212ControllerV2EbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE"></span><span id="rogue::protocols::packetizer::ControllerV2::ControllerV2__b.b.b.std::shared_ptr:rogue::protocols::packetizer::Transport:.std::shared_ptr:rogue::protocols::packetizer::Application:P"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1a1e266433422c8854bfbe02acd7fad13c"></span><span class="sig-name descname"><span class="n"><span class="pre">ControllerV2</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enIbCrc</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enObCrc</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enSsi</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transport.html#_CPPv4N5rogue9protocols10packetizer9TransportE" title="rogue::protocols::packetizer::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tran</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="application.html#_CPPv4N5rogue9protocols10packetizer11ApplicationE" title="rogue::protocols::packetizer::Application"><span class="n"><span class="pre">Application</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">app</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV212ControllerV2EbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer12ControllerV2D0Ev">
+<span id="_CPPv3N5rogue9protocols10packetizer12ControllerV2D0Ev"></span><span id="_CPPv2N5rogue9protocols10packetizer12ControllerV2D0Ev"></span><span id="rogue::protocols::packetizer::ControllerV2::~ControllerV2"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1a49c2d1b4f80e5170b8efada85e3c8743"></span><span class="sig-name descname"><span class="n"><span class="pre">~ControllerV2</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV2D0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Destructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer12ControllerV211transportRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE">
+<span id="_CPPv3N5rogue9protocols10packetizer12ControllerV211transportRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="_CPPv2N5rogue9protocols10packetizer12ControllerV211transportRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE"></span><span id="rogue::protocols::packetizer::ControllerV2::transportRx__std::shared_ptr:rogue::interfaces::stream::Frame:"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1a3b327d3b2922671dd68f56f4daa94b78"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">transportRx</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV211transportRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Frame received at transport interface. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer12ControllerV213applicationRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE7uint8_t">
+<span id="_CPPv3N5rogue9protocols10packetizer12ControllerV213applicationRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE7uint8_t"></span><span id="_CPPv2N5rogue9protocols10packetizer12ControllerV213applicationRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE7uint8_t"></span><span id="rogue::protocols::packetizer::ControllerV2::applicationRx__std::shared_ptr:rogue::interfaces::stream::Frame:.uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1aedc05ab8c0afa5029981b68d450ca006"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">applicationRx</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">frame</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">id</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV213applicationRxENSt10shared_ptrIN5rogue10interfaces6stream5FrameEEE7uint8_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Frame received at application interface. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols10packetizer12ControllerV26createEbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE">
+<span id="_CPPv3N5rogue9protocols10packetizer12ControllerV26createEbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE"></span><span id="_CPPv2N5rogue9protocols10packetizer12ControllerV26createEbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE"></span><span id="rogue::protocols::packetizer::ControllerV2::create__b.b.b.std::shared_ptr:rogue::protocols::packetizer::Transport:.std::shared_ptr:rogue::protocols::packetizer::Application:P"></span><span class="target" id="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1a2ad44625f513091b349be37215b9fc60"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV2E" title="rogue::protocols::packetizer::ControllerV2"><span class="n"><span class="pre">ControllerV2</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enIbCrc</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enObCrc</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enSsi</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="transport.html#_CPPv4N5rogue9protocols10packetizer9TransportE" title="rogue::protocols::packetizer::Transport"><span class="n"><span class="pre">Transport</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">tran</span></span>, <span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">packetizer</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="application.html#_CPPv4N5rogue9protocols10packetizer11ApplicationE" title="rogue::protocols::packetizer::Application"><span class="n"><span class="pre">Application</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">app</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols10packetizer12ControllerV26createEbbbNSt10shared_ptrIN5rogue9protocols10packetizer9TransportEEEPNSt10shared_ptrIN5rogue9protocols10packetizer11ApplicationEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Class creation. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="controllerV1.html" class="btn btn-neutral float-left" title="ControllerV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="application.html" class="btn btn-neutral float-right" title="Application" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

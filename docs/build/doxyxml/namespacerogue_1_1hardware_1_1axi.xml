@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1hardware_1_1axi" kind="namespace" language="C++">
+    <compoundname>rogue::hardware::axi</compoundname>
+    <innerclass refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" prot="public">rogue::hardware::axi::AxiMemMap</innerclass>
+    <innerclass refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" prot="public">rogue::hardware::axi::AxiStreamDma</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1hardware_1_1axi_1a9a9f6a5ab5184762d82fe93668651b1f" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiMemMap" kindref="compound">rogue::hardware::axi::AxiMemMap</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::hardware::axi::AxiMemMap&gt; rogue::hardware::axi::AxiMemMapPtr</definition>
+        <argsstring></argsstring>
+        <name>AxiMemMapPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as TcpClientPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="83" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" bodystart="83" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1hardware_1_1axi_1a160427ca07aad6dbd387ce985b7678a6" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">rogue::hardware::axi::AxiStreamDma</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::hardware::axi::AxiStreamDma&gt; rogue::hardware::axi::AxiStreamDmaPtr</definition>
+        <argsstring></argsstring>
+        <name>AxiStreamDmaPtr</name>
+        <briefdescription>
+<para>Alias for using shared pointer as AxiStreamDmaPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="175" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="175" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1hardware_1_1axi_1afae463e84f5535106fbac54fbb7ea6c2" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/module.h" line="26" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/module.h" declline="26" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h" line="30" column="19"/>
+  </compounddef>
+</doxygen>

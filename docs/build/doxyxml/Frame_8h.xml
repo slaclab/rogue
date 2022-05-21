@@ -1,0 +1,379 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="Frame_8h" kind="file" language="C++">
+    <compoundname>Frame.h</compoundname>
+    <includes local="no">memory</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">mutex</includes>
+    <includes refid="EnableSharedFromThis_8h" local="no">rogue/EnableSharedFromThis.h</includes>
+    <includes local="no">boost/python.hpp</includes>
+    <includedby refid="Buffer_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h</includedby>
+    <includedby refid="stream_2TcpClient_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h</includedby>
+    <includedby refid="TcpCore_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h</includedby>
+    <includedby refid="stream_2TcpServer_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h</includedby>
+    <includedby refid="CoreV1_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/CoreV1.h</includedby>
+    <includedby refid="Data_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/Data.h</includedby>
+    <includedby refid="Header_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Header.h</includedby>
+    <includedby refid="StreamWriter_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h</includedby>
+    <includedby refid="LegacyStreamWriter_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamWriter.h</includedby>
+    <incdepgraph>
+      <node id="4">
+        <label>stdint.h</label>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h</label>
+        <link refid="Frame_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue/EnableSharedFromThis.h</label>
+        <link refid="EnableSharedFromThis_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="5">
+        <label>vector</label>
+      </node>
+      <node id="6">
+        <label>mutex</label>
+      </node>
+      <node id="3">
+        <label>thread</label>
+      </node>
+      <node id="2">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="9">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/StreamWriter.h</label>
+        <link refid="StreamWriter_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Buffer.h</label>
+        <link refid="Buffer_8h"/>
+      </node>
+      <node id="7">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/Data.h</label>
+        <link refid="Data_8h"/>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h</label>
+        <link refid="Frame_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpCore.h</label>
+        <link refid="TcpCore_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpClient.h</label>
+        <link refid="stream_2TcpClient_8h"/>
+      </node>
+      <node id="5">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/TcpServer.h</label>
+        <link refid="stream_2TcpServer_8h"/>
+      </node>
+      <node id="10">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/utilities/fileio/LegacyStreamWriter.h</label>
+        <link refid="LegacyStreamWriter_8h"/>
+      </node>
+      <node id="8">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Header.h</label>
+        <link refid="Header_8h"/>
+      </node>
+      <node id="6">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/batcher/CoreV1.h</label>
+        <link refid="CoreV1_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1interfaces_1_1stream_1_1Frame" prot="public">rogue::interfaces::stream::Frame</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces">rogue::interfaces</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces_1_1stream">rogue::interfaces::stream</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="Frame_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Stream frame container </heading>
+</para>
+<para>File : <ref refid="Frame_8h" kindref="compound">Frame.h</ref> Author : Ryan Herbst, <ulink url="mailto:rherbst@slac.stanford.edu">rherbst@slac.stanford.edu</ulink> <heading level="2">Created : 2016-09-16 </heading>
+</para>
+<para>Description: Stream frame container <heading level="2">Some concepts borrowed from CPSW by Till Straumann </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" line="32" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="22"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_INTERFACES_STREAM_FRAME_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_INTERFACES_STREAM_FRAME_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;mutex&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="EnableSharedFromThis_8h" kindref="compound">rogue/EnableSharedFromThis.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="Frame_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">interfaces<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">stream<sp/>{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Buffer;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FrameIterator;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">FrameLock;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"></codeline>
+<codeline lineno="54" refid="classrogue_1_1interfaces_1_1stream_1_1Frame" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1EnableSharedFromThis" kindref="compound">rogue::EnableSharedFromThis</ref>&lt;rogue::interfaces::stream::Frame&gt;<sp/>{</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5ba04a2bf0ca34a0f845cd759950664d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1stream_1_1Buffer" kindref="compound">Buffer</ref>;</highlight></codeline>
+<codeline lineno="57" refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1fb42462d0d47057a7bd7bef231d3b13" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameLock" kindref="compound">FrameLock</ref>;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Interface<sp/>specific<sp/>flags</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/>flags_;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Error<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>error_;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Channel</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>chan_;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="68"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>List<sp/>of<sp/>buffers<sp/>which<sp/>hold<sp/>real<sp/>data</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>&gt;<sp/>buffers_;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Total<sp/>size<sp/>of<sp/>buffers</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/>size_;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Total<sp/>payload<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/>payload_;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Update<sp/>buffer<sp/>size<sp/>counts</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>updateSizes();</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Size<sp/>values<sp/>dirty<sp/>flags</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>sizeDirty_;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="84"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Set<sp/>size<sp/>values<sp/>dirty</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a23dda24b4637347e60de536590f87467" kindref="member">setSizeDirty</ref>();</highlight></codeline>
+<codeline lineno="87"><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Frame<sp/>lock</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="89" refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1358b7d84b56ab0fede239780217e5cb" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a1358b7d84b56ab0fede239780217e5cb" kindref="member">lock_</ref>;</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94" refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>&gt;::iterator<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9" kindref="member">BufferIterator</ref>;</highlight></codeline>
+<codeline lineno="95"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>class<sp/>for<sp/>use<sp/>in<sp/>python</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad6c499960b9eb7de72b2feea900b3e37" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2de2680040af26d54dec8363858018dd" kindref="member">create</ref>();</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>an<sp/>empty<sp/>Frame.,<sp/>not<sp/>called<sp/>directly.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="105"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d63afba0513bee7ac5cafb60a0476b8" kindref="member">Frame</ref>();</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Destroy<sp/>the<sp/>Frame.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ad929bf5a0ef04651a748a0a35feeebcc" kindref="member">~Frame</ref>();</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111"></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::stream::FrameLock&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c" kindref="member">lock</ref>();</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117"></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>&gt;::iterator</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a727e017735940558dc1565de2a0632e7" kindref="member">appendFrame</ref>(std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame);</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>&gt;::iterator</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a80975cb7cf9ff70872a19e639f3a0403" kindref="member">appendBuffer</ref>(std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>buff);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="137"></codeline>
+<codeline lineno="141"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>&gt;::iterator<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abed9660b581ae10e4e9f623176843a22" kindref="member">beginBuffer</ref>();</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="144"></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::shared_ptr&lt;rogue::interfaces::stream::Buffer&gt;<sp/>&gt;::iterator<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af7273739aa5c99529a0ec8e4f46cac36" kindref="member">endBuffer</ref>();</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b21b83111b76963f8a0c487df5c154" kindref="member">bufferCount</ref>();</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"></codeline>
+<codeline lineno="160"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abb77abc689a3ce1f04e3a727490db83a" kindref="member">clear</ref>();</highlight></codeline>
+<codeline lineno="161"><highlight class="normal"></highlight></codeline>
+<codeline lineno="163"></codeline>
+<codeline lineno="166"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abeaa1812591830ce728a83075bcb400e" kindref="member">isEmpty</ref>();</highlight></codeline>
+<codeline lineno="167"><highlight class="normal"></highlight></codeline>
+<codeline lineno="169"></codeline>
+<codeline lineno="174"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9" kindref="member">getSize</ref>();</highlight></codeline>
+<codeline lineno="175"><highlight class="normal"></highlight></codeline>
+<codeline lineno="177"></codeline>
+<codeline lineno="182"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0" kindref="member">getAvailable</ref>();</highlight></codeline>
+<codeline lineno="183"><highlight class="normal"></highlight></codeline>
+<codeline lineno="185"></codeline>
+<codeline lineno="188"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2" kindref="member">getPayload</ref>();</highlight></codeline>
+<codeline lineno="189"><highlight class="normal"></highlight></codeline>
+<codeline lineno="191"></codeline>
+<codeline lineno="194"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d" kindref="member">setPayload</ref>(uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="195"><highlight class="normal"></highlight></codeline>
+<codeline lineno="197"></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac371a2feba1fe233d0589e732928cd79" kindref="member">minPayload</ref>(uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="206"></codeline>
+<codeline lineno="211"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac0a596f34fcbdcaf1488121a52ae989c" kindref="member">adjustPayload</ref>(int32_t<sp/>value);</highlight></codeline>
+<codeline lineno="212"><highlight class="normal"></highlight></codeline>
+<codeline lineno="214"></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aba2378680daedbcc5452cf474e06597e" kindref="member">setPayloadFull</ref>();</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aae025cc94c81b1d7c32174a5ab520354" kindref="member">setPayloadEmpty</ref>();</highlight></codeline>
+<codeline lineno="223"><highlight class="normal"></highlight></codeline>
+<codeline lineno="225"></codeline>
+<codeline lineno="233"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b" kindref="member">getFlags</ref>();</highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight></codeline>
+<codeline lineno="236"></codeline>
+<codeline lineno="239"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c" kindref="member">setFlags</ref>(uint16_t<sp/>flags);</highlight></codeline>
+<codeline lineno="240"><highlight class="normal"></highlight></codeline>
+<codeline lineno="241"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>the<sp/>first<sp/>user<sp/>field<sp/>portion<sp/>of<sp/>flags<sp/>(SSI/Axi-Stream)</highlight></codeline>
+<codeline lineno="247"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1acf5caf501e8f998b343e562e5432a946" kindref="member">getFirstUser</ref>();</highlight></codeline>
+<codeline lineno="248"><highlight class="normal"></highlight></codeline>
+<codeline lineno="249"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Set<sp/>the<sp/>first<sp/>user<sp/>field<sp/>portion<sp/>of<sp/>flags<sp/>(SSI/Axi-Stream)</highlight></codeline>
+<codeline lineno="253"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a" kindref="member">setFirstUser</ref>(uint8_t<sp/>fuser);</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"></highlight></codeline>
+<codeline lineno="255"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>the<sp/>last<sp/>user<sp/>field<sp/>portion<sp/>of<sp/>flags<sp/>(SSI/Axi-Stream)</highlight></codeline>
+<codeline lineno="261"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9" kindref="member">getLastUser</ref>();</highlight></codeline>
+<codeline lineno="262"><highlight class="normal"></highlight></codeline>
+<codeline lineno="263"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Set<sp/>the<sp/>last<sp/>user<sp/>field<sp/>portion<sp/>of<sp/>flags<sp/>(SSI/Axi-Stream)</highlight></codeline>
+<codeline lineno="267"><highlight class="comment"></highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540" kindref="member">setLastUser</ref>(uint8_t<sp/>fuser);</highlight></codeline>
+<codeline lineno="268"><highlight class="normal"></highlight></codeline>
+<codeline lineno="270"></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6" kindref="member">getChannel</ref>();</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"></highlight></codeline>
+<codeline lineno="280"></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106" kindref="member">setChannel</ref>(uint8_t<sp/>channel);</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight></codeline>
+<codeline lineno="286"></codeline>
+<codeline lineno="291"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a7762575ce42e07c04eba9ecd160de55d" kindref="member">getError</ref>();</highlight></codeline>
+<codeline lineno="292"><highlight class="normal"></highlight></codeline>
+<codeline lineno="294"></codeline>
+<codeline lineno="297"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0" kindref="member">setError</ref>(uint8_t<sp/>error);</highlight></codeline>
+<codeline lineno="298"><highlight class="normal"></highlight></codeline>
+<codeline lineno="300"></codeline>
+<codeline lineno="309"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1aaeca1bab583acb86d077803c503eeccb" kindref="member">begin</ref>();</highlight></codeline>
+<codeline lineno="310"><highlight class="normal"></highlight></codeline>
+<codeline lineno="312"></codeline>
+<codeline lineno="318"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1abd51de2cb75f15e14af25228266d95d4" kindref="member">end</ref>();</highlight></codeline>
+<codeline lineno="319"><highlight class="normal"></highlight></codeline>
+<codeline lineno="320"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>read<sp/>start<sp/>FrameIterator,<sp/>LEGACY<sp/>TO<sp/>BE<sp/>DEPRECATED</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="321"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a3ce0fb9b3a6bce92a4da65cdc02c6e31" kindref="member">beginRead</ref>();</highlight></codeline>
+<codeline lineno="322"><highlight class="normal"></highlight></codeline>
+<codeline lineno="323"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>read<sp/>end<sp/>FrameIterator,<sp/>LEGACY<sp/>TO<sp/>BE<sp/>DEPRECATED</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="324"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a999963d876be5bd5946fd1f9497611bd" kindref="member">endRead</ref>();</highlight></codeline>
+<codeline lineno="325"><highlight class="normal"></highlight></codeline>
+<codeline lineno="326"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>write<sp/>start<sp/>FrameIterator,<sp/>LEGACY<sp/>TO<sp/>BE<sp/>DEPRECATED</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="327"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a5d6b7dd95ee4300853fc13201342daed" kindref="member">beginWrite</ref>();</highlight></codeline>
+<codeline lineno="328"><highlight class="normal"></highlight></codeline>
+<codeline lineno="329"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Get<sp/>write<sp/>end<sp/>FrameIterator,<sp/>LEGACY<sp/>TO<sp/>BE<sp/>DEPRECATED</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="330"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1FrameIterator" kindref="compound">rogue::interfaces::stream::FrameIterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a475dbc60413e797dc8e8e8f649ebf641" kindref="member">endWrite</ref>();</highlight></codeline>
+<codeline lineno="331"><highlight class="normal"></highlight></codeline>
+<codeline lineno="332"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="333"><highlight class="normal"></highlight></codeline>
+<codeline lineno="335"></codeline>
+<codeline lineno="341"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af320eb307d9043eb62fd137d807a62c7" kindref="member">readPy</ref><sp/>(<sp/>boost::python::object<sp/>p,<sp/>uint32_t<sp/>offset<sp/>);</highlight></codeline>
+<codeline lineno="342"><highlight class="normal"></highlight></codeline>
+<codeline lineno="344"></codeline>
+<codeline lineno="350"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2d8dc04f70a9e8cc0274bd3763209604" kindref="member">writePy</ref><sp/>(<sp/>boost::python::object<sp/>p,<sp/>uint32_t<sp/>offset<sp/>);</highlight></codeline>
+<codeline lineno="351"><highlight class="normal"></highlight></codeline>
+<codeline lineno="352"><highlight class="normal"></highlight></codeline>
+<codeline lineno="354"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/><sp/>Read<sp/>a<sp/>specified<sp/>number<sp/>of<sp/>bytes<sp/>of<sp/>data<sp/>at<sp/>a<sp/>specified<sp/>offset</highlight></codeline>
+<codeline lineno="355"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>into<sp/>a<sp/>numpy<sp/>object<sp/>which<sp/>is<sp/>returned</highlight></codeline>
+<codeline lineno="356"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="357"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>@return<sp/>The<sp/>read<sp/>data<sp/>as<sp/>a<sp/>1-D<sp/>numpy<sp/>byte<sp/>array</highlight></codeline>
+<codeline lineno="358"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="359"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>@param[in]<sp/>offset<sp/>The<sp/>byte<sp/>offset<sp/>into<sp/>the<sp/>frame<sp/>to<sp/>write<sp/>to</highlight></codeline>
+<codeline lineno="360"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>@param[in]<sp/><sp/><sp/>size<sp/>The<sp/>number<sp/>of<sp/>bytes<sp/>to<sp/>write</highlight></codeline>
+<codeline lineno="361"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="362"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="363"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>boost::python::object<sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a9286f942e04b80bffc42becb23fb8ea6" kindref="member">getNumpy</ref><sp/>(uint32_t<sp/>offset,</highlight></codeline>
+<codeline lineno="364"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/>size);</highlight></codeline>
+<codeline lineno="365"><highlight class="normal"></highlight></codeline>
+<codeline lineno="367"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="368"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="369"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>@param[in]<sp/><sp/><sp/><sp/><sp/>np<sp/>The<sp/>numpy<sp/>array<sp/>data<sp/>to<sp/>be<sp/>written</highlight></codeline>
+<codeline lineno="370"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><sp/>@param[in]<sp/>offset<sp/>The<sp/>byte<sp/>offset<sp/>into<sp/>the<sp/>frame<sp/>to<sp/>write<sp/>to</highlight></codeline>
+<codeline lineno="371"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="372"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1a8ff1ea661b1659ba36c1bbbec012c25e" kindref="member">putNumpy</ref><sp/>(boost::python::object<sp/>np,</highlight></codeline>
+<codeline lineno="373"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>offset);</highlight></codeline>
+<codeline lineno="374"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="375"><highlight class="normal"></highlight></codeline>
+<codeline lineno="377"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame_1af031fdee7784958fb1bf7b8f35dde7b7" kindref="member">debug</ref>();</highlight></codeline>
+<codeline lineno="378"><highlight class="normal"></highlight></codeline>
+<codeline lineno="379"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="380"><highlight class="normal"></highlight></codeline>
+<codeline lineno="382" refid="namespacerogue_1_1interfaces_1_1stream_1aabbfca1143d6d05a2bb0afc11e667778" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1_1stream_1aabbfca1143d6d05a2bb0afc11e667778" kindref="member">FramePtr</ref>;</highlight></codeline>
+<codeline lineno="383"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="384"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="385"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="386"><highlight class="normal"></highlight></codeline>
+<codeline lineno="387"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="388"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Frame.h"/>
+  </compounddef>
+</doxygen>

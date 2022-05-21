@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Memory Hub Example &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using The TCP Bridge" href="usingTcp.html" />
+    <link rel="prev" title="Memory Slave Example" href="slave.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../stream/index.html">Stream Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Memory Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="connecting.html">Connecting Memory Elements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="master.html">Memory Master Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="slave.html">Memory Slave Example</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Memory Hub Example</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python-raw-hub-example">Python Raw Hub Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#python-device-hub-example">Python Device Hub Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-python-device-hub">Using Python Device Hub</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-raw-hub-example">C++ Raw Hub Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocks.html">Blocks &amp; Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="blocks_advanced.html">Advanced Usage Of Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/index.html">Memory Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Interfaces</a> &raquo;</li>
+          <li><a href="index.html">Memory Interface</a> &raquo;</li>
+      <li>Memory Hub Example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/interfaces/memory/hub.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="memory-hub-example">
+<span id="interfaces-memory-hub-ex"></span><h1>Memory Hub Example<a class="headerlink" href="#memory-hub-example" title="Permalink to this headline"></a></h1>
+<p>The memory Hub interfaces between an upstream memory Master object and a downstream Memory
+slave object. The Hub can be used to group Masters together with a common offset, as is done
+in the pyrogue.Device class. It can also be used to manipulate a memory bus transaction.</p>
+<p>Most users will not need to modify or sub-class a memory hub. Instead the Device python class,
+which is a sub-class of the Hub, will be used to organize the memory map. In some special cases
+complicated hardware interface layers will need to be supported and a special Hub will need to be created.</p>
+<p>In this example we service incoming read and write requests and forward them to a memory
+slave which implements a paged memory space. This means there is a write register for the
+address (0x100), a write register for the write data (0x104), and a read register for
+read data (0x108). This example is not very efficient in that it only allows a single
+transaction to be executed at a time.</p>
+<p>See <a class="reference internal" href="classes/hub.html#interfaces-memory-hub"><span class="std std-ref">Hub</span></a> for more detail on the Hub class.</p>
+<section id="python-raw-hub-example">
+<h2>Python Raw Hub Example<a class="headerlink" href="#python-raw-hub-example" title="Permalink to this headline"></a></h2>
+<p>Below is an example of creating a raw Hub device which translates memory
+transactions in Python.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
+
+<span class="c1"># Create a subclass of a memory Hub</span>
+<span class="c1"># This hub has an offset of 0</span>
+<span class="k">class</span> <span class="nc">MyHub</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Hub</span><span class="p">):</span>
+
+    <span class="c1"># Init method must call the parent class init</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># Here we set the offset and a new root min and</span>
+        <span class="c1"># max transaction size</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="c1"># Create a lock</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="c1"># Entry point for incoming transaction</span>
+    <span class="k">def</span> <span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
+
+        <span class="c1"># First lock the memory space to avoid</span>
+        <span class="c1"># overlapping paged transactions</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+
+           <span class="c1"># Next we lock the transaction data</span>
+           <span class="c1"># Here it is held until the downstream transaction completes.</span>
+           <span class="k">with</span> <span class="n">transaction</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+
+               <span class="c1"># Put address into byte array, we do this because we will</span>
+               <span class="c1"># need to pass it as the data field of a transaction later</span>
+               <span class="c1"># The address the HUB sees is always relative, not absolute</span>
+               <span class="n">addr</span> <span class="o">=</span> <span class="n">transaction</span><span class="o">.</span><span class="n">address</span><span class="p">()</span><span class="o">.</span><span class="n">to_bytes</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;little&#39;</span><span class="p">,</span> <span class="n">signed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+               <span class="c1"># Clear any existing errors</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">_setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+               <span class="c1"># Create transaction setting address register (offset 0x100)</span>
+               <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x100</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+
+               <span class="c1"># Wait for transaction to complete</span>
+               <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+               <span class="c1"># Check transaction result, forward error to incoming transaction</span>
+               <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                   <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                   <span class="k">return</span> <span class="kc">False</span>
+
+               <span class="c1"># Handle write or post</span>
+               <span class="k">if</span> <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span> <span class="ow">or</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">type</span><span class="p">()</span> <span class="o">==</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Post</span><span class="p">:</span>
+
+                  <span class="c1"># Copy data into byte array</span>
+                  <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">getData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+                  <span class="c1"># Create transaction setting write data register (offset 0x104)</span>
+                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x104</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Write</span><span class="p">)</span>
+
+                  <span class="c1"># Wait for transaction to complete</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+                  <span class="c1"># Check transaction result, forward error to incoming transaction</span>
+                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                      <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                      <span class="k">return</span> <span class="kc">False</span>
+
+                  <span class="c1"># Success</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+
+               <span class="c1"># Handle read or verify read</span>
+               <span class="k">else</span><span class="p">:</span>
+
+                  <span class="c1"># Create read data byte array</span>
+                  <span class="n">data</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">transaction</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+
+                  <span class="c1"># Create transaction reading read data register (offset 0x108)</span>
+                  <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reqTransaction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span> <span class="o">|</span> <span class="mh">0x108</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Read</span><span class="p">)</span>
+
+                  <span class="c1"># Wait for transaction to complete</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">_waitTransaction</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+
+                  <span class="c1"># Check transaction result, forward error to incoming transaction</span>
+                  <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                      <span class="n">transaction</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_getError</span><span class="p">())</span>
+                      <span class="k">return</span> <span class="kc">False</span>
+
+                  <span class="c1"># Copy data into original transaction and complete</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">setData</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+                  <span class="n">transaction</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="python-device-hub-example">
+<h2>Python Device Hub Example<a class="headerlink" href="#python-device-hub-example" title="Permalink to this headline"></a></h2>
+<p>Below is an example of implementing the above example in a Device subclass. This allows
+the Hub to interact in a standard PyRogue tree. It will have its own base address and
+size in the downstream address map, but expose a separate upstream address map for
+translated transactions. More information about the Device class is included at TBD.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
+
+<span class="c1"># Create a subclass of a Device</span>
+<span class="k">class</span> <span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+
+    <span class="c1"># Init method with the same signature as a Device</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">memBase</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">expand</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">enableDeps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="c1"># Setup base class with size of 3*8 bytes for our local 3 registers and a</span>
+        <span class="c1"># upstream min and max transaction size of 4 bytes.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">memBase</span><span class="o">=</span><span class="n">memBase</span><span class="p">,</span>
+                         <span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span> <span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span>
+                         <span class="n">enableDeps</span><span class="o">=</span><span class="n">enableDeps</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">hubMin</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">hubMax</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+
+    <span class="c1"># Same code from previous section with the exception that the existing Device</span>
+    <span class="c1"># lock is used instead of a separate lock as above.</span>
+    <span class="k">def</span> <span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
+
+        <span class="c1"># First lock the memory space to avoid</span>
+        <span class="c1"># overlapping paged transactions</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_memLock</span><span class="p">:</span>
+</pre></div>
+</div>
+</section>
+<section id="using-python-device-hub">
+<h2>Using Python Device Hub<a class="headerlink" href="#using-python-device-hub" title="Permalink to this headline"></a></h2>
+<p>Below is an example of how the above Device would be used in a PyRogue tree.
+More information about the PyRogue Root class is included at TBD.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+
+<span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add FPGA device at 0x1000 which hosts paged master</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeFpgaDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;Fpga&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x1000</span><span class="p">))</span>
+
+        <span class="c1"># Add our translation device to the FPGA with relative offset 0x10</span>
+        <span class="c1"># its new address becomes 0x1010 and it owns a new address space</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Fpga</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">MyTranslationDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;TranBase&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x10</span><span class="p">))</span>
+
+        <span class="c1"># Add sub device which exists in paged address space</span>
+        <span class="c1"># its address is 0x200 in the spaced mastered by TranBase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">TranBase</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">SomeDevice</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;devA&quot;</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mh">0x200</span><span class="p">))</span>
+</pre></div>
+</div>
+</section>
+<section id="c-raw-hub-example">
+<h2>C++ Raw Hub Example<a class="headerlink" href="#c-raw-hub-example" title="Permalink to this headline"></a></h2>
+<p>Below is an example of creating a raw Hub device which translates memory
+transactions in C++.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Hub.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/thread.hpp&gt;</span><span class="cp"></span>
+
+<span class="c1">// Create a subclass of a memory Hub</span>
+<span class="n">class</span><span class="w"> </span><span class="n">MyHub</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Hub</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Mutex</span>
+<span class="w">      </span><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span><span class="w"> </span><span class="n">mtx_</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">   </span><span class="n">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Create a static class creator to return our custom class</span>
+<span class="w">      </span><span class="c1">// wrapped with a shared pointer</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyHub</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyHub</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">            </span><span class="n">boost</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyHub</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Standard class creator which is called by create</span>
+<span class="w">      </span><span class="c1">// Here we set offset</span>
+<span class="w">      </span><span class="n">MyHub</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Hub</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Entry point for incoming transaction</span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">doTransaction</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// First lock the memory space to avoid overlapping paged transactions</span>
+<span class="w">         </span><span class="n">boost</span><span class="o">::</span><span class="n">lock_guard</span><span class="o">&lt;</span><span class="n">boost</span><span class="o">::</span><span class="n">mutex</span><span class="o">&gt;</span><span class="w"> </span><span class="n">lock</span><span class="p">(</span><span class="n">slaveMtx_</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Next we lock the transaction data with a scoped lock</span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Clear any existing errors</span>
+<span class="w">         </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">setError</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Create transaction setting address register (offset 0x100)</span>
+<span class="w">         </span><span class="c1">// The address the HUB sees is always relative, not absolute</span>
+<span class="w">         </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x100</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span><span class="w"></span>
+<span class="w">                                   </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Wait for transaction to complete</span>
+<span class="w">         </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Check transaction result, forward error to incoming transaction</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span><span class="w"></span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Handle write or post</span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="w"> </span><span class="o">||</span><span class="w"></span>
+<span class="w">              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Post</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// Create transaction setting write data register (offset 0x104)</span>
+<span class="w">            </span><span class="c1">// Forward data pointer from original transaction</span>
+<span class="w">            </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x104</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span><span class="w"></span>
+<span class="w">                                      </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// Wait for transaction to complete</span>
+<span class="w">            </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// Check transaction result, forward error to incoming transaction</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span><span class="w"></span>
+<span class="w">               </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Handle read or verify read</span>
+<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// Create transaction getting read data register (offset 0x108)</span>
+<span class="w">            </span><span class="c1">// Forward data pointer from original transaction</span>
+<span class="w">            </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">reqTransaction</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getAddress</span><span class="p">()</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="mh">0x104</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span><span class="w"></span>
+<span class="w">                                      </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// Wait for transaction to complete</span>
+<span class="w">            </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">waitTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">            </span><span class="c1">// Check transaction result, forward error to incoming transaction</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">()</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s">&quot;&quot;</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getError</span><span class="p">());</span><span class="w"></span>
+<span class="w">               </span><span class="k">return</span><span class="w"> </span><span class="nb">false</span><span class="w"></span>
+<span class="w">            </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="k">else</span><span class="w"> </span><span class="n">transaction</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="p">};</span><span class="w"></span>
+</pre></div>
+</div>
+<p>A few notes on the above examples.</p>
+<p>The incoming transaction source thread will be stalled as we wait
+on the downstream transaction to complete. It may be better to queue the transaction and service
+it with a separate thread. Also in the C++ example the original data buffer is passed to the
+new transaction. This requires that the lock be held on the transaction until the downstream
+transaction is complete. Instead it may be better to create a new buffer and copy the data
+as is done in the Python example. See the <a class="reference internal" href="slave.html#interfaces-memory-slave-ex"><span class="std std-ref">Memory Slave Example</span></a> example for
+ways to store and later retrieve the Transaction record while the downstream transaction is
+in progress.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="slave.html" class="btn btn-neutral float-left" title="Memory Slave Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usingTcp.html" class="btn btn-neutral float-right" title="Using The TCP Bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

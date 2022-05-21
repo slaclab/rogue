@@ -1,0 +1,279 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="Value_8h" kind="file" language="C++">
+    <compoundname>Value.h</compoundname>
+    <includes local="no">boost/python.hpp</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">memory</includes>
+    <includes local="no">casdef.h</includes>
+    <includes local="no">gdd.h</includes>
+    <includes local="no">gddApps.h</includes>
+    <includes local="no">gddAppFuncTable.h</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includedby refid="protocols_2epicsV3_2Variable_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Variable.h</includedby>
+    <incdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h</label>
+        <link refid="Value_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>gdd.h</label>
+      </node>
+      <node id="11">
+        <label>stdint.h</label>
+      </node>
+      <node id="8">
+        <label>gddAppFuncTable.h</label>
+      </node>
+      <node id="14">
+        <label>string</label>
+      </node>
+      <node id="10">
+        <label>exception</label>
+      </node>
+      <node id="7">
+        <label>gddApps.h</label>
+      </node>
+      <node id="2">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="13">
+        <label>vector</label>
+      </node>
+      <node id="5">
+        <label>casdef.h</label>
+      </node>
+      <node id="12">
+        <label>mutex</label>
+      </node>
+      <node id="9">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+        <childnode refid="13" relation="include">
+        </childnode>
+        <childnode refid="14" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>thread</label>
+      </node>
+      <node id="4">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h</label>
+        <link refid="Value_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Command.h</label>
+        <link refid="Command_8h"/>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Variable.h</label>
+        <link refid="protocols_2epicsV3_2Variable_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Value" prot="public">rogue::protocols::epicsV3::Value</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor" prot="public">rogue::protocols::epicsV3::Destructor</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols">rogue::protocols</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols_1_1epicsV3">rogue::protocols::epicsV3</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="Value_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Rogue EPICS V3 Interface: Generic Value Container </heading>
+</para>
+<para>File : <ref refid="Value_8h" kindref="compound">Value.h</ref> <heading level="2">Created : 2018-11-18 </heading>
+</para>
+<para>Description: <heading level="2">Class to store an EPICs PV attributes along with its current value </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="24" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="24" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="21"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_PROTOCOLS_EPICSV3_VALUE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_PROTOCOLS_EPICSV3_VALUE_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24" refid="Value_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;casdef.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;gdd.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;gddApps.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;gddAppFuncTable.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">protocols<sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">epicsV3<sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Pv;</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value" kindref="compound">Value</ref><sp/>{</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1a2b7f392979dd919fe8800a5fb978ae" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1a2b7f392979dd919fe8800a5fb978ae" kindref="member">epicsName_</ref>;</highlight></codeline>
+<codeline lineno="44" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a82ee83dd7caeca1f6a599f6c69490616" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a82ee83dd7caeca1f6a599f6c69490616" kindref="member">typeStr_</ref>;</highlight></codeline>
+<codeline lineno="45" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a66712cd2c6d57f279459e7be73e11701" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>aitEnum<sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a66712cd2c6d57f279459e7be73e11701" kindref="member">epicsType_</ref>;</highlight></codeline>
+<codeline lineno="46" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a3acf1697a938a21d7fe05c640f803726" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a3acf1697a938a21d7fe05c640f803726" kindref="member">pValue_</ref>;</highlight></codeline>
+<codeline lineno="47" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a12ae7b2471cc66ffd4e8e8e98d7173c2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a12ae7b2471cc66ffd4e8e8e98d7173c2" kindref="member">max_</ref>;</highlight></codeline>
+<codeline lineno="48" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a396adc86bda7f32c123c15e8b1a79d45" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a396adc86bda7f32c123c15e8b1a79d45" kindref="member">size_</ref>;</highlight></codeline>
+<codeline lineno="49" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04ccd04557d625b8777c4cd129008f27" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04ccd04557d625b8777c4cd129008f27" kindref="member">fSize_</ref>;</highlight></codeline>
+<codeline lineno="50" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a175436a007a0ca5082ee1160ec529f17" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a175436a007a0ca5082ee1160ec529f17" kindref="member">array_</ref>;</highlight></codeline>
+<codeline lineno="51" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a9809624e8aa27312857eaceeb5800006" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a9809624e8aa27312857eaceeb5800006" kindref="member">isString_</ref>;</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="53" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03878faabf2595a0d3bc947633c7e923" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::vector&lt;std::string&gt;<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03878faabf2595a0d3bc947633c7e923" kindref="member">enums_</ref>;</highlight></codeline>
+<codeline lineno="54" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2910a88acf4f7dc0fc144ee8edc40ca" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" kindref="compound">rogue::protocols::epicsV3::Pv</ref><sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2910a88acf4f7dc0fc144ee8edc40ca" kindref="member">pv_</ref>;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04f7706bb21c1594b4cc5d4296cf4a62" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a04f7706bb21c1594b4cc5d4296cf4a62" kindref="member">log_</ref>;</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="58" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae7c649a8cfc3fa7fad45dd157e66a4ad" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae7c649a8cfc3fa7fad45dd157e66a4ad" kindref="member">units_</ref>;</highlight></codeline>
+<codeline lineno="59" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1add145e3bf832d7aadba8fa388b668cf9" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1add145e3bf832d7aadba8fa388b668cf9" kindref="member">precision_</ref>;</highlight></codeline>
+<codeline lineno="60" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1afbd34e915d2be2943a26c4d0d60573be" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1afbd34e915d2be2943a26c4d0d60573be" kindref="member">hopr_</ref>;</highlight></codeline>
+<codeline lineno="61" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1ed79f735ea5e8ddebfd27219e9a4157" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1ed79f735ea5e8ddebfd27219e9a4157" kindref="member">lopr_</ref>;</highlight></codeline>
+<codeline lineno="62" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0e8a72abb165ec761c07222442718c0c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0e8a72abb165ec761c07222442718c0c" kindref="member">highAlarm_</ref>;</highlight></codeline>
+<codeline lineno="63" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7c0aa2e7631a9e5e3488c562797cbbf1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7c0aa2e7631a9e5e3488c562797cbbf1" kindref="member">highWarning_</ref>;</highlight></codeline>
+<codeline lineno="64" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1abf72636f8e34d9171232ffd7eeac051a" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1abf72636f8e34d9171232ffd7eeac051a" kindref="member">lowWarning_</ref>;</highlight></codeline>
+<codeline lineno="65" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae3c9dfb647db7533b688b3dd5f20e096" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae3c9dfb647db7533b688b3dd5f20e096" kindref="member">lowAlarm_</ref>;</highlight></codeline>
+<codeline lineno="66" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac14044718fa0cd98158b7b292c78c20d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac14044718fa0cd98158b7b292c78c20d" kindref="member">highCtrlLimit_</ref>;</highlight></codeline>
+<codeline lineno="67" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7666fe7eaf5a9164219c948fb1a275fb" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gdd<sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7666fe7eaf5a9164219c948fb1a275fb" kindref="member">lowCtrlLimit_</ref>;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5d34804e91f3b78122fa47ee00dbb0a6" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTable&lt;rogue::protocols::epicsV3::Value&gt;<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5d34804e91f3b78122fa47ee00dbb0a6" kindref="member">funcTable_</ref>;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="71" refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6dfe5bc63bad685a66b86b947338dd9d" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6dfe5bc63bad685a66b86b947338dd9d" kindref="member">mtx_</ref>;</highlight></codeline>
+<codeline lineno="72"><highlight class="normal"></highlight></codeline>
+<codeline lineno="73"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a05aecfc856c3a924c18320622e31bd07" kindref="member">initGdd</ref>(std::string<sp/>typeStr,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>isEnum,<sp/>uint32_t<sp/>count,<sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/>forceStr<sp/>);</highlight></codeline>
+<codeline lineno="74"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab2ac469fe77298f490aae762be3523f9" kindref="member">updated</ref>();</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a03e1aec9cbba93280c55b2633aeca262" kindref="member">revEnum</ref>(std::string<sp/>val);</highlight></codeline>
+<codeline lineno="78"><highlight class="normal"></highlight></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0d5bf502296ecb70510d68a663dd3bdf" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1acbc2958417626ca5c8e0ddc3b03b7bec" kindref="member">Value</ref><sp/>(<sp/>std::string<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7eb57d6c86de09c845dd9e7bd63b8e30" kindref="member">epicsName</ref><sp/>);</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a11cd5902f2fb7a91e80d0c3e30dccc07" kindref="member">~Value</ref><sp/>();</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="89"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7eb57d6c86de09c845dd9e7bd63b8e30" kindref="member">epicsName</ref>();</highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab0dba925bddaf146b7ad94beffa464ae" kindref="member">valueSet</ref>();</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac255f8ddb504de3b760f0fec1d5eb0bb" kindref="member">valueGet</ref>();</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="95"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a80fdc63636e79d8fbffe19286e106d50" kindref="member">setPv</ref>(<ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" kindref="compound">rogue::protocols::epicsV3::Pv</ref><sp/>*<sp/>pv);</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" kindref="compound">rogue::protocols::epicsV3::Pv</ref><sp/>*<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1af0a030e267f086e7c6ac0781b7964530" kindref="member">getPv</ref>();</highlight></codeline>
+<codeline lineno="98"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//---------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>EPICS<sp/>Interface</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//---------------------------------------</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="102"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>caStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1acee697f706c7e9b77c8b1d35feeb7aca" kindref="member">read</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae1ef6da5684cd6ffa3dbe0f27af7a42b" kindref="member">readValue</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>caStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a5cf06e834209c0a2c2a1c7e0af6e79d5" kindref="member">write</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="107"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>aitEnum<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a6825b9a5bd89c397cc63233708724896" kindref="member">bestExternalType</ref>();</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a0a84b4a44a4fcd70911ec0c07c6f8eed" kindref="member">maxDimension</ref>();</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>aitIndex<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a44f6754e808121dca6b9ab52a7d6628d" kindref="member">maxBound</ref>(</highlight><highlight class="keywordtype">unsigned</highlight><highlight class="normal"><sp/>dimension);</highlight></codeline>
+<codeline lineno="113"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a06d377c5d0deb7c6d8f3ec3cc859cc66" kindref="member">readStatus</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="116"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1aa457add8c686fae769dd971045803af0" kindref="member">readSeverity</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="118"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1af5301cb84d1380040842bb42fae47e1b" kindref="member">readPrecision</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="119"><highlight class="normal"></highlight></codeline>
+<codeline lineno="120"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a09a23c560301e1a878593788077c123a" kindref="member">readHopr</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a83b5cb3c9b83ea0e8d753b327405b168" kindref="member">readLopr</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a8d18a5af7578ffe8f13e286785c53223" kindref="member">readHighAlarm</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="125"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ae8b9e84cf806a0dadd95b2441c10de3e" kindref="member">readHighWarn</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="128"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1aca888b5a0d1e0b5781a24ff4b0b9f845" kindref="member">readLowWarn</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="129"><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ac2e34c643275d1af817f4a21f2a8cfe0" kindref="member">readLowAlarm</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a1bb28a147155c7f42ebdfd408a61c0f7" kindref="member">readHighCtrl</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ab4bacdecb7c60e991576b6725072806b" kindref="member">readLowCtrl</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="135"><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1a7216f298dcf09ad4c33b69189b3c5318" kindref="member">readUnits</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>gddAppFuncTableStatus<sp/><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value_1ad3bac61dc336b1fdec0e0c0f3aa32913" kindref="member">readEnums</ref>(gdd<sp/>&amp;value);</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convienence</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="143" refid="namespacerogue_1_1protocols_1_1epicsV3_1a9f2c0af56c4ad44b4284a063b7ea8941" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::protocols::epicsV3::Value&gt;<sp/><ref refid="namespacerogue_1_1protocols_1_1epicsV3_1a9f2c0af56c4ad44b4284a063b7ea8941" kindref="member">ValuePtr</ref>;</highlight></codeline>
+<codeline lineno="144"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Destructor</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="146"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">template</highlight><highlight class="normal">&lt;</highlight><highlight class="keyword">typename</highlight><highlight class="normal"><sp/>T&gt;</highlight></codeline>
+<codeline lineno="147" refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor" kindref="compound">Destructor</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>gddDestructor<sp/>{</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>run<sp/>(</highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*<sp/>pUntyped)<sp/>{</highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>T<sp/>ps<sp/>=<sp/></highlight><highlight class="keyword">reinterpret_cast<sp/>&lt;</highlight><highlight class="normal">T</highlight><highlight class="keyword">&gt;</highlight><highlight class="normal">(pUntyped);</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">delete</highlight><highlight class="normal"><sp/>[]<sp/>ps;</highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="155"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="156"><highlight class="normal"></highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h"/>
+  </compounddef>
+</doxygen>

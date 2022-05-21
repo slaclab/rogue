@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1LogFilter" kind="class" language="C++" prot="public">
+    <compoundname>rogue::LogFilter</compoundname>
+    <includes refid="Logging_8h" local="no">Logging.h</includes>
+      <sectiondef kind="public-attrib">
+      <memberdef kind="variable" id="classrogue_1_1LogFilter_1aa5b741fc5d7c6a5769531fe534b150bb" prot="public" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string rogue::LogFilter::name_</definition>
+        <argsstring></argsstring>
+        <name>name_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="36" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1LogFilter_1a61b057650be4edafc80b8e7f285ab989" prot="public" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::LogFilter::level_</definition>
+        <argsstring></argsstring>
+        <name>level_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="37" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1LogFilter_1a4f4fa6490a61940c9cb08cfe429ab1a0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>rogue::LogFilter::LogFilter</definition>
+        <argsstring>(std::string name, uint32_t level)</argsstring>
+        <name>LogFilter</name>
+        <param>
+          <type>std::string</type>
+          <declname>name</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>level</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="39" column="10" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="39" bodyend="42"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Filter. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <collaborationgraph>
+      <node id="3">
+        <label>std::basic_string&lt; char &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::LogFilter</label>
+        <link refid="classrogue_1_1LogFilter"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>name_</edgelabel>
+        </childnode>
+      </node>
+      <node id="2">
+        <label>std::string</label>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" line="33" column="19" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Logging.h" bodystart="33" bodyend="43"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1LogFilter_1a61b057650be4edafc80b8e7f285ab989" prot="public" virt="non-virtual"><scope>rogue::LogFilter</scope><name>level_</name></member>
+      <member refid="classrogue_1_1LogFilter_1a4f4fa6490a61940c9cb08cfe429ab1a0" prot="public" virt="non-virtual"><scope>rogue::LogFilter</scope><name>LogFilter</name></member>
+      <member refid="classrogue_1_1LogFilter_1aa5b741fc5d7c6a5769531fe534b150bb" prot="public" virt="non-virtual"><scope>rogue::LogFilter</scope><name>name_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

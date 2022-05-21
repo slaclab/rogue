@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="Header_8h" kind="file" language="C++">
+    <compoundname>Header.h</compoundname>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">memory</includes>
+    <includes refid="Frame_8h" local="no">rogue/interfaces/stream/Frame.h</includes>
+    <incdepgraph>
+      <node id="2">
+        <label>stdint.h</label>
+      </node>
+      <node id="4">
+        <label>rogue/interfaces/stream/Frame.h</label>
+        <link refid="Frame_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue/EnableSharedFromThis.h</label>
+        <link refid="EnableSharedFromThis_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="6">
+        <label>vector</label>
+      </node>
+      <node id="7">
+        <label>mutex</label>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Header.h</label>
+        <link refid="Header_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>thread</label>
+      </node>
+      <node id="3">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classrogue_1_1protocols_1_1rssi_1_1Header" prot="public">rogue::protocols::rssi::Header</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols">rogue::protocols</innernamespace>
+    <innernamespace refid="namespacerogue_1_1protocols_1_1rssi">rogue::protocols::rssi</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="17"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_PROTOCOLS_RSSI_HEADER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_PROTOCOLS_RSSI_HEADER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Frame_8h" kindref="compound">rogue/interfaces/stream/Frame.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="24"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">protocols<sp/>{</highlight></codeline>
+<codeline lineno="25"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">rssi<sp/>{</highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28" refid="classrogue_1_1protocols_1_1rssi_1_1Header" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header" kindref="compound">Header</ref><sp/>{</highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setUInt16<sp/>(<sp/>uint8_t<sp/>*data,<sp/>uint8_t<sp/></highlight><highlight class="keywordtype">byte</highlight><highlight class="normal">,<sp/>uint16_t<sp/>value);</highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint16_t<sp/>getUInt16<sp/>(<sp/>uint8_t<sp/>*data,<sp/>uint8_t<sp/></highlight><highlight class="keywordtype">byte</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>setUInt32<sp/>(<sp/>uint8_t<sp/>*data,<sp/>uint8_t<sp/></highlight><highlight class="keywordtype">byte</highlight><highlight class="normal">,<sp/>uint32_t<sp/>value);</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">inline</highlight><highlight class="normal"><sp/>uint32_t<sp/>getUInt32<sp/>(<sp/>uint8_t<sp/>*data,<sp/>uint8_t<sp/></highlight><highlight class="keywordtype">byte</highlight><highlight class="normal"><sp/>);</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/>compSum<sp/>(uint8_t<sp/>*data,<sp/>uint8_t<sp/>size);</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="48" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ab40b573ae8130e21757e8a40098aee33" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/><sp/>int32_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ab40b573ae8130e21757e8a40098aee33" kindref="member">HeaderSize</ref><sp/>=<sp/>8;</highlight></codeline>
+<codeline lineno="49" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a9b3c2a403b17a2a45e3ee995ef568ad1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a9b3c2a403b17a2a45e3ee995ef568ad1" kindref="member">SynSize</ref><sp/><sp/><sp/><sp/>=<sp/>24;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame_;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/>time_;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/>count_;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="62"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="63"><highlight class="normal"></highlight></codeline>
+<codeline lineno="65"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::protocols::rssi::Header&gt;</highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a0735e150b426a9c9bafac9ae2f5c5971" kindref="member">create</ref>(std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame);</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a803d96b5c5c2950a4fed9c5e1ca39b2d" kindref="member">Header</ref>(std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/>frame);</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a10cb8bcdd0fdcab0814ba6b69f0b3dbc" kindref="member">~Header</ref>();</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="75"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt;<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1af7bd49c91abce43fdfbdf59fea7ed72f" kindref="member">getFrame</ref>();</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="78"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a8033b5ae693eaae2c5ecf5038beb4958" kindref="member">verify</ref>();</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a5fde7c3ebdf53897b7e09513ef66b6d3" kindref="member">update</ref>();</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/>&amp;<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a6e1c411199245e2a30e067e376aa625e" kindref="member">getTime</ref>();</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a899afda58d3e36faeff7dffe87a2f6aa" kindref="member">count</ref>();</highlight></codeline>
+<codeline lineno="88"><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a6fbb31a6fa34b5cdefd156a64561604a" kindref="member">rstTime</ref>();</highlight></codeline>
+<codeline lineno="91"><highlight class="normal"></highlight></codeline>
+<codeline lineno="93"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a3318fdcf31a0279d30b0b34b6bee084d" kindref="member">dump</ref>();</highlight></codeline>
+<codeline lineno="94"><highlight class="normal"></highlight></codeline>
+<codeline lineno="96" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a0c1e964fbbfa213b516549a681c90930" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a0c1e964fbbfa213b516549a681c90930" kindref="member">syn</ref>;</highlight></codeline>
+<codeline lineno="97"><highlight class="normal"></highlight></codeline>
+<codeline lineno="99" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a966dbda6b3ebfff32b9b92924086916b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a966dbda6b3ebfff32b9b92924086916b" kindref="member">ack</ref>;</highlight></codeline>
+<codeline lineno="100"><highlight class="normal"></highlight></codeline>
+<codeline lineno="102" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ac501745bf79f41d4152744d07fcf1389" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ac501745bf79f41d4152744d07fcf1389" kindref="member">rst</ref>;</highlight></codeline>
+<codeline lineno="103"><highlight class="normal"></highlight></codeline>
+<codeline lineno="105" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a94714c12f6cf4f5a2357539faf268dd8" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a94714c12f6cf4f5a2357539faf268dd8" kindref="member">nul</ref>;</highlight></codeline>
+<codeline lineno="106"><highlight class="normal"></highlight></codeline>
+<codeline lineno="108" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a6e16cf528c1e8eb030c557b8c8ad029e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a6e16cf528c1e8eb030c557b8c8ad029e" kindref="member">busy</ref>;</highlight></codeline>
+<codeline lineno="109"><highlight class="normal"></highlight></codeline>
+<codeline lineno="111" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1adc13dc16708d1f00d0e0e4d0d16a56cd" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1adc13dc16708d1f00d0e0e4d0d16a56cd" kindref="member">sequence</ref>;</highlight></codeline>
+<codeline lineno="112"><highlight class="normal"></highlight></codeline>
+<codeline lineno="114" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a78e61a8f5ffe1ed37a44a8b4859dad01" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a78e61a8f5ffe1ed37a44a8b4859dad01" kindref="member">acknowledge</ref>;</highlight></codeline>
+<codeline lineno="115"><highlight class="normal"></highlight></codeline>
+<codeline lineno="117" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1aa272a23979fac48cf39331134c70035f" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1aa272a23979fac48cf39331134c70035f" kindref="member">version</ref>;</highlight></codeline>
+<codeline lineno="118"><highlight class="normal"></highlight></codeline>
+<codeline lineno="120" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a319971bec37fd16a386c0b83f1c99419" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a319971bec37fd16a386c0b83f1c99419" kindref="member">chk</ref>;</highlight></codeline>
+<codeline lineno="121"><highlight class="normal"></highlight></codeline>
+<codeline lineno="123" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ad9e7c9c4d69241684a5c93a51b19da86" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ad9e7c9c4d69241684a5c93a51b19da86" kindref="member">maxOutstandingSegments</ref>;</highlight></codeline>
+<codeline lineno="124"><highlight class="normal"></highlight></codeline>
+<codeline lineno="126" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a975fbd05a3001629a4c865192464c6ef" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a975fbd05a3001629a4c865192464c6ef" kindref="member">maxSegmentSize</ref>;</highlight></codeline>
+<codeline lineno="127"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a923ec44551baf92ade1872f3de58ecd1" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a923ec44551baf92ade1872f3de58ecd1" kindref="member">retransmissionTimeout</ref>;</highlight></codeline>
+<codeline lineno="130"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ac6900994b5de58bcaa2feb707972669e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ac6900994b5de58bcaa2feb707972669e" kindref="member">cumulativeAckTimeout</ref>;</highlight></codeline>
+<codeline lineno="133"><highlight class="normal"></highlight></codeline>
+<codeline lineno="135" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ab66d9ae56b32ec8cda2e6062f8151565" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint16_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1ab66d9ae56b32ec8cda2e6062f8151565" kindref="member">nullTimeout</ref>;</highlight></codeline>
+<codeline lineno="136"><highlight class="normal"></highlight></codeline>
+<codeline lineno="138" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a5fc64bc7cef9ba004c95438d8d9ca570" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a5fc64bc7cef9ba004c95438d8d9ca570" kindref="member">maxRetransmissions</ref>;</highlight></codeline>
+<codeline lineno="139"><highlight class="normal"></highlight></codeline>
+<codeline lineno="141" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a3af256d815772b4f53caeabc123c26ac" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a3af256d815772b4f53caeabc123c26ac" kindref="member">maxCumulativeAck</ref>;</highlight></codeline>
+<codeline lineno="142"><highlight class="normal"></highlight></codeline>
+<codeline lineno="144" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1aad9f62cfe3347f62025f620e8b1a9194" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1aad9f62cfe3347f62025f620e8b1a9194" kindref="member">timeoutUnit</ref>;</highlight></codeline>
+<codeline lineno="145"><highlight class="normal"></highlight></codeline>
+<codeline lineno="147" refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a41a0e70f642eafdf294a83e3630ab639" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1protocols_1_1rssi_1_1Header_1a41a0e70f642eafdf294a83e3630ab639" kindref="member">connectionId</ref>;</highlight></codeline>
+<codeline lineno="148"><highlight class="normal"></highlight></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="151"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Convienence</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="152" refid="namespacerogue_1_1protocols_1_1rssi_1a7c40e2fe0bc2c102751b8ba7d92e061e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::protocols::rssi::Header&gt;<sp/><ref refid="namespacerogue_1_1protocols_1_1rssi_1a7c40e2fe0bc2c102751b8ba7d92e061e" kindref="member">HeaderPtr</ref>;</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="154"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="155"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="156"><highlight class="normal">};</highlight></codeline>
+<codeline lineno="157"><highlight class="normal"></highlight></codeline>
+<codeline lineno="158"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Header.h"/>
+  </compounddef>
+</doxygen>

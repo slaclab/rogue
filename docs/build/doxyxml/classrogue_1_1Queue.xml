@@ -1,0 +1,287 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1Queue" kind="class" language="C++" prot="public">
+    <compoundname>rogue::Queue</compoundname>
+    <includes refid="Queue_8h" local="no">Queue.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1Queue_1af9719cc8b2c1d9d488264fb87b3535a7" prot="private" static="no" mutable="no">
+        <type>std::queue&lt; T &gt;</type>
+        <definition>std::queue&lt;T&gt; rogue::Queue&lt; T &gt;::queue_</definition>
+        <argsstring></argsstring>
+        <name>queue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="31" column="22" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1a971756182a19be666f45ab410d545ce8" prot="private" static="no" mutable="yes">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::Queue&lt; T &gt;::mtx_</definition>
+        <argsstring></argsstring>
+        <name>mtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="32" column="30" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1aaa0782806377ef1e6d4539fada27fb42" prot="private" static="no" mutable="no">
+        <type>std::condition_variable</type>
+        <definition>std::condition_variable rogue::Queue&lt; T &gt;::pushCond_</definition>
+        <argsstring></argsstring>
+        <name>pushCond_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="33" column="35" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1af81c9b6f3980f846b233515b5ab0de9e" prot="private" static="no" mutable="no">
+        <type>std::condition_variable</type>
+        <definition>std::condition_variable rogue::Queue&lt; T &gt;::popCond_</definition>
+        <argsstring></argsstring>
+        <name>popCond_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="34" column="35" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1a028a620f50d0d388321c294d75612f1a" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::Queue&lt; T &gt;::max_</definition>
+        <argsstring></argsstring>
+        <name>max_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="35" column="20" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1a0acfa8df624cedcc0742d6ceb14237b6" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::Queue&lt; T &gt;::thold_</definition>
+        <argsstring></argsstring>
+        <name>thold_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="36" column="20" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1a54c0d8418f11272536c31b07ea6a23d1" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::Queue&lt; T &gt;::busy_</definition>
+        <argsstring></argsstring>
+        <name>busy_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="37" column="20" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1Queue_1acf7a1910c3a557fff4741dc24792dd9a" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::Queue&lt; T &gt;::run_</definition>
+        <argsstring></argsstring>
+        <name>run_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="38" column="20" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1Queue_1a5cce29c46667567969407c4ce8028329" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type></type>
+        <definition>rogue::Queue&lt; T &gt;::Queue</definition>
+        <argsstring>()</argsstring>
+        <name>Queue</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="41" column="11" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="41" bodyend="46"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1aaeaa5f0405eae55066922904054c6abc" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Queue&lt; T &gt;::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="48" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="48" bodyend="53"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1aa33a889cdb12b20589358441325c281f" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Queue&lt; T &gt;::setMax</definition>
+        <argsstring>(uint32_t max)</argsstring>
+        <name>setMax</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>max</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="55" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="55" bodyend="55"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1aaca337d5fe7decca6446ed17b9576dd9" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Queue&lt; T &gt;::setThold</definition>
+        <argsstring>(uint32_t thold)</argsstring>
+        <name>setThold</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>thold</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="57" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="57" bodyend="57"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1a81dc8688d68a626c4c0d03fa1efd7a0b" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Queue&lt; T &gt;::push</definition>
+        <argsstring>(T const &amp;data)</argsstring>
+        <name>push</name>
+        <param>
+          <type>T const &amp;</type>
+          <declname>data</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="59" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="59" bodyend="68"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1a4bbe8a907a4bac0e720bbf7ae4128c56" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::Queue&lt; T &gt;::empty</definition>
+        <argsstring>()</argsstring>
+        <name>empty</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="70" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="70" bodyend="72"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1afcf92375ec6941595cf3fe8719894ae2" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::Queue&lt; T &gt;::size</definition>
+        <argsstring>()</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="74" column="20" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="74" bodyend="77"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1a932318f18b36dc3e8d5ee9c64109ad22" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool rogue::Queue&lt; T &gt;::busy</definition>
+        <argsstring>()</argsstring>
+        <name>busy</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="79" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="79" bodyend="81"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1a68e1516378bf2e9f903e55638a584ae0" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::Queue&lt; T &gt;::reset</definition>
+        <argsstring>()</argsstring>
+        <name>reset</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="83" column="16" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="83" bodyend="88"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1Queue_1ab330629d0a26b534fc7a11ec9cdbe4ca" prot="public" static="no" const="no" explicit="no" inline="yes" virt="non-virtual">
+        <type>T</type>
+        <definition>T rogue::Queue&lt; T &gt;::pop</definition>
+        <argsstring>()</argsstring>
+        <name>pop</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="90" column="13" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="90" bodyend="101"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" line="29" column="15" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/Queue.h" bodystart="29" bodyend="102"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1Queue_1a932318f18b36dc3e8d5ee9c64109ad22" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>busy</name></member>
+      <member refid="classrogue_1_1Queue_1a54c0d8418f11272536c31b07ea6a23d1" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>busy_</name></member>
+      <member refid="classrogue_1_1Queue_1a4bbe8a907a4bac0e720bbf7ae4128c56" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>empty</name></member>
+      <member refid="classrogue_1_1Queue_1a028a620f50d0d388321c294d75612f1a" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>max_</name></member>
+      <member refid="classrogue_1_1Queue_1a971756182a19be666f45ab410d545ce8" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>mtx_</name></member>
+      <member refid="classrogue_1_1Queue_1ab330629d0a26b534fc7a11ec9cdbe4ca" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>pop</name></member>
+      <member refid="classrogue_1_1Queue_1af81c9b6f3980f846b233515b5ab0de9e" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>popCond_</name></member>
+      <member refid="classrogue_1_1Queue_1a81dc8688d68a626c4c0d03fa1efd7a0b" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>push</name></member>
+      <member refid="classrogue_1_1Queue_1aaa0782806377ef1e6d4539fada27fb42" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>pushCond_</name></member>
+      <member refid="classrogue_1_1Queue_1a5cce29c46667567969407c4ce8028329" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>Queue</name></member>
+      <member refid="classrogue_1_1Queue_1af9719cc8b2c1d9d488264fb87b3535a7" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>queue_</name></member>
+      <member refid="classrogue_1_1Queue_1a68e1516378bf2e9f903e55638a584ae0" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>reset</name></member>
+      <member refid="classrogue_1_1Queue_1acf7a1910c3a557fff4741dc24792dd9a" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>run_</name></member>
+      <member refid="classrogue_1_1Queue_1aa33a889cdb12b20589358441325c281f" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>setMax</name></member>
+      <member refid="classrogue_1_1Queue_1aaca337d5fe7decca6446ed17b9576dd9" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>setThold</name></member>
+      <member refid="classrogue_1_1Queue_1afcf92375ec6941595cf3fe8719894ae2" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>size</name></member>
+      <member refid="classrogue_1_1Queue_1aaeaa5f0405eae55066922904054c6abc" prot="public" virt="non-virtual"><scope>rogue::Queue</scope><name>stop</name></member>
+      <member refid="classrogue_1_1Queue_1a0acfa8df624cedcc0742d6ceb14237b6" prot="private" virt="non-virtual"><scope>rogue::Queue</scope><name>thold_</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

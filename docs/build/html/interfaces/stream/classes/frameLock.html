@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frame Lock &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Frame Iterator" href="frameIterator.html" />
+    <link rel="prev" title="Frame" href="frame.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../connecting.html">Connecting Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../sending.html">Sending Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../receiving.html">Receiving Frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFifo.html">Using A Fifo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../usingRateDrop.html">Using A Rate Drop Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../debugStreams.html">Debugging Streams</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Stream Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="frame.html">Frame</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Frame Lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameIterator.html">Frame Iterator</a></li>
+<li class="toctree-l4"><a class="reference internal" href="frameAccessor.html">Frame Accessor</a></li>
+<li class="toctree-l4"><a class="reference internal" href="helpers.html">Frame Helpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="master.html">Master</a></li>
+<li class="toctree-l4"><a class="reference internal" href="slave.html">Slave</a></li>
+<li class="toctree-l4"><a class="reference internal" href="fifo.html">Fifo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpCore.html">TcpCore</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpClient.html">TcpClient</a></li>
+<li class="toctree-l4"><a class="reference internal" href="tcpServer.html">TcpServer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="filter.html">Filter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rateDrop.html">RateDrop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="buffer.html">Buffer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pool.html">Pool</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../memory/index.html">Memory Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
+          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
+          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
+      <li>Frame Lock</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/interfaces/stream/classes/frameLock.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="frame-lock">
+<span id="interfaces-stream-frame-lock"></span><h1>Frame Lock<a class="headerlink" href="#frame-lock" title="Permalink to this headline"></a></h1>
+<p>FrameLock objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream12FrameLockPtrE">
+<span id="_CPPv3N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="_CPPv2N5rogue10interfaces6stream12FrameLockPtrE"></span><span id="rogue::interfaces::stream::FrameLockPtr"></span><span class="target" id="namespacerogue_1_1interfaces_1_1stream_1ad282a6c7aa64c4607580c16125f88308"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="rogue::interfaces::stream::FrameLock"><span class="n"><span class="pre">FrameLock</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FrameLockPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream12FrameLockPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Alias for using shared pointer as FrameLockPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLockE">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FrameLock</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition"></a><br /></dt>
+<dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Lock. </p>
+<p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is released when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">Frame::lock()</span></a> method. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4lockEv"></span><span id="rogue::interfaces::stream::FrameLock::lock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4lockEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Lock associated frame if not locked. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1aec723c30883fbc0e4cb64895c741c531"><span class="std std-ref">lock()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock6unlockEv"></span><span id="rogue::interfaces::stream::FrameLock::unlock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">unlock</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock6unlockEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>UnLock associated frame if locked. </p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a8208a7df89daa87a82c8f527e7ce6a4f"><span class="std std-ref">unlock()</span></a> to Python </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock5enterEv"></span><span id="rogue::interfaces::stream::FrameLock::enter"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a7539162561bd3af6592482816d9511b2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">enter</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock5enterEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enter method for python, does nothing. </p>
+<p>This exists only to support the with call in python.</p>
+<p>Exposed as <strong>enter</strong>() to Python </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv">
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLock4exitEPvPvPv"></span><span id="rogue::interfaces::stream::FrameLock::exit__voidP.voidP.voidP"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock_1a69bce60271c20a9e0961bb55d9a589df"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">exit</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span>, <span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span>, <span class="kt"><span class="pre">void</span></span><span class="p"><span class="pre">*</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLock4exitEPvPvPv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Exit method for python, does nothing. </p>
+<p>This exists only to support the with call in python.</p>
+<p>Exposed as <strong>exit</strong>() to Python </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="frame.html" class="btn btn-neutral float-left" title="Frame" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="frameIterator.html" class="btn btn-neutral float-right" title="Frame Iterator" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

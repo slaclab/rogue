@@ -1,0 +1,641 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1protocols_1_1packetizer_1_1Controller" kind="class" language="C++" prot="public">
+    <compoundname>rogue::protocols::packetizer::Controller</compoundname>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV1" prot="public" virt="non-virtual">rogue::protocols::packetizer::ControllerV1</derivedcompoundref>
+    <derivedcompoundref refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2" prot="public" virt="non-virtual">rogue::protocols::packetizer::ControllerV2</derivedcompoundref>
+    <includes refid="packetizer_2Controller_8h" local="no">Controller.h</includes>
+      <sectiondef kind="protected-attrib">
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ae4ec8c89326b09d75849f791e9aa63be" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::protocols::packetizer::Controller::enSsi_</definition>
+        <argsstring></argsstring>
+        <name>enSsi_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="40" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a94ff88a05ce6dc460fa9b37d15896471" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::appIndex_</definition>
+        <argsstring></argsstring>
+        <name>appIndex_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="41" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1aebb5645acba8e9e42f7a32bd234d65cb" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::tranIndex_</definition>
+        <argsstring></argsstring>
+        <name>tranIndex_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="42" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a693ab9d9c24983b1371efa62f1116096" prot="protected" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::protocols::packetizer::Controller::transSof_[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>transSof_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="43" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a5a174c7a3e13b81f0b0d1f1b7cf48b7f" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::tranCount_[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>tranCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="44" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1acc1fa41a4e810ae91c4c42f768fa8ff5" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::crc_[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>crc_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="45" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a707f6035cc16f3e664f08d27c8a58022" prot="protected" static="no" mutable="no">
+        <type>uint8_t</type>
+        <definition>uint8_t rogue::protocols::packetizer::Controller::tranDest_</definition>
+        <argsstring></argsstring>
+        <name>tranDest_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="46" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1aec36a2214132ef5957871c9feaef16a4" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::dropCount_</definition>
+        <argsstring></argsstring>
+        <name>dropCount_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="47" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a9af27bc7f5382266e3ba618f594f2f1a" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::headSize_</definition>
+        <argsstring></argsstring>
+        <name>headSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="48" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="48" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ac17fa0100db0be4d6efadd4478ae499a" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::tailSize_</definition>
+        <argsstring></argsstring>
+        <name>tailSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="49" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="49" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1aed0dff7ccfd5a8f09a22eeb1ee932229" prot="protected" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::alignSize_</definition>
+        <argsstring></argsstring>
+        <name>alignSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="50" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a7d00f0cd096d347bbb467fdb6e9bcfe6" prot="protected" static="no" mutable="no">
+        <type>struct timeval</type>
+        <definition>struct timeval rogue::protocols::packetizer::Controller::timeout_</definition>
+        <argsstring></argsstring>
+        <name>timeout_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="50" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="52" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1adeb5120aa3c7ed331940b601b6511357" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::protocols::packetizer::Controller::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="54" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a38ca1f01c42e6e02c2c2043fed51ae36" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::protocols::packetizer::Controller::tranFrame_[256]</definition>
+        <argsstring>[256]</argsstring>
+        <name>tranFrame_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="56" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a3cd366f425e2c58812dc36daf79268e1" prot="protected" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::protocols::packetizer::Controller::appMtx_</definition>
+        <argsstring></argsstring>
+        <name>appMtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="58" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="58" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a14ba5359c6a1623c359ec308017815ed" prot="protected" static="no" mutable="no">
+        <type>std::mutex</type>
+        <definition>std::mutex rogue::protocols::packetizer::Controller::tranMtx_</definition>
+        <argsstring></argsstring>
+        <name>tranMtx_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="59" column="27" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a84638dbc8e311af6b2b7f70dd5155dfd" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" kindref="compound">rogue::protocols::packetizer::Transport</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::Transport&gt; rogue::protocols::packetizer::Controller::tran_</definition>
+        <argsstring></argsstring>
+        <name>tran_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="61" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="61" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a7cd699a43f4e61828169385eb28d4cfc" prot="protected" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" kindref="compound">rogue::protocols::packetizer::Application</ref> &gt; *</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::packetizer::Application&gt;* rogue::protocols::packetizer::Controller::app_</definition>
+        <argsstring></argsstring>
+        <name>app_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="62" column="33" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a03a7e1a09ded73826be38b35f4c30f77" prot="protected" static="no" mutable="no">
+        <type><ref refid="classrogue_1_1Queue" kindref="compound">rogue::Queue</ref>&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt; &gt;</type>
+        <definition>rogue::Queue&lt;std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; &gt; rogue::protocols::packetizer::Controller::tranQueue_</definition>
+        <argsstring></argsstring>
+        <name>tranQueue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="64" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1afbae1488981837571d10fe200bb753e4" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::packetizer::Controller::Controller</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::protocols::packetizer::Transport &gt; tran, std::shared_ptr&lt; rogue::protocols::packetizer::Application &gt; *app, uint32_t headSize, uint32_t tailSize, uint32_t alignSize, bool enSsi)</argsstring>
+        <name>Controller</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" kindref="compound">rogue::protocols::packetizer::Transport</ref> &gt;</type>
+          <declname>tran</declname>
+        </param>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Application" kindref="compound">rogue::protocols::packetizer::Application</ref> &gt; *</type>
+          <declname>app</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>headSize</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>tailSize</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>alignSize</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>enSsi</declname>
+        </param>
+        <briefdescription>
+<para>Creator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="69" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a6def90a90ce452f580915b4a4722a1c8" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::packetizer::Controller::~Controller</definition>
+        <argsstring>()</argsstring>
+        <name>~Controller</name>
+        <briefdescription>
+<para>Destructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="74" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1af97c3eda0791cfe774723d116d8971ef" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::protocols::packetizer::Controller::reqFrame</definition>
+        <argsstring>(uint32_t size)</argsstring>
+        <name>reqFrame</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <briefdescription>
+<para><ref refid="classrogue_1_1protocols_1_1packetizer_1_1Transport" kindref="compound">Transport</ref> frame allocation request. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="77" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ad8b0fd2a4792b738b30d24162890ebf9" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::protocols::packetizer::Controller::transportRx</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>transportRx</name>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV1_1af5030f8302bc16cb06c40f3c70cdc115">transportRx</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1a3b327d3b2922671dd68f56f4daa94b78">transportRx</reimplementedby>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+<para>Frame received at transport interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="80" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a40b40a8f2fe16c22d770ac1d6f56329f" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::packetizer::Controller::stopQueue</definition>
+        <argsstring>()</argsstring>
+        <name>stopQueue</name>
+        <briefdescription>
+<para>Stop transmit queue. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="83" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a4e6cca32644f23bb02d01faf9e12e344" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::packetizer::Controller::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <briefdescription>
+<para>Stop. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="86" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a0784be1dec82503df012ecc3b4c88951" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::protocols::packetizer::Controller::transportTx</definition>
+        <argsstring>()</argsstring>
+        <name>transportTx</name>
+        <briefdescription>
+<para>Interface for transport transmitter thread. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="89" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ae99ef613dda7e09996eb783dde78f9e6" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::protocols::packetizer::Controller::applicationRx</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame, uint8_t id)</argsstring>
+        <name>applicationRx</name>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV1_1a5289f399e4f917210601377fa28c02f5">applicationRx</reimplementedby>
+        <reimplementedby refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2_1aedc05ab8c0afa5029981b68d450ca006">applicationRx</reimplementedby>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <param>
+          <type>uint8_t</type>
+          <declname>id</declname>
+        </param>
+        <briefdescription>
+<para>Frame received at application interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="92" column="29"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ad53183070119e5065f584b4ff42ec7ca" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::protocols::packetizer::Controller::getDropCount</definition>
+        <argsstring>()</argsstring>
+        <name>getDropCount</name>
+        <briefdescription>
+<para>Get drop count. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="95" column="25"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1packetizer_1_1Controller_1add76a8091bfd00aba3961bd1dc65b428" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::packetizer::Controller::setTimeout</definition>
+        <argsstring>(uint32_t timeout)</argsstring>
+        <name>setTimeout</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Set timeout in microseconds for frame transmits. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="98" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Packetizer <ref refid="classrogue_1_1protocols_1_1packetizer_1_1Controller" kindref="compound">Controller</ref> Class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::protocols::packetizer::Controller</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Controller"/>
+      </node>
+      <node id="2">
+        <label>rogue::protocols::packetizer::ControllerV1</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV1"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::protocols::packetizer::ControllerV2</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1ControllerV2"/>
+        <childnode refid="1" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>std::shared_ptr&lt; rogue::protocols::packetizer::Transport &gt;</label>
+        <childnode refid="3" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="19">
+        <label>std::shared_ptr&lt; rogue::protocols::packetizer::Application &gt;</label>
+        <childnode refid="20" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="5">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="10" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>rogue::interfaces::stream::Frame</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Frame"/>
+        <childnode refid="15" relation="public-inheritance">
+        </childnode>
+        <childnode refid="12" relation="usage">
+          <edgelabel>lock_</edgelabel>
+        </childnode>
+      </node>
+      <node id="15">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Frame &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::protocols::packetizer::Controller</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Controller"/>
+        <childnode refid="2" relation="usage">
+          <edgelabel>tran_</edgelabel>
+        </childnode>
+        <childnode refid="12" relation="usage">
+          <edgelabel>appMtx_</edgelabel>
+          <edgelabel>tranMtx_</edgelabel>
+        </childnode>
+        <childnode refid="13" relation="usage">
+          <edgelabel>tranFrame_</edgelabel>
+        </childnode>
+        <childnode refid="16" relation="usage">
+          <edgelabel>tranQueue_</edgelabel>
+        </childnode>
+        <childnode refid="17" relation="usage">
+          <edgelabel>log_</edgelabel>
+        </childnode>
+        <childnode refid="19" relation="usage">
+          <edgelabel>app_</edgelabel>
+        </childnode>
+      </node>
+      <node id="12">
+        <label>std::mutex</label>
+      </node>
+      <node id="20">
+        <label>rogue::protocols::packetizer::Application</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Application"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>rogue::protocols::packetizer::Transport</label>
+        <link refid="classrogue_1_1protocols_1_1packetizer_1_1Transport"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="17">
+        <label>std::shared_ptr&lt; rogue::Logging &gt;</label>
+        <childnode refid="18" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="13">
+        <label>std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt;</label>
+        <childnode refid="14" relation="usage">
+          <edgelabel>ptr</edgelabel>
+        </childnode>
+      </node>
+      <node id="18">
+        <label>rogue::Logging</label>
+        <link refid="classrogue_1_1Logging"/>
+      </node>
+      <node id="10">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="16">
+        <label>rogue::Queue&lt; std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; &gt;</label>
+        <link refid="classrogue_1_1Queue"/>
+      </node>
+      <node id="8">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+        <childnode refid="11" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" line="35" column="26" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/packetizer/Controller.h" bodystart="35" bodyend="99"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1aed0dff7ccfd5a8f09a22eeb1ee932229" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>alignSize_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a7cd699a43f4e61828169385eb28d4cfc" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>app_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a94ff88a05ce6dc460fa9b37d15896471" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>appIndex_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ae99ef613dda7e09996eb783dde78f9e6" prot="public" virt="virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>applicationRx</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a3cd366f425e2c58812dc36daf79268e1" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>appMtx_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1afbae1488981837571d10fe200bb753e4" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>Controller</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1acc1fa41a4e810ae91c4c42f768fa8ff5" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>crc_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1aec36a2214132ef5957871c9feaef16a4" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>dropCount_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ae4ec8c89326b09d75849f791e9aa63be" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>enSsi_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ad53183070119e5065f584b4ff42ec7ca" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>getDropCount</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a9af27bc7f5382266e3ba618f594f2f1a" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>headSize_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1adeb5120aa3c7ed331940b601b6511357" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>log_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1af97c3eda0791cfe774723d116d8971ef" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>reqFrame</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1add76a8091bfd00aba3961bd1dc65b428" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a4e6cca32644f23bb02d01faf9e12e344" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>stop</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a40b40a8f2fe16c22d770ac1d6f56329f" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>stopQueue</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ac17fa0100db0be4d6efadd4478ae499a" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tailSize_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a7d00f0cd096d347bbb467fdb6e9bcfe6" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>timeout_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a84638dbc8e311af6b2b7f70dd5155dfd" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tran_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a5a174c7a3e13b81f0b0d1f1b7cf48b7f" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tranCount_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a707f6035cc16f3e664f08d27c8a58022" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tranDest_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a38ca1f01c42e6e02c2c2043fed51ae36" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tranFrame_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1aebb5645acba8e9e42f7a32bd234d65cb" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tranIndex_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a14ba5359c6a1623c359ec308017815ed" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tranMtx_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a03a7e1a09ded73826be38b35f4c30f77" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>tranQueue_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1ad8b0fd2a4792b738b30d24162890ebf9" prot="public" virt="virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>transportRx</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a0784be1dec82503df012ecc3b4c88951" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>transportTx</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a693ab9d9c24983b1371efa62f1116096" prot="protected" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>transSof_</name></member>
+      <member refid="classrogue_1_1protocols_1_1packetizer_1_1Controller_1a6def90a90ce452f580915b4a4722a1c8" prot="public" virt="non-virtual"><scope>rogue::protocols::packetizer::Controller</scope><name>~Controller</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

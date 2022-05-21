@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="dir_f8eedd23efcd078c963f3ef5ecda1b96" kind="dir">
+    <compoundname>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi</compoundname>
+    <innerfile refid="AxiMemMap_8h">AxiMemMap.h</innerfile>
+    <innerfile refid="AxiStreamDma_8h">AxiStreamDma.h</innerfile>
+    <innerfile refid="hardware_2axi_2module_8h">module.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/"/>
+  </compounddef>
+</doxygen>

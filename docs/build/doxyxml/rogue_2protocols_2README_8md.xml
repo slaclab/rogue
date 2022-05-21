@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="rogue_2protocols_2README_8md" kind="file" language="Markdown">
+    <compoundname>README.md</compoundname>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline><highlight class="normal">Directory<sp/>for<sp/>protocol<sp/>modules.</highlight></codeline>
+<codeline></codeline>
+<codeline><highlight class="normal">map:<sp/>Memory<sp/>access<sp/>protocol.</highlight></codeline>
+<codeline><highlight class="normal">packetizer:<sp/>Break<sp/>large<sp/>frames<sp/>into<sp/>smaller<sp/>packets.</highlight></codeline>
+<codeline><highlight class="normal">rssi:<sp/>Reliable<sp/>SLAC<sp/>streaming<sp/>interface.</highlight></codeline>
+<codeline><highlight class="normal">srp:<sp/>SLAC<sp/>register<sp/>access<sp/>protocol</highlight></codeline>
+<codeline><highlight class="normal">udp:<sp/>UDP<sp/>protocol<sp/>module</highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/README.md"/>
+  </compounddef>
+</doxygen>

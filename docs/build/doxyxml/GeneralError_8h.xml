@@ -1,0 +1,127 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="GeneralError_8h" kind="file" language="C++">
+    <compoundname>GeneralError.h</compoundname>
+    <includes local="no">exception</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">string</includes>
+    <includes local="no">memory</includes>
+    <includes local="no">boost/python.hpp</includes>
+    <includedby refid="FrameAccessor_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameAccessor.h</includedby>
+    <incdepgraph>
+      <node id="3">
+        <label>stdint.h</label>
+      </node>
+      <node id="4">
+        <label>string</label>
+      </node>
+      <node id="2">
+        <label>exception</label>
+      </node>
+      <node id="6">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/GeneralError.h</label>
+        <link refid="GeneralError_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/GeneralError.h</label>
+        <link refid="GeneralError_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/FrameAccessor.h</label>
+        <link refid="FrameAccessor_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1GeneralError" prot="public">rogue::GeneralError</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="GeneralError_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : General Error </heading>
+</para>
+<para>File : <ref refid="GeneralError_8h" kindref="compound">GeneralError.h</ref> <heading level="2">Created : 2017-12-05 </heading>
+</para>
+<para>Description: <heading level="2">General exception for Rogue </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/GeneralError.h" line="28" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/GeneralError.h" bodystart="28" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="20"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_GENERAL_ERROR_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_GENERAL_ERROR_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;exception&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;string&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28" refid="GeneralError_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">extern</highlight><highlight class="normal"><sp/>PyObject<sp/>*<sp/><ref refid="namespacerogue_1a05c4a0d4f23c99d387025937c9fb394d" kindref="member">generalErrorObj</ref>;</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="comment">/*</highlight></codeline>
+<codeline lineno="40"><highlight class="comment"><sp/><sp/><sp/><sp/>*<sp/>Called<sp/>for<sp/>all<sp/>general<sp/>errors<sp/>that<sp/>should<sp/>not<sp/>occur</highlight></codeline>
+<codeline lineno="41"><highlight class="comment"><sp/><sp/><sp/><sp/>*<sp/>in<sp/>the<sp/>system.</highlight></codeline>
+<codeline lineno="42"><highlight class="comment"><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="43" refid="classrogue_1_1GeneralError" refkind="compound"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1GeneralError" kindref="compound">GeneralError</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/>std::exception<sp/>{</highlight></codeline>
+<codeline lineno="44"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>uint32_t<sp/>BuffSize<sp/>=<sp/>600;</highlight></codeline>
+<codeline lineno="46"><highlight class="normal"></highlight></codeline>
+<codeline lineno="47"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>text_[BuffSize];</highlight></codeline>
+<codeline lineno="48"><highlight class="normal"></highlight></codeline>
+<codeline lineno="49"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1GeneralError_1a4af927686545e1364d8b7d5600fd0170" kindref="member">GeneralError</ref><sp/>(std::string<sp/>src,std::string<sp/>text);</highlight></codeline>
+<codeline lineno="51"><highlight class="normal"></highlight></codeline>
+<codeline lineno="52"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1GeneralError" kindref="compound">GeneralError</ref><sp/><ref refid="classrogue_1_1GeneralError_1ab9aec3ec80983c891d1b14ce61fd6703" kindref="member">create</ref>(std::string<sp/>src,<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="53"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>*<sp/><ref refid="classrogue_1_1GeneralError_1a5cb29614ef61df4a668f4cd97368dfa9" kindref="member">what</ref>()<sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordflow">throw</highlight><highlight class="normal">();</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1GeneralError_1a4d8ee6c7a7f2040acf68c24d2f6c4eee" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1GeneralError_1a374fdf5ffba36017ee688c15ce357973" kindref="member">translate</ref>(<ref refid="classrogue_1_1GeneralError" kindref="compound">GeneralError</ref><sp/></highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/>&amp;e);</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="58"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="59"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/GeneralError.h"/>
+  </compounddef>
+</doxygen>

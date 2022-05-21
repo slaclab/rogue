@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PgpCard &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="Status" href="status.html" />
+    <link rel="prev" title="PGP Hardware Interface Class Descriptions" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../axi/index.html">Generic AXI Hardware Interface</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">PGP Card Hardware Interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">PGP Hardware Interface Class Descriptions</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">PgpCard</a></li>
+<li class="toctree-l4"><a class="reference internal" href="status.html">Status</a></li>
+<li class="toctree-l4"><a class="reference internal" href="info.html">Info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pciStatus.html">PciStatus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="evrStatus.html">EvrStatus</a></li>
+<li class="toctree-l4"><a class="reference internal" href="evrControl.html">EvrControl</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../raw/index.html">Raw Hardware Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Hardware</a> &raquo;</li>
+          <li><a href="../index.html">PGP Card Hardware Interface</a> &raquo;</li>
+          <li><a href="index.html">PGP Hardware Interface Class Descriptions</a> &raquo;</li>
+      <li>PgpCard</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/hardware/pgp/classes/pgpCard.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pgpcard">
+<span id="hardware-pgp-pgp-cardp"></span><h1>PgpCard<a class="headerlink" href="#pgpcard" title="Permalink to this headline"></a></h1>
+<p>PgpCard objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp10PgpCardPtrE">
+<span id="_CPPv3N5rogue8hardware3pgp10PgpCardPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp10PgpCardPtrE"></span><span id="rogue::hardware::pgp::PgpCardPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1af88d3b462d3c69f0848161eb7cea65fb"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp7PgpCardE" title="rogue::hardware::pgp::PgpCard"><span class="n"><span class="pre">PgpCard</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">PgpCardPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp10PgpCardPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Alias for using shared pointer as PgpCardPtr. </p>
+</dd></dl>
+
+<p>The class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCardE">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCardE"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCardE"></span><span id="rogue::hardware::pgp::PgpCard"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">PgpCard</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCardE" title="Permalink to this definition"></a><br /></dt>
+<dd><p><a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> Class. </p>
+<p>This class provides a bridge between the Rogue stream interface and the pgpcard target of the AES Stream Drivers device drivers. This bridge allows Rogue Frames to be sent and received to PGPCard boards. This interface will allocate Frame and Buffer objects using memory mapped DMA buffers or from a local memory pool when zero copy mode is disabled or a Frame with is requested with the zero copy flag set to false. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard4stopEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard4stopEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard4stopEv"></span><span id="rogue::hardware::pgp::PgpCard::stop"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ad58cf3a398ed54cb5e1a2a4fed4d64aa"></span><span class="k"><span class="pre">virtual</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">stop</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard4stopEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stop the interface. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::setTimeout__uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a0c35c236912e15f61c59c305c6dd48b2"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setTimeout</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">timeout</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard10setTimeoutE8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set timeout for frame transmits in microseconds. </p>
+<p>This setting defines how long to wait for the lower level driver to be ready to send data.</p>
+<p>Exposed to python as SetTimeout() </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Timeout value in microseconds </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb"></span><span id="rogue::hardware::pgp::PgpCard::setZeroCopyEn__b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6bf7ddc1fc7339d2b1467a58c524020a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setZeroCopyEn</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">state</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13setZeroCopyEnEb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enable / disable zero copy. </p>
+<p>By default the <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> class attempts to take advantage of the zero copy mode of the lower level driver if supported. In zero copy mode the Frame Buffer objects are mapped directly to the DMA buffers allocated by the kernel. This allows for direct user space access to the memory which the lower level DMA engines uses. When zero copy mode is disabled a memory buffer will be allocated using the Pool class and the DMA data will be coped to or from this buffer.</p>
+<p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a6bf7ddc1fc7339d2b1467a58c524020a"><span class="std std-ref">setZeroCopyEn()</span></a> </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> – Boolean indicating zero copy mode </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard7getInfoEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7getInfoEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7getInfoEv"></span><span id="rogue::hardware::pgp::PgpCard::getInfo"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa150552a727973e97a387b964cbb0934"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="info.html#_CPPv4N5rogue8hardware3pgp4InfoE" title="rogue::hardware::pgp::Info"><span class="n"><span class="pre">Info</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getInfo</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7getInfoEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get PGP card info. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="info.html#classrogue_1_1hardware_1_1pgp_1_1Info"><span class="std std-ref">Info</span></a> object pointer (InfoPtr) containing the PGPCard information </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard12getPciStatusEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard12getPciStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12getPciStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getPciStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ac2e179c7b038405d48ab1e412d280fdf"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="pciStatus.html#_CPPv4N5rogue8hardware3pgp9PciStatusE" title="rogue::hardware::pgp::PciStatus"><span class="n"><span class="pre">PciStatus</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getPciStatus</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12getPciStatusEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get pci status. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pciStatus.html#classrogue_1_1hardware_1_1pgp_1_1PciStatus"><span class="std std-ref">PciStatus</span></a> object pointer (PciStatusPtr) containing the PCI status </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard9getStatusEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard9getStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard9getStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1acaf6d7d0a27498810e6a73fbee6f9247"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="status.html#_CPPv4N5rogue8hardware3pgp6StatusE" title="rogue::hardware::pgp::Status"><span class="n"><span class="pre">Status</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getStatus</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard9getStatusEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get status of open lane. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="status.html#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">Status</span></a> object pointer (StatusPtr) for current lane </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard13getEvrControlEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard13getEvrControlEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13getEvrControlEv"></span><span id="rogue::hardware::pgp::PgpCard::getEvrControl"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a28982bcbaa320e3dc01ef95efa76b4b8"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="evrControl.html#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl"><span class="n"><span class="pre">EvrControl</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getEvrControl</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13getEvrControlEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get evr control for open lane. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="evrControl.html#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">EvrControl</span></a> object pointer (EvrControlPtr) for current lane </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE"></span><span id="rogue::hardware::pgp::PgpCard::setEvrControl__std::shared_ptr:rogue::hardware::pgp::EvrControl:"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aef14aca78ff94d4dc8fac2dff04277cf"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setEvrControl</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="evrControl.html#_CPPv4N5rogue8hardware3pgp10EvrControlE" title="rogue::hardware::pgp::EvrControl"><span class="n"><span class="pre">EvrControl</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">r</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard13setEvrControlENSt10shared_ptrIN5rogue8hardware3pgp10EvrControlEEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set evr control for open lane. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>r</strong> – <a class="reference internal" href="evrControl.html#classrogue_1_1hardware_1_1pgp_1_1EvrControl"><span class="std std-ref">EvrControl</span></a> object pointer (EvrControlPtr) with new configuration </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard12getEvrStatusEv">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard12getEvrStatusEv"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard12getEvrStatusEv"></span><span id="rogue::hardware::pgp::PgpCard::getEvrStatus"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1a5185739e8fa374b870f95726b25ac9d5"></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="evrStatus.html#_CPPv4N5rogue8hardware3pgp9EvrStatusE" title="rogue::hardware::pgp::EvrStatus"><span class="n"><span class="pre">EvrStatus</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getEvrStatus</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard12getEvrStatusEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get evr status for open lane. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="evrStatus.html#classrogue_1_1hardware_1_1pgp_1_1EvrStatus"><span class="std std-ref">EvrStatus</span></a> object pointer (EvrStatusPtr) for current lane </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard7setLoopEb">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7setLoopEb"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7setLoopEb"></span><span id="rogue::hardware::pgp::PgpCard::setLoop__b"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa6f7d33c13d6dfe49735dac9d05f64fa"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLoop</span></span></span><span class="sig-paren">(</span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">enable</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7setLoopEb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set loopback for open lane. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enable</strong> – Enable flag for lane loopback </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t"></span><span id="rogue::hardware::pgp::PgpCard::setData__uint8_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1af43d3370ef95c9120ba74af56135fbe5"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setData</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">data</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard7setDataE7uint8_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set lane data for open lane. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> – Sideband data value lane </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t"></span><span id="rogue::hardware::pgp::PgpCard::sendOpCode__uint8_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1ab34cad3cfff64cfb2aaca8cbe5b1c8cb"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">sendOpCode</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">code</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard10sendOpCodeE7uint8_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Send an opcode. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>code</strong> – Opcode to send on lane </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t"></span><span id="rogue::hardware::pgp::PgpCard::create__ss.uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1PgpCard_1aa4cce5561609236714c2d911e5b7cc68"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp7PgpCardE" title="rogue::hardware::pgp::PgpCard"><span class="n"><span class="pre">PgpCard</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">string</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">path</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lane</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">vc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp7PgpCard6createENSt6stringE8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Class factory which returns a PgpCardPtr to a newly created <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> object. </p>
+<p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">rogue.hardware.pgp.PgpCard()</span></a></p>
+<p>The lane and VC fields define the specific PGP lane and virtual channel on that lane that this stream interface will be attached to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – Path to device. i.e /dev/pgpcard_0 </p></li>
+<li><p><strong>lane</strong> – PGP lane to attach to </p></li>
+<li><p><strong>vc</strong> – Lane virtual channel to attach to </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">PgpCard</span></a> pointer (PgpCardPtr) </p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="PGP Hardware Interface Class Descriptions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="status.html" class="btn btn-neutral float-right" title="Status" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

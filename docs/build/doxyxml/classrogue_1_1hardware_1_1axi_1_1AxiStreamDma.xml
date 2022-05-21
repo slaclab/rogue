@@ -1,0 +1,707 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kind="class" language="C++" prot="public">
+    <compoundname>rogue::hardware::axi::AxiStreamDma</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Master" prot="public" virt="non-virtual">rogue::interfaces::stream::Master</basecompoundref>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::stream::Slave</basecompoundref>
+    <includes refid="AxiStreamDma_8h" local="no">AxiStreamDma.h</includes>
+      <sectiondef kind="private-static-attrib">
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ac103f95eea82eb13cf1e57ff7517f4da" prot="private" static="yes" mutable="no">
+        <type>const uint32_t</type>
+        <definition>const uint32_t rogue::hardware::axi::AxiStreamDma::RxBufferCount</definition>
+        <argsstring></argsstring>
+        <name>RxBufferCount</name>
+        <initializer>= 100</initializer>
+        <briefdescription>
+<para>Max number of buffers to receive at once. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="41" column="38" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a23f15c487f2ac51954d13128c11b600d" prot="private" static="no" mutable="no">
+        <type>int32_t</type>
+        <definition>int32_t rogue::hardware::axi::AxiStreamDma::fd_</definition>
+        <argsstring></argsstring>
+        <name>fd_</name>
+        <briefdescription>
+<para><ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">AxiStreamDma</ref> file descriptor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="44" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad9bda2c6d297d160b3cb56d58e394be6" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::hardware::axi::AxiStreamDma::dest_</definition>
+        <argsstring></argsstring>
+        <name>dest_</name>
+        <briefdescription>
+<para>Open Dest. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="47" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a0d56e56570ea3366cecf431178b014c9" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::hardware::axi::AxiStreamDma::bCount_</definition>
+        <argsstring></argsstring>
+        <name>bCount_</name>
+        <briefdescription>
+<para>Number of buffers available for zero copy. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="50" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="50" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a10e423ca3ef0f7e5da2d97632de2e1e4" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::hardware::axi::AxiStreamDma::bSize_</definition>
+        <argsstring></argsstring>
+        <name>bSize_</name>
+        <briefdescription>
+<para>Size of buffers in hardware. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="53" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="53" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1afdc158ad48b247bf192a81ca12155ce3" prot="private" static="no" mutable="no">
+        <type>struct timeval</type>
+        <definition>struct timeval rogue::hardware::axi::AxiStreamDma::timeout_</definition>
+        <argsstring></argsstring>
+        <name>timeout_</name>
+        <briefdescription>
+<para>Timeout for frame transmits. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="53" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a99b6064f37fc82ea8556d002a5c83e4d" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::hardware::axi::AxiStreamDma::enSsi_</definition>
+        <argsstring></argsstring>
+        <name>enSsi_</name>
+        <briefdescription>
+<para>ssi insertion enable </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="59" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a1cecb353b5222dd43f104c9752a7cdd3" prot="private" static="no" mutable="no">
+        <type>void **</type>
+        <definition>void** rogue::hardware::axi::AxiStreamDma::rawBuff_</definition>
+        <argsstring></argsstring>
+        <name>rawBuff_</name>
+        <briefdescription>
+<para>Pointer to zero copy buffers. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="62" column="23" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ac976211bf83df436b50b4274b00d03d7" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::hardware::axi::AxiStreamDma::thread_</definition>
+        <argsstring></argsstring>
+        <name>thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="64" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="64" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ae6e527369a16e39f4f268e6ba2eb9788" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::hardware::axi::AxiStreamDma::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="65" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a742d68f08afbbb331a8a7695c7633afa" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::hardware::axi::AxiStreamDma::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+<para>Log. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="68" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="68" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1aa5f133c108eb668699d80a13e3f24dde" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::hardware::axi::AxiStreamDma::zeroCopyEn_</definition>
+        <argsstring></argsstring>
+        <name>zeroCopyEn_</name>
+        <briefdescription>
+<para>Enable zero copy. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="74" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="74" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a8f7299be020f4fe0bd275d3781c51030" prot="private" static="no" mutable="no">
+        <type><ref refid="classrogue_1_1Queue" kindref="compound">rogue::Queue</ref>&lt; uint32_t &gt;</type>
+        <definition>rogue::Queue&lt;uint32_t&gt; rogue::hardware::axi::AxiStreamDma::retQueue_</definition>
+        <argsstring></argsstring>
+        <name>retQueue_</name>
+        <briefdescription>
+<para>Return queue. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="77" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="77" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a121f4b63556d58903394a8426ab824d2" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::hardware::axi::AxiStreamDma::retThold_</definition>
+        <argsstring></argsstring>
+        <name>retThold_</name>
+        <briefdescription>
+<para>Return thold. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="80" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="80" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a0bfbaa9674a2f415b560d38d4b36fe89" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::runThread</definition>
+        <argsstring>(std::weak_ptr&lt; int &gt;)</argsstring>
+        <name>runThread</name>
+        <param>
+          <type>std::weak_ptr&lt; int &gt;</type>
+        </param>
+        <briefdescription>
+<para>Thread background. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="71" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">rogue::hardware::axi::AxiStreamDma</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::hardware::axi::AxiStreamDma&gt; rogue::hardware::axi::AxiStreamDma::create</definition>
+        <argsstring>(std::string path, uint32_t dest, bool ssiEnable)</argsstring>
+        <name>create</name>
+        <param>
+          <type>std::string</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>ssiEnable</declname>
+        </param>
+        <briefdescription>
+<para>Class factory which returns a AxiStreamDmaPtr to a newly created <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">AxiStreamDma</ref> object. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to Python as <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">rogue.hardware.axi.AxiStreamDma()</ref></para>
+<para>The destination field is a sideband signal provided in the AxiStream protocol which allows a single interface to handle multiple frames with different purposes. The use of this field is driver specific, but the lower 8-bits are typically passed in the tDest field of the hardware frame and bits 8 and up are used to index the dma channel in the lower level hardware.</para>
+<para>The SSI Enable flag determines if the hardware frame follows the SLAC Streaming interface standard. This standard defines a SOF flag in the first user field at bit 1 and and EOFE flag in the last user field bit 0. <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>path</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Path to device. i.e /dev/datadev_0 </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>dest</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Destination index for dma transactions </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>ssiEnable</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Enable SSI user fields </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">AxiStreamDma</ref> pointer (AxiStreamDmaPtr) </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="103" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a11fc408624bed1e354a955e19ba7170a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::hardware::axi::AxiStreamDma::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="106" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a94a1a93fb0f066f030e53c7d02c24259" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::hardware::axi::AxiStreamDma::AxiStreamDma</definition>
+        <argsstring>(std::string path, uint32_t dest, bool ssiEnable)</argsstring>
+        <name>AxiStreamDma</name>
+        <param>
+          <type>std::string</type>
+          <declname>path</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>dest</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>ssiEnable</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="109" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a68aad150acfa77323c751755016935a3" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::hardware::axi::AxiStreamDma::~AxiStreamDma</definition>
+        <argsstring>()</argsstring>
+        <name>~AxiStreamDma</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="112" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a91de9045eecd13ce9a50ca77d37eb89d" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::stop</definition>
+        <argsstring>()</argsstring>
+        <name>stop</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a212216679fa253e58bda52b621a66dd5">stop</reimplements>
+        <briefdescription>
+<para>Stop the interface. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="115" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::setTimeout</definition>
+        <argsstring>(uint32_t timeout)</argsstring>
+        <name>setTimeout</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>timeout</declname>
+        </param>
+        <briefdescription>
+<para>Set timeout for frame transmits in microseconds. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This setting defines how long to wait for the lower level driver to be ready to send data. The current implementation will generate a warning message after each timeout but will continue to wait for the driver.</para>
+<para>Exposed to python as SetTimeout() <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>timeout</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Timeout value in microseconds </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="126" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::setDriverDebug</definition>
+        <argsstring>(uint32_t level)</argsstring>
+        <name>setDriverDebug</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>level</declname>
+        </param>
+        <briefdescription>
+<para>Set driver debug level. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function forwards the passed level value as a debug level to the lower level driver. Current drivers have a single level of 1, but any positive value will enable debug. Debug messages can be reviewed using the Linux command &apos;dmesg&apos;</para>
+<para>Exposed to python as <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301" kindref="member">setDriverDebug()</ref> <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>level</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Debug level, &gt;= 1 enabled debug </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="137" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::setZeroCopyEn</definition>
+        <argsstring>(bool state)</argsstring>
+        <name>setZeroCopyEn</name>
+        <param>
+          <type>bool</type>
+          <declname>state</declname>
+        </param>
+        <briefdescription>
+<para>Enable / disable zero copy. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>By default the <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma" kindref="compound">AxiStreamDma</ref> class attempts to take advantage of the zero copy mode of the lower level driver if supported. In zero copy mode the Frame Buffer objects are mapped directly to the DMA buffers allocated by the kernel. This allows for direct user space access to the memory which the lower level DMA engines uses. When zero copy mode is disabled a memory buffer will be allocated using the Pool class and the DMA data will be coped to or from this buffer.</para>
+<para>Exposed to python as <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83" kindref="member">setZeroCopyEn()</ref> <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>state</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Boolean indicating zero copy mode </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="152" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::dmaAck</definition>
+        <argsstring>()</argsstring>
+        <name>dmaAck</name>
+        <briefdescription>
+<para>Strobe ack line (hardware specific) </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This method forwards an ack command to the lower level driver. This is used in some cases to generate a hardware strobe on the dma interface.</para>
+<para>Exposed to python as <ref refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c" kindref="member">dmaAck()</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="161" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a251889fbf2b5c0790aa4ddc9208331b9" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::hardware::axi::AxiStreamDma::acceptReq</definition>
+        <argsstring>(uint32_t size, bool zeroCopyEn)</argsstring>
+        <name>acceptReq</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff">acceptReq</reimplements>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>zeroCopyEn</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="164" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a55a9680c5372818a46b5603a95a803b0" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::acceptFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>acceptFrame</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6">acceptFrame</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="167" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a21f3cde9f41ada7a96bd524ab3b2fda6" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::hardware::axi::AxiStreamDma::retBuffer</definition>
+        <argsstring>(uint8_t *data, uint32_t meta, uint32_t rawSize)</argsstring>
+        <name>retBuffer</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80">retBuffer</reimplements>
+        <param>
+          <type>uint8_t *</type>
+          <declname>data</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>meta</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>rawSize</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="170" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>AXI Stream DMA Class. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class provides a bridge between the Rogue stream interface and one of the AES Stream Drivers device drivers. This bridge allows Rogue Frames to be sent and received to PCIE Express boards (using the data_dev driver) or Zynq ZXI4 FPGA fabrics (using the rce_stream driver). This interface will allocate Frame and Buffer objects using memory mapped DMA buffers or from a local memory pool when zero copy mode is disabled or a Frame with is requested with the zero copy flag set to false. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::axi::AxiStreamDma</label>
+        <link refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::axi::AxiStreamDma</label>
+        <link refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" line="38" column="70" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiStreamDma.h" bodystart="37" bodyend="172"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a55a9680c5372818a46b5603a95a803b0" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>acceptFrame</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a251889fbf2b5c0790aa4ddc9208331b9" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>acceptReq</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a4454d19c72c99a76b8b446fb6afa72e2" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>addSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>allocBuffer</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a94a1a93fb0f066f030e53c7d02c24259" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>AxiStreamDma</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a0d56e56570ea3366cecf431178b014c9" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>bCount_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a10e423ca3ef0f7e5da2d97632de2e1e4" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>bSize_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a41ae389f17fe179e2de4d08bafdae689" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af0ad7b7652bfeb6c1bbef7062245c1ec" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Master::"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a6cf859e90fb443f756bd49f86759cc08" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>createBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>decCounter</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad9bda2c6d297d160b3cb56d58e394be6" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>dest_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>dmaAck</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a99b6064f37fc82ea8556d002a5c83e4d" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>enSsi_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a80fb7808644726ddca72e8e196477229" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>ensureSingleBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a913f40b8d390d1b2f26fa0aecfea34eb" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>equalsPy</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a23f15c487f2ac51954d13128c11b600d" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>fd_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>getAllocBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>getAllocCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>getByteCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>getFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>getFrameCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>getPoolSize</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a742d68f08afbbb331a8a7695c7633afa" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af6f5b686d275b5545ac7feefceab8dd3" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a76dbb1a62ce29ae6d130e11714a37f2f" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>operator==</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a3c410af1f0beab25864711c1be54b336" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>Pool</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a1cecb353b5222dd43f104c9752a7cdd3" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>rawBuff_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>reqFrame</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a21f3cde9f41ada7a96bd524ab3b2fda6" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>retBuffer</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a8f7299be020f4fe0bd275d3781c51030" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>retQueue_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a121f4b63556d58903394a8426ab824d2" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>retThold_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a98f9088c1a19f7875001c8f782df0265" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a0bfbaa9674a2f415b560d38d4b36fe89" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ac103f95eea82eb13cf1e57ff7517f4da" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>RxBufferCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>sendFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setDebug</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a305376eb8b149cc2bfc81b44a04a6301" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setDriverDebug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setPoolSize</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a93a4844ca269864d2ef7fd618d9f8d7c" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setTimeout</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a11fc408624bed1e354a955e19ba7170a" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ad750e68de43d9a3ee7b5c21aa1d9fc83" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>setZeroCopyEn</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::rogue::"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;::"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a69faa639115fd3108de75da01b802720" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>slaveCount</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a91de9045eecd13ce9a50ca77d37eb89d" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>stop</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ac976211bf83df436b50b4274b00d03d7" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>thread_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ae6e527369a16e39f4f268e6ba2eb9788" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1afdc158ad48b247bf192a81ca12155ce3" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>timeout_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1aa5f133c108eb668699d80a13e3f24dde" prot="private" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>zeroCopyEn_</name></member>
+      <member refid="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a68aad150acfa77323c751755016935a3" prot="public" virt="non-virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>~AxiStreamDma</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af391073d7d1e1125e9563991de0b0991" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>~Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>~Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" prot="public" virt="virtual"><scope>rogue::hardware::axi::AxiStreamDma</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

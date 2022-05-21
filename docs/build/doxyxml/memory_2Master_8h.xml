@@ -1,0 +1,360 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="memory_2Master_8h" kind="file" language="C++">
+    <compoundname>Master.h</compoundname>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">map</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">memory</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includes local="no">boost/python.hpp</includes>
+    <includedby refid="memory_2Slave_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Slave.h</includedby>
+    <includedby refid="Block_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h</includedby>
+    <includedby refid="Hub_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h</includedby>
+    <includedby refid="memory_2TcpServer_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpServer.h</includedby>
+    <incdepgraph>
+      <node id="2">
+        <label>stdint.h</label>
+      </node>
+      <node id="10">
+        <label>string</label>
+      </node>
+      <node id="4">
+        <label>map</label>
+      </node>
+      <node id="8">
+        <label>exception</label>
+      </node>
+      <node id="11">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="3">
+        <label>vector</label>
+      </node>
+      <node id="9">
+        <label>mutex</label>
+      </node>
+      <node id="7">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h</label>
+        <link refid="memory_2Master_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>thread</label>
+      </node>
+      <node id="6">
+        <label>memory</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="7">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpClient.h</label>
+        <link refid="memory_2TcpClient_8h"/>
+      </node>
+      <node id="11">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Block.h</label>
+        <link refid="Block_8h"/>
+        <childnode refid="8" relation="include">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV3.h</label>
+        <link refid="SrpV3_8h"/>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Slave.h</label>
+        <link refid="memory_2Slave_8h"/>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="10" relation="include">
+        </childnode>
+      </node>
+      <node id="12">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/TcpServer.h</label>
+        <link refid="memory_2TcpServer_8h"/>
+      </node>
+      <node id="5">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Emulate.h</label>
+        <link refid="Emulate_8h"/>
+      </node>
+      <node id="6">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Hub.h</label>
+        <link refid="Hub_8h"/>
+      </node>
+      <node id="4">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h</label>
+        <link refid="MemMap_8h"/>
+      </node>
+      <node id="8">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/LibraryBase.h</label>
+        <link refid="LibraryBase_8h"/>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h</label>
+        <link refid="memory_2Master_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h</label>
+        <link refid="AxiMemMap_8h"/>
+      </node>
+      <node id="9">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/srp/SrpV0.h</label>
+        <link refid="SrpV0_8h"/>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Master" prot="public">rogue::interfaces::memory::Master</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces">rogue::interfaces</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces_1_1memory">rogue::interfaces::memory</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="memory_2Master_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Memory Master </heading>
+</para>
+<para>File : Master.h Author : Ryan Herbst, <ulink url="mailto:rherbst@slac.stanford.edu">rherbst@slac.stanford.edu</ulink> <heading level="2">Created : 2016-09-20 </heading>
+</para>
+<para>Description: <heading level="2">Memory master interface. </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" line="31" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h" bodystart="31" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="21"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_INTERFACES_MEMORY_MASTER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_INTERFACES_MEMORY_MASTER_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;map&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31" refid="memory_2Master_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="36"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">interfaces<sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">memory<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight></codeline>
+<codeline lineno="39"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Slave;</highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Transaction;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"></highlight></codeline>
+<codeline lineno="43"></codeline>
+<codeline lineno="48" refid="classrogue_1_1interfaces_1_1memory_1_1Master" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref><sp/>{</highlight></codeline>
+<codeline lineno="49" refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a49982aa325e19f0956d42fde9132caa2" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref>;</highlight></codeline>
+<codeline lineno="50"><highlight class="normal"></highlight></codeline>
+<codeline lineno="51"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="52"><highlight class="normal"></highlight></codeline>
+<codeline lineno="54"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::map&lt;uint32_t,<sp/>std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt;<sp/>&gt;<sp/>TransactionMap;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="57"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>TransactionMap<sp/>tranMap_;</highlight></codeline>
+<codeline lineno="58"><highlight class="normal"></highlight></codeline>
+<codeline lineno="60"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt;<sp/>slave_;</highlight></codeline>
+<codeline lineno="61"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/>sumTime_;</highlight></codeline>
+<codeline lineno="64"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/>mastMtx_;</highlight></codeline>
+<codeline lineno="67"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/>error_;</highlight></codeline>
+<codeline lineno="70"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/>log_;</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="75"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"></codeline>
+<codeline lineno="79"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Master&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dd3efeb0123543b07db88eeace87d94" kindref="member">create</ref><sp/>();</highlight></codeline>
+<codeline lineno="80"><highlight class="normal"></highlight></codeline>
+<codeline lineno="81"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>class<sp/>for<sp/>use<sp/>in<sp/>python</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="82"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a86b7fc0c1e1f314d3b60cdbe29e9c19b" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="83"><highlight class="normal"></highlight></codeline>
+<codeline lineno="84"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>Master<sp/>instance</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="85"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a9899ebfecc6e7e35cebdbca4d0e40f6e" kindref="member">Master</ref>();</highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Destroy<sp/>the<sp/>Master</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a80a2fce11f04d0e2dd6202958ef377a0" kindref="member">~Master</ref>();</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">virtual</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a59be941f83e4a39df917d5402557324e" kindref="member">stop</ref>();</highlight></codeline>
+<codeline lineno="92"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"></codeline>
+<codeline lineno="101"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a6de8890cdcdc2de6148283334c7b3413" kindref="member">setSlave</ref><sp/>(<sp/>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt;<sp/>slave<sp/>);</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="104"></codeline>
+<codeline lineno="107"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a20364eb7d4b6d3d666e434ac1fd77a7d" kindref="member">getSlave</ref>();</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="110"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Each<sp/>Slave<sp/>in<sp/>the<sp/>system<sp/>has<sp/>a<sp/>unique<sp/>32-bit<sp/>ID.<sp/>This</highlight></codeline>
+<codeline lineno="111"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>request<sp/>is<sp/>forward<sp/>to<sp/>the<sp/>lowest<sp/>level<sp/>Slave<sp/>device<sp/>in</highlight></codeline>
+<codeline lineno="112"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>the<sp/>tree<sp/>which<sp/>will<sp/>service<sp/>the<sp/>Transaction<sp/>for<sp/>this<sp/>Master.<sp/>This</highlight></codeline>
+<codeline lineno="113"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>allows<sp/>the<sp/>system<sp/>to<sp/>determine<sp/>which<sp/>memory<sp/>Masters<sp/>shared<sp/>the</highlight></codeline>
+<codeline lineno="114"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>same<sp/>address<sp/>space.</highlight></codeline>
+<codeline lineno="115"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="116"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>Exposed<sp/>to<sp/>python<sp/>as<sp/>_reqSlaveId()</highlight></codeline>
+<codeline lineno="117"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>32-bit<sp/>Slave<sp/>ID</highlight></codeline>
+<codeline lineno="118"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="119"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a442a5dc81c6f1bcabf2abf726e8f5a99" kindref="member">reqSlaveId</ref>();</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">/*<sp/>Each<sp/>Slave<sp/>in<sp/>the<sp/>system<sp/>has<sp/>a<sp/>unique<sp/>name.<sp/>This</highlight></codeline>
+<codeline lineno="123"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>request<sp/>is<sp/>forward<sp/>to<sp/>the<sp/>lowest<sp/>level<sp/>Slave<sp/>device<sp/>in</highlight></codeline>
+<codeline lineno="124"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>the<sp/>tree<sp/>which<sp/>will<sp/>service<sp/>the<sp/>Transaction<sp/>for<sp/>this<sp/>Master.<sp/>This</highlight></codeline>
+<codeline lineno="125"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>allows<sp/>the<sp/>system<sp/>to<sp/>determine<sp/>which<sp/>memory<sp/>Masters<sp/>shared<sp/>the</highlight></codeline>
+<codeline lineno="126"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>same<sp/>address<sp/>space.</highlight></codeline>
+<codeline lineno="127"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="128"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>Exposed<sp/>to<sp/>python<sp/>as<sp/>_reqSlaveName()</highlight></codeline>
+<codeline lineno="129"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*<sp/>@return<sp/>Slave<sp/>Name</highlight></codeline>
+<codeline lineno="130"><highlight class="comment"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="131"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a615c288b0fdad6a5d1101479b9fb74d6" kindref="member">reqSlaveName</ref>();</highlight></codeline>
+<codeline lineno="132"><highlight class="normal"></highlight></codeline>
+<codeline lineno="134"></codeline>
+<codeline lineno="140"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a71984f8156f77b2b9066ef576c64a6a2" kindref="member">reqMinAccess</ref>();</highlight></codeline>
+<codeline lineno="141"><highlight class="normal"></highlight></codeline>
+<codeline lineno="143"></codeline>
+<codeline lineno="149"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ae06e314257d14ff11f29c0b72118519a" kindref="member">reqMaxAccess</ref>();</highlight></codeline>
+<codeline lineno="150"><highlight class="normal"></highlight></codeline>
+<codeline lineno="152"></codeline>
+<codeline lineno="159"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a777233e4f6f27148360effe500e9e957" kindref="member">reqAddress</ref>();</highlight></codeline>
+<codeline lineno="160"><highlight class="normal"></highlight></codeline>
+<codeline lineno="162"></codeline>
+<codeline lineno="168"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a491fa0c7d4565146e8baafc7ffa73346" kindref="member">getError</ref>();</highlight></codeline>
+<codeline lineno="169"><highlight class="normal"></highlight></codeline>
+<codeline lineno="171"></codeline>
+<codeline lineno="175"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1ab94eee23b721f15501a90306f73837f5" kindref="member">clearError</ref>();</highlight></codeline>
+<codeline lineno="176"><highlight class="normal"></highlight></codeline>
+<codeline lineno="178"></codeline>
+<codeline lineno="184"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aab53da8b6940f03c7220b462c984fd12" kindref="member">setTimeout</ref>(uint64_t<sp/>timeout);</highlight></codeline>
+<codeline lineno="185"><highlight class="normal"></highlight></codeline>
+<codeline lineno="187"></codeline>
+<codeline lineno="199"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a06ef5ce0dae7d9b761bd3d363d6654ae" kindref="member">reqTransaction</ref>(uint64_t<sp/>address,<sp/>uint32_t<sp/>size,<sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/>*data,<sp/>uint32_t<sp/>type);</highlight></codeline>
+<codeline lineno="200"><highlight class="normal"></highlight></codeline>
+<codeline lineno="201"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="202"><highlight class="normal"></highlight></codeline>
+<codeline lineno="204"></codeline>
+<codeline lineno="217"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1afe115af98acf6bb16f7e831ff73ec69a" kindref="member">reqTransactionPy</ref>(uint64_t<sp/>address,<sp/>boost::python::object<sp/>p,<sp/>uint32_t<sp/>size,<sp/>uint32_t<sp/>offset,<sp/>uint32_t<sp/>type);</highlight></codeline>
+<codeline lineno="218"><highlight class="normal"></highlight></codeline>
+<codeline lineno="219"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"></codeline>
+<codeline lineno="231"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa37321dd4e1bc5889478bb8eca55a297" kindref="member">copyBits</ref>(uint8_t<sp/>*dstData,<sp/>uint32_t<sp/>dstLsb,<sp/>uint8_t<sp/>*srcData,<sp/>uint32_t<sp/>srcLsb,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="232"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="234"><highlight class="normal"></highlight></codeline>
+<codeline lineno="235"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Helper<sp/>function<sp/>to<sp/>optimize<sp/>bit<sp/>copies<sp/>between<sp/>byte<sp/>arrays.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="236"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a55965b1cc0f77f427cb9d946cc4ccb8d" kindref="member">copyBitsPy</ref>(boost::python::object<sp/>dst,<sp/>uint32_t<sp/>dstLsb,<sp/>boost::python::object<sp/>src,<sp/>uint32_t<sp/>srcLsb,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="237"><highlight class="normal"></highlight></codeline>
+<codeline lineno="238"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="239"><highlight class="normal"></highlight></codeline>
+<codeline lineno="241"></codeline>
+<codeline lineno="248"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a5dac52c5af2fd91d17f8b10d0542330a" kindref="member">setBits</ref>(uint8_t<sp/>*dstData,<sp/>uint32_t<sp/>lsb,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="249"><highlight class="normal"></highlight></codeline>
+<codeline lineno="250"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="251"><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Helper<sp/>function<sp/>to<sp/>optimize<sp/>bit<sp/>setting<sp/>in<sp/>a<sp/>byte<sp/>array.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="253"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a151cd43ee75c40a69722355aee868ca0" kindref="member">setBitsPy</ref>(boost::python::object<sp/>dst,<sp/>uint32_t<sp/>lsb,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="254"><highlight class="normal"></highlight></codeline>
+<codeline lineno="255"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="256"><highlight class="normal"></highlight></codeline>
+<codeline lineno="258"></codeline>
+<codeline lineno="265"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa316b88cca37ab6d999c399ba93b7254" kindref="member">anyBits</ref>(uint8_t<sp/>*srcData,<sp/>uint32_t<sp/>lsb,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="266"><highlight class="normal"></highlight></codeline>
+<codeline lineno="267"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="268"><highlight class="normal"></highlight></codeline>
+<codeline lineno="269"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Helper<sp/>function<sp/>to<sp/>detect<sp/>bits<sp/>being<sp/>set<sp/>in<sp/>a<sp/>byte<sp/>array.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="270"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a041d0bc5879f24ca641346798a142fec" kindref="member">anyBitsPy</ref>(boost::python::object<sp/>src,<sp/>uint32_t<sp/>lsb,<sp/>uint32_t<sp/>size);</highlight></codeline>
+<codeline lineno="271"><highlight class="normal"></highlight></codeline>
+<codeline lineno="272"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="273"><highlight class="normal"></highlight></codeline>
+<codeline lineno="274"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="275"><highlight class="normal"></highlight></codeline>
+<codeline lineno="277"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a47ff28f879439aa3909fec046b68b5c3" kindref="member">rshiftPy</ref><sp/>(<sp/>boost::python::object<sp/>p<sp/>);</highlight></codeline>
+<codeline lineno="278"><highlight class="normal"></highlight></codeline>
+<codeline lineno="279"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="280"><highlight class="normal"></highlight></codeline>
+<codeline lineno="282"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt;<sp/>&amp;</highlight></codeline>
+<codeline lineno="283"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aa7eb8183583f6084fea07821eb7ff2af" kindref="member">operator &gt;&gt;</ref>(std::shared_ptr&lt;rogue::interfaces::memory::Slave&gt;<sp/>&amp;<sp/>other);</highlight></codeline>
+<codeline lineno="284"><highlight class="normal"></highlight></codeline>
+<codeline lineno="285"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="286"><highlight class="normal"></highlight></codeline>
+<codeline lineno="288"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1a33ea89bb24e4d4115c8fef6c145c7a02" kindref="member">intTransaction</ref>(std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt;<sp/>tran);</highlight></codeline>
+<codeline lineno="289"><highlight class="normal"></highlight></codeline>
+<codeline lineno="290"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="291"><highlight class="normal"></highlight></codeline>
+<codeline lineno="293"></codeline>
+<codeline lineno="300"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master_1aad065c2019c8c9d5e0f7c53b1ea05591" kindref="member">waitTransaction</ref>(uint32_t<sp/></highlight><highlight class="keywordtype">id</highlight><highlight class="normal">);</highlight></codeline>
+<codeline lineno="301"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="302"><highlight class="normal"></highlight></codeline>
+<codeline lineno="304" refid="namespacerogue_1_1interfaces_1_1memory_1a102fe4dcab8755eeec15e5b5f7b21591" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Master&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1_1memory_1a102fe4dcab8755eeec15e5b5f7b21591" kindref="member">MasterPtr</ref>;</highlight></codeline>
+<codeline lineno="305"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="306"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="307"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="308"><highlight class="normal"></highlight></codeline>
+<codeline lineno="309"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="310"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Master.h"/>
+  </compounddef>
+</doxygen>

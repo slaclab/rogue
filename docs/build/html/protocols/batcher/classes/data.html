@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="InverterV1" href="inverterV1.html" />
+    <link rel="prev" title="CoreV1" href="coreV1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Protocols</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../udp/index.html">UDP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../rssi/index.html">RSSI Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../packetizer/index.html">Packetizer Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../network.html">Network Wrapper</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Batcher Protocol</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../inverterV1.html">Batcher Protocol InverterV1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../splitterV1.html">Batcher Protocol SplitterV1</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Batcher Protocol Class Descriptions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="coreV1.html">CoreV1</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inverterV1.html">InverterV1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="splitterV1.html">SplitterV1</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV3/index.html">EPICSV3 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../epicsV4/index.html">EPICSV4 Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../srp/index.html">SRP Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../uart.html">UART Protocol</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Protocols</a> &raquo;</li>
+          <li><a href="../index.html">Batcher Protocol</a> &raquo;</li>
+          <li><a href="index.html">Batcher Protocol Class Descriptions</a> &raquo;</li>
+      <li>Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/protocols/batcher/classes/data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data">
+<span id="protocols-batcher-classes-data"></span><h1>Data<a class="headerlink" href="#data" title="Permalink to this headline"></a></h1>
+<p>TODO</p>
+<p>Data objects in C++ are referenced by the following shared pointer typedef:</p>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher7DataPtrE">
+<span id="_CPPv3N5rogue9protocols7batcher7DataPtrE"></span><span id="_CPPv2N5rogue9protocols7batcher7DataPtrE"></span><span id="rogue::protocols::batcher::DataPtr"></span><span class="target" id="namespacerogue_1_1protocols_1_1batcher_1af5d07c75e72b9c00310754bcca0bccc2"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher4DataE" title="rogue::protocols::batcher::Data"><span class="n"><span class="pre">Data</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">DataPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher7DataPtrE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<p>The Data class description is shown below:</p>
+<dl class="cpp class">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4DataE">
+<span id="_CPPv3N5rogue9protocols7batcher4DataE"></span><span id="_CPPv2N5rogue9protocols7batcher4DataE"></span><span id="rogue::protocols::batcher::Data"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Data</span></span></span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4DataE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>AXI Stream FIFO. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data4DataEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t">
+<span id="_CPPv3N5rogue9protocols7batcher4Data4DataEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t"></span><span id="_CPPv2N5rogue9protocols7batcher4Data4DataEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t"></span><span id="rogue::protocols::batcher::Data::Data__rogue::interfaces::stream::FrameIterator.uint32_t.uint8_t.uint8_t.uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1ae67fe0d1e65def957879e661380bb2ba"></span><span class="sig-name descname"><span class="n"><span class="pre">Data</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">it</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dest</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fUser</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lUser</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data4DataEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Creator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4DataD0Ev">
+<span id="_CPPv3N5rogue9protocols7batcher4DataD0Ev"></span><span id="_CPPv2N5rogue9protocols7batcher4DataD0Ev"></span><span id="rogue::protocols::batcher::Data::~Data"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1ab685b61de319e3a3dd91cd894b63d751"></span><span class="sig-name descname"><span class="n"><span class="pre">~Data</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4DataD0Ev" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Deconstructor. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data5beginEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data5beginEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data5beginEv"></span><span id="rogue::protocols::batcher::Data::begin"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1ab1586a3ef7f5ac94ced17c850c309af8"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">begin</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data5beginEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return Begin <a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref">Data</span></a> Iterator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data3endEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data3endEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data3endEv"></span><span id="rogue::protocols::batcher::Data::end"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1a9a274654304fefff36b810dac81fbcea"></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">end</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data3endEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return End <a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref">Data</span></a> Iterator. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data4sizeEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data4sizeEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data4sizeEv"></span><span id="rogue::protocols::batcher::Data::size"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1a7e480b6a4e53dc4fdf206e2eb314a04d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">size</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data4sizeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return <a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref">Data</span></a> Size. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data4destEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data4destEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data4destEv"></span><span id="rogue::protocols::batcher::Data::dest"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1a2410407ce686beb3e910be785520c3ba"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">dest</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data4destEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return <a class="reference internal" href="#classrogue_1_1protocols_1_1batcher_1_1Data"><span class="std std-ref">Data</span></a> destination. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data5fUserEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data5fUserEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data5fUserEv"></span><span id="rogue::protocols::batcher::Data::fUser"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1ac5b32f1bb975712ec7ce9c9cf81b0cc7"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">fUser</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data5fUserEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return First user. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data5lUserEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data5lUserEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data5lUserEv"></span><span id="rogue::protocols::batcher::Data::lUser"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1a03ee9ac23a16dfdf944e5250e02f71ad"></span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lUser</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data5lUserEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Return Last user. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-static-functions">Public Static Functions</p>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data12setup_pythonEv">
+<span id="_CPPv3N5rogue9protocols7batcher4Data12setup_pythonEv"></span><span id="_CPPv2N5rogue9protocols7batcher4Data12setup_pythonEv"></span><span id="rogue::protocols::batcher::Data::setup_python"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1aca903df4b0506ae61b85a9fcf6cc3bf8"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setup_python</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data12setup_pythonEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Setup class in python. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue9protocols7batcher4Data6createEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t">
+<span id="_CPPv3N5rogue9protocols7batcher4Data6createEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t"></span><span id="_CPPv2N5rogue9protocols7batcher4Data6createEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t"></span><span id="rogue::protocols::batcher::Data::create__rogue::interfaces::stream::FrameIterator.uint32_t.uint8_t.uint8_t.uint8_t"></span><span class="target" id="classrogue_1_1protocols_1_1batcher_1_1Data_1aff436e49c46cf0177c216d19c2d055f3"></span><span class="k"><span class="pre">static</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">protocols</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">batcher</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue9protocols7batcher4DataE" title="rogue::protocols::batcher::Data"><span class="n"><span class="pre">Data</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">create</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="../../../interfaces/stream/classes/frameIterator.html#_CPPv4N5rogue10interfaces6stream13FrameIteratorE" title="rogue::interfaces::stream::FrameIterator"><span class="n"><span class="pre">FrameIterator</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">it</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dest</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fUser</span></span>, <span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">lUser</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue9protocols7batcher4Data6createEN5rogue10interfaces6stream13FrameIteratorE8uint32_t7uint8_t7uint8_t7uint8_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create object. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="coreV1.html" class="btn btn-neutral float-left" title="CoreV1" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="inverterV1.html" class="btn btn-neutral float-right" title="InverterV1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

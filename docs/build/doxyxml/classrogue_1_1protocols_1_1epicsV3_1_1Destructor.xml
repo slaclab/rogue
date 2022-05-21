@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1protocols_1_1epicsV3_1_1Destructor" kind="class" language="C++" prot="public">
+    <compoundname>rogue::protocols::epicsV3::Destructor</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">gddDestructor</basecompoundref>
+    <includes refid="Value_8h" local="no">Value.h</includes>
+    <templateparamlist>
+      <param>
+        <type>typename T</type>
+      </param>
+    </templateparamlist>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1epicsV3_1_1Destructor_1a15cf77f621934bf8556e5e9d15019b7a" prot="private" static="no" const="no" explicit="no" inline="yes" virt="virtual">
+        <type>void</type>
+        <definition>virtual void rogue::protocols::epicsV3::Destructor&lt; T &gt;::run</definition>
+        <argsstring>(void *pUntyped)</argsstring>
+        <name>run</name>
+        <param>
+          <type>void *</type>
+          <declname>pUntyped</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="148" column="26" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="148" bodyend="151"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>rogue::protocols::epicsV3::Destructor&lt; T &gt;</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>gddDestructor</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>rogue::protocols::epicsV3::Destructor&lt; T &gt;</label>
+        <link refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>gddDestructor</label>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="147" column="47" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="147" bodyend="152"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor_1a15cf77f621934bf8556e5e9d15019b7a" prot="private" virt="virtual"><scope>rogue::protocols::epicsV3::Destructor</scope><name>run</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

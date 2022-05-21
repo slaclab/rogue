@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Receiving Frames &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using The TCP Bridge" href="usingTcp.html" />
+    <link rel="prev" title="Sending Frames" href="sending.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Interfaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../clients/index.html">Client Interfaces</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Stream Interface</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="connecting.html">Connecting Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="sending.html">Sending Frames</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Receiving Frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python-slave-subclass">Python Slave Subclass</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-slave-subclass">C++ Slave Subclass</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="usingTcp.html">Using The TCP Bridge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usingFifo.html">Using A Fifo</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usingFilter.html">Using A Filter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="usingRateDrop.html">Using A Rate Drop Object</a></li>
+<li class="toctree-l3"><a class="reference internal" href="debugStreams.html">Debugging Streams</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/index.html">Stream Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../memory/index.html">Memory Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../simulation/index.html">Simulation Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../sql.html">SQL Logging Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Interfaces</a> &raquo;</li>
+          <li><a href="index.html">Stream Interface</a> &raquo;</li>
+      <li>Receiving Frames</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/interfaces/stream/receiving.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="receiving-frames">
+<span id="interfaces-stream-receiving"></span><h1>Receiving Frames<a class="headerlink" href="#receiving-frames" title="Permalink to this headline"></a></h1>
+<p>Frames are received by a subclass of the <a class="reference internal" href="classes/slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> class in rogue.
+This subclass can be created either in python or in c++. In either case a received frame
+results in the execution of the the acceptFrame method in the subclass instance. Python
+and C++ subclasses of the Slave class can be used interchangeably, allowing c++ subclasses
+to receive frames from python masters and python subclasses to receive frames from c++ masters.</p>
+<section id="python-slave-subclass">
+<h2>Python Slave Subclass<a class="headerlink" href="#python-slave-subclass" title="Permalink to this headline"></a></h2>
+<p>Implementing a Slave subclass in python is easy, but may result in a lower level of performance.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
+
+<span class="k">class</span> <span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+
+    <span class="c1"># Init method must call the parent class init</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="c1"># Method which is called when a frame is received</span>
+    <span class="k">def</span> <span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frame</span><span class="p">):</span>
+
+        <span class="c1"># First it is good practice to hold a lock on the frame data.</span>
+        <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
+
+            <span class="c1"># Next we can get the size of the frame payload</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">getPayload</span><span class="p">()</span>
+
+            <span class="c1"># To access the data we need to create a byte array to hold the data</span>
+            <span class="n">fullData</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
+            <span class="c1"># Next we read the frame data into the byte array, from offset 0</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">fullData</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Alternatively we can copy a portion of the data from an arbitrary offset</span>
+            <span class="n">partialData</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+
+            <span class="c1"># Read 10 bytes starting at offset 100</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">partialData</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># Since the data is coped into the passed byte arrays we are free to</span>
+        <span class="c1"># access the copied data outside of the lock</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;First byte is </span><span class="si">{:#}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fullData</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Byte 6 is </span><span class="si">{:#}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">partialData</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+</pre></div>
+</div>
+</section>
+<section id="c-slave-subclass">
+<h2>C++ Slave Subclass<a class="headerlink" href="#c-slave-subclass" title="Permalink to this headline"></a></h2>
+<p>Creating a Slave sub-class in c++ is done in a similar fashion. In order to use a custom
+c++ Slave subclass, you will need to build it into a c++ python module or into
+a c++ application. See the sections <a class="reference internal" href="../../custom_module/index.html#custom-module"><span class="std std-ref">Creating Custom Modules</span></a> and <a class="reference internal" href="../../installing/application.html#installing-application"><span class="std std-ref">Compiling A Rogue Application</span></a>.</p>
+<p>The example below shows the most direct method for receiving data from a Frame using
+an iterator. Here we both de-reference the iterator directly to update specific locations
+and we use std::copy to move data from the Frame to a data buffer.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Slave.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Frame.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameIterator.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/FrameLock.h&gt;</span><span class="cp"></span>
+
+<span class="n">class</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="n">public</span><span class="o">:</span><span class="w"></span>
+
+<span class="w">      </span><span class="c1">// Create a static class creator to return our custom class</span>
+<span class="w">      </span><span class="c1">// wrapped with a shared pointer</span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="n">MyCustomSlave</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Slave</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">acceptFrame</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">Frame</span><span class="o">&gt;</span><span class="w"> </span><span class="n">frame</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameIterator</span><span class="w"> </span><span class="n">it</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">x</span><span class="p">;</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Acquire lock on frame. Will be release when lock class goes out of scope</span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameLock</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Here we get an iterator to the frame data</span>
+<span class="w">         </span><span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Print the values in the first 10 locations</span>
+<span class="w">         </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span><span class="w"> </span><span class="n">x</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Location %i = 0x%x</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="o">*</span><span class="n">it</span><span class="p">);</span><span class="w"></span>
+<span class="w">            </span><span class="n">it</span><span class="o">++</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">         </span><span class="c1">// Use std::copy to copy data to a data buffer</span>
+<span class="w">         </span><span class="c1">// Here we copy the entire frame payload to the data buffer</span>
+<span class="w">         </span><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
+
+<span class="c1">// Shared pointer alias</span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyCustomSlavePtr</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>The std::copy call works very well for moving data between two standard C++ iterators. It will
+properly deal with iterators which manage non-contiguous buffers, which may be the case when receiving
+Frames. For example when receiving large data frames from a UDP interface, the incoming data may
+exist within a number of 1500 byte Buffers which may exist at random locations in memory.</p>
+<p>This however comes at a performance penalty as the iterator is updated on each access to the underlying Frame data. In
+order to move data in the most effecient way, it is best to use std::memcpy with the data pointer interface
+provided by the Buffer class.  The Rogue <a class="reference internal" href="classes/frameIterator.html#interfaces-stream-frame-iterator"><span class="std std-ref">Frame Iterator</span></a> provides
+mechanisms for iterating through each contiguous buffer. The following example performs a data copy from
+a passed data buffer into the Rogue frame, ensuring that the most efficient copy methods are used:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// Get an iterator to the start of the Frame</span>
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Keep going until we get to the end of the Frame</span>
+<span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+
+<span class="w">   </span><span class="c1">// Copy the data using the iterator ptr method</span>
+<span class="w">   </span><span class="n">std</span><span class="o">::</span><span class="n">memcpy</span><span class="p">(</span><span class="n">it</span><span class="o">-&gt;</span><span class="n">ptr</span><span class="p">(),</span><span class="w"> </span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">);</span><span class="w"></span>
+
+<span class="w">   </span><span class="c1">// Update the pointer and the iterator</span>
+<span class="w">   </span><span class="n">data</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="w">   </span><span class="n">it</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">size</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Alternatively if the user wishes to access individual values in the data frame at various offsets,
+they can make use of the fromFrame helper function defined in <a class="reference internal" href="classes/helpers.html#interfaces-stream-helpers"><span class="std std-ref">Frame Helpers</span></a>.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="kt">uint64_t</span><span class="w"> </span><span class="n">data64</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint32_t</span><span class="w"> </span><span class="n">data32</span><span class="p">;</span><span class="w"></span>
+<span class="kt">uint8_t</span><span class="w">  </span><span class="n">data8</span><span class="p">;</span><span class="w"></span>
+
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Read 64-bits and advance iterator 8 bytes</span>
+<span class="n">fromFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data64</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// Read 32-bits and advance iterator 4 bytes</span>
+<span class="n">fromFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data32</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// Read 8-bits and advance iterator 1 byte</span>
+<span class="n">fromFrame</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="o">&amp;</span><span class="n">data8</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+<p>In some cases the user will need high performance element level access to the frame data. The <a class="reference internal" href="classes/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a>
+provides a memory pointer mapped view of the frame data. There is a limitation in the use of a FrameAccessor in that it can
+only map frame data that is represented by a single buffer. If the range to be accessed spans multiple buffers, attempting
+to use a FrameAccessor will throw an exception. Luckily there is a helper in the <a class="reference internal" href="classes/master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a> class
+class which will verify that a given frame is representated by a single buffer. If this is not the case it create a copy of the
+Frame into a new Frame which is made up of a single buffer.</p>
+<p>The user must be carefull to not “flatten” a frame that is purposely segmented into multiple buffers (i.e. createa a frame for
+sending over a UDP interface). The <a class="reference internal" href="classes/frameAccessor.html#interfaces-stream-frame-accessor"><span class="std std-ref">Frame Accessor</span></a> in combination with the ensureSingleBuffer() call on
+received frames.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="c1">// First lets make sure the frame is made up of a single buffer</span>
+<span class="c1">// Set the request enable flag to true, allowing a new frame to</span>
+<span class="c1">// be created. (be carefull with this call, see note above)</span>
+<span class="c1">// This call assumes a master class exists as part of the receiver.</span>
+<span class="n">self</span><span class="o">-&gt;</span><span class="n">ensureSingleBuffer</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span><span class="n">True</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// Get the iterator</span>
+<span class="n">it</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">frame</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Create accessor at current iterator position</span>
+<span class="c1">// We want to access 100 64-bit values</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameAccessor</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">acc</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">FrameAccessor</span><span class="o">&lt;</span><span class="kt">uint64_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">it</span><span class="p">,</span><span class="mi">100</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// We can now access the values as an array:</span>
+<span class="n">acc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value1</span><span class="p">;</span><span class="w"></span>
+<span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">value2</span><span class="p">;</span><span class="w"></span>
+</pre></div>
+</div>
+<p>Further study of the <a class="reference internal" href="classes/frame.html#interfaces-stream-frame"><span class="std std-ref">Frame</span></a> and <a class="reference internal" href="classes/buffer.html#interfaces-stream-buffer"><span class="std std-ref">Buffer</span></a> APIs will reveal more
+advanced methods of access frame and buffer data.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sending.html" class="btn btn-neutral float-left" title="Sending Frames" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="usingTcp.html" class="btn btn-neutral float-right" title="Using The TCP Bridge" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

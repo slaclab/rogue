@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Using The AxiStreamDma Class &mdash; Rogue v5.13.0-110-g718b7a89-dirty documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using The AxiMemMap Class" href="memory.html" />
+    <link rel="prev" title="Generic AXI Hardware Interface" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> Rogue
+          </a>
+              <div class="version">
+                v5.13.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Hardware</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html">Generic AXI Hardware Interface</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Using The AxiStreamDma Class</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#python-axistreamdma-example">Python AxiStreamDma Example</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#c-axistreamdma-example">C++ AxiStreamDma Example</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="memory.html">Using The AxiMemMap Class</a></li>
+<li class="toctree-l3"><a class="reference internal" href="features.html">Additional AxiStreamDma Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="classes/index.html">AXI Hardware Interface Class Descriptions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../pgp/index.html">PGP Card Hardware Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../raw/index.html">Raw Hardware Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Hardware</a> &raquo;</li>
+          <li><a href="index.html">Generic AXI Hardware Interface</a> &raquo;</li>
+      <li>Using The AxiStreamDma Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/hardware/axi/stream.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="using-the-axistreamdma-class">
+<span id="hardware-axi-stream"></span><h1>Using The AxiStreamDma Class<a class="headerlink" href="#using-the-axistreamdma-class" title="Permalink to this headline"></a></h1>
+<p>The AxiStreamDma class allows you to connect stream sources and destinations to
+a channel on the PCI Express board or Zynq FPGA fabric using the generic
+AXI Stream drivers. The set of hardware which use this include but are not
+limited to:</p>
+<ul class="simple">
+<li><p>PgpCard3 with the AXI Stream DMA engine</p></li>
+<li><p>KCU1500 board</p></li>
+<li><p>Zynq7000 FPGA with TID-AIRs RCe core firmware</p></li>
+</ul>
+<p>A single instances of the AxiStreamDma class will be used for each data channel
+on the underlying firmware. The data channel is identified by a destination ID.</p>
+<p>The following examples assume there are two destination fields in the underlying
+hardware. One which will be associated with a register protocol (SRPV3 in this case)
+and the other will be a bi-directional data channel. This channel will be connected to
+the custom sender and receiver described in <a class="reference internal" href="../../interfaces/stream/sending.html#interfaces-stream-sending"><span class="std std-ref">Sending Frames</span></a> and
+<a class="reference internal" href="../../interfaces/stream/receiving.html#interfaces-stream-receiving"><span class="std std-ref">Receiving Frames</span></a>. The example also uses the memory master
+created in <a class="reference internal" href="../../interfaces/memory/master.html#interfaces-memory-master-ex"><span class="std std-ref">Memory Master Example</span></a>.</p>
+<p>See <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a> for more information about the AxiStreamDma class methods.</p>
+<section id="python-axistreamdma-example">
+<h2>Python AxiStreamDma Example<a class="headerlink" href="#python-axistreamdma-example" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<span class="kn">import</span> <span class="nn">rogue.hardware.axi</span>
+<span class="kn">import</span> <span class="nn">rogue.protocols.srp</span>
+
+<span class="c1"># First attach to destination 0 for register traffic, ssi enabled</span>
+<span class="n">regChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create an SRP engine</span>
+<span class="n">srp</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">srp</span><span class="o">.</span><span class="n">SrpV3</span><span class="p">()</span>
+
+<span class="c1"># Connect the SRP engine to the register DMA</span>
+<span class="n">regChan</span> <span class="o">==</span> <span class="n">srp</span>
+
+<span class="c1"># Create a memory master</span>
+<span class="n">memMast</span> <span class="o">=</span> <span class="n">MyMemMaster</span><span class="p">()</span>
+
+<span class="c1"># Connect memory master to SRP</span>
+<span class="n">memMast</span> <span class="o">&gt;&gt;</span> <span class="n">srp</span>
+
+<span class="c1"># Next attach to destination 1 for data traffic, ssi enabled</span>
+<span class="n">dataChan</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">hardware</span><span class="o">.</span><span class="n">axi</span><span class="o">.</span><span class="n">AxiStreamDma</span><span class="p">(</span><span class="s1">&#39;/dev/datadev_0&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Create a master</span>
+<span class="n">myMast</span> <span class="o">=</span> <span class="n">MyCustomMaster</span><span class="p">()</span>
+
+<span class="c1"># Create a slave</span>
+<span class="n">mySlave</span> <span class="o">=</span> <span class="n">MyCustomSlave</span><span class="p">()</span>
+
+<span class="c1"># Connect the stream interface</span>
+<span class="n">myMast</span> <span class="o">&gt;&gt;</span> <span class="n">dataChan</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span>
+</pre></div>
+</div>
+</section>
+<section id="c-axistreamdma-example">
+<h2>C++ AxiStreamDma Example<a class="headerlink" href="#c-axistreamdma-example" title="Permalink to this headline"></a></h2>
+<p>The equivalent code in C++ is show below:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/hardware/axi/AxiStreamDma.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/srp/SrpV3.h&gt;</span><span class="cp"></span>
+
+<span class="c1">// First attach to destination 0 for register traffic, ssi enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span><span class="w"> </span><span class="n">regChan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// Create an SRP engine</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3Ptr</span><span class="w"> </span><span class="n">srp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Connect the SRP engine to the register DMA</span>
+<span class="o">*</span><span class="n">regChan</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">srp</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// Create a memory master</span>
+<span class="n">MyMemMasterPtr</span><span class="w"> </span><span class="n">memMast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyMemMaster</span><span class="p">.</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Connect memory master to SRP</span>
+<span class="o">*</span><span class="n">memMast</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">srp</span><span class="p">;</span><span class="w"></span>
+
+<span class="c1">// Next attach to destination 1 for data traffic, ssi enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span><span class="w"> </span><span class="n">dataChan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
+
+<span class="c1">// Create a master</span>
+<span class="n">MyCustomMasterPtr</span><span class="w"> </span><span class="n">myMast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+
+<span class="c1">// Create a slave</span>
+<span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">mySlave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+
+<span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">myMast</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dataChan</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mySlave</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Generic AXI Hardware Interface" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="memory.html" class="btn btn-neutral float-right" title="Using The AxiMemMap Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

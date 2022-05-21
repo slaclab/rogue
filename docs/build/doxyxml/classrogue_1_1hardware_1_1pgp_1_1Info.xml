@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1hardware_1_1pgp_1_1Info" kind="class" language="C++" prot="public">
+    <compoundname>rogue::hardware::pgp::Info</compoundname>
+    <basecompoundref refid="structPgpInfo" prot="public" virt="non-virtual">PgpInfo</basecompoundref>
+    <includes refid="Info_8h" local="no">Info.h</includes>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1pgp_1_1Info_1a10b932a242d828b4d841fb73662be1f1" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1hardware_1_1pgp_1_1Info" kindref="compound">rogue::hardware::pgp::Info</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::hardware::pgp::Info&gt; rogue::hardware::pgp::Info::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h" line="37" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1pgp_1_1Info_1a0665cb2bae825ed94a4140967a773956" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::hardware::pgp::Info::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h" line="40" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1hardware_1_1pgp_1_1Info_1aad7946ea6acc810b4756058fe0553991" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string rogue::hardware::pgp::Info::buildString</definition>
+        <argsstring>()</argsstring>
+        <name>buildString</name>
+        <briefdescription>
+<para>Return <computeroutput>build string</computeroutput> in string format. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed to python as <ref refid="classrogue_1_1hardware_1_1pgp_1_1Info_1aad7946ea6acc810b4756058fe0553991" kindref="member">buildString()</ref> </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h" line="45" column="28"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>PGP Card <ref refid="classrogue_1_1hardware_1_1pgp_1_1Info" kindref="compound">Info</ref>. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>This class contains the build &amp; version information for the PGP card. This class is a C++ wrapper around the <ref refid="structPgpInfo" kindref="compound">PgpInfo</ref> structure used by the lower level driver. All structure members are exposed to Python using their original names and can be read directly. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="2">
+        <label>PgpInfo</label>
+        <link refid="structPgpInfo"/>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::pgp::Info</label>
+        <link refid="classrogue_1_1hardware_1_1pgp_1_1Info"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="2">
+        <label>PgpInfo</label>
+        <link refid="structPgpInfo"/>
+      </node>
+      <node id="1">
+        <label>rogue::hardware::pgp::Info</label>
+        <link refid="classrogue_1_1hardware_1_1pgp_1_1Info"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h" line="33" column="35" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/pgp/Info.h" bodystart="33" bodyend="46"/>
+    <listofallmembers>
+      <member refid="structPgpInfo_1a763195a2777e4c7d56a88b5a9d7744e6" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>buildStamp</name></member>
+      <member refid="classrogue_1_1hardware_1_1pgp_1_1Info_1aad7946ea6acc810b4756058fe0553991" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>buildString</name></member>
+      <member refid="classrogue_1_1hardware_1_1pgp_1_1Info_1a10b932a242d828b4d841fb73662be1f1" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>create</name></member>
+      <member refid="structPgpInfo_1aa2d3a745069730ee1be6fc6c0af1a786" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>evrSupport</name></member>
+      <member refid="structPgpInfo_1aeab2a4b1850d18107d8a71f08b1fd4fe" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>laneMask</name></member>
+      <member refid="structPgpInfo_1ac59642e4c497d2d5a0f311c11903b9a1" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>pad</name></member>
+      <member refid="structPgpInfo_1a3632a6cba8695010ac4cbc9bf395fa47" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>pgpRate</name></member>
+      <member refid="structPgpInfo_1afa24a3907803d68acbbf6aa65f706733" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>promPrgEn</name></member>
+      <member refid="structPgpInfo_1ae03aaea2ccc8d51413da8455fc9d13ec" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>serial</name></member>
+      <member refid="classrogue_1_1hardware_1_1pgp_1_1Info_1a0665cb2bae825ed94a4140967a773956" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>setup_python</name></member>
+      <member refid="structPgpInfo_1aa863b929ab81ac98edd6502845cae300" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>type</name></member>
+      <member refid="structPgpInfo_1a369ea4f176d759151e29e93465740b8e" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>vcPerMask</name></member>
+      <member refid="structPgpInfo_1a85be0f2f33fec3bc4dd36bbefb8f86e4" prot="public" virt="non-virtual"><scope>rogue::hardware::pgp::Info</scope><name>version</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

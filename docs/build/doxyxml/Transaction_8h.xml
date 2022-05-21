@@ -1,0 +1,307 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="Transaction_8h" kind="file" language="C++">
+    <compoundname>Transaction.h</compoundname>
+    <includes local="no">memory</includes>
+    <includes local="no">stdint.h</includes>
+    <includes local="no">vector</includes>
+    <includes local="no">thread</includes>
+    <includes local="no">mutex</includes>
+    <includes local="no">condition_variable</includes>
+    <includes refid="EnableSharedFromThis_8h" local="no">rogue/EnableSharedFromThis.h</includes>
+    <includes refid="Logging_8h" local="no">rogue/Logging.h</includes>
+    <includes local="no">boost/python.hpp</includes>
+    <includedby refid="AxiMemMap_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h</includedby>
+    <includedby refid="MemMap_8h" local="no">/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h</includedby>
+    <incdepgraph>
+      <node id="3">
+        <label>stdint.h</label>
+      </node>
+      <node id="11">
+        <label>string</label>
+      </node>
+      <node id="10">
+        <label>exception</label>
+      </node>
+      <node id="8">
+        <label>rogue/EnableSharedFromThis.h</label>
+        <link refid="EnableSharedFromThis_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>condition_variable</label>
+      </node>
+      <node id="12">
+        <label>boost/python.hpp</label>
+      </node>
+      <node id="4">
+        <label>vector</label>
+      </node>
+      <node id="6">
+        <label>mutex</label>
+      </node>
+      <node id="9">
+        <label>rogue/Logging.h</label>
+        <link refid="Logging_8h"/>
+        <childnode refid="10" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="11" relation="include">
+        </childnode>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>thread</label>
+      </node>
+      <node id="2">
+        <label>memory</label>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h</label>
+        <link refid="Transaction_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+        <childnode refid="4" relation="include">
+        </childnode>
+        <childnode refid="5" relation="include">
+        </childnode>
+        <childnode refid="6" relation="include">
+        </childnode>
+        <childnode refid="7" relation="include">
+        </childnode>
+        <childnode refid="8" relation="include">
+        </childnode>
+        <childnode refid="9" relation="include">
+        </childnode>
+        <childnode refid="12" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="3">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/MemMap.h</label>
+        <link refid="MemMap_8h"/>
+      </node>
+      <node id="2">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/hardware/axi/AxiMemMap.h</label>
+        <link refid="AxiMemMap_8h"/>
+      </node>
+      <node id="1">
+        <label>/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h</label>
+        <link refid="Transaction_8h"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+        <childnode refid="3" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" prot="public">rogue::interfaces::memory::Transaction</innerclass>
+    <innernamespace refid="namespacerogue">rogue</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces">rogue::interfaces</innernamespace>
+    <innernamespace refid="namespacerogue_1_1interfaces_1_1memory">rogue::interfaces::memory</innernamespace>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="Transaction_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" prot="public" static="no">
+        <name>BOOST_BIND_GLOBAL_PLACEHOLDERS</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+<para><hruler/>
+ <heading level="2">Title : Memory Transaction </heading>
+</para>
+<para>File : <ref refid="Transaction_8h" kindref="compound">Transaction.h</ref> <heading level="2">Created : 2019-03-08 </heading>
+</para>
+<para>Description: <heading level="2">Memory Transaction </heading>
+</para>
+<para>This file is part of the rogue software platform. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <ulink url="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</ulink>. No part of the rogue software platform, including this file, may be copied, modified, propagated, or distributed except according to the terms <heading level="2">contained in the LICENSE.txt file. </heading>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h" line="32" column="9" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h" bodystart="32" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"></codeline>
+<codeline lineno="20"><highlight class="preprocessor">#ifndef<sp/>__ROGUE_INTERFACES_MEMORY_TRANSACTION_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>__ROGUE_INTERFACES_MEMORY_TRANSACTION_H__</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;memory&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;stdint.h&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;vector&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="25"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;thread&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="26"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;mutex&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;condition_variable&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="EnableSharedFromThis_8h" kindref="compound">rogue/EnableSharedFromThis.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;<ref refid="Logging_8h" kindref="compound">rogue/Logging.h</ref>&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32" refid="Transaction_8h_1ae32d133147b9dd7a9b1bfe370a71b72e" refkind="member"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>BOOST_BIND_GLOBAL_PLACEHOLDERS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor">#include<sp/>&lt;boost/python.hpp&gt;</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal"><ref refid="namespacerogue" kindref="compound">rogue</ref><sp/>{</highlight></codeline>
+<codeline lineno="37"><highlight class="normal"><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">interfaces<sp/>{</highlight></codeline>
+<codeline lineno="38"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">namespace<sp/></highlight><highlight class="normal">memory<sp/>{</highlight></codeline>
+<codeline lineno="39"><highlight class="normal"></highlight></codeline>
+<codeline lineno="40"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">TransactionLock;</highlight></codeline>
+<codeline lineno="41"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Master;</highlight></codeline>
+<codeline lineno="42"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal">Hub;</highlight></codeline>
+<codeline lineno="43"><highlight class="normal"></highlight></codeline>
+<codeline lineno="45"></codeline>
+<codeline lineno="51" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" refkind="compound"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction" kindref="compound">Transaction</ref><sp/>:<sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1EnableSharedFromThis" kindref="compound">rogue::EnableSharedFromThis</ref>&lt;rogue::interfaces::memory::Transaction&gt;<sp/>{</highlight></codeline>
+<codeline lineno="52" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a28693a5c69bdb9b2d5b91d885f8b9838" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1memory_1_1TransactionLock" kindref="compound">TransactionLock</ref>;</highlight></codeline>
+<codeline lineno="53" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a34b85c36cc2386b553fcff72fc15a596" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1memory_1_1Master" kindref="compound">Master</ref>;</highlight></codeline>
+<codeline lineno="54" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aea14f5495b4697c28ed665a9054acf5e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">friend</highlight><highlight class="normal"><sp/></highlight><highlight class="keyword">class<sp/></highlight><highlight class="normal"><ref refid="classrogue_1_1interfaces_1_1memory_1_1Hub" kindref="compound">Hub</ref>;</highlight></codeline>
+<codeline lineno="55"><highlight class="normal"></highlight></codeline>
+<codeline lineno="56"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="57"><highlight class="normal"></highlight></codeline>
+<codeline lineno="59" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>uint8_t<sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21" kindref="member">iterator</ref>;</highlight></codeline>
+<codeline lineno="60"><highlight class="normal"></highlight></codeline>
+<codeline lineno="61"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">private</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="62"><highlight class="normal"></highlight></codeline>
+<codeline lineno="63"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Class<sp/>instance<sp/>counter</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="64"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>uint32_t<sp/>classIdx_;</highlight></codeline>
+<codeline lineno="65"><highlight class="normal"></highlight></codeline>
+<codeline lineno="66"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Class<sp/>instance<sp/>lock</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="67"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::mutex<sp/>classMtx_;</highlight></codeline>
+<codeline lineno="68"><highlight class="normal"></highlight></codeline>
+<codeline lineno="69"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Conditional</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="70"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::condition_variable<sp/>cond_;</highlight></codeline>
+<codeline lineno="71"><highlight class="normal"></highlight></codeline>
+<codeline lineno="72"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">protected</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="73"><highlight class="normal"></highlight></codeline>
+<codeline lineno="74"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>timeout</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="75" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeabb4983c2197e567123dfa53fc7ce50" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeabb4983c2197e567123dfa53fc7ce50" kindref="member">timeout_</ref>;</highlight></codeline>
+<codeline lineno="76"><highlight class="normal"></highlight></codeline>
+<codeline lineno="77"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>end<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="78" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aa206fc95e6b3dfb04beabc3bc8e4b57c" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aa206fc95e6b3dfb04beabc3bc8e4b57c" kindref="member">endTime_</ref>;</highlight></codeline>
+<codeline lineno="79"><highlight class="normal"></highlight></codeline>
+<codeline lineno="80"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>start<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="81" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a459fbb7934c57006bbf23d8132adfaf3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a459fbb7934c57006bbf23d8132adfaf3" kindref="member">startTime_</ref>;</highlight></codeline>
+<codeline lineno="82"><highlight class="normal"></highlight></codeline>
+<codeline lineno="83"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>warn<sp/>time</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="84" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a0deee61005984f9db783283fbf143ad5" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">struct<sp/></highlight><highlight class="normal">timeval<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a0deee61005984f9db783283fbf143ad5" kindref="member">warnTime_</ref>;</highlight></codeline>
+<codeline lineno="85"><highlight class="normal"></highlight></codeline>
+<codeline lineno="86"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="87"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>python<sp/>buffer</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="88" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a6194db958f3970e2cebab9fcf9a6c1d3" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>Py_buffer<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a6194db958f3970e2cebab9fcf9a6c1d3" kindref="member">pyBuf_</ref>;</highlight></codeline>
+<codeline lineno="89"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="90"><highlight class="normal"></highlight></codeline>
+<codeline lineno="91"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Python<sp/>buffer<sp/>is<sp/>valid</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="92" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a2d82057c96e6b9650322e8fb82db746e" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a2d82057c96e6b9650322e8fb82db746e" kindref="member">pyValid_</ref>;</highlight></codeline>
+<codeline lineno="93"><highlight class="normal"></highlight></codeline>
+<codeline lineno="94"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Iterator<sp/>(mapped<sp/>to<sp/>uint8_t<sp/>*<sp/>for<sp/>now)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="95" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1afe46ffc40d0445501a413ad872a32291" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21" kindref="member">iterator</ref><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1afe46ffc40d0445501a413ad872a32291" kindref="member">iter_</ref>;</highlight></codeline>
+<codeline lineno="96"><highlight class="normal"></highlight></codeline>
+<codeline lineno="97"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>address</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="98" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab33c239c97affc9337b9b2487b9c051b" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab33c239c97affc9337b9b2487b9c051b" kindref="member">address_</ref>;</highlight></codeline>
+<codeline lineno="99"><highlight class="normal"></highlight></codeline>
+<codeline lineno="100"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>size</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="101" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a45a5fc539bcf4598239ef6f4181582ea" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a45a5fc539bcf4598239ef6f4181582ea" kindref="member">size_</ref>;</highlight></codeline>
+<codeline lineno="102"><highlight class="normal"></highlight></codeline>
+<codeline lineno="103"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>type</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="104" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a44bc3d4eaa900a0aa10defba45fba664" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a44bc3d4eaa900a0aa10defba45fba664" kindref="member">type_</ref>;</highlight></codeline>
+<codeline lineno="105"><highlight class="normal"></highlight></codeline>
+<codeline lineno="106"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>error</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="107" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac6ba743be1e85ed350b9794919da82bb" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac6ba743be1e85ed350b9794919da82bb" kindref="member">error_</ref>;</highlight></codeline>
+<codeline lineno="108"><highlight class="normal"></highlight></codeline>
+<codeline lineno="109"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>id</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="110" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a253359a7a3f13fdd0af62015b12ddcf4" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a253359a7a3f13fdd0af62015b12ddcf4" kindref="member">id_</ref>;</highlight></codeline>
+<codeline lineno="111"><highlight class="normal"></highlight></codeline>
+<codeline lineno="112"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Done<sp/>state</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="113" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a509585dfc7f628dc242aebe2951cae48" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a509585dfc7f628dc242aebe2951cae48" kindref="member">done_</ref>;</highlight></codeline>
+<codeline lineno="114"><highlight class="normal"></highlight></codeline>
+<codeline lineno="115"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Transaction<sp/>lock</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="116" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a442c9938c38855aa46012777b66d4c18" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::mutex<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a442c9938c38855aa46012777b66d4c18" kindref="member">lock_</ref>;</highlight></codeline>
+<codeline lineno="117"><highlight class="normal"></highlight></codeline>
+<codeline lineno="119" refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a1a3b302b8a1197e3280b1fe7c0581a09" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::Logging&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a1a3b302b8a1197e3280b1fe7c0581a09" kindref="member">log_</ref>;</highlight></codeline>
+<codeline lineno="120"><highlight class="normal"></highlight></codeline>
+<codeline lineno="121"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>transaction<sp/>container<sp/>and<sp/>return<sp/>a<sp/>TransactionPtr,<sp/>called<sp/>by<sp/>Master</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="122"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aa6269cff5d2b097f147c447d0a4e5848" kindref="member">create</ref><sp/>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>timeout);</highlight></codeline>
+<codeline lineno="123"><highlight class="normal"></highlight></codeline>
+<codeline lineno="124"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Wait<sp/>for<sp/>the<sp/>transaction<sp/>to<sp/>complete,<sp/>called<sp/>by<sp/>Master</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="125"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::string<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a537f6cdff63245d873e75eadf31a85ce" kindref="member">wait</ref>();</highlight></codeline>
+<codeline lineno="126"><highlight class="normal"></highlight></codeline>
+<codeline lineno="127"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">public</highlight><highlight class="normal">:</highlight></codeline>
+<codeline lineno="128"><highlight class="normal"></highlight></codeline>
+<codeline lineno="129"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Setup<sp/>class<sp/>for<sp/>use<sp/>in<sp/>python</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="130"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">static</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a3123d9e91bc562c4df62d27cc636f17c" kindref="member">setup_python</ref>();</highlight></codeline>
+<codeline lineno="131"><highlight class="normal"></highlight></codeline>
+<codeline lineno="132"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Create<sp/>a<sp/>Transaction.<sp/>Do<sp/>not<sp/>call<sp/>directly.<sp/>Only<sp/>called<sp/>from<sp/>the<sp/>Master<sp/>class.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="133"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a99603b75776c2bf4c783af29e624f73b" kindref="member">Transaction</ref>(</highlight><highlight class="keyword">struct</highlight><highlight class="normal"><sp/>timeval<sp/>timeout);</highlight></codeline>
+<codeline lineno="134"><highlight class="normal"></highlight></codeline>
+<codeline lineno="135"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="comment">//<sp/>Destroy<sp/>the<sp/>Transaction.</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="136"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a589e1bc8dd91b5c6c001bc7533b2b02c" kindref="member">~Transaction</ref>();</highlight></codeline>
+<codeline lineno="137"><highlight class="normal"></highlight></codeline>
+<codeline lineno="139"></codeline>
+<codeline lineno="142"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>std::shared_ptr&lt;rogue::interfaces::memory::TransactionLock&gt;<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeaeb3980a9e5959eb23d2181eeeddc49" kindref="member">lock</ref>();</highlight></codeline>
+<codeline lineno="143"><highlight class="normal"></highlight></codeline>
+<codeline lineno="145"></codeline>
+<codeline lineno="152"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">bool</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a35616717f6d15c8978ba296b7fce816c" kindref="member">expired</ref>();</highlight></codeline>
+<codeline lineno="153"><highlight class="normal"></highlight></codeline>
+<codeline lineno="155"></codeline>
+<codeline lineno="158"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a1f14874141680a7184b8277c61444d5b" kindref="member">id</ref>();</highlight></codeline>
+<codeline lineno="159"><highlight class="normal"></highlight></codeline>
+<codeline lineno="161"></codeline>
+<codeline lineno="164"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint64_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07b199ad3b8c4fec6ab3e7a334722aad" kindref="member">address</ref>();</highlight></codeline>
+<codeline lineno="165"><highlight class="normal"></highlight></codeline>
+<codeline lineno="167"></codeline>
+<codeline lineno="170"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a7c0e8ed1b737a70043b5e8f4c5eb4153" kindref="member">size</ref>();</highlight></codeline>
+<codeline lineno="171"><highlight class="normal"></highlight></codeline>
+<codeline lineno="173"></codeline>
+<codeline lineno="177"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint32_t<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e" kindref="member">type</ref>();</highlight></codeline>
+<codeline lineno="178"><highlight class="normal"></highlight></codeline>
+<codeline lineno="180"></codeline>
+<codeline lineno="187"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a6c0d228b3631ba8c038a8491a6518022" kindref="member">refreshTimer</ref>(std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt;<sp/>reference);</highlight></codeline>
+<codeline lineno="188"><highlight class="normal"></highlight></codeline>
+<codeline lineno="190"></codeline>
+<codeline lineno="195"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1af6331d51aebb4d0cf07ea55b62de7f21" kindref="member">done</ref>();</highlight></codeline>
+<codeline lineno="196"><highlight class="normal"></highlight></codeline>
+<codeline lineno="198"></codeline>
+<codeline lineno="203"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1acc83400c79ebb69dd1f1ecd6e2fda07d" kindref="member">errorPy</ref>(std::string<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da" kindref="member">error</ref>);</highlight></codeline>
+<codeline lineno="204"><highlight class="normal"></highlight></codeline>
+<codeline lineno="206"></codeline>
+<codeline lineno="210"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da" kindref="member">error</ref>(</highlight><highlight class="keyword">const</highlight><highlight class="normal"><sp/></highlight><highlight class="keywordtype">char</highlight><highlight class="normal"><sp/>*<sp/>fmt,<sp/>...);</highlight></codeline>
+<codeline lineno="211"><highlight class="normal"></highlight></codeline>
+<codeline lineno="213"></codeline>
+<codeline lineno="219"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1ae7f4fa7ac6a43bcc2d6b75dcb7d2faaa" kindref="member">begin</ref>();</highlight></codeline>
+<codeline lineno="220"><highlight class="normal"></highlight></codeline>
+<codeline lineno="222"></codeline>
+<codeline lineno="228"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>uint8_t<sp/>*<sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1add2caaa7f03d3b4a580dfdbd06922cfe" kindref="member">end</ref>();</highlight></codeline>
+<codeline lineno="229"><highlight class="normal"></highlight></codeline>
+<codeline lineno="230"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>NO_PYTHON</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="231"><highlight class="normal"></highlight></codeline>
+<codeline lineno="233"></codeline>
+<codeline lineno="240"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff" kindref="member">getData</ref><sp/>(<sp/>boost::python::object<sp/>p,<sp/>uint32_t<sp/>offset<sp/>);</highlight></codeline>
+<codeline lineno="241"><highlight class="normal"></highlight></codeline>
+<codeline lineno="243"></codeline>
+<codeline lineno="250"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keywordtype">void</highlight><highlight class="normal"><sp/><ref refid="classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75" kindref="member">setData</ref><sp/>(<sp/>boost::python::object<sp/>p,<sp/>uint32_t<sp/>offset<sp/>);</highlight></codeline>
+<codeline lineno="251"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="252"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>};</highlight></codeline>
+<codeline lineno="253"><highlight class="normal"></highlight></codeline>
+<codeline lineno="255" refid="namespacerogue_1_1interfaces_1_1memory_1a7c6250994b065d9570e27405efe61a13" refkind="member"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/></highlight><highlight class="keyword">typedef</highlight><highlight class="normal"><sp/>std::shared_ptr&lt;rogue::interfaces::memory::Transaction&gt;<sp/><ref refid="namespacerogue_1_1interfaces_1_1memory_1a7c6250994b065d9570e27405efe61a13" kindref="member">TransactionPtr</ref>;</highlight></codeline>
+<codeline lineno="256"><highlight class="normal"></highlight></codeline>
+<codeline lineno="257"><highlight class="normal"><sp/><sp/><sp/><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="258"><highlight class="normal"><sp/><sp/><sp/>}</highlight></codeline>
+<codeline lineno="259"><highlight class="normal">}</highlight></codeline>
+<codeline lineno="260"><highlight class="normal"></highlight></codeline>
+<codeline lineno="261"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="262"><highlight class="normal"></highlight></codeline>
+    </programlisting>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/memory/Transaction.h"/>
+  </compounddef>
+</doxygen>

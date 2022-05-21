@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="namespacerogue_1_1protocols_1_1epicsV3" kind="namespace" language="C++">
+    <compoundname>rogue::protocols::epicsV3</compoundname>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Command" prot="public">rogue::protocols::epicsV3::Command</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Destructor" prot="public">rogue::protocols::epicsV3::Destructor</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Pv" prot="public">rogue::protocols::epicsV3::Pv</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Server" prot="public">rogue::protocols::epicsV3::Server</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Value" prot="public">rogue::protocols::epicsV3::Value</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Variable" prot="public">rogue::protocols::epicsV3::Variable</innerclass>
+    <innerclass refid="classrogue_1_1protocols_1_1epicsV3_1_1Work" prot="public">rogue::protocols::epicsV3::Work</innerclass>
+      <sectiondef kind="typedef">
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1epicsV3_1ac3fbf5bd282ecfbdb7caab467f52a74e" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Command" kindref="compound">rogue::protocols::epicsV3::Command</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::epicsV3::Command&gt; rogue::protocols::epicsV3::CommandPtr</definition>
+        <argsstring></argsstring>
+        <name>CommandPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Command.h" line="51" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Command.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1epicsV3_1a65b216b9719b0b292a50b7280daef2a5" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Server" kindref="compound">rogue::protocols::epicsV3::Server</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::epicsV3::Server&gt; rogue::protocols::epicsV3::ServerPtr</definition>
+        <argsstring></argsstring>
+        <name>ServerPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Server.h" line="96" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Server.h" bodystart="96" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1epicsV3_1a9f2c0af56c4ad44b4284a063b7ea8941" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Value" kindref="compound">rogue::protocols::epicsV3::Value</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::epicsV3::Value&gt; rogue::protocols::epicsV3::ValuePtr</definition>
+        <argsstring></argsstring>
+        <name>ValuePtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" line="143" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Value.h" bodystart="143" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1epicsV3_1a054565e1882ef9def1078b2b728fc8f8" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Variable" kindref="compound">rogue::protocols::epicsV3::Variable</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::epicsV3::Variable&gt; rogue::protocols::epicsV3::VariablePtr</definition>
+        <argsstring></argsstring>
+        <name>VariablePtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Variable.h" line="78" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Variable.h" bodystart="78" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="namespacerogue_1_1protocols_1_1epicsV3_1a869c4829678204b3bc44391912ab2b58" prot="public" static="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1epicsV3_1_1Work" kindref="compound">rogue::protocols::epicsV3::Work</ref> &gt;</type>
+        <definition>typedef std::shared_ptr&lt;rogue::protocols::epicsV3::Work&gt; rogue::protocols::epicsV3::WorkPtr</definition>
+        <argsstring></argsstring>
+        <name>WorkPtr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Work.h" line="71" column="34" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Work.h" bodystart="71" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="func">
+      <memberdef kind="function" id="namespacerogue_1_1protocols_1_1epicsV3_1aa5e88e2e0a6a1d286fbb9ea8349e07f7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::epicsV3::setup_module</definition>
+        <argsstring>()</argsstring>
+        <name>setup_module</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/module.h" line="27" column="15" declfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/module.h" declline="27" declcolumn="15"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/epicsV3/Command.h" line="36" column="23"/>
+  </compounddef>
+</doxygen>

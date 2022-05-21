@@ -1,0 +1,356 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1protocols_1_1rssi_1_1Application" kind="class" language="C++" prot="public">
+    <compoundname>rogue::protocols::rssi::Application</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Master" prot="public" virt="non-virtual">rogue::interfaces::stream::Master</basecompoundref>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::stream::Slave</basecompoundref>
+    <includes refid="rssi_2Application_8h" local="no">Application.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a5c554bbe1c1347251991db79ae934733" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Controller" kindref="compound">rogue::protocols::rssi::Controller</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::protocols::rssi::Controller&gt; rogue::protocols::rssi::Application::cntl_</definition>
+        <argsstring></argsstring>
+        <name>cntl_</name>
+        <briefdescription>
+<para>Core module. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="35" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1rssi_1_1Application_1aad33355d8ebbbc7643daff8e5a48127d" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::protocols::rssi::Application::thread_</definition>
+        <argsstring></argsstring>
+        <name>thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="38" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a77b80c5fabeaa57fe13e9fb24e2b47f0" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::protocols::rssi::Application::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="39" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1acb0b06345154f14997554c76d37889b9" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Application::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+<para>Thread background. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="42" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a6ac3f6b8bac252c12f4400cd59927925" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">rogue::protocols::rssi::Application</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::protocols::rssi::Application&gt; rogue::protocols::rssi::Application::create</definition>
+        <argsstring>()</argsstring>
+        <name>create</name>
+        <briefdescription>
+<para>Class creation. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="47" column="39"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a4d6f8b59ddf939d960718bbb327231d8" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::protocols::rssi::Application::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+<para>Setup class in python. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="50" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a7d2e94b58722c8d6c30f6e99bd654911" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::rssi::Application::Application</definition>
+        <argsstring>()</argsstring>
+        <name>Application</name>
+        <briefdescription>
+<para>Creator. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="53" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a21c388b552f7cbd5112ddd352bc8e2a6" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::protocols::rssi::Application::~Application</definition>
+        <argsstring>()</argsstring>
+        <name>~Application</name>
+        <briefdescription>
+<para>Destructor. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="56" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a3817755bb70b2ace86c86c58f681cfed" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Application::setController</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::protocols::rssi::Controller &gt; cntl)</argsstring>
+        <name>setController</name>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1protocols_1_1rssi_1_1Controller" kindref="compound">rogue::protocols::rssi::Controller</ref> &gt;</type>
+          <declname>cntl</declname>
+        </param>
+        <briefdescription>
+<para>Setup links. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="59" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a26272091ed3e4c523aa7d2c75fa651ac" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; rogue::protocols::rssi::Application::acceptReq</definition>
+        <argsstring>(uint32_t size, bool zeroCopyEn)</argsstring>
+        <name>acceptReq</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff">acceptReq</reimplements>
+        <param>
+          <type>uint32_t</type>
+          <declname>size</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>zeroCopyEn</declname>
+        </param>
+        <briefdescription>
+<para>Generate a Frame. Called from master. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="66" column="32"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1protocols_1_1rssi_1_1Application_1a0fa38117ea451236409427b7db6c474b" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::protocols::rssi::Application::acceptFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>acceptFrame</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6">acceptFrame</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+<para>Accept a frame from master. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="69" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>RSSI <ref refid="classrogue_1_1protocols_1_1rssi_1_1Application" kindref="compound">Application</ref> Class. </para>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::protocols::rssi::Application</label>
+        <link refid="classrogue_1_1protocols_1_1rssi_1_1Application"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::protocols::rssi::Application</label>
+        <link refid="classrogue_1_1protocols_1_1rssi_1_1Application"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" line="32" column="69" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/protocols/rssi/Application.h" bodystart="31" bodyend="70"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a0fa38117ea451236409427b7db6c474b" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>acceptFrame</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a26272091ed3e4c523aa7d2c75fa651ac" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>acceptReq</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a4454d19c72c99a76b8b446fb6afa72e2" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>addSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>allocBuffer</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a7d2e94b58722c8d6c30f6e99bd654911" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>Application</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a5c554bbe1c1347251991db79ae934733" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>cntl_</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a6ac3f6b8bac252c12f4400cd59927925" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>createBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>decCounter</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a80fb7808644726ddca72e8e196477229" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>ensureSingleBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a913f40b8d390d1b2f26fa0aecfea34eb" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>equalsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>getAllocBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>getAllocCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>getByteCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>getFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>getFrameCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>getPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af6f5b686d275b5545ac7feefceab8dd3" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a76dbb1a62ce29ae6d130e11714a37f2f" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>operator==</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a3c410af1f0beab25864711c1be54b336" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>reqFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>retBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a98f9088c1a19f7875001c8f782df0265" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1acb0b06345154f14997554c76d37889b9" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>sendFrame</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a3817755bb70b2ace86c86c58f681cfed" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>setController</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>setDebug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>setFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>setPoolSize</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a4d6f8b59ddf939d960718bbb327231d8" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::"><scope>rogue::protocols::rssi::Application</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::rogue::"><scope>rogue::protocols::rssi::Application</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;::"><scope>rogue::protocols::rssi::Application</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a69faa639115fd3108de75da01b802720" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>slaveCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a212216679fa253e58bda52b621a66dd5" prot="public" virt="virtual" ambiguityscope="rogue::"><scope>rogue::protocols::rssi::Application</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" prot="public" virt="virtual" ambiguityscope="rogue::interfaces::stream::Slave::"><scope>rogue::protocols::rssi::Application</scope><name>stop</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1aad33355d8ebbbc7643daff8e5a48127d" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>thread_</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a77b80c5fabeaa57fe13e9fb24e2b47f0" prot="private" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1protocols_1_1rssi_1_1Application_1a21c388b552f7cbd5112ddd352bc8e2a6" prot="public" virt="non-virtual"><scope>rogue::protocols::rssi::Application</scope><name>~Application</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af391073d7d1e1125e9563991de0b0991" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>~Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>~Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" prot="public" virt="virtual"><scope>rogue::protocols::rssi::Application</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

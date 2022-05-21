@@ -1,0 +1,478 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.17">
+  <compounddef id="classrogue_1_1interfaces_1_1stream_1_1Fifo" kind="class" language="C++" prot="public">
+    <compoundname>rogue::interfaces::stream::Fifo</compoundname>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Master" prot="public" virt="non-virtual">rogue::interfaces::stream::Master</basecompoundref>
+    <basecompoundref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" prot="public" virt="non-virtual">rogue::interfaces::stream::Slave</basecompoundref>
+    <includes refid="Fifo_8h" local="no">Fifo.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a35e86fa98b9675da8f41f450410a7e7e" prot="private" static="no" mutable="no">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1Logging" kindref="compound">rogue::Logging</ref> &gt;</type>
+        <definition>std::shared_ptr&lt;rogue::Logging&gt; rogue::interfaces::stream::Fifo::log_</definition>
+        <argsstring></argsstring>
+        <name>log_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="51" column="32" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="51" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a2f8baeae8ec7f430b2f6bfe3f49de1c2" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Fifo::maxDepth_</definition>
+        <argsstring></argsstring>
+        <name>maxDepth_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="54" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="54" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a9c85b87c084514d53d20bf79db7efdcc" prot="private" static="no" mutable="no">
+        <type>uint32_t</type>
+        <definition>uint32_t rogue::interfaces::stream::Fifo::trimSize_</definition>
+        <argsstring></argsstring>
+        <name>trimSize_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="55" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="55" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a1c8252e4f54fae91abbedc47dc0f3ac2" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::stream::Fifo::noCopy_</definition>
+        <argsstring></argsstring>
+        <name>noCopy_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="56" column="25" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="56" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1aacd9b6bc143bd42c1c00402dc4ea3940" prot="private" static="no" mutable="no">
+        <type>std::size_t</type>
+        <definition>std::size_t rogue::interfaces::stream::Fifo::dropFrameCnt_</definition>
+        <argsstring></argsstring>
+        <name>dropFrameCnt_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="59" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="59" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1ad2752eb9b99d9b48e78d5ac99e382c5c" prot="private" static="no" mutable="no">
+        <type><ref refid="classrogue_1_1Queue" kindref="compound">rogue::Queue</ref>&lt; std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt; &gt;</type>
+        <definition>rogue::Queue&lt;std::shared_ptr&lt;rogue::interfaces::stream::Frame&gt; &gt; rogue::interfaces::stream::Fifo::queue_</definition>
+        <argsstring></argsstring>
+        <name>queue_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="62" column="29" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="62" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a763d0a45154ae468c975f20c1e0a34b0" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool rogue::interfaces::stream::Fifo::threadEn_</definition>
+        <argsstring></argsstring>
+        <name>threadEn_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="65" column="21" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="65" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a871d974e8db25e4d45f758fc2322c0c0" prot="private" static="no" mutable="no">
+        <type>std::thread *</type>
+        <definition>std::thread* rogue::interfaces::stream::Fifo::thread_</definition>
+        <argsstring></argsstring>
+        <name>thread_</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="66" column="28" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="66" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a1b6131831835ff836628000b9ea8b9a6" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Fifo::runThread</definition>
+        <argsstring>()</argsstring>
+        <name>runThread</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="69" column="21"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a7bbcb59e449f08dcfbe6b72acb3af74a" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">rogue::interfaces::stream::Fifo</ref> &gt;</type>
+        <definition>static std::shared_ptr&lt;rogue::interfaces::stream::Fifo&gt; rogue::interfaces::stream::Fifo::create</definition>
+        <argsstring>(uint32_t maxDepth, uint32_t trimSize, bool noCopy)</argsstring>
+        <name>create</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>maxDepth</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>trimSize</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>noCopy</declname>
+        </param>
+        <briefdescription>
+<para>Create a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">Fifo</ref> object and return as a FifoPtr. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Exposed as <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">rogue.interfaces.stream.Fifo()</ref> to Python <parameterlist kind="param"><parameteritem>
+<parameternamelist>
+<parametername>maxDepth</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set to a non-zero value to configured fixed size mode. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>trimSize</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set to a non-zero value to limit the amount of data copied. </para>
+</parameterdescription>
+</parameteritem>
+<parameteritem>
+<parameternamelist>
+<parametername>noCopy</parametername>
+</parameternamelist>
+<parameterdescription>
+<para>Set to true to disable <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> copy </para>
+</parameterdescription>
+</parameteritem>
+</parameterlist>
+<simplesect kind="return"><para><ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">Fifo</ref> object as a FifoPtr </para>
+</simplesect>
+</para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="81" column="19"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a33287176d57ef19fa4eafa381d2b47d2" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>static void rogue::interfaces::stream::Fifo::setup_python</definition>
+        <argsstring>()</argsstring>
+        <name>setup_python</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="84" column="28"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1ac9df79442320fa6d863d5678632231f0" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Fifo::Fifo</definition>
+        <argsstring>(uint32_t maxDepth, uint32_t trimSize, bool noCopy)</argsstring>
+        <name>Fifo</name>
+        <param>
+          <type>uint32_t</type>
+          <declname>maxDepth</declname>
+        </param>
+        <param>
+          <type>uint32_t</type>
+          <declname>trimSize</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>noCopy</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="87" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1add3d0712e1e3358ab13715a47eb1e80c" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>rogue::interfaces::stream::Fifo::~Fifo</definition>
+        <argsstring>()</argsstring>
+        <name>~Fifo</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="90" column="16"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a4365e37d6f395e39fb2697c6a863cd18" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::size_t</type>
+        <definition>std::size_t rogue::interfaces::stream::Fifo::size</definition>
+        <argsstring>()</argsstring>
+        <name>size</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="93" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a7ed02712a30a53b79a7567dfd7b1f3bf" prot="public" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>std::size_t</type>
+        <definition>std::size_t rogue::interfaces::stream::Fifo::dropCnt</definition>
+        <argsstring>() const</argsstring>
+        <name>dropCnt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="96" column="28"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a8f44ae7ea2e8bdd257595557bdc998bf" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Fifo::clearCnt</definition>
+        <argsstring>()</argsstring>
+        <name>clearCnt</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="99" column="21"/>
+      </memberdef>
+      <memberdef kind="function" id="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a301b2f55ce5802ce5aa9d6d3018288c0" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void rogue::interfaces::stream::Fifo::acceptFrame</definition>
+        <argsstring>(std::shared_ptr&lt; rogue::interfaces::stream::Frame &gt; frame)</argsstring>
+        <name>acceptFrame</name>
+        <reimplements refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a5b43e4e21f870ab00542bcdf20c9eed6">acceptFrame</reimplements>
+        <param>
+          <type>std::shared_ptr&lt; <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">rogue::interfaces::stream::Frame</ref> &gt;</type>
+          <declname>frame</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="102" column="21"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>Stream <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> FIFO. </para>
+    </briefdescription>
+    <detaileddescription>
+<para>The stream <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">Fifo</ref> object buffers <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> data as it is received from a <ref refid="classrogue_1_1interfaces_1_1stream_1_1Master" kindref="compound">Master</ref>. It is then passed to the attached <ref refid="classrogue_1_1interfaces_1_1stream_1_1Slave" kindref="compound">Slave</ref> objects in an independent thread.</para>
+<para>The <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">Fifo</ref> can either store the original data or create a copy of the data in a new <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref>.</para>
+<para>The copied data can be configured to be a fixed size to limit the amount of data copied.</para>
+<para>The <ref refid="classrogue_1_1interfaces_1_1stream_1_1Fifo" kindref="compound">Fifo</ref> supports a maximum depth to be configured. After this depth is reached new incoming <ref refid="classrogue_1_1interfaces_1_1stream_1_1Frame" kindref="compound">Frame</ref> objects are dropped. </para>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Fifo</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Fifo"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="3">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Master &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="4">
+        <label>rogue::EnableSharedFromThisBase</label>
+        <link refid="classrogue_1_1EnableSharedFromThisBase"/>
+        <childnode refid="5" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="7">
+        <label>rogue::interfaces::stream::Pool</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Pool"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="9">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="1">
+        <label>rogue::interfaces::stream::Fifo</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Fifo"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+        <childnode refid="6" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>rogue::interfaces::stream::Master</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Master"/>
+        <childnode refid="3" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="8">
+        <label>rogue::EnableSharedFromThis&lt; rogue::interfaces::stream::Pool &gt;</label>
+        <link refid="classrogue_1_1EnableSharedFromThis"/>
+        <childnode refid="4" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="5">
+        <label>std::enable_shared_from_this&lt; rogue::EnableSharedFromThisBase &gt;</label>
+      </node>
+      <node id="6">
+        <label>rogue::interfaces::stream::Slave</label>
+        <link refid="classrogue_1_1interfaces_1_1stream_1_1Slave"/>
+        <childnode refid="7" relation="public-inheritance">
+        </childnode>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+      </node>
+    </collaborationgraph>
+    <location file="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" line="49" column="62" bodyfile="/afs/slac.stanford.edu/u/gu/cdollar/rogue/include/rogue/interfaces/stream/Fifo.h" bodystart="48" bodyend="104"/>
+    <listofallmembers>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a301b2f55ce5802ce5aa9d6d3018288c0" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>acceptFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9fa25c92683134631260373d985fe6ff" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>acceptReq</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a4454d19c72c99a76b8b446fb6afa72e2" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>addSlave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1929439ba9e528d232da795fc773f6f5" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>allocBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a8f44ae7ea2e8bdd257595557bdc998bf" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>clearCnt</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a7bbcb59e449f08dcfbe6b72acb3af74a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af0ad7b7652bfeb6c1bbef7062245c1ec" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Master::"><scope>rogue::interfaces::stream::Fifo</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a6cf859e90fb443f756bd49f86759cc08" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::"><scope>rogue::interfaces::stream::Fifo</scope><name>create</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a6244eb8d4f0d4e69a8539f3d889ed004" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>createBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a01e306fd690bbfcfaec95fd90326564f" prot="protected" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>decCounter</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a7ed02712a30a53b79a7567dfd7b1f3bf" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>dropCnt</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1aacd9b6bc143bd42c1c00402dc4ea3940" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>dropFrameCnt_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a80fb7808644726ddca72e8e196477229" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>ensureSingleBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a913f40b8d390d1b2f26fa0aecfea34eb" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>equalsPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1ac9df79442320fa6d863d5678632231f0" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>Fifo</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>getAllocBytes</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>getAllocCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>getByteCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>getFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>getFrameCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>getPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a35e86fa98b9675da8f41f450410a7e7e" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>log_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a9b665aa11a8dbc6de5fc6e3cfe5fab8a" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>lshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af6f5b686d275b5545ac7feefceab8dd3" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a2f8baeae8ec7f430b2f6bfe3f49de1c2" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>maxDepth_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a1c8252e4f54fae91abbedc47dc0f3ac2" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>noCopy_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1addf9a4a5d1f7d1d8026ca3ef60dd46e5" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>operator&lt;&lt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a76dbb1a62ce29ae6d130e11714a37f2f" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>operator==</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a3c410af1f0beab25864711c1be54b336" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>operator&gt;&gt;</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1ac099f47e3db8287ec15628c726aad19c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1ad2752eb9b99d9b48e78d5ac99e382c5c" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>queue_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a7565399ec765e1093a349de8745a5034" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>reqFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a9aa628b56ba13631eca0e7cef44c9d80" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>retBuffer</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a98f9088c1a19f7875001c8f782df0265" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>rshiftPy</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a1b6131831835ff836628000b9ea8b9a6" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>runThread</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1ac4270a45820c4c03dd7f2b472df4efd8" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>sendFrame</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>setDebug</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>setFixedSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>setPoolSize</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a33287176d57ef19fa4eafa381d2b47d2" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>setup_python</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::"><scope>rogue::interfaces::stream::Fifo</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::rogue::"><scope>rogue::interfaces::stream::Fifo</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThis_1a2d79e35bc7be4d939e9a82ae58da5400" prot="public" virt="non-virtual" ambiguityscope="rogue::interfaces::stream::Slave::EnableSharedFromThis&lt; rogue::interfaces::stream::Slave &gt;::"><scope>rogue::interfaces::stream::Fifo</scope><name>shared_from_this</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a4365e37d6f395e39fb2697c6a863cd18" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>size</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a3ccdf29d62da59bcc00ab7d4f5ca95aa" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>Slave</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a69faa639115fd3108de75da01b802720" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>slaveCount</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1a212216679fa253e58bda52b621a66dd5" prot="public" virt="virtual" ambiguityscope="rogue::"><scope>rogue::interfaces::stream::Fifo</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a37bfa28fd4bf663259b4be634302334c" prot="public" virt="virtual" ambiguityscope="rogue::interfaces::stream::Slave::"><scope>rogue::interfaces::stream::Fifo</scope><name>stop</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a871d974e8db25e4d45f758fc2322c0c0" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>thread_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a763d0a45154ae468c975f20c1e0a34b0" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>threadEn_</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1a9c85b87c084514d53d20bf79db7efdcc" prot="private" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>trimSize_</name></member>
+      <member refid="classrogue_1_1EnableSharedFromThisBase_1a30602a01922086d80c07a8099278b41a" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>~EnableSharedFromThisBase</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Fifo_1add3d0712e1e3358ab13715a47eb1e80c" prot="public" virt="non-virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>~Fifo</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Master_1af391073d7d1e1125e9563991de0b0991" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>~Master</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Pool_1aa3335da5e11c507b423f0dc73ccbded1" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>~Pool</name></member>
+      <member refid="classrogue_1_1interfaces_1_1stream_1_1Slave_1a0bc74622985b7f32ea53175995643001" prot="public" virt="virtual"><scope>rogue::interfaces::stream::Fifo</scope><name>~Slave</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
