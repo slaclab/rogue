@@ -151,11 +151,12 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         size    = transaction.size()
         type    = transaction.type()
 
-        self._count += 1
-
-        if self._dropCount != 0 and self._count == self._dropCount:
-            self._count = 0
+        if self._count < self._dropCount:
+            print(f'Dropping transaction {self._count}')
+            self._count += 1
             return
+
+        self._count = 0
 
         if (address % self._minWidth) != 0:
             transaction.error("Transaction address {address:#x} is not aligned to min width {self._minWidth:#x}")
