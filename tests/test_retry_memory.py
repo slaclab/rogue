@@ -13,8 +13,6 @@ import rogue
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 
-import pytest
-
 # We expect Errors with this test, so turn off logging of them
 #rogue.Logging.setLevel(rogue.Logging.Critical)
 #import logging
