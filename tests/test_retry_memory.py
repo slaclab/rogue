@@ -9,10 +9,14 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+import rogue
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+import pytest
+
+# We expect Errors with this test, so turn off logging of them
+#rogue.Logging.setLevel(rogue.Logging.Critical)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
@@ -30,7 +34,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -40,7 +44,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -50,7 +54,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -60,7 +64,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -70,7 +74,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -80,7 +84,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
 
@@ -90,7 +94,7 @@ class DummyTree(pr.Root):
         pr.Root.__init__(self,
                          name='dummyTree',
                          description="Dummy tree for example",
-                         timeout=2.0,
+                         timeout=.01,
                          pollEn=False,
                          serverPort=None)
 
@@ -116,7 +120,7 @@ def test_memory():
             root.SimpleDev.SimpleTestBB.set(0x42 + i)
             root.SimpleDev.SimpleTestBC.set(0x43 + i)
             root.SimpleDev.SimpleTestBD.set(0x44 + i)
-
+            
             retAA = root.SimpleDev.SimpleTestAA.get()
             retAB = root.SimpleDev.SimpleTestAB.get()
             retBA = root.SimpleDev.SimpleTestBA.get()
