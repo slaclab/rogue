@@ -118,7 +118,7 @@ def test_memory():
             root.SimpleDev.SimpleTestBB.set(0x42 + i)
             root.SimpleDev.SimpleTestBC.set(0x43 + i)
             root.SimpleDev.SimpleTestBD.set(0x44 + i)
-            
+
             retAA = root.SimpleDev.SimpleTestAA.get()
             retAB = root.SimpleDev.SimpleTestAB.get()
             retBA = root.SimpleDev.SimpleTestBA.get()
