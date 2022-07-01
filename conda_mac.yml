@@ -24,3 +24,4 @@ dependencies:
   - pyserial
   - matplotlib
   - pytest
+  - pytest-cov
