@@ -92,6 +92,15 @@ jobs:
           source setup_rogue.sh
           python -m pytest --cov      
 
+      # Flake 8 check
+      - name: Flake8 Tests
+        run: |
+          source setup_rogue.sh
+          python -m compileall -f ./python/
+          flake8 --count ./python/
+          python -m compileall -f ./tests
+          flake8 --count ./tests/          
+
       # Code Coverage
       - name: Code Coverage
         run: |
@@ -164,15 +173,6 @@ jobs:
           pip install setuptools
           pip install -r pip_requirements.txt
 
-      # Flake 8 check
-      - name: Flake8 Tests
-        run: |
-          source setup_rogue.sh
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/
-
       # Rogue
       - name: Build Rogue
         run: |
@@ -187,6 +187,15 @@ jobs:
         run: |
           source setup_rogue.sh
           python -m pytest --cov
+
+      # Flake 8 check
+      - name: Flake8 Tests
+        run: |
+          source setup_rogue.sh
+          python -m compileall -f ./python/
+          flake8 --count ./python/
+          python -m compileall -f ./tests
+          flake8 --count ./tests/
 
       # Code Coverage
       - name: Code Coverage
@@ -254,7 +263,6 @@ jobs:
           flake8 --count ./python/
           python -m compileall -f ./tests
           flake8 --count ./tests/
-
       # Rogue
       - name: Build Rogue
         run: |
@@ -269,6 +277,15 @@ jobs:
         run: |
           source setup_rogue.sh
           python -m pytest --cov
+
+      # Flake 8 check
+      - name: Flake8 Tests
+        run: |
+          source setup_rogue.sh
+          python -m compileall -f ./python/
+          flake8 --count ./python/
+          python -m compileall -f ./tests
+          flake8 --count ./tests/
 
       # Code Coverage
       - name: Code Coverage
@@ -467,7 +484,7 @@ jobs:
           tags: tidair/${{ steps.get_image_info.outputs.name }}:${{ steps.get_image_info.outputs.tag }}
           build-args: branch=${{ steps.get_image_info.outputs.branch }}
 
-name: Pull Request Comment          
+name: On Pull Rogue Integration          
 on: [pull]
 
 jobs:
