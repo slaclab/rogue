@@ -67,6 +67,10 @@ if args.cmd == 'gui':
     import pyrogue.pydm
     pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui)
 
+elif arg.cmd == 'timeplot':
+    import pyrogue.pydm
+    pyrogue.pydm.runTimePlotter(serverList=args.server)
+
 # System log
 elif args.cmd == 'syslog':
     sl = pyrogue.interfaces.SystemLogMonitor(args.details)

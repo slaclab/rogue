@@ -48,3 +48,27 @@ def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=80
 
     app.exec()
 
+def runTimePlotter(serverList='localhost:9090', title=None, sizeX=800, sizeY=1000, maxListExpand=5, maxListSize=100):
+    os.environ['ROGUE_SERVERS'] = serverList
+
+    ui = os.path.dirname(os.path.abspath(__file__)) + '/TimePlotTop.py'
+
+    if title is None:
+        title = "Rogue Server: {}".format(os.getenv('ROGUE_SERVERS'))
+
+    args = []
+    args.append(f"sizeX={sizeX}")
+    args.append(f"sizeY={sizeY}")
+    args.append(f"title='{title}'")
+    args.append(f"maxListExpand={maxListExpand}")
+    args.append(f"maxListSize={maxListSize}")
+
+    app = pydm.PyDMApplication(ui_file=ui,
+                               command_line_args=args,
+                               hide_nav_bar=True,
+                               hide_menu_bar=True,
+                               hide_status_bar=True)
+
+    print(f"Running GUI. Close window, hit cntrl-c or send SIGTERM to {os.getpid()} to exit.")
+
+    app.exec()
