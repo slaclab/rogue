@@ -1112,3 +1112,14 @@ class LinkVariable(BaseVariable):
     def depBlocks(self):
         """ Return a list of Blocks that this LinkVariable depends on """
         return self.__depBlocks
+
+    @pr.expose
+    @property
+    def pollInterval(self):
+        depIntervals = [dep.pollInterval for dep in self.dependencies if dep.pollInterval > 0]
+        if len(depIntervals) == 0:
+            return 0
+        else:
+            return min(depIntervals)
+
+    
