@@ -24,16 +24,16 @@ from pydm.utilities import connection
 from pyrogue.pydm.widgets import TimePlotter
 
 from pydm.widgets import PyDMEmbeddedDisplay
-import pydm.widgets.timeplot as pwt
+
 
 from PyQt5 import QtGui
-from PyQt5.QtWidgets import QSplitter
+
 import sys
-from PyQt5.QtCore import Qt
 
 
-from qtpy import QtCore
-from PyQt5.QtCore import Qt
+
+
+
 import PyQt5.QtCore as qtcore
 
 import random
@@ -53,7 +53,7 @@ Channel = 'rogue://0/root'
 
 class TimePlotTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
-        super(DefaultTop, self).__init__(parent=parent, args=args, macros=None)
+        super().__init__(parent=parent, args=args, macros=None)
 
         #self.setStyleSheet("*[dirty='true']\
         #                   {background-color: orange;}")
@@ -80,11 +80,12 @@ class TimePlotTop(Display):
 
         self.setWindowTitle(self.title)
 
+        vb = QVBoxLayout()
+        self.setLayout(vb)
+        
         tp = TimePlotter(parent=None, init_channel=Channel)
-        self.addWidget(tp)
+        vb.addWidget(tp)
 
-#         vb = QVBoxLayout()
-#         self.setLayout(vb)
 
 #         self.tab = QTabWidget()
 #         vb.addWidget(self.tab)

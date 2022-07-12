@@ -12,10 +12,16 @@
 
 import pyrogue
 import pyrogue.pydm.widgets
-from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+from pydm.utilities import connection
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
+
+from pydm import Display
+from pydm.widgets.frame import PyDMFrame
+from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+import pydm.widgets.timeplot as pwt
+
+from qtpy import QtCore
 from qtpy.QtCore import Property, Slot, QEvent
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
@@ -25,7 +31,9 @@ from qtpy.QtWidgets import (QVBoxLayout, QHBoxLayout, QGroupBox,
     QLabel, QLineEdit, QPushButton, QScrollArea, QFrame,
     QApplication, QWidget, QTabWidget)
 
-from pydm.utilities import connection
+from PyQt5.QtWidgets import QSplitter
+from PyQt5.QtCore import Qt
+
 import random
 
 
@@ -418,13 +426,16 @@ class TimePlotter(PyDMFrame):
         super().__init__(parent, init_channel)
         self._node = None
 
+        self._addColor = '#dddddd'
+        self._colorSelector = ColorSelector()
+
 
         self.setup_ui()
 
 
     def setup_ui(self):
 
-        self.setWindowTitle(self.title)
+        #self.setWindowTitle(self.title)
 
         vb = QVBoxLayout()
         self.setLayout(vb)
@@ -512,7 +523,7 @@ class TimePlotter(PyDMFrame):
 
                 
         selection_layout = QVBoxLayout()
-        self.selection_tree = SelectionTree(main=self,parent=None,init_channel=Channel)
+        self.selection_tree = SelectionTree(main=self,parent=None,init_channel=self.channel)
         selection_layout.addWidget(self.selection_tree)
         selection_layout.addWidget(self.scroll_area)
         selection_box = QGroupBox()
@@ -535,9 +546,7 @@ class TimePlotter(PyDMFrame):
         main_layout.addWidget(main_splitter)
 
  
-        self.addWidget(main_box)
-
-        self.resize(self.sizeX, self.sizeY)
+        vb.addWidget(main_box)
 
 
     def do_add(self,path):
