@@ -484,7 +484,7 @@ jobs:
           tags: tidair/${{ steps.get_image_info.outputs.name }}:${{ steps.get_image_info.outputs.tag }}
           build-args: branch=${{ steps.get_image_info.outputs.branch }}
 
-on: [pull]
+on: [pull_request]
 
 jobs:
   test_rate:
