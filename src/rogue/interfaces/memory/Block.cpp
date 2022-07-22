@@ -282,9 +282,15 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
          count = retryCount_;
 
       } catch ( rogue::GeneralError err ) {
-         if ( (count+1) > retryCount_ ) throw err;
-         bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_), err.what());
          fWr = true; // Stale state is now lost
+
+         // Rethrow the error if this is the final retry, else log warning
+         if ( (count+1) > retryCount_ ) {
+             bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
+             throw err;
+         } else {
+             bLog_->warning("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
+         }
       }
    }
    while (count++ < retryCount_);
@@ -315,9 +321,15 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
          count = retryCount_;
 
       } catch ( rogue::GeneralError err ) {
-         if ( (count+1) > retryCount_ ) throw err;
-         bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_), err.what());
          fWr = true; // Stale state is now lost
+
+         // Rethrow the error if this is the final retry, else log warning
+         if ( (count+1) > retryCount_ ) {
+             bLog_->error("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
+             throw err;
+         } else {
+             bLog_->warning("Error on try %" PRIu32 " out of %" PRIu32 ": %s", (count+1), (retryCount_+1), err.what());
+         }
       }
    }
    while (count++ < retryCount_);
@@ -1675,4 +1687,3 @@ void rim::Block::rateTest() {
 
    printf("\nBlock c++ raw: Wrote %" PRIu64 " times in %f seconds. Rate = %f\n",count,durr,rate);
 }
-
