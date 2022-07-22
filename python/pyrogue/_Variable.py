@@ -1121,5 +1121,3 @@ class LinkVariable(BaseVariable):
             return 0
         else:
             return min(depIntervals)
-
-    
