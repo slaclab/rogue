@@ -16,14 +16,7 @@ from pyrogue.pydm.widgets import TimePlotter
 
 from pydm import Display
 
-from qtpy.QtWidgets import  (
-    QGroupBox,
-    QVBoxLayout,
-    QLineEdit,
-    QPushButton,
-    QScrollArea,
-    QFrame,
-    QWidget)
+from qtpy.QtWidgets import QVBoxLayout
 
 
 Channel = 'rogue://0/root'
