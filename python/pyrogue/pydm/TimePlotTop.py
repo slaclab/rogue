@@ -11,35 +11,19 @@
 #-----------------------------------------------------------------------------
 
 import os
-import pyrogue as pr
-import pyrogue.pydm
-from pydm import Display
-
-from qtpy.QtWidgets import (QVBoxLayout, QHBoxLayout, QGroupBox,
-    QLabel, QLineEdit, QPushButton, QScrollArea, QFrame,
-    QApplication, QWidget, QTabWidget, QListView)
-from pydm.utilities import connection
-
 
 from pyrogue.pydm.widgets import TimePlotter
 
-from pydm.widgets import PyDMEmbeddedDisplay
+from pydm import Display
 
-
-from PyQt5 import QtGui
-
-import sys
-
-
-
-
-
-import PyQt5.QtCore as qtcore
-
-import random
-
-#new tree class
-
+from qtpy.QtWidgets import  (
+    QGroupBox,
+    QVBoxLayout,
+    QLineEdit,
+    QPushButton,
+    QScrollArea,
+    QFrame,
+    QWidget)
 
 
 Channel = 'rogue://0/root'
@@ -82,7 +66,7 @@ class TimePlotTop(Display):
 
         vb = QVBoxLayout()
         self.setLayout(vb)
-        
+
         tp = TimePlotter(parent=None, init_channel=Channel)
         vb.addWidget(tp)
 

@@ -12,24 +12,20 @@
 
 import pyrogue
 import pyrogue.pydm.widgets
-from pydm.utilities import connection
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.pydm.widgets import PyRogueLineEdit
 
 from pydm import Display
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+from pydm.widgets import PyDMLabel, PyDMPushButton
 import pydm.widgets.timeplot as pwt
 
 from qtpy import QtCore
 from qtpy.QtCore import Property, Slot, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
+from qtpy.QtWidgets import (
+    QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QLabel,
+    QGroupBox, QLineEdit, QPushButton, QScrollArea, QFrame, QWidget)
 
-from qtpy.QtWidgets import (QVBoxLayout, QHBoxLayout, QGroupBox,
-    QLabel, QLineEdit, QPushButton, QScrollArea, QFrame,
-    QApplication, QWidget, QTabWidget)
 
 from PyQt5.QtWidgets import QSplitter
 from PyQt5.QtCore import Qt
@@ -521,7 +517,7 @@ class TimePlotter(PyDMFrame):
         plots_layout.addWidget(self.plots)
         plots_layout.addWidget(buttons_box)
 
-                
+
         selection_layout = QVBoxLayout()
         self.selection_tree = SelectionTree(main=self,parent=None,init_channel=self.channel)
         selection_layout.addWidget(self.selection_tree)
@@ -545,7 +541,7 @@ class TimePlotter(PyDMFrame):
         main_splitter.addWidget(graphs_box)
         main_layout.addWidget(main_splitter)
 
- 
+
         vb.addWidget(main_box)
 
 
@@ -567,7 +563,7 @@ class TimePlotter(PyDMFrame):
             if isinstance(widget,LegendRow) and widget._path == path:
                 widget.setParent(None)
                 widget.deleteLater()
-        
+
 
 
     def do_setwidth(self):
@@ -639,7 +635,7 @@ class LegendRow(Display):
 
 
 class ColorSelector():
-    
+
     def __init__(self):
         self._colorList = ['#F94144', '#F3722C', '#F8961E', '#F9844A', '#F9C74F', '#90BE6D', '#43AA8B', '#4D908E', '#577590', '#277DA1','#f70a0a','#f75d0a','#f7a00a','#f7f30a','#98f70a','#1af70a','#0af7c0','#0accf7','#0a75f7','#0a1ef7','#710af7','#e70af7','#f70a71','#8a2d06','#838a06''#188a06','#188a06','#188a06']
         self._currentDict = {}
@@ -669,5 +665,3 @@ class ColorSelector():
     def generate_new_color(self):
 
         return '#' + hex(random.randint(0x100000,0xffffff))[2:] #<----------Change this
-
-
