@@ -450,10 +450,10 @@ class Fixed(Model):
     Parameters
     ----------
     bitSize : int
-        Number of bits being represented
+        Specifies the total number of bits, including the binary point bit width.
 
     binPoint : int
-        Huh?
+        Specifies the bit location of the binary point, where bit zero is the least significant bit.
     """
 
     pytype  = float
@@ -463,4 +463,26 @@ class Fixed(Model):
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
         self.name = f'Fixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
+        self.ndType = np.dtype(np.float64)
+
+class UFixed(Model):
+    """
+    Model class for fixed point unsigned integers
+
+    Parameters
+    ----------
+    bitSize : int
+        Specifies the total number of bits, including the binary point bit width.
+
+    binPoint : int
+        Specifies the bit location of the binary point, where bit zero is the least significant bit.
+    """
+
+    pytype  = float
+    signed  = False
+    modelId = rim.Fixed
+
+    def __init__(self, bitSize, binPoint):
+        super().__init__(bitSize,binPoint)
+        self.name = f'UFixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
