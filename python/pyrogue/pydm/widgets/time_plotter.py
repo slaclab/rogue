@@ -572,7 +572,7 @@ class TimePlotter(PyDMFrame):
         try:
             val = float(text)
             self.plots.setTimeSpan(val)
-        except:
+        except Exception:
             pass
 
     def do_autoheight(self):
