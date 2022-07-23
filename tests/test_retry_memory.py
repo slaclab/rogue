@@ -13,7 +13,8 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 
 # We expect Errors with this test, so turn off logging of them
-#rogue.Logging.setLevel(rogue.Logging.Critical)
+#import rogue
+#rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)

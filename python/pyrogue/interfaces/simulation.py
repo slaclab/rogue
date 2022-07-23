@@ -152,7 +152,6 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         type    = transaction.type()
 
         if self._count < self._dropCount:
-            print(f'Dropping transaction {self._count}')
             self._count += 1
             return
 
