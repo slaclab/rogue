@@ -484,10 +484,6 @@
                   tags: tidair/${{ steps.get_image_info.outputs.name }}:${{ steps.get_image_info.outputs.tag }}
                   build-args: branch=${{ steps.get_image_info.outputs.branch }}
 
-        on: [pull_request]
-
-        jobs:
-
           pr_comment:
             name: Pull Request Comment
             runs-on: ubuntu-latest
@@ -504,6 +500,39 @@
                       rates: $
                  github_token: ${{ secrets.GITHUB_TOKEN }}
 
+    
+        on: [push, pull_request]
+
+        jobs:
+
+          test_rate:
+            name: test_rate.py
+            runs-on: ubuntu-latest
+            outputs:
+               rates: $
+            steps:
+               name: test_rate.py
+               run:
+                 source setup_rogue.sh
+                 echo set-output name=rates::python test_rate.py
+
+
+          pr_comment:
+            name: Pull Request Comment
+            runs-on: ubuntu-latest
+            steps:
+               name: Checkout
+               uses: actions/checkout@v3
+
+               name: Comment PR
+               uses: thollander/actions-comment-pull-request@v1
+               with:
+                 message: |
+                   Hello world ! :wave:
+                   with:
+                      rates: $
+                 github_token: ${{ secrets.GITHUB_TOKEN }}
+   
           full_build_test:
             name: Full Build Test
             runs-on: ubuntu-latest
