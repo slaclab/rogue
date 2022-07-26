@@ -16,14 +16,7 @@
         # secrets.DOCKERHUB_TOKEN
 
         name: Rogue Integration
-#        on: [push]
-
-        on:
-          push:
-            branches: [ $default-branch ]
-          pull_request:
-            branches: [ $default-branch ]
-
+        on: [push]
 
         jobs:
           full_build_test:
@@ -494,35 +487,35 @@
 #        on: [push, pull_request]
 # 
 #        jobs:
-
-          test_rate:
-            name: test_rate.py
-            runs-on: ubuntu-latest
-            outputs:
-               rates: $
-            steps:
-               name: test_rate.py
-               run:
-                 source setup_rogue.sh
-                 echo set-output name=rates::python test_rate.py
-
-
-          pr_comment:
-            name: Pull Request Comment
-            runs-on: ubuntu-latest
-            steps:
-               name: Checkout
-               uses: actions/checkout@v3
-
-               name: Comment PR
-               uses: thollander/actions-comment-pull-request@v1
-               with:
-                 message: |
-                   Hello world ! :wave:
-                   with:
-                      rates: $
-                 github_token: ${{ secrets.GITHUB_TOKEN }}
-   
+#
+#          test_rate:
+#            name: test_rate.py
+#            runs-on: ubuntu-latest
+#            outputs:
+#               rates: $
+#            steps:
+#               name: test_rate.py
+#               run:
+#                 source setup_rogue.sh
+#                 echo set-output name=rates::python test_rate.py
+#
+#
+#          pr_comment:
+#            name: Pull Request Comment
+#            runs-on: ubuntu-latest
+#            steps:
+#               name: Checkout
+#               uses: actions/checkout@v3
+#
+#               name: Comment PR
+#               uses: thollander/actions-comment-pull-request@v1
+#               with:
+#                 message: |
+#                   Hello world ! :wave:
+#                   with:
+#                      rates: $
+#                 github_token: ${{ secrets.GITHUB_TOKEN }}
+#   
 #           full_build_test:
 #             name: Full Build Test
 #             runs-on: ubuntu-latest
