@@ -53,14 +53,14 @@
 
                   pip install -r pip_requirements.txt
 
-              # Flake 8 check
-              - name: Flake8 Tests
-                run: |
-                  source setup_rogue.sh
-                  python -m compileall -f ./python/
-                  flake8 --count ./python/
-                  python -m compileall -f ./tests
-                  flake8 --count ./tests/    
+#               # Flake 8 check
+#               - name: Flake8 Tests
+#                 run: |
+#                   source setup_rogue.sh
+#                   python -m compileall -f ./python/
+#                   flake8 --count ./python/
+#                   python -m compileall -f ./tests
+#                   flake8 --count ./tests/    
 
               - name: Install EPICS Base
                 run: |
@@ -257,14 +257,15 @@
                   pip install setuptools
                   pip install -r pip_requirements.txt
 
-              # Flake 8 check
-              - name: Flake8 Tests
-                run: |
-                  source setup_rogue.sh
-                  python -m compileall -f ./python/
-                  flake8 --count ./python/
-                  python -m compileall -f ./tests
-                  flake8 --count ./tests/
+#               # Flake 8 check
+#               - name: Flake8 Tests
+#                 run: |
+#                   source setup_rogue.sh
+#                   python -m compileall -f ./python/
+#                   flake8 --count ./python/
+#                   python -m compileall -f ./tests
+#                   flake8 --count ./tests/
+
               # Rogue
               - name: Build Rogue
                 run: |
