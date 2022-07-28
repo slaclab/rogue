@@ -501,9 +501,18 @@
 
 
           pr_comment:
-            name: An example job to comment a PR
+            name: PR comment for test script outputs
             runs-on: ubuntu-latest
             steps:
+              - name: Get test_rate.py output
+                uses: mathiasvr/command-output@v1
+                id: rates
+                with:
+                  run:
+                    source setup_rogue.sh
+                    python test_rate.py
+
+
               - name: Checkout
                 uses: actions/checkout@v3
 
