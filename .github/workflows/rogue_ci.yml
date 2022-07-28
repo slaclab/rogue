@@ -103,6 +103,8 @@
                   run:
                     source setup_rogue.sh
                     python test_rate.py
+              - run: echo ${{steps.rates.outputs.stdout}}
+
 
               # Flake 8 check
               - name: Flake8 Tests
@@ -135,18 +137,18 @@
                   github_token: ${{ secrets.GH_TOKEN }}
                   publish_dir: docs/build/html
 
-              # Set up for Comment PR
-              - name: Checkout
-                uses: actions/checkout@v3
-
-              # Comment on PR
-              - name: Comment PR
-                uses: thollander/actions-comment-pull-request@v1
-                with:
-                  message: |
-                    Rates -
-                    ${{steps.rates.outputs.stdout}}
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
+#              # Set up for Comment PR
+#              - name: Checkout
+#                uses: actions/checkout@v3
+#
+#              # Comment on PR
+#              - name: Comment PR
+#                uses: thollander/actions-comment-pull-request@v1
+#                with:
+#                  message: |
+#                    Rates -
+#                    ${{steps.rates.outputs.stdout}}
+#                  github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
           small_build_test:
