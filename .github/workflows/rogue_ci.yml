@@ -95,6 +95,29 @@
                   source setup_rogue.sh
                   python -m pytest --cov      
 
+              # Run test_rate.py
+              - name: Get test_rate.py output
+                uses: mathiasvr/command-output@v1
+                id: rates
+                with:
+                  run:
+                    source setup_rogue.sh
+                    python test_rate.py
+
+              # Set up for Comment PR
+              - name: Checkout
+                uses: actions/checkout@v3
+
+              # Comment on PR
+              - name: Comment PR
+                uses: thollander/actions-comment-pull-request@v1
+                with:
+                  message: |
+                    Hello World! :wave:
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
+
               # Flake 8 check
               - name: Flake8 Tests
                 run: |
@@ -500,47 +523,22 @@
 #                  echo set-output name=rates::python test_rate.py
 
 
-          pr_comment:
-            name: PR comment for test script outputs
-            runs-on: ubuntu-latest
-            steps:
-              - name: Get test_rate.py output
-                uses: mathiasvr/command-output@v1
-                id: rates
-                with:
-                  run:
-                    source setup_rogue.sh
-                    python test_rate.py
-
-
-              - name: Checkout
-                uses: actions/checkout@v3
-
-
-              - name: Comment PR
-                uses: thollander/actions-comment-pull-request@v1
-                with:
-                  message: |
-                    Hello World! :wave:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-
-
-#            name: Pull Request Comment
+#          pr_comment:
+#            name: PR comment for test script outputs
 #            runs-on: ubuntu-latest
 #            steps:
-#               name: Checkout
-#               uses: actions/checkout@v3
+#              - name: Checkout
+#                uses: actions/checkout@v3
 #
-#               name: Comment PR
-#               uses: thollander/actions-comment-pull-request@v1
-#               with:
-#                 message: |
-#                   Hello world ! :wave:
-#                   with:
-#                      rates: $
-#                 github_token: ${{ secrets.GITHUB_TOKEN }}
-   
-#           full_build_test:
+#
+#              - name: Comment PR
+#                uses: thollander/actions-comment-pull-request@v1
+#                with:
+#                  message: |
+#                    Hello World! :wave:
+#                  github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
 #             name: Full Build Test
 #             runs-on: ubuntu-latest
 #             steps:
