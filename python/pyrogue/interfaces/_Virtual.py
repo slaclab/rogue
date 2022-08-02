@@ -322,7 +322,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             raise Exception(f"ZMQ Interface Exception: {e}")
 
         if isinstance(ret,Exception):
-            raise(ret)
+            raise (ret)
 
         return ret
 

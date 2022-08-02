@@ -434,7 +434,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def getDisp(self, read=True, index=-1):
-        return(self.genDisp(self.get(read=read,index=index)))
+        return (self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
     def valueDisp(self, index=-1): #, read=True, index=-1):

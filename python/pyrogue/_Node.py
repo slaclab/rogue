@@ -210,7 +210,7 @@ class Node(object):
 
 
     def __dir__(self):
-        return(super().__dir__() + [k for k,v in self._nodes.items()])
+        return (super().__dir__() + [k for k,v in self._nodes.items()])
 
     def __reduce__(self):
         attr = {}
@@ -341,7 +341,7 @@ class Node(object):
         """
         Get sub-nodes in a list
         """
-        return([k for k,v in self._nodes.items()])
+        return ([k for k,v in self._nodes.items()])
 
     def getNodes(self,typ,excTyp=None,incGroups=None,excGroups=None):
         """

@@ -369,7 +369,7 @@ class AxiVersion(pr.Device):
         @self.command(hidden=False,value='',retValue='')
         def TestCommand(arg):
             print('Got {}'.format(arg))
-            return('Got {}'.format(arg))
+            return ('Got {}'.format(arg))
 
         @self.command(hidden=False,value='',retValue='')
         def TestMemoryException(arg):
@@ -385,11 +385,11 @@ class AxiVersion(pr.Device):
 
         @self.command(hidden=False,value='',retValue='')
         def TestGeneralException(arg):
-            return(rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True))
+            return (rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0,True))
 
         @self.command(hidden=False,value='',retValue='')
         def TestOtherError(arg):
-            return(rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0))
+            return (rogue.hardware.axi.AxiStreamDma('/dev/not_a_device',0))
 
         @self.command(hidden=False,value='blah blah',retValue='')
         def TestCmdString(arg):
