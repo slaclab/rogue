@@ -100,13 +100,8 @@
                 id: rates
                 run: 
                   source setup_rogue.sh
-                  echo "::set-output name=author::$(python test_rate.py)"
-                uses: thollander/actions-comment-pull-request@v1
-                with:
-                  message: |
-                    Rates- ${{ steps.rates.outputs.rates }}
-                  github_token: ${{ secrets.GITHUB_TOKEN }} 
-            
+                  echo "::set-output name=rates::$(python test_rate.py)"
+
 #                uses: mathiasvr/command-output@v1
 #                id: rates
 #                with:
@@ -147,18 +142,19 @@
                   github_token: ${{ secrets.GH_TOKEN }}
                   publish_dir: docs/build/html
 
-#              # Set up for Comment PR
-#              - name: Checkout
-#                uses: actions/checkout@v3
-#
-#              # Comment on PR
-#              - name: Comment PR
-#                uses: thollander/actions-comment-pull-request@v1
-#                with:
-#                  message: |
-#                    Rates -
-#                    ${{steps.rates.outputs.stdout}}
-#                  github_token: ${{ secrets.GITHUB_TOKEN }}
+              # Set up for Comment PR
+              - name: Checkout
+                uses: actions/checkout@v3
+
+              # Comment on PR
+              needs: rates
+              - name: Comment PR
+                uses: thollander/actions-comment-pull-request@v1
+                with:
+                  message: |
+                    Rates -
+                    ${{steps.rates.outputs.rates}}
+                  github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
           small_build_test:
