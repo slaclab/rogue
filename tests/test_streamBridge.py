@@ -12,7 +12,6 @@
 #-----------------------------------------------------------------------------
 import rogue.interfaces.stream
 import rogue
-import pyrogue
 import time
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -58,4 +57,3 @@ def test_data_path():
 
 if __name__ == "__main__":
     test_data_path()
-

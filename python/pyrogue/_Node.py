@@ -896,7 +896,22 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
+    @expose
+    def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+
+        """
+        Get current values as yaml data.
+        modes is a list of variable modes to include.
+        If readFirst=True a full read from hardware is performed.
+        """
+        if readFirst:
+            self.root._read()
+        return pr.dataToYaml({self.name:self._getDict(modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse)})
+
+    def printYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+        print(self.getYaml(readFirst=readFirst, modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse))
+
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False, recurse=True):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -916,11 +931,16 @@ class Node(object):
 
         """
         data = odict()
-        for key,value in self.nodes.items():
-            if value.filterByGroup(incGroups,excGroups):
-                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
+        for key,value in self.variablesByGroup(incGroups, excGroups).items():
+            nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
             if nv is not None:
                 data[key] = nv
+
+        if recurse:
+            for key, value in self.devicesByGroup(incGroups, excGroups).items():
+                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
+                if nv is not None:
+                    data[key] = nv
 
         if len(data) == 0:
             return None

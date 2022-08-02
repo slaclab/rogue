@@ -489,14 +489,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @property
     def serverPort(self):
-        """ 
+        """
 """
         return self._serverPort
 
     @pr.expose
     @property
     def running(self):
-        """ 
+        """
 """
         return self._running
 
@@ -513,13 +513,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Returns
         -------
 
-        
+
         with self._varListenLock:
             self._varListeners.append(func)
 
     @pr.expose
     def get(self,path):
-        
+
 """
 
 
@@ -676,7 +676,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @contextmanager
     def pollBlock(self):
-        """ 
+        """
 """
 
         # At with call
@@ -875,7 +875,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
     def _hbeatWorker(self):
-        """ 
+        """
 """
         while self._running:
             time.sleep(1)
@@ -893,7 +893,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     #    os.execl(py, py, *sys.argv)
 
     def _rootAttached(self):
-        """ 
+        """
 """
         self._parent = self
         self._root   = self
@@ -995,6 +995,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._log.info("Done root read")
         return True
 
+    @pr.expose
     def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
         """
         Save YAML configuration/status to a file. Called from command
@@ -1134,31 +1135,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         return True
 
-    def getYaml(self,readFirst,modes,incGroups,excGroups):
-        """
-        Get current values as yaml data.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
-
-        Parameters
-        ----------
-        readFirst :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
-
-        """
-        if readFirst:
-            self._read()
-        return pr.dataToYaml({self.name:self._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups)})
-
     def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
         d = self._getDict(modes, incGroups, excGroups, properties=True)
         return {self.name: d}
@@ -1203,7 +1179,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         if self.InitAfterConfig.value():
             self.initialize()
-
 
     def remoteVariableDump(self,name,modes,readFirst):
         """

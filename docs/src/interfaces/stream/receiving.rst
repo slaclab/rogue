@@ -43,7 +43,7 @@ Implementing a Slave subclass in python is easy, but may result in a lower level
                # Alternatively we can copy a portion of the data from an arbitrary offset
                partialData = bytearray(10)
 
-               # Read 10 bytes starting at offset 100
+               # Read 10 bytes starting at offset 5
                frame.read(partialData,5)
 
            # Since the data is coped into the passed byte arrays we are free to

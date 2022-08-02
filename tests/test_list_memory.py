@@ -15,7 +15,6 @@ import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import numpy as np
 import random
-import time
 
 #rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
@@ -148,11 +147,11 @@ class DummyTree(pr.Root):
 
     def __init__(self):
         pr.Root.__init__(self,
-                         name='dummyTree',
-                         description="Dummy tree for example",
-                         timeout=2.0,
-                         pollEn=False)
-                         #serverPort=None)
+            name='dummyTree',
+            description="Dummy tree for example",
+            timeout=2.0,
+            pollEn=False)
+            #serverPort=None)
 
         # Use a memory space emulator
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
@@ -393,4 +392,3 @@ def run_gui():
 if __name__ == "__main__":
     test_memory()
     #run_gui()
-

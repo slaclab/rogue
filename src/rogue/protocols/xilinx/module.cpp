@@ -20,46 +20,28 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <RogueConfig.h>
-
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
-#include <rogue/protocols/module.h>
-#include <rogue/protocols/packetizer/module.h>
-#include <rogue/protocols/rssi/module.h>
-#include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/udp/module.h>
-#include <rogue/protocols/batcher/module.h>
 #include <rogue/protocols/xilinx/module.h>
+#include <rogue/protocols/xilinx/Xvc.h>
+#include <rogue/protocols/xilinx/JtagDriver.h>
 
-#if DO_EPICS_V3
-   #include <rogue/protocols/epicsV3/module.h>
-#endif
+namespace bp = boost::python;
+namespace rpx = rogue::protocols::xilinx;
 
-namespace bp  = boost::python;
-
-void rogue::protocols::setup_module() {
+void rpx::setup_module()
+{
 
    // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols"))));
+   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.xilinx"))));
 
    // make "from mypackage import class1" work
-   bp::scope().attr("protocols") = module;
+   bp::scope().attr("xilinx") = module;
 
    // set the current scope to the new sub-module
    bp::scope io_scope = module;
 
-   rogue::protocols::packetizer::setup_module();
-   rogue::protocols::rssi::setup_module();
-   rogue::protocols::srp::setup_module();
-   rogue::protocols::udp::setup_module();
-   rogue::protocols::batcher::setup_module();
-   rogue::protocols::xilinx::setup_module();
-
-#if DO_EPICS_V3
-   rogue::protocols::epicsV3::setup_module();
-#endif
-
+   rpx::JtagDriver::setup_python();
+   rpx::Xvc::setup_python();
 }
-

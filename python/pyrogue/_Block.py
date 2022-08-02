@@ -13,6 +13,7 @@
 #-----------------------------------------------------------------------------
 import threading
 import pyrogue as pr
+import rogue.interfaces.memory as rim
 
 
 def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
@@ -65,6 +66,51 @@ def checkTransaction(block, **kwargs):
 
     """
     block._checkTransaction()
+
+def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+    """ Helper function for writing and verifying a list of blocks.
+        Allows a custom list of blocks to be efficiently written,
+        similar to Device.writeBlocks(). """
+    for b in blocks:
+        startTransaction(b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs)
+
+def verifyBlocks(blocks, checkEach=False, **kwargs):
+    """ Helper function for verifying a list of blocks.
+        Allows a custom list of blocks to be efficiently verified without blocking
+        between each read, similar to Device.verifyBlocks(). """
+    for b in blocks:
+        startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
+
+def readBlocks(blocks, checkEach=False, **kwargs):
+    """ Helper function for reading a list of blocks.
+        Allows a custom list of blocks to be efficiently read without blocking
+        between each read, similar to Device.readBlocks(). """
+    for b in blocks:
+        startTransaction(b, type=rim.Read, checkEach=checkEach, **kwargs)
+
+def checkBlocks(blocks, **kwargs):
+    """ Helper function for waiting on block transactions for a list of blocks
+        Allows a custom list of blocks to be efficiently operated on without blocking
+        between each transaction, similar to  Device.checkBlocks(). """
+    for b in blocks:
+        checkTransaction(b)
+
+def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+    """ Helper function for writing and verifying a list of blocks.
+        Allows a custom list of blocks to be efficiently written and verified
+        similar to Device.writeAndVerifyBlocks(). """
+    writeBlocks(blocks, force=force, checkEach=checkEach, index=index, **kwargs)
+    verifyBlocks(blocks, checkEach=checkEach, **kwargs)
+    checkBlocks(blocks)
+
+def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
+    """ Helper function for reading a list of blocks.
+        Allows a custom list of blocks to be efficiently written and verified
+       without blocking between each read, similar to Device.readAndCheckBlocks(). """
+    readBlocks(blocks, checkEach, **kwargs)
+    checkBlocks(blocks)
+
+
 
 
 class MemoryError(Exception):

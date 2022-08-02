@@ -10,12 +10,9 @@
 #-----------------------------------------------------------------------------
 
 # Comment added by rherbst for demonstration purposes.
-import datetime
-import parse
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
-import time
 
 #rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
@@ -73,14 +70,14 @@ class DummyTree(pr.Root):
         self.addInterface(sim)
 
         # Create a memory gateway
-        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080);
+        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080)
         self.addInterface(ms)
 
         # Connect the memory gateways together
         sim << ms
 
         # Create a memory gateway
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080);
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080)
         self.addInterface(mc)
 
         # Add Device

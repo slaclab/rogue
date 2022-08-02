@@ -12,7 +12,6 @@
 #-----------------------------------------------------------------------------
 import rogue.interfaces.stream
 import rogue
-import pyrogue
 import time
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
@@ -27,7 +26,7 @@ def fifo_path():
     prbsRx = rogue.utilities.Prbs()
 
     # FIFO
-    fifo = rogue.interfaces.stream.Fifo(0,0,False);
+    fifo = rogue.interfaces.stream.Fifo(0,0,False)
 
     # Client stream
     prbsTx >> fifo >> prbsRx
@@ -50,4 +49,3 @@ def test_fifo_path():
 
 if __name__ == "__main__":
     test_fifo_path()
-

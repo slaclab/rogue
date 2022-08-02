@@ -582,9 +582,9 @@ class BaseVariable(pr.Node):
         return VariableValue(self,read=read)
 
     @pr.expose
-    def value(self):
+    def value(self, index=-1):
         """ """
-        return self.get(read=False, index=-1)
+        return self.get(read=False, index=index)
 
     @pr.expose
     def genDisp(self, value):
@@ -640,7 +640,7 @@ class BaseVariable(pr.Node):
         return(self.genDisp(self.get(read=read,index=index)))
 
     @pr.expose
-    def valueDisp(self): #, read=True, index=-1):
+    def valueDisp(self, index=-1): #, read=True, index=-1):
         """
 
 
@@ -655,7 +655,7 @@ class BaseVariable(pr.Node):
         -------
 
         """
-        return self.getDisp(read=False,index=-1)
+        return self.getDisp(read=False, index=index)
 
     @pr.expose
     def parseDisp(self, sValue):
@@ -1504,7 +1504,6 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
-
 class LinkVariable(BaseVariable):
     """ """
 
@@ -1553,6 +1552,8 @@ class LinkVariable(BaseVariable):
         if dependencies is not None:
             for d in dependencies:
                 self.addDependency(d)
+
+        self.__depBlocks = []
 
     def __getitem__(self, key):
         # Allow dependencies to be accessed as indices of self
@@ -1613,3 +1614,23 @@ class LinkVariable(BaseVariable):
             pr.logException(self._log,e)
             self._log.error("Error getting link variable '{}'".format(self.path))
             raise e
+
+
+    def __getBlocks(self):
+        b = []
+        for d in self.dependencies:
+            if isinstance(d, LinkVariable):
+                b.extend(d.__getBlocks())
+            elif hasattr(d, '_block') and d._block is not None:
+                b.append(d._block)
+
+        return b
+
+    def _finishInit(self):
+        super()._finishInit()
+        self.__depBlocks = self.__getBlocks()
+
+    @property
+    def depBlocks(self):
+        """ Return a list of Blocks that this LinkVariable depends on """
+        return self.__depBlocks

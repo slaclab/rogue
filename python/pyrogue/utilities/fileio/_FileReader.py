@@ -13,7 +13,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-from collections import namedtuple
+from dataclasses import dataclass
 import os
 import struct
 import numpy
@@ -24,13 +24,13 @@ RogueHeaderSize  = 8
 RogueHeaderPack  = 'IHBB'
 
 # Default header as a named tuple
-RogueHeader = namedtuple(
-    'RogueHeader',
-    ['size'   ,  # 4 Bytes, uint32, I
-    'flags'   ,  # 2 bytes, uint16, H
-    'error'   ,  # 1 bytes, uint8,  B
-    'channel' ]  # 1 bytes, uint8,  B
-)
+@dataclass
+class RogueHeader:
+    size : int     # 4 Bytes, uint32, I
+    flags: int     # 2 bytes, uint16, H
+    error: int     # 1 bytes, uint8,  B
+    channel: int   # 1 bytes, uint8,  B
+
 """ Rogue Header data
 
     Attributes
@@ -53,14 +53,14 @@ BatchHeaderSize  = 8
 BatchHeaderPack  = 'IBBBB'
 
 # Batcher Header
-BatchHeader = namedtuple(
-    'BatchHeader',
-    ['size',   # 4 Bytes, uint32, I
-    'tdest',   # 1 Byte, uint8, B
-    'fUser',   # 1 Byte, uint8, B
-    'lUser',   # 1 Byte, uint8, B
-    'width']   # 1 Byte, uint8, B
-)
+@dataclass
+class BatchHeader:
+    size: int   # 4 Bytes, uint32, I
+    tdest: int  # 1 Byte, uint8, B
+    fUser: int  # 1 Byte, uint8, B
+    lUser: int  # 1 Byte, uint8, B
+    width: int  # 1 Byte, uint8, B
+
 
 """ Batcher Header data
 
@@ -156,7 +156,7 @@ class FileReader(object):
                 self._log.warning(f'File under run reading {self._currFName}')
                 return False
 
-            self._header = RogueHeader._make(struct.Struct(RogueHeaderPack).unpack(self._currFile.read(RogueHeaderSize)))
+            self._header = RogueHeader(*struct.unpack(RogueHeaderPack, self._currFile.read(RogueHeaderSize)))
             self._header.size -= 4
 
             # Set next frame position
@@ -215,10 +215,10 @@ class FileReader(object):
 
                             # Check header size
                             if curIdx + 8 > self._header.size:
-                                raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
+                                raise FileReaderException(f'Batch frame header underrun in {self._currFName}')
 
                             # Read in header data
-                            bHead = BatchHeader._make(struct.Struct(BatchHeaderPack).unpack(self._currFile.read(BatchHeaderSize)))
+                            bHead = BatchHeader(*struct.unpack(BatchHeaderPack, self._currFile.read(BatchHeaderSize)))
                             curIdx += 8
 
                             # Fix header width
@@ -228,13 +228,13 @@ class FileReader(object):
                             if bHead.width > 8:
 
                                 if curIdx + (bHead.width-8) > self._header.size:
-                                    raise FileReaderException(f'Batch frame header underrun in {self._currFname}')
+                                    raise FileReaderException(f'Batch frame header underrun in {self._currFName}')
 
                                 self._currFile.seek(bHead.width-8)
 
                             # Check payload size
                             if curIdx + bHead.size > self._header.size:
-                                raise FileReaderException(f'Batch frame data underrun in {self._currFname}')
+                                raise FileReaderException(f'Batch frame data underrun in {self._currFName}')
 
                             # Get data
                             data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=bHead.size)
@@ -249,7 +249,7 @@ class FileReader(object):
                         try:
                             data = numpy.fromfile(self._currFile, dtype=numpy.int8, count=self._header.size)
                         except Exception:
-                            raise FileReaderException(f'Failed to read data from {self._currFname}')
+                            raise FileReaderException(f'Failed to read data from {self._currFName}')
 
                         yield (self._header, data)
 

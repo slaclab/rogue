@@ -134,6 +134,7 @@ void rpr::Controller::stop() {
       rogue::GilRelease noGil;
       threadEn_ = false;
       thread_->join();
+      delete thread_;
       thread_ = NULL;
       state_ = StClosed;
    }
