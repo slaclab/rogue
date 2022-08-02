@@ -97,18 +97,13 @@
 
               # Run test_rate.py
               - name: Get test_rate.py output
+                uses: mathiasvr/command-output@v1
                 id: rates
-                run: 
-                  source setup_rogue.sh
-                  echo "::set-output name=rates::$(python test_rate.py)"
-
-#                uses: mathiasvr/command-output@v1
-#                id: rates
-#                with:
-#                  run:
-#                    source setup_rogue.sh
-#                    python test_rate.py
-#              - run: echo ${{steps.rates.outputs.stdout}}
+                with:
+                  run:
+                    source setup_rogue.sh
+                    python test_rate.py
+              - run: echo ${{steps.rates.outputs.stdout}}
 
 
               # Flake 8 check
@@ -153,7 +148,6 @@
                 with:
                   message: |
                     Rates -
-                    ${{steps.rates.outputs.rates}}
                   github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
