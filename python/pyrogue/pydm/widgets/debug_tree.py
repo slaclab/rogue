@@ -419,3 +419,4 @@ class DebugTree(PyDMFrame):
             return True
         else:
             return False
+            

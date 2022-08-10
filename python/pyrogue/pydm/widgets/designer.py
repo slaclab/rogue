@@ -13,6 +13,7 @@
 from pydm.widgets.qtplugin_base import qtplugin_factory
 
 from pyrogue.pydm.widgets import DebugTree
+from pyrogue.pydm.widgets import SimpleDebugTree
 from pyrogue.pydm.widgets import RootControl
 from pyrogue.pydm.widgets import SystemLog
 from pyrogue.pydm.widgets import RunControl
@@ -24,6 +25,7 @@ from pyrogue.pydm.widgets import Plotter
 
 LineEdit     = qtplugin_factory(PyRogueLineEdit, group="Rogue Widgets")
 DebugTree    = qtplugin_factory(DebugTree,       group="Rogue Widgets")
+SimpleDebugTree    = qtplugin_factory(SimpleDebugTree,       group="Rogue Widgets")
 RootControl  = qtplugin_factory(RootControl,     group="Rogue Widgets")
 SystemLog    = qtplugin_factory(SystemLog,       group="Rogue Widgets")
 RunControl   = qtplugin_factory(RunControl,      group="Rogue Widgets")
