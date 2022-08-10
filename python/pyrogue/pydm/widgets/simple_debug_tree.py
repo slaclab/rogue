@@ -16,29 +16,11 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
-from qtpy.QtCore import Property, Slot, QEvent, Qt
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QWidget
+from qtpy.QtCore import Property, Slot, QEvent
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
 
-class deviceLabelReadAll(QWidget):
-    def __init__(self, parent, init_channel):
-        QWidget.__init__(self, parent)
-        label = PyDMLabel(parent=None, init_channel=init_channel + '/name')
-        label.showUnits             = False
-        label.precisionFromPV       = False
-        label.alarmSensitiveContent = False
-        label.alarmSensitiveBorder  = False
-        readAll = PyDMPushButton(label='Read Device',
-                                pressValue=True,
-                                init_channel=init_channel + '.ReadDevice')
-        grid = QGridLayout()
-        grid.addWidget(label, 0, 0)
-        grid.addWidget(readAll, 0, 1)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
 
 class DebugDev(QTreeWidgetItem):
 
@@ -56,12 +38,11 @@ class DebugDev(QTreeWidgetItem):
         else:
             self._depth = 1
 
-        w = deviceLabelReadAll(parent=None, init_channel=self._path)
-        # w = PyDMLabel(parent=None, init_channel=self._path + '/name')
-        # w.showUnits             = False
-        # w.precisionFromPV       = False
-        # w.alarmSensitiveContent = False
-        # w.alarmSensitiveBorder  = False
+        w = PyDMLabel(parent=None, init_channel=self._path + '/name')
+        w.showUnits             = False
+        w.precisionFromPV       = False
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = False
 
         self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._dev.description)
@@ -91,6 +72,7 @@ class DebugDev(QTreeWidgetItem):
 
         # First create variables/commands
         for key,val in lst.items():
+
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
                     self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
@@ -99,6 +81,7 @@ class DebugDev(QTreeWidgetItem):
 
             else:
                 DebugHolder(path=self._path + '.' + val.name, top=self._top, parent=self, variable=val)
+
         # Then create devices
         for key,val in self._dev.devicesByGroup(incGroups=self._top._incGroups, excGroups=self._top._excGroups).items():
 
@@ -142,12 +125,14 @@ class DebugGroup(QTreeWidgetItem):
 
         # Create variables
         for n in self._list:
+
             if n.isDevice:
                 DebugDev(path=self._path + '.' + n.name,
                          top=self._top,
                          parent=self,
                          dev=n,
                          noExpand=True)
+
             elif n.isVariable or n.isCommand:
                 DebugHolder(path=self._path + '.' + n.name,
                             top=self._top,
@@ -165,57 +150,6 @@ class DebugGroup(QTreeWidgetItem):
     def addNode(self,node):
         self._list.append(node)
 
-class overlayPyRogueLineEdit(QWidget):
-    def __init__(self, parent, init_channel, units):
-        QWidget.__init__(self, parent)
-        lineEdit1 = PyRogueLineEdit(parent = parent, init_channel = init_channel)
-        lineEdit2 = PyRogueLineEdit(parent = parent, init_channel = None)
-        lineEdit1.precisionFromPV       = True
-        lineEdit1.alarmSensitiveContent = False
-        lineEdit1.alarmSensitiveBorder  = True
-        lineEdit2.precisionFromPV       = True
-        lineEdit2.alarmSensitiveContent = False
-        lineEdit2.alarmSensitiveBorder  = True
-        lineEdit1.setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }")
-        if units:
-            lineEdit2.setText(str(units))
-        else:
-            lineEdit2.setText("")
-        lineEdit2.set_opacity(0.7)
-        lineEdit2.setAlignment(Qt.AlignRight)
-        grid = QGridLayout()
-        grid.addWidget(lineEdit2, 0, 0)
-        grid.addWidget(lineEdit1, 0, 0)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
-
-class overlayPyDMLabel(QWidget):
-    def __init__(self, parent, init_channel, units):
-        QWidget.__init__(self, parent)
-        label1 = PyDMLabel(parent = parent, init_channel = init_channel)
-        label2 = PyDMLabel(parent = parent, init_channel = None)
-        label1.precisionFromPV       = True
-        label1.alarmSensitiveContent = False
-        label1.alarmSensitiveBorder  = True
-        label2.precisionFromPV       = True
-        label2.alarmSensitiveContent = False
-        label2.alarmSensitiveBorder  = True
-        label1.setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }")
-        if units:
-            label2.setText(str(units))
-        else:
-            label2.setText("")
-        label2.set_opacity(0.7)
-        label2.setAlignment(Qt.AlignRight)
-        grid = QGridLayout()
-        grid.addWidget(label2, 0, 0)
-        grid.addWidget(label1, 0, 0)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
 
 class DebugHolder(QTreeWidgetItem):
 
@@ -226,19 +160,10 @@ class DebugHolder(QTreeWidgetItem):
         self._var    = variable
         self._path   = path
         self._depth  = parent._depth+1
-        self._isCommand = False
 
-        w = None
-        if self._var.isCommand and not self._var.arg:
-            w = PyDMPushButton(label=self._var.name,
-                               pressValue=1,
-                               init_channel=self._path + '/disp')
-            self._isCommand = True
-        else:
-            w = PyDMLabel(parent=None, init_channel=self._path + '/name')
-            w.showUnits             = False
-            w.precisionFromPV       = False
-
+        w = PyDMLabel(parent=None, init_channel=self._path + '/name')
+        w.showUnits             = False
+        w.precisionFromPV       = False
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
 
@@ -256,17 +181,14 @@ class DebugHolder(QTreeWidgetItem):
         self.setText(1,self._var.mode)
         self.setText(2,self._var.typeStr)
         self.setToolTip(0,self._var.description)
-        if self._isCommand:
-            return
 
-        # if self._var.isCommand and not self._var.arg:
+        if self._var.isCommand and not self._var.arg:
 
-        #     w = PyDMPushButton(label='Exec',
-        #                        pressValue=1,
-        #                        init_channel=self._path + '/disp')
+            w = PyDMPushButton(label='Exec',
+                               pressValue=1,
+                               init_channel=self._path + '/disp')
 
-
-        if self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
+        elif self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
             w = PyDMEnumComboBox(parent=None, init_channel=self._path)
             w.alarmSensitiveContent = False
             w.alarmSensitiveBorder  = True
@@ -284,41 +206,40 @@ class DebugHolder(QTreeWidgetItem):
             w.installEventFilter(self._top)
 
         elif self._var.mode == 'RO' and not self._var.isCommand:
-            w = overlayPyDMLabel(parent=None, init_channel=self._path + '/disp', units=self._var.units)
-            # w.showUnits             = (self._var.units is not None)
-            # w.unit_changed(self._var.units)
-            # w.precisionFromPV       = True
-            # w.alarmSensitiveContent = False
-            # w.alarmSensitiveBorder  = True
+            w = PyDMLabel(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
         else:
-            w = overlayPyRogueLineEdit(parent=None, init_channel=self._path + '/disp', units=self._var.units)
-            # PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
-            # w.precisionFromPV       = True
-            # w.alarmSensitiveContent = False
-            # w.alarmSensitiveBorder  = True
-            # w.displayFormat         = 'String'
+            w = PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
+            w.showUnits             = False
+            w.precisionFromPV       = True
+            w.alarmSensitiveContent = False
+            w.alarmSensitiveBorder  = True
+            #w.displayFormat         = 'String'
 
-        # if self._var.isCommand:
-        #     self._top._tree.setItemWidget(self,4,w)
-        #     width = fm.width('0xAAAAAAAA    ')
+        if self._var.isCommand:
+            self._top._tree.setItemWidget(self,4,w)
+            width = fm.width('0xAAAAAAAA    ')
 
-        #     if width > self._top._colWidths[4]:
-        #         self._top._colWidths[4] = width
-
-
-
-        # else:
-        self._top._tree.setItemWidget(self,3,w)
-        width = fm.width('0xAAAAAAAA    ')
-
-        if width > self._top._colWidths[3]:
-            self._top._colWidths[3] = width
-
-        # if self._var.units:
-        #     self.setText(5,str(self._var.units))
+            if width > self._top._colWidths[4]:
+                self._top._colWidths[4] = width
 
 
-class DebugTree(PyDMFrame):
+
+        else:
+            self._top._tree.setItemWidget(self,3,w)
+            width = fm.width('0xAAAAAAAA    ')
+
+            if width > self._top._colWidths[3]:
+                self._top._colWidths[3] = width
+
+        if self._var.units:
+            self.setText(5,str(self._var.units))
+
+
+class SimpleDebugTree(PyDMFrame):
     def __init__(self, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
@@ -329,12 +250,11 @@ class DebugTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [250,50,75,200]
-        self._expandedOnce = False
+        self._colWidths = [170,50,150,75]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
-        super(DebugTree, self).connection_changed(connected)
+        super(SimpleDebugTree, self).connection_changed(connected)
 
         if not build:
             return
@@ -349,7 +269,7 @@ class DebugTree(PyDMFrame):
         vb.addWidget(self._tree)
 
         self._tree.setColumnCount(4)
-        self._tree.setHeaderLabels(['Node','Mode','Type','Value'])
+        self._tree.setHeaderLabels(['Node','Mode','Type','Variable'])
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -372,19 +292,15 @@ class DebugTree(PyDMFrame):
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
-        if self._expandedOnce:
-            self.setUpdatesEnabled(False)
-            item._expand()
-            self.setUpdatesEnabled(True)
-        else:
-            self._expandedOnce = True
-            self.setUpdatesEnabled(False)
-            item._expand()
-            self._tree.setColumnWidth(0,self._colWidths[0])
-            self._tree.resizeColumnToContents(1)
-            self._tree.resizeColumnToContents(2)
-            self._tree.setColumnWidth(3,self._colWidths[3])
-            self.setUpdatesEnabled(True)
+        self.setUpdatesEnabled(False)
+        item._expand()
+
+        self._tree.setColumnWidth(0,self._colWidths[0])
+        self._tree.resizeColumnToContents(1)
+        self._tree.resizeColumnToContents(2)
+        self._tree.setColumnWidth(3,self._colWidths[3])
+
+        self.setUpdatesEnabled(True)
 
     @Property(str)
     def incGroups(self):
