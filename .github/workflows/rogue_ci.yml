@@ -100,7 +100,6 @@
                 id: rates
                 with:
                   run: |
-                    source setup_rogue.sh
                     python test_rate.py
 
 
