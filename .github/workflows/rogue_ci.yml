@@ -96,7 +96,7 @@
               # Run test_rate.py
               - name: Get test_rate.py output
                 id: rates
-                run:
+                run: |
                   source setup_rogue.sh
 #                  python test_rate.py
                   echo "::set-output name=rate::$(python test_rate.py)"
