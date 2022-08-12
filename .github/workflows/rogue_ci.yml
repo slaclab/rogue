@@ -145,8 +145,7 @@
                 with:
                   message: |
                     Rates -
-#                    ${{steps.rates.outputs.stdout}}
-                    ${{ steps.rates.outputs.rate }}
+                    ${{steps.rates.outputs.stdout}}
                   github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
