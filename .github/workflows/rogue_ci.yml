@@ -94,13 +94,14 @@
                   python -m pytest --cov      
 
               
-              # Run test_reate.py
+              # Run test_rate.py
               - name: Get test_rate.py output
                 uses: mathiasvr/command-output@v1
                 id: rates
                 with:
                   run: |
-                    python test_rate.py
+                    source setup rogue.sh
+                    python -m test_rate.py
 
 
               # Flake 8 check
