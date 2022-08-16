@@ -577,6 +577,7 @@ class TimePlotter(PyDMFrame):
 
     def do_autoheight(self):
         self.plots.setAutoRangeY(True)
+        print('setting')
 
     def minimumSizeHint(self):
 
