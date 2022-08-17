@@ -379,28 +379,14 @@ class TimePlotter(PyDMFrame):
 
     def setup_ui(self):
 
-        #self.setWindowTitle(self.title)
-
         vb = QVBoxLayout()
         self.setLayout(vb)
-
-#         self.tab = QTabWidget()
-#         vb.addWidget(self.tab)
-
-#         sys = SystemWindow(parent=None, init_channel=Channel)
-#         self.tab.addTab(sys,'System')
-
-
-#         var = DebugTree(parent=self, init_channel=Channel)
-#         self.tab.addTab(var,'Debug Tree')
-
 
         main_layout = QHBoxLayout()
         main_box = QGroupBox(parent=self)
         main_box.setLayout(main_layout)
 
         buttons_layout = QHBoxLayout()
-
         buttons_box = QGroupBox(parent=self)
         buttons_box.setLayout(buttons_layout)
 
@@ -412,7 +398,6 @@ class TimePlotter(PyDMFrame):
         auto_axis_btn = QPushButton()
         auto_axis_btn.setText("Auto height")
         auto_axis_btn.clicked.connect(self.do_autoheight)
-
 
         # Create the legend layout
         self.legend_layout = QVBoxLayout()
@@ -431,44 +416,28 @@ class TimePlotter(PyDMFrame):
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setAlignment(QtCore.Qt.AlignTop)
 
-
         # Add the Frame to the scroll area
         self.scroll_area.setWidget(self.frm_legend)
-
-
-
-        # buttons_layout.addWidget(self.scroll_area)
 
         buttons_layout.addWidget(self.width_edit)
         buttons_layout.addWidget(apply_btn)
         buttons_layout.addWidget(auto_axis_btn)
 
-
-
         plots_layout = QHBoxLayout()
-
-
         plots_box = QGroupBox(parent=self)
         plots_box.setLayout(plots_layout)
 
-
         self.plots = pwt.PyDMTimePlot(parent=None, background = '#f6f6f6', plot_by_timestamps = True)
         self.plots.setShowLegend(False)
-        # self.plots._show_x_grid = None
         self.plots.setShowXGrid(True)
-        # self.plots._show_y_grid = None
         self.plots.setShowYGrid(True)
-
         self.plots.setTitle('Plots')
         self.plots.setTimeSpan(100)
-
 
         plots_layout.addWidget(self.plots)
         plots_layout.addWidget(buttons_box)
 
-
         selection_layout = QVBoxLayout()
-        # selection_layout.resize(QtCore.QSize(1500, 1000))
         self.selection_tree = SelectionTree(main=self,parent=None,init_channel=self.channel)
         self.selection_tree.setMinimumWidth(718)
         selection_layout.addWidget(self.selection_tree)
@@ -492,9 +461,7 @@ class TimePlotter(PyDMFrame):
         main_splitter.addWidget(graphs_box)
         main_layout.addWidget(main_splitter)
 
-
         vb.addWidget(main_box)
-
 
     def do_add(self,path):
         self.plots.addYChannel(y_channel=path,
@@ -515,8 +482,6 @@ class TimePlotter(PyDMFrame):
                 widget.setParent(None)
                 widget.deleteLater()
 
-
-
     def do_setwidth(self):
         text = self.width_edit.text()
 
@@ -531,7 +496,6 @@ class TimePlotter(PyDMFrame):
         # self.plots.setAutoRangeY(True)
         # self.plots.autoRangeY = True
         self.plots.plotItem.enableAutoRange(ViewBox.YAxis, enable=True)
-
 
     def minimumSizeHint(self):
         return QtCore.QSize(1500, 1000)
@@ -550,7 +514,6 @@ class LegendRow(Display):
 
         self.setMaximumHeight(50)
         self.setup_ui()
-
 
     def setup_ui(self):
 
@@ -581,11 +544,9 @@ class LegendRow(Display):
 
         self.setLayout(main_layout)
 
-
     def ui_filepath(self):
         # No UI file is being used
         return None
-
 
 class ColorSelector():
 
