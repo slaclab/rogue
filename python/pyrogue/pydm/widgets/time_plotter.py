@@ -453,7 +453,6 @@ class TimePlotter(PyDMFrame):
 
 
         self.plots = pwt.PyDMTimePlot(parent=None, background = '#f6f6f6', plot_by_timestamps = True)
-        self.plots.resetShowLegend()
         # self.plots._show_x_grid = None
         self.plots.setShowXGrid(True)
         # self.plots._show_y_grid = None
@@ -500,6 +499,7 @@ class TimePlotter(PyDMFrame):
         self.plots.addYChannel(y_channel=path,
                 color = self._colorSelector.take_color(path),
                 lineWidth = 5)
+        setShowLegend(value)
 
         disp = LegendRow(parent = self,path=path,main = self)
         disp.setMaximumHeight(50)
