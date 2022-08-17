@@ -499,7 +499,7 @@ class TimePlotter(PyDMFrame):
         self.plots.addYChannel(y_channel=path,
                 color = self._colorSelector.take_color(path),
                 lineWidth = 5)
-        setShowLegend(value)
+        self.plots.setShowLegend(False)
 
         disp = LegendRow(parent = self,path=path,main = self)
         disp.setMaximumHeight(50)
