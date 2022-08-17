@@ -429,7 +429,7 @@ class TimePlotter(PyDMFrame):
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setWidgetResizable(True)
-        self.scroll_area.setAlignment(QtCore.Qt.AlignLeft)
+        self.scroll_area.setAlignment(QtCore.Qt.AlignTop)
 
 
         # Add the Frame to the scroll area
