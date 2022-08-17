@@ -414,18 +414,18 @@ class TimePlotter(PyDMFrame):
         auto_axis_btn.clicked.connect(self.do_autoheight)
 
 
-        # Create the Results Layout
+        # Create the legend layout
         self.legend_layout = QVBoxLayout()
         self.legend_layout.setContentsMargins(10, 10, 10, 10)
 
-        # Create a Frame to host the results of search
+        # Create a Frame to host the items in the legend
         self.frm_legend = QFrame(parent=self)
         self.frm_legend.setLayout(self.legend_layout)
 
 
-        # Create a ScrollArea so we can properly handle
-        # many entries
+        # Create a ScrollArea 
         self.scroll_area = QScrollArea(parent=self)
+        self.scroll_area.setMinimumHeight(400)
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setWidgetResizable(True)
@@ -469,7 +469,7 @@ class TimePlotter(PyDMFrame):
         selection_layout = QVBoxLayout()
         # selection_layout.resize(QtCore.QSize(1500, 1000))
         self.selection_tree = SelectionTree(main=self,parent=None,init_channel=self.channel)
-        self.selection_tree.setMinimumWidth(600)
+        self.selection_tree.setMinimumWidth(650)
         selection_layout.addWidget(self.selection_tree)
         selection_layout.addWidget(self.scroll_area)
         selection_box = QGroupBox()
