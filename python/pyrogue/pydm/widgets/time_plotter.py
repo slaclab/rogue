@@ -26,6 +26,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QLabel,
     QGroupBox, QLineEdit, QPushButton, QScrollArea, QFrame, QWidget)
 
+from pyqtgraph import AxisItem, PlotWidget, PlotDataItem, mkPen, ViewBox, InfiniteLine, SignalProxy
 
 from PyQt5.QtWidgets import QSplitter
 from PyQt5.QtCore import Qt
