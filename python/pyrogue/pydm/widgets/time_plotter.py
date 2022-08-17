@@ -550,7 +550,6 @@ class TimePlotter(PyDMFrame):
                 color = self._colorSelector.take_color(path),
                 lineWidth = 5)
 
-        # disp = QLabel(path)
         disp = LegendRow(parent = self,path=path,main = self)
         self.legend_layout.addWidget(disp)
 
@@ -559,7 +558,6 @@ class TimePlotter(PyDMFrame):
         curve = self.plots.findCurve(path)
         self.plots.removeYChannel(curve)
         for widget in self.frm_legend.findChildren(QWidget):
-            # print(widget)
             if isinstance(widget,LegendRow) and widget._path == path:
                 widget.setParent(None)
                 widget.deleteLater()
@@ -577,15 +575,12 @@ class TimePlotter(PyDMFrame):
 
     def do_autoheight(self):
         self.plots.setAutoRangeY(True)
-        print(self.plots.AutoRangeY)
         print('setting')
 
     def minimumSizeHint(self):
-
         return QtCore.QSize(1500, 1000)
 
     def ui_filepath(self):
-        # No UI file is being used
         return None
 
 class LegendRow(Display):
