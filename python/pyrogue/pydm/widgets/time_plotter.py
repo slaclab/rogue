@@ -469,7 +469,7 @@ class TimePlotter(PyDMFrame):
         selection_layout = QVBoxLayout()
         # selection_layout.resize(QtCore.QSize(1500, 1000))
         self.selection_tree = SelectionTree(main=self,parent=None,init_channel=self.channel)
-        self.selection_tree.setMinimumWidth(680)
+        self.selection_tree.setMinimumWidth(700)
         selection_layout.addWidget(self.selection_tree)
         selection_layout.addWidget(self.scroll_area)
         selection_box = QGroupBox()
@@ -501,6 +501,7 @@ class TimePlotter(PyDMFrame):
                 lineWidth = 5)
 
         disp = LegendRow(parent = self,path=path,main = self)
+        disp.setMaximumHeight(50)
         self.legend_layout.addWidget(disp)
 
 
