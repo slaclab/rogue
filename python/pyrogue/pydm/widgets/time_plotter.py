@@ -425,7 +425,7 @@ class TimePlotter(PyDMFrame):
 
         # Create a ScrollArea 
         self.scroll_area = QScrollArea(parent=self)
-        self.scroll_area.setMinimumHeight(400)
+        self.scroll_area.setMinimumHeight(200)
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
         self.scroll_area.setWidgetResizable(True)
@@ -469,7 +469,7 @@ class TimePlotter(PyDMFrame):
         selection_layout = QVBoxLayout()
         # selection_layout.resize(QtCore.QSize(1500, 1000))
         self.selection_tree = SelectionTree(main=self,parent=None,init_channel=self.channel)
-        self.selection_tree.setMinimumWidth(650)
+        self.selection_tree.setWidth(650)
         selection_layout.addWidget(self.selection_tree)
         selection_layout.addWidget(self.scroll_area)
         selection_box = QGroupBox()
