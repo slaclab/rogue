@@ -15,13 +15,14 @@
 
 import pyrogue
 import rogue.protocols.epicsV3
-
+from pyrogue.protocols.autosave import Autosave
 
 class EpicsCaServer(object):
     """
     Class to contain an epics ca server
     """
-    def __init__(self,*,base,root,incGroups=None,excGroups=None,pvMap=None, syncRead=True, threadCount=0):
+    def __init__(self,*,base,root,incGroups=None,excGroups=None,pvMap=None, syncRead=True, 
+                 threadCount=0, iocname=None):
         self._root      = root
         self._base      = base
         self._log       = pyrogue.logInit(cls=self)
@@ -31,6 +32,8 @@ class EpicsCaServer(object):
         self._incGroups = incGroups
         self._excGroups = excGroups
         self._started   = False
+        self._autosave  = Autosave(iocname, self)
+        self._nodeMap   = {}
 
     def stop(self):
         # Add deprecration warning in the future
@@ -45,7 +48,6 @@ class EpicsCaServer(object):
         self._srv = None
 
     def _start(self):
-
         if self._started:
             return
 
@@ -61,10 +63,11 @@ class EpicsCaServer(object):
             doAll = False
 
         # Create PVs
+        self._nodeMap = {}
         for v in self._root.variableList:
             self._addPv(v,doAll,self._incGroups,self._excGroups)
-
         self._srv._start()
+        self._autosave.start()
 
     def list(self):
         return self._pvMap
@@ -97,9 +100,40 @@ class EpicsCaServer(object):
             self._srv._addValue(rogue.protocols.epicsV3.Command(eName,node))
             self._log.info("Adding command {} mapped to {}".format(node.path,eName))
         else:
-
             # Add standard variable
+            self._nodeMap[eName] = node
+            # Do autosave!
+            ival = self._autosave.getInitialValue(eName)
+            if ival is not None:
+                # ival is a string.  We need to make it the proper type.
+                t = node.nativeType()
+                if t == bool:
+                    ival = False if int(ival) == 0 else True
+                elif t == int:
+                    ival = int(ival)
+                elif t == float:
+                    ival = float(ival)
+                node.set(ival)
             evar = rogue.protocols.epicsV3.Variable(eName,node,self._syncRead)
             node.addListener(evar.varUpdated)
             self._srv._addValue(evar)
             self._log.info("Adding variable {} mapped to {}".format(node.path,eName))
+
+    """
+    Value store interface for autosave.  Return the variable value as a string, or
+    None if not a valid variable.
+    """
+    def getValue(self, name):
+        try:
+            v = self._nodeMap[name].value()
+            print("%s --> %s" % (name, v))
+            if type(v) == float:
+                return "%.14g" % v
+            elif type(v) == bool:
+                return "1" if True else "0"
+            else:
+                return str(v)
+        except:
+            pass
+        return None
+

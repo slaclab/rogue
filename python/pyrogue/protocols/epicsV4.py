@@ -20,6 +20,7 @@ import time
 import warnings
 import re
 import numpy as np
+from pyrogue.protocols.autosave import Autosave
 
 try:
     import p4p.server.thread
@@ -269,7 +270,7 @@ class EpicsPvServer(object):
     """
     Class to contain an epics PV server
     """
-    def __init__(self,*,base,root,incGroups,excGroups,pvMap=None):
+    def __init__(self,*,base,root,incGroups,excGroups,pvMap=None,iocname=None):
         self._root      = root
         self._base      = base
         self._log       = pyrogue.logInit(cls=self)
@@ -278,7 +279,8 @@ class EpicsPvServer(object):
         self._excGroups = excGroups
         self._pvMap     = pvMap
         self._started   = False
-
+        self._autosave  = Autosave(iocname, self)
+        self._nodeMap   = {}
         self._provider = p4p.server.StaticProvider(__name__)
 
     def start(self):
@@ -314,6 +316,7 @@ class EpicsPvServer(object):
             doAll = False
 
         # Create PVs
+        self._nodeMap = {}
         for v in self._root.variableList:
             eName = None
 
@@ -325,10 +328,24 @@ class EpicsPvServer(object):
                 eName = self._pvMap[v.path]
 
             if eName is not None:
+                self._nodeMap[eName] = v
+                # Do autosave!
+                ival = self._autosave.getInitialValue(eName)
+                if ival is not None:
+                    # ival is a string.  We need to make it the proper type.
+                    t = v.nativeType()
+                    if t == bool:
+                        ival = False if int(ival) == 0 else True
+                    elif t == int:
+                        ival = int(ival)
+                    elif t == float:
+                        ival = float(ival)
+                    v.set(ival)
                 pvh = EpicsPvHolder(self._provider,eName,v,self._log)
                 self._list.append(pvh)
 
         self._server = p4p.server.Server(providers=[self._provider])
+        self._autosave.start()
 
     def list(self):
         return self._pvMap
@@ -344,3 +361,21 @@ class EpicsPvServer(object):
         else:
             for k,v in self._pvMap.items():
                 print("{} -> {}".format(v,k))
+
+    """
+    Value store interface for autosave.  Return the variable value as a string, or
+    None if not a valid variable.
+    """
+    def getValue(self, name):
+        try:
+            v = self._nodeMap[name].value()
+            print("%s --> %s" % (name, v))
+            if type(v) == float:
+                return "%.14g" % v
+            elif type(v) == bool:
+                return "1" if True else "0"
+            else:
+                return str(v)
+        except:
+            pass
+        return None
