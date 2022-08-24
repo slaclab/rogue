@@ -294,6 +294,7 @@ class EpicsPvServer(object):
     def _stop(self):
         if self._server is not None:
             self._server.stop()
+            self._autosave.stop()
 
     def _start(self):
 

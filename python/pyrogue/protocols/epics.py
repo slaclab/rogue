@@ -46,6 +46,7 @@ class EpicsCaServer(object):
     def _stop(self):
         self._srv._stop()
         self._srv = None
+        self._autosave.stop()
 
     def _start(self):
         if self._started:
