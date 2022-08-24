@@ -369,7 +369,6 @@ class EpicsPvServer(object):
     def getValue(self, name):
         try:
             v = self._nodeMap[name].value()
-            print("%s --> %s" % (name, v))
             if type(v) == float:
                 return "%.14g" % v
             elif type(v) == bool:
