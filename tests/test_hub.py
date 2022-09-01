@@ -85,17 +85,17 @@ class HubTestDev(pr.Device):
     # Return the command field from the read data
     @classmethod
     def cmd_address(cls, data): # returns address data
-        return((data & 0x7FFF0000) >> 20)
+        return (data & 0x7FFF0000) >> 20
 
     # Return the data field from the read data
     @classmethod
     def cmd_data(cls, data):  # returns data
-        return(data & 0xFFFFF)
+        return (data & 0xFFFFF)
 
     # Build the data field for a write command
     @classmethod
     def cmd_make(cls, read, address, data):
-        return((read << 31) | ((address << 20) & 0x7FF00000) | (data & 0xFFFFF))
+        return ((read << 31) | ((address << 20) & 0x7FF00000) | (data & 0xFFFFF))
 
     # Helper function to initiate outbound write transactions and wait for the result
     # Returns error string or "" for no error
@@ -200,10 +200,10 @@ class TestEmulate(rogue.interfaces.memory.Slave):
         return 0
 
     def _doMaxAccess(self):
-        return(self._maxSize)
+        return self._maxSize
 
     def _doMinAccess(self):
-        return(self._minWidth)
+        return self._minWidth
 
     def _doTransaction(self,transaction):
         address = transaction.address()
