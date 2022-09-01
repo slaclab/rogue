@@ -234,7 +234,7 @@ class Device(pr.Node,rim.Hub):
         self._ifAndProto.extend(interfaces)
 
     def _start(self):
-        """ Called recursively from Root.stop when starting """
+        """ Called recursively from Root.start when starting """
         for intf in self._ifAndProto:
             if hasattr(intf,"_start"):
                 intf._start()
