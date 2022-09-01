@@ -141,10 +141,10 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         return 0
 
     def _doMaxAccess(self):
-        return (self._maxSize)
+        return self._maxSize
 
     def _doMinAccess(self):
-        return (self._minWidth)
+        return self._minWidth
 
     def _doTransaction(self,transaction):
         address = transaction.address()
@@ -152,7 +152,6 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         type    = transaction.type()
 
         if self._count < self._dropCount:
-            print(f'Dropping transaction {self._count}')
             self._count += 1
             return
 

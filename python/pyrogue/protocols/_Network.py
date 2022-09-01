@@ -284,7 +284,7 @@ class UdpRssiPack(pr.Device):
         ))
 
     def application(self,dest):
-        return (self._pack.application(dest))
+        return self._pack.application(dest)
 
     def countReset(self):
         self._rssi.resetCounters()

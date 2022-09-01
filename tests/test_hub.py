@@ -85,7 +85,7 @@ class HubTestDev(pr.Device):
     # Return the command field from the read data
     @classmethod
     def cmd_address(cls, data): # returns address data
-        return ((data & 0x7FFF0000) >> 20)
+        return (data & 0x7FFF0000) >> 20
 
     # Return the data field from the read data
     @classmethod
@@ -200,10 +200,10 @@ class TestEmulate(rogue.interfaces.memory.Slave):
         return 0
 
     def _doMaxAccess(self):
-        return (self._maxSize)
+        return self._maxSize
 
     def _doMinAccess(self):
-        return (self._minWidth)
+        return self._minWidth
 
     def _doTransaction(self,transaction):
         address = transaction.address()
