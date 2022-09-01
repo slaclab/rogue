@@ -141,10 +141,10 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         return 0
 
     def _doMaxAccess(self):
-        return(self._maxSize)
+        return self._maxSize
 
     def _doMinAccess(self):
-        return(self._minWidth)
+        return self._minWidth
 
     def _doTransaction(self,transaction):
         address = transaction.address()
