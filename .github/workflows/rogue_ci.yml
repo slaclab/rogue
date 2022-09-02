@@ -30,11 +30,11 @@ jobs:
     steps:
 
       # Optimizations
-      - name: Disable initramfs update
-        run: sudo sed -i 's/yes/no/g' /etc/initramfs-tools/update-initramfs.conf
+#       - name: Disable initramfs update
+#         run: sudo sed -i 's/yes/no/g' /etc/initramfs-tools/update-initramfs.conf
         
-      - name: Disable man-db update
-        run: sudo rm -f /var/lib/man-db/auto-update
+#       - name: Disable man-db update
+#         run: sudo rm -f /var/lib/man-db/auto-update
 
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v3
