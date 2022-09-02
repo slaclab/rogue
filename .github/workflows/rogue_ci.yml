@@ -29,21 +29,16 @@ jobs:
 
     steps:
 
-      # Optimizations
-      - name: Disable initramfs update
-        run: sudo sed -i 's/yes/no/g' /etc/initramfs-tools/update-initramfs.conf
-
-      - name: Disable man-db update
-        run: sudo rm -f /var/lib/man-db/auto-update
-
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.8
+          cache: 'pip'
+        run: pip install -r pip_requirements.txt
 
       - name: Setup Environment
         run: |
@@ -54,25 +49,13 @@ jobs:
           echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
           echo "PATH=$PATH" >> $GITHUB_ENV
 
-      - name: Install dependencies
+      - name: Install APT dependencies
         run: |
           sudo apt-get update
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
-          pip install -r pip_requirements.txt
 
-#       - name: Cache PIP dependencies
-#         uses: actions/cache@v3
-#         id: pip-cache
-#         with:
-#           path: ~/.cache/pip
-#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
 
-#       - name: Install PIP dependencies
-#         if: ${{ steps.pip-cache.outputs.cache-hit != 'true' }}
-#         run: |
-#           pip install -r pip_requirements.txt
-
-        # Flake 8 check
+      # Flake 8 check
       - name: Flake8 Tests
         run: |
           python -m compileall -f ./python/
