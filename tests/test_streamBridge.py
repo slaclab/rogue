@@ -37,7 +37,7 @@ def data_path():
     # Server stream
     prbsRx << client
 
-    prbsRx.checkPayload(True)    
+    prbsRx.checkPayload(True)
 
     print("Generating Frames")
     for _ in range(FrameCount):
@@ -48,7 +48,7 @@ def data_path():
         if prbsRx.getRxCount() == FrameCount:
             break
         time.sleep(.1)
-        
+
 
     if prbsRx.getRxCount() != FrameCount:
         raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
