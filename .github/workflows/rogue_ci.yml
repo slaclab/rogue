@@ -94,18 +94,18 @@ jobs:
           make clean && make && make install
 
       # Rogue
-#       - name: Build Rogue
-#         run: |
-#           python -c "import numpy; print(numpy.get_include())"
-#           mkdir build; cd build
-#           cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
-#           make -j4 install
+      - name: Build Rogue
+        run: |
+          python -c "import numpy; print(numpy.get_include())"
+          mkdir build; cd build
+          cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
+          make -j4 install
 
-#       # Run Tests
-#       - name: Rogue Tests
-#         run: |
-#           source setup_rogue.sh
-#           python -m pytest --cov      
+      # Run Tests
+      - name: Rogue Tests
+        run: |
+          source setup_rogue.sh
+          python -m pytest --cov      
 
 #       # Run test_rate.py
 # #       - name: Get test_rate.py output
@@ -116,27 +116,27 @@ jobs:
 # #             source setup rogue.sh
 # #             python -m test_rate.py
 
-#       # Code Coverage
-#       - name: Code Coverage
-#         run: |
-#           source setup_rogue.sh
-#           codecov
-#           coverage report -m
+      # Code Coverage
+      - name: Code Coverage
+        run: |
+          source setup_rogue.sh
+          codecov
+          coverage report -m
 
-#       # Generate Documentation
-#       - name: Generate Documentation
-#         if: github.ref == 'refs/heads/documentation'
-#         run: |
-#           source setup_rogue.sh
-#           cd docs
-#           make html
+      # Generate Documentation
+      - name: Generate Documentation
+        if: github.ref == 'refs/heads/documentation'
+        run: |
+          source setup_rogue.sh
+          cd docs
+          make html
 
-#       - name: Deploy Documentation
-#         if: github.ref == 'refs/heads/documentation'
-#         uses: peaceiris/actions-gh-pages@v3
-#         with:
-#           github_token: ${{ secrets.GH_TOKEN }}
-#           publish_dir: docs/build/html
+      - name: Deploy Documentation
+        if: github.ref == 'refs/heads/documentation'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          publish_dir: docs/build/html
 
 #       # Set up for Comment PR
 #       - name: Checkout
