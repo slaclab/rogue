@@ -51,13 +51,13 @@ jobs:
           pip install -r pip_requirements.txt
 
         # Flake 8 check
-        - name: Flake8 Tests
-          run: |
-            source setup_rogue.sh
-            python -m compileall -f ./python/
-            flake8 --count ./python/
-            python -m compileall -f ./tests
-            flake8 --count ./tests/    
+      - name: Flake8 Tests
+        run: |
+          source setup_rogue.sh
+          python -m compileall -f ./python/
+          flake8 --count ./python/
+          python -m compileall -f ./tests
+          flake8 --count ./tests/    
 
       - name: Install EPICS Base
         run: |
@@ -91,7 +91,6 @@ jobs:
           source setup_rogue.sh
           python -m pytest --cov      
 
-      
       # Run test_rate.py
       - name: Get test_rate.py output
         uses: mathiasvr/command-output@v1
@@ -100,16 +99,6 @@ jobs:
           run: |
             source setup rogue.sh
             python -m test_rate.py
-
-
-      # Flake 8 check
-      - name: Flake8 Tests
-        run: |
-          source setup_rogue.sh
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/          
 
       # Code Coverage
       - name: Code Coverage
@@ -147,8 +136,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
-
-
   small_build_test:
     name: Small Build Test
     runs-on: ubuntu-latest
@@ -171,7 +158,7 @@ jobs:
           cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
           make -j4 install
 
-  neb_build_test:
+  no_epics_build_test:
     name: Full Build Test (No Epics Build)
     runs-on: ubuntu-latest
     steps:
@@ -190,6 +177,15 @@ jobs:
           LD_LIBRARY_PATH=/usr/lib
           echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
           echo "PATH=$PATH" >> $GITHUB_ENV
+
+      # Flake 8 check
+      - name: Flake8 Tests
+        run: |
+          source setup_rogue.sh
+          python -m compileall -f ./python/
+          flake8 --count ./python/
+          python -m compileall -f ./tests
+          flake8 --count ./tests/
 
       - name: Install dependencies
         run: |
@@ -214,14 +210,6 @@ jobs:
           source setup_rogue.sh
           python -m pytest --cov
 
-      # Flake 8 check
-      - name: Flake8 Tests
-        run: |
-          source setup_rogue.sh
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/
 
       # Code Coverage
       - name: Code Coverage
@@ -519,6 +507,7 @@ jobs:
          run:
            source setup_rogue.sh
            echo set-output name=rates::python test_rate.py
+           
    pr_comment:
      name: PR comment for test script outputs
      runs-on: ubuntu-latest
@@ -533,6 +522,7 @@ jobs:
            message: |
              Hello World! :wave:
            github_token: ${{ secrets.GITHUB_TOKEN }}
+           
       name: Full Build Test
       runs-on: ubuntu-latest
       steps:
