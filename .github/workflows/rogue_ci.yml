@@ -25,16 +25,16 @@ jobs:
 
     env:
       EPICS_BASE: /home/runner/packages/epics/base-7.0.3
-      EPICS_PCAS_ROOT: /home/runner/packages/pcas/pcas-4.13.2 
-    
+      EPICS_PCAS_ROOT: /home/runner/packages/pcas/pcas-4.13.2
+
     steps:
 
       # Optimizations
-#       - name: Disable initramfs update
-#         run: sudo sed -i 's/yes/no/g' /etc/initramfs-tools/update-initramfs.conf
-        
-#       - name: Disable man-db update
-#         run: sudo rm -f /var/lib/man-db/auto-update
+      - name: Disable initramfs update
+        run: sudo sed -i 's/yes/no/g' /etc/initramfs-tools/update-initramfs.conf
+
+      - name: Disable man-db update
+        run: sudo rm -f /var/lib/man-db/auto-update
 
       # This step checks out a copy of your repository.
       - uses: actions/checkout@v3
@@ -58,14 +58,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
-          pip install -r pip_requirements.txt        
+          pip install -r pip_requirements.txt
 
 #       - name: Cache PIP dependencies
 #         uses: actions/cache@v3
 #         id: pip-cache
 #         with:
 #           path: ~/.cache/pip
-#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }} 
+#           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
 
 #       - name: Install PIP dependencies
 #         if: ${{ steps.pip-cache.outputs.cache-hit != 'true' }}
@@ -84,7 +84,7 @@ jobs:
         uses: actions/cache@v3
         id: epics-cache
         with:
-          key: epics       
+          key: epics
           path: |
             ${{ env.EPICS_BASE }}/
             ${{ env.EPICS_PCAS_ROOT }}/
@@ -99,7 +99,7 @@ jobs:
           tar xzf base-7.0.3.tar.gz --strip 1
           make clean && make && make install
 
-      - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}          
+      - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}
         name: Install EPICS PCAS
         run: |
           mkdir -p ${EPICS_PCAS_ROOT}
@@ -121,7 +121,7 @@ jobs:
       - name: Rogue Tests
         run: |
           source setup_rogue.sh
-          python -m pytest --cov      
+          python -m pytest --cov
 
 #       # Run test_rate.py
 # #       - name: Get test_rate.py output
@@ -281,7 +281,7 @@ jobs:
 
 #       - uses: actions/cache@v2
 #         id: cache
-#         with: 
+#         with:
 #           path: ~/.cache/pip
 #           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
 #           restore-keys: |
@@ -539,7 +539,7 @@ jobs:
 #          run:
 #            source setup_rogue.sh
 #            echo set-output name=rates::python test_rate.py
-           
+
 #    pr_comment:
 #      name: PR comment for test script outputs
 #      runs-on: ubuntu-latest
@@ -554,7 +554,7 @@ jobs:
 #            message: |
 #              Hello World! :wave:
 #            github_token: ${{ secrets.GITHUB_TOKEN }}
-           
+
 #       name: Full Build Test
 #       runs-on: ubuntu-latest
 #       steps:
@@ -648,4 +648,4 @@ jobs:
 #          uses: peaceiris/actions-gh-pages@v3
 #          with:
 #            github_token: ${{ secrets.GH_TOKEN }}
-#            publish_dir: docs/build/html 
+#            publish_dir: docs/build/html
