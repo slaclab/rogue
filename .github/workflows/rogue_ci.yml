@@ -38,6 +38,7 @@ jobs:
         with:
           python-version: 3.8
           cache: 'pip'
+          cache-dependency-path: 'pip_requirements.txt'
 
       - name: Setup Environment
         run: |
