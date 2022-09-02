@@ -40,9 +40,6 @@ jobs:
 
       - name: Setup Environment
         run: |
-          echo "EPICS_BASE=$EPICS_BASE" 
-          echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" 
-          
           LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
           PATH=${EPICS_BASE}/bin/linux-x86_64:${PATH}
           echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
@@ -50,10 +47,23 @@ jobs:
           echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
           echo "PATH=$PATH" >> $GITHUB_ENV
 
-      - name: Install dependencies
+      - name: Install APT dependencies
         run: |
           sudo apt-get update
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
+
+      - name: Cache PIP dependencies
+        uses: actions/cache@v3
+        id: pip-cache
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }} 
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install PIP dependencies
+        if: ${{ steps.pip-cache.outputs.cache-hit != 'true' }}
+        run: |
           pip install -r pip_requirements.txt
 
         # Flake 8 check
