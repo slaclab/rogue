@@ -16,7 +16,7 @@
 # secrets.DOCKERHUB_TOKEN
 
 name: Rogue Integration
-on: [push]
+on: [pull_request]
 
 jobs:
   full_build_test:
@@ -108,13 +108,13 @@ jobs:
           python -m pytest --cov      
 
       # Run test_rate.py
-      - name: Get test_rate.py output
-        uses: mathiasvr/command-output@v1
-        id: rates
-        with:
-          run: |
-            source setup rogue.sh
-            python -m test_rate.py
+#       - name: Get test_rate.py output
+#         uses: mathiasvr/command-output@v1
+#         id: rates
+#         with:
+#           run: |
+#             source setup rogue.sh
+#             python -m test_rate.py
 
       # Code Coverage
       - name: Code Coverage
