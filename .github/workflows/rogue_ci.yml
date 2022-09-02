@@ -40,6 +40,9 @@ jobs:
 
       - name: Setup Environment
         run: |
+          echo "EPICS_BASE=$EPICS_BASE" 
+          echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" 
+          
           LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
           PATH=${EPICS_BASE}/bin/linux-x86_64:${PATH}
           echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
