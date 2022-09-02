@@ -24,8 +24,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      EPICS_BASE: ~/packages/epics/base-7.0.3
-      EPICS_PCAS_ROOT: ~/packages/pcas/pcas-4.13.2 
+      EPICS_BASE: ${home}/packages/epics/base-7.0.3
+      EPICS_PCAS_ROOT: ${home}/packages/pcas/pcas-4.13.2 
     
     steps:
 
