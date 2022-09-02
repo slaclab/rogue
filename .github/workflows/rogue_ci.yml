@@ -38,7 +38,6 @@ jobs:
         with:
           python-version: 3.8
           cache: 'pip'
-        run: pip install -r pip_requirements.txt
 
       - name: Setup Environment
         run: |
@@ -53,7 +52,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
-
+          pip install -r pip_requirements.txt
 
       # Flake 8 check
       - name: Flake8 Tests
