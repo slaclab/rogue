@@ -12,7 +12,9 @@
 import pyrogue as pr
 import pyrogue.interfaces.simulation
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+# We expect Errors with this test, so turn off logging of them
+#import rogue
+#rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
@@ -30,7 +32,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -40,7 +42,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -50,7 +52,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -60,7 +62,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -70,7 +72,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
         self.add(pr.RemoteVariable(
@@ -80,7 +82,7 @@ class SimpleDev(pr.Device):
             bitOffset    =  0x00,
             base         = pr.UInt,
             mode         = "RW",
-            retryCount   = 2
+            retryCount   = 3
         ))
 
 
@@ -90,7 +92,7 @@ class DummyTree(pr.Root):
         pr.Root.__init__(self,
                          name='dummyTree',
                          description="Dummy tree for example",
-                         timeout=2.0,
+                         timeout=.01,
                          pollEn=False,
                          serverPort=None)
 
