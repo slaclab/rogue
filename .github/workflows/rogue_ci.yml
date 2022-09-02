@@ -69,9 +69,9 @@ jobs:
         id: epics-cache
         with:
           key: epics       
-          path:
-            ${{ env.EPICS_BASE }}
-            ${{ env.EPICS_PCAS_ROOT }}
+          path: |
+            ${{ env.EPICS_BASE }}/
+            ${{ env.EPICS_PCAS_ROOT }}/
 
       - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}
         name: Install EPICS Base
@@ -94,62 +94,62 @@ jobs:
           make clean && make && make install
 
       # Rogue
-      - name: Build Rogue
-        run: |
-          python -c "import numpy; print(numpy.get_include())"
-          mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
-          make -j4 install
+#       - name: Build Rogue
+#         run: |
+#           python -c "import numpy; print(numpy.get_include())"
+#           mkdir build; cd build
+#           cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
+#           make -j4 install
 
-      # Run Tests
-      - name: Rogue Tests
-        run: |
-          source setup_rogue.sh
-          python -m pytest --cov      
+#       # Run Tests
+#       - name: Rogue Tests
+#         run: |
+#           source setup_rogue.sh
+#           python -m pytest --cov      
 
-      # Run test_rate.py
-#       - name: Get test_rate.py output
-#         uses: mathiasvr/command-output@v1
-#         id: rates
+#       # Run test_rate.py
+# #       - name: Get test_rate.py output
+# #         uses: mathiasvr/command-output@v1
+# #         id: rates
+# #         with:
+# #           run: |
+# #             source setup rogue.sh
+# #             python -m test_rate.py
+
+#       # Code Coverage
+#       - name: Code Coverage
+#         run: |
+#           source setup_rogue.sh
+#           codecov
+#           coverage report -m
+
+#       # Generate Documentation
+#       - name: Generate Documentation
+#         if: github.ref == 'refs/heads/documentation'
+#         run: |
+#           source setup_rogue.sh
+#           cd docs
+#           make html
+
+#       - name: Deploy Documentation
+#         if: github.ref == 'refs/heads/documentation'
+#         uses: peaceiris/actions-gh-pages@v3
 #         with:
-#           run: |
-#             source setup rogue.sh
-#             python -m test_rate.py
+#           github_token: ${{ secrets.GH_TOKEN }}
+#           publish_dir: docs/build/html
 
-      # Code Coverage
-      - name: Code Coverage
-        run: |
-          source setup_rogue.sh
-          codecov
-          coverage report -m
+#       # Set up for Comment PR
+#       - name: Checkout
+#         uses: actions/checkout@v3
 
-      # Generate Documentation
-      - name: Generate Documentation
-        if: github.ref == 'refs/heads/documentation'
-        run: |
-          source setup_rogue.sh
-          cd docs
-          make html
-
-      - name: Deploy Documentation
-        if: github.ref == 'refs/heads/documentation'
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GH_TOKEN }}
-          publish_dir: docs/build/html
-
-      # Set up for Comment PR
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      # Comment on PR
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v1
-        with:
-          message: |
-            Rates -
-            ${{steps.rates.outputs.stdout}}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+#       # Comment on PR
+#       - name: Comment PR
+#         uses: thollander/actions-comment-pull-request@v1
+#         with:
+#           message: |
+#             Rates -
+#             ${{steps.rates.outputs.stdout}}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
 
 
   small_build_test:
