@@ -18,8 +18,8 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 
 .. code::
 
-   ROGUE_VERSION = "5.13.0"
-   ROGUE_MD5SUM  = "e7d8da39b2017e9a5ef05b7851fcabc7"
+   ROGUE_VERSION = "5.14.0"
+   ROGUE_MD5SUM  = "ba8146e03f60e463a2aa3d978c1dc46e"
 
    SUMMARY = "Rogue Application"
    SECTION = "PETALINUX/apps"
@@ -30,26 +30,27 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
    SRC_URI[md5sum] = "${ROGUE_MD5SUM}"
    S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
 
-   DEPENDS += "python3 python3-numpy python3-native python3-numpy-native cmake boost zeromq bzip2"
-   DEPENDS += "python3-pyzmq python3-parse python3-pyyaml python3-click python3-sqlalchemy python3-pyserial"
+   DEPENDS += "python3 python3-numpy python3-native python3-numpy-native python3-pyzmq"
+   DEPENDS += "python3-parse python3-pyyaml python3-click python3-sqlalchemy python3-pyserial"
+   DEPENDS += "cmake boost zeromq bzip2 python3-jupyter"
 
    PROVIDES = "rogue"
    EXTRA_OECMAKE += "-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}"
 
-   inherit cmake python3native distutils3
+   inherit cmake python3native distutils3 xilinx-pynq setuptools3
 
    FILES_${PN}-dev += "/usr/include/rogue/*"
    FILES_${PN} += "/usr/lib/*"
 
    do_configure() {
       cmake_do_configure
+      bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
    }
 
    do_install() {
       cmake_do_install
       distutils3_do_install
    }
-
 
 Update the ROGUE_VERSION line for an updated version when appropriate (min version is 5.6.1). You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
 
@@ -79,13 +80,6 @@ You can then build the rogue package with the following command:
 
 .. code::
 
-   # Try to let rogue build and let it assert the error about missing setup.py file
-   > petalinux-build -c rogue
-
-   # Copy the autogenerate setup.py from the 1st "petalinux-build -c rogue" to the correct directory (work around)
-   > cp build/tmp/work/cortexa72-cortexa53-xilinx-linux/rogue/1.0-r0/build/setup.py build/tmp/work/cortexa72-cortexa53-xilinx-linux/rogue/1.0-r0/rogue-<ROGUE_VERSION>/.
-
-   # Rebuild again
    > petalinux-build -c rogue
 
 You can then build the petalinux project as normal.
