@@ -16,7 +16,7 @@
 # secrets.DOCKERHUB_TOKEN
 
 name: Rogue Integration
-on: [pull_request]
+on: [push]
 
 jobs:
   full_build_test:
