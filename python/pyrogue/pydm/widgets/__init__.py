@@ -11,13 +11,13 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-from pyrogue.pydm.widgets.line_edit     import PyRogueLineEdit
-from pyrogue.pydm.widgets.data_writer   import DataWriter
-from pyrogue.pydm.widgets.root_control  import RootControl
-from pyrogue.pydm.widgets.run_control   import RunControl
-from pyrogue.pydm.widgets.system_log    import SystemLog
-from pyrogue.pydm.widgets.system_window import SystemWindow
-from pyrogue.pydm.widgets.debug_tree    import DebugTree
+from pyrogue.pydm.widgets.line_edit            import PyRogueLineEdit
+from pyrogue.pydm.widgets.data_writer          import DataWriter
+from pyrogue.pydm.widgets.root_control         import RootControl
+from pyrogue.pydm.widgets.run_control          import RunControl
+from pyrogue.pydm.widgets.system_log           import SystemLog
+from pyrogue.pydm.widgets.system_window        import SystemWindow
+from pyrogue.pydm.widgets.debug_tree           import DebugTree
 from pyrogue.pydm.widgets.simple_debug_tree    import SimpleDebugTree
-from pyrogue.pydm.widgets.process       import Process
-from pyrogue.pydm.widgets.plot          import Plotter
+from pyrogue.pydm.widgets.process              import Process
+from pyrogue.pydm.widgets.plot                 import Plotter
