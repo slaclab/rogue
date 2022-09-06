@@ -21,7 +21,7 @@ from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QGridLayout, QWidget
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
 
-class deviceLabelReadAll(QWidget):
+class DeviceLabelReadAll(QWidget):
     def __init__(self, parent, init_channel):
         QWidget.__init__(self, parent)
         label = PyDMLabel(parent=None, init_channel=init_channel + '/name')
@@ -56,7 +56,7 @@ class DebugDev(QTreeWidgetItem):
         else:
             self._depth = 1
 
-        w = deviceLabelReadAll(parent=None, init_channel=self._path)
+        w = DeviceLabelReadAll(parent=None, init_channel=self._path)
         # w = PyDMLabel(parent=None, init_channel=self._path + '/name')
         # w.showUnits             = False
         # w.precisionFromPV       = False
@@ -165,7 +165,7 @@ class DebugGroup(QTreeWidgetItem):
     def addNode(self,node):
         self._list.append(node)
 
-class overlayPyRogueLineEdit(QWidget):
+class OverlayLineEdit(QWidget):
     def __init__(self, parent, init_channel, units):
         QWidget.__init__(self, parent)
         lineEdit1 = PyRogueLineEdit(parent = parent, init_channel = init_channel)
@@ -191,7 +191,7 @@ class overlayPyRogueLineEdit(QWidget):
         grid.setContentsMargins(0, 0, 0, 0)
         self.setLayout(grid)
 
-class overlayPyDMLabel(QWidget):
+class OverlayLabel(QWidget):
     def __init__(self, parent, init_channel, units):
         QWidget.__init__(self, parent)
         label1 = PyDMLabel(parent = parent, init_channel = init_channel)
@@ -284,14 +284,14 @@ class DebugHolder(QTreeWidgetItem):
             w.installEventFilter(self._top)
 
         elif self._var.mode == 'RO' and not self._var.isCommand:
-            w = overlayPyDMLabel(parent=None, init_channel=self._path + '/disp', units=self._var.units)
+            w = OverlayLabel(parent=None, init_channel=self._path + '/disp', units=self._var.units)
             # w.showUnits             = (self._var.units is not None)
             # w.unit_changed(self._var.units)
             # w.precisionFromPV       = True
             # w.alarmSensitiveContent = False
             # w.alarmSensitiveBorder  = True
         else:
-            w = overlayPyRogueLineEdit(parent=None, init_channel=self._path + '/disp', units=self._var.units)
+            w = OverlayLineEdit(parent=None, init_channel=self._path + '/disp', units=self._var.units)
             # PyRogueLineEdit(parent=None, init_channel=self._path + '/disp')
             # w.precisionFromPV       = True
             # w.alarmSensitiveContent = False
