@@ -335,4 +335,3 @@ class SimpleDebugTree(PyDMFrame):
             return True
         else:
             return False
-            
