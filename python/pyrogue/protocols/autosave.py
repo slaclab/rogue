@@ -40,26 +40,23 @@ class Autosave(object):
     If a required environment variable is not set or the iocname is None,
     this is a do-nothing object.
     """ 
-    def __init__(self, iocname, vs, debug = False):
+    def __init__(self, iocname, vs):
         self.thread = None
         self.init_ok = False
         self.init_dict = {}
-        self.debug = debug
+        self._log = pyrogue.logInit(cls=self)
         if iocname is None:
-            if self.debug:
-                print("No iocname, autosave disabled!")
+            self._log.info("No iocname, autosave disabled!")
             return
         self.iocname = iocname
         self.vs = vs
         self.reqpath = os.getenv("PYROGUE_AS_REQPATH")
         if self.reqpath is None:
-            if self.debug:
-                print("No PYROGUE_AS_REQPATH, autosave disabled!")
+            self._log.info("No PYROGUE_AS_REQPATH, autosave disabled!")
             return
         self.savpath = os.getenv("PYROGUE_AS_SAVPATH")
         if self.savpath is None:
-            if self.debug:
-                print("No PYROGUE_AS_SAVPATH, autosave disabled!")
+            self._log.info("No PYROGUE_AS_SAVPATH, autosave disabled!")
             return
         else:
             self.savpath +=  "/" + self.iocname
@@ -129,8 +126,7 @@ class Autosave(object):
                 l = f.readlines()
             l = [x.strip() for x in l]
             l = [x for x in l if x[0] != '#']
-            if self.debug:
-                print("Request list: %s" % str(l))
+            self._log.debug("Request list: %s" % str(l))
             return l
         except:
             return []
@@ -193,13 +189,12 @@ class Autosave(object):
             return False
 
     def write_autosave(self):
-        if self.debug:
-            print("WRITE: %s" % datetime.datetime.now())
+        self._log.debug("WRITE: %s" % datetime.datetime.now())
         if not self.check_file(self.savpath + ".savB") and self.check_file(self.savpath + ".sav"):
             # .sav is good, but .savB is not.  We must have had a previous failure!
-            print("savB is corrupt, making a new copy!")
+            self._log.info("savB is corrupt, making a new copy!")
             if not self.copyfile(self.savpath + ".sav", self.savpath + ".savB"):
-                print("Cannot make copy?!?  Autosave failure!")
+                self._log.info("Cannot make copy?!?  Autosave failure!")
                 return
         # Now, either .savB is good (we might have made it good!) or if .savB
         # is bad, .sav must be bad as well (and we did nothing above).  The 
@@ -217,20 +212,19 @@ class Autosave(object):
         with open(self.savpath + ".sav") as f:
             rb = f.read()
         if l != rb:
-            print("Autosave readback failed?!?")
+            self._log.info("Autosave readback failed?!?")
             return
         # .sav is good, so we can make .savB.
         if not self.copyfile(self.savpath + ".sav", self.savpath + ".savB"):
-            print("Cannot make copy?!?  Autosave failure!")
+            self._log.info("Cannot make copy?!?  Autosave failure!")
 
     def seq_backup(self):
-        if self.debug:
-            print("BACKUP: %s" % datetime.datetime.now())
+        self._log.debug("BACKUP: %s" % datetime.datetime.now())
         if self.copyfile("%s.sav" % (self.savpath),
                          "%s.sav%d" % (self.savpath, self.seqcur)):
             self.seqcur = (self.seqcur + 1) % self.seqcnt
         else:
-            print("Failure creating sequential backup %d!\n" % self.seqcur)
+            self._log.info("Failure creating sequential backup %d!\n" % self.seqcur)
 
     def copyfile(self, infn, outfn):
         try:
