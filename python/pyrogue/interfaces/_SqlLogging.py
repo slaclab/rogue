@@ -35,18 +35,20 @@ class SqlLogger(object):
 
         self._metadata = sqlalchemy.MetaData(engine)
 
-        self._varTable = sqlalchemy.Table('variables', self._metadata,
+        self._varTable = sqlalchemy.Table(
+            'variables', self._metadata,
             sqlalchemy.Column('id',        sqlalchemy.Integer, primary_key=True),
             sqlalchemy.Column('timestamp', sqlalchemy.DateTime(timezone=True), server_default=sqlalchemy.func.now()),
             sqlalchemy.Column('path',      sqlalchemy.String),
-#            sqlalchemy.Column('enum',      sqlalchemy.String),
-#            sqlalchemy.Column('disp',      sqlalchemy.String),
+            sqlalchemy.Column('enum',      sqlalchemy.String),
+            sqlalchemy.Column('disp',      sqlalchemy.String),
             sqlalchemy.Column('value',     sqlalchemy.String),
-            sqlalchemy.Column('valueDisp', sqlalchemy.String))                                          
-#            sqlalchemy.Column('severity',  sqlalchemy.String),
-#            sqlalchemy.Column('status',    sqlalchemy.String))
+            sqlalchemy.Column('valueDisp', sqlalchemy.String),
+            sqlalchemy.Column('severity',  sqlalchemy.String),
+            sqlalchemy.Column('status',    sqlalchemy.String))
 
-        self._logTable = sqlalchemy.Table('syslog', self._metadata,
+        self._logTable = sqlalchemy.Table(
+            'syslog', self._metadata,
             sqlalchemy.Column('id',          sqlalchemy.Integer, primary_key=True),
             sqlalchemy.Column('timestamp',   sqlalchemy.DateTime(timezone=True), server_default=sqlalchemy.func.now()),
             sqlalchemy.Column('name',        sqlalchemy.String),
@@ -75,60 +77,85 @@ class SqlLogger(object):
         print('Sql logger stopped')
 
 
-    def insert_from_q(self, ent, conn):
-        # Variable        
-        if ent[0] is not None:
-            value = ent[1].value
+    def insert_from_q(self, entry, conn):
+
+        # Variable
+        if entry[0] is not None:
+
+            # Handle corner cases
+            value = entry[1].value
             if isinstance(value, int) and value.bit_length() > 64:
-                value = ent[1].valueDisp
+                # Support >64 bit ints
+                value = entry[1].valueDisp
             elif isinstance(value, tuple):
+                # Support tuples
                 value = str(value)
-        
+
             ins = self._varTable.insert().values(
-                path=ent[0],
-#                enum=str(ent[1].enum),
-#                disp=ent[1].disp,
+                path=entry[0],
+                enum=str(entry[1].enum),
+                disp=entry[1].disp,
                 value=value,
-                valueDisp=ent[1].valueDisp)
-#                severity=ent[1].severity,
-#                status=ent[1].status)
+                valueDisp=entry[1].valueDisp,
+                severity=entry[1].severity,
+                status=entry[1].status)
 
         # Syslog
         else:
             ins = self._logTable.insert().values(
-                name=ent[1]['name'],
-                message=ent[1]['message'],
-                exception=ent[1]['exception'],
-                levelName=ent[1]['levelName'],
-                levelNumber=ent[1]['levelNumber'])
+                name=entry[1]['name'],
+                message=entry[1]['message'],
+                exception=entry[1]['exception'],
+                levelName=entry[1]['levelName'],
+                levelNumber=entry[1]['levelNumber'])
 
         conn.execute(ins)
-        
-        
+
+
     def _worker(self):
         while True:
-            ent = self._queue.get()
-            print(f'q size = {self._queue.qsize()}')
-            # Done
-            if ent is None:
+            entry = self._queue.get()
+
+            # Exit thread if None entry received
+            if entry is None:
                 return
 
-            if self._engine is not None:
-                try:                
-                    with self._engine.begin() as conn:
-                        self.insert_from_q(ent, conn)
+            # Do nothing with the data if db connection not present
+            if self._engine is None:
+                continue
 
-                        for i in range(self._queue.qsize()):
-                            ent = self._queue.get()
-                            if ent is None:
-                                return
-                            self.insert_from_q(ent, conn)
+            # If there are multiple entries in the queue
+            # write them to the DB in a single transaction
+            try:
+                with self._engine.begin() as conn:
+                    count = 0
+                    while True:
+                        #Need to check for null again from loop
+                        if entry is None:
+                            return
 
-                    
-                except Exception as e:
-                    self._engine = None
-                    pr.logException(self._log,e)
-                    self._log.error("Lost database connection to {}".format(self._url))
+                        count += 1                        
+
+                        # Insert the entry
+                        self.insert_from_q(entry, conn)
+
+                        # Break from loop and close the transaction
+                        # when queue has been emptied
+                        if self._queue.qsize() == 0:
+                            break
+
+                        # Read the next queue entry and loop
+                        entry = self._queue.get()
+
+                print(f'Worker thread wrote {count} rows into DB')
+
+
+            except Exception as e:
+                self._engine = None
+                pr.logException(self._log,e)
+                self._log.error("Lost database connection to {}".format(self._url))
+
+
 
 
 class SqlReader(object):
