@@ -114,6 +114,7 @@ class SqlLogger(object):
 
     def _worker(self):
         while True:
+            # Block and wait for a queue entry to arrive
             entry = self._queue.get()
 
             # Exit thread if None entry received
