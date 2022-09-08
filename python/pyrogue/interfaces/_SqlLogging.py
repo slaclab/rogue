@@ -128,13 +128,10 @@ class SqlLogger(object):
             # write them to the DB in a single transaction
             try:
                 with self._engine.begin() as conn:
-                    count = 0
                     while True:
                         #Need to check for null again from loop
                         if entry is None:
                             return
-
-                        count += 1                        
 
                         # Insert the entry
                         self.insert_from_q(entry, conn)
@@ -146,8 +143,6 @@ class SqlLogger(object):
 
                         # Read the next queue entry and loop
                         entry = self._queue.get()
-
-                print(f'Worker thread wrote {count} rows into DB')
 
 
             except Exception as e:
