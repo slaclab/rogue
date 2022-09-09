@@ -209,7 +209,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
         self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
-                 description='Current Time In Seconds Since EPOCH UTC'))
+                                  description='Current Time In Seconds Since EPOCH UTC', groups=['NoSql']))
 
         self.add(pr.LinkVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
                  linkedGet=lambda: time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(self.Time.value())),
@@ -940,7 +940,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             # Process list
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
-
                 for p,v in uvars.items():
                     try:
                         val = v._doUpdate()
@@ -960,6 +959,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                         # Log to database
                         if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
+                            #print('sql log:',p, val)
                             self._sqlLog.logVariable(p, val)
 
                     except Exception as e:
