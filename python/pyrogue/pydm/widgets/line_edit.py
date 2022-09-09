@@ -1,4 +1,3 @@
-
 from pydm.widgets import PyDMLineEdit, PyDMLabel
 from qtpy.QtCore import Property, Qt
 from qtpy.QtWidgets import QWidget, QGridLayout, QLabel, QFrame
@@ -37,7 +36,7 @@ class PyRogueVariableDisplay(QWidget):
         self._valueWidget.alarmSensitiveBorder  = True
         self._valueWidget.setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }")
 
-        
+
         self._unitWidget = widget(parent, init_channel = None)
         self._unitWidget.precisionFromPV       = True
         self._unitWidget.alarmSensitiveContent = False
@@ -50,9 +49,9 @@ class PyRogueVariableDisplay(QWidget):
         def unit_changed(new_unit):
             self._unitWidget.setText(new_unit)
         self._valueWidget.unit_changed = unit_changed
-        
+
         grid = QGridLayout()
-        grid.addWidget(self._unitWidget, 0, 0)                        
+        grid.addWidget(self._unitWidget, 0, 0)
         grid.addWidget(self._valueWidget, 0, 0)
         grid.setVerticalSpacing(0)
         grid.setHorizontalSpacing(0)
@@ -63,7 +62,7 @@ class PyRogueVariableDisplay(QWidget):
 class PyRogueVariableLineEdit(PyRogueVariableDisplay):
     def __init__(self, parent, init_channel):
         super().__init__(parent, init_channel, PyRogueLineEdit)
-        
+
 class PyRogueVariableLabel(PyRogueVariableDisplay):
     def __init__(self, parent, init_channel):
         super().__init__(parent, init_channel, PyDMLabel)
