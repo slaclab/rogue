@@ -26,7 +26,7 @@ from qtpy.QtWidgets import (
     QVBoxLayout, QHBoxLayout, QTreeWidgetItem, QTreeWidget, QLabel,
     QGroupBox, QLineEdit, QPushButton, QScrollArea, QFrame, QWidget)
 
-from pyqtgraph import AxisItem, PlotWidget, PlotDataItem, mkPen, ViewBox, InfiniteLine, SignalProxy
+from pyqtgraph import ViewBox
 
 from PyQt5.QtWidgets import QSplitter
 from PyQt5.QtCore import Qt
@@ -408,7 +408,7 @@ class TimePlotter(PyDMFrame):
         self.frm_legend.setLayout(self.legend_layout)
 
 
-        # Create a ScrollArea 
+        # Create a ScrollArea
         self.scroll_area = QScrollArea(parent=self)
         self.scroll_area.setMinimumHeight(200)
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOn)
