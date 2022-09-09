@@ -12,7 +12,7 @@
 import pyrogue
 import pyrogue.pydm.widgets
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.pydm.widgets import PyRogueLineEdit
+from pyrogue.pydm.widgets import PyRogueLineEdit, PyRogueVariableLabel, PyRogueVariableLineEdit
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
@@ -155,57 +155,7 @@ class DebugGroup(QTreeWidgetItem):
     def addNode(self,node):
         self._list.append(node)
 
-class OverlayLineEdit(QWidget):
-    def __init__(self, parent, init_channel, units):
-        QWidget.__init__(self, parent)
-        lineEdit1 = PyRogueLineEdit(parent = parent, init_channel = init_channel)
-        lineEdit2 = PyRogueLineEdit(parent = parent, init_channel = None)
-        lineEdit1.precisionFromPV       = True
-        lineEdit1.alarmSensitiveContent = False
-        lineEdit1.alarmSensitiveBorder  = True
-        lineEdit2.precisionFromPV       = True
-        lineEdit2.alarmSensitiveContent = False
-        lineEdit2.alarmSensitiveBorder  = True
-        lineEdit1.setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }")
-        if units:
-            lineEdit2.setText(str(units))
-        else:
-            lineEdit2.setText("")
-        lineEdit2.set_opacity(0.7)
-        lineEdit2.setAlignment(Qt.AlignRight)
-        grid = QGridLayout()
-        grid.addWidget(lineEdit2, 0, 0)
-        grid.addWidget(lineEdit1, 0, 0)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
 
-class OverlayLabel(QWidget):
-    def __init__(self, parent, init_channel, units):
-        QWidget.__init__(self, parent)
-        label1 = PyDMLabel(parent = parent, init_channel = init_channel)
-        label2 = PyDMLabel(parent = parent, init_channel = None)
-        label1.precisionFromPV       = True
-        label1.alarmSensitiveContent = False
-        label1.alarmSensitiveBorder  = True
-        label2.precisionFromPV       = True
-        label2.alarmSensitiveContent = False
-        label2.alarmSensitiveBorder  = True
-        label1.setStyleSheet("* { background-color: rgba(0, 0, 0, 0); }")
-        if units:
-            label2.setText(str(units))
-        else:
-            label2.setText("")
-        label2.set_opacity(0.7)
-        label2.setAlignment(Qt.AlignRight)
-        grid = QGridLayout()
-        grid.addWidget(label2, 0, 0)
-        grid.addWidget(label1, 0, 0)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
 
 class DebugHolder(QTreeWidgetItem):
 
@@ -267,10 +217,10 @@ class DebugHolder(QTreeWidgetItem):
             w.installEventFilter(self._top)
 
         elif self._var.mode == 'RO' and not self._var.isCommand:
-            w = OverlayLabel(parent=None, init_channel=self._path + '/disp', units=self._var.units)
+            w = PyRogueVariableLabel(parent=None, init_channel=self._path + '/disp') #, units=self._var.units)
 
         else:
-            w = OverlayLineEdit(parent=None, init_channel=self._path + '/disp', units=self._var.units)
+            w = PyRogueVariableLineEdit(parent=None, init_channel=self._path + '/disp') #, units=self._var.units)
 
         if self._var.isCommand:
             self._top._tree.setItemWidget(self,4,w)

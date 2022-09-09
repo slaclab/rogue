@@ -12,6 +12,8 @@
 #-----------------------------------------------------------------------------
 
 from pyrogue.pydm.widgets.line_edit            import PyRogueLineEdit
+from pyrogue.pydm.widgets.line_edit            import PyRogueVariableLineEdit
+from pyrogue.pydm.widgets.line_edit            import PyRogueVariableLabel
 from pyrogue.pydm.widgets.data_writer          import DataWriter
 from pyrogue.pydm.widgets.root_control         import RootControl
 from pyrogue.pydm.widgets.run_control          import RunControl
