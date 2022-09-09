@@ -31,10 +31,17 @@ def fifo_path():
     # Client stream
     prbsTx >> fifo >> prbsRx
 
+    prbsRx.checkPayload(True)
+
     print("Generating Frames")
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
-    time.sleep(30)
+
+    # Wait at least 30 seconds for frames to go through
+    for i in range(300):
+        if prbsRx.getRxCount() == FrameCount:
+            break
+        time.sleep(.1)
 
     if prbsRx.getRxErrors() != 0:
         raise AssertionError('PRBS Frame errors detected! Errors = {}'.format(prbsRx.getRxErrors()))
