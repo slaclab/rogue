@@ -27,3 +27,5 @@ dependencies:
   - sqlalchemy
   - pydm
   - matplotlib
+  - pytest
+  - pytest-cov
