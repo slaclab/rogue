@@ -21,19 +21,9 @@ from qtpy.QtWidgets import QVBoxLayout
 
 Channel = 'rogue://0/root'
 
-# def runGui(root):
-#     pyrogue.pydm.runPyDM(
-#             root  = root,
-#             sizeX = 800,
-#             sizeY = 800,
-#             ui = os.path.abspath(__file__))
-
 class TimePlotTop(Display):
     def __init__(self, parent=None, args=[], macros=None):
         super().__init__(parent=parent, args=args, macros=None)
-
-        #self.setStyleSheet("*[dirty='true']\
-        #                   {background-color: orange;}")
 
         self.sizeX  = None
         self.sizeY  = None
@@ -63,15 +53,6 @@ class TimePlotTop(Display):
         tp = TimePlotter(parent=None, init_channel=Channel)
         vb.addWidget(tp)
 
-
-#         self.tab = QTabWidget()
-#         vb.addWidget(self.tab)
-
-#         sys = SystemWindow(parent=None, init_channel=Channel)
-#         self.tab.addTab(sys,'System')
-
-#         var = DebugTree(parent=None, init_channel=Channel)
-#         self.tab.addTab(var,'Debug Tree')
 
         self.resize(self.sizeX, self.sizeY)
 
