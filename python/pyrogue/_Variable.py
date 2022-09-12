@@ -323,8 +323,20 @@ class BaseVariable(pr.Node):
 
     @pollInterval.setter
     def pollInterval(self, interval):
+        print()
+        print(f'=========== Deprecation Warming ===============')
+        print(f'Called {self.path}.pollInterval = {interval}')
+        print('This way of setting the poll interval is deprecated')
+        print(f'Use {self.path}.setPollInterval({interval}) instead')
         self._pollInterval = interval
         self._updatePollInterval()
+
+    @pr.expose
+    def setPollInterval(self, interval):
+        print(f'{self.path}.setPollInterval({interval})')
+        self._pollInterval = interval
+        self._updatePollInterval()
+
 
     @pr.expose
     @property
@@ -1116,6 +1128,7 @@ class LinkVariable(BaseVariable):
     @pr.expose
     @property
     def pollInterval(self):
+
         depIntervals = [dep.pollInterval for dep in self.dependencies if dep.pollInterval > 0]
         if len(depIntervals) == 0:
             return 0
