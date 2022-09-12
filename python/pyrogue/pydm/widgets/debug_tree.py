@@ -168,7 +168,7 @@ def makeVariableViewWidget(parent):
         w.installEventFilter(parent._top)
 
     elif parent._var.minimum is not None and parent._var.maximum is not None and parent._var.disp == '{}' and (parent._var.mode != 'RO' or parent._var.isCommand):
-        w = PyDMSpinbox(parent=None, init_channel=self._path)
+        w = PyDMSpinbox(parent=None, init_channel=parent._path)
         w.precision             = 0
         w.showUnits             = False
         w.precisionFromPV       = False
