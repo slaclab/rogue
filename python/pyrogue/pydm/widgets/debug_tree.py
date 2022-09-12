@@ -179,13 +179,13 @@ def makeVariableViewWidget(parent):
         w.installEventFilter(parent._top)
 
     elif parent._var.mode == 'RO' and not parent._var.isCommand:
-        w = PyRogueVariableLabel(parent=None, init_channel=parent._path + '/disp') 
+        w = PyRogueVariableLabel(parent=None, init_channel=parent._path + '/disp')
 
     else:
         w = PyRogueVariableLineEdit(parent=None, init_channel=parent._path + '/disp')
 
     return w
-    
+
 
 class DebugHolder(QTreeWidgetItem):
 
