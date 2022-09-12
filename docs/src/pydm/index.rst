@@ -21,6 +21,7 @@ Additionally Rogue provides a few custom widgets which can be used to visualize 
    :caption: Rogue PyDM Features:
 
    starting_gui
+   timeplot
    channel_urls
    rogue_widgets
 
