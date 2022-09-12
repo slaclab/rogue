@@ -1,4 +1,4 @@
-.. _starting_gui
+.. _timeplot_gui
 
 ===========================
 Starting The Rogue PyDM Timeplot GUI
