@@ -324,7 +324,7 @@ class BaseVariable(pr.Node):
     @pollInterval.setter
     def pollInterval(self, interval):
         print()
-        print(f'=========== Deprecation Warming ===============')
+        print('=========== Deprecation Warming ===============')
         print(f'Called {self.path}.pollInterval = {interval}')
         print('This way of setting the poll interval is deprecated')
         print(f'Use {self.path}.setPollInterval({interval}) instead')
