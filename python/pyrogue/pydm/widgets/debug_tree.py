@@ -155,6 +155,36 @@ class DebugGroup(QTreeWidgetItem):
     def addNode(self,node):
         self._list.append(node)
 
+def makeVariableViewWidget(parent):
+    if parent._var.isCommand and not parent._var.arg:
+        w = PyDMPushButton(label='Exec',
+                           pressValue=1,
+                           init_channel=parent._path + '/disp')
+
+    elif parent._var.disp == 'enum' and parent._var.enum is not None and (parent._var.mode != 'RO' or parent._var.isCommand) and parent._var.typeStr != 'list':
+        w = PyDMEnumComboBox(parent=None, init_channel=parent._path)
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
+        w.installEventFilter(parent._top)
+
+    elif parent._var.minimum is not None and parent._var.maximum is not None and parent._var.disp == '{}' and (parent._var.mode != 'RO' or parent._var.isCommand):
+        w = PyDMSpinbox(parent=None, init_channel=parent._path)
+        w.precision             = 0
+        w.showUnits             = False
+        w.precisionFromPV       = False
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
+        w.showStepExponent      = False
+        w.writeOnPress          = True
+        w.installEventFilter(parent._top)
+
+    elif parent._var.mode == 'RO' and not parent._var.isCommand:
+        w = PyRogueVariableLabel(parent=None, init_channel=parent._path + '/disp')
+
+    else:
+        w = PyRogueVariableLineEdit(parent=None, init_channel=parent._path + '/disp')
+
+    return w
 
 
 class DebugHolder(QTreeWidgetItem):
