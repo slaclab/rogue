@@ -11,7 +11,6 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue
-from pyrogue.pydm.widgets import PyRogueVariableLabel, PyRogueVariableLineEdit
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets.debug_tree import makeVariableViewWidget
 
@@ -209,7 +208,7 @@ class DebugHolder(QTreeWidgetItem):
                 print(le.text())
                 self._var.setPollInterval(float(le.text()))
             return _setPoll
-        
+
         pe.returnPressed.connect(_makeSetPoll(pe))
         pe.setText(str(self._var.pollInterval))
 
