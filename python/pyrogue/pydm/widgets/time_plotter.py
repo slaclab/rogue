@@ -11,8 +11,9 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue
-import pyrogue.pydm.widgets
+from pyrogue.pydm.widgets import PyRogueVariableLabel, PyRogueVariableLineEdit
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
+from pyrogue.pydm.widgets.debug_tree import makeVariableViewWidget
 
 from pydm import Display
 from pydm.widgets.frame import PyDMFrame
@@ -80,8 +81,8 @@ class DebugDev(QTreeWidgetItem):
                                          excGroups=self._top._excGroups)
 
 
-        lst.update(self._dev.commandsByGroup(incGroups=self._top._incGroups,
-                                             excGroups=self._top._excGroups))
+#         lst.update(self._dev.commandsByGroup(incGroups=self._top._incGroups,
+#                                              excGroups=self._top._excGroups))
 
         # First create variables/commands
         for key,val in lst.items():
@@ -196,25 +197,35 @@ class DebugHolder(QTreeWidgetItem):
 
         self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._var.description)
-        self.setText(1,str(self._var.units) if self._var.units is not None else '')
-        self.setText(3,str(self._var.pollInterval))
+
+        w = makeVariableViewWidget(self)
+        self._top._tree.setItemWidget(self, 1, w)
+
+        pe = QLineEdit(parent=None)
+
+        def _makeSetPoll(le):
+            def _setPoll():
+                print(self._var)
+                print(le.text())
+                self._var.setPollInterval(float(le.text()))
+            return _setPoll
+        
+        pe.returnPressed.connect(_makeSetPoll(pe))
+        pe.setText(str(self._var.pollInterval))
+
+        self._top._tree.setItemWidget(self, 3, pe)
+        #self.setText(3,str(self._var.pollInterval))
         # self.setText(4,str(self._var._value))
 
 
         def funcgen(str):
             def ret():
-
                 #calls the button's toggle method, and also changes the state of DefaultTop so that the correct color will be used in the plot
-
-
                 if w._state is True:
                     self._main.do_remove(str)
                 else:
                     self._main.do_add(str)
-                # print(str)
-                # print(self._var.pollInterval)
                 w.toggle()
-
             return ret
 
         f = funcgen(self._path)
@@ -222,12 +233,12 @@ class DebugHolder(QTreeWidgetItem):
         w.setText('Add')
         w.clicked.connect(f)
 
-        if not self._var.isCommand:
-            self._top._tree.setItemWidget(self,2,w)
-            width = fm.width('0xAAAAAAAA    ')
 
-            if width > self._top._colWidths[1]:
-                self._top._colWidths[1] = width
+        self._top._tree.setItemWidget(self,2,w)
+        width = fm.width('0xAAAAAAAA    ')
+
+        if width > self._top._colWidths[1]:
+            self._top._colWidths[1] = width
 
 
 
@@ -261,11 +272,8 @@ class SelectionTree(PyDMFrame):
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 
-        #self._tree.setColumnCount(5)
-        #self._tree.setHeaderLabels(['Node','Mode','Type','Variable','Command','Units'])
-
         self._tree.setColumnCount(4)
-        self._tree.setHeaderLabels(['Node','Units','Plot','Poll Interval'])#,'Value'])
+        self._tree.setHeaderLabels(['Node','Value','Plot','Poll Interval'])
 
 
         self._tree.itemExpanded.connect(self._expandCb)
