@@ -1,6 +1,6 @@
 from pydm.widgets import PyDMLineEdit, PyDMLabel
 from qtpy.QtCore import Property, Qt
-from qtpy.QtWidgets import QWidget, QGridLayout, QLabel, QFrame
+from qtpy.QtWidgets import QWidget, QGridLayout
 from pydm.widgets.base import refresh_style
 
 class PyRogueLineEdit(PyDMLineEdit):
