@@ -11,7 +11,7 @@ Using The Command Line
 
 You use the rogue module from the command line to start the GUI in the following way:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue timeplot
 
@@ -19,13 +19,13 @@ This will start the Timeplot GUI and connect to the first Rogue server it fines 
 
 You can also specify one or more Rogue server addresses on the command line:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue --server localhost:9099 timeplot
 
 Or for connecting to multiple Rogue servers:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 timeplot
 
