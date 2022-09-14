@@ -9,7 +9,7 @@
 <!-- Optional. Use if for anything that is relevant to discussion of the change, but too detailed to belong in the release notes. Otherwise you can delete this section -->
 
 ### JIRA
-<!--- Optional. Provide a link to any relevate JIRA ticket here. Otherwise you can delete this section -->
+<!--- Optional. Provide a link to any relevant JIRA ticket here. Otherwise you can delete this section -->
 
 ### Related
 <!--- Optional. Provide links to any related Pull Requests. Otherwise you can delete this section -->
