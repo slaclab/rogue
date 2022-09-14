@@ -223,34 +223,7 @@ class DebugHolder(QTreeWidgetItem):
         self.setText(2,self._var.typeStr)
         self.setToolTip(0,self._var.description)
 
-        if self._var.isCommand and not self._var.arg:
-            w = PyDMPushButton(label='Exec',
-                               pressValue=1,
-                               init_channel=self._path + '/disp')
-
-
-        elif self._var.disp == 'enum' and self._var.enum is not None and (self._var.mode != 'RO' or self._var.isCommand) and self._var.typeStr != 'list':
-            w = PyDMEnumComboBox(parent=None, init_channel=self._path)
-            w.alarmSensitiveContent = False
-            w.alarmSensitiveBorder  = True
-            w.installEventFilter(self._top)
-
-        elif self._var.minimum is not None and self._var.maximum is not None and self._var.disp == '{}' and (self._var.mode != 'RO' or self._var.isCommand):
-            w = PyDMSpinbox(parent=None, init_channel=self._path)
-            w.precision             = 0
-            w.showUnits             = False
-            w.precisionFromPV       = False
-            w.alarmSensitiveContent = False
-            w.alarmSensitiveBorder  = True
-            w.showStepExponent      = False
-            w.writeOnPress          = True
-            w.installEventFilter(self._top)
-
-        elif self._var.mode == 'RO' and not self._var.isCommand:
-            w = PyRogueVariableLabel(parent=None, init_channel=self._path + '/disp') #, units=self._var.units)
-
-        else:
-            w = PyRogueVariableLineEdit(parent=None, init_channel=self._path + '/disp') #, units=self._var.units)
+        w = makeVariableViewWidget(self)
 
         if self._var.isCommand:
             self._top._tree.setItemWidget(self,4,w)

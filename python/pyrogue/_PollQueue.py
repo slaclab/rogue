@@ -77,14 +77,14 @@ class PollQueue(object):
 
     def updatePollInterval(self, var):
         with self._condLock:
-            self._log.debug(f'updatePollInterval {var} - {var.pollInterval}')
+            self._log.debug(f'updatePollInterval {var} - {var._pollInterval}')
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
             if not hasattr(var, '_block') or var._block is None:
                 if len(var.dependencies) > 0:
                     for dep in var.dependencies:
-                        if var.pollInterval != 0 and (dep.pollInterval == 0 or var.pollInterval < dep.pollInterval):
-                            dep.pollInterval = var.pollInterval
+                        if var._pollInterval != 0 and (dep.pollInterval == 0 or var._pollInterval < dep.pollInterval):
+                            dep.setPollInterval(var._pollInterval)
 
                 return
 

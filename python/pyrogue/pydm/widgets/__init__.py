@@ -22,3 +22,4 @@ from pyrogue.pydm.widgets.system_window        import SystemWindow
 from pyrogue.pydm.widgets.debug_tree           import DebugTree
 from pyrogue.pydm.widgets.process              import Process
 from pyrogue.pydm.widgets.plot                 import Plotter
+from pyrogue.pydm.widgets.time_plotter         import TimePlotter
