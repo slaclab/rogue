@@ -533,7 +533,7 @@ void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
    for (x=0; x < byteSize/2; x++) {
       tmp = data[x];
       data[x] = data[byteSize-x-1];
-      data[byteSize-1-x] = tmp;
+      data[byteSize-x-1] = tmp;
    }
 }
 
