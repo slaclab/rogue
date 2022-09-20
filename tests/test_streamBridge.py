@@ -37,12 +37,18 @@ def data_path():
     # Server stream
     prbsRx << client
 
-    time.sleep(5)
+    prbsRx.checkPayload(True)
 
     print("Generating Frames")
     for _ in range(FrameCount):
         prbsTx.genFrame(FrameSize)
-    time.sleep(20)
+
+    # Wait at least 20 seconds for frames to go through
+    for i in range(200):
+        if prbsRx.getRxCount() == FrameCount:
+            break
+        time.sleep(.1)
+
 
     if prbsRx.getRxCount() != FrameCount:
         raise AssertionError('Frame count error. Got = {} expected = {}'.format(prbsRx.getRxCount(),FrameCount))
