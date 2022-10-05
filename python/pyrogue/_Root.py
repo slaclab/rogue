@@ -41,7 +41,7 @@ class UpdateTracker(object):
         self._q = q
 
     def increment(self, period):
-"""
+        """
 
         Parameters
         ----------
@@ -50,23 +50,19 @@ class UpdateTracker(object):
 
         Returns
         -------
-"""
+        """
 
         if self._count == 0 or self._period < period:
             self._period = period
         self._count +=1
 
     def decrement(self):
-"""
-"""
         if self._count != 0:
             self._count -= 1
 
         self._check()
 
     def _check(self):
-        """
-        """
         if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
             #print(f"Update fired {time.time()}")
             self._last = time.time()
@@ -508,10 +504,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         func :
-"""
 
         Returns
         -------
+        """
 
 
         with self._varListenLock:
@@ -519,8 +515,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     @pr.expose
     def get(self,path):
-
-"""
+        """
 
 
         Parameters

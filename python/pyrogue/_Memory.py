@@ -16,7 +16,6 @@ import threading
 
 class MemoryDevice(pr.Device):
     """
-    
     """
     def __init__(self, *,
                  name=None,
@@ -120,8 +119,6 @@ class MemoryDevice(pr.Device):
     @pr.expose
     def set(self, offset, values, write=False):
         """
-        
-
         Parameters
         ----------
         offset :
@@ -250,7 +247,7 @@ class MemoryDevice(pr.Device):
 
     def verifyBlocks(self, recurse=True, variable=None, checkEach=False):
         """
-        If fall listed functions 
+        If fall listed functions
 
         Parameters
         ----------
@@ -321,7 +318,7 @@ class MemoryDevice(pr.Device):
 
     def readBlocks(self, recurse=True, variable=None, checkEach=False):
         """
-        
+
 
         Parameters
         ----------
