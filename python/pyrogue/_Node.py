@@ -245,13 +245,6 @@ class Node(object):
 
         Returns
         -------
-<<<<<<< HEAD
-
-=======
-
->>>>>>> 8e62490fc10e721c039cb7338cc40b60315f8228
-
-
         """
         if isinstance(group,list):
             return len(set(group) & set(self._groups)) > 0
@@ -265,19 +258,12 @@ class Node(object):
         Parameters
         ----------
         incGroups :
-<<<<<<< HEAD
             list of passed inclusion groups
         excGroups :
             list of passed exclusion groups
-=======
-
-        excGroups :
-
->>>>>>> 8e62490fc10e721c039cb7338cc40b60315f8228
 
         Returns
         -------
-
 
         """
         return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
@@ -290,11 +276,7 @@ class Node(object):
         Parameters
         ----------
         group :
-<<<<<<< HEAD
             variable denoting a node that has not been passed
-=======
-
->>>>>>> 8e62490fc10e721c039cb7338cc40b60315f8228
 
         Returns
         -------
@@ -313,11 +295,7 @@ class Node(object):
         Parameters
         ----------
         group :
-<<<<<<< HEAD
             variable denoting a node that is in the passed group
-=======
-
->>>>>>> 8e62490fc10e721c039cb7338cc40b60315f8228
 
         Returns
         -------
@@ -396,7 +374,7 @@ class Node(object):
 
 
     def __dir__(self):
-        return(super().__dir__() + [k for k,v in self._nodes.items()])
+        return super().__dir__() + [k for k,v in self._nodes.items()]
 
     def __reduce__(self):
         attr = {}
@@ -579,8 +557,10 @@ class Node(object):
 
     @property
     def nodeList(self):
-        """Get sub-nodes in a list"""
-        return([k for k,v in self._nodes.items()])
+        """
+        Get sub-nodes in a list
+        """
+        return [k for k,v in self._nodes.items()]
 
     def getNodes(self,typ,excTyp=None,incGroups=None,excGroups=None):
         """

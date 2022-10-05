@@ -32,7 +32,7 @@ parser.add_argument('--details',
 
 parser.add_argument('cmd',
                     type=str,
-                    choices=['gui','syslog','monitor','get','value','set','exec','path'],
+                    choices=['gui','timeplot','syslog','monitor','get','value','set','exec','path'],
                     help='Client command to issue')
 
 parser.add_argument('path',
@@ -66,6 +66,11 @@ if args.cmd == 'gui':
     import pyrogue.gui
     import pyrogue.pydm
     pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui)
+
+elif args.cmd == 'timeplot':
+    import pyrogue.pydm
+    ui=os.path.dirname(os.path.abspath(__file__))+'/pydm/TimePlotTop.py'
+    pyrogue.pydm.runPyDM(serverList=args.server, ui=ui)
 
 # System log
 elif args.cmd == 'syslog':

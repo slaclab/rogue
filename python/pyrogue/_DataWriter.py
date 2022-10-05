@@ -153,15 +153,15 @@ class DataWriter(pr.Device):
 
     def _getCurrentSize(self):
         """get current file size. Override in sub-class"""
-        return(0)
+        return 0
 
     def _getTotalSize(self):
         """get total file size. Override in sub-class"""
-        return(0)
+        return 0
 
     def _getFrameCount(self):
         """get current file frame count. Override in sub-class"""
-        return(0)
+        return 0
 
     def _genFileName(self):
         """

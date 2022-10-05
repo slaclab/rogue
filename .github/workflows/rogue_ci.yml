@@ -22,21 +22,26 @@ jobs:
   full_build_test:
     name: Full Build Test
     runs-on: ubuntu-latest
+
+    env:
+      EPICS_BASE: /home/runner/packages/epics/base-7.0.3
+      EPICS_PCAS_ROOT: /home/runner/packages/pcas/pcas-4.13.2
+
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.8
+          cache: 'pip'
+          cache-dependency-path: 'pip_requirements.txt'
 
       - name: Setup Environment
         run: |
-          EPICS_BASE=${HOME}/packages/epics/base-7.0.3
-          EPICS_PCAS_ROOT=${HOME}/packages/pcas/pcas-4.13.2
           LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
           PATH=${EPICS_BASE}/bin/linux-x86_64:${PATH}
           echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
@@ -48,11 +53,27 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
-          python -m pip install --upgrade pip
-          pip install setuptools
           pip install -r pip_requirements.txt
 
-      - name: Install EPICS Base
+      # Flake 8 check
+      - name: Flake8 Tests
+        run: |
+          python -m compileall -f ./python/
+          flake8 --count ./python/
+          python -m compileall -f ./tests
+          flake8 --count ./tests/
+
+      - name: Cache EPICS
+        uses: actions/cache@v3
+        id: epics-cache
+        with:
+          key: epics
+          path: |
+            ${{ env.EPICS_BASE }}/
+            ${{ env.EPICS_PCAS_ROOT }}/
+
+      - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}
+        name: Install EPICS Base
         run: |
           mkdir -p ${EPICS_BASE}
           cd ${EPICS_BASE}
@@ -61,7 +82,8 @@ jobs:
           tar xzf base-7.0.3.tar.gz --strip 1
           make clean && make && make install
 
-      - name: Install EPICS PCAS
+      - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}
+        name: Install EPICS PCAS
         run: |
           mkdir -p ${EPICS_PCAS_ROOT}
           cd ${EPICS_PCAS_ROOT}
@@ -84,14 +106,14 @@ jobs:
           source setup_rogue.sh
           python -m pytest --cov
 
-      # Flake 8 check
-      - name: Flake8 Tests
-        run: |
-          source setup_rogue.sh
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/          
+#       # Run test_rate.py
+# #       - name: Get test_rate.py output
+# #         uses: mathiasvr/command-output@v1
+# #         id: rates
+# #         with:
+# #           run: |
+# #             source setup rogue.sh
+# #             python -m test_rate.py
 
       # Code Coverage
       - name: Code Coverage
@@ -115,13 +137,27 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: docs/build/html
 
+#       # Set up for Comment PR
+#       - name: Checkout
+#         uses: actions/checkout@v3
+
+#       # Comment on PR
+#       - name: Comment PR
+#         uses: thollander/actions-comment-pull-request@v1
+#         with:
+#           message: |
+#             Rates -
+#             ${{steps.rates.outputs.stdout}}
+#           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+
   small_build_test:
     name: Small Build Test
     runs-on: ubuntu-latest
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
@@ -137,6 +173,7 @@ jobs:
           cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
           make -j4 install
 
+
   gen_release:
     name: Generate Release
     runs-on: ubuntu-latest
@@ -144,11 +181,11 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.8
 
@@ -187,11 +224,11 @@ jobs:
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.8
 
@@ -210,6 +247,7 @@ jobs:
           export PATH="${HOME}/miniconda/bin:$PATH"
           source ${HOME}/miniconda/etc/profile.d/conda.sh
           conda config --set always_yes yes
+          conda update -n base -c conda-forge conda
           conda install conda-build anaconda-client conda-verify
           if [ $OS_NAME == "macos-10.15" ]
           then
@@ -273,7 +311,7 @@ jobs:
     steps:
 
       # This step checks out a copy of your repository.
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0
 

@@ -21,6 +21,7 @@ from pyrogue.pydm.widgets import SystemWindow
 from pyrogue.pydm.widgets import Process
 from pyrogue.pydm.widgets import PyRogueLineEdit
 from pyrogue.pydm.widgets import Plotter
+from pyrogue.pydm.widgets import TimePlotter
 
 LineEdit     = qtplugin_factory(PyRogueLineEdit, group="Rogue Widgets")
 DebugTree    = qtplugin_factory(DebugTree,       group="Rogue Widgets")
@@ -31,3 +32,4 @@ DataWriter   = qtplugin_factory(DataWriter,      group="Rogue Widgets")
 SystemWindow = qtplugin_factory(SystemWindow,    group="Rogue Widgets")
 Procsss      = qtplugin_factory(Process,         group="Rogue Widgets")
 Plotter      = qtplugin_factory(Plotter,         group="Rogue Widgets")
+TimePlotter  = qtplugin_factory(TimePlotter,     group="Rogue Widgets")

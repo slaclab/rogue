@@ -14,4 +14,4 @@ The following Rogue specific PyDM widgets are provided:
    - process: A widget for the Rogue Process device
    - debug_tree: A widget containing a representation of the Rogue tree
    - line_edit: A Rogue specific sub-class of PyDmLineEdit which stays yellow while the entered value is stale
-
+   - time_plotter: A widget for plotting polled variables over time

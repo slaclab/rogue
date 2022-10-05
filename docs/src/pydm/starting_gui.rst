@@ -11,7 +11,7 @@ Using The Command Line
 
 You use the rogue module from the command line to start the GUI in the following way:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue gui
 
@@ -19,13 +19,13 @@ This will start the default Rogue debug GUI and connect to the first Rogue serve
 
 You can also specify one or more Rogue server addresses on the command line:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue --server localhost:9099 gui
 
 Or for connecting to multiple Rogue servers:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 gui
 
@@ -35,7 +35,7 @@ The PyDM channel prefix for each instance of Rogue to which is is connected is r
 
 If you have created a custom PyDM display using the designer tool, you can start that display from the command line by passing the path to the created designer ui file:
 
-.. code::
+.. code:: bash
 
    $ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 --ui path/to/file.ui gui
 
@@ -44,7 +44,8 @@ Using A Python Script
 
 The alternative way to start the PyDM GUI is to execute the Rogue helper function for starting PyDM from within a python script, using the Rogue Virtual Client, or directly with a local Rogue root:
 
-.. code::
+.. code:: python
+
     import pyrogue.pydm
 
     with MyRoot() as root:
