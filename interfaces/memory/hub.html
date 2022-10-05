@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Hub Example &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Memory Hub Example &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -102,7 +104,7 @@
            <div itemprop="articleBody">
              
   <section id="memory-hub-example">
-<span id="interfaces-memory-hub-ex"></span><h1>Memory Hub Example<a class="headerlink" href="#memory-hub-example" title="Permalink to this headline"></a></h1>
+<span id="interfaces-memory-hub-ex"></span><h1>Memory Hub Example<a class="headerlink" href="#memory-hub-example" title="Permalink to this heading"></a></h1>
 <p>The memory Hub interfaces between an upstream memory Master object and a downstream Memory
 slave object. The Hub can be used to group Masters together with a common offset, as is done
 in the pyrogue.Device class. It can also be used to manipulate a memory bus transaction.</p>
@@ -116,7 +118,7 @@ read data (0x108). This example is not very efficient in that it only allows a s
 transaction to be executed at a time.</p>
 <p>See <a class="reference internal" href="classes/hub.html#interfaces-memory-hub"><span class="std std-ref">Hub</span></a> for more detail on the Hub class.</p>
 <section id="python-raw-hub-example">
-<h2>Python Raw Hub Example<a class="headerlink" href="#python-raw-hub-example" title="Permalink to this headline"></a></h2>
+<h2>Python Raw Hub Example<a class="headerlink" href="#python-raw-hub-example" title="Permalink to this heading"></a></h2>
 <p>Below is an example of creating a raw Hub device which translates memory
 transactions in Python.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
@@ -212,7 +214,7 @@ transactions in Python.</p>
 </div>
 </section>
 <section id="python-device-hub-example">
-<h2>Python Device Hub Example<a class="headerlink" href="#python-device-hub-example" title="Permalink to this headline"></a></h2>
+<h2>Python Device Hub Example<a class="headerlink" href="#python-device-hub-example" title="Permalink to this heading"></a></h2>
 <p>Below is an example of implementing the above example in a Device subclass. This allows
 the Hub to interact in a standard PyRogue tree. It will have its own base address and
 size in the downstream address map, but expose a separate upstream address map for
@@ -251,7 +253,7 @@ translated transactions. More information about the Device class is included at 
 </div>
 </section>
 <section id="using-python-device-hub">
-<h2>Using Python Device Hub<a class="headerlink" href="#using-python-device-hub" title="Permalink to this headline"></a></h2>
+<h2>Using Python Device Hub<a class="headerlink" href="#using-python-device-hub" title="Permalink to this heading"></a></h2>
 <p>Below is an example of how the above Device would be used in a PyRogue tree.
 More information about the PyRogue Root class is included at TBD.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
@@ -275,7 +277,7 @@ More information about the PyRogue Root class is included at TBD.</p>
 </div>
 </section>
 <section id="c-raw-hub-example">
-<h2>C++ Raw Hub Example<a class="headerlink" href="#c-raw-hub-example" title="Permalink to this headline"></a></h2>
+<h2>C++ Raw Hub Example<a class="headerlink" href="#c-raw-hub-example" title="Permalink to this heading"></a></h2>
 <p>Below is an example of creating a raw Hub device which translates memory
 transactions in C++.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span><span class="cp"></span>

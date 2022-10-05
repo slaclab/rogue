@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Block &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Block &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -109,7 +111,7 @@
            <div itemprop="articleBody">
              
   <section id="block">
-<span id="interfaces-memory-block"></span><h1>Block<a class="headerlink" href="#block" title="Permalink to this headline"></a></h1>
+<span id="interfaces-memory-block"></span><h1>Block<a class="headerlink" href="#block" title="Permalink to this heading"></a></h1>
 <p>The memory interface Block class provides a mirror for the hardware register space as well as serving as a translater between python types and hardware bits and bytes.</p>
 <p>Block objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
@@ -121,7 +123,7 @@
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5BlockE">
-<span id="_CPPv3N5rogue10interfaces6memory5BlockE"></span><span id="_CPPv2N5rogue10interfaces6memory5BlockE"></span><span id="rogue::interfaces::memory::Block"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Block</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5BlockE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory5BlockE"></span><span id="_CPPv2N5rogue10interfaces6memory5BlockE"></span><span id="rogue::interfaces::memory::Block"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Block</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6memory6MasterE" title="rogue::interfaces::memory::Master"><span class="n"><span class="pre">Master</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5BlockE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Memory interface <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a> device. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>

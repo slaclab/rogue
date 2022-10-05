@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frame Lock &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Frame Lock &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -115,7 +117,7 @@
            <div itemprop="articleBody">
              
   <section id="frame-lock">
-<span id="interfaces-stream-frame-lock"></span><h1>Frame Lock<a class="headerlink" href="#frame-lock" title="Permalink to this headline"></a></h1>
+<span id="interfaces-stream-frame-lock"></span><h1>Frame Lock<a class="headerlink" href="#frame-lock" title="Permalink to this heading"></a></h1>
 <p>FrameLock objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream12FrameLockPtrE">
@@ -126,7 +128,7 @@
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream9FrameLockE">
-<span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">FrameLock</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream9FrameLockE"></span><span id="_CPPv2N5rogue10interfaces6stream9FrameLockE"></span><span id="rogue::interfaces::stream::FrameLock"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1FrameLock"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">FrameLock</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream9FrameLockE" title="Permalink to this definition"></a><br /></dt>
 <dd><p><a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> Lock. </p>
 <p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> is a container for holding a lock on <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while accessing that data. This lock allows multiple stream <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> objects to read and update <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data while ensuring only one thread is updating at a time. The lock is released when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is destroyed. The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> object is never created directly, instead it is returned by the <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">Frame::lock()</span></a> method. </p>
 <div class="breathe-sectiondef docutils container">

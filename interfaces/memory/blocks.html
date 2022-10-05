@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blocks &amp; Models &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Blocks &amp; Models &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -101,7 +103,7 @@
            <div itemprop="articleBody">
              
   <section id="blocks-models">
-<span id="interfaces-memory-blocks"></span><h1>Blocks &amp; Models<a class="headerlink" href="#blocks-models" title="Permalink to this headline"></a></h1>
+<span id="interfaces-memory-blocks"></span><h1>Blocks &amp; Models<a class="headerlink" href="#blocks-models" title="Permalink to this heading"></a></h1>
 <p>In the Rogue memory interface, the block provides a representation of the underlying hardware memory
 space, hosting one or more Variable objects. It is in the Block where native python types are converted
 into the bits and byte that are ultimately written to the hardware devices.</p>
@@ -223,7 +225,7 @@ with the standard set of Rogue Models.</p>
 An exception to this is UInt and Int types that exceed 64-bits. These conversions are performed in the Model class at the python
 level.</p>
 <section id="custom-models">
-<h2>Custom Models<a class="headerlink" href="#custom-models" title="Permalink to this headline"></a></h2>
+<h2>Custom Models<a class="headerlink" href="#custom-models" title="Permalink to this heading"></a></h2>
 <p>The user has the ability to create application specific data types by sub-classing the Model in python and providing the
 toByte and fromBytes functions that are called by the Block to perform the data conversions. This allows for a quick method to
 support odd data types.</p>
@@ -269,7 +271,7 @@ must sub-class the Block class and add it to a user specific library. They can t
 range 0x80 - 0xFF.  See <a class="reference internal" href="blocks_advanced.html#interfaces-memory-blocks-advanced"><span class="std std-ref">Advanced Usage Of Blocks</span></a> for more information about the advanced features of the Block class.</p>
 </section>
 <section id="using-custom-models">
-<h2>Using Custom Models<a class="headerlink" href="#using-custom-models" title="Permalink to this headline"></a></h2>
+<h2>Using Custom Models<a class="headerlink" href="#using-custom-models" title="Permalink to this heading"></a></h2>
 <p>The following shows an example of using the above custom model in Rogue. The code blow is executed during the
 creation of a custom Device class. See xxxx for more details.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create a variable using my custom Model</span>
@@ -287,7 +289,7 @@ creation of a custom Device class. See xxxx for more details.</p>
 and assocaited with the above RemoteVariable as approprite.</p>
 </section>
 <section id="pre-allocating-blocks">
-<h2>Pre-Allocating Blocks<a class="headerlink" href="#pre-allocating-blocks" title="Permalink to this headline"></a></h2>
+<h2>Pre-Allocating Blocks<a class="headerlink" href="#pre-allocating-blocks" title="Permalink to this heading"></a></h2>
 <p>In some cases the user may want to pre-create blocks of a specific size to better group Variables that are more
 effeciently accessed in larger burst transactions. With larger blocks the user can initiate transactions
 on a sub-portion of the block by accessing the variable directly, or the user can force larger burst transactions

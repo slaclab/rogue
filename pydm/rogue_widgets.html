@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rogue Widgets &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Rogue Widgets &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -29,7 +31,7 @@
             <a href="../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -50,6 +52,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Using the PyDM Gui</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLS</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Rogue Widgets</a></li>
 </ul>
@@ -82,7 +85,7 @@
            <div itemprop="articleBody">
              
   <section id="rogue-widgets">
-<h1>Rogue Widgets<a class="headerlink" href="#rogue-widgets" title="Permalink to this headline"></a></h1>
+<h1>Rogue Widgets<a class="headerlink" href="#rogue-widgets" title="Permalink to this heading"></a></h1>
 <p>The following Rogue specific PyDM widgets are provided:</p>
 <blockquote>
 <div><ul class="simple">
@@ -94,6 +97,7 @@
 <li><p>process: A widget for the Rogue Process device</p></li>
 <li><p>debug_tree: A widget containing a representation of the Rogue tree</p></li>
 <li><p>line_edit: A Rogue specific sub-class of PyDmLineEdit which stays yellow while the entered value is stale</p></li>
+<li><p>time_plotter: A widget for plotting polled variables over time</p></li>
 </ul>
 </div></blockquote>
 </section>

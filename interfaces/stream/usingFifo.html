@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using A Fifo &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Using A Fifo &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -101,7 +103,7 @@
            <div itemprop="articleBody">
              
   <section id="using-a-fifo">
-<span id="interfaces-stream-using-fifo"></span><h1>Using A Fifo<a class="headerlink" href="#using-a-fifo" title="Permalink to this headline"></a></h1>
+<span id="interfaces-stream-using-fifo"></span><h1>Using A Fifo<a class="headerlink" href="#using-a-fifo" title="Permalink to this heading"></a></h1>
 <p>A <a class="reference internal" href="classes/fifo.html#interfaces-stream-fifo"><span class="std std-ref">Fifo</span></a> object provides an elastic buffer between a stream Master and stream Slave. This can be
 useful when absorbing flow control situations or providing a point where data Frames can be cleanly
 dropped when the receiver can not keep up with a source. The use of a Fifo can can also be helpful
@@ -115,7 +117,7 @@ the primary path data rate and may not want to consume all of the available data
 the Fifo size is unlimited and Frames are never dropped. When maxDepth != 0 Frame data is dropped
 once the Fifo Frame count reaches the maxDepth size.</p>
 <section id="in-line-fifo-example">
-<h2>In Line Fifo Example<a class="headerlink" href="#in-line-fifo-example" title="Permalink to this headline"></a></h2>
+<h2>In Line Fifo Example<a class="headerlink" href="#in-line-fifo-example" title="Permalink to this heading"></a></h2>
 <p>The following python example shows how to add a noCopy FIFO with maxDepth of 100 between a master
 and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noCopy is set True.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
@@ -154,7 +156,7 @@ and a slave. The first arg maxDepth is set to 100, trimSize is set to 0, and noC
 </div>
 </section>
 <section id="stream-tap-fifo-example">
-<h2>Stream Tap Fifo Example<a class="headerlink" href="#stream-tap-fifo-example" title="Permalink to this headline"></a></h2>
+<h2>Stream Tap Fifo Example<a class="headerlink" href="#stream-tap-fifo-example" title="Permalink to this heading"></a></h2>
 <p>The following python example shows how to add a copy  FIFO with maxDepth of 150 between a master
 and a slave. This Fifo is configured to only copy the first 20 bytes of the Frame data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>

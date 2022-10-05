@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sending Frames &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Sending Frames &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -101,7 +103,7 @@
            <div itemprop="articleBody">
              
   <section id="sending-frames">
-<span id="interfaces-stream-sending"></span><h1>Sending Frames<a class="headerlink" href="#sending-frames" title="Permalink to this headline"></a></h1>
+<span id="interfaces-stream-sending"></span><h1>Sending Frames<a class="headerlink" href="#sending-frames" title="Permalink to this heading"></a></h1>
 <p>Frames are transmitted by a subclass of the <a class="reference internal" href="classes/master.html#interfaces-stream-master"><span class="std std-ref">Master</span></a> class in rogue.
 This subclass can be created either in python or in c++. In order to send a Frame, the
 master sub-class must first request the creation of a new Frame with enough space available for
@@ -115,7 +117,7 @@ reused.</p>
 <p>Python and C++ subclasses of the Master class can be used interchangeably, allowing c++ subclasses
 to receive Frames from python masters and python subclasses to receive Frames from c++ masters.</p>
 <section id="python-master-subclass">
-<h2>Python Master Subclass<a class="headerlink" href="#python-master-subclass" title="Permalink to this headline"></a></h2>
+<h2>Python Master Subclass<a class="headerlink" href="#python-master-subclass" title="Permalink to this heading"></a></h2>
 <p>Implementing a Master subclass in python is easy, but may result in a lower level of performance.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
 
@@ -166,7 +168,7 @@ to receive Frames from python masters and python subclasses to receive Frames fr
 </div>
 </section>
 <section id="c-master-subclass">
-<h2>C++ Master Subclass<a class="headerlink" href="#c-master-subclass" title="Permalink to this headline"></a></h2>
+<h2>C++ Master Subclass<a class="headerlink" href="#c-master-subclass" title="Permalink to this heading"></a></h2>
 <p>Creating a Master sub-class in c++ is done in a similar fashion. A new frame is
 requested just as it is in python and the sendFrame() method is used to pass the
 frame to the connected Slaves. The main difference is that accessing the Frame

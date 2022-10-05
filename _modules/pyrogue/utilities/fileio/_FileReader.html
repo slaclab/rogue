@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,9 @@
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" /> 
@@ -27,7 +29,7 @@
             <a href="../../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -89,7 +91,7 @@
 <span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
 <span class="c1"># contained in the LICENSE.txt file.</span>
 <span class="c1">#-----------------------------------------------------------------------------</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">numpy</span>
@@ -100,13 +102,13 @@
 <span class="n">RogueHeaderPack</span>  <span class="o">=</span> <span class="s1">&#39;IHBB&#39;</span>
 
 <span class="c1"># Default header as a named tuple</span>
-<span class="n">RogueHeader</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s1">&#39;RogueHeader&#39;</span><span class="p">,</span>
-    <span class="p">[</span><span class="s1">&#39;size&#39;</span>   <span class="p">,</span>  <span class="c1"># 4 Bytes, uint32, I</span>
-    <span class="s1">&#39;flags&#39;</span>   <span class="p">,</span>  <span class="c1"># 2 bytes, uint16, H</span>
-    <span class="s1">&#39;error&#39;</span>   <span class="p">,</span>  <span class="c1"># 1 bytes, uint8,  B</span>
-    <span class="s1">&#39;channel&#39;</span> <span class="p">]</span>  <span class="c1"># 1 bytes, uint8,  B</span>
-<span class="p">)</span>
+<div class="viewcode-block" id="RogueHeader"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">RogueHeader</span><span class="p">:</span>
+    <span class="n">size</span> <span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 4 Bytes, uint32, I</span>
+    <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 2 bytes, uint16, H</span>
+    <span class="n">error</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 1 bytes, uint8,  B</span>
+    <span class="n">channel</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 1 bytes, uint8,  B</span></div>
+
 <span class="sd">&quot;&quot;&quot; Rogue Header data</span>
 
 <span class="sd">    Attributes</span>
@@ -129,14 +131,14 @@
 <span class="n">BatchHeaderPack</span>  <span class="o">=</span> <span class="s1">&#39;IBBBB&#39;</span>
 
 <span class="c1"># Batcher Header</span>
-<span class="n">BatchHeader</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span>
-    <span class="s1">&#39;BatchHeader&#39;</span><span class="p">,</span>
-    <span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">,</span>   <span class="c1"># 4 Bytes, uint32, I</span>
-    <span class="s1">&#39;tdest&#39;</span><span class="p">,</span>   <span class="c1"># 1 Byte, uint8, B</span>
-    <span class="s1">&#39;fUser&#39;</span><span class="p">,</span>   <span class="c1"># 1 Byte, uint8, B</span>
-    <span class="s1">&#39;lUser&#39;</span><span class="p">,</span>   <span class="c1"># 1 Byte, uint8, B</span>
-    <span class="s1">&#39;width&#39;</span><span class="p">]</span>   <span class="c1"># 1 Byte, uint8, B</span>
-<span class="p">)</span>
+<span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">BatchHeader</span><span class="p">:</span>
+    <span class="n">size</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 4 Bytes, uint32, I</span>
+    <span class="n">tdest</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
+    <span class="n">fUser</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
+    <span class="n">lUser</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
+
 
 <span class="sd">&quot;&quot;&quot; Batcher Header data</span>
 
@@ -232,7 +234,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File under run reading </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
                 <span class="k">return</span> <span class="kc">False</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">RogueHeader</span><span class="o">.</span><span class="n">_make</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="n">RogueHeaderPack</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">RogueHeaderSize</span><span class="p">)))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">RogueHeader</span><span class="p">(</span><span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">RogueHeaderPack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">RogueHeaderSize</span><span class="p">)))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span> <span class="o">-=</span> <span class="mi">4</span>
 
             <span class="c1"># Set next frame position</span>
@@ -291,10 +293,10 @@
 
                             <span class="c1"># Check header size</span>
                             <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="mi">8</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                                <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                             <span class="c1"># Read in header data</span>
-                            <span class="n">bHead</span> <span class="o">=</span> <span class="n">BatchHeader</span><span class="o">.</span><span class="n">_make</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="n">BatchHeaderPack</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BatchHeaderSize</span><span class="p">)))</span>
+                            <span class="n">bHead</span> <span class="o">=</span> <span class="n">BatchHeader</span><span class="p">(</span><span class="o">*</span><span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">BatchHeaderPack</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BatchHeaderSize</span><span class="p">)))</span>
                             <span class="n">curIdx</span> <span class="o">+=</span> <span class="mi">8</span>
 
                             <span class="c1"># Fix header width</span>
@@ -304,13 +306,13 @@
                             <span class="k">if</span> <span class="n">bHead</span><span class="o">.</span><span class="n">width</span> <span class="o">&gt;</span> <span class="mi">8</span><span class="p">:</span>
 
                                 <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                                    <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                    <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame header underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                                 <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">bHead</span><span class="o">.</span><span class="n">width</span><span class="o">-</span><span class="mi">8</span><span class="p">)</span>
 
                             <span class="c1"># Check payload size</span>
                             <span class="k">if</span> <span class="n">curIdx</span> <span class="o">+</span> <span class="n">bHead</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                                <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame data underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                                <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Batch frame data underrun in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                             <span class="c1"># Get data</span>
                             <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">bHead</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
@@ -325,7 +327,7 @@
                         <span class="k">try</span><span class="p">:</span>
                             <span class="n">data</span> <span class="o">=</span> <span class="n">numpy</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">numpy</span><span class="o">.</span><span class="n">int8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
                         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                            <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to read data from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFname</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+                            <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Failed to read data from </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_currFName</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                         <span class="k">yield</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
 

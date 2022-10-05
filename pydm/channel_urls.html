@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Channel URLS &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Channel URLS &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,12 +14,14 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Rogue Widgets" href="rogue_widgets.html" />
-    <link rel="prev" title="Starting The Rogue PyDM GUI" href="starting_gui.html" /> 
+    <link rel="prev" title="Starting The Rogue PyDM Timeplot GUI" href="timeplot_gui.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -30,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -51,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Using the PyDM Gui</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Channel URLS</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#url-suffix">URL Suffix</a></li>
 </ul>
@@ -86,13 +89,13 @@
            <div itemprop="articleBody">
              
   <section id="channel-urls">
-<h1>Channel URLS<a class="headerlink" href="#channel-urls" title="Permalink to this headline"></a></h1>
+<h1>Channel URLS<a class="headerlink" href="#channel-urls" title="Permalink to this heading"></a></h1>
 <p>When using the PyDM and Rogue widgets the user must associate the widget with a Rogue Device, Variable or Command using a channel URL. The URLs used by Rogue connected widgets are in the form:</p>
 <p>rogue://0/MyRoot.MyDevice.MyVariable</p>
 <p>The user can either use the real root name or simply the ‘root’ alias when referring to a Rogue root instance. This is usefull when creating generic debug tree associations. For example the URL used by a generic DebugTree widdget would be:</p>
 <p>rogue://0/root</p>
 <section id="url-suffix">
-<h2>URL Suffix<a class="headerlink" href="#url-suffix" title="Permalink to this headline"></a></h2>
+<h2>URL Suffix<a class="headerlink" href="#url-suffix" title="Permalink to this heading"></a></h2>
 <p>For some channels such as variables and commands a suffix can be added to the URL to direct PyDM on how to access the Rogue instance. An example suffix usage is:</p>
 <p>rogue://0/root.Device.Variable/disp</p>
 <p>The following suffixes are currently supported:</p>
@@ -110,7 +113,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="starting_gui.html" class="btn btn-neutral float-left" title="Starting The Rogue PyDM GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="timeplot_gui.html" class="btn btn-neutral float-left" title="Starting The Rogue PyDM Timeplot GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="rogue_widgets.html" class="btn btn-neutral float-right" title="Rogue Widgets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hardware &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Starting The Rogue PyDM Timeplot GUI &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -20,8 +20,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Generic AXI Hardware Interface" href="axi/index.html" />
-    <link rel="prev" title="StreamUnZip" href="../utilities/compression/classes/unzip.html" /> 
+    <link rel="next" title="Channel URLS" href="channel_urls.html" />
+    <link rel="prev" title="Starting The Rogue PyDM GUI" href="starting_gui.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -47,16 +47,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="axi/index.html">Generic AXI Hardware Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pgp/index.html">PGP Card Hardware Interface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="raw/index.html">Raw Hardware Interface</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Using the PyDM Gui</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="starting_gui.html">Starting The Rogue PyDM GUI</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Starting The Rogue PyDM Timeplot GUI</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#using-the-command-line">Using The Command Line</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -73,9 +77,10 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Hardware</li>
+          <li><a href="index.html">Using the PyDM Gui</a> &raquo;</li>
+      <li>Starting The Rogue PyDM Timeplot GUI</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/hardware/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/pydm/timeplot_gui.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -83,28 +88,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="hardware">
-<span id="id1"></span><h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading"></a></h1>
-<p>This section describes the hardware which is supported by Rogue with the
-help of a Linux Kernel device driver. The device driver required to use
-the interfaces described in this section can be found at:</p>
-<p><a class="reference external" href="https://github.com/slaclab/aes-stream-drivers">https://github.com/slaclab/aes-stream-drivers</a></p>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Hardware:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="axi/index.html">Generic AXI Hardware Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pgp/index.html">PGP Card Hardware Interface</a></li>
-<li class="toctree-l1"><a class="reference internal" href="raw/index.html">Raw Hardware Interface</a></li>
-</ul>
+  <section id="starting-the-rogue-pydm-timeplot-gui">
+<h1>Starting The Rogue PyDM Timeplot GUI<a class="headerlink" href="#starting-the-rogue-pydm-timeplot-gui" title="Permalink to this heading"></a></h1>
+<p>The Rogue PyDM Timeplot GUI can be started from the command line</p>
+<section id="using-the-command-line">
+<h2>Using The Command Line<a class="headerlink" href="#using-the-command-line" title="Permalink to this heading"></a></h2>
+<p>You use the rogue module from the command line to start the GUI in the following way:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue timeplot
+</pre></div>
 </div>
+<p>This will start the Timeplot GUI and connect to the first Rogue server it fines while scanning the typical server ports opened by a Rogue instance.</p>
+<p>You can also specify one or more Rogue server addresses on the command line:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099 timeplot
+</pre></div>
+</div>
+<p>Or for connecting to multiple Rogue servers:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 timeplot
+</pre></div>
+</div>
+<p>The default GUI only supports a connection to one server at a time and will only display the debug GUI for the first server in the list. The additional servers are available in the PyDM session, but require a custom GUI to be created either programically or using the PyQT designer application.</p>
+<p>The PyDM channel prefix for each instance of Rogue to which is is connected is rogue://n/ where n is the 0 based serial number of the server instance passed on the command line.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../utilities/compression/classes/unzip.html" class="btn btn-neutral float-left" title="StreamUnZip" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="axi/index.html" class="btn btn-neutral float-right" title="Generic AXI Hardware Interface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="starting_gui.html" class="btn btn-neutral float-left" title="Starting The Rogue PyDM GUI" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="channel_urls.html" class="btn btn-neutral float-right" title="Channel URLS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

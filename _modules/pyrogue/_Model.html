@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue._Model &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>pyrogue._Model &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,7 +13,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -27,7 +29,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -662,7 +664,17 @@
 
 
 <div class="viewcode-block" id="Fixed"><a class="viewcode-back" href="../../interfaces/memory/classes/model.html#pyrogue.Fixed">[docs]</a><span class="k">class</span> <span class="nc">Fixed</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Model class for fixed point signed integers&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for fixed point signed integers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Specifies the total number of bits, including the binary point bit width.</span>
+
+<span class="sd">    binPoint : int</span>
+<span class="sd">        Specifies the bit location of the binary point, where bit zero is the least significant bit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">pytype</span>  <span class="o">=</span> <span class="nb">float</span>
     <span class="n">signed</span>  <span class="o">=</span> <span class="kc">True</span>
@@ -672,6 +684,28 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">,</span><span class="n">binPoint</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Fixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span></div>
+
+<span class="k">class</span> <span class="nc">UFixed</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Model class for fixed point unsigned integers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    bitSize : int</span>
+<span class="sd">        Specifies the total number of bits, including the binary point bit width.</span>
+
+<span class="sd">    binPoint : int</span>
+<span class="sd">        Specifies the bit location of the binary point, where bit zero is the least significant bit.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">pytype</span>  <span class="o">=</span> <span class="nb">float</span>
+    <span class="n">signed</span>  <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">modelId</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Fixed</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bitSize</span><span class="p">,</span> <span class="n">binPoint</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">bitSize</span><span class="p">,</span><span class="n">binPoint</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;UFixed_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">bitSize</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="o">-</span><span class="mi">1</span><span class="si">}</span><span class="s1">_</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">binPoint</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ndType</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
 </pre></div>
 
            </div>

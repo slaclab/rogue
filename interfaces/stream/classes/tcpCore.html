@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TcpCore &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>TcpCore &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -115,7 +117,7 @@
            <div itemprop="articleBody">
              
   <section id="tcpcore">
-<span id="interfaces-stream-tcp-core"></span><h1>TcpCore<a class="headerlink" href="#tcpcore" title="Permalink to this headline"></a></h1>
+<span id="interfaces-stream-tcp-core"></span><h1>TcpCore<a class="headerlink" href="#tcpcore" title="Permalink to this heading"></a></h1>
 <p>Examples of using a TCP stream bridge are described in <a class="reference internal" href="../usingTcp.html#interfaces-stream-using-tcp"><span class="std std-ref">Using The TCP Bridge</span></a>.</p>
 <p>TcpCore objects in C++ are referenced by the following shared pointer typedef:</p>
 <dl class="cpp type">
@@ -127,7 +129,7 @@
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream7TcpCoreE">
-<span id="_CPPv3N5rogue10interfaces6stream7TcpCoreE"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCoreE"></span><span id="rogue::interfaces::stream::TcpCore"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">TcpCore</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6stream7TcpCoreE"></span><span id="_CPPv2N5rogue10interfaces6stream7TcpCoreE"></span><span id="rogue::interfaces::stream::TcpCore"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1TcpCore"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">TcpCore</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="master.html#_CPPv4N5rogue10interfaces6stream6MasterE" title="rogue::interfaces::stream::Master"><span class="n"><span class="pre">Master</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="slave.html#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream7TcpCoreE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Stream TCP Bridge Core. </p>
 <p>This class implements the core functionality of the <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> and <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> classes which implement a Rogue stream bridge over a TCP network. This core can operation in either client or server mode. The <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> and <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> classes are thin wrapper which define which mode flag to pass to this base class.</p>
 <p>The <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1stream_1_1TcpServer"><span class="std std-ref">TcpServer</span></a> and <a class="reference internal" href="tcpClient.html#classrogue_1_1interfaces_1_1stream_1_1TcpClient"><span class="std std-ref">TcpClient</span></a> interfaces are blocking and will stall frame transmissions when the remote side is either not present or is back pressuring. When the remote server is not present a local buffer is not utilized, where it is utilized when a connection has been established. </p>

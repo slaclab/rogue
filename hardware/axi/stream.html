@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The AxiStreamDma Class &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Using The AxiStreamDma Class &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -94,7 +96,7 @@
            <div itemprop="articleBody">
              
   <section id="using-the-axistreamdma-class">
-<span id="hardware-axi-stream"></span><h1>Using The AxiStreamDma Class<a class="headerlink" href="#using-the-axistreamdma-class" title="Permalink to this headline"></a></h1>
+<span id="hardware-axi-stream"></span><h1>Using The AxiStreamDma Class<a class="headerlink" href="#using-the-axistreamdma-class" title="Permalink to this heading"></a></h1>
 <p>The AxiStreamDma class allows you to connect stream sources and destinations to
 a channel on the PCI Express board or Zynq FPGA fabric using the generic
 AXI Stream drivers. The set of hardware which use this include but are not
@@ -114,7 +116,7 @@ the custom sender and receiver described in <a class="reference internal" href="
 created in <a class="reference internal" href="../../interfaces/memory/master.html#interfaces-memory-master-ex"><span class="std std-ref">Memory Master Example</span></a>.</p>
 <p>See <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a> for more information about the AxiStreamDma class methods.</p>
 <section id="python-axistreamdma-example">
-<h2>Python AxiStreamDma Example<a class="headerlink" href="#python-axistreamdma-example" title="Permalink to this headline"></a></h2>
+<h2>Python AxiStreamDma Example<a class="headerlink" href="#python-axistreamdma-example" title="Permalink to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">rogue.hardware.axi</span>
 <span class="kn">import</span> <span class="nn">rogue.protocols.srp</span>
@@ -149,7 +151,7 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 </div>
 </section>
 <section id="c-axistreamdma-example">
-<h2>C++ AxiStreamDma Example<a class="headerlink" href="#c-axistreamdma-example" title="Permalink to this headline"></a></h2>
+<h2>C++ AxiStreamDma Example<a class="headerlink" href="#c-axistreamdma-example" title="Permalink to this heading"></a></h2>
 <p>The equivalent code in C++ is show below:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/hardware/axi/AxiStreamDma.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/srp/SrpV3.h&gt;</span><span class="cp"></span>

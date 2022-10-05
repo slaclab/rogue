@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Starting The Rogue PyDM GUI &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Starting The Rogue PyDM GUI &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,11 +14,13 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Channel URLS" href="channel_urls.html" />
+    <link rel="next" title="Starting The Rogue PyDM Timeplot GUI" href="timeplot_gui.html" />
     <link rel="prev" title="Using the PyDM Gui" href="index.html" /> 
 </head>
 
@@ -30,7 +32,7 @@
             <a href="../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -55,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#using-a-python-script">Using A Python Script</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="timeplot_gui.html">Starting The Rogue PyDM Timeplot GUI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="channel_urls.html">Channel URLS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rogue_widgets.html">Rogue Widgets</a></li>
 </ul>
@@ -87,33 +90,39 @@
            <div itemprop="articleBody">
              
   <section id="starting-the-rogue-pydm-gui">
-<h1>Starting The Rogue PyDM GUI<a class="headerlink" href="#starting-the-rogue-pydm-gui" title="Permalink to this headline"></a></h1>
+<h1>Starting The Rogue PyDM GUI<a class="headerlink" href="#starting-the-rogue-pydm-gui" title="Permalink to this heading"></a></h1>
 <p>The Rogue PyDM GUI can be started either from the command line or within a python application.</p>
 <section id="using-the-command-line">
-<h2>Using The Command Line<a class="headerlink" href="#using-the-command-line" title="Permalink to this headline"></a></h2>
+<h2>Using The Command Line<a class="headerlink" href="#using-the-command-line" title="Permalink to this heading"></a></h2>
 <p>You use the rogue module from the command line to start the GUI in the following way:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue gui
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue gui
 </pre></div>
 </div>
 <p>This will start the default Rogue debug GUI and connect to the first Rogue server it fines while scanning the typical server ports opened by a Rogue instance.</p>
 <p>You can also specify one or more Rogue server addresses on the command line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099 gui
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099 gui
 </pre></div>
 </div>
 <p>Or for connecting to multiple Rogue servers:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 gui
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 gui
 </pre></div>
 </div>
 <p>The default GUI only supports a connection to one server at a time and will only display the debug GUI for the first server in the list. The additional servers are available in the PyDM session, but require a custom GUI to be created either programically or using the PyQT designer application.</p>
 <p>The PyDM channel prefix for each instance of Rogue to which is is connected is rogue://n/ where n is the 0 based serial number of the server instance passed on the command line.</p>
 <p>If you have created a custom PyDM display using the designer tool, you can start that display from the command line by passing the path to the created designer ui file:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 --ui path/to/file.ui gui
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python -m pyrogue --server localhost:9099,otherhost1:9099,otherhost2:9099 --ui path/to/file.ui gui
 </pre></div>
 </div>
 </section>
 <section id="using-a-python-script">
-<h2>Using A Python Script<a class="headerlink" href="#using-a-python-script" title="Permalink to this headline"></a></h2>
+<h2>Using A Python Script<a class="headerlink" href="#using-a-python-script" title="Permalink to this heading"></a></h2>
 <p>The alternative way to start the PyDM GUI is to execute the Rogue helper function for starting PyDM from within a python script, using the Rogue Virtual Client, or directly with a local Rogue root:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.pydm</span>
+
+<span class="k">with</span> <span class="n">MyRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="n">root</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;MyTitle&#39;</span><span class="p">,</span><span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
 <p>The possible args that can be passed to the runPyDm function are:</p>
 <blockquote>
 <div><ul class="simple">
@@ -133,7 +142,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="Using the PyDM Gui" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="channel_urls.html" class="btn btn-neutral float-right" title="Channel URLS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="timeplot_gui.html" class="btn btn-neutral float-right" title="Starting The Rogue PyDM Timeplot GUI" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

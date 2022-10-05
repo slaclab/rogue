@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Additional AxiStreamDma Features &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Additional AxiStreamDma Features &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -96,12 +98,12 @@
            <div itemprop="articleBody">
              
   <section id="additional-axistreamdma-features">
-<span id="hardware-axi-features"></span><h1>Additional AxiStreamDma Features<a class="headerlink" href="#additional-axistreamdma-features" title="Permalink to this headline"></a></h1>
+<span id="hardware-axi-features"></span><h1>Additional AxiStreamDma Features<a class="headerlink" href="#additional-axistreamdma-features" title="Permalink to this heading"></a></h1>
 <p>The following features are available in the AxiStreamDma class which
 may be necessary for some operation modes.</p>
 <p>All of these features are described in detail at <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a>.</p>
 <section id="kernel-module-debug">
-<h2>Kernel Module Debug<a class="headerlink" href="#kernel-module-debug" title="Permalink to this headline"></a></h2>
+<h2>Kernel Module Debug<a class="headerlink" href="#kernel-module-debug" title="Permalink to this heading"></a></h2>
 <p>Most of the lower level kernel modules which are used with the AxiStreamDma
 class have a debugging mode. This can be enabled by the user with the following
 calls:</p>
@@ -119,7 +121,7 @@ calls:</p>
 </div>
 </section>
 <section id="zerocopy-enable">
-<h2>ZeroCopy Enable<a class="headerlink" href="#zerocopy-enable" title="Permalink to this headline"></a></h2>
+<h2>ZeroCopy Enable<a class="headerlink" href="#zerocopy-enable" title="Permalink to this heading"></a></h2>
 <p>By default the AxiStreamDma class interacts with the underlying driver using
 its zero copy buffer mode if available. The user’s implementation may choose
 to avoid this by asserting rogue::interface::memory::reqFrame() calls with
@@ -136,7 +138,7 @@ with the AxiStreamDma class using the following call:</p>
 </div>
 </section>
 <section id="dma-acknowledge">
-<h2>DMA Acknowledge<a class="headerlink" href="#dma-acknowledge" title="Permalink to this headline"></a></h2>
+<h2>DMA Acknowledge<a class="headerlink" href="#dma-acknowledge" title="Permalink to this heading"></a></h2>
 <p>Some versions of the lower level driver and the underlying hardware will support
 a DMA Acknowledge function which pulses a logic signal in the lower level firmware.
 This was used in some experiments which need more complex handshakes between software
@@ -151,7 +153,7 @@ and firmware. The following method can be used to trigger this acknowledge.</p>
 </div>
 </section>
 <section id="frame-send-timeout">
-<h2>Frame Send Timeout<a class="headerlink" href="#frame-send-timeout" title="Permalink to this headline"></a></h2>
+<h2>Frame Send Timeout<a class="headerlink" href="#frame-send-timeout" title="Permalink to this heading"></a></h2>
 <p>In some cases the lower level driver will not be ready when allocating new
 buffers or sending frames. After a defined timeout the AxiStreamDma class
 will generate a warning message but continue to wait for the driver. The following

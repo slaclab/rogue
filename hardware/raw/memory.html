@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The MemMap Class &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Using The MemMap Class &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -92,7 +94,7 @@
            <div itemprop="articleBody">
              
   <section id="using-the-memmap-class">
-<span id="hardware-raw-memory"></span><h1>Using The MemMap Class<a class="headerlink" href="#using-the-memmap-class" title="Permalink to this headline"></a></h1>
+<span id="hardware-raw-memory"></span><h1>Using The MemMap Class<a class="headerlink" href="#using-the-memmap-class" title="Permalink to this heading"></a></h1>
 <p>The MemMap class allows you to connect memory masters to local hardware
 registers using the /dev/map interface. To avoid uneccessary mapping of
 large spaces, each MemMap instance is associated with a specific span of
@@ -100,7 +102,7 @@ memory, including a base address and size. In most cases it is better to use
 the <a class="reference internal" href="../axi/classes/axiMemMap.html#hardware-axi-axi-mem-map"><span class="std std-ref">AxiMemMap</span></a> class.</p>
 <p>See <a class="reference internal" href="classes/memMap.html#hardware-raw-mem-map"><span class="std std-ref">MemMap</span></a> for more information about the MemMap class methods.</p>
 <section id="python-memmap-example">
-<h2>Python MemMap Example<a class="headerlink" href="#python-memmap-example" title="Permalink to this headline"></a></h2>
+<h2>Python MemMap Example<a class="headerlink" href="#python-memmap-example" title="Permalink to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
 <span class="kn">import</span> <span class="nn">rogue.hardware</span>
 
@@ -116,7 +118,7 @@ the <a class="reference internal" href="../axi/classes/axiMemMap.html#hardware-a
 </div>
 </section>
 <section id="c-aximemmap-example">
-<h2>C++ AxiMemMap Example<a class="headerlink" href="#c-aximemmap-example" title="Permalink to this headline"></a></h2>
+<h2>C++ AxiMemMap Example<a class="headerlink" href="#c-aximemmap-example" title="Permalink to this heading"></a></h2>
 <p>The equivalent code in C++ is show below:</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/hardware/MemMap.h&gt;</span><span class="cp"></span>
 

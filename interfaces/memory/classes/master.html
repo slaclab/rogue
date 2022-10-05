@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Master &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Master &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -109,7 +111,7 @@
            <div itemprop="articleBody">
              
   <section id="master">
-<span id="interfaces-memory-master"></span><h1>Master<a class="headerlink" href="#master" title="Permalink to this headline"></a></h1>
+<span id="interfaces-memory-master"></span><h1>Master<a class="headerlink" href="#master" title="Permalink to this heading"></a></h1>
 <p>The memory interface Master class is the interface for initiating a memory transaction.
 Each Master class object will be coupled with one or more <a class="reference internal" href="slave.html#interfaces-memory-slave"><span class="std std-ref">Slave</span></a> objects.</p>
 <p>Master objects in C++ are referenced by the following shared pointer typedef:</p>
@@ -122,7 +124,7 @@ Each Master class object will be coupled with one or more <a class="reference in
 <p>The class description is shown below:</p>
 <dl class="cpp class">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory6MasterE">
-<span id="_CPPv3N5rogue10interfaces6memory6MasterE"></span><span id="_CPPv2N5rogue10interfaces6memory6MasterE"></span><span id="rogue::interfaces::memory::Master"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">Master</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6MasterE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory6MasterE"></span><span id="_CPPv2N5rogue10interfaces6memory6MasterE"></span><span id="rogue::interfaces::memory::Master"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Master"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Master</span></span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory6MasterE" title="Permalink to this definition"></a><br /></dt>
 <dd><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> for a memory transaction interface. </p>
 <p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> class is the initiator for any Memory transactions on a bus. Each master is connected to a single next level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> or <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> class. Multiple <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> levels are allowed in a memory tree. Each <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">Hub</span></a> has an offset which will be applied to the memory transaction address as it flows down to the lowest level <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> device. </p>
 <p>Subclassed by <a class="reference internal" href="block.html#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">rogue::interfaces::memory::Block</span></a>, <a class="reference internal" href="hub.html#classrogue_1_1interfaces_1_1memory_1_1Hub"><span class="std std-ref">rogue::interfaces::memory::Hub</span></a>, <a class="reference internal" href="tcpServer.html#classrogue_1_1interfaces_1_1memory_1_1TcpServer"><span class="std std-ref">rogue::interfaces::memory::TcpServer</span></a></p>

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiving Frames &mdash; Rogue v5.13.0-110-g718b7a89 documentation</title>
+  <title>Receiving Frames &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,7 +14,9 @@
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -30,7 +32,7 @@
             <a href="../../index.html" class="icon icon-home"> Rogue
           </a>
               <div class="version">
-                v5.13.0
+                v5.15.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -101,14 +103,14 @@
            <div itemprop="articleBody">
              
   <section id="receiving-frames">
-<span id="interfaces-stream-receiving"></span><h1>Receiving Frames<a class="headerlink" href="#receiving-frames" title="Permalink to this headline"></a></h1>
+<span id="interfaces-stream-receiving"></span><h1>Receiving Frames<a class="headerlink" href="#receiving-frames" title="Permalink to this heading"></a></h1>
 <p>Frames are received by a subclass of the <a class="reference internal" href="classes/slave.html#interfaces-stream-slave"><span class="std std-ref">Slave</span></a> class in rogue.
 This subclass can be created either in python or in c++. In either case a received frame
 results in the execution of the the acceptFrame method in the subclass instance. Python
 and C++ subclasses of the Slave class can be used interchangeably, allowing c++ subclasses
 to receive frames from python masters and python subclasses to receive frames from c++ masters.</p>
 <section id="python-slave-subclass">
-<h2>Python Slave Subclass<a class="headerlink" href="#python-slave-subclass" title="Permalink to this headline"></a></h2>
+<h2>Python Slave Subclass<a class="headerlink" href="#python-slave-subclass" title="Permalink to this heading"></a></h2>
 <p>Implementing a Slave subclass in python is easy, but may result in a lower level of performance.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
 
@@ -136,7 +138,7 @@ to receive frames from python masters and python subclasses to receive frames fr
             <span class="c1"># Alternatively we can copy a portion of the data from an arbitrary offset</span>
             <span class="n">partialData</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
 
-            <span class="c1"># Read 10 bytes starting at offset 100</span>
+            <span class="c1"># Read 10 bytes starting at offset 5</span>
             <span class="n">frame</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">partialData</span><span class="p">,</span><span class="mi">5</span><span class="p">)</span>
 
         <span class="c1"># Since the data is coped into the passed byte arrays we are free to</span>
@@ -147,7 +149,7 @@ to receive frames from python masters and python subclasses to receive frames fr
 </div>
 </section>
 <section id="c-slave-subclass">
-<h2>C++ Slave Subclass<a class="headerlink" href="#c-slave-subclass" title="Permalink to this headline"></a></h2>
+<h2>C++ Slave Subclass<a class="headerlink" href="#c-slave-subclass" title="Permalink to this heading"></a></h2>
 <p>Creating a Slave sub-class in c++ is done in a similar fashion. In order to use a custom
 c++ Slave subclass, you will need to build it into a c++ python module or into
 a c++ application. See the sections <a class="reference internal" href="../../custom_module/index.html#custom-module"><span class="std std-ref">Creating Custom Modules</span></a> and <a class="reference internal" href="../../installing/application.html#installing-application"><span class="std std-ref">Compiling A Rogue Application</span></a>.</p>
