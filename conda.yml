@@ -2,7 +2,7 @@ channels:
   - tidair-packages
   - conda-forge
 dependencies:
-  - python
+  - python=3.10
   - gcc_linux-64
   - gxx_linux-64
   - make
@@ -23,7 +23,6 @@ dependencies:
   - sphinx_rtd_theme
   - breathe
   - pyserial
-  - p4p
   - sqlalchemy
   - pydm
   - matplotlib
