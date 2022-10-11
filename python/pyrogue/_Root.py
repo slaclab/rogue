@@ -297,7 +297,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  function=lambda arg: self.getYaml(readFirst=arg,
                                                                    modes=['RW','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoConfig'),
+                                                                   excGroups='NoConfig',
+                                                                   recurse=True),
                                  hidden=True,
                                  description='Get current configuration as YAML string. Pass read first arg.'))
 
@@ -305,7 +306,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                  function=lambda arg: self.getYaml(readFirst=arg,
                                                                    modes=['RW','RO','WO'],
                                                                    incGroups=None,
-                                                                   excGroups='NoState'),
+                                                                   excGroups='NoState',
+                                                                   recurse=True),
                                  hidden=True,
                                  description='Get current state as YAML string. Pass read first arg.'))
 
@@ -727,7 +729,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._sendYamlFrame(self.getYaml(readFirst=False,
                                          modes=modes,
                                          incGroups=incGroups,
-                                         excGroups=excGroups))
+                                         excGroups=excGroups,
+                                         recurse=True))
 
     def _write(self):
         """Write all blocks"""
@@ -764,7 +767,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if autoCompress:
                 name += '.zip'
 
-        yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups)
+        yml = self.getYaml(readFirst=readFirst,modes=modes,incGroups=incGroups,excGroups=excGroups, recurse=True)
 
         if name.split('.')[-1] == 'zip':
             with zipfile.ZipFile(name, 'w', compression=zipfile.ZIP_LZMA) as zf:
