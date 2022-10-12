@@ -1,0 +1,25 @@
+DummyTree:
+  enable: True
+  ForceWrite: False
+  InitAfterConfig: False
+  PollEn: False
+  SimpleDev:
+    enable: True
+    A : 1
+    B : 2
+    C : 3
+    SimpleDev:
+      enable: True
+      A : 4
+      B : 5
+      C : 6
+      SimpleDev:
+        enable: True
+        A : 7
+        B : 8
+        C : 9
+        SimpleDev:
+          enable: True
+          A : 10
+          B : 11
+          C : 12
