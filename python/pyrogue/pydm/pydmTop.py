@@ -65,7 +65,7 @@ class DefaultTop(Display):
 
         # Set the default Tab view
         self.tab.setCurrentIndex(1)
-        
+
         self.resize(self.sizeX, self.sizeY)
 
     def ui_filepath(self):
