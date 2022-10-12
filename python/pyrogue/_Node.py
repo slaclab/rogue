@@ -526,7 +526,7 @@ class Node(object):
             self.addToGroup(grp)
 
     @expose
-    def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+    def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=True):
 
         """
         Get current values as yaml data.
