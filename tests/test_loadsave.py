@@ -99,7 +99,6 @@ def test_loadsave():
         inputDict = pr.yamlToData(fName=inputYaml)
 
         root.SaveConfig(outputYaml)
-        root.SaveState(stateYaml)
 
         outputDict = pr.yamlToData(fName=outputYaml)
 
