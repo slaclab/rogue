@@ -20,10 +20,12 @@ from pyrogue.pydm.widgets import DataWriter
 from pyrogue.pydm.widgets import SystemWindow
 from pyrogue.pydm.widgets import Process
 from pyrogue.pydm.widgets import PyRogueLineEdit
+from pyrogue.pydm.widgets import PyRogueLabel
 from pyrogue.pydm.widgets import Plotter
 from pyrogue.pydm.widgets import TimePlotter
 
 LineEdit     = qtplugin_factory(PyRogueLineEdit, group="Rogue Widgets")
+Label        = qtplugin_factory(PyRogueLabel,    group="Rogue Widgets")
 DebugTree    = qtplugin_factory(DebugTree,       group="Rogue Widgets")
 RootControl  = qtplugin_factory(RootControl,     group="Rogue Widgets")
 SystemLog    = qtplugin_factory(SystemLog,       group="Rogue Widgets")

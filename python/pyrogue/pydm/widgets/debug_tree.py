@@ -12,7 +12,7 @@
 import pyrogue
 import pyrogue.pydm.widgets
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
-from pyrogue.pydm.widgets import PyRogueVariableLabel, PyRogueVariableLineEdit
+from pyrogue.pydm.widgets import PyRogueLabel, PyRogueLineEdit
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
@@ -179,10 +179,10 @@ def makeVariableViewWidget(parent):
         w.installEventFilter(parent._top)
 
     elif parent._var.mode == 'RO' and not parent._var.isCommand:
-        w = PyRogueVariableLabel(parent=None, init_channel=parent._path + '/disp')
+        w = PyRogueLabel(parent=None, init_channel=parent._path + '/disp')
 
     else:
-        w = PyRogueVariableLineEdit(parent=None, init_channel=parent._path + '/disp')
+        w = PyRogueLineEdit(parent=None, init_channel=parent._path + '/disp')
 
     return w
 
