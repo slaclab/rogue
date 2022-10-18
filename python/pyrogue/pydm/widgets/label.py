@@ -1,7 +1,7 @@
 from pydm.widgets import PyDMLabel
 from qtpy.QtCore import Qt
 from qtpy.QtWidgets import QGridLayout
-from pydm.widgets.base import refresh_style, str_types
+from pydm.widgets.base import str_types
 from pydm.widgets.display_format import parse_value_for_display
 
 class PyRogueLabel(PyDMLabel):
