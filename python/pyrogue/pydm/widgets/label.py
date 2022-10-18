@@ -62,4 +62,3 @@ class PyRogueLabel(PyDMLabel):
         # If you made it this far, just turn whatever the heck the value
         # is into a string and display it.
         self.setText(str(new_value))
-
