@@ -18,7 +18,7 @@ from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 
 from qtpy.QtCore import Property, Slot, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView
 from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
 from qtpy.QtGui import QFontMetrics
 
@@ -248,7 +248,7 @@ class DebugTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [250,50,75,200,200]
+        self._colWidths = [300,50,75,400,75]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -268,6 +268,9 @@ class DebugTree(PyDMFrame):
 
         self._tree.setColumnCount(5)
         self._tree.setHeaderLabels(['Node','Mode','Type','Value', 'Command'])
+        self._tree.header().setStretchLastSection(False)
+        self._tree.header().setResizeMode(3, QHeaderView.Stretch) #ResizeToContents)
+        
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -294,10 +297,12 @@ class DebugTree(PyDMFrame):
         self.setUpdatesEnabled(False)
         item._expand()
         self._tree.setColumnWidth(0,self._colWidths[0])
-        self._tree.resizeColumnToContents(1)
-        self._tree.resizeColumnToContents(2)
-        self._tree.setColumnWidth(3,self._colWidths[3])
-        self._tree.setColumnWidth(4,self._colWidths[4])
+        #print(f'_expandCb - colWidth = {self._colWidths[0]}')
+#        self._tree.resizeColumnToContents(0)        
+#         self._tree.resizeColumnToContents(1)
+#         self._tree.resizeColumnToContents(2)
+#         self._tree.setColumnWidth(3,self._colWidths[3])
+#         self._tree.setColumnWidth(4,self._colWidths[4])
         self.setUpdatesEnabled(True)
 
     @Property(str)
