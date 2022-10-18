@@ -7,6 +7,8 @@ from qtpy.QtWidgets import QGridLayout
 from pydm.widgets.base import refresh_style, str_types
 from pydm.widgets.display_format import DisplayFormat, parse_value_for_display
 
+logger = logging.getLogger(__name__)
+
 class PyRogueLineEdit(PyDMLineEdit):
     def __init__(self, parent, init_channel=None, show_units=True):
         super().__init__(parent, init_channel=init_channel)
@@ -106,9 +108,9 @@ class PyRogueLineEdit(PyDMLineEdit):
 
         self.clearFocus()
         self.set_display()
-        
 
-        
+
+
     def set_display(self):
         """
         Set the text display of the PyDMLineEdit.
