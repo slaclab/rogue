@@ -270,7 +270,7 @@ class DebugTree(PyDMFrame):
         self._tree.setHeaderLabels(['Node','Mode','Type','Value', 'Command'])
         self._tree.header().setStretchLastSection(False)
         self._tree.header().setResizeMode(3, QHeaderView.Stretch) #ResizeToContents)
-        
+
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -298,7 +298,7 @@ class DebugTree(PyDMFrame):
         item._expand()
         self._tree.setColumnWidth(0,self._colWidths[0])
         #print(f'_expandCb - colWidth = {self._colWidths[0]}')
-#        self._tree.resizeColumnToContents(0)        
+#        self._tree.resizeColumnToContents(0)
 #         self._tree.resizeColumnToContents(1)
 #         self._tree.resizeColumnToContents(2)
 #         self._tree.setColumnWidth(3,self._colWidths[3])
