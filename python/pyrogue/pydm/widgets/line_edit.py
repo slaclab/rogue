@@ -1,6 +1,7 @@
 import locale
 import numpy as np
 import ast
+import logging
 from pydm.widgets import PyDMLineEdit, PyDMLabel
 from qtpy.QtCore import Property, Qt
 from qtpy.QtWidgets import QGridLayout
