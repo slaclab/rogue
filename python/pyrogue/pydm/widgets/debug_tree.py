@@ -220,7 +220,7 @@ class DebugHolder(QTreeWidgetItem):
         self.setToolTip(0,self._var.description)
 
         self.setText(1,self._var.mode)
-        self.setText(2,self._var.typeStr)
+        self.setText(2,f'{self._var.typeStr}   ') # Pad to look nicer
         self.setToolTip(0,self._var.description)
 
         w = makeVariableViewWidget(self)
@@ -268,9 +268,9 @@ class DebugTree(PyDMFrame):
 
         self._tree.setColumnCount(5)
         self._tree.setHeaderLabels(['Node','Mode','Type','Value', 'Command'])
-        self._tree.header().setStretchLastSection(False)
-        self._tree.header().setResizeMode(3, QHeaderView.Stretch) #ResizeToContents)
-
+        header = self._tree.header()
+        header.setStretchLastSection(False)
+        header.setSectionResizeMode(3, QHeaderView.Stretch)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
