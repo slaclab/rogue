@@ -1,6 +1,6 @@
 from pydm.widgets import PyDMLabel
 from qtpy.QtCore import Qt
-from qtpy.QtWidgets import QGridLayout
+from qtpy.QtWidgets import QHBoxLayout
 from pydm.widgets.base import str_types
 from pydm.widgets.display_format import parse_value_for_display
 
@@ -15,12 +15,11 @@ class PyRogueLabel(PyDMLabel):
         self._unitWidget.setAlignment(Qt.AlignRight)
         self._unitWidget.setText("")
 
-        grid = QGridLayout()
-        grid.addWidget(self._unitWidget, 0, 0)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
+        hbox = QHBoxLayout()
+        hbox.addStretch(1)
+        hbox.addWidget(self._unitWidget)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(hbox)
 
     def unit_changed(self, new_unit):
         if self._show_units:
