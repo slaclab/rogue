@@ -11,7 +11,7 @@ class PyRogueLabel(PyDMLabel):
         self._show_units = show_units
 
         self._unitWidget = PyDMLabel(parent)
-        self._unitWidget.setStyleSheet("QLabel { color : DimGrey; }")
+        self._unitWidget.setStyleSheet("QLabel { background-color: white; color : DimGrey; }")
         self._unitWidget.setAlignment(Qt.AlignRight)
         self._unitWidget.setText("")
 
