@@ -178,9 +178,6 @@ def makeVariableViewWidget(parent):
         w.writeOnPress          = True
         w.installEventFilter(parent._top)
 
-    elif parent._var.mode == 'RO' and not parent._var.isCommand:
-        w = PyRogueLabel(parent=None, init_channel=parent._path + '/disp')
-
     else:
         w = PyRogueLineEdit(parent=None, init_channel=parent._path + '/disp')
 

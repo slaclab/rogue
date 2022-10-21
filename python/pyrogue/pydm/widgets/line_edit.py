@@ -43,6 +43,12 @@ class PyRogueLineEdit(PyDMLineEdit):
         super(PyRogueLineEdit, self).focusOutEvent(event)
         refresh_style(self)
 
+
+    def check_enable_state(self):
+        status = self._write_access and self._connected
+        self.setReadOnly(not status)
+        refresh_style(self)        
+
     @Property(bool)
     def dirty(self):
         return self._dirty
