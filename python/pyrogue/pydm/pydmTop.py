@@ -55,11 +55,16 @@ class DefaultTop(Display):
         self.tab = QTabWidget()
         vb.addWidget(self.tab)
 
+        # System Tab  (Tab Index=0)
         sys = SystemWindow(parent=None, init_channel=Channel)
         self.tab.addTab(sys,'System')
 
+        # Debug Tree Tab  (Tab Index=1)
         var = DebugTree(parent=None, init_channel=Channel)
         self.tab.addTab(var,'Debug Tree')
+
+        # Set the default Tab view
+        self.tab.setCurrentIndex(1)
 
         self.resize(self.sizeX, self.sizeY)
 
