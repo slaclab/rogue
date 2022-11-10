@@ -14,6 +14,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+
+#define PY_SSIZE_T_CLEAN
+
 #include <rogue/interfaces/ZmqServer.h>
 #include <rogue/GeneralError.h>
 #include <memory>
@@ -268,6 +271,10 @@ void rogue::interfaces::ZmqServer::runThread() {
          Py_buffer valueBuf;
          rogue::ScopedGil gil;
          PyObject *val = Py_BuildValue("y#",zmq_msg_data(&rxMsg),zmq_msg_size(&rxMsg));
+
+         if ( val == NULL )
+            throw(rogue::GeneralError::create("ZmqServer::runThread","Failed to generate bytearray"));
+
          bp::handle<> handle(val);
 
          bp::object ret = this->doRequest(bp::object(handle));

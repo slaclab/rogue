@@ -16,6 +16,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+
+#define PY_SSIZE_T_CLEAN
+
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
@@ -529,7 +532,7 @@ bp::object rim::Block::variablesPy() {
 void rim::Block::reverseBytes ( uint8_t *data, uint32_t byteSize ) {
    uint32_t x;
    uint8_t tmp;
-   
+
    for (x=0; x < byteSize/2; x++) {
       tmp = data[x];
       data[x] = data[byteSize-x-1];
@@ -718,6 +721,9 @@ bp::object rim::Block::getPyFunc ( rim::Variable *var, int32_t index ) {
       getBytes(getBuffer, var, index);
       PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
 
+      if ( val == NULL )
+         throw(rogue::GeneralError::create("Block::getPyFunc","Failed to generate bytearray"));
+
       bp::handle<> handle(val);
       bp::object pass = bp::object(handle);
 
@@ -760,6 +766,9 @@ bp::object rim::Block::getByteArrayPy ( rim::Variable *var, int32_t index ) {
 
    getBytes(getBuffer, var,index);
    PyObject *val = Py_BuildValue("y#",getBuffer,var->valueBytes_);
+
+   if ( val == NULL )
+      throw(rogue::GeneralError::create("Block::setByteArrayPy","Failed to generate bytearray"));
 
    bp::handle<> handle(val);
    return bp::object(handle);
@@ -890,6 +899,10 @@ bp::object rim::Block::getUIntPy (rim::Variable *var, int32_t index ) {
    }
    else {
       PyObject *val = Py_BuildValue("K",getUInt(var,index));
+
+      if ( val == NULL )
+         throw(rogue::GeneralError::create("Block::getUIntPy","Failed to generate UInt"));
+
       bp::handle<> handle(val);
       ret = bp::object(handle);
    }
@@ -1031,6 +1044,10 @@ bp::object rim::Block::getIntPy ( rim::Variable *var, int32_t index ) {
    }
    else {
       PyObject *val = Py_BuildValue("L",getInt(var,index));
+
+      if ( val == NULL )
+         throw(rogue::GeneralError::create("Block::getIntPy","Failed to generate Int"));
+
       bp::handle<> handle(val);
       ret = bp::object(handle);
    }
@@ -1216,6 +1233,10 @@ bp::object rim::Block::getStringPy ( rim::Variable *var, int32_t index ) {
 
    getString(var,strVal,index);
    PyObject *val = Py_BuildValue("s",strVal.c_str());
+
+   if ( val == NULL )
+      throw(rogue::GeneralError::create("Block::getStringPy","Failed to generate String"));
+
    bp::handle<> handle(val);
    return bp::object(handle);
 }
@@ -1346,6 +1367,10 @@ bp::object rim::Block::getFloatPy ( rim::Variable *var, int32_t index ) {
 
    else {
       PyObject *val = Py_BuildValue("f",getFloat(var,index));
+
+      if ( val == NULL )
+         throw(rogue::GeneralError::create("Block::getFloatPy","Failed to generate Float"));
+
       bp::handle<> handle(val);
       ret = bp::object(handle);
    }
@@ -1470,6 +1495,10 @@ bp::object rim::Block::getDoublePy ( rim::Variable *var, int32_t index ) {
 
    else {
       PyObject *val = Py_BuildValue("d",getDouble(var,index));
+
+      if ( val == NULL )
+         throw(rogue::GeneralError::create("Block::getDoublePy","Failed to generate Double"));
+
       bp::handle<> handle(val);
       ret = bp::object(handle);
    }
@@ -1593,6 +1622,10 @@ bp::object rim::Block::getFixedPy ( rim::Variable *var, int32_t index ) {
 
    else {
       PyObject *val = Py_BuildValue("d",getFixed(var,index));
+
+      if ( val == NULL )
+         throw(rogue::GeneralError::create("Block::getFixedPy","Failed to generate Fixed"));
+
       bp::handle<> handle(val);
       ret = bp::object(handle);
    }
