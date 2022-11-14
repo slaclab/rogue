@@ -38,13 +38,15 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 #endif
 
+std::map<std::string, std::shared_ptr<rha::AxiStreamDmaShared> > rha::AxiStreamDma::sharedBuffers_;
+
 rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
-   fd = -1;
-   path = path;
-   openCount = 1;
-   rawBuff = NULL;
-   bCount = 0;
-   bSize = 0;
+   this->fd = -1;
+   this->path = path;
+   this->openCount = 1;
+   this->rawBuff = NULL;
+   this->bCount = 0;
+   this->bSize = 0;
 }
 
 //! Open shared buffer space
