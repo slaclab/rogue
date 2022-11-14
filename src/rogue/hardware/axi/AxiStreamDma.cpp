@@ -38,6 +38,71 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 #endif
 
+//! Open shared buffer space
+rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path) {
+   std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
+
+   // Entry already exists
+   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) {
+      it->second->openCount++;
+      return it->second;
+   }
+
+   // Create new record
+   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>();
+
+   // We need to open device and create shared buffers
+   if ( (ret->fd = ::open(path.c_str(), O_RDWR)) < 0 )
+      throw(rogue::GeneralError::create("AxiStreamDma::openShared", "Failed to open device file: %s",path.c_str()));
+
+   if ( dmaCheckVersion(ret->fd) < 0 ) {
+      ::close(ret->fd);
+      throw(rogue::GeneralError("AxiStreamDma::openShared","Bad kernel driver version detected. Please re-compile kernel driver.\n \
+      Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
+      To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
+      \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
+   }
+
+   // Init
+   ret->path = path;
+   ret->openCount = 1;
+   ret->rawBuff = NULL;
+   ret->bCount = 0;
+   ret->bSize = 0;
+
+   // Result may be that rawBuff = NULL
+   // Should this just be a warning?
+   ret->rawBuff = dmaMapDma(ret->fd,&(ret->bCount),&(ret->bSize));
+   if ( ret->rawBuff == NULL ) {
+      ::close(ret->fd);
+      throw(rogue::GeneralError("AxiStreamDma::openShared","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
+   }
+
+   // Add entry to map and return
+   sharedBuffers_.insert(std::pair<std::string, rha::AxiStreamDmaSharedPtr>(path,ret));
+   return ret;
+}
+
+//! Close shared buffer space
+void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
+   desc->openCount--;
+
+   if ( desc->openCount == 0 ) {
+
+      if ( desc->rawBuff != NULL ) {
+         dmaUnMapDma(desc->fd, desc->rawBuff);
+      }
+
+      ::close(desc->fd);
+      desc->fd = -1;
+      desc->bCount = 0;
+      desc->bSize = 0;
+      desc->rawBuff = NULL;
+
+      sharedBuffers_.erase(desc->path);
+   }
+}
+
 //! Class creation
 rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest, bool ssiEnable) {
    rha::AxiStreamDmaPtr r = std::make_shared<rha::AxiStreamDma>(path,dest,ssiEnable);
@@ -62,32 +127,21 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
 
    rogue::GilRelease noGil;
 
-   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 )
-      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
+   // Attempt to open shared structure
+   desc_ = openShared(path);
 
-   if ( dmaCheckVersion(fd_) < 0 )
-      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Bad kernel driver version detected. Please re-compile kernel driver.\n \
-      Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
-      To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
-      \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
+   //if ( desc_->bCount_ >= 1000 ) retThold_ = 50;
+   if ( desc_->bCount >= 1000 ) retThold_ = 80;
 
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
 
-   if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
-      ::close(fd_);
+   if  ( dmaSetMaskBytes(desc_->fd,mask) < 0 ) {
+      closeShared(desc_);
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
             "Failed to open device file %s with dest 0x%" PRIx32 "! Another process may already have it open!", path.c_str(), dest));
 
    }
-
-   // Result may be that rawBuff_ = NULL
-   rawBuff_ = dmaMapDma(fd_,&bCount_,&bSize_);
-   if ( rawBuff_ == NULL ) {
-      throw(rogue::GeneralError("AxiStreamDma::AxiStreamDma","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
-   }
-   //else if ( bCount_ >= 1000 ) retThold_ = 50;
-   else if ( bCount_ >= 1000 ) retThold_ = 80;
 
    // Start read thread
    threadEn_ = true;
@@ -112,10 +166,7 @@ void rha::AxiStreamDma::stop() {
     threadEn_ = false;
     thread_->join();
 
-    if ( rawBuff_ != NULL ) {
-      dmaUnMapDma(fd_, rawBuff_);
-    }
-    ::close(fd_);
+    closeShared(desc_);
   }
 }
 
@@ -130,7 +181,7 @@ void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
 
 //! Set driver debug level
 void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
-   dmaSetDebug(fd_,level);
+   dmaSetDebug(desc_->fd,level);
 }
 
 //! Enable / disable zero copy
@@ -140,7 +191,7 @@ void rha::AxiStreamDma::setZeroCopyEn(bool state) {
 
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
-   if ( fd_ >= 0 ) axisReadAck(fd_);
+   if ( desc_->fd >= 0 ) axisReadAck(desc_->fd);
 }
 
 //! Generate a buffer. Called from master
@@ -154,11 +205,11 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    uint32_t         buffSize;
 
    //! Adjust allocation size
-   if ( size > bSize_) buffSize = bSize_;
+   if ( size > desc_->bSize) buffSize = desc_->bSize;
    else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn_ == false || zeroCopyEn == false || rawBuff_ == NULL ) {
+   if ( zeroCopyEn_ == false || zeroCopyEn == false || desc_->rawBuff == NULL ) {
       frame = ris::Pool::acceptReq(size,false);
    }
 
@@ -179,25 +230,25 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
             // Setup fds for select call
             FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
+            FD_SET(desc_->fd,&fds);
 
             // Setup select timeout
             tout = timeout_;
 
-            if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
+            if ( select(desc_->fd+1,NULL,&fds,NULL,&tout) <= 0 ) {
                log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
                // Attempt to get index.
                // return of less than 0 is a failure to get a buffer
-               res = dmaGetIndex(fd_);
+               res = dmaGetIndex(desc_->fd);
             }
          }
          while (res < 0);
 
          // Mark zero copy meta with bit 31 set, lower bits are index
-         buff = createBuffer(rawBuff_[res],0x80000000 | res,buffSize,bSize_);
+         buff = createBuffer(desc_->rawBuff[res],0x80000000 | res,buffSize,desc_->bSize);
          frame->appendBuffer(buff);
          alloc += buffSize;
       }
@@ -261,7 +312,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing (*it)er index to driver
-            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
+            if ( dmaWriteIndex(desc_->fd, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed"));
             }
 
@@ -280,18 +331,18 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
             // Setup fds for select call
             FD_ZERO(&fds);
-            FD_SET(fd_,&fds);
+            FD_SET(desc_->fd,&fds);
 
             // Setup select timeout
             tout = timeout_;
 
-            if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
+            if ( select(desc_->fd+1,NULL,&fds,NULL,&tout) <= 0 ) {
                log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
                // Write with (*it)er copy
-               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
+               if ( (res = dmaWrite(desc_->fd, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed!!!!"));
                }
             }
@@ -317,7 +368,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
-      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
+      if ( (desc_->fd >= 0) && ((meta & 0x40000000) == 0) ) {
 
 #if 0
          // Add to queue
@@ -330,7 +381,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 
-            if ( dmaRetIndexes(fd_,count,ret) < 0 )
+            if ( dmaRetIndexes(desc_->fd,count,ret) < 0 )
                throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
 
             decCounter(size*count);
@@ -338,7 +389,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
          }
 
 #else
-         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
+         if ( dmaRetIndex(desc_->fd,meta & 0x3FFFFFFF) < 0 )
             throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
 
 #endif
@@ -384,23 +435,23 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
       // Setup fds for select call
       FD_ZERO(&fds);
-      FD_SET(fd_,&fds);
+      FD_SET(desc_->fd,&fds);
 
       // Setup select timeout
       tout.tv_sec  = 0;
       tout.tv_usec = 1000;
 
       // Select returns with available buffer
-      if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
+      if ( select(desc_->fd+1,&fds,NULL,NULL,&tout) > 0 ) {
 
          // Zero copy buffers were not allocated
-         if ( zeroCopyEn_ == false || rawBuff_ == NULL ) {
+         if ( zeroCopyEn_ == false || desc_->rawBuff == NULL ) {
 
             // Allocate a buffer
-            buff[0] = allocBuffer(bSize_,NULL);
+            buff[0] = allocBuffer(desc_->bSize,NULL);
 
             // Attempt read, dest is not needed since only one lane/vc is open
-            rxSize[0] = dmaRead(fd_, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
+            rxSize[0] = dmaRead(desc_->fd, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
             if ( rxSize[0] <= 0 ) rxCount = rxSize[0];
             else rxCount = 1;
          }
@@ -409,11 +460,11 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
          else {
 
             // Attempt read, dest is not needed since only one lane/vc is open
-            rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
+            rxCount = dmaReadBulkIndex(desc_->fd, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 
             // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
             for (x=0; x < rxCount; x++)
-               buff[x] = createBuffer(rawBuff_[meta[x]],0x80000000 | meta[x],bSize_,bSize_);
+               buff[x] = createBuffer(desc_->rawBuff[meta[x]],0x80000000 | meta[x],desc_->bSize,desc_->bSize);
          }
 
          // Return of -1 is bad

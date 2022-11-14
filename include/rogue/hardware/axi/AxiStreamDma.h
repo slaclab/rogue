@@ -18,12 +18,39 @@
 #include <thread>
 #include <memory>
 #include <stdint.h>
+#include <map>
 #include <rogue/Logging.h>
 
 
 namespace rogue {
    namespace hardware {
       namespace axi {
+
+         //! Storage class for shared memory buffers
+         class AxiStreamDmaShared {
+            public:
+
+               //! Shared FD
+               int32_t  fd;
+
+               //! Path
+               std::string path;
+
+               //! Instance Counter
+               int32_t  openCount;
+
+               //! Pointer to zero copy buffers
+               void  ** rawBuff;
+
+               //! Number of buffers available for zero copy
+               uint32_t bCount;
+
+               //! Size of buffers in hardware
+               uint32_t bSize;
+         };
+
+         //! Alias for using shared pointer as AxiStreamDmaSharedPtr
+         typedef std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> AxiStreamDmaSharedPtr;
 
          //! AXI Stream DMA Class
          /** This class provides a bridge between the Rogue stream interface and one
@@ -37,29 +64,23 @@ namespace rogue {
          class AxiStreamDma : public rogue::interfaces::stream::Master,
                               public rogue::interfaces::stream::Slave {
 
+               //! Shared memory buffer tracking
+               static std::map<std::string, std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> > sharedBuffers_;
+
                //! Max number of buffers to receive at once
                static const uint32_t RxBufferCount = 100;
 
                //! AxiStreamDma file descriptor
-               int32_t  fd_;
+               std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> desc_;
 
                //! Open Dest
                uint32_t dest_;
-
-               //! Number of buffers available for zero copy
-               uint32_t bCount_;
-
-               //! Size of buffers in hardware
-               uint32_t bSize_;
 
                //! Timeout for frame transmits
                struct timeval timeout_;
 
                //! ssi insertion enable
                bool enSsi_;
-
-               //! Pointer to zero copy buffers
-               void  ** rawBuff_;
 
                std::thread* thread_;
                bool threadEn_;
@@ -78,6 +99,13 @@ namespace rogue {
 
                //! Return thold
                uint32_t retThold_;
+
+               //! Open shared buffer space
+               static std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>
+                  openShared(std::string path);
+
+               //! Close shared buffer space
+               static void closeShared(std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>);
 
             public:
 
