@@ -30,6 +30,8 @@ namespace rogue {
          class AxiStreamDmaShared {
             public:
 
+               AxiStreamDmaShared(std::string path);
+
                //! Shared FD
                int32_t  fd;
 

@@ -38,6 +38,15 @@ namespace ris = rogue::interfaces::stream;
 namespace bp  = boost::python;
 #endif
 
+rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
+   fd = -1;
+   path = path;
+   openCount = 1;
+   rawBuff = NULL;
+   bCount = 0;
+   bSize = 0;
+}
+
 //! Open shared buffer space
 rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path) {
    std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
@@ -49,7 +58,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path) {
    }
 
    // Create new record
-   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>();
+   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
 
    // We need to open device and create shared buffers
    if ( (ret->fd = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -62,13 +71,6 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path) {
       To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
       \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
    }
-
-   // Init
-   ret->path = path;
-   ret->openCount = 1;
-   ret->rawBuff = NULL;
-   ret->bCount = 0;
-   ret->bSize = 0;
 
    // Result may be that rawBuff = NULL
    // Should this just be a warning?
