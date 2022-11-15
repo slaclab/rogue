@@ -426,9 +426,11 @@ class BaseVariable(pr.Node):
         try:
 
             if isinstance(value,np.ndarray):
-                with np.printoptions(formatter={'all':self.disp.format},threshold=sys.maxsize):
-                    ret = np.array2string(value, separator=', ')
-                return ret
+                return np.array2string(value,
+                                       separator=', ',
+                                       formatter={'all':self.disp.format},
+                                       threshold=sys.maxsize,
+                                       max_line_width=1000)
 
             elif self.disp == 'enum':
                 if value in self.enum:

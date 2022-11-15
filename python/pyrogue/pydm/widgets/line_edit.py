@@ -4,35 +4,36 @@ import ast
 import logging
 from pydm.widgets import PyDMLineEdit, PyDMLabel
 from qtpy.QtCore import Property, Qt
-from qtpy.QtWidgets import QGridLayout
+from qtpy.QtWidgets import QHBoxLayout
 from pydm.widgets.base import refresh_style, str_types
 from pydm.widgets.display_format import DisplayFormat, parse_value_for_display
 
 logger = logging.getLogger(__name__)
 
 class PyRogueLineEdit(PyDMLineEdit):
-    def __init__(self, parent, init_channel=None, show_units=True):
+    def __init__(self, parent, init_channel=None, show_units=True, read_only=False):
         super().__init__(parent, init_channel=init_channel)
 
         self._show_units = show_units
+
+        self.textEdited.connect(self.text_edited)
+        self._dirty = False
+        self.setStyleSheet("*[dirty='true']\
+                           {background-color: orange;}\
+                           *[readOnly='true'] { color: black; background-color: WhiteSmoke;}")
+
 
         self._unitWidget = PyDMLabel(parent)
         self._unitWidget.setStyleSheet("QLabel { color : DimGrey; }")
         self._unitWidget.setAlignment(Qt.AlignRight)
         self._unitWidget.setText("")
 
-        grid = QGridLayout()
-        grid.addWidget(self._unitWidget, 0, 0)
-        grid.setVerticalSpacing(0)
-        grid.setHorizontalSpacing(0)
-        grid.setContentsMargins(0, 0, 0, 0)
-        self.setLayout(grid)
+        hbox = QHBoxLayout()
+        hbox.addStretch(1)
+        hbox.addWidget(self._unitWidget)
+        hbox.setContentsMargins(0, 0, 0, 0)
+        self.setLayout(hbox)
 
-        self.textEdited.connect(self.text_edited)
-        self._dirty = False
-
-        self.setStyleSheet("*[dirty='true']\
-                           {background-color: orange;}")
 
     def text_edited(self):
         self._dirty = True
@@ -41,6 +42,12 @@ class PyRogueLineEdit(PyDMLineEdit):
     def focusOutEvent(self, event):
         self._dirty = False
         super(PyRogueLineEdit, self).focusOutEvent(event)
+        refresh_style(self)
+
+
+    def check_enable_state(self):
+        status = self._write_access and self._connected
+        self.setReadOnly(not status)
         refresh_style(self)
 
     @Property(bool)
