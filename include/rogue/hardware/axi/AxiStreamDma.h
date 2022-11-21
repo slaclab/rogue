@@ -75,6 +75,9 @@ namespace rogue {
                //! AxiStreamDma file descriptor
                std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared> desc_;
 
+               //! Process specific FD
+               int32_t fd_;
+
                //! Open Dest
                uint32_t dest_;
 
@@ -104,7 +107,7 @@ namespace rogue {
 
                //! Open shared buffer space
                static std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>
-                  openShared(std::string path);
+                  openShared(std::string path, std::shared_ptr<rogue::Logging> log);
 
                //! Close shared buffer space
                static void closeShared(std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>);

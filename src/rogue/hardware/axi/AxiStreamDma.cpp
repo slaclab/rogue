@@ -50,17 +50,19 @@ rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
 }
 
 //! Open shared buffer space
-rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path) {
+rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogue::LoggingPtr log) {
    std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
 
    // Entry already exists
    if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) {
       it->second->openCount++;
+      log->debug("Shared file descriptor already opened")
       return it->second;
    }
 
    // Create new record
    rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+   log->debug("Opening new shared file descriptor")
 
    // We need to open device and create shared buffers
    if ( (ret->fd = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -81,6 +83,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path) {
       ::close(ret->fd);
       throw(rogue::GeneralError("AxiStreamDma::openShared","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
    }
+   log->debug("Mapped buffers. bCount = %i, bSize=%i", ret->bCount, ret->bSize);
 
    // Add entry to map and return
    sharedBuffers_.insert(std::pair<std::string, rha::AxiStreamDmaSharedPtr>(path,ret));
@@ -132,16 +135,23 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    rogue::GilRelease noGil;
 
    // Attempt to open shared structure
-   desc_ = openShared(path);
+   desc_ = openShared(path, log_);
 
    //if ( desc_->bCount_ >= 1000 ) retThold_ = 50;
    if ( desc_->bCount >= 1000 ) retThold_ = 80;
 
+   // Open non shared file descriptor
+   if ( (fd_ = ::open(path.c_str(), O_RDWR)) < 0 ) {
+      closeShared(desc_);
+      throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
+   }
+
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
 
-   if  ( dmaSetMaskBytes(desc_->fd,mask) < 0 ) {
+   if  ( dmaSetMaskBytes(fd_,mask) < 0 ) {
       closeShared(desc_);
+      ::close(fd_);
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma",
             "Failed to open device file %s with dest 0x%" PRIx32 "! Another process may already have it open!", path.c_str(), dest));
 
@@ -171,6 +181,8 @@ void rha::AxiStreamDma::stop() {
     thread_->join();
 
     closeShared(desc_);
+    ::close(fd_);
+    fd_ = -1;
   }
 }
 
@@ -185,7 +197,7 @@ void rha::AxiStreamDma::setTimeout(uint32_t timeout) {
 
 //! Set driver debug level
 void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
-   dmaSetDebug(desc_->fd,level);
+   dmaSetDebug(fd_,level);
 }
 
 //! Enable / disable zero copy
@@ -195,7 +207,7 @@ void rha::AxiStreamDma::setZeroCopyEn(bool state) {
 
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
-   if ( desc_->fd >= 0 ) axisReadAck(desc_->fd);
+   if ( fd_ >= 0 ) axisReadAck(fd_);
 }
 
 //! Generate a buffer. Called from master
@@ -234,19 +246,19 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
 
             // Setup fds for select call
             FD_ZERO(&fds);
-            FD_SET(desc_->fd,&fds);
+            FD_SET(fd_,&fds);
 
             // Setup select timeout
             tout = timeout_;
 
-            if ( select(desc_->fd+1,NULL,&fds,NULL,&tout) <= 0 ) {
+            if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
                log_->critical("AxiStreamDma::acceptReq: Timeout waiting for outbound buffer after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = -1;
             }
             else {
                // Attempt to get index.
                // return of less than 0 is a failure to get a buffer
-               res = dmaGetIndex(desc_->fd);
+               res = dmaGetIndex(fd_);
             }
          }
          while (res < 0);
@@ -316,7 +328,7 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
          if ( (meta & 0x40000000) == 0 ) {
 
             // Write by passing (*it)er index to driver
-            if ( dmaWriteIndex(desc_->fd, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
+            if ( dmaWriteIndex(fd_, meta & 0x3FFFFFFF, (*it)->getPayload(), axisSetFlags(fuser, luser, cont), dest_) <= 0 ) {
                throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed"));
             }
 
@@ -335,18 +347,18 @@ void rha::AxiStreamDma::acceptFrame ( ris::FramePtr frame ) {
 
             // Setup fds for select call
             FD_ZERO(&fds);
-            FD_SET(desc_->fd,&fds);
+            FD_SET(fd_,&fds);
 
             // Setup select timeout
             tout = timeout_;
 
-            if ( select(desc_->fd+1,NULL,&fds,NULL,&tout) <= 0 ) {
+            if ( select(fd_+1,NULL,&fds,NULL,&tout) <= 0 ) {
                log_->critical("AxiStreamDma::acceptFrame: Timeout waiting for outbound write after %" PRIuLEAST32 ".%" PRIuLEAST32 " seconds! May be caused by outbound back pressure.", timeout_.tv_sec, timeout_.tv_usec);
                res = 0;
             }
             else {
                // Write with (*it)er copy
-               if ( (res = dmaWrite(desc_->fd, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
+               if ( (res = dmaWrite(fd_, (*it)->begin(), (*it)->getPayload(), axisSetFlags(fuser, luser,0), dest_)) < 0 ) {
                   throw(rogue::GeneralError("AxiStreamDma::acceptFrame","AXIS Write Call Failed!!!!"));
                }
             }
@@ -372,7 +384,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
 
       // Device is open and buffer is not stale
       // Bit 30 indicates buffer has already been returned to hardware
-      if ( (desc_->fd >= 0) && ((meta & 0x40000000) == 0) ) {
+      if ( (fd_ >= 0) && ((meta & 0x40000000) == 0) ) {
 
 #if 0
          // Add to queue
@@ -385,7 +397,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 
-            if ( dmaRetIndexes(desc_->fd,count,ret) < 0 )
+            if ( dmaRetIndexes(fd_,count,ret) < 0 )
                throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
 
             decCounter(size*count);
@@ -393,7 +405,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t * data, uint32_t meta, uint32_t size) 
          }
 
 #else
-         if ( dmaRetIndex(desc_->fd,meta & 0x3FFFFFFF) < 0 )
+         if ( dmaRetIndex(fd_,meta & 0x3FFFFFFF) < 0 )
             throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
 
 #endif
@@ -439,14 +451,14 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
       // Setup fds for select call
       FD_ZERO(&fds);
-      FD_SET(desc_->fd,&fds);
+      FD_SET(fd_,&fds);
 
       // Setup select timeout
       tout.tv_sec  = 0;
       tout.tv_usec = 1000;
 
       // Select returns with available buffer
-      if ( select(desc_->fd+1,&fds,NULL,NULL,&tout) > 0 ) {
+      if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
          // Zero copy buffers were not allocated
          if ( zeroCopyEn_ == false || desc_->rawBuff == NULL ) {
@@ -455,7 +467,7 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
             buff[0] = allocBuffer(desc_->bSize,NULL);
 
             // Attempt read, dest is not needed since only one lane/vc is open
-            rxSize[0] = dmaRead(desc_->fd, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
+            rxSize[0] = dmaRead(fd_, buff[0]->begin(), buff[0]->getAvailable(), rxFlags, rxError, NULL);
             if ( rxSize[0] <= 0 ) rxCount = rxSize[0];
             else rxCount = 1;
          }
@@ -464,7 +476,7 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
          else {
 
             // Attempt read, dest is not needed since only one lane/vc is open
-            rxCount = dmaReadBulkIndex(desc_->fd, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
+            rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 
             // Allocate a buffer, Mark zero copy meta with bit 31 set, lower bits are index
             for (x=0; x < rxCount; x++)
