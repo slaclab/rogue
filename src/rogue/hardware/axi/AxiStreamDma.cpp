@@ -56,13 +56,13 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogu
    // Entry already exists
    if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) {
       it->second->openCount++;
-      log->debug("Shared file descriptor already opened")
+      log->debug("Shared file descriptor already opened");
       return it->second;
    }
 
    // Create new record
    rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
-   log->debug("Opening new shared file descriptor")
+   log->debug("Opening new shared file descriptor");
 
    // We need to open device and create shared buffers
    if ( (ret->fd = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -80,8 +80,14 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogu
    // Should this just be a warning?
    ret->rawBuff = dmaMapDma(ret->fd,&(ret->bCount),&(ret->bSize));
    if ( ret->rawBuff == NULL ) {
+
+      ret->bCount = ioctl(ret->fd,DMA_Get_Buff_Count,0);
+
+      // New map limit should be 8K more than the total number of buffers we require
+      uint32_t mapSize = ret->bCount + 8192;
+
       ::close(ret->fd);
-      throw(rogue::GeneralError("AxiStreamDma::openShared","Failed to map dma buffers. Increase vm map limit: sysctl -w vm.max_map_count=262144"));
+      throw(rogue::GeneralError::create("AxiStreamDma::openShared","Failed to map dma buffers. Increase vm map limit to : sudo sysctl -w vm.max_map_count=%i",mapSize));
    }
    log->debug("Mapped buffers. bCount = %i, bSize=%i", ret->bCount, ret->bSize);
 
