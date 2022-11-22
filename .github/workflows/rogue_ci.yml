@@ -52,7 +52,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
+          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev libboost-python-dev
           pip install -r pip_requirements.txt
 
       # Flake 8 check
