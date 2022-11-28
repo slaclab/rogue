@@ -59,12 +59,25 @@ class DataReceiver(pr.Device,ris.Slave):
                                   description='Data Frame Container'))
 
     def countReset(self):
+        """ """
         self.FrameCount.set(0)
         self.ErrorCount.set(0)
         self.ByteCount.set(0)
         super().countReset()
 
     def _acceptFrame(self, frame):
+        """
+
+
+        Parameters
+        ----------
+        frame :
+
+
+        Returns
+        -------
+
+        """
         # Do nothing if not yet started or enabled
         if self.running is False or self.RxEnable.value() is False:
             return
@@ -94,6 +107,15 @@ class DataReceiver(pr.Device,ris.Slave):
         The user can use this method to process the data, by default a byte numpy array is generated
         This may include separating data, header and other payload sub-fields
         This all occurs with the frame lock held
+
+        Parameters
+        ----------
+        frame :
+
+
+        Returns
+        -------
+
         """
 
         # Get data from frame
@@ -105,10 +127,12 @@ class DataReceiver(pr.Device,ris.Slave):
         self.Updated.set(True,write=True)
 
     def _start(self):
+        """ """
         super()._start()
         self.RxEnable.set(value=self._enableOnStart)
 
     def _stop(self):
+        """ """
         self.RxEnable.set(value=False)
         super()._stop()
 
