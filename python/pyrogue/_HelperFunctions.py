@@ -27,6 +27,15 @@ def addLibraryPath(path):
     Append the past string or list of strings to the python library path.
     Passed strings can either be relative: ../path/to/library
     or absolute: /path/to/library
+
+    Parameters
+    ----------
+    path :
+
+
+    Returns
+    -------
+
     """
     if len(sys.argv) == 0:
         base = os.path.dirname(os.path.realpath(__file__))
@@ -72,10 +81,25 @@ def waitCntrlC():
     """Helper Function To Wait For Cntrl-c"""
 
     class monitorSignal(object):
+        """ """
+
         def __init__(self):
+            """ """
             self.runEnable = True
 
         def receiveSignal(self,*args):
+            """
+
+
+            Parameters
+            ----------
+            *args :
+
+
+            Returns
+            -------
+
+            """
             print("Got SIGTERM, exiting")
             self.runEnable = False
 
@@ -99,6 +123,17 @@ def streamConnect(source, dest):
     the _getStreamMaster call to return a contained master.
     Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
+
+    Parameters
+    ----------
+    source :
+
+    dest :
+
+
+    Returns
+    -------
+
     """
 
     # Is object a native master or wrapped?
@@ -119,6 +154,17 @@ def streamConnect(source, dest):
 def streamTap(source, tap):
     """
     DEPRECATED!
+
+    Parameters
+    ----------
+    source :
+
+    tap :
+
+
+    Returns
+    -------
+
     """
     #print("******** Stream TAP is deprecated. Use streamConnect instead. ********")
     streamConnect(source,tap)
@@ -132,6 +178,17 @@ def streamConnectBiDir(deviceA, deviceB):
     the _getStreamMaster call to return a contained master.
     Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
+
+    Parameters
+    ----------
+    deviceA :
+
+    deviceB :
+
+
+    Returns
+    -------
+
     """
 
     """
@@ -153,6 +210,17 @@ def busConnect(source,dest):
     the _getMemoryMaster call to return a contained master.
     Similarly dest is either a memory slave sub class or implements
     the _getMemorySlave call to return a contained slave.
+
+    Parameters
+    ----------
+    source :
+
+    dest :
+
+
+    Returns
+    -------
+
     """
 
     # Is object a native master or wrapped?
@@ -174,14 +242,40 @@ def yamlToData(stream='',fName=None):
     """
     Load yaml to data structure.
     A yaml string or file path may be passed.
+
+    Parameters
+    ----------
+    stream :
+         (Default value = '')
+    fName :
+         (Default value = None)
+
+    Returns
+    -------
+
     """
 
     log = pr.logInit(name='yamlToData')
 
     class PyrogueLoader(yaml.Loader):
+        """ """
         pass
 
     def include_mapping(loader, node):
+        """
+
+
+        Parameters
+        ----------
+        loader :
+
+        node :
+
+
+        Returns
+        -------
+
+        """
         rel = loader.construct_scalar(node)
 
         # Filename starts with absolute path
@@ -200,6 +294,20 @@ def yamlToData(stream='',fName=None):
         return yamlToData(fName=os.path.abspath(filename))
 
     def construct_mapping(loader, node):
+        """
+
+
+        Parameters
+        ----------
+        loader :
+
+        node :
+
+
+        Returns
+        -------
+
+        """
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
@@ -229,12 +337,38 @@ def yamlToData(stream='',fName=None):
 
 
 def dataToYaml(data):
-    """Convert data structure to yaml"""
+    """
+    Convert data structure to yaml
+
+    Parameters
+    ----------
+    data :
+
+
+    Returns
+    -------
+
+    """
 
     class PyrogueDumper(yaml.Dumper):
+        """ """
         pass
 
     def _var_representer(dumper, data):
+        """
+
+
+        Parameters
+        ----------
+        dumper :
+
+        data :
+
+
+        Returns
+        -------
+
+        """
         if type(data.value) == bool:
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
@@ -252,6 +386,20 @@ def dataToYaml(data):
             return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper, data):
+        """
+
+
+        Parameters
+        ----------
+        dumper :
+
+        data :
+
+
+        Returns
+        -------
+
+        """
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
     PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
@@ -261,6 +409,22 @@ def dataToYaml(data):
 
 
 def keyValueUpdate(old, key, value):
+    """
+
+
+    Parameters
+    ----------
+    old :
+
+    key :
+
+    value :
+
+
+    Returns
+    -------
+
+    """
     d = old
     parts = key.split('.')
     for part in parts[:-1]:
@@ -271,6 +435,20 @@ def keyValueUpdate(old, key, value):
 
 
 def dictUpdate(old, new):
+    """
+
+
+    Parameters
+    ----------
+    old :
+
+    new :
+
+
+    Returns
+    -------
+
+    """
     for k,v in new.items():
         if '.' in k:
             keyValueUpdate(old, k, v)
@@ -281,14 +459,56 @@ def dictUpdate(old, new):
 
 
 def yamlUpdate(old, new):
+    """
+
+
+    Parameters
+    ----------
+    old :
+
+    new :
+
+
+    Returns
+    -------
+
+    """
     dictUpdate(old, pr.yamlToData(new))
 
 
 def recreate_OrderedDict(name, values):
+    """
+
+
+    Parameters
+    ----------
+    name :
+
+    values :
+
+
+    Returns
+    -------
+
+    """
     return odict(values['items'])
 
 # Creation function wrapper for methods with variable args
 def functionWrapper(function, callArgs):
+    """
+
+
+    Parameters
+    ----------
+    function :
+
+    callArgs :
+
+
+    Returns
+    -------
+
+    """
 
     if function is None:
         return eval("lambda " + ", ".join(['function'] + callArgs) + ": None")
@@ -309,3 +529,94 @@ def functionWrapper(function, callArgs):
     ls = "lambda " + ", ".join(['function'] + callArgs) + ": function(" + ", ".join(args) + ")"
     #print("Creating Function: " + ls)
     return eval(ls)
+
+
+def genDocTableHeader(fields, indent, width):
+    """
+
+
+    Parameters
+    ----------
+    fields :
+
+    indent :
+
+    width :
+
+
+    Returns
+    -------
+
+    """
+    r = ' ' * indent + '+'
+
+    for _ in range(len(fields)):
+        r += '-' * width + '+'
+
+    r += '\n' + ' ' * indent + '|'
+
+    for f in fields:
+        r += f + ' '
+        r += ' ' * (width-len(f)-1) + '|'
+
+    r += '\n' + ' ' * indent + '+'
+
+    for _ in range(len(fields)):
+        r += '=' * width + '+'
+
+    return r
+
+def genDocTableRow(fields, indent, width):
+    """
+
+
+    Parameters
+    ----------
+    fields :
+
+    indent :
+
+    width :
+
+
+    Returns
+    -------
+
+    """
+    r = ' ' * indent + '|'
+
+    for f in fields:
+        r += f + ' '
+        r += ' ' * (width-len(f)-1) + '|'
+
+    r += '\n' + ' ' * indent + '+'
+
+    for _ in range(len(fields)):
+        r += '-' * width + '+'
+
+    return r
+
+def genDocDesc(desc, indent):
+    """
+
+
+    Parameters
+    ----------
+    desc :
+
+    indent :
+
+
+    Returns
+    -------
+
+    """
+    r = ''
+
+    for f in desc.split('.'):
+        f = f.strip()
+        if len(f) > 0:
+            r += ' ' * indent
+            r += '| ' + f + '.\n'
+
+    return r

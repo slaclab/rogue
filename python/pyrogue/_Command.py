@@ -16,11 +16,14 @@ import threading
 
 
 class CommandError(Exception):
-    """ Exception for command errors."""
+    """
+    Exception for command errors.
+    """
     pass
 
 
 class BaseCommand(pr.BaseVariable):
+    """ """
 
     def __init__(self, *,
                  name=None,
@@ -78,11 +81,13 @@ class BaseCommand(pr.BaseVariable):
     @pr.expose
     @property
     def arg(self):
+        """ """
         return self._arg
 
     @pr.expose
     @property
     def retTypeStr(self):
+        """ """
         return self._retTypeStr
 
     def __call__(self,arg=None):
@@ -100,7 +105,18 @@ class BaseCommand(pr.BaseVariable):
             return self._doFunc(arg)
 
     def _doFunc(self,arg):
-        """Execute command: TODO: Update comments"""
+        """
+        Execute command: TODO: Update comments
+
+        Parameters
+        ----------
+        arg :
+
+
+        Returns
+        -------
+
+        """
         if (self.parent.enable.value() is not True):
             return
 
@@ -127,22 +143,75 @@ class BaseCommand(pr.BaseVariable):
 
     @pr.expose
     def call(self,arg=None):
+        """
+
+
+        Parameters
+        ----------
+        arg : str
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
         return self.__call__(arg)
 
     @staticmethod
     def nothing():
+        """ """
         pass
 
     @staticmethod
     def read(cmd):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
+
+        """
         cmd.get(read=True)
 
     @staticmethod
     def setArg(cmd, arg):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
+
+        """
         cmd.set(arg)
 
     @staticmethod
     def setAndVerifyArg(cmd, arg):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
+
+        """
         cmd.set(arg)
         ret = cmd.get()
         if ret != arg:
@@ -150,24 +219,98 @@ class BaseCommand(pr.BaseVariable):
 
     @staticmethod
     def createToggle(sets):
+        """
+
+
+        Parameters
+        ----------
+        sets :
+
+
+        Returns
+        -------
+
+        """
         def toggle(cmd):
+            """
+
+
+            Parameters
+            ----------
+            cmd :
+
+
+            Returns
+            -------
+
+            """
             for s in sets:
                 cmd.set(s)
         return toggle
 
     @staticmethod
     def toggle(cmd):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
+
+        """
         cmd.set(1)
         cmd.set(0)
 
     @staticmethod
     def createTouch(value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         def touch(cmd):
+            """
+
+
+            Parameters
+            ----------
+            cmd :
+
+
+            Returns
+            -------
+
+            """
             cmd.set(value)
         return touch
 
     @staticmethod
     def touch(cmd, arg):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
+
+        """
         if arg is not None:
             cmd.set(arg)
         else:
@@ -175,48 +318,227 @@ class BaseCommand(pr.BaseVariable):
 
     @staticmethod
     def touchZero(cmd):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
+
+        """
         cmd.set(0)
 
     @staticmethod
     def touchOne(cmd):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
+
+        """
         cmd.set(1)
 
     @staticmethod
     def createPostedTouch(value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         def postedTouch(cmd):
+            """
+
+
+            Parameters
+            ----------
+            cmd :
+
+
+            Returns
+            -------
+
+            """
             cmd.post(value)
         return postedTouch
 
     @staticmethod
     def postedTouch(cmd, arg):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
+
+        """
         cmd.post(arg)
 
     @staticmethod
     def postedTouchOne(cmd):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
+
+        """
         cmd.post(1)
 
     @staticmethod
     def postedTouchZero(cmd):
+        """
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
+
+        """
         cmd.post(0)
 
     def replaceFunction(self, function):
+        """
+
+
+        Parameters
+        ----------
+        function :
+
+
+        Returns
+        -------
+
+        """
         self._function = function
         self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
+        """
+
+
+        Parameters
+        ----------
+        d :
+
+        writeEach :
+
+        modes :
+
+        incGroups :
+
+        excGroups :
+
+        keys :
+
+
+        Returns
+        -------
+
+        """
         pass
 
     def _getDict(self,modes,incGroups,excGroups,properties):
+        """
+
+
+        Parameters
+        ----------
+        modes :
+
+        incGroups :
+
+        excGroups :
+
+
+        Returns
+        -------
+
+        """
         return None
 
     def get(self,read=True, index=-1):
+        """
+
+
+        Parameters
+        ----------
+        read : bool
+             (Default value = True)
+        index : int
+             (Default value = -1)
+
+        Returns
+        -------
+
+        """
         return self._default
+
+    def _genDocs(self,file):
+        """
+
+
+        Parameters
+        ----------
+        file :
+
+
+        Returns
+        -------
+
+        """
+        print(f".. topic:: {self.path}",file=file)
+
+        print('',file=file)
+        print(pr.genDocDesc(self.description,4),file=file)
+        print('',file=file)
+
+        print(pr.genDocTableHeader(['Field','Value'],4,100),file=file)
+
+        for a in ['name', 'path', 'enum', 'typeStr', 'disp']:
+            astr = str(getattr(self,a))
+
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
+
 
 # LocalCommand is the same as BaseCommand
 LocalCommand = BaseCommand
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
+    """ """
 
     def __init__(self, *,
                  name,
@@ -265,6 +587,24 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             guiGroup=guiGroup)
 
     def set(self, value, *,  index=-1, write=True):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+        * :
+
+        index : int
+             (Default value = -1)
+        write : bool
+             (Default value = True)
+
+        Returns
+        -------
+
+        """
         self._log.debug("{}.set({})".format(self, value))
         try:
             self._set(value,index)
@@ -278,6 +618,22 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
 
     def get(self, *, index=-1, read=True):
+        """
+
+
+        Parameters
+        ----------
+        * :
+
+        index : int
+             (Default value = -1)
+        read : bool
+             (Default value = True)
+
+        Returns
+        -------
+
+        """
         try:
             if read:
                 pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
@@ -287,6 +643,29 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         except Exception as e:
             pr.logException(self._log,e)
             raise e
+
+    def _genDocs(self,file):
+        """
+
+
+        Parameters
+        ----------
+        file :
+
+
+        Returns
+        -------
+
+        """
+        BaseCommand._genDocs(self,file)
+
+        for a in ['offset', 'bitSize', 'bitOffset', 'varBytes']:
+            astr = str(getattr(self,a))
+
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
+
+
 
 # Alias, this should go away
 Command = BaseCommand

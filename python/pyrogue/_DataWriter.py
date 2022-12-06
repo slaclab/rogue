@@ -17,20 +17,37 @@ class DataWriter(pr.Device):
     """Special base class to control data files. TODO: Update comments"""
 
     def __init__(self, *, hidden=True, **kwargs):
-        """Initialize device class"""
+        """
+        Initialize device class
+        Parameters
+        ----------
+        * :
 
-        pr.Device.__init__(self, hidden=hidden, **kwargs)
+        hidden=True :
+
+        **kwargs :
+
+        Returns
+        -------
+
+        """
+
+        pr.Device.__init__(self,
+                           hidden=hidden,
+                           description = 'Class which stores received data to a file.',
+                           **kwargs)
 
         self.add(pr.LocalVariable(
             name='DataFile',
             mode='RW',
             value='',
-            description='Data file for storing frames for connected streams.'))
+            description='Data file for storing frames for connected streams.'
+                        'This is the file opened when the Open command is executed.'))
 
         self.add(pr.LocalCommand(
             name='Open',
             function=self._open,
-            description='Open data file.'))
+            description='Open data file. The new file name will be the contents of the DataFile variable.'))
 
         self.add(pr.LocalCommand(
             name='Close',
@@ -42,7 +59,7 @@ class DataWriter(pr.Device):
             mode='RO',
             value=False,
             localGet=self._isOpen,
-            description='Data file is open.'))
+            description='Status field which is True when the Data file is open.'))
 
         self.add(pr.LocalVariable(
             name='BufferSize',
@@ -67,7 +84,7 @@ class DataWriter(pr.Device):
             typeStr='UInt64',
             pollInterval=1,
             localGet=self._getCurrentSize,
-            description='Size of current data files(s) for current open session in bytes.'))
+            description='Size of current data files in bytes.'))
 
         self.add(pr.LocalVariable(
             name='TotalSize',
@@ -76,7 +93,7 @@ class DataWriter(pr.Device):
             typeStr='UInt64',
             pollInterval=1,
             localGet=self._getTotalSize,
-            description='Size of all data sub-files(s) for current open session in bytes.'))
+            description='Total bytes written.'))
 
         self.add(pr.LocalVariable(
             name='FrameCount',
@@ -85,7 +102,7 @@ class DataWriter(pr.Device):
             typeStr='UInt32',
             pollInterval=1,
             localGet=self._getFrameCount,
-            description='Frame in data file(s) for current open session in bytes.'))
+            description='Total frames received and written.'))
 
         self.add(pr.LocalCommand(
             name='AutoName',
@@ -105,11 +122,33 @@ class DataWriter(pr.Device):
         pass
 
     def _setBufferSize(self,value):
-        """Set buffer size. Override in sub-class"""
+        """
+        Set buffer size. Override in sub-class
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         pass
 
     def _setMaxFileSize(self,value):
-        """Set max file size. Override in sub-class"""
+        """
+        Set max file size. Override in sub-class
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         pass
 
     def _getCurrentSize(self):
@@ -128,6 +167,13 @@ class DataWriter(pr.Device):
         """
         Auto create data file name based upon date and time.
         Preserve file's location in path.
+
+        Parameters
+        ----------
+
+        Returns
+        -------
+
         """
         idx = self.DataFile.value().rfind('/')
 

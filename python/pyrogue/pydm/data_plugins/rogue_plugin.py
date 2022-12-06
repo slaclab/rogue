@@ -22,7 +22,6 @@ from pydm import utilities
 import pyrogue
 from pyrogue.interfaces import VirtualClient
 from matplotlib.pyplot import Figure
-import numpy as np
 import pickle
 
 

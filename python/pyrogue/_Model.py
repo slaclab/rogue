@@ -14,6 +14,20 @@ import rogue.interfaces.memory as rim
 import numpy as np
 
 def wordCount(bits, wordSize):
+    """
+
+
+    Parameters
+    ----------
+    bits :
+
+    wordSize :
+
+
+    Returns
+    -------
+
+    """
     ret = bits // wordSize
     if (bits % wordSize != 0 or bits == 0):
         ret += 1
@@ -21,10 +35,36 @@ def wordCount(bits, wordSize):
 
 
 def byteCount(bits):
+    """
+
+
+    Parameters
+    ----------
+    bits :
+
+
+    Returns
+    -------
+
+    """
     return wordCount(bits, 8)
 
 
 def reverseBits(value, bitSize):
+    """
+
+
+    Parameters
+    ----------
+    value :
+
+    bitSize :
+
+
+    Returns
+    -------
+
+    """
     result = 0
     for i in range(bitSize):
         result <<= 1
@@ -34,13 +74,27 @@ def reverseBits(value, bitSize):
 
 
 def twosComplement(value, bitSize):
-    """compute the 2's complement of int value"""
+    """
+    compute the 2's complement of int value
+
+    Parameters
+    ----------
+    value :
+
+    bitSize :
+
+
+    Returns
+    -------
+
+    """
     if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
         value = value - (1 << bitSize)      # compute negative value
     return value                            # return positive value as is
 
 
 class ModelMeta(type):
+    """ """
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
@@ -64,9 +118,11 @@ class Model(object, metaclass=ModelMeta):
     ----------
     bitSize : int
         Number of bits being represented
-
     binPoint : int
         Huh?
+
+    Returns
+    -------
 
     Attributes
     ----------
@@ -102,7 +158,6 @@ class Model(object, metaclass=ModelMeta):
 
     ndType: np.dtype
         numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
-
     """
 
     fstring     = None
@@ -122,6 +177,7 @@ class Model(object, metaclass=ModelMeta):
 
     @property
     def isBigEndian(self):
+        """ """
         return self.endianness == 'big'
 
     def toBytes(self, value):
@@ -130,12 +186,13 @@ class Model(object, metaclass=ModelMeta):
 
         Parameters
         ----------
-        value: obj
+        value : obj
             Python value to convert
 
         Returns
         -------
-        bytearray : Byte array representation of value
+
+
         """
         return None
 
@@ -146,12 +203,13 @@ class Model(object, metaclass=ModelMeta):
 
         Parameters
         ----------
-        ba: bytearray
+        ba : bytearray
             Byte array to extract value from
 
         Returns
         -------
-        obj : Converted python value
+
+
         """
         return None
 
@@ -161,45 +219,27 @@ class Model(object, metaclass=ModelMeta):
 
         Parameters
         ----------
-        string: str
+        string : str
             String representation of the value
 
         Returns
         -------
-        obj : Converted python value
+
+
         """
         return None
 
     def minValue(self):
-        """
-        Return the minimum value for the Model type
-
-        Returns
-        -------
-        obj: Minimum value
-        """
+        """Return the minimum value for the Model type"""
         return None
 
     def maxValue(self):
-        """
-        Return the maximum value for the Model type
-
-        Returns
-        -------
-        obj: Maximum value
-        """
+        """Return the maximum value for the Model type"""
         return None
 
 
 class UInt(Model):
-    """
-    Model class for unsigned integers
-
-    Parameters
-    ----------
-    bitSize : int
-        Number of bits being represented
-    """
+    """Model class for unsigned integers"""
 
     pytype      = int
     defaultdisp = '{:#x}'
@@ -212,26 +252,62 @@ class UInt(Model):
 
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     # Called by raw read/write and when bitsize > 64
     def fromBytes(self, ba):
+        """
+
+
+        Parameters
+        ----------
+        ba :
+
+
+        Returns
+        -------
+
+        """
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
     def fromString(self, string):
+        """
+
+
+        Parameters
+        ----------
+        string :
+
+
+        Returns
+        -------
+
+        """
         return int(string, 0)
 
     def minValue(self):
+        """ """
         return 0
 
     def maxValue(self):
+        """ """
         return (2**self.bitSize)-1
 
 
 class UIntReversed(UInt):
-    """
-    Model class for unsigned integers, stored in reverse bit order
-    """
+    """Model class for unsigned integers, stored in reverse bit order"""
 
     modelId    = rim.PyFunc # Not yet supported
     bitReverse = True
@@ -241,18 +317,40 @@ class UIntReversed(UInt):
         self.ndType = None
 
     def toBytes(self, value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         valueReverse = reverseBits(value, self.bitSize)
         return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(self, ba):
+        """
+
+
+        Parameters
+        ----------
+        ba :
+
+
+        Returns
+        -------
+
+        """
         valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
         return reverseBits(valueReverse, self.bitSize)
 
 
 class Int(UInt):
-    """
-    Model class for integers
-    """
+    """Model class for integers"""
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
@@ -265,6 +363,18 @@ class Int(UInt):
 
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
             newValue = value & (2**(self.bitSize)-1) # Strip upper bits
             ba = newValue.to_bytes(byteCount(self.bitSize), self.endianness, signed=False)
@@ -275,6 +385,18 @@ class Int(UInt):
 
     # Called by raw read/write and when bitsize > 64
     def fromBytes(self,ba):
+        """
+
+
+        Parameters
+        ----------
+        ba :
+
+
+        Returns
+        -------
+
+        """
         if (self.bitSize < (byteCount(self.bitSize)*8)):
             value = int.from_bytes(ba, self.endianness, signed=False)
 
@@ -287,6 +409,18 @@ class Int(UInt):
         return
 
     def fromString(self, string):
+        """
+
+
+        Parameters
+        ----------
+        string :
+
+
+        Returns
+        -------
+
+        """
         i = int(string, 0)
         # perform twos complement if necessary
         if i>0 and ((i >> self.bitSize) & 0x1 == 1):
@@ -294,37 +428,28 @@ class Int(UInt):
         return i
 
     def minValue(self):
+        """ """
         return -1 * ((2**(self.bitSize-1))-1)
 
     def maxValue(self):
+        """ """
         return (2**(self.bitSize-1))-1
 
 
 class UIntBE(UInt):
-    """
-    Model class for big endian unsigned integers
-    """
+    """Model class for big endian unsigned integers"""
 
     endianness = 'big'
 
 
 class IntBE(Int):
-    """
-    Model class for big endian integers
-    """
+    """Model class for big endian integers"""
 
     endianness = 'big'
 
 
 class Bool(Model):
-    """
-    Model class for booleans
-
-    Parameters
-    ----------
-    bitSize : int
-        Number of bits being represented
-    """
+    """Model class for booleans"""
 
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
@@ -336,24 +461,31 @@ class Bool(Model):
         self.ndType = np.dtype(bool)
 
     def fromString(self, string):
+        """
+
+
+        Parameters
+        ----------
+        string :
+
+
+        Returns
+        -------
+
+        """
         return str.lower(string) == "true"
 
     def minValue(self):
+        """ """
         return 0
 
     def maxValue(self):
+        """ """
         return 1
 
 
 class String(Model):
-    """
-    Model class for strings
-
-    Parameters
-    ----------
-    bitSize : int
-        Number of bits being represented
-    """
+    """Model class for strings"""
 
     encoding    = 'utf-8'
     defaultdisp = '{}'
@@ -365,18 +497,23 @@ class String(Model):
         self.name = f'{self.__class__.__name__}({self.bitSize//8})'
 
     def fromString(self, string):
+        """
+
+
+        Parameters
+        ----------
+        string :
+
+
+        Returns
+        -------
+
+        """
         return string
 
 
 class Float(Model):
-    """
-    Model class for 32-bit floats
-
-    Parameters
-    ----------
-    bitSize : int
-        Number of bits being represented, must be 32
-    """
+    """Model class for 32-bit floats"""
 
     defaultdisp = '{:f}'
     pytype      = float
@@ -390,24 +527,31 @@ class Float(Model):
         self.ndType = np.dtype(np.float32)
 
     def fromString(self, string):
+        """
+
+
+        Parameters
+        ----------
+        string :
+
+
+        Returns
+        -------
+
+        """
         return float(string)
 
     def minValue(self):
+        """ """
         return -3.4e38
 
     def maxValue(self):
+        """ """
         return 3.4e38
 
 
 class Double(Float):
-    """
-    Model class for 64-bit floats
-
-    Parameters
-    ----------
-    bitSize : int
-        Number of bits being represented, must be 64
-    """
+    """Model class for 64-bit floats"""
 
     fstring = 'd'
     modelId = rim.Double
@@ -419,25 +563,23 @@ class Double(Float):
         self.ndType = np.dtype(np.float64)
 
     def minValue(self):
+        """ """
         return -1.80e308
 
     def maxValue(self):
+        """ """
         return 1.80e308
 
 
 class FloatBE(Float):
-    """
-    Model class for 32-bit floats stored as big endian
-    """
+    """Model class for 32-bit floats stored as big endian"""
 
     endianness = 'big'
     fstring = '!f'
 
 
 class DoubleBE(Double):
-    """
-    Model class for 64-bit floats stored as big endian
-    """
+    """Model class for 64-bit floats stored as big endian"""
 
     endianness = 'big'
     fstring = '!d'
