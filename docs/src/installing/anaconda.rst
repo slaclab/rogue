@@ -31,7 +31,7 @@ Use the following command to add anaconda to your environment. This can be added
 Creating A Rogue Environment
 ============================
 
-The next step is to create ana anaconda environment which includes the Rogue package.
+The next step is to create an anaconda environment which includes the Rogue package.
 
 .. code::
 
@@ -45,7 +45,7 @@ If you already have an anaconda environment that you would like to install Rogue
 
    $ conda install -c tidair-tag -c tidair-packages -c conda-forge rogue
 
-The above commands will install the latest version of Rogue from the master branch. If you want to install the pre-release version of Rogue, run the following:
+The above commands will install the latest version of Rogue from the `main` branch. If you want to install the `pre-release` version of Rogue, run the following:
 
 .. code::
 
@@ -55,7 +55,7 @@ Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_5.8.0 -c tidair-packages -c conda-forge -c pydm-tag -c tidair-tag rogue=v5.8.0
+   $ conda create -n rogue_vX.Y.Z -c tidair-packages -c conda-forge -c tidair-tag rogue=vX.Y.Z
 
 Using Rogue In Anaconda
 =======================
