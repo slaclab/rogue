@@ -64,6 +64,23 @@ class Process(pr.Device):
             pollInterval=1.0,
             description="Process status message. Prefixed with 'Error:' if an error occurred."))
 
+        self.add(pr.LocalVariable(
+            name = 'Step',
+            mode = 'RO',
+            value = 1,
+            description = "Total number of loops steps for the process"))
+
+        self.add(pr.LocalVariable(
+            name = 'TotalSteps',
+            mode = 'RO',
+            value = 1,
+            description = "Total number of loops steps for the process"))
+
+        @self.command(hidden=True)
+        def Advance():
+            self.Step += 1
+            self.Progress.set(self.Step.value()/self.TotalSteps.value())
+
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
             self.add(self._argVar)
@@ -126,6 +143,7 @@ class Process(pr.Device):
         if self._function is not None:
             self.Message.setDisp("Running")
             self.Progress.set(0.0)
+            self.Step.set(0)
 
             if self._argVar is not None:
                 arg = self._argVar.get()
