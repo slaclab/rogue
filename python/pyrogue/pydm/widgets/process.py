@@ -114,15 +114,9 @@ class Process(PyDMFrame):
                     w.showStepExponent      = False
                     w.writeOnPress          = True
 
-                elif v.mode == 'RO' and not v.isCommand:
-                    w = PyDMLabel(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
-                    w.showUnits             = False
-                    w.precisionFromPV       = True
-                    w.alarmSensitiveContent = False
-                    w.alarmSensitiveBorder  = True
                 else:
                     w = PyRogueLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
-                    w.showUnits             = False
+                    w.showUnits             = True
                     w.precisionFromPV       = True
                     w.alarmSensitiveContent = False
                     w.alarmSensitiveBorder  = True
