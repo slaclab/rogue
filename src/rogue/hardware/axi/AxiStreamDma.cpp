@@ -27,6 +27,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <stdlib.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rha = rogue::hardware::axi;

@@ -22,6 +22,7 @@
 #include <rogue/GeneralError.h>
 #include <rogue/Helpers.h>
 #include <unistd.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpu = rogue::protocols::udp;

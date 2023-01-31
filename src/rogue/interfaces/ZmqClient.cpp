@@ -25,6 +25,7 @@
 #include <rogue/GeneralError.h>
 #include <string>
 #include <zmq.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 #ifndef NO_PYTHON

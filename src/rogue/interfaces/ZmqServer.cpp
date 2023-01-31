@@ -22,6 +22,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <string>
 #include <zmq.h>

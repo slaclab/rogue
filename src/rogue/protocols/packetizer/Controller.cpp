@@ -29,6 +29,7 @@
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <math.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpp = rogue::protocols::packetizer;

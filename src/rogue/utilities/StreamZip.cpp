@@ -28,6 +28,7 @@
 #include <rogue/GilRelease.h>
 #include <memory>
 #include <bzlib.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;

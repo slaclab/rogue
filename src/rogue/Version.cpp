@@ -24,6 +24,7 @@
 #include <unistd.h>
 #include <string>
 #include <sstream>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 #ifndef NO_PYTHON

@@ -19,6 +19,7 @@
 #ifndef __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
 #define __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
 #include <stdint.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <vector>
 #include <rogue/EnableSharedFromThis.h>
