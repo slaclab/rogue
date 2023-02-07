@@ -32,6 +32,7 @@
 #include <memory>
 #include <cmath>
 #include <exception>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;

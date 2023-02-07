@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpu = rogue::protocols::udp;

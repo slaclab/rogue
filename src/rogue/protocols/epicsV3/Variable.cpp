@@ -26,6 +26,7 @@
 #include <rogue/GilRelease.h>
 #include <memory>
 #include <memory>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 #ifdef __MACH__

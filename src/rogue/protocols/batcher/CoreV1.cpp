@@ -51,6 +51,7 @@
 #include <rogue/protocols/batcher/Data.h>
 #include <rogue/GeneralError.h>
 #include <math.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpb = rogue::protocols::batcher;

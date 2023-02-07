@@ -25,6 +25,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <fdManager.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpe = rogue::protocols::epicsV3;

@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rha = rogue::hardware::axi;

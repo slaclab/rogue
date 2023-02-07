@@ -26,6 +26,7 @@
 #include <cstring>
 #include <memory>
 #include <string.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <rogue/GilRelease.h>
 #include <rogue/Logging.h>
