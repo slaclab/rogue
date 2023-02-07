@@ -55,7 +55,7 @@ Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_v5.16.0 -c tidair-packages -c conda-forge -c tidair-tag rogue=v5.16.0
+   $ conda create -n rogue_v5.16.1 -c tidair-packages -c conda-forge -c tidair-tag rogue=v5.16.1
 
 Using Rogue In Anaconda
 =======================
