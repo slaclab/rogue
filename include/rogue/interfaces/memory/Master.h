@@ -25,7 +25,7 @@
 #include <map>
 #include <thread>
 #include <memory>
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

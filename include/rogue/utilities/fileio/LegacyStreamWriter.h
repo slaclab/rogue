@@ -22,9 +22,9 @@
 **/
 #ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
-#include <rogue/utilities/fileio/StreamWriter.h>
+#include "rogue/utilities/fileio/StreamWriter.h"
 #include <memory>
-#include <rogue/interfaces/stream/Frame.h>
+#include "rogue/interfaces/stream/Frame.h"
 #include <stdint.h>
 #include <thread>
 #include <map>

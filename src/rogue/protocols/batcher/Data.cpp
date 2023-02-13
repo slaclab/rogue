@@ -18,9 +18,9 @@
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/protocols/batcher/Data.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/protocols/batcher/Data.h"
 
 namespace rpb = rogue::protocols::batcher;
 namespace ris = rogue::interfaces::stream;

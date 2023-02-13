@@ -19,11 +19,11 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_TCP_SERVER_H__
 #define __ROGUE_INTERFACES_STREAM_TCP_SERVER_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/TcpCore.h>
-#include <rogue/Logging.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/TcpCore.h"
+#include "rogue/Logging.h"
 #include <thread>
 #include <memory>
 #include <stdint.h>

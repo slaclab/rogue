@@ -18,12 +18,12 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/protocols/epicsV3/Variable.h>
-#include <rogue/protocols/epicsV3/Pv.h>
-#include <rogue/protocols/epicsV3/Server.h>
-#include <rogue/GeneralError.h>
-#include <rogue/ScopedGil.h>
-#include <rogue/GilRelease.h>
+#include "rogue/protocols/epicsV3/Variable.h"
+#include "rogue/protocols/epicsV3/Pv.h"
+#include "rogue/protocols/epicsV3/Server.h"
+#include "rogue/GeneralError.h"
+#include "rogue/ScopedGil.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 #include <memory>
 #define __STDC_FORMAT_MACROS

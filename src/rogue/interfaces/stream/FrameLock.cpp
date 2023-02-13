@@ -17,9 +17,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/GilRelease.h>
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 
 namespace ris = rogue::interfaces::stream;

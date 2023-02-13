@@ -14,7 +14,7 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/XvcConnection.h>
+#include "rogue/protocols/xilinx/XvcConnection.h"
 
 #include <netinet/tcp.h>
 #include <arpa/inet.h>

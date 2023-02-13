@@ -23,11 +23,11 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
-#include <rogue/interfaces/module.h>
-#include <rogue/interfaces/memory/module.h>
-#include <rogue/interfaces/stream/module.h>
-#include <rogue/interfaces/ZmqServer.h>
-#include <rogue/interfaces/ZmqClient.h>
+#include "rogue/interfaces/module.h"
+#include "rogue/interfaces/memory/module.h"
+#include "rogue/interfaces/stream/module.h"
+#include "rogue/interfaces/ZmqServer.h"
+#include "rogue/interfaces/ZmqClient.h"
 
 namespace bp  = boost::python;
 

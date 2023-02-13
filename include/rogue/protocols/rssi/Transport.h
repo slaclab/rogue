@@ -16,10 +16,10 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
 #define __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 #include <stdint.h>
-#include <rogue/Queue.h>
+#include "rogue/Queue.h"
 #include <memory>
 
 namespace rogue {

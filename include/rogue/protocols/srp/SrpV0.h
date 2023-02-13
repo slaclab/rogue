@@ -18,10 +18,10 @@
 #define __ROGUE_PROTOCOLS_SRP_SRPV0_H__
 #include <stdint.h>
 #include <thread>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/Logging.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/Logging.h"
 #include <memory>
 
 namespace rogue {

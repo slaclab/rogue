@@ -17,14 +17,14 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Master.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Master.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

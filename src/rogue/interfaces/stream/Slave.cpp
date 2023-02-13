@@ -21,17 +21,17 @@
 **/
 #include <unistd.h>
 #include <string>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
-#include <rogue/Logging.h>
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
+#include "rogue/Logging.h"
 #include <string.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

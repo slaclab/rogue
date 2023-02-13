@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include <memory>
 
-#include <rogue/interfaces/stream/Frame.h>
+#include "rogue/interfaces/stream/Frame.h"
 
 namespace rogue {
    namespace interfaces {

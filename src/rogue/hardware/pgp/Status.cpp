@@ -19,7 +19,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/hardware/pgp/Status.h>
+#include "rogue/hardware/pgp/Status.h"
 #include <memory>
 
 namespace rhp = rogue::hardware::pgp;

@@ -18,7 +18,7 @@
 #define __ROGUE_HARDWARE_PGP_EVR_STATUS_H__
 #include <stdint.h>
 #include <memory>
-#include <rogue/hardware/drivers/PgpDriver.h>
+#include "rogue/hardware/drivers/PgpDriver.h"
 
 namespace rogue {
    namespace hardware {

@@ -20,12 +20,12 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/utilities/fileio/StreamReader.h>
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
-#include <rogue/utilities/fileio/StreamWriter.h>
-#include <rogue/utilities/fileio/LegacyStreamWriter.h>
-#include <rogue/utilities/fileio/LegacyStreamReader.h>
-#include <rogue/utilities/fileio/module.h>
+#include "rogue/utilities/fileio/StreamReader.h"
+#include "rogue/utilities/fileio/StreamWriterChannel.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
+#include "rogue/utilities/fileio/LegacyStreamWriter.h"
+#include "rogue/utilities/fileio/LegacyStreamReader.h"
+#include "rogue/utilities/fileio/module.h"
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>

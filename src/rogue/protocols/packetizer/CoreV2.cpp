@@ -17,13 +17,13 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/packetizer/CoreV2.h>
-#include <rogue/protocols/packetizer/Transport.h>
-#include <rogue/protocols/packetizer/Application.h>
-#include <rogue/protocols/packetizer/ControllerV2.h>
-#include <rogue/GeneralError.h>
+#include "rogue/protocols/packetizer/CoreV2.h"
+#include "rogue/protocols/packetizer/Transport.h"
+#include "rogue/protocols/packetizer/Application.h"
+#include "rogue/protocols/packetizer/ControllerV2.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;

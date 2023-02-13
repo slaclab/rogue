@@ -16,7 +16,7 @@
 **/
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_READER_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_READER_H__
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/interfaces/stream/Master.h"
 #include <thread>
 #include <stdint.h>
 #include <mutex>

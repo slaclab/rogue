@@ -16,7 +16,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_UDP_CORE_H__
 #define __ROGUE_PROTOCOLS_UDP_CORE_H__
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 #include <stdint.h>
 #include <netdb.h>
 #include <sys/socket.h>

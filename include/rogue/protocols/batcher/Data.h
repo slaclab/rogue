@@ -23,8 +23,8 @@
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
 
 namespace rogue {
    namespace protocols {

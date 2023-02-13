@@ -17,15 +17,15 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/protocols/packetizer/ControllerV1.h>
-#include <rogue/protocols/packetizer/Transport.h>
-#include <rogue/protocols/packetizer/Application.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/protocols/packetizer/ControllerV1.h"
+#include "rogue/protocols/packetizer/Transport.h"
+#include "rogue/protocols/packetizer/Application.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <math.h>
 #include <stdlib.h>
 #include <unistd.h>

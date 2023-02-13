@@ -22,9 +22,9 @@
 #define __ROGUE_INTERFACES_STREAM_RATE_DROP_H__
 #include <stdint.h>
 #include <memory>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/Logging.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/Logging.h"
 
 namespace rogue {
    namespace interfaces {

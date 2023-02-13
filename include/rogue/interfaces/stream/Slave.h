@@ -24,9 +24,9 @@
 
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Pool.h>
-#include <rogue/Logging.h>
-#include <rogue/EnableSharedFromThis.h>
+#include "rogue/interfaces/stream/Pool.h"
+#include "rogue/Logging.h"
+#include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

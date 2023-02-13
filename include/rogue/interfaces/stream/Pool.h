@@ -23,8 +23,8 @@
 
 #include <thread>
 #include <memory>
-#include <rogue/Queue.h>
-#include <rogue/EnableSharedFromThis.h>
+#include "rogue/Queue.h"
+#include "rogue/EnableSharedFromThis.h"
 
 namespace rogue {
    namespace interfaces {

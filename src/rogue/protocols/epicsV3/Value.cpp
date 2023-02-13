@@ -18,9 +18,9 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/protocols/epicsV3/Value.h>
-#include <rogue/protocols/epicsV3/Pv.h>
-#include <rogue/GeneralError.h>
+#include "rogue/protocols/epicsV3/Value.h"
+#include "rogue/protocols/epicsV3/Pv.h"
+#include "rogue/GeneralError.h"
 #include <memory>
 #include <memory>
 #include <aitTypes.h>

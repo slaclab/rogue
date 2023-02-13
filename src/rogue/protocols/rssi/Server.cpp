@@ -14,13 +14,13 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/rssi/Server.h>
-#include <rogue/protocols/rssi/Transport.h>
-#include <rogue/protocols/rssi/Application.h>
-#include <rogue/protocols/rssi/Controller.h>
-#include <rogue/GeneralError.h>
+#include "rogue/protocols/rssi/Server.h"
+#include "rogue/protocols/rssi/Transport.h"
+#include "rogue/protocols/rssi/Application.h"
+#include "rogue/protocols/rssi/Controller.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;

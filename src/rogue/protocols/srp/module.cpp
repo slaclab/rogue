@@ -23,10 +23,10 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
-#include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/srp/SrpV0.h>
-#include <rogue/protocols/srp/SrpV3.h>
-#include <rogue/protocols/srp/Cmd.h>
+#include "rogue/protocols/srp/module.h"
+#include "rogue/protocols/srp/SrpV0.h"
+#include "rogue/protocols/srp/SrpV3.h"
+#include "rogue/protocols/srp/Cmd.h"
 
 namespace bp  = boost::python;
 namespace rps = rogue::protocols::srp;

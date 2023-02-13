@@ -17,19 +17,19 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/TcpClient.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/memory/TcpClient.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/GeneralError.h"
 #include <string.h>
 #include <cstring>
 #include <memory>
 #include <string.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
-#include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
+#include "rogue/GilRelease.h"
+#include "rogue/Logging.h"
 #include <zmq.h>
 
 namespace rim = rogue::interfaces::memory;

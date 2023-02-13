@@ -23,7 +23,7 @@
 #include <vector>
 #include <memory>
 
-#include <rogue/interfaces/memory/Slave.h>
+#include "rogue/interfaces/memory/Slave.h"
 #include <thread>
 
 #ifndef NO_PYTHON

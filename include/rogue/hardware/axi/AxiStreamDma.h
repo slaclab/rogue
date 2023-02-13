@@ -13,13 +13,13 @@
 **/
 #ifndef __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
 #define __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 #include <thread>
 #include <memory>
 #include <stdint.h>
 #include <map>
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 
 
 namespace rogue {

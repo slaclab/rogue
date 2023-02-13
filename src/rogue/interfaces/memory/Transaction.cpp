@@ -19,15 +19,15 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/interfaces/memory/Master.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/interfaces/memory/Master.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/GeneralError.h"
 #include <memory>
 #include <stdarg.h>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
 #include <sys/time.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

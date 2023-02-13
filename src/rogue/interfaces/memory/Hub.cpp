@@ -21,10 +21,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/Hub.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
+#include "rogue/interfaces/memory/Hub.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
 #include <memory>
 #include <cmath>
 

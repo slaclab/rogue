@@ -19,14 +19,14 @@
 
 #define PY_SSIZE_T_CLEAN
 
-#include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Variable.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/memory/Block.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Variable.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
+#include "rogue/GeneralError.h"
 #include <sys/time.h>
 #include <string.h>
 #include <memory>

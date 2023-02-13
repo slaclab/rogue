@@ -29,7 +29,7 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/protocols/epicsV3/Value.h>
+#include "rogue/protocols/epicsV3/Value.h"
 
 namespace rogue {
    namespace protocols {

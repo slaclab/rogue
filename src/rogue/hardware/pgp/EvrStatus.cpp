@@ -19,7 +19,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/hardware/pgp/EvrStatus.h>
+#include "rogue/hardware/pgp/EvrStatus.h"
 #include <memory>
 
 namespace rhp = rogue::hardware::pgp;

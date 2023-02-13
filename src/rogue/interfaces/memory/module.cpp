@@ -18,18 +18,18 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/interfaces/memory/module.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Master.h>
-#include <rogue/interfaces/memory/Hub.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/interfaces/memory/TcpClient.h>
-#include <rogue/interfaces/memory/TcpServer.h>
-#include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/Variable.h>
-#include <rogue/interfaces/memory/Emulate.h>
+#include "rogue/interfaces/memory/module.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Master.h"
+#include "rogue/interfaces/memory/Hub.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/interfaces/memory/TcpClient.h"
+#include "rogue/interfaces/memory/TcpServer.h"
+#include "rogue/interfaces/memory/Block.h"
+#include "rogue/interfaces/memory/Variable.h"
+#include "rogue/interfaces/memory/Emulate.h"
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>

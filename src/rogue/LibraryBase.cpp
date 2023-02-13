@@ -17,9 +17,9 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/LibraryBase.h>
-#include <rogue/GeneralError.h>
-#include <rogue/interfaces/memory/Constants.h>
+#include "rogue/LibraryBase.h"
+#include "rogue/GeneralError.h"
+#include "rogue/interfaces/memory/Constants.h"
 #include <stdint.h>
 #include <algorithm>
 #include <vector>

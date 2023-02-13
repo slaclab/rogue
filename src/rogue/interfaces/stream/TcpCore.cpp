@@ -17,16 +17,16 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/TcpCore.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/TcpCore.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/GeneralError.h"
 #include <string.h>
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
+#include "rogue/GilRelease.h"
+#include "rogue/Logging.h"
 #include <zmq.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

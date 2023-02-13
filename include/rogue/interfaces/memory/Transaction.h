@@ -25,8 +25,8 @@
 #include <thread>
 #include <mutex>
 #include <condition_variable>
-#include <rogue/EnableSharedFromThis.h>
-#include <rogue/Logging.h>
+#include "rogue/EnableSharedFromThis.h"
+#include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

@@ -24,9 +24,9 @@
 #define __ROGUE_INTERFACES_MEMORY_HUB_H__
 #include <stdint.h>
 
-#include <rogue/interfaces/memory/Master.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/Logging.h>
+#include "rogue/interfaces/memory/Master.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/Logging.h"
 #include <thread>
 
 #ifndef NO_PYTHON

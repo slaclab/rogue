@@ -16,9 +16,9 @@
 **/
 #ifndef __ROGUE_HARDWARE_PGP_PGP_CARD_H__
 #define __ROGUE_HARDWARE_PGP_PGP_CARD_H__
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/hardware/drivers/PgpDriver.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/hardware/drivers/PgpDriver.h"
 #include <thread>
 #include <stdint.h>
 #include <memory>

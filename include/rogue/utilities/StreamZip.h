@@ -20,8 +20,8 @@
 #define __ROGUE_UTILITIES_STREAM_ZIP_H__
 #include <stdint.h>
 #include <thread>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
 
 #include <memory>
 namespace rogue {

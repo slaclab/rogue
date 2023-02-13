@@ -16,12 +16,12 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/memory/Variable.h>
-#include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/memory/Variable.h"
+#include "rogue/interfaces/memory/Block.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
+#include "rogue/GeneralError.h"
 #include <memory>
 #include <cmath>
 #include <string.h>

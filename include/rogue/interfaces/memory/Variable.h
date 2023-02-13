@@ -22,7 +22,7 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <vector>
-#include <rogue/EnableSharedFromThis.h>
+#include "rogue/EnableSharedFromThis.h"
 #include <memory>
 #include <string>
 

@@ -17,8 +17,8 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
 
 #include <stdint.h>
 #include <exception>

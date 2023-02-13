@@ -18,12 +18,12 @@
  * ----------------------------------------------------------------------------
 **/
 #include <unistd.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/GilRelease.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/GilRelease.h"
+#include "rogue/GeneralError.h"
 #include <memory>
 
 namespace ris  = rogue::interfaces::stream;

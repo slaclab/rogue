@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/hardware/pgp/Info.h>
+#include "rogue/hardware/pgp/Info.h"
 #include <memory>
 #include <string>
 

@@ -18,7 +18,7 @@
 #define __ROGUE_PROTOCOLS_RSSI_HEADER_H__
 #include <stdint.h>
 #include <memory>
-#include <rogue/interfaces/stream/Frame.h>
+#include "rogue/interfaces/stream/Frame.h"
 
 namespace rogue {
    namespace protocols {

@@ -23,11 +23,11 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
-#include <rogue/protocols/packetizer/module.h>
-#include <rogue/protocols/packetizer/Application.h>
-#include <rogue/protocols/packetizer/Transport.h>
-#include <rogue/protocols/packetizer/Core.h>
-#include <rogue/protocols/packetizer/CoreV2.h>
+#include "rogue/protocols/packetizer/module.h"
+#include "rogue/protocols/packetizer/Application.h"
+#include "rogue/protocols/packetizer/Transport.h"
+#include "rogue/protocols/packetizer/Core.h"
+#include "rogue/protocols/packetizer/CoreV2.h"
 
 namespace bp  = boost::python;
 namespace rpp = rogue::protocols::packetizer;

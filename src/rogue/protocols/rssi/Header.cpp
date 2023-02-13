@@ -18,13 +18,13 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/rssi/Header.h>
-#include <rogue/GeneralError.h>
+#include "rogue/protocols/rssi/Header.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <stdint.h>
 #include <iomanip>
-#include <rogue/interfaces/stream/Buffer.h>
+#include "rogue/interfaces/stream/Buffer.h"
 #include <arpa/inet.h>
 #include <iostream>
 #include <sstream>

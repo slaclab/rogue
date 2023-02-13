@@ -21,7 +21,7 @@
 #include <stdint.h>
 #include <vector>
 
-#include <rogue/interfaces/memory/Master.h>
+#include "rogue/interfaces/memory/Master.h"
 #include <thread>
 #include <memory>
 

@@ -19,7 +19,7 @@
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/interfaces/stream/Master.h"
 
 namespace rogue {
    namespace protocols {

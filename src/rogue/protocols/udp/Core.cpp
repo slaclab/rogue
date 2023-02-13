@@ -17,10 +17,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/protocols/udp/Core.h>
-#include <rogue/Logging.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Helpers.h>
+#include "rogue/protocols/udp/Core.h"
+#include "rogue/Logging.h"
+#include "rogue/GeneralError.h"
+#include "rogue/Helpers.h"
 #include <unistd.h>
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>

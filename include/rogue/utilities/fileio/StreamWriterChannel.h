@@ -20,7 +20,7 @@
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
 #include <stdint.h>
 #include <thread>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/interfaces/stream/Slave.h"
 #include <memory>
 
 namespace rogue {

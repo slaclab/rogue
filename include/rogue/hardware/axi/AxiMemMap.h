@@ -16,14 +16,14 @@
 **/
 #ifndef __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Transaction.h>
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Transaction.h"
 #include <thread>
 #include <memory>
 #include <mutex>
 #include <stdint.h>
-#include <rogue/Queue.h>
-#include <rogue/Logging.h>
+#include "rogue/Queue.h"
+#include "rogue/Logging.h"
 
 namespace rogue {
    namespace hardware {

@@ -22,10 +22,10 @@
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-#include <rogue/hardware/module.h>
-#include <rogue/hardware/pgp/module.h>
-#include <rogue/hardware/axi/module.h>
-#include <rogue/hardware/MemMap.h>
+#include "rogue/hardware/module.h"
+#include "rogue/hardware/pgp/module.h"
+#include "rogue/hardware/axi/module.h"
+#include "rogue/hardware/MemMap.h"
 
 namespace bp  = boost::python;
 

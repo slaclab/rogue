@@ -25,16 +25,16 @@
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
-#include <rogue/protocols/module.h>
-#include <rogue/protocols/packetizer/module.h>
-#include <rogue/protocols/rssi/module.h>
-#include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/udp/module.h>
-#include <rogue/protocols/batcher/module.h>
-#include <rogue/protocols/xilinx/module.h>
+#include "rogue/protocols/module.h"
+#include "rogue/protocols/packetizer/module.h"
+#include "rogue/protocols/rssi/module.h"
+#include "rogue/protocols/srp/module.h"
+#include "rogue/protocols/udp/module.h"
+#include "rogue/protocols/batcher/module.h"
+#include "rogue/protocols/xilinx/module.h"
 
 #if DO_EPICS_V3
-   #include <rogue/protocols/epicsV3/module.h>
+   #include "rogue/protocols/epicsV3/module.h"
 #endif
 
 namespace bp  = boost::python;

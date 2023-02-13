@@ -30,8 +30,8 @@
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
 #include <map>
-#include <rogue/Queue.h>
-#include <rogue/Logging.h>
+#include "rogue/Queue.h"
+#include "rogue/Logging.h"
 
 namespace rogue {
    namespace protocols {

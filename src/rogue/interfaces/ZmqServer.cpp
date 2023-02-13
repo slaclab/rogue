@@ -17,11 +17,11 @@
 
 #define PY_SSIZE_T_CLEAN
 
-#include <rogue/interfaces/ZmqServer.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/ZmqServer.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <string>

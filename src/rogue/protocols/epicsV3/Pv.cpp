@@ -18,10 +18,10 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/protocols/epicsV3/Pv.h>
-#include <rogue/protocols/epicsV3/Value.h>
-#include <rogue/protocols/epicsV3/Server.h>
-#include <rogue/protocols/epicsV3/Work.h>
+#include "rogue/protocols/epicsV3/Pv.h"
+#include "rogue/protocols/epicsV3/Value.h"
+#include "rogue/protocols/epicsV3/Server.h"
+#include "rogue/protocols/epicsV3/Work.h"
 #include <time.h>
 
 namespace rpe = rogue::protocols::epicsV3;

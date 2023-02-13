@@ -17,9 +17,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/Buffer.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/interfaces/stream/Buffer.h"
 
 namespace ris = rogue::interfaces::stream;
 

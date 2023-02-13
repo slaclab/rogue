@@ -20,18 +20,18 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/interfaces/module.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Fifo.h>
-#include <rogue/interfaces/stream/Filter.h>
-#include <rogue/interfaces/stream/TcpCore.h>
-#include <rogue/interfaces/stream/TcpClient.h>
-#include <rogue/interfaces/stream/TcpServer.h>
-#include <rogue/interfaces/stream/RateDrop.h>
-#include <rogue/interfaces/stream/module.h>
+#include "rogue/interfaces/module.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Fifo.h"
+#include "rogue/interfaces/stream/Filter.h"
+#include "rogue/interfaces/stream/TcpCore.h"
+#include "rogue/interfaces/stream/TcpClient.h"
+#include "rogue/interfaces/stream/TcpServer.h"
+#include "rogue/interfaces/stream/RateDrop.h"
+#include "rogue/interfaces/stream/module.h"
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>

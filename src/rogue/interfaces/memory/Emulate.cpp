@@ -18,11 +18,11 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/interfaces/memory/Emulate.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/GilRelease.h>
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Emulate.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 #include <string.h>
 #define __STDC_FORMAT_MACROS

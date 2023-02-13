@@ -17,7 +17,7 @@
 #ifndef __ROGUE_ZMQ_SERVER_H__
 #define __ROGUE_ZMQ_SERVER_H__
 #include <thread>
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 #include <memory>
 
 #ifndef NO_PYTHON

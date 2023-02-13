@@ -19,14 +19,14 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_V2_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_V2_H__
-#include <rogue/protocols/packetizer/Controller.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/protocols/packetizer/Controller.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 #include <memory>
 #include <stdint.h>
-#include <rogue/Queue.h>
-#include <rogue/Logging.h>
-#include <rogue/EnableSharedFromThis.h>
+#include "rogue/Queue.h"
+#include "rogue/Logging.h"
+#include "rogue/EnableSharedFromThis.h"
 
 namespace rogue {
    namespace protocols {

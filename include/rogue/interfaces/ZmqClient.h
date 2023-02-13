@@ -18,7 +18,7 @@
 #define __ROGUE_ZMQ_CLIENT_H__
 #include <thread>
 #include <memory>
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

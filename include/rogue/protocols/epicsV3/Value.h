@@ -29,7 +29,7 @@
 #include <gdd.h>
 #include <gddApps.h>
 #include <gddAppFuncTable.h>
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 
 namespace rogue {
    namespace protocols {

@@ -20,13 +20,13 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/utilities/module.h>
-#include <rogue/utilities/Prbs.h>
-#include <rogue/utilities/StreamZip.h>
-#include <rogue/utilities/StreamUnZip.h>
-#include <rogue/utilities/fileio/module.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/utilities/module.h"
+#include "rogue/utilities/Prbs.h"
+#include "rogue/utilities/StreamZip.h"
+#include "rogue/utilities/StreamUnZip.h"
+#include "rogue/utilities/fileio/module.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>

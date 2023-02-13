@@ -18,7 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 #include <stdint.h>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 
 #ifndef NO_PYTHON
 

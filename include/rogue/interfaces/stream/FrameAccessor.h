@@ -23,8 +23,8 @@
 #define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <memory>
-#include <rogue/GeneralError.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
+#include "rogue/GeneralError.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
 
 namespace rogue {
    namespace interfaces {

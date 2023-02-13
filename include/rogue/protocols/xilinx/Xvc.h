@@ -17,14 +17,14 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_H__
 
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/protocols/xilinx/XvcServer.h>
-#include <rogue/protocols/xilinx/XvcConnection.h>
-#include <rogue/protocols/xilinx/JtagDriver.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
-#include <rogue/Queue.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/protocols/xilinx/XvcServer.h"
+#include "rogue/protocols/xilinx/XvcConnection.h"
+#include "rogue/protocols/xilinx/JtagDriver.h"
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
+#include "rogue/Queue.h"
 
 #include <thread>
 #include <stdint.h>

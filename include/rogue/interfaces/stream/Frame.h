@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <vector>
 #include <mutex>
-#include <rogue/EnableSharedFromThis.h>
+#include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

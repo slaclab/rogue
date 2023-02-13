@@ -26,12 +26,12 @@
 #include <string>
 #include <fstream>
 #include <istream>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/memory/Variable.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Block.h>
-#include <rogue/Logging.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/memory/Variable.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Block.h"
+#include "rogue/Logging.h"
 
 namespace rogue {
 

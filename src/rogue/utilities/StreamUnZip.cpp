@@ -18,14 +18,14 @@
 **/
 #include <unistd.h>
 #include <stdarg.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/utilities/StreamUnZip.h>
-#include <rogue/GeneralError.h>
-#include <rogue/GilRelease.h>
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/utilities/StreamUnZip.h"
+#include "rogue/GeneralError.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 #include <bzlib.h>
 #define __STDC_FORMAT_MACROS

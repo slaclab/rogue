@@ -16,7 +16,7 @@
 **/
 #ifndef __ROGUE_HARDWARE_PGP_PCI_STATUS_H__
 #define __ROGUE_HARDWARE_PGP_PCI_STATUS_H__
-#include <rogue/hardware/drivers/PgpDriver.h>
+#include "rogue/hardware/drivers/PgpDriver.h"
 #include <stdint.h>
 #include <memory>
 
