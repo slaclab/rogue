@@ -18,9 +18,10 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #include "rogue/hardware/pgp/Info.h"
+
 #include <memory>
 #include <string>
 
@@ -29,34 +30,32 @@ namespace rhp = rogue::hardware::pgp;
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Create the info class with pointer
 rhp::InfoPtr rhp::Info::create() {
-   rhp::InfoPtr r = std::make_shared<rhp::Info>();
-   return(r);
+    rhp::InfoPtr r = std::make_shared<rhp::Info>();
+    return (r);
 }
 
 //! Return `build string` in string format
 std::string rhp::Info::buildString() {
-   return(std::string(buildStamp));
+    return (std::string(buildStamp));
 }
 
 void rhp::Info::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rhp::Info, rhp::InfoPtr>("Info",bp::no_init)
-      .def_readonly("serial",     &rhp::Info::serial)
-      .def_readonly("type",       &rhp::Info::type)
-      .def_readonly("version",    &rhp::Info::version)
-      .def_readonly("laneMask",   &rhp::Info::laneMask)
-      .def_readonly("vcPerMask",  &rhp::Info::vcPerMask)
-      .def_readonly("pgpRate",    &rhp::Info::pgpRate)
-      .def_readonly("promPrgEn",  &rhp::Info::promPrgEn)
-      .def_readonly("evrSupport", &rhp::Info::evrSupport)
-      .def("buildString",         &rhp::Info::buildString)
-   ;
+    bp::class_<rhp::Info, rhp::InfoPtr>("Info", bp::no_init)
+        .def_readonly("serial", &rhp::Info::serial)
+        .def_readonly("type", &rhp::Info::type)
+        .def_readonly("version", &rhp::Info::version)
+        .def_readonly("laneMask", &rhp::Info::laneMask)
+        .def_readonly("vcPerMask", &rhp::Info::vcPerMask)
+        .def_readonly("pgpRate", &rhp::Info::pgpRate)
+        .def_readonly("promPrgEn", &rhp::Info::promPrgEn)
+        .def_readonly("evrSupport", &rhp::Info::evrSupport)
+        .def("buildString", &rhp::Info::buildString);
 #endif
 }
-

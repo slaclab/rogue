@@ -18,8 +18,9 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #include "rogue/hardware/pgp/EvrStatus.h"
+
 #include <memory>
 
 namespace rhp = rogue::hardware::pgp;
@@ -27,27 +28,25 @@ namespace rhp = rogue::hardware::pgp;
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Create the info class with pointer
 rhp::EvrStatusPtr rhp::EvrStatus::create() {
-   rhp::EvrStatusPtr r = std::make_shared<rhp::EvrStatus>();
-   return(r);
+    rhp::EvrStatusPtr r = std::make_shared<rhp::EvrStatus>();
+    return (r);
 }
 
-void rhp::EvrStatus::setup_python () {
+void rhp::EvrStatus::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rhp::EvrStatus, rhp::EvrStatusPtr >("EvrStatus",bp::no_init)
-      .def_readonly("lane",          &rhp::EvrStatus::lane)
-      .def_readonly("linkErrors",    &rhp::EvrStatus::linkErrors)
-      .def_readonly("linkUp",        &rhp::EvrStatus::linkUp)
-      .def_readonly("runStatus",     &rhp::EvrStatus::runStatus)
-      .def_readonly("evrSeconds",    &rhp::EvrStatus::evrSeconds)
-      .def_readonly("runCounter",    &rhp::EvrStatus::runCounter)
-      .def_readonly("acceptCounter", &rhp::EvrStatus::acceptCounter)
-   ;
+    bp::class_<rhp::EvrStatus, rhp::EvrStatusPtr>("EvrStatus", bp::no_init)
+        .def_readonly("lane", &rhp::EvrStatus::lane)
+        .def_readonly("linkErrors", &rhp::EvrStatus::linkErrors)
+        .def_readonly("linkUp", &rhp::EvrStatus::linkUp)
+        .def_readonly("runStatus", &rhp::EvrStatus::runStatus)
+        .def_readonly("evrSeconds", &rhp::EvrStatus::evrSeconds)
+        .def_readonly("runCounter", &rhp::EvrStatus::runCounter)
+        .def_readonly("acceptCounter", &rhp::EvrStatus::acceptCounter);
 #endif
 }
-

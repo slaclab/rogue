@@ -19,15 +19,16 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_MEMORY_HUB_H__
 #define __ROGUE_INTERFACES_MEMORY_HUB_H__
 #include <stdint.h>
 
+#include <thread>
+
+#include "rogue/Logging.h"
 #include "rogue/interfaces/memory/Master.h"
 #include "rogue/interfaces/memory/Slave.h"
-#include "rogue/Logging.h"
-#include <thread>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
@@ -35,165 +36,156 @@
 #endif
 
 namespace rogue {
-   namespace interfaces {
-      namespace memory {
+namespace interfaces {
+namespace memory {
 
-         //! Memory interface Hub device
-         /** The memory bus Hub serves as both a Slave and a Master for memory transactions. It
-          * will accept a Transaction from an attached Master and pass it down to the next
-          * level Slave or Hub device. It will apply its local offset address to the transaction
-          * as it is passed down to the next level.
-          *
-          * A Hub can be sub-classed in either Python or C++ is order to further manipulate the
-          * transaction data on the way down or convert the initial Transaction into multiple
-          * transactions to the next level. This can be useful to hide complex windows memory
-          * spaces or transactions that require multiplied steps be performed in hardware.
-          *
-          * If a non zero min and max transaction size are passed at creation this Hub will
-          * behave as if it is a new root Slave memory device in the tree. This is useful in
-          * cases where this Hub will master a paged address or other virtual address space.
-          *
-          * A pyrogue.Device instance is the most typical Hub used in Rogue.
-          */
-         class Hub : public Master, public Slave {
+//! Memory interface Hub device
+/** The memory bus Hub serves as both a Slave and a Master for memory transactions. It
+ * will accept a Transaction from an attached Master and pass it down to the next
+ * level Slave or Hub device. It will apply its local offset address to the transaction
+ * as it is passed down to the next level.
+ *
+ * A Hub can be sub-classed in either Python or C++ is order to further manipulate the
+ * transaction data on the way down or convert the initial Transaction into multiple
+ * transactions to the next level. This can be useful to hide complex windows memory
+ * spaces or transactions that require multiplied steps be performed in hardware.
+ *
+ * If a non zero min and max transaction size are passed at creation this Hub will
+ * behave as if it is a new root Slave memory device in the tree. This is useful in
+ * cases where this Hub will master a paged address or other virtual address space.
+ *
+ * A pyrogue.Device instance is the most typical Hub used in Rogue.
+ */
+class Hub : public Master, public Slave {
+    // Offset address of hub
+    uint64_t offset_;
 
-               // Offset address of hub
-               uint64_t offset_;
+    // Flag if this is a base slave
+    bool root_;
 
-               // Flag if this is a base slave
-               bool root_;
+    //! Log
+    std::shared_ptr<rogue::Logging> log_;
 
-               //! Log
-               std::shared_ptr<rogue::Logging> log_;
-           
+  public:
+    //! Class factory which returns a pointer to a Hub (HubPtr)
+    /** Exposed to Python as rogue.interfaces.memory.Hub()
+     *
+     * @param offset The offset of this Hub device
+     * @param min The min transaction size, 0 if not a virtual memory space root
+     * @param min The max transaction size, 0 if not a virtual memory space root
+     */
+    static std::shared_ptr<rogue::interfaces::memory::Hub> create(uint64_t offset, uint32_t min, uint32_t max);
 
-            public:
+    // Setup class for use in python
+    static void setup_python();
 
-               //! Class factory which returns a pointer to a Hub (HubPtr)
-               /** Exposed to Python as rogue.interfaces.memory.Hub()
-                *
-                * @param offset The offset of this Hub device
-                * @param min The min transaction size, 0 if not a virtual memory space root
-                * @param min The max transaction size, 0 if not a virtual memory space root
-                */
-           static std::shared_ptr<rogue::interfaces::memory::Hub> create (uint64_t offset, uint32_t min, uint32_t max);
+    // Create a Hub device with a given offset
+    Hub(uint64_t offset, uint32_t min, uint32_t max);
 
-               // Setup class for use in python
-               static void setup_python();
+    // Destroy the Hub
+    ~Hub();
 
-               // Create a Hub device with a given offset
-           Hub(uint64_t offset, uint32_t min, uint32_t max);
+    //! Get offset of this Hub
+    /** Return the offset address of this Hub
+     *
+     * Exposed as _getOffset() to Python
+     * @return 64-bit address offset
+     */
+    uint64_t getOffset();
 
-               // Destroy the Hub
-               ~Hub();
+    //! Get full address of this Hub
+    /** Return the full address of this Hub, including local offset.
+     *
+     * Exposed as _getAddress() to Python
+     * @return 64-bit address
+     */
+    uint64_t getAddress();
 
-               //! Get offset of this Hub
-               /** Return the offset address of this Hub
-                *
-                * Exposed as _getOffset() to Python
-                * @return 64-bit address offset
-                */
-               uint64_t getOffset();
+    //! Interface to service the getSlaveId request from an attached master
+    /** By default the Hub will forward this request to the next level.
+     * A hub may want to override this when mastering a virtual address space
+     * such as a paged address map. Otherwise incorrect overlap errors may be
+     * generated by the PyRogue Root.
+     *
+     * Not exposed to Python
+     * @return 32-bit slave ID
+     */
+    uint32_t doSlaveId();
 
-               //! Get full address of this Hub
-               /** Return the full address of this Hub, including local offset.
-                *
-                * Exposed as _getAddress() to Python
-                * @return 64-bit address
-                */
-               uint64_t getAddress();
+    //! Interface to service the getSlaveName request from an attached master
+    /** By default the Hub will forward this request to the next level.
+     * A hub may want to override this when mastering a virtual address space
+     * such as a paged address map. Otherwise incorrect overlap errors may be
+     * generated by the PyRogue Root.
+     *
+     * Not exposed to Python
+     * @return slave name
+     */
+    std::string doSlaveName();
 
-               //! Interface to service the getSlaveId request from an attached master
-               /** By default the Hub will forward this request to the next level.
-                * A hub may want to override this when mastering a virtual address space
-                * such as a paged address map. Otherwise incorrect overlap errors may be
-                * generated by the PyRogue Root.
-                *
-                * Not exposed to Python
-                * @return 32-bit slave ID
-                */
-               uint32_t doSlaveId();
+    //! Interface to service the getMinAccess request from an attached master
+    /** This Hub will forward this request to the next level device.                 *
+     * Not exposed to Python
+     * @return Min transaction access size
+     */
+    uint32_t doMinAccess();
 
-               //! Interface to service the getSlaveName request from an attached master
-               /** By default the Hub will forward this request to the next level.
-                * A hub may want to override this when mastering a virtual address space
-                * such as a paged address map. Otherwise incorrect overlap errors may be
-                * generated by the PyRogue Root.
-                *
-                * Not exposed to Python
-                * @return slave name
-                */
-               std::string doSlaveName();
+    //! Interface to service the getMaxAccess request from an attached master
+    /** This Hub will forward this request to the next level device. A Hub
+     * sub-class is allowed to override this method.
+     *
+     * Not exposed to Python
+     * @return Max transaction access size
+     */
+    uint32_t doMaxAccess();
 
-               //! Interface to service the getMinAccess request from an attached master
-               /** This Hub will forward this request to the next level device.                 *
-                * Not exposed to Python
-                * @return Min transaction access size
-                */
-               uint32_t doMinAccess();
+    //! Interface to service the getAddress request from an attached master
+    /** This Hub will forward this request to the next level device and apply
+     * the local address offset. A Hub sub-class is allowed to override this method.
+     *
+     * Not exposed to Python
+     * @return Max transaction access size
+     */
+    uint64_t doAddress();
 
-               //! Interface to service the getMaxAccess request from an attached master
-               /** This Hub will forward this request to the next level device. A Hub
-                * sub-class is allowed to override this method.
-                *
-                * Not exposed to Python
-                * @return Max transaction access size
-                */
-               uint32_t doMaxAccess();
+    //! Interface to service the transaction request from an attached master
+    /** This Hub will forward this request to the next level device and apply
+     * the local address offset.
+     *
+     * It is possible for this method to be overridden in either a Python or C++
+     * subclass. Examples of sub-classing a Hub are included elsewhere in this
+     * document.
+     *
+     * Exposed to Python as _doTransaction()
+     * @param transaction Transaction pointer as TransactionPtr
+     */
+    virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+};
 
-               //! Interface to service the getAddress request from an attached master
-               /** This Hub will forward this request to the next level device and apply
-                * the local address offset. A Hub sub-class is allowed to override this method.
-                *
-                * Not exposed to Python
-                * @return Max transaction access size
-                */
-               uint64_t doAddress();
-
-               //! Interface to service the transaction request from an attached master
-               /** This Hub will forward this request to the next level device and apply
-                * the local address offset.
-                *
-                * It is possible for this method to be overridden in either a Python or C++
-                * subclass. Examples of sub-classing a Hub are included elsewhere in this
-                * document.
-                *
-                * Exposed to Python as _doTransaction()
-                * @param transaction Transaction pointer as TransactionPtr
-                */
-               virtual void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
-
-         };
-
-         //! Alias for using shared pointer as HubPtr
-         typedef std::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
+//! Alias for using shared pointer as HubPtr
+typedef std::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
 
 #ifndef NO_PYTHON
 
-         // Memory Hub class, wrapper to enable python overload of virtual methods
-         class HubWrap :
-            public rogue::interfaces::memory::Hub,
-            public boost::python::wrapper<rogue::interfaces::memory::Hub> {
+// Memory Hub class, wrapper to enable python overload of virtual methods
+class HubWrap : public rogue::interfaces::memory::Hub, public boost::python::wrapper<rogue::interfaces::memory::Hub> {
+  public:
+    // Constructor
+    HubWrap(uint64_t offset, uint32_t min, uint32_t max);
 
-            public:
+    // Post a transaction. Master will call this method with the access attributes.
+    void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               // Constructor
-           HubWrap(uint64_t offset, uint32_t min, uint32_t max);
+    // Post a transaction. Master will call this method with the access attributes.
+    void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+};
 
-               // Post a transaction. Master will call this method with the access attributes.
-               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
-
-               // Post a transaction. Master will call this method with the access attributes.
-               void defDoTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
+// Convienence
+typedef std::shared_ptr<rogue::interfaces::memory::HubWrap> HubWrapPtr;
 #endif
 
-      }
-   }
-}
+}  // namespace memory
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

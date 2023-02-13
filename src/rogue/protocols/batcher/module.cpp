@@ -18,36 +18,33 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #include <RogueConfig.h>
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
-#include "rogue/protocols/batcher/module.h"
 #include "rogue/protocols/batcher/CoreV1.h"
 #include "rogue/protocols/batcher/Data.h"
-#include "rogue/protocols/batcher/SplitterV1.h"
 #include "rogue/protocols/batcher/InverterV1.h"
+#include "rogue/protocols/batcher/SplitterV1.h"
+#include "rogue/protocols/batcher/module.h"
 
-namespace bp  = boost::python;
+namespace bp = boost::python;
 
 void rogue::protocols::batcher::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.batcher"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.batcher"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("batcher") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("batcher") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rogue::protocols::batcher::CoreV1::setup_python();
-   rogue::protocols::batcher::Data::setup_python();
-   rogue::protocols::batcher::SplitterV1::setup_python();
-   rogue::protocols::batcher::InverterV1::setup_python();
-
+    rogue::protocols::batcher::CoreV1::setup_python();
+    rogue::protocols::batcher::Data::setup_python();
+    rogue::protocols::batcher::SplitterV1::setup_python();
+    rogue::protocols::batcher::InverterV1::setup_python();
 }
-

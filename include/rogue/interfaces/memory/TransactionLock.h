@@ -16,78 +16,76 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_LOCK_H__
 #include <stdint.h>
-#include <thread>
+
 #include <memory>
+#include <thread>
 
 namespace rogue {
-   namespace interfaces {
-      namespace memory {
+namespace interfaces {
+namespace memory {
 
-         class Transaction;
+class Transaction;
 
-         //! Transaction Lock
-         /**
-          * The TransactionLock is a container for holding a lock on Transaction data while accessing
-          * that data. This lock ensures that Transaction is not destroyed when the Slave is updating
-          * its data and result. This object is created by calling Transaction::lock().
-          */
-         class TransactionLock {
+//! Transaction Lock
+/**
+ * The TransactionLock is a container for holding a lock on Transaction data while accessing
+ * that data. This lock ensures that Transaction is not destroyed when the Slave is updating
+ * its data and result. This object is created by calling Transaction::lock().
+ */
+class TransactionLock {
+    std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
+    bool locked_;
 
-               std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
-               bool locked_;
+  public:
+    // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
+    static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create(
+        std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-            public:
+    // Transaction lock constructor
+    TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
-               // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
-               static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create (
-                  std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+    // Setup class for use in python
+    static void setup_python();
 
-               // Transaction lock constructor
-               TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+    // Destroy and release the transaction lock
+    ~TransactionLock();
 
-               // Setup class for use in python
-               static void setup_python();
+    //! Lock associated Transaction if not locked
+    /** Exposed as lock() to Python
+     */
+    void lock();
 
-               // Destroy and release the transaction lock
-               ~TransactionLock();
+    //! UnLock associated transaction if locked
+    /** Exposed as unlock() to Python
+     */
+    void unlock();
 
-               //! Lock associated Transaction if not locked
-               /** Exposed as lock() to Python
-                */
-               void lock();
+    //! Enter method for python, does nothing
+    /** This exists only to support the
+     * with call in python.
+     *
+     * Exposed as __enter__() to Python
+     */
+    void enter();
 
-               //! UnLock associated transaction if locked
-               /** Exposed as unlock() to Python
-                */
-               void unlock();
+    //! Exit method for python, does nothing
+    /** This exists only to support the
+     * with call in python.
+     *
+     * Exposed as __exit__() to Python
+     */
+    void exit(void*, void*, void*);
+};
 
-               //! Enter method for python, does nothing
-               /** This exists only to support the
-                * with call in python.
-                *
-                * Exposed as __enter__() to Python
-                */
-               void enter();
+//! Alias for using shared pointer as TransactionLockPtr
+typedef std::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
 
-               //! Exit method for python, does nothing
-               /** This exists only to support the
-                * with call in python.
-                *
-                * Exposed as __exit__() to Python
-                */
-               void exit(void *, void *, void *);
-         };
-
-         //! Alias for using shared pointer as TransactionLockPtr
-         typedef std::shared_ptr<rogue::interfaces::memory::TransactionLock> TransactionLockPtr;
-
-      }
-   }
-}
+}  // namespace memory
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

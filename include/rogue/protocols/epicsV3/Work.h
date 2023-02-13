@@ -16,62 +16,56 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_WORK_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_WORK_H__
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/python.hpp>
 #include <casdef.h>
-#include <memory>
 #include <gdd.h>
-#include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <gddApps.h>
+
+#include <boost/python.hpp>
+#include <memory>
 
 namespace rogue {
-   namespace protocols {
-      namespace epicsV3 {
+namespace protocols {
+namespace epicsV3 {
 
-         class Value;
+class Value;
 
-         class Work {
-            private:
+class Work {
+  private:
+    std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
+    casAsyncReadIO* read_;
+    casAsyncWriteIO* write_;
+    gdd* gValue_;
 
-               std::shared_ptr<rogue::protocols::epicsV3::Value> value_;
-               casAsyncReadIO  * read_;
-               casAsyncWriteIO * write_;
-               gdd * gValue_;
+  public:
+    //! Create a work container for write
+    static std::shared_ptr<rogue::protocols::epicsV3::Work>
+    createWrite(std::shared_ptr<rogue::protocols::epicsV3::Value> value, const gdd& wValue, casAsyncWriteIO* write);
 
-            public:
+    //! Create a work container for read
+    static std::shared_ptr<rogue::protocols::epicsV3::Work>
+    createRead(std::shared_ptr<rogue::protocols::epicsV3::Value> value, gdd& rValue, casAsyncReadIO* read);
 
-               //! Create a work container for write
-               static std::shared_ptr<rogue::protocols::epicsV3::Work> createWrite (
-                      std::shared_ptr<rogue::protocols::epicsV3::Value> value,
-                      const gdd & wValue, casAsyncWriteIO *write);
+    //! Class creation
+    Work(std::shared_ptr<rogue::protocols::epicsV3::Value> value, const gdd& wValue, casAsyncWriteIO* write);
 
-               //! Create a work container for read
-               static std::shared_ptr<rogue::protocols::epicsV3::Work> createRead (
-                      std::shared_ptr<rogue::protocols::epicsV3::Value> value,
-                      gdd & rValue, casAsyncReadIO *read);
+    Work(std::shared_ptr<rogue::protocols::epicsV3::Value> value, gdd& rValue, casAsyncReadIO* read);
 
-               //! Class creation
-               Work ( std::shared_ptr<rogue::protocols::epicsV3::Value> value,
-                     const gdd & wValue, casAsyncWriteIO * write );
+    ~Work();
 
-               Work ( std::shared_ptr<rogue::protocols::epicsV3::Value> value,
-                     gdd & rValue, casAsyncReadIO * read);
+    void execute();
+};
 
-               ~Work();
-
-               void execute ();
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::epicsV3::Work> WorkPtr;
-      }
-   }
-}
+// Convienence
+typedef std::shared_ptr<rogue::protocols::epicsV3::Work> WorkPtr;
+}  // namespace epicsV3
+}  // namespace protocols
+}  // namespace rogue
 
 #endif
-

@@ -13,43 +13,43 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_HARDWARE_PGP_INFO_H__
 #define __ROGUE_HARDWARE_PGP_INFO_H__
-#include "rogue/hardware/drivers/PgpDriver.h"
 #include <stdint.h>
+
 #include <memory>
 
+#include "rogue/hardware/drivers/PgpDriver.h"
+
 namespace rogue {
-   namespace hardware {
-      namespace pgp {
+namespace hardware {
+namespace pgp {
 
-         //! PGP Card Info
-         /** This class contains the build & version information for the PGP card.
-          * This class is a C++ wrapper around the PgpInfo structure used by the
-          * lower level driver. All structure members are exposed to Python using
-          * their original names and can be read directly.
-          */
-         class Info : public PgpInfo {
-            public:
+//! PGP Card Info
+/** This class contains the build & version information for the PGP card.
+ * This class is a C++ wrapper around the PgpInfo structure used by the
+ * lower level driver. All structure members are exposed to Python using
+ * their original names and can be read directly.
+ */
+class Info : public PgpInfo {
+  public:
+    // Create the info class with pointer
+    static std::shared_ptr<rogue::hardware::pgp::Info> create();
 
-               // Create the info class with pointer
-               static std::shared_ptr<rogue::hardware::pgp::Info> create();
+    // Setup class in python
+    static void setup_python();
 
-               // Setup class in python
-               static void setup_python();
+    //! Return `build string` in string format
+    /** Exposed to python as buildString()
+     */
+    std::string buildString();
+};
 
-               //! Return `build string` in string format
-               /** Exposed to python as buildString()
-                */
-               std::string buildString();
-         };
-
-         //! Alias for using shared pointer as InfoPtr
-         typedef std::shared_ptr<rogue::hardware::pgp::Info> InfoPtr;
-      }
-   }
-}
+//! Alias for using shared pointer as InfoPtr
+typedef std::shared_ptr<rogue::hardware::pgp::Info> InfoPtr;
+}  // namespace pgp
+}  // namespace hardware
+}  // namespace rogue
 
 #endif
-

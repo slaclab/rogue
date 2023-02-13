@@ -16,70 +16,68 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_VARIABLE_H__
 
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
-#include <boost/python.hpp>
-#include <thread>
-#include <memory>
 #include <casdef.h>
 #include <gdd.h>
-#include <gddApps.h>
 #include <gddAppFuncTable.h>
+#include <gddApps.h>
+
+#include <boost/python.hpp>
+#include <memory>
+#include <thread>
+
 #include "rogue/protocols/epicsV3/Value.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace epicsV3 {
+namespace protocols {
+namespace epicsV3 {
 
-         class Variable: public Value {
-               boost::python::object var_;
+class Variable : public Value {
+    boost::python::object var_;
 
-               bool syncRead_;
+    bool syncRead_;
 
-               // Lock held when called
-               void fromPython(boost::python::object value);
+    // Lock held when called
+    void fromPython(boost::python::object value);
 
-               // Use to extract values from python while checking for errors
-               template<typename T>
-               T extractValue(boost::python::object value);
+    // Use to extract values from python while checking for errors
+    template <typename T>
+    T extractValue(boost::python::object value);
 
-            protected:
+  protected:
+    std::string setAttr_;
 
-               std::string setAttr_;
+  public:
+    //! Setup class in python
+    static void setup_python();
 
-            public:
+    //! Class creation
+    Variable(std::string epicsName, boost::python::object p, bool syncRead);
 
-               //! Setup class in python
-               static void setup_python();
+    ~Variable();
 
-               //! Class creation
-               Variable ( std::string epicsName, boost::python::object p, bool syncRead );
+    void varUpdated(std::string path, boost::python::object value);
 
-               ~Variable ();
+    // Update alarm status, lock held when called
+    void updateAlarm(boost::python::object status, boost::python::object severity);
 
-               void varUpdated(std::string path, boost::python::object value);
+    // Lock held when called
+    bool valueGet();
 
-               // Update alarm status, lock held when called
-               void updateAlarm(boost::python::object status, boost::python::object severity);
+    // Lock held when called
+    bool valueSet();
+};
 
-               // Lock held when called
-               bool valueGet();
+// Convienence
+typedef std::shared_ptr<rogue::protocols::epicsV3::Variable> VariablePtr;
 
-               // Lock held when called
-               bool valueSet();
-
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::epicsV3::Variable> VariablePtr;
-
-      }
-   }
-}
+}  // namespace epicsV3
+}  // namespace protocols
+}  // namespace rogue
 
 #endif
-

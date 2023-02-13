@@ -14,72 +14,68 @@
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
-#include "rogue/utilities/fileio/StreamWriter.h"
-#include <memory>
-#include "rogue/interfaces/stream/Frame.h"
 #include <stdint.h>
-#include <thread>
+
 #include <map>
+#include <memory>
+#include <thread>
+
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
 
 namespace rogue {
-   namespace utilities {
-      namespace fileio {
+namespace utilities {
+namespace fileio {
 
-         class StreamWriterChannel;
+class StreamWriterChannel;
 
-         //! Stream writer central class
-         class LegacyStreamWriter : public StreamWriter {
+//! Stream writer central class
+class LegacyStreamWriter : public StreamWriter {
+  protected:
+    //! Write data to file. Called from StreamWriterChannel
+    virtual void writeFile(uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-            protected:
+  public:
+    // Data types.
+    // Count is n*32bits for type = 0, byte count for all others
+    enum DataType {
+        RawData     = 0,
+        XmlConfig   = 1,
+        XmlStatus   = 2,
+        XmlRunStart = 3,
+        XmlRunStop  = 4,
+        XmlRunTime  = 5,
+        YamlData    = 6
+    };
 
-               //! Write data to file. Called from StreamWriterChannel
-               virtual void writeFile ( uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    //! Class creation
+    static std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> create();
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               // Data types.
-               // Count is n*32bits for type = 0, byte count for all others
-               enum DataType {
-                 RawData     = 0,
-                 XmlConfig   = 1,
-                 XmlStatus   = 2,
-                 XmlRunStart = 3,
-                 XmlRunStop  = 4,
-                 XmlRunTime  = 5,
-                 YamlData    = 6
-               };
+    //! Creator
+    LegacyStreamWriter();
 
-               //! Class creation
-               static std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> create ();
+    //! Deconstructor
+    ~LegacyStreamWriter();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Get a port
+    std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getDataChannel();
+    std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getYamlChannel();
+};
 
-               //! Creator
-               LegacyStreamWriter();
-
-               //! Deconstructor
-               ~LegacyStreamWriter();
-
-               //! Get a port
-               std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getDataChannel();
-               std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> getYamlChannel();
-
-
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> LegacyStreamWriterPtr;
-      }
-   }
-}
+// Convenience
+typedef std::shared_ptr<rogue::utilities::fileio::LegacyStreamWriter> LegacyStreamWriterPtr;
+}  // namespace fileio
+}  // namespace utilities
+}  // namespace rogue
 #endif
-
