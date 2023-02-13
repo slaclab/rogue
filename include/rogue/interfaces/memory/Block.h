@@ -48,7 +48,9 @@ template <class T>
 inline boost::python::list std_vector_to_py_list(std::vector<T> vector) {
     typename std::vector<T>::iterator iter;
     boost::python::list list;
-    for (iter = vector.begin(); iter != vector.end(); ++iter) { list.append(*iter); }
+    for (iter = vector.begin(); iter != vector.end(); ++iter) {
+        list.append(*iter);
+    }
     return list;
 }
 

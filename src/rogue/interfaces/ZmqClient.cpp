@@ -285,7 +285,9 @@ void rogue::interfaces::ZmqClientWrap::doUpdate(bp::object data) {
     if (bp::override f = this->get_override("_doUpdate")) {
         try {
             f(data);
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
     rogue::interfaces::ZmqClient::doUpdate(data);
 }

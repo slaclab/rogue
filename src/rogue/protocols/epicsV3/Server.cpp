@@ -176,7 +176,9 @@ void rpe::Server::runThread() {
     while (threadEn_) {
         try {
             fileDescriptorManager.process(0.01);
-        } catch (...) { log_->error("Caught exception in server thread"); }
+        } catch (...) {
+            log_->error("Caught exception in server thread");
+        }
     }
     log_->info("Stopping epics server thread");
 }
@@ -193,6 +195,8 @@ void rpe::Server::runWorker() {
         if (work == NULL) break;
         try {
             work->execute();
-        } catch (...) { log_->error("Caught exception in worker thread"); }
+        } catch (...) {
+            log_->error("Caught exception in worker thread");
+        }
     }
 }

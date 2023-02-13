@@ -117,7 +117,9 @@ void ris::SlaveWrap::acceptFrame(ris::FramePtr frame) {
             try {
                 pb(frame);
                 return;
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     ris::Slave::acceptFrame(frame);

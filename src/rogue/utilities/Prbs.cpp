@@ -202,7 +202,9 @@ void ru::Prbs::flfsr(uint8_t* data) {
 void ru::Prbs::runThread() {
     txLog_->logThreadId();
 
-    while (threadEn_) { genFrame(txSize_); }
+    while (threadEn_) {
+        genFrame(txSize_);
+    }
 }
 
 //! Auto run data generation

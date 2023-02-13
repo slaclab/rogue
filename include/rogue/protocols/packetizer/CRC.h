@@ -273,11 +273,11 @@ class CRC {
 #endif
 
 #ifdef CRCPP_USE_CPP11
-    CRC()                 = delete;
-    CRC(const CRC& other) = delete;
+    CRC()                            = delete;
+    CRC(const CRC& other)            = delete;
     CRC& operator=(const CRC& other) = delete;
     CRC(CRC&& other)                 = delete;
-    CRC& operator=(CRC&& other) = delete;
+    CRC& operator=(CRC&& other)      = delete;
 #endif
 
   private:
@@ -553,7 +553,9 @@ inline CRCType CRC::Finalize(CRCType remainder, CRCType finalXOR, bool reflectOu
     static crcpp_constexpr CRCType BIT_MASK =
         (CRCType(1) << (CRCWidth - CRCType(1))) | ((CRCType(1) << (CRCWidth - CRCType(1))) - CRCType(1));
 
-    if (reflectOutput) { remainder = Reflect(remainder, CRCWidth); }
+    if (reflectOutput) {
+        remainder = Reflect(remainder, CRCWidth);
+    }
 
     return (remainder ^ finalXOR) & BIT_MASK;
 }
@@ -583,7 +585,9 @@ inline CRCType CRC::UndoFinalize(CRCType crc, CRCType finalXOR, bool reflectOutp
 
     crc = (crc & BIT_MASK) ^ finalXOR;
 
-    if (reflectOutput) { crc = Reflect(crc, CRCWidth); }
+    if (reflectOutput) {
+        crc = Reflect(crc, CRCWidth);
+    }
 
     return crc;
 }

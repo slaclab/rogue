@@ -241,7 +241,9 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Reset
     if (head->rst) {
-        if (state_ == StOpen || state_ == StWaitSyn) { stQueue_.push(head); }
+        if (state_ == StOpen || state_ == StWaitSyn) {
+            stQueue_.push(head);
+        }
     }
 
     // Syn frame goes to state machine if state = open

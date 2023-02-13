@@ -169,7 +169,9 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     if (tmpEof) {
         tranFrame_[0]->setLastUser(tmpLuser);
         tranCount_[0] = 0;
-        if (app_[tranDest_]) { app_[tranDest_]->pushFrame(tranFrame_[0]); }
+        if (app_[tranDest_]) {
+            app_[tranDest_]->pushFrame(tranFrame_[0]);
+        }
         tranFrame_[0].reset();
 
         // Detect SSI error

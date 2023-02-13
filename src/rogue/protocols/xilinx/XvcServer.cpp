@@ -74,7 +74,9 @@ void rpx::XvcServer::run(bool& threadEn, rogue::LoggingPtr log) {
             try {
                 XvcConnection conn(sd_, drv_, maxMsgSize_);
                 conn.run();
-            } catch (rogue::GeneralError& e) { log->debug("Sub-connection failed"); }
+            } catch (rogue::GeneralError& e) {
+                log->debug("Sub-connection failed");
+            }
         }
     }
 }
