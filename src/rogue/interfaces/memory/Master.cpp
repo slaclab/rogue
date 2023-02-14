@@ -28,6 +28,7 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <stdlib.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;

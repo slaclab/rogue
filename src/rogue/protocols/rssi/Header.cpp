@@ -30,6 +30,7 @@
 #include <sstream>
 #include <string.h>
 #include <sys/time.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpr = rogue::protocols::rssi;

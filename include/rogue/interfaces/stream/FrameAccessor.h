@@ -20,6 +20,7 @@
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
 #include <stdint.h>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <memory>
 #include <rogue/GeneralError.h>

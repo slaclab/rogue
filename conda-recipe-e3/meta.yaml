@@ -47,7 +47,7 @@ requirements:
      - click
      - pyqt
      - sqlalchemy
-     - pydm
+     - pydm>=1.18.0
      - pyserial
      - matplotlib
 

@@ -29,6 +29,7 @@
 #include <unistd.h>
 #include <vector>
 #include <memory>
+#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 using std::vector;
