@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_H__
+#include <rogue/Directives.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 #include <memory>

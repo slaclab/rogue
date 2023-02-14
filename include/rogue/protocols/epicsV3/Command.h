@@ -21,7 +21,7 @@
 #ifndef __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
 #define __ROGUE_PROTOCOLS_EPICSV3_COMMAND_H__
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+#include <rogue/Directives.h>
 #include <boost/python.hpp>
 #include <thread>
 #include <memory>

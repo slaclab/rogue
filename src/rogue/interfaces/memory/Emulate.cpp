@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/Constants.h>
 #include <rogue/interfaces/memory/Emulate.h>
 #include <rogue/interfaces/memory/Transaction.h>
@@ -25,13 +26,11 @@
 #include <rogue/GilRelease.h>
 #include <memory>
 #include <string.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif

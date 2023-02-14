@@ -17,8 +17,7 @@
  * ----------------------------------------------------------------------------
 **/
 
-#define PY_SSIZE_T_CLEAN
-
+#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Variable.h>
@@ -32,14 +31,11 @@
 #include <memory>
 #include <cmath>
 #include <exception>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <numpy/arrayobject.h>
 #include <numpy/ndarraytypes.h>

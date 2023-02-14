@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
+#include <rogue/Directives.h>
 #include <thread>
 #include <stdint.h>
 #include <memory>

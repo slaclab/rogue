@@ -17,6 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <RogueConfig.h>
 #include <rogue/Version.h>
 #include <rogue/GeneralError.h>
@@ -24,11 +25,9 @@
 #include <unistd.h>
 #include <string>
 #include <sstream>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif

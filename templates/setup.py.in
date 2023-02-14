@@ -19,7 +19,7 @@ from distutils.core import setup
 
 setup (
     name='rogue',
-    version='${ROGUE_VERSION}',
+    version='${PYROGUE_VERSION}',
     packages=['pyrogue',
               'pyrogue.gui',
               'pyrogue.utilities',

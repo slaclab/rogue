@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_POOL_H__
 #define __ROGUE_INTERFACES_STREAM_POOL_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 
 #include <thread>
