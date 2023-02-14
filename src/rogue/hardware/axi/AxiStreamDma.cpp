@@ -555,10 +555,10 @@ void rha::AxiStreamDma::setup_python () {
 #ifndef NO_PYTHON
 
    bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
-      .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
-      .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
-      .def("setTimeout",     &rha::AxiStreamDma::setTimeout)
-      .def("setZeroCopyEn",  &rha::AxiStreamDma::setZeroCopyEn)
+      .def("setDriverDebug",  &rha::AxiStreamDma::setDriverDebug)
+      .def("dmaAck",          &rha::AxiStreamDma::dmaAck)
+      .def("setTimeout",      &rha::AxiStreamDma::setTimeout)
+      .def("zeroCopyDisable", &rha::AxiStreamDma::zeroCopyDisable)
    ;
 
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
