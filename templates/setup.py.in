@@ -21,9 +21,9 @@ rawVersion = '${ROGUE_VERSION}'
 
 fields = rawVersion.split('-')
 
-if fields == 1:
+if len(fields) == 1:
     pyVersion = fields[0]
-else
+else:
     pyVersion = fields[0] + '.dev' + fields[1]
 
 setup (
