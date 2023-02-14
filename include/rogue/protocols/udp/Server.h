@@ -26,6 +26,7 @@
 #include <thread>
 
 #include "rogue/Logging.h"
+#include "rogue/protocols/udp/Core.h"
 #include "rogue/interfaces/stream/Master.h"
 #include "rogue/interfaces/stream/Slave.h"
 
