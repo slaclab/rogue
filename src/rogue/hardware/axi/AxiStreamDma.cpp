@@ -48,22 +48,35 @@ rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
    this->rawBuff = NULL;
    this->bCount = 0;
    this->bSize = 0;
+   this->zCopyEn = true;
 }
 
 //! Open shared buffer space
 rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogue::LoggingPtr log) {
    std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
+   rha::AxiStreamDmaSharedPtr ret;
 
    // Entry already exists
-   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) {
-      it->second->openCount++;
-      log->debug("Shared file descriptor already opened");
-      return it->second;
-   }
+   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) ret = it->second;
 
    // Create new record
-   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
-   log->debug("Opening new shared file descriptor");
+   else {
+      rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+      log->debug("Opening new shared file descriptor");
+   }
+
+   // Check if already open
+   if ( ret->fd != -1 ) {
+      ret->openCount++;
+      log->debug("Shared file descriptor already opened");
+      return ret;
+   }
+
+   // Check if zero copy is disabled, if so don't open or map buffers
+   if ( ! ret->zCopyEn ) {
+      log->debug("Zero copy is disabled");
+      return ret;
+   }
 
    // We need to open device and create shared buffers
    if ( (ret->fd = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -112,8 +125,6 @@ void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
       desc->bCount = 0;
       desc->bSize = 0;
       desc->rawBuff = NULL;
-
-      sharedBuffers_.erase(desc->path);
    }
 }
 
@@ -123,6 +134,22 @@ rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest,
    return(r);
 }
 
+
+void rha::AxiStreamDma::zeroCopyDisable(std::string path) {
+   std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
+
+   // Entry already exists
+   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() )
+      throw(rogue::GeneralError("AxiStreamDma::zeroCopyDisable","zeroCopyDisable can't be called twice or after a device has been opened"));
+
+   // Create new record
+   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+   ret->zCopyEn = false;
+
+   sharedBuffers_.insert(std::pair<std::string, rha::AxiStreamDmaSharedPtr>(path,ret));
+}
+
+
 //! Open the device. Pass destination.
 rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnable) {
    uint8_t mask[DMA_MASK_SIZE];
@@ -130,7 +157,6 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    dest_       = dest;
    enSsi_      = ssiEnable;
    retThold_   = 1;
-   zeroCopyEn_ = true;
 
    // Create a shared pointer to use as a lock for runThread()
    std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
@@ -144,7 +170,6 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    // Attempt to open shared structure
    desc_ = openShared(path, log_);
 
-   //if ( desc_->bCount_ >= 1000 ) retThold_ = 50;
    if ( desc_->bCount >= 1000 ) retThold_ = 80;
 
    // Open non shared file descriptor
@@ -207,11 +232,6 @@ void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
    dmaSetDebug(fd_,level);
 }
 
-//! Enable / disable zero copy
-void rha::AxiStreamDma::setZeroCopyEn(bool state) {
-   zeroCopyEn_ = state;
-}
-
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
    if ( fd_ >= 0 ) axisReadAck(fd_);
@@ -232,7 +252,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn_ == false || zeroCopyEn == false || desc_->rawBuff == NULL ) {
+   if ( zeroCopyEn == false || desc_->rawBuff == NULL ) {
       frame = ris::Pool::acceptReq(size,false);
    }
 
@@ -468,7 +488,7 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
       if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
          // Zero copy buffers were not allocated
-         if ( zeroCopyEn_ == false || desc_->rawBuff == NULL ) {
+         if ( desc_->rawBuff == NULL ) {
 
             // Allocate a buffer
             buff[0] = allocBuffer(desc_->bSize,NULL);
