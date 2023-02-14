@@ -231,10 +231,6 @@ if ( NOT ROGUE_VERSION )
          COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty
          OUTPUT_VARIABLE ROGUE_VERSION
          OUTPUT_STRIP_TRAILING_WHITESPACE)
-      execute_process (
-         COMMAND ${GIT_EXECUTABLE} --git-dir=${CMAKE_SOURCE_DIR}/.git --work-tree=${CMAKE_SOURCE_DIR} describe --tags --dirty=.dev --abbrev=0
-         OUTPUT_VARIABLE PYROGUE_VERSION
-         OUTPUT_STRIP_TRAILING_WHITESPACE)
    else()
       message("")
       message(FATAL_ERROR "Git is required to build rogue!")

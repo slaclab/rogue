@@ -17,9 +17,18 @@
 
 from distutils.core import setup
 
+rawVersion = '${ROGUE_VERSION}'
+
+fields = rawVersion.split('-')
+
+if fields == 1:
+    pyVersion = fields[0]
+else
+    pyVersion = fields[0] + '.dev' + fields[1]
+
 setup (
     name='rogue',
-    version='${PYROGUE_VERSION}',
+    version=pyVersion,
     packages=['pyrogue',
               'pyrogue.gui',
               'pyrogue.utilities',
