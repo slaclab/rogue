@@ -1,9 +1,12 @@
 /**
  *-----------------------------------------------------------------------------
- * Title      : Python Module
+ * Title      : Common Directives
+ * ----------------------------------------------------------------------------
+ * File       : Directives.h
+ * Created    : 2023-02-13
  * ----------------------------------------------------------------------------
  * Description:
- * Python module setup
+ * Common Directives For Rogue
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -14,19 +17,18 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_PROTOCOLS_XILINX_MODULE_H__
-#define __ROGUE_PROTOCOLS_XILINX_MODULE_H__
-#include <rogue/Directives.h>
+#ifndef __ROGUE_DIRECTIVES_H__
+#define __ROGUE_DIRECTIVES_H__
 
-namespace rogue
-{
-   namespace protocols
-   {
-      namespace xilinx
-      {
-         void setup_module();
-      }
-   }
-}
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
+#define PY_SSIZE_T_CLEAN
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+
+#define CRCPP_USE_CPP11
+
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
 
 #endif
+

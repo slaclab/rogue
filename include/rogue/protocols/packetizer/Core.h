@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
+#include <rogue/Directives.h>
 #include <thread>
 #include <stdint.h>
 #include <memory>

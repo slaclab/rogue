@@ -30,7 +30,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpp = rogue::protocols::packetizer;

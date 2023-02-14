@@ -17,6 +17,7 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 
+#include <rogue/Directives.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 
@@ -29,7 +30,6 @@
 #include <unistd.h>
 #include <vector>
 #include <memory>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 using std::vector;
@@ -173,7 +173,7 @@ namespace rogue
 
                //! Setup class in python
                static void setup_python();
-				
+
                JtagDriver(uint16_t port);
 
                // initialization after full construction

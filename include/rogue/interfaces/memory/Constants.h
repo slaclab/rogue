@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_ERRORS_H__
 #define __ROGUE_INTERFACES_MEMORY_ERRORS_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 
 namespace rogue {

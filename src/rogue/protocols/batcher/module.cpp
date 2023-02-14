@@ -20,9 +20,9 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <RogueConfig.h>
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 #include <rogue/protocols/batcher/module.h>

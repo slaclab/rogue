@@ -17,6 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Constants.h>
@@ -28,13 +29,11 @@
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
 #include <stdlib.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif

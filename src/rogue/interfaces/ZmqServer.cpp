@@ -15,20 +15,17 @@
  * ----------------------------------------------------------------------------
 **/
 
-#define PY_SSIZE_T_CLEAN
-
+#include <rogue/Directives.h>
 #include <rogue/interfaces/ZmqServer.h>
 #include <rogue/GeneralError.h>
 #include <memory>
 #include <rogue/GilRelease.h>
 #include <rogue/ScopedGil.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <string>
 #include <zmq.h>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif

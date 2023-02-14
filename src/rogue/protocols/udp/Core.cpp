@@ -17,18 +17,17 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <rogue/protocols/udp/Core.h>
 #include <rogue/Logging.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Helpers.h>
 #include <unistd.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpu = rogue::protocols::udp;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif

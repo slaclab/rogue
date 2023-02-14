@@ -18,6 +18,7 @@
 **/
 #ifndef __ROGUE_LIBRARY_BASE_H__
 #define __ROGUE_LIBRARY_BASE_H__
+#include <rogue/Directives.h>
 #include <memory>
 #include <stdint.h>
 #include <vector>

@@ -18,6 +18,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_BLOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_BLOCK_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <vector>
 
@@ -26,7 +27,6 @@
 #include <memory>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

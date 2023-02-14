@@ -18,8 +18,8 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
 #define __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 #include <vector>
 #include <rogue/EnableSharedFromThis.h>
@@ -29,7 +29,6 @@
 #include <thread>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

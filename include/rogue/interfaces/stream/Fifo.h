@@ -20,6 +20,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_FIFO_H__
 #define __ROGUE_INTERFACES_STREAM_FIFO_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <thread>
 #include <memory>

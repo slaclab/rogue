@@ -20,7 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
+#include <rogue/Directives.h>
 #include <boost/python.hpp>
 
 #include <rogue/protocols/srp/module.h>
