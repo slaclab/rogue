@@ -25,7 +25,6 @@
 #include <sys/time.h>
 #include <sys/syscall.h>
 #include <unistd.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 #if defined(__linux__)
