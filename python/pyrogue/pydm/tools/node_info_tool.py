@@ -52,7 +52,7 @@ class NodeInformation(ExternalTool):
                  'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
         if node.isinstance(pyrogue.RemoteVariable):
-            attrs += ['offset', 'bitSize', 'bitOffset', 'verify', 'varBytes']
+            attrs += ['offset', 'bitSize', 'bitOffset', 'verifyEn', 'varBytes']
 
         msgBox = QDialog()
         msgBox.setWindowTitle("Variable Information For {}".format(node.name))
@@ -91,6 +91,13 @@ class NodeInformation(ExternalTool):
         le.setReadOnly(True)
         le.setText(channel.address)
         fl.addRow('PyDM Path',le)
+
+        if node.isinstance(pyrogue.RemoteVariable):
+            le = QLineEdit()
+            le.setReadOnly(True)
+            addr = getattr(node,"address")
+            le.setText(f'{addr:#x}')
+            fl.addRow("address",le)
 
         msgBox.exec()
 
