@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_QUEUE_H__
 #define __ROGUE_QUEUE_H__
+#include <rogue/Directives.h>
 #include <condition_variable>
 #include <stdint.h>
 #include <queue>

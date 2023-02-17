@@ -20,8 +20,8 @@
 #ifndef __ROGUE_SCOPED_GIL_H__
 #define __ROGUE_SCOPED_GIL_H__
 
+#include <rogue/Directives.h>
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

@@ -19,10 +19,9 @@
 **/
 #ifndef __ROGUE_GIL_RELEASE_H__
 #define __ROGUE_GIL_RELEASE_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
-
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

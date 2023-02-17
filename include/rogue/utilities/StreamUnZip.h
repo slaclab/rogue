@@ -18,6 +18,7 @@
 **/
 #ifndef __ROGUE_UTILITIES_STREAM_UN_ZIP_H__
 #define __ROGUE_UTILITIES_STREAM_UN_ZIP_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <thread>
 #include <rogue/interfaces/stream/Slave.h>

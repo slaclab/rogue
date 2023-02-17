@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/module.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Master.h>
@@ -30,8 +31,6 @@
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Variable.h>
 #include <rogue/interfaces/memory/Emulate.h>
-
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;

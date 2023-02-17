@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/protocols/epicsV3/Variable.h>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Server.h>
@@ -35,8 +36,6 @@
 
 namespace rpe = rogue::protocols::epicsV3;
 
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <numpy/arrayobject.h>
 #include <numpy/ndarraytypes.h>

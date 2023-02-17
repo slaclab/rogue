@@ -14,6 +14,7 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
+#include <rogue/Directives.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
 
 #include <sys/socket.h>
@@ -27,7 +28,6 @@
 namespace rpx = rogue::protocols::xilinx;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
@@ -238,7 +238,7 @@ int rpx::JtagDriver::xferRel(uint8_t *txb, unsigned txBytes, Header *phdr, uint8
             else
                snprintf(errb + pos, sizeof(errb) - pos, "error %d", e);
 
-            throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Protocol error")); 
+            throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Protocol error"));
          }
          if (xid == XID_ANY || xid == getXid(hdr))
          {

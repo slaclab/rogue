@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TCP_CLIENT_H__
 #define __ROGUE_INTERFACES_MEMORY_TCP_CLIENT_H__
+#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/Logging.h>
 #include <memory>

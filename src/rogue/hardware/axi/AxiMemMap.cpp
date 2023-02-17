@@ -14,6 +14,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <rogue/hardware/axi/AxiMemMap.h>
 #include <rogue/hardware/drivers/AxisDriver.h>
 #include <rogue/interfaces/memory/Constants.h>
@@ -36,7 +37,6 @@ namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -53,7 +53,7 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4,0xFFFFFFFF) {
    log_ = rogue::Logging::create("axi.AxiMemMap");
    if ( fd_ < 0 )
       throw(rogue::GeneralError::create("AxiMemMap::AxiMemMap", "Failed to open device file: %s",path.c_str()));
-   
+
    // Check driver version
    if ( dmaCheckVersion(fd_) < 0 )
       throw(rogue::GeneralError("AxiMemMap::AxiMemMap","Bad kernel driver version detected. Please re-compile kernel driver.\n \

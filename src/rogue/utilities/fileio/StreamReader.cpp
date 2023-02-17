@@ -19,6 +19,7 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <rogue/utilities/fileio/StreamReader.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/Buffer.h>
@@ -37,7 +38,6 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif

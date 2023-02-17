@@ -18,6 +18,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameLock.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
@@ -29,8 +30,6 @@
 namespace ris  = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #include <numpy/arrayobject.h>
 #include <numpy/ndarraytypes.h>
