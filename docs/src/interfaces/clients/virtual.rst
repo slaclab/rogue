@@ -44,7 +44,7 @@ Below is an example of using the VirtualClient in a python script:
       print(f"Version = {ret}")
 
       # Set a variable value using the native value
-      root.AxiVersion.Scratchpad.set(0x100)
+      root.AxiVersion.ScratchPad.set(0x100)
 
       # Set a variable value using the string representation of the value
       root.AxiVersion.ScratchPad.setDisp("0x100")
