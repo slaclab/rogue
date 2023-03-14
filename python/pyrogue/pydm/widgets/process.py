@@ -12,7 +12,7 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton, PyDMScaleIndicator
-from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMEnumComboBox
+from pydm.widgets import PyDMSpinbox, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
 from qtpy.QtCore import Qt
