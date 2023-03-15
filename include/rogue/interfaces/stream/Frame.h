@@ -21,6 +21,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_H__
+#include <rogue/Directives.h>
 #include <memory>
 #include <thread>
 #include <stdint.h>
@@ -29,7 +30,6 @@
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

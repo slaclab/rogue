@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/protocols/epicsV3/Server.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Pv.h>
@@ -25,12 +26,10 @@
 #include <rogue/GilRelease.h>
 #include <rogue/GeneralError.h>
 #include <fdManager.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpe = rogue::protocols::epicsV3;
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 

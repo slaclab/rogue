@@ -30,6 +30,7 @@
 **/
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
+#include <rogue/Directives.h>
 #include <memory>
 #include <rogue/interfaces/stream/Frame.h>
 #include <stdint.h>

@@ -30,14 +30,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/time.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
 // Local CRC library
-#define CRCPP_USE_CPP11
 #include <rogue/protocols/packetizer/CRC.h>
 
 // CRC Lookup table for later use

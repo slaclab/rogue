@@ -18,6 +18,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/protocols/epicsV3/Pv.h>
 #include <rogue/protocols/epicsV3/Value.h>
 #include <rogue/protocols/epicsV3/Server.h>
@@ -26,7 +27,6 @@
 
 namespace rpe = rogue::protocols::epicsV3;
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 

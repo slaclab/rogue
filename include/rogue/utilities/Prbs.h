@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_UTILITIES_PRBS_H__
 #define __ROGUE_UTILITIES_PRBS_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <thread>
 #include <rogue/interfaces/stream/Slave.h>

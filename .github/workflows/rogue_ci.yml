@@ -218,7 +218,6 @@ jobs:
           - ubuntu-20.04
         src:
           - conda-recipe
-          - conda-recipe-e3
     runs-on: ${{ matrix.os }}
     steps:
 

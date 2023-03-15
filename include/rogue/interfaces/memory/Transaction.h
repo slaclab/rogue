@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#include <rogue/Directives.h>
 #include <memory>
 #include <stdint.h>
 #include <map>
@@ -29,7 +30,6 @@
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

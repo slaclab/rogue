@@ -20,6 +20,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_RATE_DROP_H__
 #define __ROGUE_INTERFACES_STREAM_RATE_DROP_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <memory>
 #include <rogue/interfaces/stream/Master.h>

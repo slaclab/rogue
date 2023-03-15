@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_PROTOCOLS_SRP_SRPV3_H__
 #define __ROGUE_PROTOCOLS_SRP_SRPV3_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <thread>
 #include <rogue/interfaces/stream/Master.h>

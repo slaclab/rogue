@@ -16,12 +16,12 @@
 **/
 #ifndef __ROGUE_ZMQ_CLIENT_H__
 #define __ROGUE_ZMQ_CLIENT_H__
+#include <rogue/Directives.h>
 #include <thread>
 #include <memory>
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 
