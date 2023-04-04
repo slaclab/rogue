@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building The Custom Module &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Building The Custom Module &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/underscore.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -73,9 +74,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="index.html">Creating Custom Modules</a> &raquo;</li>
-      <li>Building The Custom Module</li>
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Creating Custom Modules</a></li>
+      <li class="breadcrumb-item active">Building The Custom Module</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/custom_module/makefile.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -108,7 +109,7 @@ environment variable.</p>
 <div class="highlight-cmake notranslate"><div class="highlight"><pre><span></span><span class="c"># Source for CMakeLists.txt</span>
 
 <span class="c"># Add support for building in conda environment</span>
-<span class="nb">if</span> <span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{CONDA_PREFIX}</span><span class="p">)</span>
+<span class="nb">if</span><span class="w"> </span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{CONDA_PREFIX}</span><span class="p">)</span>
 <span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_PREFIX_PATH</span><span class="w"> </span><span class="s2">&quot;$ENV{CONDA_PREFIX}&quot;</span><span class="p">)</span>
 <span class="w">   </span><span class="nb">link_directories</span><span class="p">(</span><span class="o">$ENV{</span><span class="nv">CONDA_PREFIX</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">endif</span><span class="p">()</span>
@@ -118,7 +119,7 @@ environment variable.</p>
 <span class="nb">include</span><span class="p">(</span><span class="s">InstallRequiredSystemLibraries</span><span class="p">)</span>
 
 <span class="c"># Project name, Replace with your name</span>
-<span class="nb">project</span> <span class="p">(</span><span class="s">MyModule</span><span class="p">)</span>
+<span class="nb">project</span><span class="w"> </span><span class="p">(</span><span class="s">MyModule</span><span class="p">)</span>
 
 <span class="c"># C/C++</span>
 <span class="nb">enable_language</span><span class="p">(</span><span class="s">CXX</span><span class="p">)</span>
@@ -127,7 +128,7 @@ environment variable.</p>
 <span class="c">#####################################</span>
 <span class="c"># Find Rogue &amp; Support Libraries</span>
 <span class="c">#####################################</span>
-<span class="nb">if</span> <span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{ROGUE_DIR}</span><span class="p">)</span>
+<span class="nb">if</span><span class="w"> </span><span class="p">(</span><span class="s">DEFINED</span><span class="w"> </span><span class="s">ENV{ROGUE_DIR}</span><span class="p">)</span>
 <span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">Rogue_DIR</span><span class="w"> </span><span class="o">$ENV{</span><span class="nv">ROGUE_DIR</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>
 <span class="nb">else</span><span class="p">()</span>
 <span class="w">   </span><span class="nb">set</span><span class="p">(</span><span class="s">Rogue_DIR</span><span class="w"> </span><span class="o">${</span><span class="nv">CMAKE_PREFIX_PATH</span><span class="o">}</span><span class="s">/lib</span><span class="p">)</span>

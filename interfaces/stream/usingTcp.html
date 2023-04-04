@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The TCP Bridge &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -92,10 +93,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="index.html">Stream Interface</a> &raquo;</li>
-      <li>Using The TCP Bridge</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+      <li class="breadcrumb-item active">Using The TCP Bridge</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/interfaces/stream/usingTcp.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -162,20 +163,20 @@ on the server.  The Python client is able to interface with either a Python or C
 <p>The following code demonstrates a C++ server with a local receiver and transmitter device. The local transmitter
 will send data to a remote receiver on the client. The local receiver will receive data from a remote transmitter
 on the client.  The C++ server is able to interface with either a Python or C++ client.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/TcpServer.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/TcpServer.h&gt;</span>
 
 <span class="c1">// Local transmitter</span>
-<span class="n">MyCustomMasterPtr</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="w"></span>
+<span class="n">MyCustomMasterPtr</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
 
 <span class="c1">// Local receiver</span>
-<span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="w"></span>
+<span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
 
 <span class="c1">// Start a TCP Bridge Server, Listen on all interfaces, ports 8000 &amp; 8001.</span>
 <span class="c1">// Pass an address of 192.168.1.1 to listen on only that specific interface</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServerPtr</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServerPtr</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpServer</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;*&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1">// Connect the transmitter</span>
-<span class="o">*</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span><span class="w"></span>
+<span class="o">*</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>
@@ -184,19 +185,19 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
 <p>The following code demonstrates a C++ client with a local receiver and transmitter device.  The local transmitter
 will send data to a remote receiver on the server. The local receiver will receive data from a remote transmitter
 on the server.  The C++ client is able to interface with either a Python or C++ server.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/TcpClient.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/TcpClient.h&gt;</span>
 
 <span class="c1">// Local transmitter</span>
-<span class="n">MyCustomMasterPtr</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="w"></span>
+<span class="n">MyCustomMasterPtr</span><span class="w"> </span><span class="n">src</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
 
 <span class="c1">// Local receiver</span>
-<span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="w"></span>
+<span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">dst</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">()</span>
 
 <span class="c1">// Start a TCP Bridge Client, Connect remote server at 192.168.1.1 ports 8000 &amp; 8001.</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClientPtr</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClientPtr</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">stream</span><span class="o">::</span><span class="n">TcpClient</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;192.168.1.1&quot;</span><span class="p">,</span><span class="mi">8000</span><span class="p">)</span>
 
 <span class="c1">// Connect the transmitter</span>
-<span class="o">*</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span><span class="w"></span>
+<span class="o">*</span><span class="p">(</span><span class="w"> </span><span class="o">*</span><span class="n">src</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">tcp</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dst</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Block &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Block &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -96,11 +97,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
-          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
-      <li>Block</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Memory Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Block</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/memory/classes/block.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -134,7 +135,7 @@
 <p>Return the path of the block in the device tree</p>
 <p>Exposed as path property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Full path of the block </p>
 </dd>
 </dl>
@@ -147,7 +148,7 @@
 <p>Return the mode of the block, the supported modes are “RW”, “RO” and “WO”</p>
 <p>Exposed as mode property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Mode string </p>
 </dd>
 </dl>
@@ -160,7 +161,7 @@
 <p>Return the bulk enable flag, indicating if this block should be included in bulk read and write operations.</p>
 <p>Exposed as bulkOpEn property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bulk enable flag </p>
 </dd>
 </dl>
@@ -173,7 +174,7 @@
 <p>Return the overlap enable flag</p>
 <p>Exposed as overlapEn property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>overlap enable flag </p>
 </dd>
 </dl>
@@ -200,7 +201,7 @@
 <p>Return the offset of this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a></p>
 <p>Exposed as offset property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>64-bit address offset </p>
 </dd>
 </dl>
@@ -213,7 +214,7 @@
 <p>Return the full address of this block, including the parent address plus the local offset.</p>
 <p>Exposed as address property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>64-bit address </p>
 </dd>
 </dl>
@@ -226,7 +227,7 @@
 <p>Return the size of this block in bytes.</p>
 <p>Exposed as size property to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>32-bit size </p>
 </dd>
 </dl>
@@ -244,7 +245,7 @@
 <dd><p>Start a c++ transaction for this block. </p>
 <p>Start a c++ transaction with the passed type and access range</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p></li>
 <li><p><strong>forceWr</strong> – Force write of non-stale block </p></li>
@@ -263,7 +264,7 @@
 <p>Start a transaction with the passed type and access range</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a4fd0c83f8e529dfaf8c38b0e44513a9f"><span class="std std-ref">startTransaction()</span></a> method to Python</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>type</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p></li>
 <li><p><strong>forceWr</strong> – Force write of non-stale block </p></li>
@@ -309,7 +310,7 @@
 <p>Add the passed list of variables to this block</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1aed1e3aec51a587ccf9b04611014ad75c"><span class="std std-ref">addVariables()</span></a> method to Python</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>variables</strong> – Variable list </p>
 </dd>
 </dl>
@@ -321,7 +322,7 @@
 <dd><p>Add variables to block, Python version. </p>
 <p>Add the passed list of variables to this block</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>variables</strong> – Variable list </p>
 </dd>
 </dl>
@@ -561,10 +562,10 @@
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a> (BlockPtr) </p>
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">rogue.interfaces.memory.Block()</span></a></p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>offset</strong> – Memory offset of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a> </p></li>
-<li><p><strong>size</strong> – Memory size (footprint) of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a> </p></li>
+<li><p><strong>offset</strong> – Memory offset of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a></p></li>
+<li><p><strong>size</strong> – Memory size (footprint) of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block"><span class="std std-ref">Block</span></a></p></li>
 </ul>
 </dd>
 </dl>

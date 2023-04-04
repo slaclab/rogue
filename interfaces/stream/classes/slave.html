@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slave &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Slave &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -102,11 +103,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
-          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
-      <li>Slave</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Slave</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/stream/classes/slave.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -131,7 +132,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5SlaveE"></span><span id="_CPPv2N5rogue10interfaces6stream5SlaveE"></span><span id="rogue::interfaces::stream::Slave"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Slave</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="pool.html#_CPPv4N5rogue10interfaces6stream4PoolE" title="rogue::interfaces::stream::Pool"><span class="n"><span class="pre">Pool</span></span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">EnableSharedFromThis</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="rogue::interfaces::stream::Slave"><span class="n"><span class="pre">Slave</span></span></a><span class="p"><span class="pre">&gt;</span></span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5SlaveE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Stream slave class. </p>
 <p>The stream slave accepts stream data from a master. It also can accept frame allocation requests through its <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> base class. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object can be attached to multiple <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> objects. </p>
-<p>Subclassed by <a class="reference internal" href="../../../hardware/axi/classes/axiStreamDma.html#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue::hardware::axi::AxiStreamDma</span></a>, <a class="reference internal" href="../../../hardware/pgp/classes/pgpCard.html#classrogue_1_1hardware_1_1pgp_1_1PgpCard"><span class="std std-ref">rogue::hardware::pgp::PgpCard</span></a>, <a class="reference internal" href="fifo.html#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">rogue::interfaces::stream::Fifo</span></a>, <a class="reference internal" href="filter.html#classrogue_1_1interfaces_1_1stream_1_1Filter"><span class="std std-ref">rogue::interfaces::stream::Filter</span></a>, <a class="reference internal" href="rateDrop.html#classrogue_1_1interfaces_1_1stream_1_1RateDrop"><span class="std std-ref">rogue::interfaces::stream::RateDrop</span></a>, rogue::interfaces::stream::SlaveWrap, <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">rogue::interfaces::stream::TcpCore</span></a>, <a class="reference internal" href="../../../protocols/batcher/classes/inverterV1.html#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref">rogue::protocols::batcher::InverterV1</span></a>, <a class="reference internal" href="../../../protocols/batcher/classes/splitterV1.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV1"><span class="std std-ref">rogue::protocols::batcher::SplitterV1</span></a>, <a class="reference internal" href="../../../protocols/packetizer/classes/application.html#classrogue_1_1protocols_1_1packetizer_1_1Application"><span class="std std-ref">rogue::protocols::packetizer::Application</span></a>, <a class="reference internal" href="../../../protocols/packetizer/classes/transport.html#classrogue_1_1protocols_1_1packetizer_1_1Transport"><span class="std std-ref">rogue::protocols::packetizer::Transport</span></a>, <a class="reference internal" href="../../../protocols/rssi/classes/application.html#classrogue_1_1protocols_1_1rssi_1_1Application"><span class="std std-ref">rogue::protocols::rssi::Application</span></a>, <a class="reference internal" href="../../../protocols/rssi/classes/transport.html#classrogue_1_1protocols_1_1rssi_1_1Transport"><span class="std std-ref">rogue::protocols::rssi::Transport</span></a>, <a class="reference internal" href="../../../protocols/srp/classes/srpV0.html#classrogue_1_1protocols_1_1srp_1_1SrpV0"><span class="std std-ref">rogue::protocols::srp::SrpV0</span></a>, <a class="reference internal" href="../../../protocols/srp/classes/srpV3.html#classrogue_1_1protocols_1_1srp_1_1SrpV3"><span class="std std-ref">rogue::protocols::srp::SrpV3</span></a>, <a class="reference internal" href="../../../protocols/udp/classes/client.html#classrogue_1_1protocols_1_1udp_1_1Client"><span class="std std-ref">rogue::protocols::udp::Client</span></a>, <a class="reference internal" href="../../../protocols/udp/classes/server.html#classrogue_1_1protocols_1_1udp_1_1Server"><span class="std std-ref">rogue::protocols::udp::Server</span></a>, rogue::protocols::xilinx::Xvc, <a class="reference internal" href="../../../utilities/fileio/classes/channel.html#classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel"><span class="std std-ref">rogue::utilities::fileio::StreamWriterChannel</span></a>, <a class="reference internal" href="../../../utilities/prbs/classes/prbs.html#classrogue_1_1utilities_1_1Prbs"><span class="std std-ref">rogue::utilities::Prbs</span></a>, <a class="reference internal" href="../../../utilities/compression/classes/unzip.html#classrogue_1_1utilities_1_1StreamUnZip"><span class="std std-ref">rogue::utilities::StreamUnZip</span></a>, <a class="reference internal" href="../../../utilities/compression/classes/zip.html#classrogue_1_1utilities_1_1StreamZip"><span class="std std-ref">rogue::utilities::StreamZip</span></a></p>
+<p>Subclassed by <a class="reference internal" href="../../../hardware/axi/classes/axiStreamDma.html#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma"><span class="std std-ref">rogue::hardware::axi::AxiStreamDma</span></a>, <a class="reference internal" href="fifo.html#classrogue_1_1interfaces_1_1stream_1_1Fifo"><span class="std std-ref">rogue::interfaces::stream::Fifo</span></a>, <a class="reference internal" href="filter.html#classrogue_1_1interfaces_1_1stream_1_1Filter"><span class="std std-ref">rogue::interfaces::stream::Filter</span></a>, <a class="reference internal" href="rateDrop.html#classrogue_1_1interfaces_1_1stream_1_1RateDrop"><span class="std std-ref">rogue::interfaces::stream::RateDrop</span></a>, rogue::interfaces::stream::SlaveWrap, <a class="reference internal" href="tcpCore.html#classrogue_1_1interfaces_1_1stream_1_1TcpCore"><span class="std std-ref">rogue::interfaces::stream::TcpCore</span></a>, <a class="reference internal" href="../../../protocols/batcher/classes/inverterV1.html#classrogue_1_1protocols_1_1batcher_1_1InverterV1"><span class="std std-ref">rogue::protocols::batcher::InverterV1</span></a>, <a class="reference internal" href="../../../protocols/batcher/classes/splitterV1.html#classrogue_1_1protocols_1_1batcher_1_1SplitterV1"><span class="std std-ref">rogue::protocols::batcher::SplitterV1</span></a>, <a class="reference internal" href="../../../protocols/packetizer/classes/application.html#classrogue_1_1protocols_1_1packetizer_1_1Application"><span class="std std-ref">rogue::protocols::packetizer::Application</span></a>, <a class="reference internal" href="../../../protocols/packetizer/classes/transport.html#classrogue_1_1protocols_1_1packetizer_1_1Transport"><span class="std std-ref">rogue::protocols::packetizer::Transport</span></a>, <a class="reference internal" href="../../../protocols/rssi/classes/application.html#classrogue_1_1protocols_1_1rssi_1_1Application"><span class="std std-ref">rogue::protocols::rssi::Application</span></a>, <a class="reference internal" href="../../../protocols/rssi/classes/transport.html#classrogue_1_1protocols_1_1rssi_1_1Transport"><span class="std std-ref">rogue::protocols::rssi::Transport</span></a>, <a class="reference internal" href="../../../protocols/srp/classes/srpV0.html#classrogue_1_1protocols_1_1srp_1_1SrpV0"><span class="std std-ref">rogue::protocols::srp::SrpV0</span></a>, <a class="reference internal" href="../../../protocols/srp/classes/srpV3.html#classrogue_1_1protocols_1_1srp_1_1SrpV3"><span class="std std-ref">rogue::protocols::srp::SrpV3</span></a>, <a class="reference internal" href="../../../protocols/udp/classes/client.html#classrogue_1_1protocols_1_1udp_1_1Client"><span class="std std-ref">rogue::protocols::udp::Client</span></a>, <a class="reference internal" href="../../../protocols/udp/classes/server.html#classrogue_1_1protocols_1_1udp_1_1Server"><span class="std std-ref">rogue::protocols::udp::Server</span></a>, rogue::protocols::xilinx::Xvc, <a class="reference internal" href="../../../utilities/fileio/classes/channel.html#classrogue_1_1utilities_1_1fileio_1_1StreamWriterChannel"><span class="std std-ref">rogue::utilities::fileio::StreamWriterChannel</span></a>, <a class="reference internal" href="../../../utilities/prbs/classes/prbs.html#classrogue_1_1utilities_1_1Prbs"><span class="std std-ref">rogue::utilities::Prbs</span></a>, <a class="reference internal" href="../../../utilities/compression/classes/unzip.html#classrogue_1_1utilities_1_1StreamUnZip"><span class="std std-ref">rogue::utilities::StreamUnZip</span></a>, <a class="reference internal" href="../../../utilities/compression/classes/zip.html#classrogue_1_1utilities_1_1StreamZip"><span class="std std-ref">rogue::utilities::StreamZip</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-functions">Public Functions</p>
 <dl class="cpp function">
@@ -149,7 +150,7 @@
 <p>This method enables debug messages when using the base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> class attached as a primary or secondary <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> on a <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a>. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a0db1eae3e974be56cfe5cd35653d752d"><span class="std std-ref">setDebug()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>debug</strong> – Maximum number of bytes to print in debug message. </p></li>
 <li><p><strong>name</strong> – Name to included in the debug messages. </p></li>
@@ -165,7 +166,7 @@
 <p>This method is called by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> object to which this <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> is attached when passing a <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. By default this method will print debug information if enabled and is typically re-implemented by a <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class.</p>
 <p>Re-implemented as _acceptFrame() in a Python subclass </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>frame</strong> – <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> pointer (FramePtr) </p>
 </dd>
 </dl>
@@ -178,7 +179,7 @@
 <p>Returns the total frames received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a504c34d1b91a6358b3eaf7ee6be4417f"><span class="std std-ref">getFrameCount()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Total number of <a class="reference internal" href="frame.html#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> objects received. </p>
 </dd>
 </dl>
@@ -191,7 +192,7 @@
 <p>Returns the total bytes received. Only valid if acceptFrame is not re-implemented as a sub-class. Typically used when attaching a base <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> object for debug purposes.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Slave_1a83a0b347fcb2524362e0c65f8f9d916c"><span class="std std-ref">getByteCount()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Total number of bytes received. </p>
 </dd>
 </dl>

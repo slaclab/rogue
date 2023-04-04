@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Compressing Frames &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Compressing Frames &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -77,10 +78,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Utilities</a> &raquo;</li>
-          <li><a href="index.html">Compression Utilities</a> &raquo;</li>
-      <li>Compressing Frames</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Utilities</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Compression Utilities</a></li>
+      <li class="breadcrumb-item active">Compressing Frames</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/utilities/compression/compress.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -125,48 +126,48 @@
 </pre></div>
 </div>
 <p>The following code shows how to connect a PRBS generator to a compression engine and then on to a StreamWriter in c++.</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/Prbs.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/StreamZip.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriterChannel.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/Prbs.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/StreamZip.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriterChannel.h&gt;</span>
 
 <span class="c1">// First we create a file writer instance</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriterPtr</span><span class="w"> </span><span class="n">fwrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriterPtr</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="o">:</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriterPtr</span><span class="w"> </span><span class="n">fwrite</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">fileio</span><span class="o">::</span><span class="n">StreamWriterPtr</span><span class="o">::</span><span class="n">create</span><span class="p">()</span><span class="o">:</span>
 
 <span class="c1">// Next we set the buffer size which controls how much data to cache in memory</span>
 <span class="c1">// before forming a burst write to the operating system. Larger writes help</span>
 <span class="c1">// in file operation performance</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span><span class="w"></span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setBufferSize</span><span class="p">(</span><span class="mi">10000</span><span class="p">);</span>
 
 <span class="c1">// We can also set a maximum file size for each file. If this value is non-zero</span>
 <span class="c1">// the passed file name will be appended with a numeric value starting from 1.</span>
 <span class="c1">// As the max size is reached a new file will be opened with the next index value 100MBytes</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">100000000</span><span class="p">);</span><span class="w"></span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setMaxSize</span><span class="p">(</span><span class="mi">100000000</span><span class="p">);</span>
 
 <span class="c1">// By default all frames are written, even if the incoming error field is set. You</span>
 <span class="c1">// can choose to ignore errored frames using the following call:</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setDropErrors</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span><span class="w"></span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">setDropErrors</span><span class="p">(</span><span class="nb">true</span><span class="p">);</span>
 
 <span class="c1">// Create a PRBS generator</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">PrbsPtr</span><span class="w"> </span><span class="n">prbs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">Prbs</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">PrbsPtr</span><span class="w"> </span><span class="n">prbs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">Prbs</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Create a compression block</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">StreamZipPtr</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">StreamZip</span><span class="o">::</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">StreamZipPtr</span><span class="w"> </span><span class="n">comp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">utilities</span><span class="o">::</span><span class="n">StreamZip</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect prbs to file writer</span>
-<span class="n">prbs</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">comp</span><span class="p">;</span><span class="w"></span>
+<span class="n">prbs</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">comp</span><span class="p">;</span>
 
 <span class="c1">// Connect compression block to the stream writer</span>
-<span class="n">comp</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span><span class="w"></span>
+<span class="n">comp</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">getChannel</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
 
 <span class="c1">// Open the data file</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;test.dat&quot;</span><span class="p">)</span><span class="o">:</span><span class="w"></span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;test.dat&quot;</span><span class="p">)</span><span class="o">:</span>
 
 <span class="cp"># Generate 1000 frames of PRBS data, 1000 bytes each</span>
-<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">genFrame</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">:</span><span class="w"></span>
+<span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">prbs</span><span class="o">-&gt;</span><span class="n">genFrame</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">:</span>
 
 <span class="c1">// Close the data file</span>
-<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">()</span><span class="o">:</span><span class="w"></span>
+<span class="n">fwrite</span><span class="o">-&gt;</span><span class="n">close</span><span class="p">()</span><span class="o">:</span>
 </pre></div>
 </div>
 </section>

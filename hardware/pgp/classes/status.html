@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Status &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Status &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -83,11 +84,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Hardware</a> &raquo;</li>
-          <li><a href="../index.html">PGP Card Hardware Interface</a> &raquo;</li>
-          <li><a href="index.html">PGP Hardware Interface Class Descriptions</a> &raquo;</li>
-      <li>Status</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Hardware</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">PGP Card Hardware Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">PGP Hardware Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Status</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/hardware/pgp/classes/status.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -100,27 +101,21 @@
   <section id="status">
 <span id="hardware-pgp-status"></span><h1>Status<a class="headerlink" href="#status" title="Permalink to this heading"></a></h1>
 <p>Status objects in C++ are referenced by the following shared pointer typedef:</p>
-<dl class="cpp type">
-<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp9StatusPtrE">
-<span id="_CPPv3N5rogue8hardware3pgp9StatusPtrE"></span><span id="_CPPv2N5rogue8hardware3pgp9StatusPtrE"></span><span id="rogue::hardware::pgp::StatusPtr"></span><span class="target" id="namespacerogue_1_1hardware_1_1pgp_1ae318c7a5de44e8dbed624be79a79f810"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N5rogue8hardware3pgp6StatusE" title="rogue::hardware::pgp::Status"><span class="n"><span class="pre">Status</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="sig-prename descclassname"><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">hardware</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">pgp</span></span><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">StatusPtr</span></span></span><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp9StatusPtrE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Alias for using shared pointer as StatusPtr. </p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygentypedef: Cannot find typedef “rogue::hardware::pgp::StatusPtr” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
+</div>
 <p>The class description is shown below:</p>
-<dl class="cpp class">
-<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3pgp6StatusE">
-<span id="_CPPv3N5rogue8hardware3pgp6StatusE"></span><span id="_CPPv2N5rogue8hardware3pgp6StatusE"></span><span id="rogue::hardware::pgp::Status"></span><span class="target" id="classrogue_1_1hardware_1_1pgp_1_1Status"></span><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Status</span></span></span><span class="w"> </span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="k"><span class="pre">public</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv49PgpStatus" title="PgpStatus"><span class="n"><span class="pre">PgpStatus</span></span></a><a class="headerlink" href="#_CPPv4N5rogue8hardware3pgp6StatusE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">Status</span></a> Class. </p>
-<p>This class contains the current PGP status for one of the 8 lanes on a PGP card. This class is a C++ wrapper around the <a class="reference internal" href="#structPgpStatus"><span class="std std-ref">PgpStatus</span></a> structure used by the lower level driver. All structure members are exposed to Python using their original names and can be read directly. </p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenclass: Cannot find class “rogue::hardware::pgp::Status” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
+</div>
 <p>The structure which the above class wraps is shown below. All of these
 members are exposed in the above class.</p>
 <dl class="cpp struct">
 <dt class="sig sig-object cpp" id="_CPPv49PgpStatus">
 <span id="_CPPv39PgpStatus"></span><span id="_CPPv29PgpStatus"></span><span id="PgpStatus"></span><span class="target" id="structPgpStatus"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PgpStatus</span></span></span><a class="headerlink" href="#_CPPv49PgpStatus" title="Permalink to this definition"></a><br /></dt>
 <dd><p>PGP Lane Status. </p>
-<p>Subclassed by <a class="reference internal" href="#classrogue_1_1hardware_1_1pgp_1_1Status"><span class="std std-ref">rogue::hardware::pgp::Status</span></a></p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
 <dl class="cpp var">

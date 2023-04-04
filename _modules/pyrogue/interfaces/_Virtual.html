@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._Virtual &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>pyrogue.interfaces._Virtual &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,9 +11,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -26,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -64,9 +65,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>pyrogue.interfaces._Virtual</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue.interfaces._Virtual</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -272,7 +273,7 @@
 
 
 <div class="viewcode-block" id="VirtualClient"><a class="viewcode-back" href="../../../interfaces/clients/virtual.html#pyrogue.interfaces.VirtualClient">[docs]</a><span class="k">class</span> <span class="nc">VirtualClient</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqClient</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A full featured client interface for Rogue. This can be used in</span>
 <span class="sd">    scripts or other clients which require remote access to the running</span>
 <span class="sd">    Rogue instance.</span>
@@ -347,7 +348,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_monThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="VirtualClient.addLinkMonitor"><a class="viewcode-back" href="../../../interfaces/clients/virtual.html#pyrogue.interfaces.VirtualClient.addLinkMonitor">[docs]</a>    <span class="k">def</span> <span class="nf">addLinkMonitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Add a link monitor callback function. This function will be called</span>
 <span class="sd">        any time the link state changes. A single boolean argument will be passed to</span>
 <span class="sd">        the callback function containing the current link state.</span>
@@ -361,7 +362,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_monitors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">function</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="VirtualClient.remLinkMonitor"><a class="viewcode-back" href="../../../interfaces/clients/virtual.html#pyrogue.interfaces.VirtualClient.remLinkMonitor">[docs]</a>    <span class="k">def</span> <span class="nf">remLinkMonitor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Remove a previously added link monitor function.</span>
 
 <span class="sd">        Parameters</span>

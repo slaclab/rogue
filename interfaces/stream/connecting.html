@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Connecting Streams &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Connecting Streams &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -85,10 +86,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="index.html">Stream Interface</a> &raquo;</li>
-      <li>Connecting Streams</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface</a></li>
+      <li class="breadcrumb-item active">Connecting Streams</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/interfaces/stream/connecting.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -117,10 +118,10 @@ empty the frame when processing the data, such as a DMA driver in zero copy mode
 </pre></div>
 </div>
 <p>A similiar line of code is used to connect a master and slave in c++:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mySlave</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mySlave</span>
 
 <span class="c1">// A helper function can also be used</span>
-<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span><span class="n">mySlave</span><span class="p">)</span><span class="w"></span>
+<span class="n">rogueStreamConnect</span><span class="p">(</span><span class="n">myMaster</span><span class="p">,</span><span class="n">mySlave</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The above command examples attaches the primary slave to the master.</p>
@@ -134,7 +135,7 @@ it is passed to the primary slave:</p>
 </pre></div>
 </div>
 <p>And in C++:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mySlave</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">myMaster</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mySlave</span><span class="p">;</span>
 </pre></div>
 </div>
 <p>In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
@@ -150,10 +151,10 @@ to create a bi-directional data stream using the following command in python:</p
 </div>
 <p>This command adds endPointB as a Slave for endPointA at the same time adding endPointA as a
 slave for endPointB. A similar command is available in C++:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">endPointA</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">endPointB</span><span class="p">;</span><span class="w"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="o">*</span><span class="n">endPointA</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">endPointB</span><span class="p">;</span>
 
 <span class="c1">// Or using a helper function</span>
-<span class="n">rogueStreamConnectBiDir</span><span class="p">(</span><span class="n">endPointA</span><span class="p">,</span><span class="w"> </span><span class="n">endPointB</span><span class="p">)</span><span class="w"></span>
+<span class="n">rogueStreamConnectBiDir</span><span class="p">(</span><span class="n">endPointA</span><span class="p">,</span><span class="w"> </span><span class="n">endPointB</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>

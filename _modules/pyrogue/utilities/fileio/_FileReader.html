@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,9 +11,6 @@
   <![endif]-->
   
         <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
-        <script src="../../../../_static/jquery.js"></script>
-        <script src="../../../../_static/underscore.js"></script>
-        <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../../_static/doctools.js"></script>
         <script src="../../../../_static/sphinx_highlight.js"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -26,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -64,9 +65,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../../index.html">Module code</a> &raquo;</li>
-      <li>pyrogue.utilities.fileio._FileReader</li>
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue.utilities.fileio._FileReader</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -162,12 +163,12 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="k">class</span> <span class="nc">FileReaderException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; File reader exception &quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; File reader exception &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="FileReader"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader">[docs]</a><span class="k">class</span> <span class="nc">FileReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A lightweight file reader for Rogue.</span>
 
 <span class="sd">    Parameters</span>
@@ -257,7 +258,7 @@
                 <span class="k">return</span> <span class="kc">True</span>
 
 <div class="viewcode-block" id="FileReader.records"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.records">[docs]</a>    <span class="k">def</span> <span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generator which returns (header, data) tuples</span>
 
 <span class="sd">        Returns</span>
@@ -348,7 +349,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
 <div class="viewcode-block" id="FileReader.configValue"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.configValue">[docs]</a>    <span class="k">def</span> <span class="nf">configValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a configuration or status value</span>
 
 <span class="sd">        Parameters</span>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pool &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Pool &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -102,11 +103,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
-          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
-      <li>Pool</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Pool</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/stream/classes/pool.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -142,7 +143,7 @@
 <p>Return the total bytes currently allocated. This value is incremented as buffers are allocated and decremented as buffers are freed.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a694f6e2bafd0e1bde90027c158685f72"><span class="std std-ref">getAllocBytes()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Total currently allocated bytes </p>
 </dd>
 </dl>
@@ -155,7 +156,7 @@
 <p>Return the total number of buffers currently allocated. This value is incremented as buffers are allocated and decremented as buffers are freed.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a843fe5351d94a90fe8ef1aa792799a21"><span class="std std-ref">getAllocCount()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Total currently allocated buffers </p>
 </dd>
 </dl>
@@ -174,7 +175,7 @@
 <p>This method puts the allocator into fixed size mode.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a1180466e6f42279a8c9adb9c689711cd"><span class="std std-ref">setFixedSize()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – Fixed size value. </p>
 </dd>
 </dl>
@@ -187,7 +188,7 @@
 <p>Return state of fixed size mode.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a2254a049f7825fbc82a2093c18820a3a"><span class="std std-ref">getFixedSize()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Fixed size value or 0 if not in fixed size mode </p>
 </dd>
 </dl>
@@ -200,7 +201,7 @@
 <p>Set the buffer pool size.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a4fc6d967cadc1799712e7fe7d56878f5"><span class="std std-ref">setPoolSize()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – Number of entries to keep in the pool </p>
 </dd>
 </dl>
@@ -213,7 +214,7 @@
 <p>Return configured pool size</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool_1a73c526e6d724d2d69393cbe77db353bf"><span class="std std-ref">getPoolSize()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> size </p>
 </dd>
 </dl>
@@ -229,13 +230,13 @@
 <p>This method is the default <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> allocator. The requested buffer is created from either a malloc call or fulling a free entry from the memory pool if it is enabled. If fixed size is configured the size parameter is ignored and a <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> is returned with the fixed size amount of memory. The passed total value is incremented by the allocated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size. This method is protected to allow it to be called by a sub-class of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a>.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>size</strong> – <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size requested </p></li>
 <li><p><strong>total</strong> – Pointer to current total size </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Allocated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> pointer as BufferPtr </p>
 </dd>
 </dl>
@@ -248,7 +249,7 @@
 <p>This method is used to create a <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> with a pre-allocated block of memory. This can be used when the block of memory is allocated by a hardware DMA driver. This method is protected to allow it to be called by a sub-class of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a>.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data</strong> – Data pointer to pre-allocated memory block </p></li>
 <li><p><strong>meta</strong> – Meta data associated with pre-allocated memory block </p></li>
@@ -256,7 +257,7 @@
 <li><p><strong>alloc</strong> – Allocated size of memory block (may be greater than requested size) </p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Allocated <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> pointer as BufferPtr </p>
 </dd>
 </dl>
@@ -269,7 +270,7 @@
 <p>Called in a sub-class to decrement the allocated byte count</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>alloc</strong> – Amount of memory be de-allocated. </p>
 </dd>
 </dl>

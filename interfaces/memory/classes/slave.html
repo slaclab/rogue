@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slave &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Slave &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -96,11 +97,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
-          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
-      <li>Slave</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Memory Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Slave</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/memory/classes/slave.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -142,7 +143,7 @@
 <p>This method is called by the sub-class to add a transaction into the local tracking map for later retrieval. This is used when the transaction will be completed later as the result of protocol data being returned to the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a>.</p>
 <p>Exposed to python as _addTransaction() </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>transaction</strong> – Pointer to transaction as TransactionPtr </p>
 </dd>
 </dl>
@@ -155,10 +156,10 @@
 <p>This method is called by the sub-class to retrieve an existing transaction using the unique transaction ID. If the transaction exists in the list the pointer to that transaction will be returned. If not a NULL pointer will be returned. When <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave_1a4bf250f6776be14c6d8ed924807eba82"><span class="std std-ref">getTransaction()</span></a> is called the map will also be checked for stale transactions which will be removed from the map.</p>
 <p>Exposed to python as _getTransaction() </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>index</strong> – ID of transaction to lookup </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Pointer to transaction as TransactionPtr or NULL if not found </p>
 </dd>
 </dl>
@@ -170,7 +171,7 @@
 <dd><p>Get min size from slave. </p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Minimum transaction size </p>
 </dd>
 </dl>
@@ -182,7 +183,7 @@
 <dd><p>Get max size from slave. </p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Maximum transaction size </p>
 </dd>
 </dl>
@@ -194,7 +195,7 @@
 <dd><p>Get unique slave ID. </p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Unique slave ID </p>
 </dd>
 </dl>
@@ -213,7 +214,7 @@
 <dd><p>Get slave Name. </p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> Name </p>
 </dd>
 </dl>
@@ -226,7 +227,7 @@
 <p>Called by memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>. May be overridden by <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class. By default returns the local <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> ID</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Unique <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> ID </p>
 </dd>
 </dl>
@@ -239,7 +240,7 @@
 <p>Called by memory <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a>. May be overridden by <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class. By default returns the local <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> Name</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Unique <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> Name </p>
 </dd>
 </dl>
@@ -252,7 +253,7 @@
 <p>By default the local min access value will be returned. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class is allowed to override this method.</p>
 <p>Exposed as _doMinAccess() to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Min transaction access size </p>
 </dd>
 </dl>
@@ -265,7 +266,7 @@
 <p>By default the local max access value will be returned. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class is allowed to override this method.</p>
 <p>Exposed as _doMaxAccess() to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Max transaction access size </p>
 </dd>
 </dl>
@@ -278,7 +279,7 @@
 <p>This <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> will return 0 byte default. A <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> sub-class is allowed to override this method.</p>
 <p>Exposed as _doAddress() to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Address </p>
 </dd>
 </dl>
@@ -292,7 +293,7 @@
 <p>It is possible for this method to be overridden in either a Python or C++ subclass. Examples of sub-classing a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> is included elsewhere in this document.</p>
 <p>Exposed to Python as _doTransaction() </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>transaction</strong> – <a class="reference internal" href="transaction.html#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> pointer as TransactionPtr </p>
 </dd>
 </dl>
@@ -319,7 +320,7 @@
 <dd><p>Class factory which returns a pointer to a <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> (SlavePtr) </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">rogue.interfaces.memory.Slave()</span></a> to Python</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>min</strong> – Minimum transaction this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> can accept. </p></li>
 <li><p><strong>max</strong> – Maximum transaction this <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Slave"><span class="std std-ref">Slave</span></a> can accept. </p></li>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Virtual Client Interface &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Virtual Client Interface &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -82,10 +83,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="index.html">Client Interfaces</a> &raquo;</li>
-      <li>Virtual Client Interface</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Client Interfaces</a></li>
+      <li class="breadcrumb-item active">Virtual Client Interface</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/interfaces/clients/virtual.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -131,7 +132,7 @@ client uses much of the Rogue libraries and requires a full Rogue installation t
    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Version = </span><span class="si">{</span><span class="n">ret</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
    <span class="c1"># Set a variable value using the native value</span>
-   <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">Scratchpad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
+   <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mh">0x100</span><span class="p">)</span>
 
    <span class="c1"># Set a variable value using the string representation of the value</span>
    <span class="n">root</span><span class="o">.</span><span class="n">AxiVersion</span><span class="o">.</span><span class="n">ScratchPad</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="s2">&quot;0x100&quot;</span><span class="p">)</span>
@@ -189,10 +190,10 @@ Rogue instance.</p>
 <p>This class ues a custom factory ensuring that only one instance of this
 class is created in a python script for a given remote connection.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>addr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – host address</p></li>
-<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – host port</p></li>
+<li><p><strong>addr</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><em>str</em></a>) – host address</p></li>
+<li><p><strong>port</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><em>int</em></a>) – host port</p></li>
 </ul>
 </dd>
 </dl>
@@ -201,8 +202,8 @@ class is created in a python script for a given remote connection.</p>
 <span class="sig-name descname"><span class="pre">linked</span></span><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.linked" title="Permalink to this definition"></a></dt>
 <dd><p>link state</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)">bool</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -212,7 +213,7 @@ class is created in a python script for a given remote connection.</p>
 <span class="sig-name descname"><span class="pre">root</span></span><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.root" title="Permalink to this definition"></a></dt>
 <dd><p>root class reference</p>
 <dl class="field-list simple">
-<dt class="field-odd">Type</dt>
+<dt class="field-odd">Type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>obj</p>
 </dd>
 </dl>
@@ -225,7 +226,7 @@ class is created in a python script for a given remote connection.</p>
 any time the link state changes. A single boolean argument will be passed to
 the callback function containing the current link state.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>function</strong> (<em>obj</em>) – Call back function with the form function(linkState)</p>
 </dd>
 </dl>
@@ -236,7 +237,7 @@ the callback function containing the current link state.</p>
 <span class="sig-name descname"><span class="pre">remLinkMonitor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/pyrogue/interfaces/_Virtual.html#VirtualClient.remLinkMonitor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.interfaces.VirtualClient.remLinkMonitor" title="Permalink to this definition"></a></dt>
 <dd><p>Remove a previously added link monitor function.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>function</strong> (<em>obj</em>) – Call back function</p>
 </dd>
 </dl>

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The AxiMemMap Class &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Using The AxiMemMap Class &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -82,10 +83,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Hardware</a> &raquo;</li>
-          <li><a href="index.html">Generic AXI Hardware Interface</a> &raquo;</li>
-      <li>Using The AxiMemMap Class</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Hardware</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Generic AXI Hardware Interface</a></li>
+      <li class="breadcrumb-item active">Using The AxiMemMap Class</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/hardware/axi/memory.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -127,16 +128,16 @@ with the master being the device created in the <a class="reference internal" hr
 <section id="c-aximemmap-example">
 <h2>C++ AxiMemMap Example<a class="headerlink" href="#c-aximemmap-example" title="Permalink to this heading"></a></h2>
 <p>The equivalent code in C++ is show below:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/hardware/axi/AxiMemMap.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/hardware/axi/AxiMemMap.h&gt;</span>
 
 <span class="c1">// Create memory mapped AXI interface</span>
-<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiMemMapPtr</span><span class="w"> </span><span class="n">memMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiMemMap</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">);</span><span class="w"></span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiMemMapPtr</span><span class="w"> </span><span class="n">memMap</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiMemMap</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">);</span>
 
 <span class="c1">// Create a memory master</span>
-<span class="n">MyMemMasterPtr</span><span class="w"> </span><span class="n">memMast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyMemMaster</span><span class="p">.</span><span class="n">create</span><span class="p">();</span><span class="w"></span>
+<span class="n">MyMemMasterPtr</span><span class="w"> </span><span class="n">memMast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyMemMaster</span><span class="p">.</span><span class="n">create</span><span class="p">();</span>
 
 <span class="c1">// Connect memory master to memory map</span>
-<span class="o">*</span><span class="n">memMast</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">memMap</span><span class="p">;</span><span class="w"></span>
+<span class="o">*</span><span class="n">memMast</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">memMap</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>

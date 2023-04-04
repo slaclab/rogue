@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>pyrogue.interfaces._SimpleClient &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -11,9 +11,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -26,14 +23,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -64,9 +65,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>pyrogue.interfaces._SimpleClient</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue.interfaces._SimpleClient</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -106,7 +107,7 @@
 
 
 <div class="viewcode-block" id="SimpleClient"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient">[docs]</a><span class="k">class</span> <span class="nc">SimpleClient</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A lightweight client inerface for Rogue. This can be used in</span>
 <span class="sd">    scripts or as an interface to Rogue in matlab. For a more</span>
 <span class="sd">    powerfull, tree access capable client. Please see the</span>
@@ -156,7 +157,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_subThread</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
 <div class="viewcode-block" id="SimpleClient._stop"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient._stop">[docs]</a>    <span class="k">def</span> <span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Stop the SimpleClient interface.</span>
 <span class="sd">        This must be called if not not using the SimpleClient in a context</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -191,7 +192,7 @@
         <span class="k">return</span> <span class="n">resp</span>
 
 <div class="viewcode-block" id="SimpleClient.get"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a variable value, initating a read</span>
 
 <span class="sd">        Parameters</span>
@@ -208,7 +209,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;get&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimpleClient.getDisp"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.getDisp">[docs]</a>    <span class="k">def</span> <span class="nf">getDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a variable value, in string form, initating a read</span>
 
 <span class="sd">        Parameters</span>
@@ -225,7 +226,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;getDisp&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimpleClient.value"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.value">[docs]</a>    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a variable value, without initating a read</span>
 
 <span class="sd">        Parameters</span>
@@ -242,7 +243,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;value&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimpleClient.valueDisp"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.valueDisp">[docs]</a>    <span class="k">def</span> <span class="nf">valueDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a variable value, in string form, without initating a read</span>
 
 <span class="sd">        Parameters</span>
@@ -259,7 +260,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;valueDisp&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimpleClient.set"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a variable value, using its native type</span>
 
 <span class="sd">        Parameters</span>
@@ -273,7 +274,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;set&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimpleClient.setDisp"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.setDisp">[docs]</a>    <span class="k">def</span> <span class="nf">setDisp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set a variable value, using a string representation</span>
 
 <span class="sd">        Parameters</span>
@@ -287,7 +288,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remoteAttr</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;setDisp&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="SimpleClient.exec"><a class="viewcode-back" href="../../../interfaces/clients/simple.html#pyrogue.interfaces.SimpleClient.exec">[docs]</a>    <span class="k">def</span> <span class="nf">exec</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">arg</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Call a command, with the optional arg</span>
 
 <span class="sd">        Parameters</span>

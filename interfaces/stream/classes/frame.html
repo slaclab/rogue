@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frame &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Frame &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -102,11 +103,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
-          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
-      <li>Frame</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Frame</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/stream/classes/frame.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -149,7 +150,7 @@
 <dd><p>Lock frame and return a FrameLockPtr object. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a77f4303b1f63cd0e555db044ec430b3c"><span class="std std-ref">lock()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="frameLock.html#classrogue_1_1interfaces_1_1stream_1_1FrameLock"><span class="std std-ref">FrameLock</span></a> pointer (FrameLockPtr) </p>
 </dd>
 </dl>
@@ -162,10 +163,10 @@
 <p>Buffers from the passed frame are appended to the end of this frame and will be removed from the source frame.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>frame</strong> – Source frame pointer (FramePtr) to append </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the first inserted buffer from passed frame </p>
 </dd>
 </dl>
@@ -177,10 +178,10 @@
 <dd><p>Add a buffer to end of frame,. </p>
 <p>Not exposed to Python This is for advanced manipulation of the underlying buffers. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>buff</strong> – The buffer pointer (BufferPtr) to append to the end of the frame </p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the added buffer </p>
 </dd>
 </dl>
@@ -192,7 +193,7 @@
 <dd><p>Get <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list begin iterator. </p>
 <p>Not exposed to Python This is for advanced manipulation of the underlying buffers. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the start of the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list </p>
 </dd>
 </dl>
@@ -204,7 +205,7 @@
 <dd><p>Get <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list end iterator. </p>
 <p>Not exposed to Python This is for advanced manipulation of the underlying buffers. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list iterator (<a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a89f911ccda4b575a58cb85906692c9b9"><span class="std std-ref">Frame::BufferIterator</span></a>) pointing to the end of the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list </p>
 </dd>
 </dl>
@@ -216,7 +217,7 @@
 <dd><p>Get <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list count. </p>
 <p>Not exposed to Python This is for advanced manipulation of the underlying buffers. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Number of buffers in the <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list </p>
 </dd>
 </dl>
@@ -235,7 +236,7 @@
 <dd><p><a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list empty state. </p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if frame <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> list is empty. </p>
 </dd>
 </dl>
@@ -248,7 +249,7 @@
 <p>This function returns the full buffer size</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1ae18b2ebade7c22f6e6ff2ca6047410a9"><span class="std std-ref">getSize()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Total raw <a class="reference internal" href="buffer.html#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> in bytes </p>
 </dd>
 </dl>
@@ -261,8 +262,8 @@
 <p>This is the space remaining for payload</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a84a26b8dd545c2dc3a489b3596c4a4d0"><span class="std std-ref">getAvailable()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Remaining bytes available for payload in the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Remaining bytes available for payload in the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -273,8 +274,8 @@
 <dd><p>Get total payload size of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a6de871a21683c12274372162c82512f2"><span class="std std-ref">getPayload()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Total payload bytes in the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Total payload bytes in the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -285,7 +286,7 @@
 <dd><p>Set payload size. </p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – New payload size </p>
 </dd>
 </dl>
@@ -298,7 +299,7 @@
 <p>If current payload size is larger then passed value, the payload size is unchanged.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – New minimum size </p>
 </dd>
 </dl>
@@ -311,7 +312,7 @@
 <p>Pass is a positive or negative size adjustment.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – Size adjustment value </p>
 </dd>
 </dl>
@@ -338,7 +339,7 @@
 <p>The <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> flags field is a 16-bit application specific field for passing data between a stream <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> and <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a>. A typical use in Rogue is to pass the first and last user Axi-Stream fields.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1af06fb1ca0017c196d03a9843c6e2ce1b"><span class="std std-ref">getFlags()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>16-bit Flag value </p>
 </dd>
 </dl>
@@ -350,7 +351,7 @@
 <dd><p>Set <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> flags. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a72b9b5f1fba5a053f43daf71b6e7ff6c"><span class="std std-ref">setFlags()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>flags</strong> – 16-bit flag value </p>
 </dd>
 </dl>
@@ -362,7 +363,7 @@
 <dd><p>The first user value is stored in the lower 8-bits of the flag field.</p>
 <p>Exposed as getFirstuser() to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuser 8-bit first user value </p>
 </dd>
 </dl>
@@ -373,7 +374,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setFirstUser__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setFirstUser</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fuser</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame12setFirstUserE7uint8_t" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1adc623290ea7a27b565b9e7bb40ebe80a"><span class="std std-ref">setFirstUser()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tuser</strong> – 8-bit first user value </p>
 </dd>
 </dl>
@@ -385,7 +386,7 @@
 <dd><p>The last user value is stored in the upper 8-bits of the flag field.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a85622715941a780db631f9b041ecb6f9"><span class="std std-ref">getLastUser()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>tuser 8-bit last user value </p>
 </dd>
 </dl>
@@ -396,7 +397,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t"></span><span id="rogue::interfaces::stream::Frame::setLastUser__uint8_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">setLastUser</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint8_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">fuser</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame11setLastUserE7uint8_t" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a31850834a52ecffc85db7dac3d03f540"><span class="std std-ref">setLastUser()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>tuser</strong> – 8-bit last user value </p>
 </dd>
 </dl>
@@ -409,7 +410,7 @@
 <p>Most Frames in Rogue will not use this channel field since most <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1stream_1_1Master"><span class="std std-ref">Master</span></a> to <a class="reference internal" href="slave.html#classrogue_1_1interfaces_1_1stream_1_1Slave"><span class="std std-ref">Slave</span></a> connections are not channelized. Exceptions include data coming out of a data file reader.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a69a180c5ee97b4cbec23888387d6fef6"><span class="std std-ref">getChannel()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>8-bit channel ID </p>
 </dd>
 </dl>
@@ -421,7 +422,7 @@
 <dd><p>Set channel. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1ae4f4ad8000d05381f5cd06b7353c2106"><span class="std std-ref">setChannel()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>channel</strong> – 8-bit channel ID </p>
 </dd>
 </dl>
@@ -441,7 +442,7 @@
 <dd><p>Set error state. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1a2f2b7dad7c5b1bf0a97e757f85e927e0"><span class="std std-ref">setError()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>error</strong> – New error value </p>
 </dd>
 </dl>
@@ -454,7 +455,7 @@
 <p>Return an iterator for accessing data within the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>. This iterator assumes the payload size of the frame has already been set. This means the frame has either been received already containing data, or the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame_1aaf4d97a4f4ffe2b7803acc9c62758f5d"><span class="std std-ref">setPayload()</span></a> method has been called.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> pointing to beginning of payload </p>
 </dd>
 </dl>
@@ -467,7 +468,7 @@
 <p>This iterator is used to detect when the end of the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> payload is reached when iterating through the <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a>.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="frameIterator.html#classrogue_1_1interfaces_1_1stream_1_1FrameIterator"><span class="std std-ref">FrameIterator</span></a> read end position </p>
 </dd>
 </dl>
@@ -480,7 +481,7 @@
 <p>Read data from <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> into passed Python byte array.</p>
 <p>Exposed as read() to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p</strong> – Python object containing byte array </p></li>
 <li><p><strong>offset</strong> – First location of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data to copy to byte array </p></li>
@@ -496,10 +497,10 @@
 <p>Write data into from <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> from passed Python byte array.</p>
 <p>Exposed as write() to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p</strong> – Python object containing byte array </p></li>
-<li><p><strong>offset</strong> – First location to write byte array into <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> </p></li>
+<li><p><strong>offset</strong> – First location to write byte array into <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a></p></li>
 </ul>
 </dd>
 </dl>

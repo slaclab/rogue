@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Slave Example &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Memory Slave Example &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-        <script src="../../_static/jquery.js"></script>
-        <script src="../../_static/underscore.js"></script>
-        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../_static/doctools.js"></script>
         <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -84,10 +85,10 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="index.html">Memory Interface</a> &raquo;</li>
-      <li>Memory Slave Example</li>
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface</a></li>
+      <li class="breadcrumb-item active">Memory Slave Example</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../_sources/interfaces/memory/slave.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -217,106 +218,106 @@ initiate a read and write transaction:</p>
 </pre></div>
 </div>
 <p>The equivalent code in C++ is show below:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span><span class="cp"></span>
-<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Slave.h&gt;</span><span class="cp"></span>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Slave.h&gt;</span>
 
 <span class="c1">// Create a subclass of a memory Slave</span>
 <span class="c1">// Assume our min size = 4 bytes and our max size is 1024 bytes</span>
-<span class="n">class</span><span class="w"> </span><span class="n">MyMemSlave</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">   </span><span class="n">public</span><span class="o">:</span><span class="w"></span>
+<span class="n">class</span><span class="w"> </span><span class="n">MyMemSlave</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">public</span><span class="o">:</span>
 
 <span class="w">      </span><span class="c1">// Create a static class creator to return our custom class</span>
 <span class="w">      </span><span class="c1">// wrapped with a shared pointer</span>
-<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span><span class="w"></span>
-<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="p">();</span><span class="w"></span>
-<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">create</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ret</span><span class="w"> </span><span class="o">=</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">         </span><span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
+<span class="w">      </span><span class="p">}</span>
 
 <span class="w">      </span><span class="c1">// Standard class creator which is called by create</span>
 <span class="w">      </span><span class="c1">// Here we set min and max size</span>
-<span class="w">      </span><span class="n">MyMemSlave</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="w">      </span><span class="n">MyMemSlave</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Slave</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">1024</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span>
 
 <span class="w">      </span><span class="c1">// Entry point for incoming transaction</span>
-<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">doTransaction</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">doTransaction</span><span class="p">(</span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">         </span><span class="c1">// First we lock the transaction data with a scoped lock</span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
 <span class="w">         </span><span class="c1">// Next store the transaction in the local map so we</span>
 <span class="w">         </span><span class="c1">// can retrieve it when the protocol returns</span>
-<span class="w">         </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">addTransaction</span><span class="p">(</span><span class="n">tran</span><span class="p">);</span><span class="w"></span>
+<span class="w">         </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">addTransaction</span><span class="p">(</span><span class="n">tran</span><span class="p">);</span>
 
 <span class="w">         </span><span class="c1">// Handle write or post</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="w"> </span><span class="o">||</span><span class="w"></span>
-<span class="w">              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Post</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Write</span><span class="w"> </span><span class="o">||</span>
+<span class="w">              </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">type</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">Post</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">            </span><span class="c1">// Next forward the transaction data to our protocol</span>
 <span class="w">            </span><span class="c1">// Use pointer directly from transaction</span>
-<span class="w">            </span><span class="n">protocolWrite</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                          </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                          </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span><span class="w"></span>
+<span class="w">            </span><span class="n">protocolWrite</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">(),</span>
+<span class="w">                          </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span>
+<span class="w">                          </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span>
 
-<span class="w">         </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="p">}</span>
 
 <span class="w">         </span><span class="c1">// Handle read or verify read</span>
-<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
 
 <span class="w">            </span><span class="c1">// Next forward the transaction data to our protocol</span>
-<span class="w">            </span><span class="n">protocolRead</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span><span class="w"></span>
-<span class="w">                         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">());</span><span class="w"></span>
-<span class="w">         </span><span class="p">}</span><span class="w"></span>
+<span class="w">            </span><span class="n">protocolRead</span><span class="p">(</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">id</span><span class="p">(),</span>
+<span class="w">                         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">address</span><span class="p">(),</span>
+<span class="w">                         </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">());</span>
+<span class="w">         </span><span class="p">}</span>
 
 <span class="w">         </span><span class="c1">// We are done for now until protocol returns below</span>
 
 <span class="w">      </span><span class="c1">// Protocol callback for write complete</span>
-<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">protocolWriteDone</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">protocolWriteDone</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">;</span>
 
 <span class="w">         </span><span class="c1">// First attempt to retrieve transaction</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
 
 <span class="w">         </span><span class="c1">// Lock the transaction data with a scoped lock</span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
 <span class="w">         </span><span class="c1">// make sure transaction is not stale</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
 
 <span class="w">         </span><span class="c1">// If an error occured, complete result with bus fail</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Got a bad protocol result %i&quot;</span><span class="p">,</span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Got a bad protocol result %i&quot;</span><span class="p">,</span><span class="n">result</span><span class="p">);</span>
 
 <span class="w">         </span><span class="c1">// Otherwise complete transaction with success</span>
-<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
+<span class="w">      </span><span class="p">}</span>
 
 <span class="w">      </span><span class="c1">// Protocol callback for read complete</span>
-<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">protocolReadDone</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="kt">void</span><span class="w"> </span><span class="n">protocolReadDone</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="kt">uint8_t</span><span class="w"> </span><span class="o">*</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionPtr</span><span class="w"> </span><span class="n">tran</span><span class="p">;</span>
 
 <span class="w">         </span><span class="c1">// First attempt to retrieve transaction</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="p">(</span><span class="n">tran</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">this</span><span class="o">-&gt;</span><span class="n">getTransaction</span><span class="p">(</span><span class="n">id</span><span class="p">))</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">NULL</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
 
 <span class="w">         </span><span class="c1">// Lock the transaction data with a scoped lock</span>
-<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span><span class="w"></span>
+<span class="w">         </span><span class="n">rogue</span><span class="o">::</span><span class="n">interfaces</span><span class="o">::</span><span class="n">memory</span><span class="o">::</span><span class="n">TransactionLockPtr</span><span class="w"> </span><span class="n">lock</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
 <span class="w">         </span><span class="c1">// make sure transaction is not stale</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">expired</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
 
 <span class="w">         </span><span class="c1">// If an error occurred, complete result with bus fail</span>
-<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Got a bad protocol result %i&quot;</span><span class="p">,</span><span class="n">result</span><span class="p">);</span><span class="w"></span>
+<span class="w">         </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Got a bad protocol result %i&quot;</span><span class="p">,</span><span class="n">result</span><span class="p">);</span>
 
 <span class="w">         </span><span class="c1">// Otherwise set the read data back to the transaction</span>
 <span class="w">         </span><span class="c1">// and complete without error</span>
-<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="o">+</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span><span class="w"></span>
-<span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span><span class="w"></span>
-<span class="w">         </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="p">};</span><span class="w"></span>
+<span class="w">         </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="n">std</span><span class="o">::</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">data</span><span class="o">+</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">(),</span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">());</span>
+<span class="w">            </span><span class="n">tran</span><span class="o">-&gt;</span><span class="n">done</span><span class="p">();</span>
+<span class="w">         </span><span class="p">}</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="p">};</span>
 
 <span class="c1">// Shared pointer alias</span>
-<span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyMemSlavePtr</span><span class="p">;</span><span class="w"></span>
+<span class="k">typedef</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyMemSlave</span><span class="o">&gt;</span><span class="w"> </span><span class="n">MyMemSlavePtr</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>

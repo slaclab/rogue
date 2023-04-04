@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Transaction &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Transaction &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -96,11 +97,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Memory Interface</a> &raquo;</li>
-          <li><a href="index.html">Memory Interface Class Descriptions</a> &raquo;</li>
-      <li>Transaction</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Memory Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Memory Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Transaction</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/memory/classes/transaction.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -142,7 +143,7 @@
 <dd><p>Lock <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> and return a TransactionLockPtr object. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aeaeb3980a9e5959eb23d2181eeeddc49"><span class="std std-ref">lock()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="transactionLock.html#classrogue_1_1interfaces_1_1memory_1_1TransactionLock"><span class="std std-ref">TransactionLock</span></a> pointer (TransactonLockPtr) </p>
 </dd>
 </dl>
@@ -155,7 +156,7 @@
 <p>The expired flag is set by the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> when the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> times out and the <a class="reference internal" href="master.html#classrogue_1_1interfaces_1_1memory_1_1Master"><span class="std std-ref">Master</span></a> is no longer waiting for the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> to complete. Lock must be held before checking the expired status.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a35616717f6d15c8978ba296b7fce816c"><span class="std std-ref">expired()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if transaction is expired. </p>
 </dd>
 </dl>
@@ -167,7 +168,7 @@
 <dd><p>Get 32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> ID. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a1f14874141680a7184b8277c61444d5b"><span class="std std-ref">id()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>32-bit transaction ID </p>
 </dd>
 </dl>
@@ -179,7 +180,7 @@
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> address. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07b199ad3b8c4fec6ab3e7a334722aad"><span class="std std-ref">address()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>64-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> ID </p>
 </dd>
 </dl>
@@ -191,7 +192,7 @@
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size. </p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a7c0e8ed1b737a70043b5e8f4c5eb4153"><span class="std std-ref">size()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> size </p>
 </dd>
 </dl>
@@ -203,7 +204,7 @@
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type. </p>
 <p>The transaction type values are defined in Constants Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ac03d3ff263b5a59ddbc8ab67bdc2758e"><span class="std std-ref">type()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>32-bit <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> type </p>
 </dd>
 </dl>
@@ -215,7 +216,7 @@
 <dd><p>Create a subtransaction. </p>
 <p>Create a new transaction and assign internal pointers linking it to this parent transaction </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A pointer to the newly created subtransaction </p>
 </dd>
 </dl>
@@ -228,7 +229,7 @@
 <p>Called to refresh the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> timer. If the passed reference <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> is NULL or the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> start time is later than the reference transaction, the <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> timer will be refreshed.</p>
 <p>Not exposed to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>reference</strong> – Reference TransactionPtr </p>
 </dd>
 </dl>
@@ -249,7 +250,7 @@
 <p>Lock must be held before calling this method.</p>
 <p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a9c3f54d3fcfa0766984039b6739629da"><span class="std std-ref">error()</span></a> to Python </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>error</strong> – <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> error message </p>
 </dd>
 </dl>
@@ -261,7 +262,7 @@
 <dd><p>Complete transaction with passed error. </p>
 <p>Lock must be held before calling this method.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>error</strong> – <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> error message </p>
 </dd>
 </dl>
@@ -274,8 +275,8 @@
 <p>Not exposed to Python</p>
 <p>Lock must be held before calling this method and while updating <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Data iterator as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a> </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Data iterator as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -287,8 +288,8 @@
 <p>Not exposed to Python</p>
 <p>Lock must be held before calling this method and while updating <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Data iterator as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a> </p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Data iterator as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1ab35827b018cd3000de36a1cad2373d21"><span class="std std-ref">Transaction::iterator</span></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -300,7 +301,7 @@
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1a07bd8bccdcba6384f5976d148ce362ff"><span class="std std-ref">getData()</span></a></p>
 <p>The size of the data to be copied is defined by the size of the passed data buffer. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p</strong> – Python byte array object </p></li>
 <li><p><strong>offset</strong> – Offset for <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data access. </p></li>
@@ -316,7 +317,7 @@
 <p>Exposed to Python as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction_1aba98e4513c63a75e9146807361c6eb75"><span class="std std-ref">setData()</span></a></p>
 <p>The size of the data to be copied is defined by the size of the passed data buffer. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>p</strong> – Python byte array object </p></li>
 <li><p><strong>offset</strong> – Offset for <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Transaction"><span class="std std-ref">Transaction</span></a> data access. </p></li>

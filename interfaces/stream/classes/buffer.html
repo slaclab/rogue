@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buffer &mdash; Rogue v5.15.0-30-g6ed35d45 documentation</title>
+  <title>Buffer &mdash; Rogue v5.17.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -12,9 +12,6 @@
   <![endif]-->
   
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -29,14 +26,18 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> Rogue
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
           </a>
               <div class="version">
-                v5.15.0
+                v5.17.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -102,11 +103,11 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Interfaces</a> &raquo;</li>
-          <li><a href="../index.html">Stream Interface</a> &raquo;</li>
-          <li><a href="index.html">Stream Interface Class Descriptions</a> &raquo;</li>
-      <li>Buffer</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Interfaces</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Stream Interface</a></li>
+          <li class="breadcrumb-item"><a href="index.html">Stream Interface Class Descriptions</a></li>
+      <li class="breadcrumb-item active">Buffer</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../../../_sources/interfaces/stream/classes/buffer.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -156,7 +157,7 @@
 <dd><p>Get meta data. </p>
 <p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Meta data value </p>
 </dd>
 </dl>
@@ -168,7 +169,7 @@
 <dd><p>Set meta data. </p>
 <p>The meta data field is used by the <a class="reference internal" href="pool.html#classrogue_1_1interfaces_1_1stream_1_1Pool"><span class="std std-ref">Pool</span></a> class or sub-class to track the allocated data. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>meta</strong> – Meta data value </p>
 </dd>
 </dl>
@@ -179,7 +180,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustHeader__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1a0d894947e2006509b5e7b1216395be35"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustHeader</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer12adjustHeaderE7int32_t" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Adjust header by passed value. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – Head adjustment amount </p>
 </dd>
 </dl>
@@ -196,7 +197,7 @@
 <span id="_CPPv3N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="_CPPv2N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t"></span><span id="rogue::interfaces::stream::Buffer::adjustTail__int32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Buffer_1ad3b1a80aa1d347a11b9cecf1b5246365"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">adjustTail</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">int32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">value</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream6Buffer10adjustTailE7int32_t" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Adjust tail reservation by passed value. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – Tail adjustment amount </p>
 </dd>
 </dl>
@@ -214,7 +215,7 @@
 <dd><p>Get beginning buffer iterator. </p>
 <p>Get an iterator which indicates the start of the buffer space, not including the header reservation. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Begin buffer iterator </p>
 </dd>
 </dl>
@@ -226,7 +227,7 @@
 <dd><p>Get end buffer iterator. </p>
 <p>Get an iterator which indicates the end of the the buffer minus the tail reservation. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>End buffer iterator </p>
 </dd>
 </dl>
@@ -238,7 +239,7 @@
 <dd><p>Get end payload iterator. </p>
 <p>Get an iterator which indicates the end of the the payload space. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>End payload iterator </p>
 </dd>
 </dl>
@@ -250,7 +251,7 @@
 <dd><p>Get <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size. </p>
 <p>Get size of buffer that can hold payload data. This function returns the full buffer size minus the head and tail reservation. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Buffer"><span class="std std-ref">Buffer</span></a> size in bytes </p>
 </dd>
 </dl>
@@ -262,7 +263,7 @@
 <dd><p>Get the available space for payload. </p>
 <p>Get the remaining data available for payload. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The amount of available space for payload in bytes. </p>
 </dd>
 </dl>
@@ -274,7 +275,7 @@
 <dd><p>Get the payload size. </p>
 <p>This method will return the amount of payload data in the buffer. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Payload size in bytes </p>
 </dd>
 </dl>
@@ -286,7 +287,7 @@
 <dd><p>Set the payload size. </p>
 <p>Set the payload size to the passed value. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – New payload size in bytes </p>
 </dd>
 </dl>
@@ -298,7 +299,7 @@
 <dd><p>Set minimum payload size. </p>
 <p>This method sets the payload size to be at least the passed value. If the current payload size exceeds the passed value, the size is unchanged. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>size</strong> – Min payload size in bytes </p>
 </dd>
 </dl>
@@ -310,7 +311,7 @@
 <dd><p>Adjust the payload size. </p>
 <p>This method adjusts the payload size by the passed positive or negative value. </p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>value</strong> – Value to adjust payload by in bytes </p>
 </dd>
 </dl>
