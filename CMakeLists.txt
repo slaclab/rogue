@@ -450,14 +450,9 @@ if (NOT NO_PYTHON)
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use setuptools with python3 for system
-   elseif (${ROGUE_INSTALL} STREQUAL "system")
-      install(CODE "execute_process(COMMAND python3 ${PROJECT_BINARY_DIR}/setup.py install)")
-
-   # Use setuptools with python for anaconda
-   elseif (${ROGUE_INSTALL} STREQUAL "conda")
-      install(CODE "execute_process(COMMAND python
-              ${PROJECT_BINARY_DIR}/setup.py install --prefix=${ROGUE_DIR})")
+   # Use pip with python3 for system or anaconda
+   elseif ((${ROGUE_INSTALL} STREQUAL "system" or (${ROGUE_INSTALL} STREQUAL "conda"))
+      install(CODE "execute_process(COMMAND pip3 install ${PROJECT_BINARY_DIR}/)")
    endif()
 
    # Do byte compile for custom or local
