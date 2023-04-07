@@ -10,16 +10,11 @@ build:
 
 requirements:
    build:
-     - python
-     - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
      - git
      - cmake
      - make
-     - bzip2
-     - zeromq
-     - numpy
    host:
      - python
      - boost
@@ -39,7 +34,6 @@ requirements:
      - pyzmq
      - parse
      - click
-     - pyqt
      - sqlalchemy
      - pydm>=1.18.0
      - pyserial

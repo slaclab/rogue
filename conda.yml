@@ -1,5 +1,4 @@
 channels:
-  - tidair-packages
   - conda-forge
 dependencies:
   - python
