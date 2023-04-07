@@ -12,7 +12,7 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton, PyDMScaleIndicator
-from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMEnumComboBox
+from pydm.widgets import PyDMSpinbox, PyDMEnumComboBox
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
 from qtpy.QtCore import Qt
@@ -114,15 +114,9 @@ class Process(PyDMFrame):
                     w.showStepExponent      = False
                     w.writeOnPress          = True
 
-                elif v.mode == 'RO' and not v.isCommand:
-                    w = PyDMLabel(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
-                    w.showUnits             = False
-                    w.precisionFromPV       = True
-                    w.alarmSensitiveContent = False
-                    w.alarmSensitiveBorder  = True
                 else:
                     w = PyRogueLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
-                    w.showUnits             = False
+                    w.showUnits             = True
                     w.precisionFromPV       = True
                     w.alarmSensitiveContent = False
                     w.alarmSensitiveBorder  = True
