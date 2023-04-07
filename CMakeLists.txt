@@ -451,7 +451,7 @@ if (NOT NO_PYTHON)
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
    # Use pip with python3 for system or anaconda
-   elseif ((${ROGUE_INSTALL} STREQUAL "system" or (${ROGUE_INSTALL} STREQUAL "conda"))
+   elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
       install(CODE "execute_process(COMMAND pip3 install ${PROJECT_BINARY_DIR}/)")
    endif()
 
