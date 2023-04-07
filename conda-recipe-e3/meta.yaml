@@ -10,33 +10,24 @@ build:
 
 requirements:
    build:
-     - python<3.8
-     - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
      - git
      - cmake
      - make
-     - bzip2
-     - zeromq
-     - epics-base
-     - pcas
-     - numpy
    host:
-     - python<3.8
+     - python
      - boost
      - bzip2
      - zeromq
-     - epics-base
-     - pcas
      - numpy
+     - epics-base
+     - pcas
    run:
-     - python<3.8
+     - python
      - boost
      - bzip2
      - zeromq
-     - epics-base
-     - pcas
      - numpy
      - ipython
      - p4p
@@ -45,11 +36,12 @@ requirements:
      - pyzmq
      - parse
      - click
-     - pyqt
      - sqlalchemy
      - pydm>=1.18.0
      - pyserial
      - matplotlib
+     - epics-base
+     - pcas
 
 about:
    home: https://github.com/slaclab/rogue

@@ -15,7 +15,7 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-from distutils.core import setup
+from setuptools import setup
 
 rawVersion = '${ROGUE_VERSION}'
 
