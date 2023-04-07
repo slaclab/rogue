@@ -73,14 +73,14 @@ class RogueConnection(PyDMConnection):
 
         self.app = QApplication.instance()
 
-        self._host, self._port, self._path, self._mode = parseAddress(address)
+        self._host, self._port, self._path, self._mode = parseAddress(channel.address)
 
         self._cmd    = False
         self._int    = False
         self._node   = None
         self._enum   = None
         self._notDev = False
-        self._address = address
+        self._address = channel.address
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
