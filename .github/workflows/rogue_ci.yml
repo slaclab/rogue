@@ -147,7 +147,7 @@ jobs:
     name: Anaconda Build
     needs: [full_build_test, small_build_test]
     if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
-    runs-on: - ubuntu-20.04
+    runs-on: ubuntu-20.04
     steps:
 
       # This step checks out a copy of your repository.
