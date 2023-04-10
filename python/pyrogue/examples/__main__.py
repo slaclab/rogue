@@ -36,7 +36,6 @@ parser.add_argument(
 args = parser.parse_args()
 
 #import logging
-#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
 #logger = logging.getLogger('pyrogue')

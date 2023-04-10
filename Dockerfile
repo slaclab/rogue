@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
  && rm -rf /var/lib/apt/lists/*
 
 # PIP Packages
-RUN pip3 install PyYAML Pyro4 parse click ipython pyzmq packaging matplotlib numpy pyepics p4p pydm jsonpickle sqlalchemy pyserial
+RUN pip3 install PyYAML Pyro4 parse click ipython pyzmq packaging matplotlib numpy p4p pydm jsonpickle sqlalchemy pyserial
 
 # Install Rogue
 ARG branch
