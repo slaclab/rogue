@@ -21,19 +21,16 @@ import rogue.interfaces.memory
 import rogue
 import math
 import numpy as np
-import pyrogue.protocols.epicsV4
 import matplotlib.pyplot as plt
 
 try:
-    import pyrogue.protocols.epics
+    import pyrogue.protocols.epicsV4
 except Exception:
     pass
 
 class ExampleRoot(pyrogue.Root):
 
-    def __init__(self,
-                 epics3En=False,
-                 epics4En=False):
+    def __init__(self, epics4En=False):
 
         self._scnt = 0
         self._sdata = np.zeros(100,dtype=np.float64)
@@ -110,10 +107,6 @@ class ExampleRoot(pyrogue.Root):
             mode = 'RO',
             dependencies = [self.TestArray],
             linkedGet = self._getPlot))
-
-        if epics3En:
-            self._epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
-            self.addProtocol(self._epics)
 
         if epics4En:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
