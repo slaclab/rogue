@@ -31,16 +31,20 @@ namespace rogue {
 
                //! Create the object
                /**
-                * @param obj Python object to map to the root
+                * @param modName Module containing root class
+                * @param rootClass Root class
+                * @param rootArgs Args for root as dictionary in yaml format
                 */
-               Root (boost::python::object obj);
+               Root (std::string modName, std::string rootClass, std::string rootArgs);
                ~Root();
 
                //! Class factory which returns a pointer to a Root (RootPtr)
                /**
-                * @param obj Python object to map to the root
+                * @param modName Module containing root class
+                * @param rootClass Root class
+                * @param rootArgs Args for root as dictionary in yaml format
                 */
-               static std::shared_ptr<rogue::interfaces::api::Root> create (boost::python::ojbect obj);
+               static std::shared_ptr<rogue::interfaces::api::Root> create (std::string modName, std::string rootClass, std::string rootArgs);
 
                //! Start root
                void start();
