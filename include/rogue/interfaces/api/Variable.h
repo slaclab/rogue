@@ -45,10 +45,10 @@ namespace rogue {
                std::string typeStr();
 
                //! Get precision
-               int8_t precision();
+               int32_t precision();
 
                //! Get enum mapping in yaml format, empty string if no enum
-               std::string enum();
+               std::string enumYaml();
 
                //! Get mode
                std::string mode();
