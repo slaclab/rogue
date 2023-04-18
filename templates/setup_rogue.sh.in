@@ -9,13 +9,6 @@ then
    PYTHONPATH=""
 fi
 
-############### Uncomment the following for SLAC rhel6 machines ####################
-#source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.sh
-#source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.sh
-#source /afs/slac.stanford.edu/g/reseng/zeromq/4.3.1/settings.sh
-#source /afs/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.sh
-####################################################################################
-
 # Rogue directory
 export ROGUE_DIR=@ROGUE_DIR@
 export ROGUE_VERSION=@ROGUE_VERSION@

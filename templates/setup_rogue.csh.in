@@ -7,13 +7,6 @@ if ( ! $?LD_LIBRARY_PATH ) then
    setenv LD_LIBRARY_PATH ""
 endif
 
-############### Uncomment the following for SLAC rhel6 machines ####################
-#source /afs/slac.stanford.edu/g/reseng/python/3.6.1/settings.csh
-#source /afs/slac.stanford.edu/g/reseng/boost/1.64.0/settings.csh
-#source /afs/slac.stanford.edu/g/reseng/zeromq/4.3.1/settings.csh
-#source /afs/slac.stanford.edu/g/reseng/epics/base-R3-15-5-1-0/settings.csh
-####################################################################################
-
 # Rogue directory
 setenv ROGUE_DIR @ROGUE_DIR@
 setenv ROGUE_VERSION @ROGUE_VERSION@
