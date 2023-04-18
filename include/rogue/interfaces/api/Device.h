@@ -32,6 +32,7 @@ namespace rogue {
                /**
                 * @param obj Python object to map to the device
                 */
+               Device ();
                Device (boost::python::object obj);
                ~Device();
 
@@ -39,11 +40,11 @@ namespace rogue {
                /**
                 * @param obj Python object to map to the device
                 */
-               static std::shared_ptr<rogue::interfaces::api::Device> create (boost::python::ojbect obj);
+               static std::shared_ptr<rogue::interfaces::api::Device> create (boost::python::object obj);
 
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::api::Device> DevicePtr;
+         typedef std::shared_ptr<rogue::interfaces::api::Device> DevicePtr;
       }
    }
 }

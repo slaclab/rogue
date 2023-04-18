@@ -26,12 +26,10 @@ namespace ria = rogue::interfaces::api;
 // Class factory which returns a pointer to a Variable (VariablePtr)
 ria::VariablePtr ria::Variable::create (bp::object obj) {
    ria::VariablePtr r = std::make_shared<ria::Variable>(obj);
-   return(b);
+   return(r);
 }
 
-ria::Variable::Variable (boost::python::object obj) {
-   _obj = obj;
-}
+ria::Variable::Variable (boost::python::object obj) : ria::Node::Node(obj) {}
 
 ria::Variable::~Variable() { }
 
@@ -63,22 +61,21 @@ std::string ria::Variable::units() {
 
 //! Get minimum
 float ria::Variable::minimum() {
-   return(std::string(bp::extract<float>(this->_obj.attr("minimum"))));
+   return(bp::extract<float>(this->_obj.attr("minimum")));
 }
 
 //! Get maximum
 float ria::Variable::maximum() {
-   return(std::string(bp::extract<float>(this->_obj.attr("maximum"))));
+   return(bp::extract<float>(this->_obj.attr("maximum")));
 }
 
 //! Set value
-void ria::Variable::setDisp(std::string value, bool write=true, int32_t index=-1) {
-
+void ria::Variable::setDisp(std::string value, bool write, int32_t index) {
+   this->_obj.attr("setDisp")(value,write,index);
 }
 
 //! Get value
-std::string ria::Variable::getDisp(bool read=true, int32_t index=-1) {
-
-
+std::string ria::Variable::getDisp(bool read, int32_t index) {
+   return(std::string(bp::extract<char *>(this->_obj.attr("getDisp")(read,index))));
 }
 

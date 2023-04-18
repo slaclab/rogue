@@ -36,6 +36,7 @@ namespace rogue {
                /**
                 * @param obj Python object to map to the node
                 */
+               Node ();
                Node (boost::python::object obj);
                ~Node();
 
@@ -43,7 +44,7 @@ namespace rogue {
                /**
                 * @param obj Python object to map to the node
                 */
-               static std::shared_ptr<rogue::interfaces::api::Node> create (boost::python::ojbect obj);
+               static std::shared_ptr<rogue::interfaces::api::Node> create (boost::python::object obj);
 
                //! Get name of node
                std::string name();
@@ -73,7 +74,7 @@ namespace rogue {
                bool isVariable();
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::api::Node> NodePtr;
+         typedef std::shared_ptr<rogue::interfaces::api::Node> NodePtr;
       }
    }
 }

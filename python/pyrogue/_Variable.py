@@ -253,6 +253,11 @@ class BaseVariable(pr.Node):
         """ """
         return self._enum
 
+    @property
+    def enumYaml(self):
+        """ """
+        return pr.dataToYaml(self._enum)
+
     @pr.expose
     @property
     def revEnum(self):

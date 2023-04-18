@@ -39,7 +39,7 @@ namespace rogue {
                /**
                 * @param obj Python object to map to the variable
                 */
-               static std::shared_ptr<rogue::interfaces::api::Variable> create (boost::python::ojbect obj);
+               static std::shared_ptr<rogue::interfaces::api::Variable> create (boost::python::object obj);
 
                //! Get type string
                std::string typeStr();
@@ -70,7 +70,7 @@ namespace rogue {
 
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::api::Variable> VariablePtr;
+         typedef std::shared_ptr<rogue::interfaces::api::Variable> VariablePtr;
       }
    }
 }

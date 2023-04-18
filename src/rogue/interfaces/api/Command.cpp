@@ -16,6 +16,7 @@
 **/
 #include <rogue/interfaces/api/Node.h>
 #include <rogue/interfaces/api/Command.h>
+#include <rogue/interfaces/api/Variable.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GeneralError.h>
 
@@ -26,12 +27,10 @@ namespace ria = rogue::interfaces::api;
 // Class factory which returns a pointer to a Command (CommandPtr)
 ria::CommandPtr ria::Command::create (bp::object obj) {
    ria::CommandPtr r = std::make_shared<ria::Command>(obj);
-   return(b);
+   return(r);
 }
 
-ria::Command::Command (boost::python::object obj) {
-   _obj = obj;
-}
+ria::Command::Command (boost::python::object obj) : ria::Variable::Variable(obj) {}
 
 ria::Command::~Command() { }
 
@@ -47,8 +46,7 @@ bool ria::Command::arg() {
 }
 
 //! Execute command
-std::string ria::Command::call(std::string arg="") {
-
+std::string ria::Command::call(std::string arg) {
+   return(std::string(bp::extract<char *>(this->_obj.attr("callDisp")(arg))));
 }
-
 

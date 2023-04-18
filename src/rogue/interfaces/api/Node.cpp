@@ -20,36 +20,39 @@
 #include <rogue/interfaces/api/Command.h>
 #include <boost/make_shared.hpp>
 #include <rogue/GeneralError.h>
+#include <string>
 
 namespace bp = boost::python;
 namespace ria = rogue::interfaces::api;
 
 
 // Class factory which returns a pointer to a Node (NodePtr)
-ria::NodePtr ria::Node::create (bp::object obj) {
+ria::NodePtr ria::Node::create(bp::object obj) {
    ria::NodePtr r = std::make_shared<ria::Node>(obj);
-   return(b);
+   return(r);
 }
 
+ria::Node::Node () {}
+
 ria::Node::Node (boost::python::object obj) {
-   _obj = obj;
+   this->_obj = obj;
 }
 
 ria::Node::~Node() { }
 
 //! Get name of node
 std::string ria::Node::name() {
-   return(std::string(char * ret = bp::extract<char *>(this->_obj.attr("name"))));
+   return(std::string(bp::extract<char *>(this->_obj.attr("name"))));
 }
 
 //! Get path of node
 std::string ria::Node::path() {
-   return(std::string(char * ret = bp::extract<char *>(this->_obj.attr("path"))));
+   return(std::string(bp::extract<char *>(this->_obj.attr("path"))));
 }
 
 //! Get description of node
 std::string ria::Node::description() {
-   return(std::string(char * ret = bp::extract<char *>(this->_obj.attr("description"))));
+   return(std::string(bp::extract<char *>(this->_obj.attr("description"))));
 }
 
 //! Get list of sub nodes
@@ -57,7 +60,7 @@ std::vector<std::string> ria::Node::nodeList() {
    std::vector<std::string> ret;
    int32_t i;
 
-   bp::list pl = (bp::list)_root.attr("nodeList");
+   bp::list pl = (bp::list)this->_obj.attr("nodeList");
 
    for (i=0; i < len(pl); i++) ret.push_back(std::string(bp::extract<char *>(pl[i])));
 
@@ -67,15 +70,16 @@ std::vector<std::string> ria::Node::nodeList() {
 //! Return a sub-node
 std::shared_ptr<rogue::interfaces::api::Node> ria::Node::node(std::string name) {
    try {
-      bp::object obj = this->_obj.attr(name);
+      bp::object obj = this->_obj.attr(name.c_str());
 
       if ( obj.attr("isDevice") ) return ria::Device::create(obj);
       if ( obj.attr("isCommand") ) return ria::Command::create(obj);
       if ( obj.attr("isVariable") ) return ria::Variable::create(obj);
 
-   } catch() {
+   } catch (...) {
       throw(rogue::GeneralError::create("Node::node", "Invalid child node %s", name.c_str()));
    }
+   return(NULL);
 }
 
 //! Return a sub-node operator

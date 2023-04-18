@@ -157,6 +157,22 @@ class BaseCommand(pr.BaseVariable):
         """
         return self.__call__(arg)
 
+    @pr.expose
+    def callDisp(self,arg=None):
+        """
+
+
+        Parameters
+        ----------
+        arg : str
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
+        return self.disp.format(self.__call__(arg))
+
     @staticmethod
     def nothing():
         """ """

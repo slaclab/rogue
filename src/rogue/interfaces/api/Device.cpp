@@ -26,12 +26,12 @@ namespace ria = rogue::interfaces::api;
 // Class factory which returns a pointer to a Device (DevicePtr)
 ria::DevicePtr ria::Device::create (bp::object obj) {
    ria::DevicePtr r = std::make_shared<ria::Device>(obj);
-   return(b);
+   return(r);
 }
 
-ria::Device::Device (boost::python::object obj) {
-   _obj = obj;
-}
+ria::Device::Device () {}
+
+ria::Device::Device (boost::python::object obj) : ria::Node::Node(obj) {}
 
 ria::Device::~Device() { }
 

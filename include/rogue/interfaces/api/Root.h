@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#ifndef __ROGUE_INTERFACE_API_DEVICE_H__
-#define __ROGUE_INTERFACE_API_DEVICE_H__
+#ifndef __ROGUE_INTERFACE_API_ROOT_H__
+#define __ROGUE_INTERFACE_API_ROOT_H__
 #include <boost/python.hpp>
 #include <rogue/interfaces/api/Device.h>
 #include <rogue/interfaces/api/Node.h>
@@ -57,7 +57,7 @@ namespace rogue {
 
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::api::Root> RootPtr;
+         typedef std::shared_ptr<rogue::interfaces::api::Root> RootPtr;
       }
    }
 }

@@ -19,6 +19,7 @@
 #include <boost/python.hpp>
 #include <rogue/interfaces/api/Node.h>
 #include <rogue/interfaces/api/Command.h>
+#include <rogue/interfaces/api/Variable.h>
 
 namespace rogue {
    namespace interfaces {
@@ -40,7 +41,7 @@ namespace rogue {
                /**
                 * @param obj Python object to map to the command
                 */
-               static std::shared_ptr<rogue::interfaces::api::Command> create (boost::python::ojbect obj);
+               static std::shared_ptr<rogue::interfaces::api::Command> create (boost::python::object obj);
 
                //! Get return type string
                std::string retTypeStr();
@@ -52,7 +53,7 @@ namespace rogue {
                std::string call(std::string arg="");
          };
 
-         typedef boost::shared_ptr<rogue::interfaces::api::Command> CommandPtr;
+         typedef std::shared_ptr<rogue::interfaces::api::Command> CommandPtr;
       }
    }
 }
