@@ -36,7 +36,9 @@ ria::Root::Root (std::string modName, std::string rootClass, std::string rootArg
    this->_obj = mod.attr(rootClass.c_str())(rootArgs);
 }
 
-ria::Root::~Root() { }
+ria::Root::~Root() {
+   this->stop();
+}
 
 //! Return a sub-node
 std::shared_ptr<rogue::interfaces::api::Node> ria::Root::getNode(const char *name) {
