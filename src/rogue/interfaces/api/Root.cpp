@@ -38,6 +38,17 @@ ria::Root::Root (std::string modName, std::string rootClass, std::string rootArg
 
 ria::Root::~Root() { }
 
+//! Return a sub-node
+std::shared_ptr<rogue::interfaces::api::Node> ria::Root::getNode(const char *name) {
+   try {
+      bp::object obj = this->_obj.attr("getNode")(name);
+      return(ria::Node::create(obj));
+   } catch (...) {
+      throw(rogue::GeneralError::create("Node::node", "Invalid child node %s", name));
+   }
+}
+
+
 //! Start root
 void ria::Root::start() {
    this->_obj.attr("start")();

@@ -23,16 +23,16 @@ namespace rogue {
    namespace interfaces {
       namespace api {
 
-         class Variable;
-         class Command;
-         class Device;
-
          //! Node Class
          class Node {
 
             protected:
 
                boost::python::object _obj;
+               bool _isDevice;
+               bool _isVariable;
+               bool _isCommand;
+               std::string _name;
 
             public:
 
@@ -50,6 +50,10 @@ namespace rogue {
                 */
                static std::shared_ptr<rogue::interfaces::api::Node> create (boost::python::object obj);
 
+               ////////////////////////////////////////////////////////////
+               // Standard Node Interface
+               ////////////////////////////////////////////////////////////
+
                //! Get name of node
                std::string name();
 
@@ -62,16 +66,8 @@ namespace rogue {
                //! Get list of sub nodes
                std::vector<std::string> nodeList();
 
-               //! Return a sub-node
-               //std::shared_ptr<rogue::interfaces::api::Node> node(std::string name);
-
-               //! Return a sub-node
-               std::shared_ptr<rogue::interfaces::api::Command>  command(std::string name);
-               std::shared_ptr<rogue::interfaces::api::Device>   device(std::string name);
-               std::shared_ptr<rogue::interfaces::api::Variable> variable(std::string name);
-
                //! Return a sub-node operator
-               //std::shared_ptr<rogue::interfaces::api::Node> operator [](std::string name);
+               rogue::interfaces::api::Node operator [](const char *name);
 
                //! Return true if node is a device
                bool isDevice();
@@ -81,6 +77,53 @@ namespace rogue {
 
                //! Return true if node is a variable
                bool isVariable();
+
+               ////////////////////////////////////////////////////////////
+               // Variable Interface
+               ////////////////////////////////////////////////////////////
+
+               //! Get type string
+               std::string typeStr();
+
+               //! Get precision
+               int32_t precision();
+
+               //! Get enum mapping in yaml format, empty string if no enum
+               std::string enumYaml();
+
+               //! Get mode
+               std::string mode();
+
+               //! Get units
+               std::string units();
+
+               //! Get minimum
+               float minimum();
+
+               //! Get maximum
+               float maximum();
+
+               //! Set value
+               void setDisp(std::string value, bool write=true, int32_t index=-1);
+
+               //! Get value
+               std::string getDisp(bool read=true, int32_t index=-1);
+
+               ////////////////////////////////////////////////////////////
+               // Command Interface
+               ////////////////////////////////////////////////////////////
+
+               //! Get return type string
+               std::string retTypeStr();
+
+               //! Does command take an arg
+               bool arg();
+
+               //! Execute command
+               std::string call(std::string arg);
+
+               //! Execute command, no arg
+               std::string call();
          };
 
          typedef std::shared_ptr<rogue::interfaces::api::Node> NodePtr;

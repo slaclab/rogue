@@ -171,7 +171,9 @@ class BaseCommand(pr.BaseVariable):
         -------
 
         """
-        return self.disp.format(self.__call__(arg))
+        ret = self.__call__(arg)
+        # This needs to be a special disp for return values
+        return str(ret)
 
     @staticmethod
     def nothing():

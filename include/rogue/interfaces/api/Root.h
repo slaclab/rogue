@@ -17,7 +17,6 @@
 #ifndef __ROGUE_INTERFACE_API_ROOT_H__
 #define __ROGUE_INTERFACE_API_ROOT_H__
 #include <boost/python.hpp>
-#include <rogue/interfaces/api/Device.h>
 #include <rogue/interfaces/api/Node.h>
 
 namespace rogue {
@@ -25,7 +24,7 @@ namespace rogue {
       namespace api {
 
          //! Root Class
-         class Root : public rogue::interfaces::api::Device {
+         class Root : public rogue::interfaces::api::Node {
 
             public:
 
@@ -45,6 +44,9 @@ namespace rogue {
                 * @param rootArgs Args for root as dictionary in yaml format
                 */
                static std::shared_ptr<rogue::interfaces::api::Root> create (std::string modName, std::string rootClass, std::string rootArgs = "");
+
+               //! Return a sub-node by full path
+               std::shared_ptr<rogue::interfaces::api::Node> getNode(const char *name);
 
                //! Start root
                void start();
