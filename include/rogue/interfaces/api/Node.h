@@ -23,6 +23,10 @@ namespace rogue {
    namespace interfaces {
       namespace api {
 
+         class Variable;
+         class Command;
+         class Device;
+
          //! Node Class
          class Node {
 
@@ -59,10 +63,15 @@ namespace rogue {
                std::vector<std::string> nodeList();
 
                //! Return a sub-node
-               std::shared_ptr<rogue::interfaces::api::Node> node(std::string name);
+               //std::shared_ptr<rogue::interfaces::api::Node> node(std::string name);
+
+               //! Return a sub-node
+               std::shared_ptr<rogue::interfaces::api::Command>  command(std::string name);
+               std::shared_ptr<rogue::interfaces::api::Device>   device(std::string name);
+               std::shared_ptr<rogue::interfaces::api::Variable> variable(std::string name);
 
                //! Return a sub-node operator
-               std::shared_ptr<rogue::interfaces::api::Node> operator [](std::string name);
+               //std::shared_ptr<rogue::interfaces::api::Node> operator [](std::string name);
 
                //! Return true if node is a device
                bool isDevice();

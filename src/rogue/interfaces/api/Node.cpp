@@ -68,12 +68,36 @@ std::vector<std::string> ria::Node::nodeList() {
 }
 
 //! Return a sub-node
-std::shared_ptr<rogue::interfaces::api::Node> ria::Node::node(std::string name) {
+//std::shared_ptr<rogue::interfaces::api::Node> ria::Node::node(std::string name) {
+//   try {
+//      bp::object obj = this->_obj.attr(name.c_str());
+//
+//      if ( obj.attr("isDevice") ) return ria::Device::create(obj);
+//      if ( obj.attr("isCommand") ) return ria::Command::create(obj);
+//      if ( obj.attr("isVariable") ) return ria::Variable::create(obj);
+//
+//   } catch (...) {
+//      throw(rogue::GeneralError::create("Node::node", "Invalid child node %s", name.c_str()));
+//   }
+//   return(NULL);
+//}
+
+std::shared_ptr<rogue::interfaces::api::Device> ria::Node::device(std::string name) {
    try {
       bp::object obj = this->_obj.attr(name.c_str());
 
       if ( obj.attr("isDevice") ) return ria::Device::create(obj);
-      if ( obj.attr("isCommand") ) return ria::Command::create(obj);
+
+   } catch (...) {
+      throw(rogue::GeneralError::create("Node::node", "Invalid child node %s", name.c_str()));
+   }
+   return(NULL);
+}
+
+std::shared_ptr<rogue::interfaces::api::Variable> ria::Node::variable(std::string name) {
+   try {
+      bp::object obj = this->_obj.attr(name.c_str());
+
       if ( obj.attr("isVariable") ) return ria::Variable::create(obj);
 
    } catch (...) {
@@ -82,10 +106,22 @@ std::shared_ptr<rogue::interfaces::api::Node> ria::Node::node(std::string name) 
    return(NULL);
 }
 
-//! Return a sub-node operator
-std::shared_ptr<rogue::interfaces::api::Node> ria::Node::operator [](std::string name) {
-   return this->node(name);
+std::shared_ptr<rogue::interfaces::api::Command> ria::Node::command(std::string name) {
+   try {
+      bp::object obj = this->_obj.attr(name.c_str());
+
+      if ( obj.attr("isCommand") ) return ria::Command::create(obj);
+
+   } catch (...) {
+      throw(rogue::GeneralError::create("Node::node", "Invalid child node %s", name.c_str()));
+   }
+   return(NULL);
 }
+
+//! Return a sub-node operator
+//std::shared_ptr<rogue::interfaces::api::Node> ria::Node::operator [](std::string name) {
+   //return this->node(name);
+//}
 
 //! Return true if node is a device
 bool ria::Node::isDevice() {
