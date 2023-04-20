@@ -146,7 +146,7 @@ class RootLogHandler(logging.Handler):
                 print(self.format(record))
                 print("------------------------------------------------")
 
-class Root(rogue.interfaces.stream.Master,pr.Device):
+class Root(pr.Device):
     """
     Class which serves as the root of a tree of nodes.
     The root is the interface point for tree level access and updates.
@@ -200,15 +200,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._initWrite       = initWrite
         self._pollEn          = pollEn
         self._maxLog          = maxLog
-        self._streamIncGroups = streamIncGroups
-        self._streamExcGroups = streamExcGroups
         self._doHeartbeat     = True # Backdoor flag
 
         # Deprecated
-        self._serverPort   = serverPort
-        self._sqlUrl       = sqlUrl
-        self._sqlIncGroups = sqlIncGroups
-        self._sqlExcGroups = sqlExcGroups
+        self._serverPort      = serverPort
+        self._sqlUrl          = sqlUrl
+        self._sqlIncGroups    = sqlIncGroups
+        self._sqlExcGroups    = sqlExcGroups
+        self._streamIncGroups = streamIncGroups
+        self._streamExcGroups = streamExcGroups
+        self._streamMaster    = None
 
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
@@ -899,70 +900,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         for v in self.variables.values():
             v._finishInit()
 
-    def _sendYamlFrame(self,yml):
-        """
-        Generate a frame containing the passed string.
-
-        Parameters
-        ----------
-        yml :
-
-
-        Returns
-        -------
-
-        """
-        b = bytearray(yml,'utf-8')
-        frame = self._reqFrame(len(b),True)
-        frame.write(b,0)
-        self._sendFrame(frame)
-
-    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=None):
-        """
-        Generate a frame containing all variables values in yaml format.
-        A hardware read is not generated before the frame is generated.
-        incGroups is a list of groups that the variable must be a member
-        of in order to be included in the stream. excGroups is a list of
-        groups that the variable must not be a member of to include.
-        excGroups takes precedence over incGroups. If excGroups or
-        incGroups are None, the default set of stream include and
-        exclude groups will be used as specified when the Root class was created.
-        By default all variables are included, except for members of the NoStream group.
-
-        Parameters
-        ----------
-        modes :
-             (Default value = ['RW')
-        'RO' :
-
-        'WO'] :
-
-        incGroups :
-             (Default value = None)
-        excGroups :
-             (Default value = None)
-
-        Returns
-        -------
-
-        """
-
-        # Don't send if there are not any Slaves connected
-        if self._slaveCount == 0:
-            return
-
-        # Inherit include and exclude groups from global if not passed
-        if incGroups is None:
-            incGroups = self._streamIncGroups
-        if excGroups is None:
-            excGroups = self._streamExcGroups
-
-        self._sendYamlFrame(self.getYaml(readFirst=False,
-                                         modes=modes,
-                                         incGroups=incGroups,
-                                         excGroups=excGroups,
-                                         recurse=True))
-
     def _write(self):
         """Write all blocks"""
         self._log.info("Start root write")
@@ -1284,10 +1221,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                 for p,v in uvars.items():
                     val = v._doUpdate()
 
-#                        # Add to stream
-#                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
-#                            strm[p] = val
-
                     # Call listener functions,
                     with self._varListenLock:
                         for func,doneFunc,incGroups,excGroups in self._varListeners:
@@ -1316,3 +1249,31 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
             # Set done
             self._updateQueue.task_done()
+
+    # Deprecated
+    def _getStreamMaster(self):
+        if self._streamMaster is None:
+            print("========== Deprecation Warning =============================== ")
+            print(" Setting up variable streaming directly through the root class ")
+            print(" is no longer supported. Instead create a VariableStram        ")
+            print(" object seperately and add it as an interface:                 ")
+            print("                                                               ")
+            print("    with Root() as r:                                          ")
+            print("       stream = pr.interfaces.stream.Variable(root=r)          ")
+            print("       r.addInterface(stream)                                  ")
+            print("                                                               ")
+            print(" You can then connect stream slaves to the newly created       ")
+            print(" VariableStream instance:                                      ")
+            print("                                                               ")
+            print(" slave << stream                                               ")
+            print("===============================================================")
+            self._streamMaster = pyrogue.interfaces.stream.Variable(root=r, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
+            self.addInterface(self._streamMaster)
+
+        return self_streamMaster
+
+    # Deprecated support
+    def __rshift__(self,other):
+        pyrogue.streamConnect(self,other)
+        return other
+

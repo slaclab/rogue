@@ -9,3 +9,4 @@
 #-----------------------------------------------------------------------------
 
 from pyrogue.interfaces.stream._Fifo import *
+from pyrogue.interfaces.stream._Variable import *

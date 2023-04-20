@@ -25,6 +25,7 @@ def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=80
         for i in root._ifAndProto:
             if isinstance(i, pr.interfaces.ZmqServer)
                 serverList='localhost:{}'.format(i.port())
+                break
 
     os.environ['ROGUE_SERVERS'] = serverList
 

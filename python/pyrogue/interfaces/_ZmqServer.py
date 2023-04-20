@@ -66,8 +66,9 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         self._updateList[p] = val
 
     def _varDone(self):
-        self._publish(pickle.dumps(self._updateList))
-        self._updateList = {}
+        if len(self._updateList) > 0:
+            self._publish(pickle.dumps(self._updateList))
+            self._updateList = {}
 
     def _start(self):
         rogue.interfaces.ZmqServer._start(self)
