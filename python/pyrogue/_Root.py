@@ -221,9 +221,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Polling worker
         self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
 
-        # Zeromq server
-        self._zmqServer  = None
-
         # List of variable listeners
         self._varListeners  = []
         self._varListenLock = threading.Lock()
@@ -430,11 +427,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         # Start ZMQ server if enabled
         if self._serverPort is not None:
-            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
-            self._serverPort = self._zmqServer.port()
-            print(f"Start: Started zmqServer on ports {self._serverPort}-{self._serverPort+2}")
-            print(f"    To start a gui: python -m pyrogue gui --server='localhost:{self._serverPort}'")
-            print(f"    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port={self._serverPort})")
+            print("========== Deprecation Warning =============================== ")
+            print(" Setting up zmq server through the Root class creator is       ")
+            print(" no longer supported. Instead create the ZmqServer seperately  ")
+            print(" add add it as an interface:                                   ")
+            print("                                                               ")
+            print("    with Root() as r:                                          ")
+            print("       zmq = pr.interfaces.ZmqServer(root=r,addr='*',port=0    ")
+            print("       r.addInterface(zmq)                                     ")
+            print("===============================================================")
+            self.addProtocol(pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
 
         # Start sql interface
         if self._sqlUrl is not None:
@@ -477,9 +479,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._pollQueue:
             self._pollQueue._stop()
 
-        if self._zmqServer is not None:
-            self._zmqServer._stop()
-
         if self._sqlLog is not None:
             self._sqlLog._stop()
 
@@ -498,7 +497,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 """
         return self._running
 
-    def addVarListener(self,func):
+    def addVarListener(self,func,doneFunc=None,incGroups=None,excGroups=None):
         """
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
@@ -513,7 +512,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
 
         with self._varListenLock:
-            self._varListeners.append(func)
+            self._varListeners.append((func,doneFunc,incGroups,excGroups))
 
     @pr.expose
     def get(self,path):
@@ -1273,7 +1272,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         """ """
         self._log.info("Starting update thread")
         strm = {}
-        zmq  = {}
 
         while True:
             uvars = self._updateQueue.get()
@@ -1291,23 +1289,20 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     try:
                         val = v._doUpdate()
 
-                        # Add to stream
-                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
-                            strm[p] = val
-
-                        # Add to zmq publish
-                        if not v.inGroup('NoServe'):
-                            zmq[p] = val
+#                        # Add to stream
+#                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
+#                            strm[p] = val
 
                         # Call listener functions,
                         with self._varListenLock:
-                            for func in self._varListeners:
-                                func(p,val)
+                            for func,doneFunc,incGroups,excGroups in self._varListeners:
+                                if (incGroups is None or v.inGroup(incGroups)) and (excGroups is None or not v.inGroup(excGroups)):
+                                    func(p,val)
 
-                        # Log to database
-                        if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
-                            #print('sql log:',p, val)
-                            self._sqlLog.logVariable(p, val)
+#                        # Log to database
+#                        if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
+#                            #print('sql log:',p, val)
+#                            self._sqlLog.logVariable(p, val)
 
                     except Exception as e:
                         if v == self.SystemLog:
@@ -1319,20 +1314,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
-
-                # Generate yaml stream
+                # Finalize listeners
                 try:
-                    if len(strm) > 0:
-                        self._sendYamlFrame(pr.dataToYaml(strm))
-                        strm = {}
+
+                    with self._varListenLock:
+                        for func,doneFunc in self._varListeners:
+                            if doneFunc is not None:
+                                doneFunc()
 
                 except Exception as e:
                     pr.logException(self._log,e)
-
-                # Send over zmq link
-                if self._zmqServer is not None:
-                    self._zmqServer._publish(pickle.dumps(zmq))
-                zmq = {}
 
             # Set done
             self._updateQueue.task_done()
