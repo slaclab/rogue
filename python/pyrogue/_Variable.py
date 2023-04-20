@@ -592,7 +592,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value, useDisp=self.disp):
+    def genDisp(self, value, *, useDisp=self.disp):
         """
 
 
