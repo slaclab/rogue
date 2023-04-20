@@ -19,7 +19,7 @@ import json
 
 class SqlLogger(object):
 
-    def __init__(self, *, root, url, incGroups, excGroups):
+    def __init__(self, *, root, url, incGroups=None, excGroups=['NoSql']):
         self._log = pr.logInit(cls=self,name="SqlLogger",path=None)
         self._url = url
         self._engine = None
@@ -28,8 +28,8 @@ class SqlLogger(object):
         self._thread = threading.Thread(target=self._worker)
         self._thread.start()
 
-        root.addVarListeners(func=self._varUpdate, done=self._varDone, incGrops=incGroups, excGroups=excGroups)
         self._sysLogPath = root.SystemLogLast.path
+        root.addVarListeners(func=self._varUpdate, done=None, incGrops=incGroups, excGroups=excGroups)
 
         try:
             engine = sqlalchemy.create_engine(self._url) #, isolation_level="AUTOCOMMIT")
@@ -152,10 +152,6 @@ class SqlLogger(object):
 
     def _varUpdate(self, path, value):
         self._queue.put((path,value))
-
-    def _varDone(self):
-        pass
-
 
 
 class SqlReader(object):

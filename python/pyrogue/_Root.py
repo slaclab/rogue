@@ -183,9 +183,10 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                  initRead=False,
                  initWrite=False,
                  pollEn=True,
+                 maxLog=1000,
+                 # Deprecated
                  serverPort=0,  # 9099 is the default, 0 for auto
                  sqlUrl=None,
-                 maxLog=1000,
                  streamIncGroups=None,
                  streamExcGroups=['NoStream'],
                  sqlIncGroups=None,
@@ -495,7 +496,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @property
     def running(self):
         """
-"""
+        """
         return self._running
 
     def addVarListener(self,func,*,done=None,incGroups=None,excGroups=None):
@@ -676,7 +677,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def pollBlock(self):
         """
-"""
+        """
 
         # At with call
         self._pollQueue._blockIncrement()
@@ -875,25 +876,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _hbeatWorker(self):
         """
-"""
+        """
         while self._running:
             time.sleep(1)
 
             with self.updateGroup():
                 self.Time.set(time.time())
 
-    #def _exit(self):
-    #    self.stop()
-    #    exit()
-
-    #def _restart(self):
-    #    self.stop()
-    #    py = sys.executable
-    #    os.execl(py, py, *sys.argv)
-
     def _rootAttached(self):
         """
-"""
+        """
         self._parent = self
         self._root   = self
         self._path   = self.name
@@ -1304,23 +1296,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                                     func(p,val)
 
                                 except Exception as e:
-                                    if v == self.SystemLog:
+                                    if v == self.SystemLog or v == self.SystemLogLast:
                                         print("------- Error Executing Syslog Listeners -------")
                                         print("Error: {}".format(e))
                                         print("------------------------------------------------")
                                     else:
                                         pr.logException(self._log,e)
 
-                self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-
                 # Finalize listeners
                 with self._varListenLock:
-                    for func,doneFunc in self._varListeners:
+                    for func,doneFunc,incGroups,excGroups in self._varListeners:
                         if doneFunc is not None:
                             try:
                                 doneFunc()
                             except Exception as e:
                                 pr.logException(self._log,e)
+
+                self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
             # Set done
             self._updateQueue.task_done()
