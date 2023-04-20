@@ -515,131 +515,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         with self._varListenLock:
             self._varListeners.append(func)
 
-    @pr.expose
-    def get(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.get()
-
-    @pr.expose
-    def getDisp(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.getDisp()
-
-    @pr.expose
-    def value(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.value()
-
-    @pr.expose
-    def valueDisp(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.valueDisp()
-
-    @pr.expose
-    def set(self,path,value):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        value :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.set(value)
-
-    @pr.expose
-    def setDisp(self,path,value):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        value :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.setDisp(value)
-
-    @pr.expose
-    def exec(self,path,arg):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        arg :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj(arg)
-
     @contextmanager
     def updateGroup(self, period=0):
         """
@@ -870,28 +745,18 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     f.write("{}\t".format(v.groups))
                     f.write("{}\n".format(v.description))
 
-
     def _hbeatWorker(self):
         """
-"""
+        """
         while self._running:
             time.sleep(1)
 
             with self.updateGroup():
                 self.Time.set(time.time())
 
-    #def _exit(self):
-    #    self.stop()
-    #    exit()
-
-    #def _restart(self):
-    #    self.stop()
-    #    py = sys.executable
-    #    os.execl(py, py, *sys.argv)
-
     def _rootAttached(self):
         """
-"""
+        """
         self._parent = self
         self._root   = self
         self._path   = self.name

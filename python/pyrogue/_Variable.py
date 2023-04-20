@@ -592,7 +592,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value):
+    def genDisp(self, value, useDisp=self.disp):
         """
 
 
@@ -610,18 +610,18 @@ class BaseVariable(pr.Node):
             if isinstance(value,np.ndarray):
                 return np.array2string(value,
                                        separator=', ',
-                                       formatter={'all':self.disp.format},
+                                       formatter={'all':useDisp.format},
                                        threshold=sys.maxsize,
                                        max_line_width=1000)
 
-            elif self.disp == 'enum':
+            elif useDisp == 'enum':
                 if value in self.enum:
                     return self.enum[value]
                 else:
                     self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
                     return f'INVALID: {value}'
             else:
-                return self.disp.format(value)
+                return useDisp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
