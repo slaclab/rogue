@@ -75,4 +75,3 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         print(f"Start: Started zmqServer on ports {self.port()}-{self.port()+2}")
         print(f"    To start a gui: python -m pyrogue gui --server='localhost:{self.port()}'")
         print(f"    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port={self.port()})")
-

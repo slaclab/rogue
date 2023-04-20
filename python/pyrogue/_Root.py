@@ -17,11 +17,11 @@ import rogue.interfaces.memory as rim
 import threading
 import logging
 import pyrogue as pr
+import pyrogue.interfaces.stream
 import functools as ft
 import time
 import queue
 import json
-import pickle
 import zipfile
 import traceback
 import datetime
@@ -429,29 +429,27 @@ class Root(pr.Device):
 
         # Start ZMQ server if enabled
         if self._serverPort is not None:
-            print("========== Deprecation Warning ===============================      ")
-            print(" Setting up zmq server through the Root class creator is            ")
-            print(" no longer supported. Instead create the ZmqServer seperately       ")
-            print(" add add it as an interface:                                        ")
-            print("                                                                    ")
-            print("    with Root() as r:                                               ")
-            print("       zmq = pyrogue.interfaces.ZmqServer(root=r, addr='*', port=0  ")
-            print("       r.addInterface(zmq)                                          ")
-            print("===============================================================     ")
+            print("========== Deprecation Warning ===============================================")
+            print(" Setting up zmq server through the Root class creator is                      ")
+            print(" no longer supported. Instead create the ZmqServer seperately                 ")
+            print(" add add it as an interface:                                                  ")
+            print("                                                                              ")
+            print("    with Root() as r:                                                         ")
+            print("       r.addInterface(pyrogue.interfaces.ZmqServer(root=r, addr='*', port=0)) ")
+            print("==============================================================================")
             self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort))
 
         # Start sql interface
         if self._sqlUrl is not None:
-            print("========== Deprecation Warning =============================== ")
-            print(" Setting up sql logger through the Root class creator is       ")
-            print(" no longer supported. Instead create the SqlLogger seperately  ")
-            print(" add add it as an interface:                                   ")
-            print("                                                               ")
-            print("    with Root() as r:                                          ")
-            print("       sql = pyrogue.interfaces.SqlLogger(root=r, url=sqlUrl)  ")
-            print("       r.addInterface(sql)                                     ")
-            print("===============================================================")
-            self.addProtocol(pr.interfaces.SqlLogger(root=r, url=self._sqlUrl, incGroups=self._sqlIncGroups, excGroups=self._sqlExcGroups))
+            print("========== Deprecation Warning =========================================")
+            print(" Setting up sql logger through the Root class creator is                ")
+            print(" no longer supported. Instead create the SqlLogger seperately           ")
+            print(" add add it as an interface:                                            ")
+            print("                                                                        ")
+            print("    with Root() as r:                                                   ")
+            print("       r.addInterface(pyrogue.interfaces.SqlLogger(root=r, url=sqlUrl)) ")
+            print("========================================================================")
+            self.addProtocol(pr.interfaces.SqlLogger(root=self, url=self._sqlUrl, incGroups=self._sqlIncGroups, excGroups=self._sqlExcGroups))
 
         # Start update thread
         self._running = True
@@ -1203,7 +1201,6 @@ class Root(pr.Device):
     def _updateWorker(self):
         """ """
         self._log.info("Starting update thread")
-        strm = {}
 
         while True:
             uvars = self._updateQueue.get()
@@ -1266,7 +1263,7 @@ class Root(pr.Device):
             print("                                                               ")
             print("    slave << stream                                            ")
             print("===============================================================")
-            self._streamMaster = pr.interfaces.stream.Variable(root=r, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
+            self._streamMaster = pr.interfaces.stream.Variable(root=self, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
             self.addInterface(self._streamMaster)
 
         return self._streamMaster
@@ -1275,4 +1272,3 @@ class Root(pr.Device):
     def __rshift__(self,other):
         pr.streamConnect(self,other)
         return other
-

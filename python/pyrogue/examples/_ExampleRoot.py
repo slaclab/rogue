@@ -43,6 +43,7 @@ class ExampleRoot(pyrogue.Root):
                               description="Example Root",
                               timeout=2.0,
                               pollEn=True,
+                              sqlUrl='sqlite:///test.db',
                               serverPort=0)
 
         # Use a memory space emulator
