@@ -125,6 +125,8 @@ class RootLogHandler(logging.Handler):
                     for tb in traceback.format_tb(record.exc_info[2]):
                         se['traceBack'].append(tb.rstrip())
 
+                self._root.SystemLogLast.set(json.dumps(se))
+
                 # System log is a running json encoded list
                 with self._root.SystemLog.lock:
                     lst = json.loads(self._root.SystemLog.value())
@@ -135,9 +137,6 @@ class RootLogHandler(logging.Handler):
                     lst.append(se)
                     self._root.SystemLog.set(json.dumps(lst))
 
-                # Log to database
-                if self._root._sqlLog is not None:
-                    self._root._sqlLog.logSyslog(se)
 
             except Exception as e:
                 print("-----------Error Logging Exception -------------")
@@ -199,14 +198,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._initRead        = initRead
         self._initWrite       = initWrite
         self._pollEn          = pollEn
-        self._serverPort      = serverPort
-        self._sqlUrl          = sqlUrl
         self._maxLog          = maxLog
         self._streamIncGroups = streamIncGroups
         self._streamExcGroups = streamExcGroups
-        self._sqlIncGroups    = sqlIncGroups
-        self._sqlExcGroups    = sqlExcGroups
         self._doHeartbeat     = True # Backdoor flag
+
+        # Deprecated
+        self._serverPort   = serverPort
+        self._sqlUrl       = sqlUrl
+        self._sqlIncGroups = sqlIncGroups
+        self._sqlExcGroups = sqlExcGroups
 
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
@@ -231,9 +232,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateLock   = threading.Lock()
         self._updateTrack  = {}
 
-        # SQL URL
-        self._sqlLog = None
-
         # Init
         pr.Device.__init__(self, name=name, description=description, expand=expand)
 
@@ -244,8 +242,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self.add(pr.LocalVariable(name='RogueDirectory', value=os.path.dirname(pr.__file__), mode='RO', hidden=False,
                  description='Rogue Library Directory'))
 
-        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
+        self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql', 'NoState'],
             description='String containing newline separated system logic entries'))
+
+        self.add(pr.LocalVariable(name='SystemLogLast', value='', mode='RO', hidden=True, groups=['NoStream','NoState'],
+            description='String containing last system log entry'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
@@ -433,14 +434,23 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             print(" add add it as an interface:                                   ")
             print("                                                               ")
             print("    with Root() as r:                                          ")
-            print("       zmq = pr.interfaces.ZmqServer(root=r,addr='*',port=0    ")
+            print("       zmq = pr.interfaces.ZmqServer(root=r, addr='*', port=0  ")
             print("       r.addInterface(zmq)                                     ")
             print("===============================================================")
-            self.addProtocol(pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
+            self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort)
 
         # Start sql interface
         if self._sqlUrl is not None:
-            self._sqlLog = pr.interfaces.SqlLogger(self._sqlUrl)
+            print("========== Deprecation Warning =============================== ")
+            print(" Setting up sql logger through the Root class creator is       ")
+            print(" no longer supported. Instead create the SqlLogger seperately  ")
+            print(" add add it as an interface:                                   ")
+            print("                                                               ")
+            print("    with Root() as r:                                          ")
+            print("       sql = pr.interfaces.SqlLogger(root=r, url=sqlUrl)       ")
+            print("       r.addInterface(sql)                                     ")
+            print("===============================================================")
+            self.addProtocol(pr.interfaces.SqlLogger(root=r, url=self._sqlUrl, incGroups=self._sqlIncGroups, excGroups=self._sqlExcGroups))
 
         # Start update thread
         self._running = True
@@ -479,16 +489,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._pollQueue:
             self._pollQueue._stop()
 
-        if self._sqlLog is not None:
-            self._sqlLog._stop()
-
         pr.Device._stop(self)
-
-    @property
-    def serverPort(self):
-        """
-"""
-        return self._serverPort
 
     @pr.expose
     @property
@@ -497,7 +498,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 """
         return self._running
 
-    def addVarListener(self,func,doneFunc=None,incGroups=None,excGroups=None):
+    def addVarListener(self,func,*,done=None,incGroups=None,excGroups=None):
         """
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
@@ -505,14 +506,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         func :
+        done :
+        incGroups :
+        excGroups :
 
         Returns
         -------
         """
 
-
         with self._varListenLock:
-            self._varListeners.append((func,doneFunc,incGroups,excGroups))
+            self._varListeners.append((func,done,incGroups,excGroups))
 
     @pr.expose
     def get(self,path):
@@ -1246,6 +1249,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _clearLog(self):
         """Clear the system log"""
         self.SystemLog.set(SystemLogInit)
+        self.SystemLogLast.set('')
 
     def _queueUpdates(self,var):
         """
@@ -1286,44 +1290,37 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
                 for p,v in uvars.items():
-                    try:
-                        val = v._doUpdate()
+                    val = v._doUpdate()
 
 #                        # Add to stream
 #                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
 #                            strm[p] = val
 
-                        # Call listener functions,
-                        with self._varListenLock:
-                            for func,doneFunc,incGroups,excGroups in self._varListeners:
-                                if (incGroups is None or v.inGroup(incGroups)) and (excGroups is None or not v.inGroup(excGroups)):
+                    # Call listener functions,
+                    with self._varListenLock:
+                        for func,doneFunc,incGroups,excGroups in self._varListeners:
+                            if v.filterByGroup(incGroups, excGroups):
+                                try:
                                     func(p,val)
 
-#                        # Log to database
-#                        if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
-#                            #print('sql log:',p, val)
-#                            self._sqlLog.logVariable(p, val)
-
-                    except Exception as e:
-                        if v == self.SystemLog:
-                            print("------- Error Executing Syslog Listeners -------")
-                            print("Error: {}".format(e))
-                            print("------------------------------------------------")
-                        else:
-                            pr.logException(self._log,e)
+                                except Exception as e:
+                                    if v == self.SystemLog:
+                                        print("------- Error Executing Syslog Listeners -------")
+                                        print("Error: {}".format(e))
+                                        print("------------------------------------------------")
+                                    else:
+                                        pr.logException(self._log,e)
 
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
 
                 # Finalize listeners
-                try:
-
-                    with self._varListenLock:
-                        for func,doneFunc in self._varListeners:
-                            if doneFunc is not None:
+                with self._varListenLock:
+                    for func,doneFunc in self._varListeners:
+                        if doneFunc is not None:
+                            try:
                                 doneFunc()
-
-                except Exception as e:
-                    pr.logException(self._log,e)
+                            except Exception as e:
+                                pr.logException(self._log,e)
 
             # Set done
             self._updateQueue.task_done()
