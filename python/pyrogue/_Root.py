@@ -17,7 +17,6 @@ import rogue.interfaces.memory as rim
 import threading
 import logging
 import pyrogue as pr
-import pyrogue.interfaces
 import functools as ft
 import time
 import queue
@@ -430,16 +429,16 @@ class Root(pr.Device):
 
         # Start ZMQ server if enabled
         if self._serverPort is not None:
-            print("========== Deprecation Warning =============================== ")
-            print(" Setting up zmq server through the Root class creator is       ")
-            print(" no longer supported. Instead create the ZmqServer seperately  ")
-            print(" add add it as an interface:                                   ")
-            print("                                                               ")
-            print("    with Root() as r:                                          ")
-            print("       zmq = pr.interfaces.ZmqServer(root=r, addr='*', port=0  ")
-            print("       r.addInterface(zmq)                                     ")
-            print("===============================================================")
-            self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort)
+            print("========== Deprecation Warning ===============================      ")
+            print(" Setting up zmq server through the Root class creator is            ")
+            print(" no longer supported. Instead create the ZmqServer seperately       ")
+            print(" add add it as an interface:                                        ")
+            print("                                                                    ")
+            print("    with Root() as r:                                               ")
+            print("       zmq = pyrogue.interfaces.ZmqServer(root=r, addr='*', port=0  ")
+            print("       r.addInterface(zmq)                                          ")
+            print("===============================================================     ")
+            self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort))
 
         # Start sql interface
         if self._sqlUrl is not None:
@@ -449,7 +448,7 @@ class Root(pr.Device):
             print(" add add it as an interface:                                   ")
             print("                                                               ")
             print("    with Root() as r:                                          ")
-            print("       sql = pr.interfaces.SqlLogger(root=r, url=sqlUrl)       ")
+            print("       sql = pyrogue.interfaces.SqlLogger(root=r, url=sqlUrl)  ")
             print("       r.addInterface(sql)                                     ")
             print("===============================================================")
             self.addProtocol(pr.interfaces.SqlLogger(root=r, url=self._sqlUrl, incGroups=self._sqlIncGroups, excGroups=self._sqlExcGroups))
@@ -1259,21 +1258,21 @@ class Root(pr.Device):
             print(" object seperately and add it as an interface:                 ")
             print("                                                               ")
             print("    with Root() as r:                                          ")
-            print("       stream = pr.interfaces.stream.Variable(root=r)          ")
+            print("       stream = pyrogue.interfaces.stream.Variable(root=r)     ")
             print("       r.addInterface(stream)                                  ")
             print("                                                               ")
             print(" You can then connect stream slaves to the newly created       ")
             print(" VariableStream instance:                                      ")
             print("                                                               ")
-            print(" slave << stream                                               ")
+            print("    slave << stream                                            ")
             print("===============================================================")
-            self._streamMaster = pyrogue.interfaces.stream.Variable(root=r, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
+            self._streamMaster = pr.interfaces.stream.Variable(root=r, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
             self.addInterface(self._streamMaster)
 
-        return self_streamMaster
+        return self._streamMaster
 
     # Deprecated support
     def __rshift__(self,other):
-        pyrogue.streamConnect(self,other)
+        pr.streamConnect(self,other)
         return other
 

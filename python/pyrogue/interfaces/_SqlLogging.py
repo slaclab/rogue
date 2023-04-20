@@ -29,7 +29,7 @@ class SqlLogger(object):
         self._thread.start()
 
         self._sysLogPath = root.SystemLogLast.path
-        root.addVarListeners(func=self._varUpdate, done=None, incGrops=incGroups, excGroups=excGroups)
+        root.addVarListener(func=self._varUpdate, done=None, incGroups=incGroups, excGroups=excGroups)
 
         try:
             engine = sqlalchemy.create_engine(self._url) #, isolation_level="AUTOCOMMIT")

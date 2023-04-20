@@ -32,12 +32,12 @@ class StreamWriter(pyrogue.DataWriter):
             self._writer = writer
 
     def _rootAttached(self,parent,root):
-        pr.Device._rootAttached(self,parent,root)
+        pyrogue.Device._rootAttached(self,parent,root)
 
         # Find Variable Stream Interface
         if self._configEn:
             for i in self.root._ifAndProto:
-                if isinstance(i, pr.interfaces.stream.Variable)
+                if isinstance(i, pyrogue.interfaces.stream.Variable):
                     self._varStream = i
                     break
 

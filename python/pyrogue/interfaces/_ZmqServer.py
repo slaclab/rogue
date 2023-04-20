@@ -17,10 +17,10 @@ import json
 
 class ZmqServer(rogue.interfaces.ZmqServer):
 
-    def __init__(self,*,root,addr,port,incGroups=None, excGroup=['NoServe']):
+    def __init__(self,*,root,addr,port,incGroups=None, excGroups=['NoServe']):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
-        self._root.addVarListeners(func=self._varUpdate, done=self._varDone, incGrops=incGroups, excGroups=excGroups)
+        self._root.addVarListener(func=self._varUpdate, done=self._varDone, incGroups=incGroups, excGroups=excGroups)
         self._updateList = {}
 
     def _doOperation(self,d):
@@ -63,7 +63,7 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             return "EXCEPTION: " + str(msg)
 
     def _varUpdate(self, path, value):
-        self._updateList[p] = val
+        self._updateList[path] = value
 
     def _varDone(self):
         if len(self._updateList) > 0:

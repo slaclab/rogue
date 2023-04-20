@@ -12,6 +12,7 @@
 import os
 import sys
 import pydm
+import pyrogue
 import pyrogue.pydm.data_plugins.rogue_plugin
 
 def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=800,sizeY=1000,maxListExpand=5,maxListSize=100):
@@ -23,7 +24,7 @@ def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=80
 
         # Attempt to find server
         for i in root._ifAndProto:
-            if isinstance(i, pr.interfaces.ZmqServer)
+            if isinstance(i, pyrogue.interfaces.ZmqServer):
                 serverList='localhost:{}'.format(i.port())
                 break
 
