@@ -57,17 +57,20 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
    this->addr_    = addr;
    this->zmqCtx_  = zmq_ctx_new();
    this->threadEn_ = false;
+   this->basePort_ = port;
 }
 
 rogue::interfaces::ZmqServer::~ZmqServer() {
    stop();
 }
 
-rogue::interfaces::ZmqServer::start() {
+void rogue::interfaces::ZmqServer::start() {
    std::string dummy;
    bool res = false;
+   uint16_t port;
 
    if ( this->threadEn_ ) return;
+   port = this->basePort_;
 
    // Auto port
    if ( port == 0 ) {
@@ -76,18 +79,15 @@ rogue::interfaces::ZmqServer::start() {
          if ( res ) break;
       }
    }
-   else {
-      this->basePort_ = port;
-      res = this->tryConnect();
-   }
+   else res = this->tryConnect();
 
    if ( ! res ) {
       if (port == 0)
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
-            "Failed to auto bind server on interface %s.",addr.c_str()));
+            "Failed to auto bind server on interface %s.",this->addr_.c_str()));
       else
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
-            "Failed to bind server to port %" PRIu16 " on interface %s. Another process may be using this port.", port+1, addr.c_str()));
+            "Failed to bind server to port %" PRIu16 " on interface %s. Another process may be using this port.", port+1, this->addr_.c_str()));
    }
 
    log_->info("Started Rogue server at ports %" PRIu16 ":%" PRIu16, this->basePort_, this->basePort_+1);
