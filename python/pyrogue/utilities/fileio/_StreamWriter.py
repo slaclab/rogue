@@ -35,7 +35,7 @@ class StreamWriter(pyrogue.DataWriter):
         pr.Device._rootAttached(self,parent,root)
 
         # Find Variable Stream Interface
-        if configEn:
+        if self._configEn:
             for i in self.root._ifAndProto:
                 if isinstance(i, pr.interfaces.stream.Variable)
                     self._varStream = i
@@ -45,14 +45,14 @@ class StreamWriter(pyrogue.DataWriter):
         self._writer.open(self.DataFile.value())
 
         # Dump config/status to file
-        if self._varStream:
+        if self._varStream is not None:
             self._varStream.streamYaml()
         self.FrameCount.set(0)
         self.IsOpen.get()
 
     def _close(self):
         # Dump config/status to file
-        if self._varStream:
+        if self._varStream is not None:
             self._varStream.streamYaml()
         self._writer.close()
         self.IsOpen.get()
