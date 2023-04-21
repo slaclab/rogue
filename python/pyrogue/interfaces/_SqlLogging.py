@@ -38,7 +38,8 @@ class SqlLogger(object):
             self._log.error("Failed to open database connection to {}: {}".format(self._url,e))
             return
 
-        self._metadata = sqlalchemy.MetaData(engine)
+        #self._metadata = sqlalchemy.MetaData(engine)
+        self._metadata = sqlalchemy.MetaData()
 
         self._varTable = sqlalchemy.Table(
             'variables', self._metadata,
@@ -103,7 +104,7 @@ class SqlLogger(object):
                 path=entry[0],
                 enum=str(entry[1].enum),
                 disp=entry[1].disp,
-                value=value,
+                value=str(value),
                 valueDisp=entry[1].valueDisp,
                 severity=entry[1].severity,
                 status=entry[1].status)
