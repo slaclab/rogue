@@ -602,6 +602,9 @@ class BaseVariable(pr.Node):
         """
         try:
 
+            if useDisp == '':
+                return ''
+
             if isinstance(value,np.ndarray):
                 return np.array2string(value,
                                        separator=', ',
