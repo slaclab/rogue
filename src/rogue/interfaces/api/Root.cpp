@@ -24,12 +24,12 @@ namespace ria = rogue::interfaces::api;
 
 
 // Class factory which returns a pointer to a Root (RootPtr)
-ria::RootPtr ria::Root::create (std::string &modName, std::string &rootClass) {
+ria::RootPtr ria::Root::create (std::string modName, std::string rootClass) {
    ria::RootPtr r = std::make_shared<ria::Root>(modName, rootClass);
    return(r);
 }
 
-ria::Root::Root (std::string &modName, std::string &rootClass) {
+ria::Root::Root (std::string modName, std::string rootClass) {
    Py_Initialize();
 
    bp::object mod = bp::import(modName.c_str());
@@ -41,7 +41,7 @@ ria::Root::~Root() {
 }
 
 //! Return a sub-node
-std::shared_ptr<rogue::interfaces::api::Node> ria::Root::getNode(std::string &name) {
+std::shared_ptr<rogue::interfaces::api::Node> ria::Root::getNode(std::string name) {
    try {
       bp::object obj = this->_obj.attr("getNode")(name);
       return(ria::Node::create(obj));
@@ -67,5 +67,5 @@ bool ria::Root::running() {
 }
 
 void ria::Root::addVarListener(void(*func)(std::string,std::string), void(*done)()) {
-   this->_obj.attr("addVarListenerCpp")(func, done);
+   this->_obj.attr("_addVarListenerCpp")(func, done);
 }

@@ -67,7 +67,7 @@ namespace rogue {
                std::vector<std::string> nodeList();
 
                //! Return a sub-node operator
-               rogue::interfaces::api::Node operator []( std::string &name);
+               rogue::interfaces::api::Node operator []( std::string name);
 
                //! Return true if node is a device
                bool isDevice();
@@ -104,7 +104,7 @@ namespace rogue {
                float maximum();
 
                //! Set value
-               void setDisp(std::string &value, bool write=true, int32_t index=-1);
+               void setDisp(std::string value, bool write=true, int32_t index=-1);
 
                //! Get value
                std::string getDisp(bool read=true, int32_t index=-1);
@@ -123,7 +123,7 @@ namespace rogue {
                bool arg();
 
                //! Execute command
-               std::string call(std::string &arg);
+               std::string call(std::string arg);
 
                //! Execute command, no arg
                std::string call();

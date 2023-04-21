@@ -33,7 +33,7 @@ namespace rogue {
                 * @param modName Module containing root class
                 * @param rootClass Root class
                 */
-               Root (std::string &modName, std::string &rootClass);
+               Root (std::string modName, std::string rootClass);
                ~Root();
 
                //! Class factory which returns a pointer to a Root (RootPtr)
@@ -42,10 +42,10 @@ namespace rogue {
                 * @param rootClass Root class
                 * @param rootArgs Args for root as dictionary in yaml format
                 */
-               static std::shared_ptr<rogue::interfaces::api::Root> create (std::string &modName, std::string &rootClass);
+               static std::shared_ptr<rogue::interfaces::api::Root> create (std::string modName, std::string rootClass);
 
                //! Return a sub-node by full path
-               std::shared_ptr<rogue::interfaces::api::Node> getNode(std::string &name);
+               std::shared_ptr<rogue::interfaces::api::Node> getNode(std::string name);
 
                //! Start root
                void start();
