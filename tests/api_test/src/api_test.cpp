@@ -23,8 +23,6 @@ int main (int argc, char **argv) {
    root.addVarListener(&rootListener,&rootDone);
    root["LocalTime"].addListener(&varListener);
 
-   // Using non pointer references
-
    // Get running uptime clock
    printf("LocalTime = %s\n",root["LocalTime"].getDisp().c_str());
 
@@ -36,8 +34,8 @@ int main (int argc, char **argv) {
    printf("ScratchPad = %s\n",root.getNode("ExampleRoot.AxiVersion.ScratchPad")->getDisp().c_str());
 
    // Get yaml config
-   //std::string cfg = root["GetYamlConfig"].call("True");
-   //printf("Config = %s\n", cfg.c_str());
+   std::string cfg = root["GetYamlConfig"].call("True");
+   printf("Config = %s\n", cfg.c_str());
 
    // Set yaml config, example
    //root["SetYamlConfig"].call("Some Yaml String");
