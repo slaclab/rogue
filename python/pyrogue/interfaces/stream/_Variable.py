@@ -51,4 +51,3 @@ class Variable(rogue.interfaces.stream.Master):
         frame = self._reqFrame(len(b),True)
         frame.write(b,0)
         self._sendFrame(frame)
-
