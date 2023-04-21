@@ -456,7 +456,7 @@ class BaseVariable(pr.Node):
             if listener not in self.__functions:
                 self.__functions.append(listener)
 
-    def addListenerCpp(self, func):
+    def _addListenerCpp(self, func):
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
     def delListener(self, listener):

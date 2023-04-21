@@ -517,7 +517,7 @@ class Root(pr.Device):
         with self._varListenLock:
             self._varListeners.append((func,done,incGroups,excGroups))
 
-    def addVarListenerCpp(self, func, done):
+    def _addVarListenerCpp(self, func, done):
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager

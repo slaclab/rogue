@@ -81,7 +81,7 @@ std::vector<std::string> ria::Node::nodeList() {
 }
 
 //! Return a sub-node operator
-rogue::interfaces::api::Node ria::Node::operator [](std::string name) {
+rogue::interfaces::api::Node ria::Node::operator [](std::string &name) {
    try {
       bp::object obj = this->_obj.attr("node")(name);
       return(ria::Node(obj));
@@ -152,7 +152,7 @@ float ria::Node::maximum() {
 }
 
 //! Set value
-void ria::Node::setDisp(std::string value, bool write, int32_t index) {
+void ria::Node::setDisp(std::string &value, bool write, int32_t index) {
    if ( this->_isVariable ) this->_obj.attr("setDisp")(value,write,index);
    else throw(rogue::GeneralError::create("Node::setDisp", "Node %s is not a variable", this->_name.c_str()));
 }
@@ -185,7 +185,7 @@ bool ria::Node::arg() {
 }
 
 //! Execute command
-std::string ria::Node::call(std::string arg) {
+std::string ria::Node::call(std::string &arg) {
    if ( this->_isCommand ) return(std::string(bp::extract<char *>(this->_obj.attr("callDisp")(arg))));
    else throw(rogue::GeneralError::create("Node::call", "Node %s is not a command", this->_name.c_str()));
 }
