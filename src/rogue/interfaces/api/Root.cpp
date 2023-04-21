@@ -41,7 +41,7 @@ ria::Root::~Root() {
 }
 
 //! Return a sub-node
-std::shared_ptr<rogue::interfaces::api::Node> ria::Root::getNode(const char *name) {
+std::shared_ptr<rogue::interfaces::api::Node> ria::Root::getNode(std::string name) {
    try {
       bp::object obj = this->_obj.attr("getNode")(name);
       return(ria::Node::create(obj));
@@ -66,3 +66,6 @@ bool ria::Root::running() {
    return (bp::extract<bool>(this->_obj.attr("running")));
 }
 
+void ria::Root::addVarListener(void(*func)(std::string,std::string), void(*done)()) {
+   this->_obj.attr("addVarListenerCpp")(func, done);
+}

@@ -456,6 +456,9 @@ class BaseVariable(pr.Node):
             if listener not in self.__functions:
                 self.__functions.append(listener)
 
+    def addListenerCpp(self, func):
+        self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
+
     def delListener(self, listener):
         """
         Remove a listener Variable or function
@@ -592,7 +595,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value, *, useDisp=self.disp):
+    def genDisp(self, value, *, useDisp=None):
         """
 
 
@@ -606,6 +609,9 @@ class BaseVariable(pr.Node):
 
         """
         try:
+
+            if useDisp is None:
+                useDisp=self.disp
 
             if isinstance(value,np.ndarray):
                 return np.array2string(value,

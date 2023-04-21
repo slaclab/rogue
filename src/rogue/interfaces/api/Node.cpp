@@ -81,7 +81,7 @@ std::vector<std::string> ria::Node::nodeList() {
 }
 
 //! Return a sub-node operator
-rogue::interfaces::api::Node ria::Node::operator [](const char *name) {
+rogue::interfaces::api::Node ria::Node::operator [](std::string name) {
    try {
       bp::object obj = this->_obj.attr("node")(name);
       return(ria::Node(obj));
@@ -161,6 +161,11 @@ void ria::Node::setDisp(std::string value, bool write, int32_t index) {
 std::string ria::Node::getDisp(bool read, int32_t index) {
    if ( this->_isVariable ) return(std::string(bp::extract<char *>(this->_obj.attr("getDisp")(read,index))));
    else throw(rogue::GeneralError::create("Node::getDisp", "Node %s is not a variable", this->_name.c_str()));
+}
+
+void ria::Node::addListener(void(*func)(std::string,std::string)) {
+   if ( this->_isVariable ) this->_obj.attr("addListenerCpp")(func);
+   else throw(rogue::GeneralError::create("Node::addListenerCpp", "Node %s is not a variable", this->_name.c_str()));
 }
 
 ////////////////////////////////////////////////////////////

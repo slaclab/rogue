@@ -31,9 +31,7 @@ except Exception:
 
 class ExampleRoot(pyrogue.Root):
 
-    def __init__(self,
-                 epics3En=False,
-                 epics4En=False):
+    def __init__(self, epics3En=False, epics4En=False):
 
         self._scnt = 0
         self._sdata = np.zeros(100,dtype=np.float64)

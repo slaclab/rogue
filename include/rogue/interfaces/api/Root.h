@@ -46,7 +46,7 @@ namespace rogue {
                static std::shared_ptr<rogue::interfaces::api::Root> create (std::string modName, std::string rootClass, std::string rootArgs = "");
 
                //! Return a sub-node by full path
-               std::shared_ptr<rogue::interfaces::api::Node> getNode(const char *name);
+               std::shared_ptr<rogue::interfaces::api::Node> getNode(std::string name);
 
                //! Start root
                void start();
@@ -57,6 +57,8 @@ namespace rogue {
                //! Root is running
                bool running();
 
+               //! Add Var Listener
+               void addVarListener(void(*func)(std::string,std::string), void(*done)());
          };
 
          typedef std::shared_ptr<rogue::interfaces::api::Root> RootPtr;

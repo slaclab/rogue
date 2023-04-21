@@ -67,7 +67,7 @@ namespace rogue {
                std::vector<std::string> nodeList();
 
                //! Return a sub-node operator
-               rogue::interfaces::api::Node operator [](const char *name);
+               rogue::interfaces::api::Node operator []( std::string name);
 
                //! Return true if node is a device
                bool isDevice();
@@ -108,6 +108,9 @@ namespace rogue {
 
                //! Get value
                std::string getDisp(bool read=true, int32_t index=-1);
+
+               //! Add Var Listener
+               void addListener(void(*func)(std::string,std::string));
 
                ////////////////////////////////////////////////////////////
                // Command Interface
