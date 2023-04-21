@@ -13,7 +13,6 @@ void rootDone() {
 }
 
 int main (int argc, char **argv) {
-   uint32_t x;
 
    rogue::interfaces::api::Root root("pyrogue.examples","ExampleRoot");
 
