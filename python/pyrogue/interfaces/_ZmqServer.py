@@ -17,9 +17,11 @@ import json
 
 class ZmqServer(rogue.interfaces.ZmqServer):
 
-    def __init__(self,*,root,addr,port):
+    def __init__(self,*,root,addr,port,incGroups=None, excGroups=['NoServe']):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
+        self._root.addVarListener(func=self._varUpdate, done=self._varDone, incGroups=incGroups, excGroups=excGroups)
+        self._updateList = {}
 
     def _doOperation(self,d):
         path    = d['path']   if 'path'   in d else None
@@ -59,3 +61,17 @@ class ZmqServer(rogue.interfaces.ZmqServer):
             return str(self._doOperation(d))
         except Exception as msg:
             return "EXCEPTION: " + str(msg)
+
+    def _varUpdate(self, path, value):
+        self._updateList[path] = value
+
+    def _varDone(self):
+        if len(self._updateList) > 0:
+            self._publish(pickle.dumps(self._updateList))
+            self._updateList = {}
+
+    def _start(self):
+        rogue.interfaces.ZmqServer._start(self)
+        print(f"Start: Started zmqServer on ports {self.port()}-{self.port()+2}")
+        print(f"    To start a gui: python -m pyrogue gui --server='localhost:{self.port()}'")
+        print(f"    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port={self.port()})")

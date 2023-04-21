@@ -14,18 +14,23 @@ import pyrogue as pr
 import sqlalchemy
 import threading
 import queue
+import json
 
 
 class SqlLogger(object):
 
-    def __init__(self, url):
+    def __init__(self, *, root, url, incGroups=None, excGroups=['NoSql']):
         self._log = pr.logInit(cls=self,name="SqlLogger",path=None)
         self._url = url
-        self._engine   = None
+        self._engine = None
         self._thread = None
         self._queue  = queue.Queue()
         self._thread = threading.Thread(target=self._worker)
         self._thread.start()
+
+        self._sysLogPath = root.SystemLogLast.path
+        root.addVarListener(func=self._varUpdate, done=None, incGroups=incGroups, excGroups=excGroups)
+
         try:
             engine = sqlalchemy.create_engine(self._url) #, isolation_level="AUTOCOMMIT")
             self._log.info("Opened database connection to {}".format(self._url))
@@ -33,7 +38,8 @@ class SqlLogger(object):
             self._log.error("Failed to open database connection to {}: {}".format(self._url,e))
             return
 
-        self._metadata = sqlalchemy.MetaData(engine)
+        #self._metadata = sqlalchemy.MetaData(engine)
+        self._metadata = sqlalchemy.MetaData()
 
         self._varTable = sqlalchemy.Table(
             'variables', self._metadata,
@@ -61,14 +67,6 @@ class SqlLogger(object):
         self._logTable.create(engine, checkfirst=True)
         self._engine = engine
 
-    def logVariable(self, path, varValue):
-        if self._engine is not None:
-            self._queue.put((path,varValue))
-
-    def logSyslog(self, syslogData):
-        if self._engine is not None:
-            self._queue.put((None,syslogData))
-
     def _stop(self):
         if not self._queue.empty():
             print("Waiting for sql logger to finish...")
@@ -79,8 +77,19 @@ class SqlLogger(object):
 
     def insert_from_q(self, entry, conn):
 
+        # Syslog
+        if entry[0] == self._sysLogPath:
+            val = json.loads(entry[1])
+
+            ins = self._logTable.insert().values(
+                name=val['name'],
+                message=val['message'],
+                exception=val['exception'],
+                levelName=val['levelName'],
+                levelNumber=val['levelNumber'])
+
         # Variable
-        if entry[0] is not None:
+        else:
 
             # Handle corner cases
             value = entry[1].value
@@ -95,19 +104,10 @@ class SqlLogger(object):
                 path=entry[0],
                 enum=str(entry[1].enum),
                 disp=entry[1].disp,
-                value=value,
+                value=str(value),
                 valueDisp=entry[1].valueDisp,
                 severity=entry[1].severity,
                 status=entry[1].status)
-
-        # Syslog
-        else:
-            ins = self._logTable.insert().values(
-                name=entry[1]['name'],
-                message=entry[1]['message'],
-                exception=entry[1]['exception'],
-                levelName=entry[1]['levelName'],
-                levelNumber=entry[1]['levelNumber'])
 
         conn.execute(ins)
 
@@ -151,7 +151,8 @@ class SqlLogger(object):
                 pr.logException(self._log,e)
                 self._log.error("Lost database connection to {}".format(self._url))
 
-
+    def _varUpdate(self, path, value):
+        self._queue.put((path,value))
 
 
 class SqlReader(object):

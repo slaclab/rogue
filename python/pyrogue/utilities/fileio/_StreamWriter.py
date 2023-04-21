@@ -24,25 +24,36 @@ class StreamWriter(pyrogue.DataWriter):
     def __init__(self, *, configEn=False, writer=None, **kwargs):
         pyrogue.DataWriter.__init__(self, **kwargs)
         self._configEn = configEn
+        self._varStream = None
 
         if writer is None:
             self._writer = rogue.utilities.fileio.StreamWriter()
         else:
             self._writer = writer
 
+    def _rootAttached(self,parent,root):
+        pyrogue.Device._rootAttached(self,parent,root)
+
+        # Find Variable Stream Interface
+        if self._configEn:
+            for i in self.root._ifAndProto:
+                if isinstance(i, pyrogue.interfaces.stream.Variable):
+                    self._varStream = i
+                    break
+
     def _open(self):
         self._writer.open(self.DataFile.value())
 
         # Dump config/status to file
-        if self._configEn:
-            self.root.streamYaml()
+        if self._varStream is not None:
+            self._varStream.streamYaml()
         self.FrameCount.set(0)
         self.IsOpen.get()
 
     def _close(self):
         # Dump config/status to file
-        if self._configEn:
-            self.root.streamYaml()
+        if self._varStream is not None:
+            self._varStream.streamYaml()
         self._writer.close()
         self.IsOpen.get()
 
@@ -59,6 +70,7 @@ class StreamWriter(pyrogue.DataWriter):
         return self._writer.getCurrentSize()
 
     def _getTotalSize(self,dev,var):
+
         return self._writer.getTotalSize()
 
     def _getFrameCount(self,dev,var):
