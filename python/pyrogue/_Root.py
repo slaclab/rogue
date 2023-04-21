@@ -184,7 +184,7 @@ class Root(pr.Device):
                  pollEn=True,
                  maxLog=1000,
                  # Deprecated
-                 serverPort=0,  # 9099 is the default, 0 for auto
+                 serverPort=None,  # 9099 is the default, 0 for auto
                  sqlUrl=None,
                  streamIncGroups=None,
                  streamExcGroups=['NoStream'],
