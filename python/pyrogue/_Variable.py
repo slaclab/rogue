@@ -602,7 +602,7 @@ class BaseVariable(pr.Node):
         """
         try:
 
-            if useDisp == '':
+            if self.disp == '':
                 return ''
 
             if isinstance(value,np.ndarray):
