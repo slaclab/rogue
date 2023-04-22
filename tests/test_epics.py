@@ -11,12 +11,8 @@
 
 import pyrogue
 import time
-
-try:
-    import pyrogue.protocols.epics
-    from epics import caget, caput
-except Exception:
-    print("Epics not installed, skipping test")
+import pyrogue.protocols.epicsV4
+from p4p.client.thread import Context
 
 epics_prefix='test_ioc'
 
@@ -53,18 +49,26 @@ class LocalRootWithEpics(LocalRoot):
         else:
             pv_map=None
 
-        self.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=self, pvMap=pv_map)
+        self.epics = pyrogue.protocols.epicsV4.EpicsPvServer(
+            base      = epics_prefix,
+            root      = self,
+            pvMap     = pv_map,
+            incGroups = None,
+            excGroups = None,
+        )
         self.addProtocol(self.epics)
-
 
 def test_local_root():
     """
     Test Epics Server
     """
-    return
-
     # Test both autogeneration and mapping of PV names
     pv_map_states = [False, True]
+
+    # setup the P4P client
+    # https://mdavidsaver.github.io/p4p/client.html#usage
+    print( Context.providers() )
+    ctxt = Context('pva')
 
     for s in pv_map_states:
         with LocalRootWithEpics(use_map=s) as root:
@@ -83,42 +87,23 @@ def test_local_root():
             # Test RW a variable holding an scalar value
             pv_name=device_epics_prefix+':var'
             test_value=314
-            caput(pv_name, test_value)
+            ctxt.put(pv_name, test_value)
             time.sleep(1)
-            test_result=caget(pv_name)
+            test_result=ctxt.get(pv_name)
             if test_result != test_value:
                 raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
 
             # Test RW a variable holding a float value
             pv_name=device_epics_prefix+':var_float'
             test_value=5.67
-            caput(pv_name, test_value)
+            ctxt.put(pv_name, test_value)
             time.sleep(1)
-            test_result=round(caget(pv_name),2)
+            test_result=round(ctxt.get(pv_name),2)
             if test_result != test_value:
                 raise AssertionError('pvStates={} pv_name={}: test_value={}; test_result={}'.format(s, pv_name, test_value, test_result))
 
         # Allow epics client to reset
         time.sleep(5)
-
-    """
-    Test EPICS server with a non-started tree
-    """
-    try:
-        root=pyrogue.Root(name='LocalRoot', description='Local root')
-        root.epics=pyrogue.protocols.epics.EpicsCaServer(base=epics_prefix, root=root)
-        root.epics.start()
-        raise AssertionError('Attaching a pyrogue.epics to a non-started tree did not throw exception')
-    except Exception as e:
-        print(type(e)) # do something with "e" variable so it is not unused for flake8 linter
-        pass
-
-    """
-    Test createMaster and createSlave methods
-    """
-    with LocalRootWithEpics() as root:
-        root.epics.createSlave(name='slave', maxSize=1000, type='UInt16')
-        root.epics.createMaster(name='master', maxSize=1000, type='UInt16')
 
 if __name__ == "__main__":
     test_local_root()
