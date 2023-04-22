@@ -15,7 +15,6 @@ Protocols
    packetizer/index
    network
    batcher/index
-   epicsV3/index
    epicsV4/index
    srp/index
    uart

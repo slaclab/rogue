@@ -109,7 +109,7 @@ class EnableVariable(pr.BaseVariable):
 
             # The following concept will trigger enable listeners
             # directly. This is causing lock contentions in practice
-            # (epics as an example)
+            # (epics4 as an example)
 
             #self._doUpdate()
             #for var in self._listeners:

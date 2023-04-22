@@ -25,14 +25,6 @@ parser.add_argument(
 )
 
 parser.add_argument(
-    "--epics3",
-    action   = 'store_true',
-    required = False,
-    default  = False,
-    help     = "Enable EPICS 3",
-)
-
-parser.add_argument(
     "--epics4",
     action   = 'store_true',
     required = False,
@@ -44,13 +36,12 @@ parser.add_argument(
 args = parser.parse_args()
 
 #import logging
-#rogue.Logging.setFilter('pyrogue.epicsV3.Value',rogue.Logging.Debug)
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-with pyrogue.examples.ExampleRoot(epics3En=args.epics3, epics4En=args.epics4) as root:
+with pyrogue.examples.ExampleRoot(epics4En=args.epics4) as root:
     root.saveAddressMap('addr_map.csv')
     root.saveAddressMap('addr_map.h',headerEn=True)
 
