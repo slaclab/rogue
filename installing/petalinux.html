@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.17.0 documentation</title>
+  <title>Setting Up Rogue In Petalinux &mdash; Rogue v5.18.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             Rogue
           </a>
               <div class="version">
-                v5.17.0
+                v5.18.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -99,29 +99,54 @@
 <p>This will create a directory in project-spec/meta-user/recipes-apps/rogue</p>
 <p>The sub-directory ‘files’ can be ignored or removed.</p>
 <p>You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogue.bb with the following content:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ROGUE_VERSION = &quot;5.14.0&quot;
-ROGUE_MD5SUM  = &quot;ba8146e03f60e463a2aa3d978c1dc46e&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ROGUE_VERSION = &quot;5.18.2&quot;
+ROGUE_MD5SUM  = &quot;38bf1bc4108eb08fc56ee9017be40c50&quot;
 
-SUMMARY = &quot;Rogue Application&quot;
-SECTION = &quot;PETALINUX/apps&quot;
+SUMMARY = &quot;Recipe to build Rogue&quot;
+HOMEPAGE =&quot;https://github.com/slaclab/rogue&quot;
 LICENSE = &quot;MIT&quot;
 LIC_FILES_CHKSUM = &quot;file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302&quot;
 
 SRC_URI = &quot;https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz&quot;
 SRC_URI[md5sum] = &quot;${ROGUE_MD5SUM}&quot;
+
 S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}&quot;
-
-DEPENDS += &quot;python3 python3-numpy python3-native python3-numpy-native python3-pyzmq&quot;
-DEPENDS += &quot;python3-parse python3-pyyaml python3-click python3-sqlalchemy python3-pyserial&quot;
-DEPENDS += &quot;cmake boost zeromq bzip2 python3-jupyter&quot;
-
 PROVIDES = &quot;rogue&quot;
 EXTRA_OECMAKE += &quot;-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}&quot;
 
-inherit cmake python3native distutils3 xilinx-pynq setuptools3
+inherit cmake python3native distutils3
 
-FILES_${PN}-dev += &quot;/usr/include/rogue/*&quot;
-FILES_${PN} += &quot;/usr/lib/*&quot;
+DEPENDS += &quot; \
+   python3 \
+   python3-native \
+   python3-numpy \
+   python3-numpy-native \
+   python3-pyzmq \
+   python3-parse \
+   python3-pyyaml \
+   python3-click \
+   python3-sqlalchemy \
+   python3-pyserial \
+   bzip2 \
+   zeromq \
+   boost \
+   cmake \
+&quot;
+
+RDEPENDS:${PN} += &quot; \
+   python3-numpy \
+   python3-pyzmq \
+   python3-parse \
+   python3-pyyaml \
+   python3-click \
+   python3-sqlalchemy \
+   python3-pyserial \
+   python3-json \
+   python3-logging \
+&quot;
+
+FILES:${PN}-dev += &quot;/usr/include/rogue/*&quot;
+FILES:${PN} += &quot;/usr/lib/*&quot;
 
 do_configure() {
    cmake_do_configure

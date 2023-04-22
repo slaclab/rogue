@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue With Anaconda &mdash; Rogue v5.17.0 documentation</title>
+  <title>Installing Rogue With Anaconda &mdash; Rogue v5.18.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             Rogue
           </a>
               <div class="version">
-                v5.17.0
+                v5.18.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -119,20 +119,20 @@ $ bash Anaconda3-2020.07-Linux-x86_64.sh
 <section id="creating-a-rogue-environment">
 <h2>Creating A Rogue Environment<a class="headerlink" href="#creating-a-rogue-environment" title="Permalink to this heading"></a></h2>
 <p>The next step is to create ana anaconda environment which includes the Rogue package.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c tidair-tag -c tidair-packages -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_tag -c tidair-tag -c conda-forge rogue
 </pre></div>
 </div>
 <p>The order of the args is important. tidair-tag is the channel from which the Rogue package is downloaded.</p>
 <p>If you already have an anaconda environment that you would like to install Rogue into:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c tidair-tag -c tidair-packages -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c tidair-tag -c conda-forge rogue
 </pre></div>
 </div>
 <p>The above commands will install the latest version of Rogue from the master branch. If you want to install the pre-release version of Rogue, run the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_dev -c tidair-dev -c tidair-packages -c conda-forge rogue
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_dev -c tidair-dev -c conda-forge rogue
 </pre></div>
 </div>
 <p>Alternatively you can install a specific released version of Rogue:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v5.16.1 -c tidair-packages -c conda-forge -c tidair-tag rogue=v5.16.1
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v5.18.2 -c conda-forge -c tidair-tag rogue=v5.18.2
 </pre></div>
 </div>
 </section>
