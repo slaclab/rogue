@@ -58,7 +58,6 @@ void rim::Block::setup_python() {
        .add_property("path",      &rim::Block::path)
        .add_property("mode",      &rim::Block::mode)
        .add_property("bulkOpEn",  &rim::Block::bulkOpEn)
-       .add_property("overlapEn", &rim::Block::overlapEn)
        .add_property("offset",    &rim::Block::offset)
        .add_property("address",   &rim::Block::address)
        .add_property("size",      &rim::Block::size)
@@ -128,11 +127,6 @@ std::string rim::Block::mode() {
 // Return bulk enable flag
 bool rim::Block::bulkOpEn() {
    return bulkOpEn_;
-}
-
-// Return overlap enable flag
-bool rim::Block::overlapEn() {
-   return overlapEn_;
 }
 
 // Set enable state
@@ -483,17 +477,12 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
       bLog_->debug("Adding variable %s to block %s at offset 0x%.8" PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_);
    }
 
-   // Init overlap enable before check, block level overlap enable flag will be removed in the future
-   overlapEn_ = true;
-
    // Check for overlaps by anding exclusive and overlap bit vectors
    for (x=0; x < size_; x++) {
       if ( oleMask[x] & excMask[x] )
          throw(rogue::GeneralError::create("Block::addVariables",
                "Variable bit overlap detected for block %s with address 0x%.8x",
                path_.c_str(), address()));
-
-      if ( excMask[x] != 0 ) overlapEn_ = false;
    }
 
    // Execute custom init
