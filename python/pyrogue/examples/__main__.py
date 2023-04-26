@@ -56,7 +56,8 @@ with pyrogue.examples.ExampleRoot(epics3En=args.epics3, epics4En=args.epics4) as
 
     if args.gui:
         import pyrogue.pydm
-        pyrogue.pydm.runPyDM(root=root,title='test123',sizeX=1000,sizeY=500)
+        port = root.zmqServer.port()
+        pyrogue.pydm.runPyDM(serverList=f'localhost:{port}',title='test123',sizeX=1000,sizeY=500)
 
     else:
         pyrogue.waitCntrlC()
