@@ -78,6 +78,7 @@ class GpibController(rogue.interfaces.memory.Slave):
 
                 var = self._map[addr]
                 byteSize = pyrogue.byteCount(var.base.bitSize)
+                readLen = 1024 if byteSize < 1024 else byteSize+10
 
                 # Check transaction size
                 if byteSize != transaction.size():
@@ -98,7 +99,7 @@ class GpibController(rogue.interfaces.memory.Slave):
                     send = var.getExtraAttribute('key') + "?"
                     self._log.debug(f"Read Sending {send}")
                     self._gpib.write(send.encode('UTF-8'))
-                    valStr = self._gpib.read(byteSize*2).decode('UTF-8').rstrip()
+                    valStr = self._gpib.read(readLen).decode('UTF-8').rstrip()
                     self._log.debug(f"Read Got: {valStr}")
                     val = var.parseDisp(valStr)
                     valBytes = var.base.toBytes(val)
