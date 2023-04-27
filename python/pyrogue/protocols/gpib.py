@@ -68,17 +68,17 @@ class GpibController(rogue.interfaces.memory.Slave):
                     transaction.getData(valBytes, 0)
                     val = base.fromBytes(valBytes)
                     send = f"{key} {val}"
-                    print(f"Write Sending {send}")
+                    self._log.debug(f"Write Sending {send}")
                     self._gpib.write(send.encode('UTF-8'))
                     transaction.done()
 
                 # Read Path
                 elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
                     send = f"{key}?"
-                    print(f"Read Sending {send}")
+                    self._log.debug(f"Read Sending {send}")
                     self._gpib.write(send.encode('UTF-8'))
                     valStr = self._gpib.read(byteSize*2).decode('UTF-8').rstrip()
-                    print(f"Read Got: {valStr}")
+                    delf._log.debug(f"Read Got: {valStr}")
                     val = base.fromString(valStr)
                     valBytes = base.toBytes(val)
                     transaction.setData(valBytes, 0)
@@ -96,6 +96,13 @@ class GpibDevice(pyrogue.Device):
         pyrogue.Device.__init__(self, memBase=self._gpib, **kwargs)
         self.addProtocol(self._gpib)
 
+        self._nextAddr = 0
+
+    @property
+    def nextAddr(self):
+        return self._nextAddr
+
     def addGpib(self, key, node):
         self.add(node)
         self._gpib._addVariable(node.offset, key, node.base)
+        self._nextAddr += (node.offset + node.varBytes)
