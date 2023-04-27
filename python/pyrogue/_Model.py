@@ -634,21 +634,6 @@ class Float(Model):
         -------
 
         """
-        return string
-
-    def fromString(self, string):
-        """
-
-
-        Parameters
-        ----------
-        string :
-
-
-        Returns
-        -------
-
-        """
         return float(string)
 
     def minValue(self):

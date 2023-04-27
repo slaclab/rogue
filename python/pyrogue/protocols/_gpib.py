@@ -52,7 +52,7 @@ class GpibController(rogue.interfaces.memory.Slave):
 
                 # First lookup address
                 addr = transaction.address()
-                if not addr in self._map:
+                if addr not in self._map:
                     transaction.error(f'Unknown address: {addr}')
 
                 key, base = self._map[addr]
@@ -99,4 +99,3 @@ class GpibDevice(pyrogue.Device):
     def addGpib(self, key, node):
         self.add(node)
         self._gpib._addVariable(node.offset, key, node.base)
-
