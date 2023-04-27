@@ -20,8 +20,29 @@ import queue
 import threading
 
 class GpibController(rogue.interfaces.memory.Slave):
-    def __init__(self, *, gpibAddr, gpibBoard=0, timeout=11):
-        super().__init__(1,4096) # 1KByte For Serial Data
+    def __init__(self, *, gpibAddr, gpibBoard=0, timeout=Gpib.gpib.T1s):
+        """
+        Possible Timeout Values:
+            T1000s
+            T300s
+            T100s
+            T30s
+            T10s
+            T3s
+            T1s
+            T300ms
+            T100ms
+            T30ms
+            T10ms
+            T3ms
+            T1ms
+            T300us
+            T100us
+            T30us
+            T10us
+            TNONE
+        """
+        super().__init__(1,4096)
 
         self._log = pyrogue.logInit(cls=self, name=f'GPIB.{gpibBoard}.{gpibAddr}')
         self._gpib = Gpib.Gpib(gpibBoard,gpibAddr,0,timeout)
@@ -102,7 +123,7 @@ class GpibDevice(pyrogue.Device):
         return self._nextAddr
 
     def add(self, node):
-        pyrogue.Device.add(self,node)
+        super().add(node)
         if node.getExtraAttribute('key') is not None:
             self._gpib._addVariable(node)
             self._nextAddr += (node.offset + node.varBytes)
