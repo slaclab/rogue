@@ -9,3 +9,4 @@
 #-----------------------------------------------------------------------------
 from pyrogue.protocols._Network import *
 from pyrogue.protocols._uart import *
+from pyrogue.protocols._gpib import *
