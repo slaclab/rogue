@@ -1,48 +1,44 @@
-#include <rogue/interfaces/api/Root.h>
+#include <rogue/interfaces/api/Bsp.h>
 
 void varListener(std::string path, std::string value) {
    printf("Var Listener: %s = %s\n", path.c_str(), value.c_str());
 }
 
-void rootListener(std::string path, std::string value) {
-   printf("Root Listener: %s = %s\n", path.c_str(), value.c_str());
-}
-
-void rootDone() {
-   printf("Root Done\n");
+void varDone() {
+   printf("Var Done\n");
 }
 
 int main (int argc, char **argv) {
 
-   rogue::interfaces::api::Root root("pyrogue.examples","ExampleRoot");
+   rogue::interfaces::api::Bsp bsp("pyrogue.examples","ExampleRoot");
 
-   root.start();
-   printf("Root started\n");
-
-   root.addVarListener(&rootListener,&rootDone);
-   root["LocalTime"].addListener(&varListener);
+   bsp.addVarListener(&varListener,&varDone);
 
    // Get running uptime clock
-   printf("LocalTime = %s\n",root["LocalTime"].getDisp().c_str());
+   printf("LocalTime = %s\n",bsp["LocalTime"].get().c_str());
 
    // Set and get scratchpad
-   root["AxiVersion"]["ScratchPad"].setDisp("0x1111");
-   printf("ScratchPad = %s\n",root["AxiVersion"]["ScratchPad"].getDisp().c_str());
+   bsp["AxiVersion"]["ScratchPad"].setWrite("0x1111");
+   printf("ScratchPad = %s\n",bsp["AxiVersion"]["ScratchPad"].readGet().c_str());
 
    // Get object as a pointer using full path, and get scratchpad
-   printf("ScratchPad = %s\n",root.getNode("ExampleRoot.AxiVersion.ScratchPad")->getDisp().c_str());
+   printf("ScratchPad = %s\n",bsp.getNode("ExampleRoot.AxiVersion.ScratchPad")->get().c_str());
 
    // Get yaml config
-   std::string cfg = root["GetYamlConfig"].call("True");
+   std::string cfg = bsp["GetYamlConfig"]("True");
    printf("Config = %s\n", cfg.c_str());
 
    // Set yaml config, example
-   //root["SetYamlConfig"].call("Some Yaml String");
+   //bsp["SetYamlConfig"]("Some Yaml String");
+
+   // Write Entrire Tree
+   bsp["WriteAll"]();
+
+   // Read Entrire Tree
+   bsp["ReadAll"]();
 
    Py_BEGIN_ALLOW_THREADS;
    sleep(60);
    Py_END_ALLOW_THREADS;
-
-   root.stop();
 }
 
