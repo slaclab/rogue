@@ -12,6 +12,7 @@
 
 import rogue.interfaces.memory as rim
 import numpy as np
+import struct
 
 def wordCount(bits, wordSize):
     """
@@ -618,7 +619,7 @@ class Float(Model):
         -------
 
         """
-        return struct.unpack(self.fstring, ba)
+        return struct.unpack(self.fstring, ba)[0]
 
     def fromString(self, string):
         """
