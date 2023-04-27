@@ -30,7 +30,6 @@ class GpibController(rogue.interfaces.memory.Slave):
         self._workerThread = threading.Thread(target=self._worker)
         self._workerThread.start()
         self._map = {}
-        self._nextAddr = 0
 
     def _addVariable(self, addr, key, base):
         self._map[addr] = (key, base)
