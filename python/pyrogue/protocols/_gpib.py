@@ -95,6 +95,7 @@ class GpibDevice(pyrogue.Device):
     def __init__(self, *, gpibAddr, gpibBoard=0, timeout=11, **kwargs):
         self._gpib = GpibController(gpibAddr=gpibAddr, gpibBoard=gpibBoard, timeout=timeout)
         pyrogue.Device.__init__(self, memBase=self._gpib, **kwargs)
+        self.addProtocol(self._gpib)
 
     def addGpib(self, key, node):
         self.add(node)
