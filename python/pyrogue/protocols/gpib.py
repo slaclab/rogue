@@ -31,12 +31,12 @@ class GpibController(rogue.interfaces.memory.Slave):
         self._workerThread.start()
         self._map = {}
 
-    def _addVariable(self, addr, key, base):
-        self._map[addr] = (key, base)
+    def _addVariable(self, var):
+        self._map[var.offset] = var
 
     def _stop(self):
         self._workerQueue.put(None)
-        self._workerQueue.join()
+        self._workerThread.join()
 
     def _doTransaction(self, transaction):
         self._workerQueue.put(transaction)
@@ -46,7 +46,7 @@ class GpibController(rogue.interfaces.memory.Slave):
             transaction = self._workerQueue.get()
 
             if transaction is None:
-                break
+                return
 
             with transaction.lock():
 
@@ -55,8 +55,8 @@ class GpibController(rogue.interfaces.memory.Slave):
                 if addr not in self._map:
                     transaction.error(f'Unknown address: {addr}')
 
-                key, base = self._map[addr]
-                byteSize = pyrogue.byteCount(base.bitSize)
+                var = self._map[addr]
+                byteSize = pyrogue.byteCount(var.base.bitSize)
 
                 # Check transaction size
                 if byteSize != transaction.size():
@@ -66,21 +66,21 @@ class GpibController(rogue.interfaces.memory.Slave):
                 if transaction.type() == rogue.interfaces.memory.Write:
                     valBytes = bytearray(byteSize)
                     transaction.getData(valBytes, 0)
-                    val = base.fromBytes(valBytes)
-                    send = f"{key} {val}"
+                    val = var.base.fromBytes(valBytes)
+                    send = var.getExtraAttribute('key') + " " + var.disp.format(val)
                     self._log.debug(f"Write Sending {send}")
                     self._gpib.write(send.encode('UTF-8'))
                     transaction.done()
 
                 # Read Path
                 elif (transaction.type() == rogue.interfaces.memory.Read or transaction.type() == rogue.interfaces.memory.Verify):
-                    send = f"{key}?"
+                    send = var.getExtraAttribute('key') + "?"
                     self._log.debug(f"Read Sending {send}")
                     self._gpib.write(send.encode('UTF-8'))
                     valStr = self._gpib.read(byteSize*2).decode('UTF-8').rstrip()
-                    delf._log.debug(f"Read Got: {valStr}")
-                    val = base.fromString(valStr)
-                    valBytes = base.toBytes(val)
+                    self._log.debug(f"Read Got: {valStr}")
+                    val = var.base.fromString(valStr)
+                    valBytes = var.base.toBytes(val)
                     transaction.setData(valBytes, 0)
                     transaction.done()
 
@@ -95,14 +95,14 @@ class GpibDevice(pyrogue.Device):
         self._gpib = GpibController(gpibAddr=gpibAddr, gpibBoard=gpibBoard, timeout=timeout)
         pyrogue.Device.__init__(self, memBase=self._gpib, **kwargs)
         self.addProtocol(self._gpib)
-
         self._nextAddr = 0
 
     @property
     def nextAddr(self):
         return self._nextAddr
 
-    def addGpib(self, key, node):
-        self.add(node)
-        self._gpib._addVariable(node.offset, key, node.base)
-        self._nextAddr += (node.offset + node.varBytes)
+    def add(self, node):
+        pyrogue.Device.add(self,node)
+        if node.getExtraAttribute('key') is not None:
+            self._gpib._addVariable(node)
+            self._nextAddr += (node.offset + node.varBytes)
