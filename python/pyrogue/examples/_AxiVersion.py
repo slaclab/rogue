@@ -193,17 +193,6 @@ class AxiVersion(pr.Device):
         ))
 
         self.add(pr.RemoteVariable(
-            name         = 'BuildStamp',
-            description  = 'Firmware Build String',
-            offset       = 0x800,
-            bitSize      = 8*256,
-            bitOffset    = 0x00,
-            base         = pr.String,
-            mode         = 'RO',
-            hidden       = True,
-        ))
-
-        self.add(pr.RemoteVariable(
             name         = 'TestEnum',
             description  = 'ENUM Test Field',
             offset       = 0x900,
@@ -218,40 +207,6 @@ class AxiVersion(pr.Device):
             mode         = 'RW',
             hidden       = True,
         ))
-
-
-        def parseBuildStamp(var, val):
-            p = parse.parse("{ImageName}: {BuildEnv}, {BuildServer}, Built {BuildDate} by {Builder}", val.value.strip())
-            if p is not None:
-                for k,v in p.named.items():
-                    self.node(k).set(v)
-
-        self.add(pr.LocalVariable(
-            name = 'ImageName',
-            mode = 'RO',
-            value = ''))
-
-        self.add(pr.LocalVariable(
-            name = 'BuildEnv',
-            mode = 'RO',
-            value = ''))
-
-        self.add(pr.LocalVariable(
-            name = 'BuildServer',
-            mode = 'RO',
-            value = ''))
-
-        self.add(pr.LocalVariable(
-            name = 'BuildDate',
-            mode = 'RO',
-            value = ''))
-
-        self.add(pr.LocalVariable(
-            name = 'Builder',
-            mode = 'RO',
-            value = ''))
-
-        self.BuildStamp.addListener(parseBuildStamp)
 
         #self.add(pr.LocalVariable(name = 'TestArray[2]',value=0))
 
