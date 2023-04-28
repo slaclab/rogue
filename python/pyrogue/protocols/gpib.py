@@ -13,6 +13,13 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
+# The following is required to use this Device:
+#
+# https://gist.github.com/ochococo/8362414fff28fa593bc8f368ba94d46a
+#
+# Install the gpib_cytpes python package from https://pypi.org/project/gpib-ctypes/
+#    pip install gpib_ctypes
+
 from gpib_ctypes import Gpib # pip install gpib_ctypes
 import rogue.interfaces.memory
 import pyrogue
