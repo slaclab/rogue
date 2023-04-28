@@ -82,6 +82,7 @@ class GpibController(rogue.interfaces.memory.Slave):
                 addr = transaction.address()
                 if addr not in self._map:
                     transaction.error(f'Unknown address: {addr}')
+                    continue;
 
                 var = self._map[addr]
                 byteSize = pyrogue.byteCount(var.base.bitSize)
@@ -90,6 +91,7 @@ class GpibController(rogue.interfaces.memory.Slave):
                 # Check transaction size
                 if byteSize != transaction.size():
                     transaction.error(f'Transaction size mismatch: Got={transaction.size()}, Exp={byteSize}')
+                    continue;
 
                 # Write path
                 if transaction.type() == rogue.interfaces.memory.Write:
