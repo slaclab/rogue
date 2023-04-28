@@ -377,6 +377,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Call special root level rootAttached
         self._rootAttached()
 
+        # Finish Initialization
+        self._finishInit()
+
         # Get full list of Devices and Blocks
         tmpList = []
         for d in self.deviceList:
@@ -891,7 +894,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
     def _rootAttached(self):
         """
-"""
+        """
         self._parent = self
         self._root   = self
         self._path   = self.name
@@ -901,9 +904,11 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self._buildBlocks()
 
-        # Some variable initialization can run until the blocks are built
-        for v in self.variables.values():
-            v._finishInit()
+    def _finishInit(self):
+        """
+        """
+        for key,value in self._nodes.items():
+            value._finishInit()
 
     def _sendYamlFrame(self,yml):
         """
