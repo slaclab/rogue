@@ -904,12 +904,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self._buildBlocks()
 
-    def _finishInit(self):
-        """
-        """
-        for key,value in self._nodes.items():
-            value._finishInit()
-
     def _sendYamlFrame(self,yml):
         """
         Generate a frame containing the passed string.
