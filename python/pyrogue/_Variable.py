@@ -34,7 +34,7 @@ def VariableWait(varList, testFunction, timeout=0):
     The test function is passed a dictionary containing the current
     variableValue state index by variable path
     i.e. w = VariableWait([root.device.var1,root.device.var2],
-                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
+                          lambda varValues: varValues['ooot.device.var1'].value >= 10 and \
                                             varValues['root.device.var1'].value >= 20)
 
     Parameters
@@ -716,20 +716,11 @@ class BaseVariable(pr.Node):
     @property
     def nativeType(self):
         """ """
-        if self._nativeType is None:
-            v = self.value()
-            self._nativeType = type(v)
-
-            if self._nativeType is np.ndarray:
-                self._ndType = v.dtype
-
         return self._nativeType
 
     @property
     def ndType(self):
         """ """
-        if self._ndType is None:
-            _ = self.nativeType
         return self._ndType
 
     @property
@@ -752,6 +743,14 @@ class BaseVariable(pr.Node):
         # Set the default value but dont write
         self._setDefault()
         self._updatePollInterval()
+
+        # Setup native type
+        if self._nativeType is None:
+            v = self.value()
+            self._nativeType = type(v)
+
+            if self._nativeType is np.ndarray:
+                self._ndType = v.dtype
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
