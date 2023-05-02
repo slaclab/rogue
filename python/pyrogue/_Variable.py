@@ -181,7 +181,8 @@ class BaseVariable(pr.Node):
                  typeStr='Unknown',
                  bulkOpEn=True,
                  offset=0,
-                 guiGroup=None):
+                 guiGroup=None,
+                 **kwargs):
 
         # Public Attributes
         self._bulkOpEn      = bulkOpEn
@@ -200,6 +201,7 @@ class BaseVariable(pr.Node):
         self._pollInterval  = pollInterval
         self._nativeType    = None
         self._ndType        = None
+        self._extraAttr     = kwargs
         self._listeners     = []
         self.__functions    = []
         self.__dependencies = []
@@ -368,6 +370,12 @@ class BaseVariable(pr.Node):
         for p in self.PROPS:
             d[p] = getattr(self, p)
         return d
+
+    def getExtraAttribute(self, name):
+        if name in self._extraAttr:
+            return self._extraAttr[name]
+        else:
+            return None
 
     def addDependency(self, dep):
         """
@@ -716,20 +724,11 @@ class BaseVariable(pr.Node):
     @property
     def nativeType(self):
         """ """
-        if self._nativeType is None:
-            v = self.value()
-            self._nativeType = type(v)
-
-            if self._nativeType is np.ndarray:
-                self._ndType = v.dtype
-
         return self._nativeType
 
     @property
     def ndType(self):
         """ """
-        if self._ndType is None:
-            _ = self.nativeType
         return self._ndType
 
     @property
@@ -752,6 +751,14 @@ class BaseVariable(pr.Node):
         # Set the default value but dont write
         self._setDefault()
         self._updatePollInterval()
+
+        # Setup native type
+        if self._nativeType is None:
+            v = self.value()
+            self._nativeType = type(v)
+
+            if self._nativeType is np.ndarray:
+                self._ndType = v.dtype
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
@@ -958,7 +965,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  bulkOpEn=True,
                  verify=True,
                  retryCount=0,
-                 guiGroup=None):
+                 guiGroup=None,
+                 **kwargs):
 
         if disp is None:
             disp = base.defaultdisp
@@ -1006,7 +1014,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify,
-                              guiGroup=guiGroup)
+                              guiGroup=guiGroup, **kwargs)
 
         # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
         if numValues != 0:
@@ -1328,7 +1336,8 @@ class LocalVariable(BaseVariable):
                  updateNotify=True,
                  typeStr='Unknown',
                  bulkOpEn=True,
-                 guiGroup=None):
+                 guiGroup=None,
+                 **kwargs):
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -1340,7 +1349,7 @@ class LocalVariable(BaseVariable):
                               lowWarning=lowWarning, lowAlarm=lowAlarm,
                               highWarning=highWarning, highAlarm=highAlarm,
                               pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
-                              guiGroup=guiGroup)
+                              guiGroup=guiGroup, **kwargs)
 
         self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
 
