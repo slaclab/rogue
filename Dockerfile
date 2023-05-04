@@ -1,4 +1,4 @@
-FROM tidair/rogue-base:v2.0.1
+FROM tidair/rogue-base:v3.0.0
 
 # Install Rogue
 ARG branch
@@ -9,3 +9,5 @@ RUN mkdir build
 WORKDIR build
 RUN cmake .. -DROGUE_INSTALL=system -DDO_EPICS=1
 RUN make -j4 install
+RUN ldconfig
+WORKDIR /root
