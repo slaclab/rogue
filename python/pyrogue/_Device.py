@@ -987,11 +987,6 @@ class Device(pr.Node,rim.Hub):
                 for var in nodes:
                     var._default = defValue
 
-        # Some variable initialization can run until the blocks are built
-        for v in self.variables.values():
-            v._finishInit()
-
-
     def _setTimeout(self,timeout):
         """
         Set timeout value on all devices & blocks

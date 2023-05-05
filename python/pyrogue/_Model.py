@@ -12,6 +12,7 @@
 
 import rogue.interfaces.memory as rim
 import numpy as np
+import struct
 
 def wordCount(bits, wordSize):
     """
@@ -460,6 +461,36 @@ class Bool(Model):
         super().__init__(bitSize)
         self.ndType = np.dtype(bool)
 
+    def toBytes(self, value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
+        return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
+
+    def fromBytes(self, ba):
+        """
+
+
+        Parameters
+        ----------
+        ba :
+
+
+        Returns
+        -------
+
+        """
+        return bool(int.from_bytes(ba, self.endianness, signed=self.signed))
+
     def fromString(self, string):
         """
 
@@ -496,6 +527,40 @@ class String(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}({self.bitSize//8})'
 
+
+    def toBytes(self, value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
+        ba = bytearray(value, self.encoding)
+        ba.extend(bytearray(1))
+        return ba
+
+    def fromBytes(self, ba):
+        """
+
+
+        Parameters
+        ----------
+        ba :
+
+
+        Returns
+        -------
+
+        """
+        s = ba.rstrip(bytearray(1))
+        return s.decode(self.encoding)
+
     def fromString(self, string):
         """
 
@@ -525,6 +590,36 @@ class Float(Model):
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
         self.ndType = np.dtype(np.float32)
+
+    def toBytes(self, value):
+        """
+
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
+        return bytearray(struct.pack(self.fstring, value))
+
+    def fromBytes(self, ba):
+        """
+
+
+        Parameters
+        ----------
+        ba :
+
+
+        Returns
+        -------
+
+        """
+        return struct.unpack(self.fstring, ba)[0]
 
     def fromString(self, string):
         """

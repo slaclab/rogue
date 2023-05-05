@@ -15,18 +15,15 @@ import pydm
 import pyrogue
 import pyrogue.pydm.data_plugins.rogue_plugin
 
-def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None,sizeX=800,sizeY=1000,maxListExpand=5,maxListSize=100):
+def runPyDM(serverList='localhost:9090', root=None, ui=None, title=None, sizeX=800, sizeY=1000, maxListExpand=5, maxListSize=100):
 
     if root is not None:
-
-        if not root.running:
-            raise Exception("Attempt to use pydm with root that has not started")
-
-        # Attempt to find server
-        for i in root._ifAndProto:
-            if isinstance(i, pyrogue.interfaces.ZmqServer):
-                serverList='localhost:{}'.format(i.port())
-                break
+        print("")
+        print("========== Deprecation Warning ===============================")
+        print(" Pass root to runPyDM is not longer supported. Please extract ")
+        print("    the port number from the ZMQ server and pass in the       ")
+        print("    serverList argument.                                      ")
+        print("==============================================================")
 
     os.environ['ROGUE_SERVERS'] = serverList
 

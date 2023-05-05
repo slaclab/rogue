@@ -37,7 +37,8 @@ class BaseCommand(pr.BaseVariable):
                  maximum=None,
                  function=None,
                  background=False,
-                 guiGroup=None):
+                 guiGroup=None,
+                 **kwargs):
 
         pr.BaseVariable.__init__(
             self,
@@ -51,7 +52,8 @@ class BaseCommand(pr.BaseVariable):
             minimum=minimum,
             maximum=maximum,
             bulkOpEn=False,
-            guiGroup=guiGroup)
+            guiGroup=guiGroup,
+            **kwargs)
 
         self._function = function
         self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
@@ -573,7 +575,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
                  bitSize=32,
                  bitOffset=0,
                  overlapEn=False,
-                 guiGroup=None):
+                 guiGroup=None,
+                 **kwargs):
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
@@ -581,7 +584,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             name=name,
             retValue=retValue,
             function=function,
-            guiGroup=guiGroup)
+            guiGroup=guiGroup,
+            **kwargs)
 
         pr.RemoteVariable.__init__(
             self,
@@ -601,7 +605,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             overlapEn=overlapEn,
             bulkOpEn=False,
             verify=False,
-            guiGroup=guiGroup)
+            guiGroup=guiGroup,
+            **kwargs)
 
     def set(self, value, *,  index=-1, write=True):
         """

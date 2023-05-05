@@ -21,39 +21,35 @@ import rogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, *, configEn=False, writer=None, **kwargs):
+    def __init__(self, *, configStream={}, writer=None, **kwargs):
         pyrogue.DataWriter.__init__(self, **kwargs)
-        self._configEn = configEn
-        self._varStream = None
+        self._configStream = configStream
 
         if writer is None:
             self._writer = rogue.utilities.fileio.StreamWriter()
         else:
             self._writer = writer
 
-    def _rootAttached(self,parent,root):
-        pyrogue.Device._rootAttached(self,parent,root)
-
-        # Find Variable Stream Interface
-        if self._configEn:
-            for i in self.root._ifAndProto:
-                if isinstance(i, pyrogue.interfaces.stream.Variable):
-                    self._varStream = i
-                    break
+        # Connect configuration stream
+        for k,v in self._configStream.items():
+            pyrogue.streamConnect(v, self._writer.getChannel(k))
 
     def _open(self):
         self._writer.open(self.DataFile.value())
 
         # Dump config/status to file
-        if self._varStream is not None:
-            self._varStream.streamYaml()
+        for k,v in self._configStream.items():
+            v.streamYaml()
+
         self.FrameCount.set(0)
         self.IsOpen.get()
 
     def _close(self):
+
         # Dump config/status to file
-        if self._varStream is not None:
-            self._varStream.streamYaml()
+        for k,v in self._configStream.items():
+            v.streamYaml()
+
         self._writer.close()
         self.IsOpen.get()
 
