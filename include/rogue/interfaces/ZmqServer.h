@@ -79,6 +79,7 @@ namespace rogue {
             uint16_t port();
 
             void stop();
+            void start();
       };
       typedef std::shared_ptr<rogue::interfaces::ZmqServer> ZmqServerPtr;
 

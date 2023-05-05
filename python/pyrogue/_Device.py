@@ -320,11 +320,7 @@ class Device(pr.Node,rim.Hub):
         -------
 
         """
-        for protocol in protocols:
-            if isinstance(protocol, collections.abc.Iterable):
-                self._ifAndProto.extend(protocol)
-            else:
-                self._ifAndProto.append(protocol)
+        self.addInterface(protocols)
 
     def manage(self, *interfaces):
         """

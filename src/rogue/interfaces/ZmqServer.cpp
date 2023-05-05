@@ -45,18 +45,32 @@ void rogue::interfaces::ZmqServer::setup_python() {
       .def("_publish",   &rogue::interfaces::ZmqServer::publish)
       .def("port",       &rogue::interfaces::ZmqServer::port)
       .def("_stop",      &rogue::interfaces::ZmqServer::stop)
+      .def("_start",     &rogue::interfaces::ZmqServer::start)
    ;
 #endif
 }
 
 rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
-   std::string dummy;
-   bool res = false;
 
    log_ = rogue::Logging::create("ZmqServer");
 
    this->addr_    = addr;
    this->zmqCtx_  = zmq_ctx_new();
+   this->threadEn_ = false;
+   this->basePort_ = port;
+}
+
+rogue::interfaces::ZmqServer::~ZmqServer() {
+   stop();
+}
+
+void rogue::interfaces::ZmqServer::start() {
+   std::string dummy;
+   bool res = false;
+   uint16_t port;
+
+   if ( this->threadEn_ ) return;
+   port = this->basePort_;
 
    // Auto port
    if ( port == 0 ) {
@@ -65,33 +79,26 @@ rogue::interfaces::ZmqServer::ZmqServer (std::string addr, uint16_t port) {
          if ( res ) break;
       }
    }
-   else {
-      this->basePort_ = port;
-      res = this->tryConnect();
-   }
+   else res = this->tryConnect();
 
    if ( ! res ) {
       if (port == 0)
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
-            "Failed to auto bind server on interface %s.",addr.c_str()));
+            "Failed to auto bind server on interface %s.",this->addr_.c_str()));
       else
          throw(rogue::GeneralError::create("ZmqServer::ZmqServer",
-            "Failed to bind server to port %" PRIu16 " on interface %s. Another process may be using this port.", port+1, addr.c_str()));
+            "Failed to bind server to port %" PRIu16 " on interface %s. Another process may be using this port.", port+1, this->addr_.c_str()));
    }
 
    log_->info("Started Rogue server at ports %" PRIu16 ":%" PRIu16, this->basePort_, this->basePort_+1);
 
-   threadEn_ = true;
-   rThread_ = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
-   sThread_ = new std::thread(&rogue::interfaces::ZmqServer::strThread, this);
+   this->threadEn_ = true;
+   this->rThread_ = new std::thread(&rogue::interfaces::ZmqServer::runThread, this);
+   this->sThread_ = new std::thread(&rogue::interfaces::ZmqServer::strThread, this);
 
    // Send empty frame
    dummy = "null\n";
    zmq_send(this->zmqPub_,dummy.c_str(),dummy.size(),0);
-}
-
-rogue::interfaces::ZmqServer::~ZmqServer() {
-   stop();
 }
 
 void rogue::interfaces::ZmqServer::stop() {
@@ -198,6 +205,8 @@ std::string rogue::interfaces::ZmqServer::doString ( std::string data ) {
 void rogue::interfaces::ZmqServer::publish(bp::object value) {
    zmq_msg_t msg;
    Py_buffer valueBuf;
+
+   if ( ! this->threadEn_ ) return;
 
    if ( PyObject_GetBuffer(value.ptr(),&(valueBuf),PyBUF_SIMPLE) < 0 )
       throw(rogue::GeneralError::create("ZmqServer::publish","Failed to extract object data"));

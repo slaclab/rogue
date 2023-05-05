@@ -39,8 +39,7 @@ class ExampleRoot(pyrogue.Root):
         pyrogue.Root.__init__(self,
                               description="Example Root",
                               timeout=2.0,
-                              pollEn=True,
-                              serverPort=0)
+                              pollEn=True)
 
         # Use a memory space emulator
         sim = rogue.interfaces.memory.Emulate(4,0x1000)
@@ -53,20 +52,32 @@ class ExampleRoot(pyrogue.Root):
                                         offset=0x0))
         self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
 
-        # Add Data Writer
+        # Create configuration stream
+        stream = pyrogue.interfaces.stream.Variable(root=self)
+
+        # PRBS Transmitter
         self._prbsTx = pyrogue.utilities.prbs.PrbsTx()
         self.add(self._prbsTx)
-        self._fw = pyrogue.utilities.fileio.StreamWriter()
+
+        # Add Data Writer, configuration goes to channel 1
+        self._fw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream})
         self.add(self._fw)
         self._prbsTx >> self._fw.getChannel(0)
 
-        # Add Data Receiver
+        # Data Receiver
         drx = pyrogue.DataReceiver()
         self._prbsTx >> drx
         self.add(drx)
 
         # Add Run Control
         self.add(pyrogue.RunControl())
+
+        # Add zmq server
+        self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='*', port=0)
+        self.addInterface(self.zmqServer)
+
+        # Add sql logger
+        #self.addInterface(pyrogue.interfaces.SqlLogger(root=self, url='sqlite:///test.db'))
 
         # Add process controller
         p = pyrogue.Process()
