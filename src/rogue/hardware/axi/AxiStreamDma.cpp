@@ -61,6 +61,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogu
 
    // Create new record
    else {
+      //ret = std::make_shared<rha::AxiStreamDmaShared>(path);
       rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
       log->debug("Opening new shared file descriptor");
    }
