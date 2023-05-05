@@ -109,7 +109,7 @@ class EnableVariable(pr.BaseVariable):
 
             # The following concept will trigger enable listeners
             # directly. This is causing lock contentions in practice
-            # (epics as an example)
+            # (epics4 as an example)
 
             #self._doUpdate()
             #for var in self._listeners:
@@ -986,11 +986,6 @@ class Device(pr.Node,rim.Hub):
             if keys is None:
                 for var in nodes:
                     var._default = defValue
-
-        # Some variable initialization can run until the blocks are built
-        for v in self.variables.values():
-            v._finishInit()
-
 
     def _setTimeout(self,timeout):
         """

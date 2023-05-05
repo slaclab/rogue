@@ -376,6 +376,9 @@ class Root(pr.Device):
         # Call special root level rootAttached
         self._rootAttached()
 
+        # Finish Initialization
+        self._finishInit()
+
         # Get full list of Devices and Blocks
         tmpList = []
         for d in self.deviceList:
@@ -398,29 +401,9 @@ class Root(pr.Device):
             if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId() == tmpList[i-1]._reqSlaveId()) and \
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
-                # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
-                # Check for instances when device comes before block and when block comes before device
-                # This will be removed in the future and an error will always be raised
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
-                        (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
-
-                    raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                                       tmpList[i].path,tmpList[i].address,
-                                       tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
-
-                # Deprecation Error
-                print("")
-                print("========== Deprecation Warning ===============================")
-                print(" Detected overlap between the following Devices/Blocks        ")
-                print("    {} at address={:#x} wht size {}".format(tmpList[i].path,tmpList[i].address,tmpList[i].size))
-                print("    {} at address={:#x} wht size {}".format(tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
-                print(" Creating these types of overlaps can generate inconsistencies")
-                print(" in the variable state and can cause errors. Please consider  ")
-                print(" using a listDevice and or a MemoryDevice class instead.      ")
-                print(" Link variables can be used to map multiple variables to the  ")
-                print(" underlying address space. Future releases of Rogue will treat")
-                print(" these overlaps as errors.")
-                print("==============================================================")
+                raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                                   tmpList[i].path,tmpList[i].address,
+                                   tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if self._timeout != 1.0:

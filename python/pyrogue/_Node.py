@@ -876,6 +876,10 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
+    def _finishInit(self):
+        for key,value in self._nodes.items():
+            value._finishInit()
+
     @expose
     def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=True):
 

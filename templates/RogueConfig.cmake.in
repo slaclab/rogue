@@ -21,7 +21,6 @@
 # Enables from Rogue CMAKE
 #####################################
 set(NO_PYTHON   @NO_PYTHON@)
-set(DO_EPICS    @DO_EPICS@)
 
 #####################################
 # Boost + Python
@@ -141,61 +140,6 @@ if (NOT ZeroMQ_FOUND)
 endif()
 
 #####################################
-# EPICS V3
-#####################################
-if((NOT NO_PYTHON) AND (DO_EPICS) AND DEFINED ENV{EPICS_BASE})
-   set(DO_EPICS_V3 1)
-   set(EPICS_BASE_DIR $ENV{EPICS_BASE})
-   if(DEFINED ENV{EPICS_HOST_ARCH})
-       set(EPICS_ARCH $ENV{EPICS_HOST_ARCH})
-   else()
-       execute_process(COMMAND ${EPICS_BASE_DIR}/startup/EpicsHostArch
-                       OUTPUT_VARIABLE EPICS_ARCH OUTPUT_STRIP_TRAILING_WHITESPACE)
-       string(REGEX REPLACE "\n$" "" EPICS_ARCH "${EPICS_ARCH}")
-   endif()
-
-   # PCAS is part of epics before version 4
-   if(EPICS_PCAS_ROOT)
-      set(EPICS_PCAS_DIR ${EPICS_PCAS_ROOT})
-   elseif(DEFINED ENV{EPICS_PCAS_ROOT})
-      set(EPICS_PCAS_DIR $ENV{EPICS_PCAS_ROOT})
-   else()
-      set(EPICS_PCAS_DIR $ENV{EPICS_BASE})
-   endif()
-
-   # See if we can find the pcas header, may not exist if epics 7 without pcas is installed
-   find_path(E3_TEST_INCLUDE_DIR NAMES casdef.h PATHS ${EPICS_PCAS_DIR}/include)
-   if (NOT E3_TEST_INCLUDE_DIR)
-      set(DO_EPICS_V3 0)
-   elseif(APPLE)
-
-      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
-                            ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc
-                            ${EPICS_BASE_DIR}/include/os/Darwin)
-
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.dylib
-                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.dylib
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.dylib )
-   else()
-
-      set(EPICS_INCLUDES    ${EPICS_PCAS_DIR}/include
-                            ${EPICS_BASE_DIR}/include
-                            ${EPICS_BASE_DIR}/include/compiler/gcc
-                            ${EPICS_BASE_DIR}/include/os/Linux)
-
-      set(EPICS_LIBRARIES   ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libcas.so
-                            ${EPICS_PCAS_DIR}/lib/${EPICS_ARCH}/libgdd.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libca.so
-                            ${EPICS_BASE_DIR}/lib/${EPICS_ARCH}/libCom.so )
-   endif()
-
-else()
-   set(DO_EPICS_V3 0)
-endif()
-
-#####################################
 # Set Rogue Variables
 #####################################
 # These variables are now defined
@@ -258,16 +202,6 @@ else()
    message("")
    message("-- Found python: ${PYTHON_LIBRARIES}")
    message("-- Found numpy: ${Python3_NumPy_INCLUDE_DIRS}")
-endif()
-
-message("")
-
-if (DO_EPICS_V3)
-   message("-- Found EPICS: ${EPICS_BASE_DIR}")
-   message("")
-   message("-- Found PCAS:  ${EPICS_PCAS_DIR}")
-else()
-   message("-- EPICS V3 not included!")
 endif()
 
 message("")

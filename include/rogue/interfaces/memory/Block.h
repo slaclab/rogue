@@ -130,9 +130,6 @@ namespace rogue {
                // Block logging
                std::shared_ptr<rogue::Logging> bLog_;
 
-               // Overlap Enable
-               bool overlapEn_;
-
                // Variable list
                std::vector< std::shared_ptr<rogue::interfaces::memory::Variable> > variables_;
 
@@ -215,14 +212,6 @@ namespace rogue {
                 * @return bulk enable flag
                 */
                bool bulkOpEn();
-
-               //! Return overlap enable flag
-               /** Return the overlap enable flag
-                *
-                * Exposed as overlapEn property to Python
-                * @return overlap enable flag
-                */
-               bool overlapEn();
 
                //! Set enable state
                /** Set the enable state

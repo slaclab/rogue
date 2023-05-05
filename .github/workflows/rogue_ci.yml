@@ -11,7 +11,6 @@
 # ----------------------------------------------------------------------------
 # The following environment variables are required for this process:
 # secrets.GH_TOKEN
-# secrets.CONDA_UPLOAD_TOKEN_DEV
 # secrets.CONDA_UPLOAD_TOKEN_TAG
 # secrets.DOCKERHUB_TOKEN
 
@@ -22,11 +21,6 @@ jobs:
   full_build_test:
     name: Full Build Test
     runs-on: ubuntu-20.04
-
-    env:
-      EPICS_BASE: /home/runner/packages/epics/base-7.0.3
-      EPICS_PCAS_ROOT: /home/runner/packages/pcas/pcas-4.13.2
-
     steps:
 
       # This step checks out a copy of your repository.
@@ -39,15 +33,6 @@ jobs:
           python-version: 3.8
           cache: 'pip'
           cache-dependency-path: 'pip_requirements.txt'
-
-      - name: Setup Environment
-        run: |
-          LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
-          PATH=${EPICS_BASE}/bin/linux-x86_64:${PATH}
-          echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
-          echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
-          echo "PATH=$PATH" >> $GITHUB_ENV
 
       - name: Install dependencies
         run: |
@@ -63,41 +48,12 @@ jobs:
           python -m compileall -f ./tests
           flake8 --count ./tests/
 
-      - name: Cache EPICS
-        uses: actions/cache@v3
-        id: epics-cache
-        with:
-          key: epics
-          path: |
-            ${{ env.EPICS_BASE }}/
-            ${{ env.EPICS_PCAS_ROOT }}/
-
-      - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}
-        name: Install EPICS Base
-        run: |
-          mkdir -p ${EPICS_BASE}
-          cd ${EPICS_BASE}
-          pwd
-          wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
-          tar xzf base-7.0.3.tar.gz --strip 1
-          make clean && make && make install
-
-      - if: ${{ steps.epics-cache.outputs.cache-hit != 'true' }}
-        name: Install EPICS PCAS
-        run: |
-          mkdir -p ${EPICS_PCAS_ROOT}
-          cd ${EPICS_PCAS_ROOT}
-          wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
-          tar xzf pcas-4.13.2.tar.gz --strip 1
-          echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
-          make clean && make && make install
-
       # Rogue
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local -DDO_EPICS=1
+          cmake .. -DROGUE_INSTALL=local
           make -j4 install
 
       # Run Tests
@@ -105,15 +61,6 @@ jobs:
         run: |
           source setup_rogue.sh
           python -m pytest --cov
-
-#       # Run test_rate.py
-# #       - name: Get test_rate.py output
-# #         uses: mathiasvr/command-output@v1
-# #         id: rates
-# #         with:
-# #           run: |
-# #             source setup rogue.sh
-# #             python -m test_rate.py
 
       # Code Coverage
       - name: Code Coverage
@@ -136,20 +83,6 @@ jobs:
         with:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: docs/build/html
-
-#       # Set up for Comment PR
-#       - name: Checkout
-#         uses: actions/checkout@v3
-
-#       # Comment on PR
-#       - name: Comment PR
-#         uses: thollander/actions-comment-pull-request@v1
-#         with:
-#           message: |
-#             Rates -
-#             ${{steps.rates.outputs.stdout}}
-#           github_token: ${{ secrets.GITHUB_TOKEN }}
-
 
   small_build_test:
     name: Small Build Test
@@ -211,14 +144,8 @@ jobs:
   conda_build:
     name: Anaconda Build
     needs: [full_build_test, small_build_test]
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
-    strategy:
-      matrix:
-        os:
-          - ubuntu-20.04
-        src:
-          - conda-recipe
-    runs-on: ${{ matrix.os }}
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-20.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -231,8 +158,6 @@ jobs:
           python-version: 3.8
 
       - name: Setup anaconda
-        env:
-          OS_NAME: ${{ matrix.os }}
         run: |
           cd ${HOME}
           wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -250,37 +175,28 @@ jobs:
       - name: Get Image Information
         id: get_image_info
         env:
-          CONDA_UPLOAD_TOKEN_DEV: ${{ secrets.CONDA_UPLOAD_TOKEN_DEV }}
           CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
-          OS_NAME: ${{ matrix.os }}
         run: |
-          if [ ${GITHUB_REF} == "refs/heads/pre-release" ]
-          then
-              echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_DEV
-          else
-              echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_TAG
-          fi
+          echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_TAG
           echo ::set-output name=os::linux-64
 
       - name: Build
-        env:
-          CONDA_SRC: ${{ matrix.src }}
         run: |
           export PATH="${HOME}/miniconda/bin:$PATH"
           source ${HOME}/miniconda/etc/profile.d/conda.sh
-          conda build $CONDA_SRC --output-folder bld-dir -c tidair-packages -c conda-forge
+          conda build conda-recipe --output-folder bld-dir -c conda-forge
 
       - name: Upload
         run: |
           export PATH="${HOME}/miniconda/bin:$PATH"
           source ${HOME}/miniconda/etc/profile.d/conda.sh
-          anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/${{ steps.get_image_info.outputs.os }}/*.tar.bz2
+          anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/*/*.tar.bz2
 
   docker_build:
     name: Docker Build
     runs-on: ubuntu-20.04
     needs: [full_build_test, small_build_test]
-    if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/pre-release'
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
 
       # This step checks out a copy of your repository.
@@ -293,12 +209,7 @@ jobs:
         run: |
           echo ::set-output name=tag::`git describe --tags`
           echo ::set-output name=branch::`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'`
-          if [ ${GITHUB_REF} == "refs/heads/pre-release" ]
-          then
-              echo ::set-output name=name::"rogue-dev"
-          else
-              echo ::set-output name=name::"rogue"
-          fi
+          echo ::set-output name=name::"rogue"
 
       # Setup docker build environment
       - name: Set up Docker Buildx
