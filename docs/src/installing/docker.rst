@@ -54,6 +54,13 @@ where:
 
 If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:
 
+As an example use can test the docker install and X11 with the following command:
+
+.. code::
+
+   $ setfacl -m user:0:r ${HOME}/.Xauthority
+   $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority tidair/rogue python3 -m pyrogue.examples --gui
+
 GUI On A Linux OS
 =================
 

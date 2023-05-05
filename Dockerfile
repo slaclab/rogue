@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:22.10
 
 # Install system tools
 RUN apt-get update && apt-get install -y \
@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     libzmq3-dev \
     python3-pyqt5 \
+    python3-pyqt5.qtsvg \
     libreadline6-dev \
  && rm -rf /var/lib/apt/lists/*
 
@@ -27,3 +28,9 @@ RUN mkdir build
 WORKDIR build
 RUN cmake .. -DROGUE_INSTALL=system
 RUN make -j4 install
+RUN echo /usr/local/lib >> /etc/ld.so.conf.d/rogue_epics.conf
+RUN ldconfig
+ENV PYQTDESIGNERPATH /usr/local/lib/python3.10/dist-packages/pyrogue/pydm
+ENV PYDM_DATA_PLUGINS_PATH /usr/local/lib/python3.10/dist-packages/pyrogue/pydm/data_plugins
+ENV PYDM_TOOLS_PATH /usr/local/lib/python3.10/dist-packages/pyrogue/pydm/tools
+WORKDIR /root
