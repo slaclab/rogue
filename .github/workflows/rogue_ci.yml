@@ -286,7 +286,6 @@ jobs:
         run: |
           echo ::set-output name=tag::`git describe --tags`
           echo ::set-output name=branch::`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'`
-          echo ::set-output name=name::"rogue"
 
       # Setup docker build environment
       - name: Set up Docker Buildx
@@ -306,6 +305,6 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: tidair/${{ steps.get_image_info.outputs.name }}:${{ steps.get_image_info.outputs.tag }}
+          tags: tidair/rogue:${{ steps.get_image_info.outputs.tag }}, tidair/rogue:latest
           build-args: branch=${{ steps.get_image_info.outputs.branch }}
 
