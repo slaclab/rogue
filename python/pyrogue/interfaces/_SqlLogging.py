@@ -104,7 +104,7 @@ class SqlLogger(object):
                 path=entry[0],
                 enum=str(entry[1].enum),
                 disp=entry[1].disp,
-                value=str(value),
+                value=value,
                 valueDisp=entry[1].valueDisp,
                 severity=entry[1].severity,
                 status=entry[1].status)
