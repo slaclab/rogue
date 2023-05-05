@@ -28,6 +28,14 @@ Use the following command to add anaconda to your environment. This can be added
 
    $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 
+It is important to use the latest conda solver:
+
+.. code::
+
+    $ conda config --set channel_priority strict
+    $ conda install -n base conda-libmamba-solver
+    $ conda config --set solver libmamba
+
 Creating A Rogue Environment
 ============================
 
