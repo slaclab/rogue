@@ -28,10 +28,18 @@ Use the following command to add anaconda to your environment. This can be added
 
    $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 
+It is important to use the latest conda solver:
+
+.. code::
+
+    $ conda config --set channel_priority strict
+    $ conda install -n base conda-libmamba-solver
+    $ conda config --set solver libmamba
+
 Creating A Rogue Environment
 ============================
 
-The next step is to create ana anaconda environment which includes the Rogue package.
+The next step is to create an anaconda environment which includes the Rogue package.
 
 .. code::
 
@@ -45,7 +53,7 @@ If you already have an anaconda environment that you would like to install Rogue
 
    $ conda install -c tidair-tag -c conda-forge rogue
 
-The above commands will install the latest version of Rogue from the master branch. If you want to install the pre-release version of Rogue, run the following:
+The above commands will install the latest version of Rogue from the `main` branch. If you want to install the `pre-release` version of Rogue, run the following:
 
 .. code::
 
