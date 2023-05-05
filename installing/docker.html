@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue Docker &mdash; Rogue v5.18.3 documentation</title>
+  <title>Installing Rogue Docker &mdash; Rogue v5.18.4 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -33,7 +33,7 @@
             Rogue
           </a>
               <div class="version">
-                v5.18.3
+                v5.18.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -135,6 +135,11 @@
 <li><p><strong>APP_NAME</strong> is the name of your application script.</p></li>
 </ul>
 <p>If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:</p>
+<p>As an example use can test the docker install and X11 with the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ setfacl -m user:0:r ${HOME}/.Xauthority
+$ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority tidair/rogue python3 -m pyrogue.examples --gui
+</pre></div>
+</div>
 </section>
 <section id="gui-on-a-linux-os">
 <h2>GUI On A Linux OS<a class="headerlink" href="#gui-on-a-linux-os" title="Permalink to this heading"></a></h2>
