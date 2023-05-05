@@ -14,7 +14,6 @@
 #-----------------------------------------------------------------------------
 
 import datetime
-import parse
 import pyrogue as pr
 import rogue
 import rogue.hardware.axi
