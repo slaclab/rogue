@@ -47,22 +47,38 @@ rha::AxiStreamDmaShared::AxiStreamDmaShared(std::string path) {
    this->rawBuff = NULL;
    this->bCount = 0;
    this->bSize = 0;
+   this->zCopyEn = true;
 }
 
 //! Open shared buffer space
 rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogue::LoggingPtr log) {
    std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
+   rha::AxiStreamDmaSharedPtr ret;
 
    // Entry already exists
    if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) {
-      it->second->openCount++;
-      log->debug("Shared file descriptor already opened");
-      return it->second;
+      ret = it->second;
+      log->debug("Reusing existing shared file descriptor for %s",path.c_str());
    }
 
    // Create new record
-   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
-   log->debug("Opening new shared file descriptor");
+   else {
+      ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+      log->debug("Opening new shared file descriptor for %s",path.c_str());
+   }
+
+   // Check if already open
+   if ( ret->fd != -1 ) {
+      ret->openCount++;
+      log->debug("Shared file descriptor already opened for %s",path.c_str());
+      return ret;
+   }
+
+   // Check if zero copy is disabled, if so don't open or map buffers
+   if ( ! ret->zCopyEn ) {
+      log->debug("Zero copy is disabled. Not Mapping Buffers for %s",path.c_str());
+      return ret;
+   }
 
    // We need to open device and create shared buffers
    if ( (ret->fd = ::open(path.c_str(), O_RDWR)) < 0 )
@@ -89,7 +105,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogu
       ::close(ret->fd);
       throw(rogue::GeneralError::create("AxiStreamDma::openShared","Failed to map dma buffers. Increase vm map limit to : sudo sysctl -w vm.max_map_count=%i",mapSize));
    }
-   log->debug("Mapped buffers. bCount = %i, bSize=%i", ret->bCount, ret->bSize);
+   log->debug("Mapped buffers. bCount = %i, bSize=%i for %s", ret->bCount, ret->bSize,path.c_str());
 
    // Add entry to map and return
    sharedBuffers_.insert(std::pair<std::string, rha::AxiStreamDmaSharedPtr>(path,ret));
@@ -111,8 +127,6 @@ void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
       desc->bCount = 0;
       desc->bSize = 0;
       desc->rawBuff = NULL;
-
-      sharedBuffers_.erase(desc->path);
    }
 }
 
@@ -122,6 +136,22 @@ rha::AxiStreamDmaPtr rha::AxiStreamDma::create (std::string path, uint32_t dest,
    return(r);
 }
 
+
+void rha::AxiStreamDma::zeroCopyDisable(std::string path) {
+   std::map<std::string, rha::AxiStreamDmaSharedPtr>::iterator it;
+
+   // Entry already exists
+   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() )
+      throw(rogue::GeneralError("AxiStreamDma::zeroCopyDisable","zeroCopyDisable can't be called twice or after a device has been opened"));
+
+   // Create new record
+   rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+   ret->zCopyEn = false;
+
+   sharedBuffers_.insert(std::pair<std::string, rha::AxiStreamDmaSharedPtr>(path,ret));
+}
+
+
 //! Open the device. Pass destination.
 rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnable) {
    uint8_t mask[DMA_MASK_SIZE];
@@ -129,7 +159,6 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    dest_       = dest;
    enSsi_      = ssiEnable;
    retThold_   = 1;
-   zeroCopyEn_ = true;
 
    // Create a shared pointer to use as a lock for runThread()
    std::shared_ptr<int> scopePtr = std::make_shared<int>(0);
@@ -143,7 +172,6 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
    // Attempt to open shared structure
    desc_ = openShared(path, log_);
 
-   //if ( desc_->bCount_ >= 1000 ) retThold_ = 50;
    if ( desc_->bCount >= 1000 ) retThold_ = 80;
 
    // Open non shared file descriptor
@@ -151,6 +179,13 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
       closeShared(desc_);
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
    }
+
+   // Zero copy is disabled
+   if ( desc_->rawBuff == NULL ) {
+      desc_->bCount = dmaGetTxBuffCount(fd_) + dmaGetRxBuffCount(fd_);
+      desc_->bSize  = dmaGetBuffSize(fd_);
+   }
+   if ( desc_->bCount >= 1000 ) retThold_ = 80;
 
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
@@ -206,11 +241,6 @@ void rha::AxiStreamDma::setDriverDebug(uint32_t level) {
    dmaSetDebug(fd_,level);
 }
 
-//! Enable / disable zero copy
-void rha::AxiStreamDma::setZeroCopyEn(bool state) {
-   zeroCopyEn_ = state;
-}
-
 //! Strobe ack line
 void rha::AxiStreamDma::dmaAck() {
    if ( fd_ >= 0 ) axisReadAck(fd_);
@@ -231,7 +261,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq ( uint32_t size, bool zeroCopyEn) {
    else buffSize = size;
 
    // Zero copy is disabled. Allocate from memory.
-   if ( zeroCopyEn_ == false || zeroCopyEn == false || desc_->rawBuff == NULL ) {
+   if ( zeroCopyEn == false || desc_->rawBuff == NULL ) {
       frame = ris::Pool::acceptReq(size,false);
    }
 
@@ -467,7 +497,7 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
       if ( select(fd_+1,&fds,NULL,NULL,&tout) > 0 ) {
 
          // Zero copy buffers were not allocated
-         if ( zeroCopyEn_ == false || desc_->rawBuff == NULL ) {
+         if ( desc_->rawBuff == NULL ) {
 
             // Allocate a buffer
             buff[0] = allocBuffer(desc_->bSize,NULL);
@@ -534,10 +564,10 @@ void rha::AxiStreamDma::setup_python () {
 #ifndef NO_PYTHON
 
    bp::class_<rha::AxiStreamDma, rha::AxiStreamDmaPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("AxiStreamDma",bp::init<std::string,uint32_t,bool>())
-      .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
-      .def("dmaAck",         &rha::AxiStreamDma::dmaAck)
-      .def("setTimeout",     &rha::AxiStreamDma::setTimeout)
-      .def("setZeroCopyEn",  &rha::AxiStreamDma::setZeroCopyEn)
+      .def("setDriverDebug",  &rha::AxiStreamDma::setDriverDebug)
+      .def("dmaAck",          &rha::AxiStreamDma::dmaAck)
+      .def("setTimeout",      &rha::AxiStreamDma::setTimeout)
+      .def("zeroCopyDisable", &rha::AxiStreamDma::zeroCopyDisable)
    ;
 
    bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();

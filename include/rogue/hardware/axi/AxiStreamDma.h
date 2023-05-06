@@ -50,6 +50,9 @@ namespace rogue {
 
                //! Size of buffers in hardware
                uint32_t bSize;
+
+               //! Zero copy is enabled
+               bool zCopyEn;
          };
 
          //! Alias for using shared pointer as AxiStreamDmaSharedPtr
@@ -97,9 +100,6 @@ namespace rogue {
                //! Thread background
                void runThread(std::weak_ptr<int>);
 
-               //! Enable zero copy
-               bool zeroCopyEn_;
-
                //! Return queue
                rogue::Queue<uint32_t> retQueue_;
 
@@ -136,6 +136,21 @@ namespace rogue {
                static std::shared_ptr<rogue::hardware::axi::AxiStreamDma>
                   create (std::string path, uint32_t dest, bool ssiEnable);
 
+               //! Disable zero copy
+               /** By default the AxiStreamDma class attempts to take advantage of
+                * the zero copy mode of the lower level driver if supported. In zero
+                * copy mode the Frame Buffer objects are mapped directly to the DMA
+                * buffers allocated by the kernel. This allows for direct user space
+                * access to the memory which the lower level DMA engines uses.
+                * When zero copy mode is disabled a memory buffer will be allocated
+                * using the Pool class and the DMA data will be coped to or from this
+                * buffer. This call must be made before the first AxiStreamDma device is created.
+                *
+                * Exposed to python as zeroCopyDisable()
+                * @param path Path to device. i.e /dev/datadev_0
+                */
+               static void zeroCopyDisable(std::string path);
+
                // Setup class in python
                static void setup_python();
 
@@ -169,21 +184,6 @@ namespace rogue {
                 * @param level Debug level, >= 1 enabled debug
                 */
                void setDriverDebug(uint32_t level);
-
-               //! Enable / disable zero copy
-               /** By default the AxiStreamDma class attempts to take advantage of
-                * the zero copy mode of the lower level driver if supported. In zero
-                * copy mode the Frame Buffer objects are mapped directly to the DMA
-                * buffers allocated by the kernel. This allows for direct user space
-                * access to the memory which the lower level DMA engines uses.
-                * When zero copy mode is disabled a memory buffer will be allocated
-                * using the Pool class and the DMA data will be coped to or from this
-                * buffer.
-                *
-                * Exposed to python as setZeroCopyEn()
-                * @param state Boolean indicating zero copy mode
-                */
-               void setZeroCopyEn(bool state);
 
                //! Strobe ack line (hardware specific)
                /** This method forwards an ack command to the lower
