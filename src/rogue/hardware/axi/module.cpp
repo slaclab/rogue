@@ -18,11 +18,11 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/hardware/axi/AxiMemMap.h>
 #include <rogue/hardware/axi/AxiStreamDma.h>
 #include <rogue/hardware/axi/module.h>
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;

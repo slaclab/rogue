@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_HARDWARE_MODULE_H__
 #define __ROGUE_HARDWARE_MODULE_H__
+#include <rogue/Directives.h>
 
 namespace rogue {
    namespace hardware {

@@ -1,8 +1,7 @@
 channels:
-  - tidair-packages
   - conda-forge
 dependencies:
-  - python
+  - python>=3.7
   - gcc_linux-64
   - gxx_linux-64
   - make

@@ -19,6 +19,7 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <thread>
 #include <memory>
@@ -35,7 +36,6 @@
 #include <rogue/Logging.h>
 #include <rogue/GilRelease.h>
 #include <string.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace rps = rogue::protocols::srp;
@@ -43,7 +43,6 @@ namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp  = boost::python;
 #endif
@@ -75,8 +74,8 @@ rps::SrpV3::SrpV3() : ris::Master(), ris::Slave(), rim::Slave(4,4096) {
 rps::SrpV3::~SrpV3() {}
 
 //! Set the hardware timeout
-void rps::SrpV3::setHardwareTimeout( uint8_t val ) { 
-   timeout_ = val; 
+void rps::SrpV3::setHardwareTimeout( uint8_t val ) {
+   timeout_ = val;
 }
 
 //! Setup header, return frame size

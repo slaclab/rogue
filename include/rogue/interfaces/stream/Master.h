@@ -20,6 +20,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_STREAM_MASTER_H__
 #define __ROGUE_INTERFACES_STREAM_MASTER_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string>
@@ -30,7 +31,6 @@
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 

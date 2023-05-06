@@ -19,6 +19,7 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
+#include <rogue/Directives.h>
 #include <unistd.h>
 #include <stdarg.h>
 #include <rogue/interfaces/stream/Slave.h>
@@ -35,14 +36,12 @@
 #include <rogue/GeneralError.h>
 #include <sys/time.h>
 #include <string.h>
-#define __STDC_FORMAT_MACROS
 #include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif

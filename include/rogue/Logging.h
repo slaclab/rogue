@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_LOGGING_H__
 #define __ROGUE_LOGGING_H__
+#include <rogue/Directives.h>
 #include <exception>
 #include <stdint.h>
 #include <thread>

@@ -16,6 +16,7 @@
 **/
 #ifndef __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
+#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/memory/Transaction.h>
 #include <thread>

@@ -20,6 +20,7 @@
  * ----------------------------------------------------------------------------
 **/
 
+#include <rogue/Directives.h>
 #include <rogue/utilities/module.h>
 #include <rogue/utilities/Prbs.h>
 #include <rogue/utilities/StreamZip.h>
@@ -28,7 +29,6 @@
 #include <rogue/interfaces/stream/Slave.h>
 #include <rogue/interfaces/stream/Master.h>
 
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 
 namespace bp  = boost::python;

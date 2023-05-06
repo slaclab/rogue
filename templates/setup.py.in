@@ -15,11 +15,20 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-from distutils.core import setup
+from setuptools import setup
+
+rawVersion = '${ROGUE_VERSION}'
+
+fields = rawVersion.split('-')
+
+if len(fields) == 1:
+    pyVersion = fields[0]
+else:
+    pyVersion = fields[0] + '.dev' + fields[1]
 
 setup (
     name='rogue',
-    version='${ROGUE_VERSION}',
+    version=pyVersion,
     packages=['pyrogue',
               'pyrogue.gui',
               'pyrogue.utilities',

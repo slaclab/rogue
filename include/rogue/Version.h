@@ -19,6 +19,7 @@
 **/
 #ifndef __ROGUE_VERSION_H__
 #define __ROGUE_VERSION_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 #include <string>
 

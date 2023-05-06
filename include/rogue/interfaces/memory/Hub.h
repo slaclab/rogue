@@ -22,6 +22,7 @@
 **/
 #ifndef __ROGUE_INTERFACES_MEMORY_HUB_H__
 #define __ROGUE_INTERFACES_MEMORY_HUB_H__
+#include <rogue/Directives.h>
 #include <stdint.h>
 
 #include <rogue/interfaces/memory/Master.h>
@@ -30,7 +31,6 @@
 #include <thread>
 
 #ifndef NO_PYTHON
-#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include <boost/python.hpp>
 #endif
 
@@ -65,7 +65,7 @@ namespace rogue {
 
                //! Log
                std::shared_ptr<rogue::Logging> log_;
-           
+
 
             public:
 
