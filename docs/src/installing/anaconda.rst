@@ -17,8 +17,8 @@ Go to https://www.anaconda.com/download to get the latest version of anaconda. E
 
 .. code::
 
-   $ wget https://repo.anaconda.com/archive/Anaconda3-2020.07-Linux-x86_64.sh
-   $ bash Anaconda3-2020.07-Linux-x86_64.sh
+   $ wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
+   $ bash Anaconda3-2023.03-1-Linux-x86_64.sh
 
 You do not need to install visual studio.
 
@@ -28,10 +28,18 @@ Use the following command to add anaconda to your environment. This can be added
 
    $ source /path/to/my/anaconda3/etc/profile.d/conda.sh
 
+It is important to use the latest conda solver:
+
+.. code::
+
+    $ conda config --set channel_priority strict
+    $ conda install -n base conda-libmamba-solver
+    $ conda config --set solver libmamba
+
 Creating A Rogue Environment
 ============================
 
-The next step is to create ana anaconda environment which includes the Rogue package.
+The next step is to create an anaconda environment which includes the Rogue package.
 
 .. code::
 
@@ -45,7 +53,7 @@ If you already have an anaconda environment that you would like to install Rogue
 
    $ conda install -c tidair-tag -c conda-forge rogue
 
-The above commands will install the latest version of Rogue from the master branch. If you want to install the pre-release version of Rogue, run the following:
+The above commands will install the latest version of Rogue from the `main` branch. If you want to install the `pre-release` version of Rogue, run the following:
 
 .. code::
 
@@ -55,7 +63,7 @@ Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_v5.18.2 -c conda-forge -c tidair-tag rogue=v5.18.2
+   $ conda create -n rogue_v5.18.4 -c conda-forge -c tidair-tag rogue=v5.18.4
 
 Using Rogue In Anaconda
 =======================

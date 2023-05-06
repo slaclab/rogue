@@ -40,4 +40,12 @@ The following is how you install the development version (pre-release) or Rogue 
 
 ```
 
-#hello?
+It is important to use the latest conda solver:
+
+```
+
+    $ conda config --set channel_priority strict
+    $ conda install -n base conda-libmamba-solver
+    $ conda config --set solver libmamba
+
+```
