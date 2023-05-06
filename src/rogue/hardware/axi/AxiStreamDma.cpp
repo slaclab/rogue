@@ -56,25 +56,28 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogu
    rha::AxiStreamDmaSharedPtr ret;
 
    // Entry already exists
-   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) ret = it->second;
+   if ( (it = sharedBuffers_.find(path)) != sharedBuffers_.end() ) {
+      ret = it->second;
+      log->debug("Reusing existing shared file descriptor for %s",path.c_str());
+   }
 
    // Create new record
    else {
-      //ret = std::make_shared<rha::AxiStreamDmaShared>(path);
-      rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
-      log->debug("Opening new shared file descriptor");
+      ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+      //rha::AxiStreamDmaSharedPtr ret = std::make_shared<rha::AxiStreamDmaShared>(path);
+      log->debug("Opening new shared file descriptor for %s",path.c_str());
    }
 
    // Check if already open
    if ( ret->fd != -1 ) {
       ret->openCount++;
-      log->debug("Shared file descriptor already opened");
+      log->debug("Shared file descriptor already opened for %s",path.c_str());
       return ret;
    }
 
    // Check if zero copy is disabled, if so don't open or map buffers
    if ( ! ret->zCopyEn ) {
-      log->debug("Zero copy is disabled");
+      log->debug("Zero copy is disabled. Not Mapping Buffers for %s",path.c_str());
       return ret;
    }
 
@@ -103,7 +106,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared (std::string path, rogu
       ::close(ret->fd);
       throw(rogue::GeneralError::create("AxiStreamDma::openShared","Failed to map dma buffers. Increase vm map limit to : sudo sysctl -w vm.max_map_count=%i",mapSize));
    }
-   log->debug("Mapped buffers. bCount = %i, bSize=%i", ret->bCount, ret->bSize);
+   log->debug("Mapped buffers. bCount = %i, bSize=%i for %s", ret->bCount, ret->bSize,path.c_str());
 
    // Add entry to map and return
    sharedBuffers_.insert(std::pair<std::string, rha::AxiStreamDmaSharedPtr>(path,ret));
@@ -177,6 +180,13 @@ rha::AxiStreamDma::AxiStreamDma ( std::string path, uint32_t dest, bool ssiEnabl
       closeShared(desc_);
       throw(rogue::GeneralError::create("AxiStreamDma::AxiStreamDma", "Failed to open device file: %s",path.c_str()));
    }
+
+   // Zero copy is disabled
+   if ( desc_->rawBuff == NULL ) {
+      desc_->bCount = dmaGetTxBuffCount(fd_) + dmaGetRxBuffCount(fd_);
+      desc_->bSize  = dmaGetBuffSize(fd_);
+   }
+   if ( desc_->bCount >= 1000 ) retThold_ = 80;
 
    dmaInitMaskBytes(mask);
    dmaAddMaskBytes(mask,dest_);
