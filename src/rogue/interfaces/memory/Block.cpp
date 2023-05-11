@@ -211,6 +211,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
 
              lowByte = var->staleLowByte_;
              highByte = var->staleHighByte_;
+
              // Catch case where fewer stale bytes than min access or non-aligned
              if (lowByte % minAccess != 0) lowByte -= lowByte % minAccess;
              if ((highByte+1) % minAccess != 0) highByte += minAccess - ((highByte+1) % minAccess);
@@ -585,6 +586,8 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t in
 
    // Standard variable
    else {
+      var->staleLowByte_ = var->lowTranByte_;
+      var->staleHighByte_ = var->highTranByte_;
 
       // Fast copy
       if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[0],buff,var->valueBytes_);
