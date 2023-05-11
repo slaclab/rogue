@@ -1,9 +1,9 @@
 #-----------------------------------------------------------------------------
-# This file is part of the 'SLAC Firmware Standard Library'. It is subject to
+# This file is part of the rogue_example software. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
 #    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-# No part of the 'SLAC Firmware Standard Library', including this file, may be
+# No part of the rogue_example software, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
@@ -28,9 +28,9 @@ class BlockDevice(pr.Device):
             numValues    = numRegs,
             valueBits    = 32,
             valueStride  = 32,
-            bulkOpEn     = False, # FALSE for large variables
+            bulkOpEn     = False,
             overlapEn    = True,
-            verify       = False, # FALSE due to a mix of RO/WO/RW variables
+            verify       = False,
             hidden       = True,
             base         = pr.UInt,
             mode         = "RW",
