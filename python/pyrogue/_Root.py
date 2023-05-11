@@ -63,7 +63,7 @@ class UpdateTracker(object):
 
     def _check(self):
         if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
-            #print(f"Utpdate fired {time.time()}")
+            #print(f"Update fired {time.time()}")
             self._last = time.time()
             self._q.put(self._list)
             self._list = {}
@@ -200,7 +200,6 @@ class Root(pr.Device):
         self._pollEn          = pollEn
         self._maxLog          = maxLog
         self._doHeartbeat     = True # Backdoor flag
-        self._testFunc        = None
 
         # Deprecated
         self._serverPort      = serverPort
