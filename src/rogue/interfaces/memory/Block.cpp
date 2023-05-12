@@ -28,6 +28,8 @@
 #include <rogue/GeneralError.h>
 #include <sys/time.h>
 #include <string.h>
+#include <iomanip>
+#include <sstream>
 #include <memory>
 #include <cmath>
 #include <exception>
@@ -205,6 +207,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
 
              lowByte = var->staleLowByte_;
              highByte = var->staleHighByte_;
+
              // Catch case where fewer stale bytes than min access or non-aligned
              if (lowByte % minAccess != 0) lowByte -= lowByte % minAccess;
              if ((highByte+1) % minAccess != 0) highByte += minAccess - ((highByte+1) % minAccess);
@@ -472,9 +475,9 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
             verifyEn_ = true;
             setBits(verifyMask_,(*vit)->bitOffset_[x],(*vit)->bitSize_[x]);
          }
-      }
 
-      bLog_->debug("Adding variable %s to block %s at offset 0x%.8" PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_);
+         bLog_->debug("Adding variable %s to block %s at offset 0x%.8x,  bitOffset %i, bitSize %i, mode %s, verifyEn %d " PRIx64, (*vit)->name_.c_str(), path_.c_str(), offset_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x], (*vit)->mode_.c_str(), (*vit)->verifyEn_);
+      }
    }
 
    // Check for overlaps by anding exclusive and overlap bit vectors
@@ -487,6 +490,24 @@ void rim::Block::addVariables (std::vector<rim::VariablePtr> variables) {
 
    // Execute custom init
    customInit();
+
+   // Debug the results of the build
+   std::stringstream ss;
+   uint32_t rem = size_;
+   uint32_t idx;
+   idx = 0;
+   x = 0;
+
+   while (rem > 0) {
+      ss << "0x" << std::setfill('0') << std::hex << std::setw(2) << (uint32_t)(verifyMask_[x]) << " ";
+      x++;
+      rem--;
+      if ( rem == 0 || x % 10 == 0) {
+         bLog_->debug("Done adding variables. Verify Mask %.3i - %.3i: %s", idx, x-1, ss.str().c_str());
+         ss.str("");
+         idx = x;
+      }
+   }
 }
 
 #ifndef NO_PYTHON
@@ -574,6 +595,8 @@ void rim::Block::setBytes ( const uint8_t *data, rim::Variable *var, uint32_t in
 
    // Standard variable
    else {
+      var->staleLowByte_ = var->lowTranByte_;
+      var->staleHighByte_ = var->highTranByte_;
 
       // Fast copy
       if ( var->fastByte_ != NULL ) memcpy(blockData_+var->fastByte_[0],buff,var->valueBytes_);
