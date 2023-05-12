@@ -29,6 +29,7 @@
 #include <sys/time.h>
 #include <string.h>
 #include <iomanip>
+#include <sstream>
 #include <memory>
 #include <cmath>
 #include <exception>
