@@ -40,6 +40,14 @@ parser.add_argument(
     help     = "Enable EPICS 4",
 )
 
+parser.add_argument(
+    "--map",
+    action   = 'store_true',
+    required = False,
+    default  = False,
+    help     = "Store address map",
+)
+
 # Get the arguments
 args = parser.parse_args()
 
@@ -51,12 +59,16 @@ args = parser.parse_args()
 #logger.setLevel(logging.DEBUG)
 
 with pyrogue.examples.ExampleRoot(epics3En=args.epics3, epics4En=args.epics4) as root:
-    root.saveAddressMap('addr_map.csv')
-    root.saveAddressMap('addr_map.h',headerEn=True)
+    if args.map:
+        root.saveAddressMap('addr_map.csv')
+        root.saveAddressMap('addr_map.h',headerEn=True)
+
+
 
     if args.gui:
         import pyrogue.pydm
-        pyrogue.pydm.runPyDM(root=root,title='test123',sizeX=1000,sizeY=500)
+        ui = pyrogue.pydm.__path__[0] + '/examples/rogue_plugin_test.ui'
+        pyrogue.pydm.runPyDM(root=root,ui=ui,title='Test UI',sizeX=1000,sizeY=500)
 
     else:
         pyrogue.waitCntrlC()
