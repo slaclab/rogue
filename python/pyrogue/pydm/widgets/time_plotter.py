@@ -255,8 +255,6 @@ class SelectionTree(PyDMFrame):
 
         self._colWidths = [250,50,150,50,50]
 
-        print("Selection tree created")
-
     def connection_changed(self, connected):
 
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -390,8 +388,6 @@ class TimePlotter(PyDMFrame):
         if not build:
             return
 
-        print("Calling setup UI")
-
         self._node = nodeFromAddress(self.channel)
         self.setup_ui()
 
@@ -508,7 +504,6 @@ class TimePlotter(PyDMFrame):
             pass
 
     def do_autoheight(self):
-        print('setting')
         # self.plots.setAutoRangeY(True)
         # self.plots.autoRangeY = True
         self.plots.plotItem.enableAutoRange(ViewBox.YAxis, enable=True)
