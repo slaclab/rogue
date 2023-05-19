@@ -15,7 +15,6 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtWidgets import QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
-import matplotlib.pyplot as plt
 
 class Plotter(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
