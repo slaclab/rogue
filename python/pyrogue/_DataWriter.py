@@ -16,7 +16,7 @@ import pyrogue as pr
 class DataWriter(pr.Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, *, hidden=True, **kwargs):
+    def __init__(self, *, hidden=True, bufferSize=0, maxFileSize=0, **kwargs):
         """
         Initialize device class
         Parameters
@@ -64,7 +64,7 @@ class DataWriter(pr.Device):
         self.add(pr.LocalVariable(
             name='BufferSize',
             mode='RW',
-            value=0,
+            value=bufferSize,
             typeStr='UInt32',
             localSet=self._setBufferSize,
             description='File buffering size. Enables caching of data before call to file system.'))
@@ -72,7 +72,7 @@ class DataWriter(pr.Device):
         self.add(pr.LocalVariable(
             name='MaxFileSize',
             mode='RW',
-            value=0,
+            value=maxFileSize,
             typeStr='UInt64',
             localSet=self._setMaxFileSize,
             description='Maximum size for an individual file. Setting to a non zero splits the run data into multiple files.'))
