@@ -381,7 +381,6 @@ class TimePlotter(PyDMFrame):
 
         self._addColor = '#dddddd'
         self._colorSelector = ColorSelector()
-        self.setup_ui()
 
     def connection_changed(self, connected):
 
