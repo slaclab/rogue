@@ -35,6 +35,7 @@ class ExampleRoot(pyrogue.Root):
         self._sdata = np.zeros(100,dtype=np.float64)
 
         self._fig = None
+        self._ax = None
         pyrogue.Root.__init__(self,
                               description="Example Root",
                               timeout=2.0,
@@ -138,8 +139,10 @@ class ExampleRoot(pyrogue.Root):
 
         if self._fig is not None:
             plt.close(self._fig)
+            self._fig.clf()
+            del self._ax, self._fig
 
         self._fig = plt.Figure()
-        ax = self._fig.add_subplot(111)
-        ax.plot(self.TestArray.get(read=read))
+        self._ax = self._fig.add_subplot(111)
+        self._ax.plot(self.TestArray.get(read=read))
         return self._fig
