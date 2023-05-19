@@ -16,7 +16,7 @@ from qtpy.QtWidgets import QVBoxLayout
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 import matplotlib.pyplot as plt
-import pickle
+import gc
 
 class Plotter(PyDMFrame):
     def __init__(self, parent=None, init_channel=None):
@@ -43,9 +43,10 @@ class Plotter(PyDMFrame):
         if self._canvas is not None:
             self._vb.removeWidget(self._canvas)
             self._vb.removeWidget(self._nav)
-            plt.close(self._fig)
+            self._canvas.setParent(None)
+            self._nav.setParent(None)
 
-        self._fig = pickle.loads(bytes.fromhex(new_val))
+        self._fig = new_val
         self._canvas = FigureCanvas(self._fig)
         self._nav = NavigationToolbar(self._canvas, self)
         self._vb.addWidget(self._nav)
