@@ -509,7 +509,7 @@ class TimePlotter(PyDMFrame):
         self.plots.plotItem.enableAutoRange(ViewBox.YAxis, enable=True)
 
     def minimumSizeHint(self):
-        return QtCore.QSize(1500, 1000)
+        return QtCore.QSize(1500, 900)
 
     def ui_filepath(self):
         return None
