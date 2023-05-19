@@ -16,10 +16,12 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include "rogue/Directives.h"
-#include <stdint.h>
+ **/
 #include "rogue/GilRelease.h"
+
+#include <stdint.h>
+
+#include "rogue/Directives.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -28,29 +30,29 @@ namespace bp = boost::python;
 
 rogue::GilRelease::GilRelease() {
 #ifndef NO_PYTHON
-   state_ = NULL;
-   release();
+    state_ = NULL;
+    release();
 #endif
 }
 
 rogue::GilRelease::~GilRelease() {
 #ifndef NO_PYTHON
-   acquire();
+    acquire();
 #endif
 }
 
 void rogue::GilRelease::acquire() {
 #ifndef NO_PYTHON
-   if ( state_ != NULL ) PyEval_RestoreThread(state_);
-   state_ = NULL;
+    if (state_ != NULL) PyEval_RestoreThread(state_);
+    state_ = NULL;
 #endif
 }
 
 void rogue::GilRelease::release() {
 #ifndef NO_PYTHON
-   if ( Py_IsInitialized() && PyGILState_Check() )
-      state_ = PyEval_SaveThread();
-   else state_ = NULL;
+    if (Py_IsInitialized() && PyGILState_Check())
+        state_ = PyEval_SaveThread();
+    else
+        state_ = NULL;
 #endif
 }
-

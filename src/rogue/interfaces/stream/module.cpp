@@ -18,48 +18,47 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
-#include "rogue/Directives.h"
 #include "rogue/interfaces/module.h"
-#include "rogue/interfaces/stream/Slave.h"
-#include "rogue/interfaces/stream/Master.h"
-#include "rogue/interfaces/stream/Frame.h"
-#include "rogue/interfaces/stream/FrameLock.h"
-#include "rogue/interfaces/stream/Fifo.h"
-#include "rogue/interfaces/stream/Filter.h"
-#include "rogue/interfaces/stream/TcpCore.h"
-#include "rogue/interfaces/stream/TcpClient.h"
-#include "rogue/interfaces/stream/TcpServer.h"
-#include "rogue/interfaces/stream/RateDrop.h"
-#include "rogue/interfaces/stream/module.h"
 
 #include <boost/python.hpp>
+
+#include "rogue/Directives.h"
+#include "rogue/interfaces/stream/Fifo.h"
+#include "rogue/interfaces/stream/Filter.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/RateDrop.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/TcpClient.h"
+#include "rogue/interfaces/stream/TcpCore.h"
+#include "rogue/interfaces/stream/TcpServer.h"
+#include "rogue/interfaces/stream/module.h"
 
 namespace bp  = boost::python;
 namespace ris = rogue::interfaces::stream;
 
 void ris::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.interfaces.stream"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.interfaces.stream"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("stream") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("stream") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   ris::Frame::setup_python();
-   ris::FrameLock::setup_python();
-   ris::Master::setup_python();
-   ris::Slave::setup_python();
-   ris::Pool::setup_python();
-   ris::Fifo::setup_python();
-   ris::Filter::setup_python();
-   ris::TcpCore::setup_python();
-   ris::TcpClient::setup_python();
-   ris::TcpServer::setup_python();
-   ris::RateDrop::setup_python();
+    ris::Frame::setup_python();
+    ris::FrameLock::setup_python();
+    ris::Master::setup_python();
+    ris::Slave::setup_python();
+    ris::Pool::setup_python();
+    ris::Fifo::setup_python();
+    ris::Filter::setup_python();
+    ris::TcpCore::setup_python();
+    ris::TcpClient::setup_python();
+    ris::TcpServer::setup_python();
+    ris::RateDrop::setup_python();
 }
-

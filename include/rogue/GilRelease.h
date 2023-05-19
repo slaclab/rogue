@@ -16,31 +16,30 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_GIL_RELEASE_H__
 #define __ROGUE_GIL_RELEASE_H__
-#include <rogue/Directives.h>
 #include <stdint.h>
+
+#include <rogue/Directives.h>
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
 #endif
 
 namespace rogue {
 
-   //! Logging
-   class GilRelease {
-
+//! Logging
+class GilRelease {
 #ifndef NO_PYTHON
-         PyThreadState *state_;
+    PyThreadState* state_;
 #endif
 
-      public:
-         GilRelease();
-         ~GilRelease();
-         void acquire();
-         void release();
-   };
-}
+  public:
+    GilRelease();
+    ~GilRelease();
+    void acquire();
+    void release();
+};
+}  // namespace rogue
 
 #endif
-

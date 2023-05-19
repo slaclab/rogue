@@ -18,39 +18,38 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
-#include "rogue/Directives.h"
+#include "rogue/protocols/module.h"
+
 #include <RogueConfig.h>
 
 #include <boost/python.hpp>
 
-#include "rogue/protocols/module.h"
+#include "rogue/Directives.h"
+#include "rogue/protocols/batcher/module.h"
 #include "rogue/protocols/packetizer/module.h"
 #include "rogue/protocols/rssi/module.h"
 #include "rogue/protocols/srp/module.h"
 #include "rogue/protocols/udp/module.h"
-#include "rogue/protocols/batcher/module.h"
 #include "rogue/protocols/xilinx/module.h"
 
-namespace bp  = boost::python;
+namespace bp = boost::python;
 
 void rogue::protocols::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("protocols") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("protocols") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rogue::protocols::packetizer::setup_module();
-   rogue::protocols::rssi::setup_module();
-   rogue::protocols::srp::setup_module();
-   rogue::protocols::udp::setup_module();
-   rogue::protocols::batcher::setup_module();
-   rogue::protocols::xilinx::setup_module();
+    rogue::protocols::packetizer::setup_module();
+    rogue::protocols::rssi::setup_module();
+    rogue::protocols::srp::setup_module();
+    rogue::protocols::udp::setup_module();
+    rogue::protocols::batcher::setup_module();
+    rogue::protocols::xilinx::setup_module();
 }
-

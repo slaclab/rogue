@@ -18,29 +18,28 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
+
+#include "rogue/hardware/module.h"
+
+#include <boost/python.hpp>
 
 #include "rogue/Directives.h"
-#include <boost/python.hpp>
-#include "rogue/hardware/module.h"
-#include "rogue/hardware/axi/module.h"
 #include "rogue/hardware/MemMap.h"
+#include "rogue/hardware/axi/module.h"
 
-namespace bp  = boost::python;
+namespace bp = boost::python;
 
 void rogue::hardware::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("hardware") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("hardware") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rogue::hardware::axi::setup_module();
-   rogue::hardware::MemMap::setup_python();
-
+    rogue::hardware::axi::setup_module();
+    rogue::hardware::MemMap::setup_python();
 }
-

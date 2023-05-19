@@ -17,78 +17,80 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include "rogue/Directives.h"
-#include "rogue/interfaces/stream/Frame.h"
-#include "rogue/interfaces/stream/Buffer.h"
-#include "rogue/protocols/packetizer/Controller.h"
+ **/
 #include "rogue/protocols/packetizer/Transport.h"
-#include "rogue/GeneralError.h"
+
 #include <memory>
+
+#include "rogue/Directives.h"
+#include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/protocols/packetizer/Controller.h"
 
 namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Class creation
-rpp::TransportPtr rpp::Transport::create () {
-   rpp::TransportPtr r = std::make_shared<rpp::Transport>();
-   return(r);
+rpp::TransportPtr rpp::Transport::create() {
+    rpp::TransportPtr r = std::make_shared<rpp::Transport>();
+    return (r);
 }
 
 void rpp::Transport::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rpp::Transport, rpp::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
+    bp::class_<rpp::Transport, rpp::TransportPtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>("Transport",
+                                                                                                          bp::init<>());
 
-   bp::implicitly_convertible<rpp::TransportPtr, ris::MasterPtr>();
-   bp::implicitly_convertible<rpp::TransportPtr, ris::SlavePtr>();
+    bp::implicitly_convertible<rpp::TransportPtr, ris::MasterPtr>();
+    bp::implicitly_convertible<rpp::TransportPtr, ris::SlavePtr>();
 #endif
 }
 
 //! Creator
-rpp::Transport::Transport () { }
+rpp::Transport::Transport() {}
 
 //! Destructor
 rpp::Transport::~Transport() {
-   threadEn_ = false;
-   cntl_->stopQueue();
-   thread_->join();
+    threadEn_ = false;
+    cntl_->stopQueue();
+    thread_->join();
 }
 
 //! Setup links
-void rpp::Transport::setController( rpp::ControllerPtr cntl ) {
-   cntl_ = cntl;
+void rpp::Transport::setController(rpp::ControllerPtr cntl) {
+    cntl_ = cntl;
 
-   // Start read thread
-   threadEn_ = true;
-   thread_ = new std::thread(&rpp::Transport::runThread, this);
+    // Start read thread
+    threadEn_ = true;
+    thread_   = new std::thread(&rpp::Transport::runThread, this);
 
-   // Set a thread name
+    // Set a thread name
 #ifndef __MACH__
-   pthread_setname_np( thread_->native_handle(), "PackTrans" );
+    pthread_setname_np(thread_->native_handle(), "PackTrans");
 #endif
 }
 
 //! Accept a frame from master
-void rpp::Transport::acceptFrame ( ris::FramePtr frame ) {
-   cntl_->transportRx(frame);
+void rpp::Transport::acceptFrame(ris::FramePtr frame) {
+    cntl_->transportRx(frame);
 }
 
 //! Thread background
 void rpp::Transport::runThread() {
-   ris::FramePtr frame;
-   Logging log("packetizer.Transport");
-   log.logThreadId();
+    ris::FramePtr frame;
+    Logging log("packetizer.Transport");
+    log.logThreadId();
 
-   while(threadEn_) {
-      if ( (frame=cntl_->transportTx()) != NULL ) sendFrame(frame);
-   }
+    while (threadEn_) {
+        if ((frame = cntl_->transportTx()) != NULL) sendFrame(frame);
+    }
 }
-

@@ -13,18 +13,17 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_UDP_MODULE_H__
 #define __ROGUE_PROTOCOLS_UDP_MODULE_H__
 #include <rogue/Directives.h>
 
 namespace rogue {
-   namespace protocols {
-      namespace udp {
-         void setup_module();
-      }
-   }
+namespace protocols {
+namespace udp {
+void setup_module();
 }
+}  // namespace protocols
+}  // namespace rogue
 
 #endif
-

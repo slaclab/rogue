@@ -13,94 +13,91 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_H__
-#include <rogue/Directives.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <netinet/ip.h>
+#include <stdint.h>
+#include <sys/socket.h>
 
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/protocols/xilinx/XvcServer.h>
-#include <rogue/protocols/xilinx/XvcConnection.h>
-#include <rogue/protocols/xilinx/JtagDriver.h>
+#include <memory>
+#include <thread>
+
+#include <rogue/Directives.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/Queue.h>
+#include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Slave.h>
+#include <rogue/protocols/xilinx/JtagDriver.h>
+#include <rogue/protocols/xilinx/XvcConnection.h>
+#include <rogue/protocols/xilinx/XvcServer.h>
 
-#include <thread>
-#include <stdint.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <memory>
+namespace rogue {
+namespace protocols {
+namespace xilinx {
+const unsigned int kMaxArgs = 3;
 
-namespace rogue
-{
-   namespace protocols
-   {
-      namespace xilinx
-      {
-         const unsigned int kMaxArgs = 3;
+class Xvc : public rogue::interfaces::stream::Master,
+            public rogue::interfaces::stream::Slave,
+            public rogue::protocols::xilinx::JtagDriver {
+  protected:
+    unsigned mtu_;
 
-         class Xvc : public rogue::interfaces::stream::Master,
-                     public rogue::interfaces::stream::Slave,
-                     public rogue::protocols::xilinx::JtagDriver
-         {
-            protected:
+    // Use rogue frames to exchange data with other rogue objects
+    rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-               unsigned mtu_;
+    // Log
+    std::shared_ptr<rogue::Logging> log_;
 
-               // Use rogue frames to exchange data with other rogue objects
-               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
+    //! Thread background
+    std::thread* thread_;
+    bool threadEn_;
 
-               // Log
-               std::shared_ptr<rogue::Logging> log_;
+    // Lock
+    std::mutex mtx_;
 
-               //! Thread background
-               std::thread* thread_;
-               bool         threadEn_;
+    // TCP server for Vivado client
+    void runThread();
 
-               // Lock
-               std::mutex mtx_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::xilinx::Xvc> create(uint16_t port);
 
-               // TCP server for Vivado client
-               void runThread();
+    //! Setup class in python
+    static void setup_python();
 
-            public:
+    //! Creator
+    Xvc(uint16_t port);
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::xilinx::Xvc>
-               create(uint16_t port);
+    //! Destructor
+    ~Xvc();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Start the interface
+    void start();
 
-               //! Creator
-               Xvc(uint16_t port);
+    //! Stop the interface
+    void stop();
 
-               //! Destructor
-               ~Xvc();
+    // Receive frame
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Start the interface
-               void start();
+    virtual unsigned long getMaxVectorSize() final;
 
-               //! Stop the interface
-               void stop();
+    virtual int xfer(uint8_t* txBuffer,
+                     unsigned txBytes,
+                     uint8_t* hdBuffer,
+                     unsigned hdBytes,
+                     uint8_t* rxBuffer,
+                     unsigned rxBytes) final;
+};
 
-               // Receive frame
-               void acceptFrame (std::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               virtual unsigned long getMaxVectorSize() final;
-
-               virtual int
-               xfer(uint8_t *txBuffer, unsigned txBytes, uint8_t *hdBuffer, unsigned hdBytes, uint8_t *rxBuffer, unsigned rxBytes) final;
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::xilinx::Xvc> XvcPtr;
-      }
-   }
-}
+// Convenience
+typedef std::shared_ptr<rogue::protocols::xilinx::Xvc> XvcPtr;
+}  // namespace xilinx
+}  // namespace protocols
+}  // namespace rogue
 
 #endif

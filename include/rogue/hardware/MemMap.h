@@ -13,82 +13,81 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_HARDWARE_MEM_MAP_H__
 #define __ROGUE_HARDWARE_MEM_MAP_H__
-#include <rogue/Directives.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <thread>
-#include <mutex>
-#include <memory>
 #include <stdint.h>
+
+#include <memory>
+#include <mutex>
+#include <thread>
+
+#include <rogue/Directives.h>
 #include <rogue/Logging.h>
 #include <rogue/Queue.h>
+#include <rogue/interfaces/memory/Slave.h>
+#include <rogue/interfaces/memory/Transaction.h>
 
 #define MAP_DEVICE "/dev/mem"
 
 namespace rogue {
-   namespace hardware {
+namespace hardware {
 
-      //! Raw Memory Map Class
-      /** This class provides a bridge between the Rogue memory interface and
-       * a standard Linux /dev/map interface.
-       */
-      class MemMap : public rogue::interfaces::memory::Slave {
+//! Raw Memory Map Class
+/** This class provides a bridge between the Rogue memory interface and
+ * a standard Linux /dev/map interface.
+ */
+class MemMap : public rogue::interfaces::memory::Slave {
+    //! MemMap file descriptor
+    int32_t fd_;
 
-            //! MemMap file descriptor
-            int32_t  fd_;
+    //! Size
+    uint64_t size_;
 
-            //! Size
-            uint64_t size_;
+    //! Memory Mapped Pointer
+    volatile uint8_t* map_;
 
-            //! Memory Mapped Pointer
-            volatile uint8_t * map_;
+    // Logging
+    std::shared_ptr<rogue::Logging> log_;
 
-            // Logging
-            std::shared_ptr<rogue::Logging> log_;
+    std::thread* thread_;
+    bool threadEn_;
 
-            std::thread* thread_;
-            bool threadEn_;
+    //! Thread background
+    void runThread();
 
-            //! Thread background
-            void runThread();
+    // Queue
+    rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
-            // Queue
-            rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
+  public:
+    //! Class factory which returns a MemMapPtr to a newly created MemMap object
+    /** Exposed to Python as rogue.hardware.MemMap()
+     * @param base Base address to map
+     * @param size Size of address space to map
+     * @return MemMap pointer (MemMapPtr)
+     */
+    static std::shared_ptr<rogue::hardware::MemMap> create(uint64_t base, uint32_t size);
 
-         public:
+    // Setup class for use in python
+    static void setup_python();
 
-            //! Class factory which returns a MemMapPtr to a newly created MemMap object
-            /** Exposed to Python as rogue.hardware.MemMap()
-             * @param base Base address to map
-             * @param size Size of address space to map
-             * @return MemMap pointer (MemMapPtr)
-             */
-            static std::shared_ptr<rogue::hardware::MemMap> create (uint64_t base, uint32_t size);
+    // Class Creator
+    MemMap(uint64_t base, uint32_t size);
 
-            // Setup class for use in python
-            static void setup_python();
+    // Destructor
+    ~MemMap();
 
-            // Class Creator
-            MemMap(uint64_t base, uint32_t size);
+    // stop interface
+    void stop();
 
-            // Destructor
-            ~MemMap();
-
-            // stop interface
-            void stop();
-
-            // Accept as transaction from the memory Master as defined in the Slave class.
-            void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
-      };
-
-      //! Alias for using shared pointer as TcpClientPtr
-      typedef std::shared_ptr<rogue::hardware::MemMap> MemMapPtr;
-
-   }
+    // Accept as transaction from the memory Master as defined in the Slave class.
+    void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 };
 
-#endif
+//! Alias for using shared pointer as TcpClientPtr
+typedef std::shared_ptr<rogue::hardware::MemMap> MemMapPtr;
 
+}  // namespace hardware
+};  // namespace rogue
+
+#endif

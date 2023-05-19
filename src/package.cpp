@@ -18,20 +18,18 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
+
+#include <boost/python.hpp>
 
 #include "rogue/Directives.h"
-#include <boost/python.hpp>
 #include "rogue/Version.h"
 #include "rogue/module.h"
 
 BOOST_PYTHON_MODULE(rogue) {
+    // PyEval_InitThreads();
 
-   //PyEval_InitThreads();
+    rogue::setup_module();
 
-   rogue::setup_module();
-
-   printf("Rogue/pyrogue version %s. https://github.com/slaclab/rogue\n",rogue::Version::current().c_str());
-
+    printf("Rogue/pyrogue version %s. https://github.com/slaclab/rogue\n", rogue::Version::current().c_str());
 };
-

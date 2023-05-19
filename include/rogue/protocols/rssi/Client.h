@@ -13,129 +13,127 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
 #define __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
-#include <rogue/Directives.h>
-#include <thread>
 #include <stdint.h>
+
 #include <memory>
+#include <thread>
+
+#include <rogue/Directives.h>
 
 namespace rogue {
-   namespace protocols {
-      namespace rssi {
+namespace protocols {
+namespace rssi {
 
-         class Transport;
-         class Application;
-         class Controller;
+class Transport;
+class Application;
+class Controller;
 
-         //! RSSI Client Class
-         class Client {
+//! RSSI Client Class
+class Client {
+    //! Transport module
+    std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
 
-               //! Transport module
-               std::shared_ptr<rogue::protocols::rssi::Transport> tran_;
+    //! Application module
+    std::shared_ptr<rogue::protocols::rssi::Application> app_;
 
-               //! Application module
-               std::shared_ptr<rogue::protocols::rssi::Application> app_;
+    //! Client module
+    std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-               //! Client module
-               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::rssi::Client> create(uint32_t segSize);
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::rssi::Client> create (uint32_t segSize);
+    //! Creator
+    Client(uint32_t segSize);
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Client();
 
-               //! Creator
-               Client(uint32_t segSize);
+    //! Get transport interface
+    std::shared_ptr<rogue::protocols::rssi::Transport> transport();
 
-               //! Destructor
-               ~Client();
+    //! Application module
+    std::shared_ptr<rogue::protocols::rssi::Application> application();
 
-               //! Get transport interface
-               std::shared_ptr<rogue::protocols::rssi::Transport> transport();
+    //! Get state
+    bool getOpen();
 
-               //! Application module
-               std::shared_ptr<rogue::protocols::rssi::Application> application();
+    //! Get Down Count
+    uint32_t getDownCount();
 
-               //! Get state
-               bool getOpen();
+    //! Get Drop Count
+    uint32_t getDropCount();
 
-               //! Get Down Count
-               uint32_t getDownCount();
+    //! Get Retransmit Count
+    uint32_t getRetranCount();
 
-               //! Get Drop Count
-               uint32_t getDropCount();
+    //! Get locBusy
+    bool getLocBusy();
 
-               //! Get Retransmit Count
-               uint32_t getRetranCount();
+    //! Get locBusyCnt
+    uint32_t getLocBusyCnt();
 
-               //! Get locBusy
-               bool getLocBusy();
+    //! Get remBusy
+    bool getRemBusy();
 
-               //! Get locBusyCnt
-               uint32_t getLocBusyCnt();
+    //! Get remBusyCnt
+    uint32_t getRemBusyCnt();
 
-               //! Get remBusy
-               bool getRemBusy();
+    void setLocTryPeriod(uint32_t val);
+    uint32_t getLocTryPeriod();
 
-               //! Get remBusyCnt
-               uint32_t getRemBusyCnt();
+    void setLocMaxBuffers(uint8_t val);
+    uint8_t getLocMaxBuffers();
 
-               void     setLocTryPeriod(uint32_t val);
-               uint32_t getLocTryPeriod();
+    void setLocMaxSegment(uint16_t val);
+    uint16_t getLocMaxSegment();
 
-               void     setLocMaxBuffers(uint8_t val);
-               uint8_t  getLocMaxBuffers();
+    void setLocCumAckTout(uint16_t val);
+    uint16_t getLocCumAckTout();
 
-               void     setLocMaxSegment(uint16_t val);
-               uint16_t getLocMaxSegment();
+    void setLocRetranTout(uint16_t val);
+    uint16_t getLocRetranTout();
 
-               void     setLocCumAckTout(uint16_t val);
-               uint16_t getLocCumAckTout();
+    void setLocNullTout(uint16_t val);
+    uint16_t getLocNullTout();
 
-               void     setLocRetranTout(uint16_t val);
-               uint16_t getLocRetranTout();
+    void setLocMaxRetran(uint8_t val);
+    uint8_t getLocMaxRetran();
 
-               void     setLocNullTout(uint16_t val);
-               uint16_t getLocNullTout();
+    void setLocMaxCumAck(uint8_t val);
+    uint8_t getLocMaxCumAck();
 
-               void     setLocMaxRetran(uint8_t val);
-               uint8_t  getLocMaxRetran();
+    uint8_t curMaxBuffers();
+    uint16_t curMaxSegment();
+    uint16_t curCumAckTout();
+    uint16_t curRetranTout();
+    uint16_t curNullTout();
+    uint8_t curMaxRetran();
+    uint8_t curMaxCumAck();
 
-               void     setLocMaxCumAck(uint8_t val);
-               uint8_t  getLocMaxCumAck();
+    void resetCounters();
 
-               uint8_t  curMaxBuffers();
-               uint16_t curMaxSegment();
-               uint16_t curCumAckTout();
-               uint16_t curRetranTout();
-               uint16_t curNullTout();
-               uint8_t  curMaxRetran();
-               uint8_t  curMaxCumAck();
+    //! Set timeout in microseconds for frame transmits
+    void setTimeout(uint32_t timeout);
 
-               void resetCounters();
+    //! Stop connection
+    void stop();
 
-               //! Set timeout in microseconds for frame transmits
-               void setTimeout(uint32_t timeout);
-
-               //! Stop connection
-               void stop();
-
-               //! Start connection
-               void start();
-
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::rssi::Client> ClientPtr;
-
-      }
-   }
+    //! Start connection
+    void start();
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::rssi::Client> ClientPtr;
 
+}  // namespace rssi
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

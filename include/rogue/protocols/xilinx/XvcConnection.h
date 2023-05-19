@@ -16,64 +16,59 @@
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
-#include <rogue/Directives.h>
-
-#include <rogue/protocols/xilinx/JtagDriver.h>
-#include <rogue/GeneralError.h>
-
-#include <sys/socket.h>
 #include <netinet/in.h>
+#include <sys/socket.h>
 
-namespace rogue
-{
-   namespace protocols
-   {
-      namespace xilinx
-      {
-         // Class managing a XVC tcp connection
-         class XvcConnection
-         {
-               int                sd_;
-               JtagDriver         *drv_;
-               struct sockaddr_in peer_;
+#include <rogue/Directives.h>
+#include <rogue/GeneralError.h>
+#include <rogue/protocols/xilinx/JtagDriver.h>
 
-               // just use vectors to back raw memory; DONT use 'size/resize'
-               // (unfortunately 'resize' fills elements beyond the current 'size'
-               // with zeroes)
+namespace rogue {
+namespace protocols {
+namespace xilinx {
+// Class managing a XVC tcp connection
+class XvcConnection {
+    int sd_;
+    JtagDriver* drv_;
+    struct sockaddr_in peer_;
 
-               uint8_t         *rp_;
-               vector<uint8_t> rxb_;
-               unsigned long   rl_;
-               unsigned long   tl_;
+    // just use vectors to back raw memory; DONT use 'size/resize'
+    // (unfortunately 'resize' fills elements beyond the current 'size'
+    // with zeroes)
 
-               vector<uint8_t> txb_;
-               unsigned long   maxVecLen_;
-               unsigned long   supVecLen_;
-               unsigned long   chunk_;
+    uint8_t* rp_;
+    vector<uint8_t> rxb_;
+    unsigned long rl_;
+    unsigned long tl_;
 
-            public:
-               XvcConnection(int sd, JtagDriver *drv, unsigned long maxVecLen_ = 32768);
+    vector<uint8_t> txb_;
+    unsigned long maxVecLen_;
+    unsigned long supVecLen_;
+    unsigned long chunk_;
 
-               // fill rx buffer to 'n' octets (from TCP connection)
-               virtual void fill(unsigned long n);
+  public:
+    XvcConnection(int sd, JtagDriver* drv, unsigned long maxVecLen_ = 32768);
 
-               // send tx buffer to TCP connection
-               virtual void flush();
+    // fill rx buffer to 'n' octets (from TCP connection)
+    virtual void fill(unsigned long n);
 
-               // discard 'n' octets from rx buffer (mark as consumed)
-               virtual void bump(unsigned long n);
+    // send tx buffer to TCP connection
+    virtual void flush();
 
-               // (re)allocated buffers
-               virtual void allocBufs();
+    // discard 'n' octets from rx buffer (mark as consumed)
+    virtual void bump(unsigned long n);
 
-               virtual void run();
+    // (re)allocated buffers
+    virtual void allocBufs();
 
-               ssize_t readTo(void *buf, size_t count);
+    virtual void run();
 
-               virtual ~XvcConnection();
-         };
-      }
-   }
-}
+    ssize_t readTo(void* buf, size_t count);
+
+    virtual ~XvcConnection();
+};
+}  // namespace xilinx
+}  // namespace protocols
+}  // namespace rogue
 
 #endif

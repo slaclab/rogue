@@ -13,70 +13,68 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_UDP_SERVER_H__
 #define __ROGUE_PROTOCOLS_UDP_SERVER_H__
-#include <rogue/Directives.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/Logging.h>
-#include <thread>
-#include <stdint.h>
 #include <netdb.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <stdint.h>
+#include <sys/socket.h>
+
 #include <memory>
+#include <thread>
+
+#include <rogue/Directives.h>
+#include <rogue/Logging.h>
+#include <rogue/interfaces/stream/Master.h>
+#include <rogue/interfaces/stream/Slave.h>
 
 namespace rogue {
-   namespace protocols {
-      namespace udp {
+namespace protocols {
+namespace udp {
 
-         //! PGP Card class
-         class Server : public rogue::protocols::udp::Core,
-                        public rogue::interfaces::stream::Master,
-                        public rogue::interfaces::stream::Slave {
+//! PGP Card class
+class Server : public rogue::protocols::udp::Core,
+               public rogue::interfaces::stream::Master,
+               public rogue::interfaces::stream::Slave {
+    //! Local port number
+    uint16_t port_;
 
-               //! Local port number
-               uint16_t port_;
+    //! Local socket address
+    struct sockaddr_in locAddr_;
 
-               //! Local socket address
-               struct sockaddr_in locAddr_;
+    //! Thread background
+    void runThread(std::weak_ptr<int>);
 
-               //! Thread background
-               void runThread(std::weak_ptr<int>);
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::udp::Server> create(uint16_t port, bool jumbo);
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::udp::Server>
-                  create (uint16_t port, bool jumbo);
+    //! Creator
+    Server(uint16_t port, bool jumbo);
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Server();
 
-               //! Creator
-               Server(uint16_t port, bool jumbo);
+    //! Stop the interface
+    void stop();
 
-               //! Destructor
-               ~Server();
+    //! Get port number
+    uint32_t getPort();
 
-               //! Stop the interface
-               void stop();
-
-               //! Get port number
-               uint32_t getPort();
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::udp::Server> ServerPtr;
-
-      }
-   }
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::udp::Server> ServerPtr;
 
+}  // namespace udp
+}  // namespace protocols
+};  // namespace rogue
+
+#endif
