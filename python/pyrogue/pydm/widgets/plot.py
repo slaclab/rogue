@@ -45,6 +45,7 @@ class Plotter(PyDMFrame):
             self._vb.removeWidget(self._nav)
             self._canvas.setParent(None)
             self._nav.setParent(None)
+            del self._canvas, self._nav, self._fig
 
         self._fig = new_val
         self._canvas = FigureCanvas(self._fig)
