@@ -14,7 +14,6 @@ dependencies:
   - parse
   - click
   - numpy
-  - pyqt
   - boost
   - bzip2
   - zeromq
@@ -24,7 +23,7 @@ dependencies:
   - pyserial
   - p4p
   - sqlalchemy
-  - pydm
+  - pydm>=1.18.0
   - matplotlib
   - pytest
   - pytest-cov

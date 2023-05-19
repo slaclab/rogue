@@ -15,11 +15,11 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 rawVersion = '${ROGUE_VERSION}'
 
-fields = rawVersion.split('-')
+fields = rawVersion[1:].split('-')
 
 if len(fields) == 1:
     pyVersion = fields[0]
@@ -29,18 +29,8 @@ else:
 setup (
     name='rogue',
     version=pyVersion,
-    packages=['pyrogue',
-              'pyrogue.gui',
-              'pyrogue.utilities',
-              'pyrogue.utilities.fileio',
-              'pyrogue.utilities.hls',
-              'pyrogue.interfaces',
-              'pyrogue.protocols',
-              'pyrogue.examples',
-              'pyrogue.pydm',
-              'pyrogue.pydm.widgets',
-              'pyrogue.pydm.tools',
-              'pyrogue.pydm.data_plugins' ],
-    package_dir={'':'${PROJECT_SOURCE_DIR}/python'},
-    package_data={'':['../rogue.so']},
+    packages=find_packages(where="../python"),
+    package_dir={'':'../python'},
+    package_data={'':['../rogue.so'], 'pyrogue.pydm':['examples/*.ui']},
+    include_package_data=True,
 )

@@ -88,7 +88,7 @@ class DebugDev(QTreeWidgetItem):
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, main=self._main, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
@@ -100,7 +100,7 @@ class DebugDev(QTreeWidgetItem):
 
             if val.guiGroup is not None:
                 if val.guiGroup not in self._groups:
-                    self._groups[val.guiGroup] = DebugGroup(path=self._path, top=self._top, parent=self, name=val.guiGroup)
+                    self._groups[val.guiGroup] = DebugGroup(path=self._path, main=self._main, top=self._top, parent=self, name=val.guiGroup)
 
                 self._groups[val.guiGroup].addNode(val)
 
@@ -242,7 +242,7 @@ class DebugHolder(QTreeWidgetItem):
 
 
 class SelectionTree(PyDMFrame):
-    def __init__(self,main, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
+    def __init__(self, main, parent=None, init_channel=None, incGroups=None, excGroups=['Hidden']):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._main = main
@@ -256,6 +256,7 @@ class SelectionTree(PyDMFrame):
         self._colWidths = [250,50,150,50,50]
 
     def connection_changed(self, connected):
+
         build = (self._node is None) and (self._connected != connected and connected is True)
         super(SelectionTree, self).connection_changed(connected)
 
@@ -273,7 +274,6 @@ class SelectionTree(PyDMFrame):
 
         self._tree.setColumnCount(4)
         self._tree.setHeaderLabels(['Node','Value','Plot','Poll Interval'])
-
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -380,9 +380,16 @@ class TimePlotter(PyDMFrame):
         self._addColor = '#dddddd'
         self._colorSelector = ColorSelector()
 
+    def connection_changed(self, connected):
 
+        build = (self._node is None) and (self._connected != connected and connected is True)
+        super(TimePlotter, self).connection_changed(connected)
+
+        if not build:
+            return
+
+        self._node = nodeFromAddress(self.channel)
         self.setup_ui()
-
 
     def setup_ui(self):
 
@@ -413,7 +420,6 @@ class TimePlotter(PyDMFrame):
         # Create a Frame to host the items in the legend
         self.frm_legend = QFrame(parent=self)
         self.frm_legend.setLayout(self.legend_layout)
-
 
         # Create a ScrollArea
         self.scroll_area = QScrollArea(parent=self)
@@ -480,7 +486,6 @@ class TimePlotter(PyDMFrame):
         disp.setMaximumHeight(50)
         self.legend_layout.addWidget(disp)
 
-
     def do_remove(self,path):
         curve = self.plots.findCurve(path)
         self.plots.removeYChannel(curve)
@@ -499,13 +504,12 @@ class TimePlotter(PyDMFrame):
             pass
 
     def do_autoheight(self):
-        print('setting')
         # self.plots.setAutoRangeY(True)
         # self.plots.autoRangeY = True
         self.plots.plotItem.enableAutoRange(ViewBox.YAxis, enable=True)
 
     def minimumSizeHint(self):
-        return QtCore.QSize(1500, 1000)
+        return QtCore.QSize(1500, 900)
 
     def ui_filepath(self):
         return None
@@ -528,7 +532,6 @@ class LegendRow(Display):
         main_layout = QHBoxLayout()
         main_box = QGroupBox(parent=self)
         main_box.setLayout(main_layout)
-
 
         #Add widgets to layout
         main_layout.addWidget(QLabel(self._path))
