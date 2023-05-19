@@ -19,21 +19,21 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <unistd.h>
 #include <stdarg.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/utilities/Prbs.h>
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/utilities/Prbs.h"
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
-#include <rogue/GeneralError.h>
+#include "rogue/GilRelease.h"
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
+#include "rogue/GeneralError.h"
 #include <sys/time.h>
 #include <string.h>
 #include <inttypes.h>

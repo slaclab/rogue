@@ -14,8 +14,8 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/Directives.h>
-#include <rogue/protocols/xilinx/JtagDriver.h>
+#include "rogue/Directives.h"
+#include "rogue/protocols/xilinx/JtagDriver.h"
 
 #include <sys/socket.h>
 #include <netinet/in.h>

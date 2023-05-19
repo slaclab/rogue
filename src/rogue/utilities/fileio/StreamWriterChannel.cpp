@@ -21,15 +21,15 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
-#include <rogue/utilities/fileio/StreamWriter.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
+#include "rogue/Directives.h"
+#include "rogue/utilities/fileio/StreamWriterChannel.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <sys/time.h>
 
 namespace ris = rogue::interfaces::stream;

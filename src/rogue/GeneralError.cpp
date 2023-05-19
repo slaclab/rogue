@@ -17,8 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/GeneralError.h>
+#include "rogue/Directives.h"
+#include "rogue/GeneralError.h"
 #include <stdarg.h>
 
 #ifndef NO_PYTHON

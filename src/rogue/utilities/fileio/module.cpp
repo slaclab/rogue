@@ -20,13 +20,13 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
-#include <rogue/utilities/fileio/StreamReader.h>
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
-#include <rogue/utilities/fileio/StreamWriter.h>
-#include <rogue/utilities/fileio/LegacyStreamWriter.h>
-#include <rogue/utilities/fileio/LegacyStreamReader.h>
-#include <rogue/utilities/fileio/module.h>
+#include "rogue/Directives.h"
+#include "rogue/utilities/fileio/StreamReader.h"
+#include "rogue/utilities/fileio/StreamWriterChannel.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
+#include "rogue/utilities/fileio/LegacyStreamWriter.h"
+#include "rogue/utilities/fileio/LegacyStreamReader.h"
+#include "rogue/utilities/fileio/module.h"
 
 #include <boost/python.hpp>
 

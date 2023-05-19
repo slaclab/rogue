@@ -15,13 +15,13 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
-#include <rogue/interfaces/ZmqClient.h>
-#include <rogue/GeneralError.h>
+#include "rogue/Directives.h"
+#include "rogue/interfaces/ZmqClient.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/ScopedGil.h>
-#include <rogue/GeneralError.h>
+#include "rogue/GilRelease.h"
+#include "rogue/ScopedGil.h"
+#include "rogue/GeneralError.h"
 #include <string>
 #include <zmq.h>
 #include <inttypes.h>

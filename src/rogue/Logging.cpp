@@ -17,8 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/Logging.h>
+#include "rogue/Directives.h"
+#include "rogue/Logging.h"
 #include <memory>
 #include <stdarg.h>
 #include <string.h>

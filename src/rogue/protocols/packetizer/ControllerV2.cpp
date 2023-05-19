@@ -17,15 +17,15 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/protocols/packetizer/ControllerV2.h>
-#include <rogue/protocols/packetizer/Transport.h>
-#include <rogue/protocols/packetizer/Application.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/protocols/packetizer/ControllerV2.h"
+#include "rogue/protocols/packetizer/Transport.h"
+#include "rogue/protocols/packetizer/Application.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <math.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -36,7 +36,7 @@ namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
 // Local CRC library
-#include <rogue/protocols/packetizer/CRC.h>
+#include "rogue/protocols/packetizer/CRC.h"
 
 // CRC Lookup table for later use
 static const CRC::Table<uint32_t, 32> crcTable_(CRC::CRC_32());

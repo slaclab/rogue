@@ -17,16 +17,16 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/protocols/udp/Core.h>
-#include <rogue/protocols/udp/Server.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
+#include "rogue/Directives.h"
+#include "rogue/protocols/udp/Core.h"
+#include "rogue/protocols/udp/Server.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
+#include "rogue/GilRelease.h"
+#include "rogue/Logging.h"
 #include <iostream>
 #include <unistd.h>
 #include <stdlib.h>

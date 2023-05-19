@@ -20,18 +20,18 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <RogueConfig.h>
 
 #include <boost/python.hpp>
 
-#include <rogue/protocols/module.h>
-#include <rogue/protocols/packetizer/module.h>
-#include <rogue/protocols/rssi/module.h>
-#include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/udp/module.h>
-#include <rogue/protocols/batcher/module.h>
-#include <rogue/protocols/xilinx/module.h>
+#include "rogue/protocols/module.h"
+#include "rogue/protocols/packetizer/module.h"
+#include "rogue/protocols/rssi/module.h"
+#include "rogue/protocols/srp/module.h"
+#include "rogue/protocols/udp/module.h"
+#include "rogue/protocols/batcher/module.h"
+#include "rogue/protocols/xilinx/module.h"
 
 namespace bp  = boost::python;
 

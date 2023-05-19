@@ -45,11 +45,11 @@
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/protocols/batcher/CoreV1.h>
-#include <rogue/protocols/batcher/Data.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/protocols/batcher/CoreV1.h"
+#include "rogue/protocols/batcher/Data.h"
+#include "rogue/GeneralError.h"
 #include <math.h>
 #include <inttypes.h>
 

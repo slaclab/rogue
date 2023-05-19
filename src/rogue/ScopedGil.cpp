@@ -17,7 +17,7 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/ScopedGil.h>
+#include "rogue/ScopedGil.h"
 
 rogue::ScopedGil::ScopedGil() {
 #ifndef NO_PYTHON

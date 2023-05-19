@@ -20,14 +20,14 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
-#include <rogue/utilities/module.h>
-#include <rogue/utilities/Prbs.h>
-#include <rogue/utilities/StreamZip.h>
-#include <rogue/utilities/StreamUnZip.h>
-#include <rogue/utilities/fileio/module.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/Directives.h"
+#include "rogue/utilities/module.h"
+#include "rogue/utilities/Prbs.h"
+#include "rogue/utilities/StreamZip.h"
+#include "rogue/utilities/StreamUnZip.h"
+#include "rogue/utilities/fileio/module.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Master.h"
 
 #include <boost/python.hpp>
 

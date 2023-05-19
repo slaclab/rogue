@@ -16,14 +16,14 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/utilities/fileio/LegacyStreamReader.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
-#include <rogue/GilRelease.h>
+#include "rogue/Directives.h"
+#include "rogue/utilities/fileio/LegacyStreamReader.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
+#include "rogue/GilRelease.h"
 #include <stdint.h>
 #include <thread>
 #include <memory>

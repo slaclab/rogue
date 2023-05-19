@@ -19,14 +19,14 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/protocols/srp/Cmd.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/protocols/srp/Cmd.h"
 
 namespace rps = rogue::protocols::srp;
 namespace ris = rogue::interfaces::stream;

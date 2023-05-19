@@ -20,12 +20,12 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <boost/python.hpp>
 
-#include <rogue/protocols/xilinx/module.h>
-#include <rogue/protocols/xilinx/Xvc.h>
-#include <rogue/protocols/xilinx/JtagDriver.h>
+#include "rogue/protocols/xilinx/module.h"
+#include "rogue/protocols/xilinx/Xvc.h"
+#include "rogue/protocols/xilinx/JtagDriver.h"
 
 namespace bp = boost::python;
 namespace rpx = rogue::protocols::xilinx;

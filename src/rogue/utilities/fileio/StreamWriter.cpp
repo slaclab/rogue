@@ -33,17 +33,17 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/utilities/fileio/StreamWriter.h>
-#include <rogue/utilities/fileio/StreamWriterChannel.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
+#include "rogue/Directives.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
+#include "rogue/utilities/fileio/StreamWriterChannel.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/GeneralError.h"
 #include <stdint.h>
 #include <thread>
 #include <memory>
 #include <fcntl.h>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <unistd.h>
 #include <sys/time.h>
 #include <string.h>

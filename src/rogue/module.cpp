@@ -20,17 +20,17 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <boost/python.hpp>
 
-#include <rogue/module.h>
-#include <rogue/interfaces/module.h>
-#include <rogue/hardware/module.h>
-#include <rogue/utilities/module.h>
-#include <rogue/protocols/module.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
-#include <rogue/Version.h>
+#include "rogue/module.h"
+#include "rogue/interfaces/module.h"
+#include "rogue/hardware/module.h"
+#include "rogue/utilities/module.h"
+#include "rogue/protocols/module.h"
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
+#include "rogue/Version.h"
 
 namespace bp  = boost::python;
 

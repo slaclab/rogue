@@ -19,22 +19,22 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/protocols/srp/SrpV3.h>
-#include <rogue/Logging.h>
-#include <rogue/GilRelease.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/protocols/srp/SrpV3.h"
+#include "rogue/Logging.h"
+#include "rogue/GilRelease.h"
 #include <string.h>
 #include <inttypes.h>
 

@@ -19,15 +19,15 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <unistd.h>
 #include <string>
-#include <rogue/interfaces/stream/Pool.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/GeneralError.h>
+#include "rogue/interfaces/stream/Pool.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/GeneralError.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <inttypes.h>
 
 namespace ris = rogue::interfaces::stream;

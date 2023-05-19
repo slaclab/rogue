@@ -14,14 +14,14 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/hardware/axi/AxiMemMap.h>
-#include <rogue/hardware/drivers/AxisDriver.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/GeneralError.h>
-#include <rogue/GilRelease.h>
+#include "rogue/Directives.h"
+#include "rogue/hardware/axi/AxiMemMap.h"
+#include "rogue/hardware/drivers/AxisDriver.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/GeneralError.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 #include <cstring>
 #include <thread>

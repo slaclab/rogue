@@ -17,10 +17,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/GilRelease.h>
+#include "rogue/Directives.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 
 namespace rim = rogue::interfaces::memory;

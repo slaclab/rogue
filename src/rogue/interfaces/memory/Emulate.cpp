@@ -18,12 +18,12 @@
  * ----------------------------------------------------------------------------
 **/
 
-#include <rogue/Directives.h>
-#include <rogue/interfaces/memory/Constants.h>
-#include <rogue/interfaces/memory/Emulate.h>
-#include <rogue/interfaces/memory/Transaction.h>
-#include <rogue/interfaces/memory/TransactionLock.h>
-#include <rogue/GilRelease.h>
+#include "rogue/Directives.h"
+#include "rogue/interfaces/memory/Constants.h"
+#include "rogue/interfaces/memory/Emulate.h"
+#include "rogue/interfaces/memory/Transaction.h"
+#include "rogue/interfaces/memory/TransactionLock.h"
+#include "rogue/GilRelease.h"
 #include <memory>
 #include <string.h>
 #include <inttypes.h>

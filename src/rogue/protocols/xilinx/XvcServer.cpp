@@ -14,8 +14,8 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
-#include <rogue/protocols/xilinx/XvcServer.h>
-#include <rogue/protocols/xilinx/XvcConnection.h>
+#include "rogue/protocols/xilinx/XvcServer.h"
+#include "rogue/protocols/xilinx/XvcConnection.h"
 
 #include <sys/socket.h>
 #include <sys/select.h>

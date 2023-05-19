@@ -15,20 +15,20 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <stdint.h>
 #include <thread>
 #include <memory>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
-#include <rogue/protocols/batcher/SplitterV1.h>
-#include <rogue/protocols/batcher/CoreV1.h>
-#include <rogue/protocols/batcher/Data.h>
-#include <rogue/Logging.h>
-#include <rogue/GilRelease.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
+#include "rogue/protocols/batcher/SplitterV1.h"
+#include "rogue/protocols/batcher/CoreV1.h"
+#include "rogue/protocols/batcher/Data.h"
+#include "rogue/Logging.h"
+#include "rogue/GilRelease.h"
 #include <math.h>
 
 namespace rpb = rogue::protocols::batcher;

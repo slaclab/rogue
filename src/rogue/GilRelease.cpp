@@ -17,9 +17,9 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #include <stdint.h>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

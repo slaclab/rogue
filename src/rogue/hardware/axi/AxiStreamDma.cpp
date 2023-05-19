@@ -17,16 +17,16 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
 **/
-#include <rogue/Directives.h>
-#include <rogue/hardware/axi/AxiStreamDma.h>
-#include <rogue/hardware/drivers/AxisDriver.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/FrameLock.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Helpers.h>
+#include "rogue/Directives.h"
+#include "rogue/hardware/axi/AxiStreamDma.h"
+#include "rogue/hardware/drivers/AxisDriver.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/interfaces/stream/FrameLock.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/GeneralError.h"
+#include "rogue/Helpers.h"
 #include <memory>
-#include <rogue/GilRelease.h>
+#include "rogue/GilRelease.h"
 #include <stdlib.h>
 #include <inttypes.h>
 
