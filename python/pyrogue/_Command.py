@@ -61,6 +61,7 @@ class BaseCommand(pr.BaseVariable):
         self._thread = None
         self._lock = threading.Lock()
         self._background = background
+        self._retDisp = "{}"
 
         if self._background:
             self._log.error('Background commands are deprecated. Please use a Process device instead.')
@@ -158,6 +159,22 @@ class BaseCommand(pr.BaseVariable):
 
         """
         return self.__call__(arg)
+
+    @pr.expose
+    def callDisp(self,arg=None):
+        """
+
+
+        Parameters
+        ----------
+        arg : str
+             (Default value = None)
+
+        Returns
+        -------
+
+        """
+        return self.genDisp(self.__call__(arg),useDisp=self._retDisp)
 
     @staticmethod
     def nothing():

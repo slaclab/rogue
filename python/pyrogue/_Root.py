@@ -499,130 +499,8 @@ class Root(pr.Device):
         with self._varListenLock:
             self._varListeners.append((func,done,incGroups,excGroups))
 
-    @pr.expose
-    def get(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.get()
-
-    @pr.expose
-    def getDisp(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.getDisp()
-
-    @pr.expose
-    def value(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.value()
-
-    @pr.expose
-    def valueDisp(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.valueDisp()
-
-    @pr.expose
-    def set(self,path,value):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        value :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.set(value)
-
-    @pr.expose
-    def setDisp(self,path,value):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        value :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.setDisp(value)
-
-    @pr.expose
-    def exec(self,path,arg):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        arg :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj(arg)
+    def _addVarListenerCpp(self, func, done):
+        self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager
     def updateGroup(self, period=0):
@@ -853,7 +731,6 @@ class Root(pr.Device):
                     f.write("{}\t".format(v.pollInterval))
                     f.write("{}\t".format(v.groups))
                     f.write("{}\n".format(v.description))
-
 
     def _hbeatWorker(self):
         """

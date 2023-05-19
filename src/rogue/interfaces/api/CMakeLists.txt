@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : src/rogue/interfaces/CMakeLists.txt
-# Created    : 2018-02-27
+# File       : src/rogue/interfaces/api/CMakeLists.txt
+# Created    : 2023-04-17
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -13,13 +13,4 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-add_subdirectory("memory")
-add_subdirectory("stream")
-
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqServer.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/ZmqClient.cpp")
-
-if (NOT NO_PYTHON)
-   target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
-   add_subdirectory("api")
-endif()
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Bsp.cpp")

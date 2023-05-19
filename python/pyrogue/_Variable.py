@@ -255,6 +255,11 @@ class BaseVariable(pr.Node):
         """ """
         return self._enum
 
+    @property
+    def enumYaml(self):
+        """ """
+        return pr.dataToYaml(self._enum)
+
     @pr.expose
     @property
     def revEnum(self):
@@ -459,6 +464,9 @@ class BaseVariable(pr.Node):
             if listener not in self.__functions:
                 self.__functions.append(listener)
 
+    def _addListenerCpp(self, func):
+        self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
+
     def delListener(self, listener):
         """
         Remove a listener Variable or function
@@ -595,7 +603,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value):
+    def genDisp(self, value, *, useDisp=None):
         """
 
 
@@ -610,24 +618,27 @@ class BaseVariable(pr.Node):
         """
         try:
 
-            if self.disp == '':
+            if useDisp is None:
+                useDisp=self.disp
+
+            if useDisp == '':
                 return ''
 
-            if isinstance(value,np.ndarray):
+            elif isinstance(value,np.ndarray):
                 return np.array2string(value,
                                        separator=', ',
-                                       formatter={'all':self.disp.format},
+                                       formatter={'all':useDisp.format},
                                        threshold=sys.maxsize,
                                        max_line_width=1000)
 
-            elif self.disp == 'enum':
+            elif useDisp == 'enum':
                 if value in self.enum:
                     return self.enum[value]
                 else:
                     self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
                     return f'INVALID: {value}'
             else:
-                return self.disp.format(value)
+                return useDisp.format(value)
 
         except Exception as e:
             pr.logException(self._log,e)
