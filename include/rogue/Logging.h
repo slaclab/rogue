@@ -19,6 +19,8 @@
  **/
 #ifndef __ROGUE_LOGGING_H__
 #define __ROGUE_LOGGING_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <exception>
@@ -27,8 +29,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
-#include <rogue/Directives.h>
 
 namespace rogue {
 

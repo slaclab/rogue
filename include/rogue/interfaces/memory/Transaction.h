@@ -19,6 +19,8 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <condition_variable>
@@ -27,7 +29,6 @@
 #include <mutex>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/EnableSharedFromThis.h>
 #include <rogue/Logging.h>
 

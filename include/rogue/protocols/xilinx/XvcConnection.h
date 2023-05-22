@@ -16,10 +16,11 @@
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
+#include <rogue/Directives.h>
+
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-#include <rogue/Directives.h>
 #include <rogue/GeneralError.h>
 #include <rogue/protocols/xilinx/JtagDriver.h>
 

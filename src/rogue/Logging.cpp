@@ -17,6 +17,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/Logging.h"
 
 #include <inttypes.h>
@@ -27,8 +29,6 @@
 #include <unistd.h>
 
 #include <memory>
-
-#include "rogue/Directives.h"
 
 #if defined(__linux__)
 #include <sys/syscall.h>

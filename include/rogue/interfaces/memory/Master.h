@@ -20,6 +20,8 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_MASTER_H__
 #define __ROGUE_INTERFACES_MEMORY_MASTER_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <map>
@@ -27,7 +29,6 @@
 #include <thread>
 #include <vector>
 
-#include <rogue/Directives.h>
 #include <rogue/Logging.h>
 
 #ifndef NO_PYTHON

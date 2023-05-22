@@ -17,6 +17,9 @@ AccessModifierOffset: -2
 SortIncludes: true
 IncludeBlocks: Regroup
 IncludeCategories:
+    # Rogue Directives.h goes first
+  - Regex:           '^((<|")(rogue)/(Directives.h))'
+    Priority:        -1
     # Rogue headers go last
   - Regex:           '^((<|")(rogue)/)'
     Priority:        5

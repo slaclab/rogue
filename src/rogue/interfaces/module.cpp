@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/interfaces/ZmqClient.h"
 #include "rogue/interfaces/ZmqServer.h"
 #include "rogue/interfaces/memory/module.h"

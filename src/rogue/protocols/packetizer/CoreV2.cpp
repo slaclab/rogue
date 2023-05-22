@@ -17,11 +17,12 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/packetizer/CoreV2.h"
 
 #include <memory>
 
-#include "rogue/Directives.h"
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/protocols/packetizer/Application.h"

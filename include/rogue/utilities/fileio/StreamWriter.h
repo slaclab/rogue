@@ -30,6 +30,8 @@
  **/
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <condition_variable>
@@ -38,7 +40,6 @@
 #include <mutex>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/EnableSharedFromThis.h>
 #include <rogue/Logging.h>
 #include <rogue/interfaces/stream/Frame.h>

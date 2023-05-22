@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/interfaces/stream/Fifo.h"
 #include "rogue/interfaces/stream/Filter.h"
 #include "rogue/interfaces/stream/Frame.h"

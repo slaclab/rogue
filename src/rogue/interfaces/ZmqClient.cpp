@@ -15,6 +15,8 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/ZmqClient.h"
 
 #include <inttypes.h>
@@ -23,7 +25,6 @@
 #include <memory>
 #include <string>
 
-#include "rogue/Directives.h"
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/ScopedGil.h"

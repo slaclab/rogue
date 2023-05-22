@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/srp/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/protocols/srp/Cmd.h"
 #include "rogue/protocols/srp/SrpV0.h"
 #include "rogue/protocols/srp/SrpV3.h"

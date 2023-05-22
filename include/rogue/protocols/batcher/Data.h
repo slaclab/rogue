@@ -20,12 +20,13 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_BATCHER_DATA_H__
 #define __ROGUE_PROTOCOLS_BATCHER_DATA_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/interfaces/stream/Frame.h>
 #include <rogue/interfaces/stream/FrameIterator.h>
 

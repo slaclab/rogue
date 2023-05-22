@@ -19,13 +19,13 @@
  **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <cstring>
 #include <memory>
 #include <vector>
-
-#include <rogue/Directives.h>
 
 namespace rogue {
 namespace interfaces {

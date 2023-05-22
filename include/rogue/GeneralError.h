@@ -19,13 +19,13 @@
  **/
 #ifndef __ROGUE_GENERAL_ERROR_H__
 #define __ROGUE_GENERAL_ERROR_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <exception>
 #include <memory>
 #include <string>
-
-#include <rogue/Directives.h>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

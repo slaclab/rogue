@@ -18,6 +18,8 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/memory/Emulate.h"
 
 #include <inttypes.h>
@@ -25,7 +27,6 @@
 
 #include <memory>
 
-#include "rogue/Directives.h"
 #include "rogue/GilRelease.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Transaction.h"

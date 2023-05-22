@@ -17,12 +17,13 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/udp/Core.h"
 
 #include <inttypes.h>
 #include <unistd.h>
 
-#include "rogue/Directives.h"
 #include "rogue/GeneralError.h"
 #include "rogue/Helpers.h"
 #include "rogue/Logging.h"

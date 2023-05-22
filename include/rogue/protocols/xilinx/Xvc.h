@@ -16,6 +16,8 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_H__
+#include <rogue/Directives.h>
+
 #include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
@@ -25,7 +27,6 @@
 #include <memory>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/GeneralError.h>
 #include <rogue/Logging.h>
 #include <rogue/Queue.h>

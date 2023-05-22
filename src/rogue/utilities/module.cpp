@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/utilities/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/interfaces/stream/Master.h"
 #include "rogue/interfaces/stream/Slave.h"
 #include "rogue/utilities/Prbs.h"

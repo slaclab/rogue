@@ -19,13 +19,14 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_SLAVE_H__
 #define __ROGUE_INTERFACES_MEMORY_SLAVE_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <map>
 #include <memory>
 #include <vector>
 
-#include <rogue/Directives.h>
 #include <rogue/EnableSharedFromThis.h>
 #include <rogue/interfaces/memory/Master.h>
 #include <rogue/interfaces/memory/Transaction.h>

@@ -20,13 +20,14 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/batcher/module.h"
 
 #include <RogueConfig.h>
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/protocols/batcher/CoreV1.h"
 #include "rogue/protocols/batcher/Data.h"
 #include "rogue/protocols/batcher/InverterV1.h"

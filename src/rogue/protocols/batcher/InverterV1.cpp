@@ -15,6 +15,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/batcher/InverterV1.h"
 
 #include <math.h>
@@ -23,7 +25,6 @@
 #include <memory>
 #include <thread>
 
-#include "rogue/Directives.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"

@@ -19,13 +19,13 @@
  **/
 #ifndef __ROGUE_QUEUE_H__
 #define __ROGUE_QUEUE_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <condition_variable>
 #include <mutex>
 #include <queue>
-
-#include <rogue/Directives.h>
 
 namespace rogue {
 template <typename T>

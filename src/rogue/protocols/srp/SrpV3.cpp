@@ -19,6 +19,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/srp/SrpV3.h"
 
 #include <inttypes.h>
@@ -28,7 +30,6 @@
 #include <memory>
 #include <thread>
 
-#include "rogue/Directives.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"
 #include "rogue/interfaces/memory/Constants.h"

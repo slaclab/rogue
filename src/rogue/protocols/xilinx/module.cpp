@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/xilinx/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/protocols/xilinx/JtagDriver.h"
 #include "rogue/protocols/xilinx/Xvc.h"
 

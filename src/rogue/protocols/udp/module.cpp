@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/udp/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/protocols/udp/Client.h"
 #include "rogue/protocols/udp/Core.h"
 #include "rogue/protocols/udp/Server.h"

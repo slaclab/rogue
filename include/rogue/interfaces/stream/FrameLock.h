@@ -19,12 +19,12 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
-
-#include <rogue/Directives.h>
 
 namespace rogue {
 namespace interfaces {

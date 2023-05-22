@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/packetizer/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/protocols/packetizer/Application.h"
 #include "rogue/protocols/packetizer/Core.h"
 #include "rogue/protocols/packetizer/CoreV2.h"

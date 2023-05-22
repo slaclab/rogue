@@ -20,9 +20,10 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/Version.h"
 #include "rogue/module.h"
 

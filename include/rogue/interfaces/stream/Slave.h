@@ -20,12 +20,13 @@
  **/
 #ifndef __ROGUE_INTERFACES_STREAM_SLAVE_H__
 #define __ROGUE_INTERFACES_STREAM_SLAVE_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/EnableSharedFromThis.h>
 #include <rogue/Logging.h>
 #include <rogue/interfaces/stream/Pool.h>

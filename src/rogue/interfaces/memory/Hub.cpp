@@ -21,6 +21,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/memory/Hub.h"
 
 #include <inttypes.h>
@@ -28,7 +30,6 @@
 #include <cmath>
 #include <memory>
 
-#include "rogue/Directives.h"
 #include "rogue/GilRelease.h"
 #include "rogue/ScopedGil.h"
 #include "rogue/interfaces/memory/Transaction.h"

@@ -18,13 +18,14 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_BLOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_BLOCK_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 #include <vector>
 
-#include <rogue/Directives.h>
 #include <rogue/interfaces/memory/Master.h>
 
 #ifndef NO_PYTHON

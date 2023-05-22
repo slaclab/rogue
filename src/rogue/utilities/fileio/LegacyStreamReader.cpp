@@ -16,6 +16,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/utilities/fileio/LegacyStreamReader.h"
 
 #include <fcntl.h>
@@ -28,7 +30,6 @@
 #include <memory>
 #include <thread>
 
-#include "rogue/Directives.h"
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/Logging.h"

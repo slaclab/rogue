@@ -18,6 +18,8 @@
  **/
 #ifndef __ROGUE_LIBRARY_BASE_H__
 #define __ROGUE_LIBRARY_BASE_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <fstream>
@@ -28,7 +30,6 @@
 #include <string>
 #include <vector>
 
-#include <rogue/Directives.h>
 #include <rogue/Logging.h>
 #include <rogue/interfaces/memory/Block.h>
 #include <rogue/interfaces/memory/Slave.h>

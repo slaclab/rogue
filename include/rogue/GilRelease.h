@@ -19,9 +19,9 @@
  **/
 #ifndef __ROGUE_GIL_RELEASE_H__
 #define __ROGUE_GIL_RELEASE_H__
-#include <stdint.h>
-
 #include <rogue/Directives.h>
+
+#include <stdint.h>
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
 #endif

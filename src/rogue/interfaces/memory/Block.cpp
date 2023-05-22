@@ -17,6 +17,8 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/memory/Block.h"
 
 #include <inttypes.h>
@@ -29,7 +31,6 @@
 #include <memory>
 #include <sstream>
 
-#include "rogue/Directives.h"
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
 #include "rogue/ScopedGil.h"

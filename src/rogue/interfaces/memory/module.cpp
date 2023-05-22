@@ -18,11 +18,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/memory/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/interfaces/memory/Block.h"
 #include "rogue/interfaces/memory/Constants.h"
 #include "rogue/interfaces/memory/Emulate.h"

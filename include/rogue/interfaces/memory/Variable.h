@@ -18,6 +18,8 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
 #define __ROGUE_INTERFACES_MEMORY_VARIABLE_H__
+#include <rogue/Directives.h>
+
 #include <inttypes.h>
 #include <stdint.h>
 
@@ -26,7 +28,6 @@
 #include <thread>
 #include <vector>
 
-#include <rogue/Directives.h>
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON

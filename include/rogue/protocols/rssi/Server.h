@@ -16,12 +16,12 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
-
-#include <rogue/Directives.h>
 
 namespace rogue {
 namespace protocols {

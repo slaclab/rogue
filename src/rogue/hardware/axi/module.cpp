@@ -18,11 +18,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/hardware/axi/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/hardware/axi/AxiMemMap.h"
 #include "rogue/hardware/axi/AxiStreamDma.h"
 

@@ -20,11 +20,12 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/rssi/module.h"
 
 #include <boost/python.hpp>
 
-#include "rogue/Directives.h"
 #include "rogue/protocols/rssi/Application.h"
 #include "rogue/protocols/rssi/Client.h"
 #include "rogue/protocols/rssi/Server.h"

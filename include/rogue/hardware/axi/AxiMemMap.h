@@ -16,13 +16,14 @@
  **/
 #ifndef __ROGUE_HARDWARE_AXI_MEM_MAP_H__
 #define __ROGUE_HARDWARE_AXI_MEM_MAP_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <mutex>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/Logging.h>
 #include <rogue/Queue.h>
 #include <rogue/interfaces/memory/Slave.h>

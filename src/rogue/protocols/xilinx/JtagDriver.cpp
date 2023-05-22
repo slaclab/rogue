@@ -14,6 +14,8 @@
 // the terms contained in the LICENSE.txt file.
 //-----------------------------------------------------------------------------
 
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/xilinx/JtagDriver.h"
 
 #include <arpa/inet.h>
@@ -24,8 +26,6 @@
 #include <sys/socket.h>
 
 #include <string>
-
-#include "rogue/Directives.h"
 
 namespace rpx = rogue::protocols::xilinx;
 

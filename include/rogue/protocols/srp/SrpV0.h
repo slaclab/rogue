@@ -16,12 +16,13 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_SRP_SRPV0_H__
 #define __ROGUE_PROTOCOLS_SRP_SRPV0_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/Logging.h>
 #include <rogue/interfaces/memory/Slave.h>
 #include <rogue/interfaces/stream/Master.h>

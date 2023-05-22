@@ -18,12 +18,13 @@
  **/
 #ifndef __ROGUE_UTILITIES_STREAM_ZIP_H__
 #define __ROGUE_UTILITIES_STREAM_ZIP_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/Directives.h>
 #include <rogue/interfaces/stream/Master.h>
 #include <rogue/interfaces/stream/Slave.h>
 namespace rogue {

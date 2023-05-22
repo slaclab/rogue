@@ -17,11 +17,12 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/interfaces/memory/TransactionLock.h"
 
 #include <memory>
 
-#include "rogue/Directives.h"
 #include "rogue/GilRelease.h"
 #include "rogue/interfaces/memory/Transaction.h"
 

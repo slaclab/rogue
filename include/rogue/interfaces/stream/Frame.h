@@ -21,6 +21,8 @@
  **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_H__
+#include <rogue/Directives.h>
+
 #include <stdint.h>
 
 #include <memory>
@@ -28,7 +30,6 @@
 #include <thread>
 #include <vector>
 
-#include <rogue/Directives.h>
 #include <rogue/EnableSharedFromThis.h>
 
 #ifndef NO_PYTHON

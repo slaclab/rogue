@@ -19,6 +19,8 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
+#include "rogue/Directives.h"
+
 #include "rogue/protocols/srp/Cmd.h"
 
 #include <stdint.h>
@@ -26,7 +28,6 @@
 #include <memory>
 #include <thread>
 
-#include "rogue/Directives.h"
 #include "rogue/interfaces/stream/Frame.h"
 #include "rogue/interfaces/stream/FrameIterator.h"
 #include "rogue/interfaces/stream/Master.h"
