@@ -54,7 +54,7 @@ jobs:
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=system
-          make -j4 install
+          make -j4 install DESTDIR=/usr/
 
       # Run Tests
       - name: Rogue Tests
