@@ -49,7 +49,7 @@ int main (int argc, char **argv) {
    bsp["ReadAll"]();
 
    Py_BEGIN_ALLOW_THREADS;
-   sleep(60);
+   sleep(20);
    Py_END_ALLOW_THREADS;
 }
 

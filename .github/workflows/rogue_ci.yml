@@ -53,14 +53,22 @@ jobs:
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local
+          cmake .. -DROGUE_INSTALL=system
           make -j4 install
 
       # Run Tests
       - name: Rogue Tests
         run: |
-          source setup_rogue.sh
           python -m pytest --cov
+
+      # Compile And Run API Test
+      - name: Compile And Run API Test
+        run: |
+          cd tests/api_test
+          mkdir build; cd build
+          cmake ..
+          cd ../bin
+          ./api_test
 
       # Code Coverage
       - name: Code Coverage
