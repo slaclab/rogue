@@ -69,6 +69,7 @@ jobs:
           cd tests/api_test
           mkdir build; cd build
           cmake ..
+          make
           cd ../bin
           ./api_test
 
