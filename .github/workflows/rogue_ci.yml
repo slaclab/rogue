@@ -53,7 +53,7 @@ jobs:
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=system -DROGUE_DIR=/usr/
+          cmake .. -DROGUE_INSTALL=local
           make -j4 install
 
       # Run Tests
