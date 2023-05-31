@@ -57,7 +57,7 @@ with pyrogue.examples.ExampleRoot(epics4En=args.epics4) as root:
     if args.gui:
         import pyrogue.pydm
         ui = pyrogue.pydm.__path__[0] + '/examples/rogue_plugin_test.ui'
-        pyrogue.pydm.runPyDM(root=root,ui=ui,title='Test UI',sizeX=1000,sizeY=500)
+        pyrogue.pydm.runPyDM(serverList=root.zmqServer.address,ui=ui,title='Test UI',sizeX=1000,sizeY=500)
 
     else:
         pyrogue.waitCntrlC()

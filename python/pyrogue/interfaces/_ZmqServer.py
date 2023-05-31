@@ -23,6 +23,10 @@ class ZmqServer(rogue.interfaces.ZmqServer):
         self._root.addVarListener(func=self._varUpdate, done=self._varDone, incGroups=incGroups, excGroups=excGroups)
         self._updateList = {}
 
+    @property
+    def address(self):
+        return f"localhost:{self.port()}"
+
     def _doOperation(self,d):
         path    = d['path']   if 'path'   in d else None
         attr    = d['attr']   if 'attr'   in d else None
