@@ -55,9 +55,7 @@ ria::Bsp::Bsp(std::string modName, std::string rootClass) {
 }
 
 ria::Bsp::~Bsp() {
-    if (this->_isRoot) {
-        this->_obj.attr("stop")();
-    }
+    if (this->_isRoot) { this->_obj.attr("stop")(); }
 }
 
 void ria::Bsp::addVarListener(void (*func)(std::string, std::string), void (*done)()) {
@@ -111,18 +109,14 @@ std::shared_ptr<rogue::interfaces::api::Bsp> ria::Bsp::getNode(std::string name)
 std::string ria::Bsp::operator()(std::string arg) {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")(arg))));
-    } catch (...) {
-        throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
-    }
+    } catch (...) { throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str())); }
 }
 
 //! Execute command operator without arg
 std::string ria::Bsp::operator()() {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")())));
-    } catch (...) {
-        throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
-    }
+    } catch (...) { throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str())); }
 }
 
 //! Execute command

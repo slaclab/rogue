@@ -213,9 +213,7 @@ void rogue::LibraryBase::createVariable(std::map<std::string, std::string>& data
 // Read all variables
 void rogue::LibraryBase::readAll() {
     std::map<std::string, rim::VariablePtr>::iterator it;
-    for (it = variables_.begin(); it != variables_.end(); ++it) {
-        it->second->read();
-    }
+    for (it = variables_.begin(); it != variables_.end(); ++it) { it->second->read(); }
 }
 
 //! Helper function to get string from fields
@@ -347,9 +345,7 @@ void rogue::LibraryBase::dumpRegisterStatus(std::string filename, bool read, boo
     myfile.open(filename);
 
     for (it = variables_.begin(); it != variables_.end(); ++it) {
-        if (includeStatus || it->second->mode() != "RO") {
-            myfile << it->second->getDumpValue(read);
-        }
+        if (includeStatus || it->second->mode() != "RO") { myfile << it->second->getDumpValue(read); }
     }
     myfile.close();
 }
