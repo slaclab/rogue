@@ -184,12 +184,8 @@ class Root(pr.Device):
                  pollEn=True,
                  maxLog=1000,
                  # Deprecated
-                 serverPort=None,  # 9099 is the default, 0 for auto
-                 sqlUrl=None,
-                 streamIncGroups=None,
-                 streamExcGroups=['NoStream'],
-                 sqlIncGroups=None,
-                 sqlExcGroups=['NoSql']):
+                 serverPort=None):
+
         """Init the node with passed attributes"""
         rogue.interfaces.stream.Master.__init__(self)
 
@@ -203,13 +199,6 @@ class Root(pr.Device):
 
         # Deprecated
         self._serverPort      = serverPort
-        self._sqlUrl          = sqlUrl
-        self._sqlIncGroups    = sqlIncGroups
-        self._sqlExcGroups    = sqlExcGroups
-        self._streamIncGroups = streamIncGroups
-        self._streamExcGroups = streamExcGroups
-        self._streamMaster    = None
-
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
@@ -421,19 +410,6 @@ class Root(pr.Device):
             print("       r.addInterface(pyrogue.interfaces.ZmqServer(root=r, addr='*', port=0)) ")
             print("==============================================================================")
             self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort))
-
-        # Start sql interface
-        if self._sqlUrl is not None:
-            print("========== Deprecation Warning =========================================")
-            print(" Setting up sql logger through the Root class creator is                ")
-            print(" no longer supported. Instead create the SqlLogger seperately           ")
-            print(" add add it as an interface:                                            ")
-            print("                                                                        ")
-            print("    with Root() as r:                                                   ")
-            print("       r.addInterface(pyrogue.interfaces.SqlLogger(root=r, url=sqlUrl)) ")
-            print("========================================================================")
-            self.addProtocol(pr.interfaces.SqlLogger(root=self, url=self._sqlUrl, incGroups=self._sqlIncGroups, excGroups=self._sqlExcGroups))
-
         # Start update thread
         self._running = True
         self._updateThread = threading.Thread(target=self._updateWorker)
@@ -1106,29 +1082,3 @@ class Root(pr.Device):
             # Set done
             self._updateQueue.task_done()
 
-    # Deprecated
-    def _getStreamMaster(self):
-        if self._streamMaster is None:
-            print("========== Deprecation Warning =============================== ")
-            print(" Setting up variable streaming directly through the root class ")
-            print(" is no longer supported. Instead create a VariableStram        ")
-            print(" object seperately and add it as an interface:                 ")
-            print("                                                               ")
-            print("    with Root() as r:                                          ")
-            print("       stream = pyrogue.interfaces.stream.Variable(root=r)     ")
-            print("       r.addInterface(stream)                                  ")
-            print("                                                               ")
-            print(" You can then connect stream slaves to the newly created       ")
-            print(" VariableStream instance:                                      ")
-            print("                                                               ")
-            print("    slave << stream                                            ")
-            print("===============================================================")
-            self._streamMaster = pr.interfaces.stream.Variable(root=self, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
-            self.addInterface(self._streamMaster)
-
-        return self._streamMaster
-
-    # Deprecated support
-    def __rshift__(self,other):
-        pr.streamConnect(self,other)
-        return other
