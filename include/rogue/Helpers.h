@@ -19,7 +19,7 @@
  **/
 #ifndef __ROGUE_HELPERS_H__
 #define __ROGUE_HELPERS_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 // Connect stream
 #define rogueStreamConnect(src, dst) src->addSlave(dst);

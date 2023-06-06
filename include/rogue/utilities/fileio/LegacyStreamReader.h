@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_READER_H__
 #define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_READER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
@@ -25,7 +25,7 @@
 #include <memory>
 #include <thread>
 
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/interfaces/stream/Master.h"
 
 namespace rogue {
 namespace utilities {

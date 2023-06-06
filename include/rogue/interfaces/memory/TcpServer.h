@@ -19,15 +19,15 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TCP_SERVER_H__
 #define __ROGUE_INTERFACES_MEMORY_TCP_SERVER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/Logging.h>
-#include <rogue/interfaces/memory/Master.h>
+#include "rogue/Logging.h"
+#include "rogue/interfaces/memory/Master.h"
 
 namespace rogue {
 namespace interfaces {

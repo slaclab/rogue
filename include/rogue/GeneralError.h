@@ -19,7 +19,7 @@
  **/
 #ifndef __ROGUE_GENERAL_ERROR_H__
 #define __ROGUE_GENERAL_ERROR_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 

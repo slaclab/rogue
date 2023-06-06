@@ -16,12 +16,12 @@
  **/
 #ifndef __ROGUE_ZMQ_SERVER_H__
 #define __ROGUE_ZMQ_SERVER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <memory>
 #include <thread>
 
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

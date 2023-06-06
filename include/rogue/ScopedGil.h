@@ -20,7 +20,7 @@
 #ifndef __ROGUE_SCOPED_GIL_H__
 #define __ROGUE_SCOPED_GIL_H__
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
 #endif

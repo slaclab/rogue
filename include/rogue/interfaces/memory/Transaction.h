@@ -19,7 +19,7 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
 #define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
@@ -29,8 +29,8 @@
 #include <mutex>
 #include <thread>
 
-#include <rogue/EnableSharedFromThis.h>
-#include <rogue/Logging.h>
+#include "rogue/EnableSharedFromThis.h"
+#include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

@@ -18,7 +18,7 @@
  **/
 #ifndef __ROGUE_LIBRARY_BASE_H__
 #define __ROGUE_LIBRARY_BASE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
@@ -30,12 +30,12 @@
 #include <string>
 #include <vector>
 
-#include <rogue/Logging.h>
-#include <rogue/interfaces/memory/Block.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Variable.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/Logging.h"
+#include "rogue/interfaces/memory/Block.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Variable.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
 

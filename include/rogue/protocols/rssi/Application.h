@@ -16,14 +16,14 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_APPLICATION_H__
 #define __ROGUE_PROTOCOLS_RSSI_APPLICATION_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
 #include <memory>
 
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
 namespace protocols {

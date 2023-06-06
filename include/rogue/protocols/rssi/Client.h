@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
 #define __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 

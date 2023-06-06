@@ -19,15 +19,15 @@
  **/
 #ifndef __ROGUE_INTERFACES_STREAM_POOL_H__
 #define __ROGUE_INTERFACES_STREAM_POOL_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/EnableSharedFromThis.h>
-#include <rogue/Queue.h>
+#include "rogue/EnableSharedFromThis.h"
+#include "rogue/Queue.h"
 
 namespace rogue {
 namespace interfaces {

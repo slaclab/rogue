@@ -19,7 +19,7 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 

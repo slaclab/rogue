@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_HARDWARE_MEM_MAP_H__
 #define __ROGUE_HARDWARE_MEM_MAP_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
@@ -24,10 +24,10 @@
 #include <mutex>
 #include <thread>
 
-#include <rogue/Logging.h>
-#include <rogue/Queue.h>
-#include <rogue/interfaces/memory/Slave.h>
-#include <rogue/interfaces/memory/Transaction.h>
+#include "rogue/Logging.h"
+#include "rogue/Queue.h"
+#include "rogue/interfaces/memory/Slave.h"
+#include "rogue/interfaces/memory/Transaction.h"
 
 #define MAP_DEVICE "/dev/mem"
 

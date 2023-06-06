@@ -22,15 +22,15 @@
  **/
 #ifndef __ROGUE_INTERFACES_MEMORY_HUB_H__
 #define __ROGUE_INTERFACES_MEMORY_HUB_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
 #include <thread>
 
-#include <rogue/Logging.h>
-#include <rogue/interfaces/memory/Master.h>
-#include <rogue/interfaces/memory/Slave.h>
+#include "rogue/Logging.h"
+#include "rogue/interfaces/memory/Master.h"
+#include "rogue/interfaces/memory/Slave.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

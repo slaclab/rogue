@@ -16,14 +16,14 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_SRP_CMD_H__
 #define __ROGUE_PROTOCOLS_SRP_CMD_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
 #include <memory>
 #include <thread>
 
-#include <rogue/interfaces/stream/Master.h>
+#include "rogue/interfaces/stream/Master.h"
 
 namespace rogue {
 namespace protocols {

@@ -19,7 +19,7 @@
  **/
 #ifndef __ROGUE_HARDWARE_AXI_MODULE_H__
 #define __ROGUE_HARDWARE_AXI_MODULE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 namespace rogue {
 namespace hardware {

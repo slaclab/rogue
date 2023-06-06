@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_UDP_CORE_H__
 #define __ROGUE_PROTOCOLS_UDP_CORE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <netdb.h>
 #include <netinet/in.h>
@@ -26,7 +26,7 @@
 
 #include <memory>
 
-#include <rogue/Logging.h>
+#include "rogue/Logging.h"
 
 namespace rogue {
 namespace protocols {

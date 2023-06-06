@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_UDP_CLIENT_H__
 #define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <netdb.h>
 #include <netinet/in.h>
@@ -27,10 +27,10 @@
 #include <memory>
 #include <thread>
 
-#include <rogue/Logging.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/protocols/udp/Core.h>
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/protocols/udp/Core.h"
 
 namespace rogue {
 namespace protocols {

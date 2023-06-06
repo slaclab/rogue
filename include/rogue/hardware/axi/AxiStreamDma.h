@@ -13,7 +13,7 @@
  **/
 #ifndef __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
 #define __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
@@ -21,9 +21,9 @@
 #include <memory>
 #include <thread>
 
-#include <rogue/Logging.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
 namespace hardware {

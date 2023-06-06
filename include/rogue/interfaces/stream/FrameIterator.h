@@ -19,7 +19,7 @@
  **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_ITERATOR_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 

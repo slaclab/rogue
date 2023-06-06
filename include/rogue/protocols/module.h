@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_MODULE_H__
 #define __ROGUE_PROTOCOLS_MODULE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 namespace rogue {
 namespace protocols {

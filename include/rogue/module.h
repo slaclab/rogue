@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_MODULE_H__
 #define __ROGUE_MODULE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 namespace rogue {
 void setup_module();

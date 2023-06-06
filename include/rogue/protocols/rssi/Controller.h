@@ -19,18 +19,18 @@
  **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
 #define __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
 #include <map>
 #include <memory>
 
-#include <rogue/EnableSharedFromThis.h>
-#include <rogue/Logging.h>
-#include <rogue/Queue.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/EnableSharedFromThis.h"
+#include "rogue/Logging.h"
+#include "rogue/Queue.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
 namespace protocols {

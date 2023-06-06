@@ -16,11 +16,11 @@
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
-#include <rogue/protocols/xilinx/JtagDriver.h>
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
+#include "rogue/protocols/xilinx/JtagDriver.h"
 
 namespace rogue {
 namespace protocols {

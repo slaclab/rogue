@@ -22,7 +22,7 @@
  **/
 #ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
 #define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 
@@ -30,8 +30,8 @@
 #include <memory>
 #include <thread>
 
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/utilities/fileio/StreamWriter.h>
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/utilities/fileio/StreamWriter.h"
 
 namespace rogue {
 namespace utilities {

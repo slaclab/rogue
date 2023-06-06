@@ -17,7 +17,7 @@
 #ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <errno.h>
 #include <inttypes.h>
@@ -31,8 +31,8 @@
 #include <stdexcept>
 #include <vector>
 
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
 
 using std::vector;
 

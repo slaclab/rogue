@@ -21,7 +21,7 @@
  **/
 #ifndef __ROGUE_ENABLE_SHARED_FROM_THIS_H__
 #define __ROGUE_ENABLE_SHARED_FROM_THIS_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <memory>
 

@@ -20,7 +20,7 @@
  **/
 #ifndef __ROGUE_INTERFACES_STREAM_MASTER_H__
 #define __ROGUE_INTERFACES_STREAM_MASTER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -31,7 +31,7 @@
 #include <thread>
 #include <vector>
 
-#include <rogue/EnableSharedFromThis.h>
+#include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>

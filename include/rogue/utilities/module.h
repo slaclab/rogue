@@ -16,7 +16,7 @@
  **/
 #ifndef __ROGUE_UTILITIES_FILEIO_MODULE_H__
 #define __ROGUE_UTILITIES_FILEIO_MODULE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 namespace rogue {
 namespace utilities {
