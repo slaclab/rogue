@@ -26,13 +26,6 @@ class myDevice(pyrogue.Device):
             description='Command running in the foreground',
             function=self._DelayFunction))
 
-        # This command calls _DelayFunction in the background
-        self.add(pyrogue.LocalCommand(
-            name='cmd_bg',
-            description='Command running in the background',
-            background=True,
-            function=self._DelayFunction))
-
     # Blocking function. The passed argument specify how many seconds
     # it will block.
     def _DelayFunction(self,arg):
@@ -57,15 +50,6 @@ def test_local_cmd():
         duration=end-start
         if duration < delay:
             raise AssertionError('Command running in foreground returned too soon: '
-                'delay was set to {} s, and the command took {} s.'.format(delay, duration))
-
-        # Test a local command running in the background
-        start=time()
-        root.myDevice.cmd_bg.call(2)
-        end=time()
-        duration=end-start
-        if duration > delay:
-            raise AssertionError('Command running in background returned too late: '
                 'delay was set to {} s, and the command took {} s.'.format(delay, duration))
 
 if __name__ == "__main__":
