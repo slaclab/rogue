@@ -21,9 +21,13 @@ void varDone() {
 
 int main (int argc, char **argv) {
 
+   printf("Here1\n");
+
    rogue::interfaces::api::Bsp bsp("pyrogue.examples","ExampleRoot");
+   printf("Here2\n");
 
    bsp.addVarListener(&varListener,&varDone);
+   printf("Here3\n");
 
    // Get running uptime clock
    printf("LocalTime = %s\n",bsp["LocalTime"].get().c_str());
