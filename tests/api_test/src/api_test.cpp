@@ -21,42 +21,41 @@ void varDone() {
 
 int main (int argc, char **argv) {
 
-   sleep(5);
-   printf("Here1\n");
-   sleep(5);
+   try {
+      rogue::interfaces::api::Bsp bsp("pyrogue.examples","ExampleRoot");
 
-   rogue::interfaces::api::Bsp bsp("pyrogue.examples","ExampleRoot");
-   printf("Here2\n");
-   sleep(5);
+      bsp.addVarListener(&varListener,&varDone);
 
-   bsp.addVarListener(&varListener,&varDone);
-   printf("Here3\n");
+      // Get running uptime clock
+      printf("LocalTime = %s\n",bsp["LocalTime"].get().c_str());
 
-   // Get running uptime clock
-   printf("LocalTime = %s\n",bsp["LocalTime"].get().c_str());
+      // Set and get scratchpad
+      bsp["AxiVersion"]["ScratchPad"].setWrite("0x1111");
+      printf("ScratchPad = %s\n",bsp["AxiVersion"]["ScratchPad"].readGet().c_str());
 
-   // Set and get scratchpad
-   bsp["AxiVersion"]["ScratchPad"].setWrite("0x1111");
-   printf("ScratchPad = %s\n",bsp["AxiVersion"]["ScratchPad"].readGet().c_str());
+      // Get object as a pointer using full path, and get scratchpad
+      printf("ScratchPad = %s\n",bsp.getNode("ExampleRoot.AxiVersion.ScratchPad")->get().c_str());
 
-   // Get object as a pointer using full path, and get scratchpad
-   printf("ScratchPad = %s\n",bsp.getNode("ExampleRoot.AxiVersion.ScratchPad")->get().c_str());
+      // Get yaml config
+      std::string cfg = bsp["GetYamlConfig"]("True");
+      printf("Config = %s\n", cfg.c_str());
 
-   // Get yaml config
-   std::string cfg = bsp["GetYamlConfig"]("True");
-   printf("Config = %s\n", cfg.c_str());
+      // Set yaml config, example
+      //bsp["SetYamlConfig"]("Some Yaml String");
 
-   // Set yaml config, example
-   //bsp["SetYamlConfig"]("Some Yaml String");
+      // Write Entrire Tree
+      bsp["WriteAll"]();
 
-   // Write Entrire Tree
-   bsp["WriteAll"]();
+      // Read Entrire Tree
+      bsp["ReadAll"]();
 
-   // Read Entrire Tree
-   bsp["ReadAll"]();
+      Py_BEGIN_ALLOW_THREADS;
+      sleep(20);
+      Py_END_ALLOW_THREADS;
 
-   Py_BEGIN_ALLOW_THREADS;
-   sleep(20);
-   Py_END_ALLOW_THREADS;
+   } catch (...) {
+      fprintf(stderr, "Found error running API example:\n");
+      PyErr_Print();
+  }
 }
 
