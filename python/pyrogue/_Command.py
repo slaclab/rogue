@@ -60,11 +60,7 @@ class BaseCommand(pr.BaseVariable):
 
         self._thread = None
         self._lock = threading.Lock()
-        self._background = background
         self._retDisp = "{}"
-
-        if self._background:
-            self._log.error('Background commands are deprecated. Please use a Process device instead.')
 
         if retValue is None:
             self._retTypeStr = None
@@ -94,18 +90,7 @@ class BaseCommand(pr.BaseVariable):
         return self._retTypeStr
 
     def __call__(self,arg=None):
-        if self._background:
-            with self._lock:
-                if self._thread is not None and self._thread.isAlive():
-                    self._log.warning('Command execution is already in progress!')
-                    return None
-                else:
-                    self._thread = threading.Thread(target=self._doFunc, args=(arg,))
-                    self._thread.start()
-
-            return None
-        else:
-            return self._doFunc(arg)
+        return self._doFunc(arg)
 
     def _doFunc(self,arg):
         """

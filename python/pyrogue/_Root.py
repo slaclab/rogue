@@ -182,14 +182,8 @@ class Root(pr.Device):
                  initRead=False,
                  initWrite=False,
                  pollEn=True,
-                 maxLog=1000,
-                 # Deprecated
-                 serverPort=None,  # 9099 is the default, 0 for auto
-                 sqlUrl=None,
-                 streamIncGroups=None,
-                 streamExcGroups=['NoStream'],
-                 sqlIncGroups=None,
-                 sqlExcGroups=['NoSql']):
+                 maxLog=1000):
+
         """Init the node with passed attributes"""
         rogue.interfaces.stream.Master.__init__(self)
 
@@ -200,15 +194,6 @@ class Root(pr.Device):
         self._pollEn          = pollEn
         self._maxLog          = maxLog
         self._doHeartbeat     = True # Backdoor flag
-
-        # Deprecated
-        self._serverPort      = serverPort
-        self._sqlUrl          = sqlUrl
-        self._sqlIncGroups    = sqlIncGroups
-        self._sqlExcGroups    = sqlExcGroups
-        self._streamIncGroups = streamIncGroups
-        self._streamExcGroups = streamExcGroups
-        self._streamMaster    = None
 
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
@@ -379,10 +364,13 @@ class Root(pr.Device):
         # Finish Initialization
         self._finishInit()
 
-        # Get full list of Devices and Blocks
+        # Get full list of Blocks and Devices with size
         tmpList = []
         for d in self.deviceList:
-            tmpList.append(d)
+
+            if hasattr(d,"size"):
+                tmpList.append(d)
+
             for b in d._blocks:
                 if isinstance(b, rim.Block):
                     tmpList.append(b)
@@ -409,30 +397,6 @@ class Root(pr.Device):
         if self._timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
-
-        # Start ZMQ server if enabled
-        if self._serverPort is not None:
-            print("========== Deprecation Warning ===============================================")
-            print(" Setting up zmq server through the Root class creator is                      ")
-            print(" no longer supported. Instead create the ZmqServer seperately                 ")
-            print(" add add it as an interface:                                                  ")
-            print("                                                                              ")
-            print("    with Root() as r:                                                         ")
-            print("       r.addInterface(pyrogue.interfaces.ZmqServer(root=r, addr='*', port=0)) ")
-            print("==============================================================================")
-            self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort))
-
-        # Start sql interface
-        if self._sqlUrl is not None:
-            print("========== Deprecation Warning =========================================")
-            print(" Setting up sql logger through the Root class creator is                ")
-            print(" no longer supported. Instead create the SqlLogger seperately           ")
-            print(" add add it as an interface:                                            ")
-            print("                                                                        ")
-            print("    with Root() as r:                                                   ")
-            print("       r.addInterface(pyrogue.interfaces.SqlLogger(root=r, url=sqlUrl)) ")
-            print("========================================================================")
-            self.addProtocol(pr.interfaces.SqlLogger(root=self, url=self._sqlUrl, incGroups=self._sqlIncGroups, excGroups=self._sqlExcGroups))
 
         # Start update thread
         self._running = True
@@ -1105,30 +1069,3 @@ class Root(pr.Device):
 
             # Set done
             self._updateQueue.task_done()
-
-    # Deprecated
-    def _getStreamMaster(self):
-        if self._streamMaster is None:
-            print("========== Deprecation Warning =============================== ")
-            print(" Setting up variable streaming directly through the root class ")
-            print(" is no longer supported. Instead create a VariableStram        ")
-            print(" object seperately and add it as an interface:                 ")
-            print("                                                               ")
-            print("    with Root() as r:                                          ")
-            print("       stream = pyrogue.interfaces.stream.Variable(root=r)     ")
-            print("       r.addInterface(stream)                                  ")
-            print("                                                               ")
-            print(" You can then connect stream slaves to the newly created       ")
-            print(" VariableStream instance:                                      ")
-            print("                                                               ")
-            print("    slave << stream                                            ")
-            print("===============================================================")
-            self._streamMaster = pr.interfaces.stream.Variable(root=self, incGroups=self._streamIncGroups, excGroups=self._streamExcGroups)
-            self.addInterface(self._streamMaster)
-
-        return self._streamMaster
-
-    # Deprecated support
-    def __rshift__(self,other):
-        pr.streamConnect(self,other)
-        return other

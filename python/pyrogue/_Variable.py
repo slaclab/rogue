@@ -405,16 +405,6 @@ class BaseVariable(pr.Node):
         """ """
         return self._pollInterval
 
-    @pollInterval.setter
-    def pollInterval(self, interval):
-        print()
-        print('=========== Deprecation Warming ===============')
-        print(f'Called {self.path}.pollInterval = {interval}')
-        print('This way of setting the poll interval is deprecated')
-        print(f'Use {self.path}.setPollInterval({interval}) instead')
-        self._pollInterval = interval
-        self._updatePollInterval()
-
     @pr.expose
     def setPollInterval(self, interval):
         print(f'{self.path}.setPollInterval({interval})')

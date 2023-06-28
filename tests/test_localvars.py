@@ -92,7 +92,7 @@ class myDevice(pyrogue.Device):
 
 class LocalRoot(pyrogue.Root):
     def __init__(self):
-        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root',serverPort=None)
+        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
         my_device=myDevice()
         self.add(my_device)
 
@@ -163,7 +163,7 @@ def test_local_root():
             raise AssertionError('Value written was {}, but value read back was = {}'.format(test_value, test_result))
 
         # Check pollInterval set/readback methods
-        root.myDevice.var_with_properties.pollInterval=poll_set
+        root.myDevice.var_with_properties.setPollInterval(poll_set)
         poll_read=root.myDevice.var_with_properties.pollInterval
         if poll_read != poll_set:
             raise AssertionError('Poll Interval was set to {} was was read back as {}'. format(poll_set,poll_read))
