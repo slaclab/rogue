@@ -71,6 +71,7 @@ jobs:
           cmake ..
           make
           cd ../bin
+          ldd ./api_test
           ./api_test
 
       # Code Coverage
