@@ -364,9 +364,13 @@ class Root(pr.Device):
         # Finish Initialization
         self._finishInit()
 
-        # Get full list of Blocks
+        # Get full list of Blocks and Devices with size
         tmpList = []
         for d in self.deviceList:
+
+            if hasattr(d,size):
+                tmpList.append(d)
+
             for b in d._blocks:
                 if isinstance(b, rim.Block):
                     tmpList.append(b)
