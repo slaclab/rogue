@@ -32,14 +32,6 @@ The following is how you install the latest released version of Rogue with anaco
 
 ```
 
-The following is how you install the development version (pre-release) or Rogue with anaconda.
-
-```
-
-   $ conda create -n rogue_pre -c tidair-dev -c conda-forge rogue
-
-```
-
 It is important to use the latest conda solver:
 
 ```
@@ -49,3 +41,5 @@ It is important to use the latest conda solver:
     $ conda config --set solver libmamba
 
 ```
+
+See migration notes in the documentation before moving to Rogue Version 6.0 as there have been some key structural changes.
