@@ -177,7 +177,7 @@ class Device(pr.Node,rim.Hub):
                  guiGroup=None):
 
         if size != 0:
-            raise pr.NodeError("Size attribute in Device is not supported!)
+            raise pr.NodeError("Size attribute in Device is not supported!")
 
         """Initialize device class"""
         if name is None:
