@@ -364,10 +364,9 @@ class Root(pr.Device):
         # Finish Initialization
         self._finishInit()
 
-        # Get full list of Devices and Blocks
+        # Get full list of Blocks
         tmpList = []
         for d in self.deviceList:
-            tmpList.append(d)
             for b in d._blocks:
                 if isinstance(b, rim.Block):
                     tmpList.append(b)
