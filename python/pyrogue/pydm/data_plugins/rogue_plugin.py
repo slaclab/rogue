@@ -77,7 +77,6 @@ class RogueConnection(PyDMConnection):
         self._cmd    = False
         self._int    = False
         self._node   = None
-        self._client = None
         self._enum   = None
         self._notDev = False
         self._address = channel.address
