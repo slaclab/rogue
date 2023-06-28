@@ -21,10 +21,13 @@ void varDone() {
 
 int main (int argc, char **argv) {
 
+   sleep(5);
    printf("Here1\n");
+   sleep(5);
 
    rogue::interfaces::api::Bsp bsp("pyrogue.examples","ExampleRoot");
    printf("Here2\n");
+   sleep(5);
 
    bsp.addVarListener(&varListener,&varDone);
    printf("Here3\n");
