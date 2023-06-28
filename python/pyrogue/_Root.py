@@ -368,7 +368,7 @@ class Root(pr.Device):
         tmpList = []
         for d in self.deviceList:
 
-            if hasattr(d,size):
+            if hasattr(d,"size"):
                 tmpList.append(d)
 
             for b in d._blocks:
