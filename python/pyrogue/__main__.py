@@ -63,7 +63,6 @@ print("Connecting to {}".format(args.server))
 
 # GUI Client
 if args.cmd == 'gui':
-    import pyrogue.gui
     import pyrogue.pydm
     pyrogue.pydm.runPyDM(serverList=args.server,ui=args.ui)
 
