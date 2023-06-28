@@ -13,100 +13,94 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_ZMQ_CLIENT_H__
 #define __ROGUE_ZMQ_CLIENT_H__
-#include <rogue/Directives.h>
-#include <thread>
+#include "rogue/Directives.h"
+
 #include <memory>
-#include <rogue/Logging.h>
+#include <thread>
+
+#include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
 #endif
 
 namespace rogue {
-   namespace interfaces {
+namespace interfaces {
 
-      //! Logging
-      class ZmqClient {
+//! Logging
+class ZmqClient {
+    // Zeromq Context
+    void* zmqCtx_;
 
-            // Zeromq Context
-            void * zmqCtx_;
+    // Zeromq publish port
+    void* zmqSub_;
 
-            // Zeromq publish port
-            void * zmqSub_;
+    // Zeromq request port
+    void* zmqReq_;
 
-            // Zeromq request port
-            void * zmqReq_;
+    //! Log
+    std::shared_ptr<rogue::Logging> log_;
 
-            //! Log
-            std::shared_ptr<rogue::Logging> log_;
+    uint32_t timeout_;
 
-            uint32_t timeout_;
+    bool waitRetry_;
 
-            bool waitRetry_;
+    std::thread* thread_;
+    bool threadEn_;
+    bool running_;
+    bool doString_;
 
-            std::thread   * thread_;
-            bool threadEn_;
-            bool running_;
-            bool doString_;
+    void runThread();
 
-            void runThread();
+  public:
+    static std::shared_ptr<rogue::interfaces::ZmqClient> create(std::string addr, uint16_t port, bool doString);
 
-         public:
+    //! Setup class in python
+    static void setup_python();
 
-            static std::shared_ptr<rogue::interfaces::ZmqClient> create(std::string addr, uint16_t port, bool doString);
+    ZmqClient(std::string addr, uint16_t port, bool doString);
+    virtual ~ZmqClient();
 
-            //! Setup class in python
-            static void setup_python();
+    void setTimeout(uint32_t msecs, bool waitRetry);
 
-            ZmqClient (std::string addr, uint16_t port, bool doString);
-            virtual ~ZmqClient();
+    std::string sendString(std::string path, std::string attr, std::string arg);
 
-            void setTimeout(uint32_t msecs, bool waitRetry);
+    std::string getDisp(std::string path);
 
-            std::string sendString(std::string path, std::string attr, std::string arg);
+    void setDisp(std::string path, std::string value);
 
-            std::string getDisp(std::string path);
+    std::string exec(std::string path, std::string arg = "");
 
-            void setDisp(std::string path, std::string value);
-
-            std::string exec(std::string path, std::string arg = "");
-
-            std::string valueDisp(std::string path);
+    std::string valueDisp(std::string path);
 
 #ifndef NO_PYTHON
-            boost::python::object send(boost::python::object data);
+    boost::python::object send(boost::python::object data);
 
-            virtual void doUpdate (boost::python::object data);
+    virtual void doUpdate(boost::python::object data);
 #endif
 
-            void stop();
-
-      };
-      typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
+    void stop();
+};
+typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
 
 #ifndef NO_PYTHON
 
-      //! Stream slave class, wrapper to enable python overload of virtual methods
-      class ZmqClientWrap :
-         public rogue::interfaces::ZmqClient,
-         public boost::python::wrapper<rogue::interfaces::ZmqClient> {
+//! Stream slave class, wrapper to enable python overload of virtual methods
+class ZmqClientWrap : public rogue::interfaces::ZmqClient, public boost::python::wrapper<rogue::interfaces::ZmqClient> {
+  public:
+    ZmqClientWrap(std::string addr, uint16_t port, bool doString);
 
-         public:
+    void doUpdate(boost::python::object data);
 
-            ZmqClientWrap (std::string addr, uint16_t port, bool doString);
+    void defDoUpdate(boost::python::object data);
+};
 
-            void doUpdate  ( boost::python::object data );
-
-            void defDoUpdate  ( boost::python::object data );
-      };
-
-      typedef std::shared_ptr<rogue::interfaces::ZmqClientWrap> ZmqClientWrapPtr;
+typedef std::shared_ptr<rogue::interfaces::ZmqClientWrap> ZmqClientWrapPtr;
 #endif
-   }
-}
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

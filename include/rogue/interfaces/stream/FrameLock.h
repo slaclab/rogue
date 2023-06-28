@@ -16,86 +16,84 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
 #define __ROGUE_INTERFACES_MEMORY_FRAME_LOCK_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <thread>
+
 #include <memory>
+#include <thread>
 
 namespace rogue {
-   namespace interfaces {
-      namespace stream {
+namespace interfaces {
+namespace stream {
 
-         class Frame;
+class Frame;
 
-         //! Frame Lock
-         /**
-          * The FrameLock is a container for holding a lock on Frame data while accessing that
-          * data. This lock allows multiple stream Slave objects to read and update Frame data
-          * while ensuring only one thread is updating at a time. The lock is released when
-          * the FrameLock object is destroyed. The FrameLock object is never created directly,
-          * instead it is returned by the Frame::lock() method.
-          */
-         class FrameLock {
+//! Frame Lock
+/**
+ * The FrameLock is a container for holding a lock on Frame data while accessing that
+ * data. This lock allows multiple stream Slave objects to read and update Frame data
+ * while ensuring only one thread is updating at a time. The lock is released when
+ * the FrameLock object is destroyed. The FrameLock object is never created directly,
+ * instead it is returned by the Frame::lock() method.
+ */
+class FrameLock {
+    std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
+    bool locked_;
 
-               std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
-               bool locked_;
+  public:
+    // Class factory which returns a pointer to a FrameLock (FrameLockPtr)
+    /* Only called by Frame object.
+     * Create a new Frame lock on the passed Frame.
+     * frame Frame pointer (FramePtr) to create a lock on
+     */
+    static std::shared_ptr<rogue::interfaces::stream::FrameLock> create(
+        std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-            public:
+    // Frame lock constructor
+    FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               // Class factory which returns a pointer to a FrameLock (FrameLockPtr)
-               /* Only called by Frame object.
-                * Create a new Frame lock on the passed Frame.
-                * frame Frame pointer (FramePtr) to create a lock on
-                */
-               static std::shared_ptr<rogue::interfaces::stream::FrameLock> create (
-                  std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    // Setup class for use in python
+    static void setup_python();
 
-               // Frame lock constructor
-               FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    // Destroy and release the frame lock
+    ~FrameLock();
 
-               // Setup class for use in python
-               static void setup_python();
+    //! Lock associated frame if not locked
+    /** Exposed as lock() to Python
+     */
+    void lock();
 
-               // Destroy and release the frame lock
-               ~FrameLock();
+    //! UnLock associated frame if locked
+    /** Exposed as unlock() to Python
+     */
+    void unlock();
 
-               //! Lock associated frame if not locked
-               /** Exposed as lock() to Python
-                */
-               void lock();
+    //! Enter method for python, does nothing
+    /** This exists only to support the
+     * with call in python.
+     *
+     * Exposed as __enter__() to Python
+     */
+    void enter();
 
-               //! UnLock associated frame if locked
-               /** Exposed as unlock() to Python
-                */
-               void unlock();
+    //! Exit method for python, does nothing
+    /** This exists only to support the
+     * with call in python.
+     *
+     * Exposed as __exit__() to Python
+     */
+    void exit(void*, void*, void*);
+};
 
-               //! Enter method for python, does nothing
-               /** This exists only to support the
-                * with call in python.
-                *
-                * Exposed as __enter__() to Python
-                */
-               void enter();
+//! Alias for using shared pointer as FrameLockPtr
+typedef std::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
 
-               //! Exit method for python, does nothing
-               /** This exists only to support the
-                * with call in python.
-                *
-                * Exposed as __exit__() to Python
-                */
-               void exit(void *, void *, void *);
-
-         };
-
-         //! Alias for using shared pointer as FrameLockPtr
-         typedef std::shared_ptr<rogue::interfaces::stream::FrameLock> FrameLockPtr;
-
-      }
-   }
-}
+}  // namespace stream
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

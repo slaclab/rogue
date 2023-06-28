@@ -13,77 +13,73 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACE_API_BSP_H__
 #define __ROGUE_INTERFACE_API_BSP_H__
 #include <boost/python.hpp>
 #include <vector>
 
 namespace rogue {
-   namespace interfaces {
-      namespace api {
+namespace interfaces {
+namespace api {
 
-         //! Bsp Class
-         class Bsp {
+//! Bsp Class
+class Bsp {
+  protected:
+    boost::python::object _obj;
+    bool _isRoot;
+    std::string _name;
 
-            protected:
+  public:
+    //! Class factory
+    static std::shared_ptr<rogue::interfaces::api::Bsp> create(boost::python::object obj);
+    static std::shared_ptr<rogue::interfaces::api::Bsp> create(std::string modName, std::string rootClass);
 
-               boost::python::object _obj;
-               bool _isRoot;
-               std::string _name;
+    //! Create the object
+    Bsp(boost::python::object obj);
+    Bsp(std::string modName, std::string rootClass);
+    ~Bsp();
 
-            public:
+    //! Add Var Listener
+    void addVarListener(void (*func)(std::string, std::string), void (*done)());
 
-               //! Class factory
-               static std::shared_ptr<rogue::interfaces::api::Bsp> create (boost::python::object obj);
-               static std::shared_ptr<rogue::interfaces::api::Bsp> create (std::string modName, std::string rootClass);
+    //! Get Attribute
+    std::string getAttribute(std::string attribute);
 
-               //! Create the object
-               Bsp (boost::python::object obj);
-               Bsp (std::string modName, std::string rootClass);
-               ~Bsp();
+    //! Return a sub-node operator
+    rogue::interfaces::api::Bsp operator[](std::string name);
 
-               //! Add Var Listener
-               void addVarListener(void(*func)(std::string,std::string), void(*done)());
+    //! Return a sub-node pointer
+    std::shared_ptr<rogue::interfaces::api::Bsp> getNode(std::string name);
 
-               //! Get Attribute
-               std::string getAttribute(std::string attribute);
+    //! Execute a command
+    std::string operator()(std::string arg);
 
-               //! Return a sub-node operator
-               rogue::interfaces::api::Bsp operator []( std::string name);
+    //! Execute a command without arg
+    std::string operator()();
 
-               //! Return a sub-node pointer
-               std::shared_ptr<rogue::interfaces::api::Bsp> getNode(std::string name);
+    //! Execute a command
+    std::string execute(std::string arg);
 
-               //! Execute a command
-               std::string operator ()( std::string arg);
+    //! Execute a command without arg
+    std::string execute();
 
-               //! Execute a command without arg
-               std::string operator ()();
+    //! Set
+    void set(std::string value);
 
-               //! Execute a command
-               std::string execute(std::string arg);
+    //! Set and write
+    void setWrite(std::string value);
 
-               //! Execute a command without arg
-               std::string execute();
+    //! Get
+    std::string get();
 
-               //! Set
-               void set(std::string value);
+    //! Read and get
+    std::string readGet();
+};
 
-               //! Set and write
-               void setWrite(std::string value);
-
-               //! Get
-               std::string get();
-
-               //! Read and get
-               std::string readGet();
-         };
-
-         typedef std::shared_ptr<rogue::interfaces::api::Bsp> BspPtr;
-      }
-   }
-}
+typedef std::shared_ptr<rogue::interfaces::api::Bsp> BspPtr;
+}  // namespace api
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

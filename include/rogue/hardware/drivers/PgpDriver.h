@@ -13,191 +13,186 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __PGP_DRIVER_H__
 #define __PGP_DRIVER_H__
 #include "DmaDriver.h"
 
 //! PGP Card Info
 struct PgpInfo {
+    //! PGP Card Serial #
+    uint64_t serial;
 
-   //! PGP Card Serial #
-   uint64_t serial;
+    //! PGP Card Type
+    uint32_t type;
 
-   //! PGP Card Type
-   uint32_t type;
+    //! PGP Card Version
+    uint32_t version;
 
-   //! PGP Card Version
-   uint32_t version;
+    //! PGP Card Lane Mask
+    uint32_t laneMask;
 
-   //! PGP Card Lane Mask
-   uint32_t laneMask;
+    //! PGP Card VCs per Lane Mask
+    uint32_t vcPerMask;
 
-   //! PGP Card VCs per Lane Mask
-   uint32_t vcPerMask;
+    //! PGP Card Line Rate
+    uint32_t pgpRate;
 
-   //! PGP Card Line Rate
-   uint32_t pgpRate;
+    //! PGP Card Prom Programming Support Flag
+    uint32_t promPrgEn;
 
-   //! PGP Card Prom Programming Support Flag
-   uint32_t promPrgEn;
+    //! PGP Card EVR Support Flag
+    uint32_t evrSupport;
 
-   //! PGP Card EVR Support Flag
-   uint32_t evrSupport;
+    uint32_t pad;
 
-   uint32_t pad;
-
-   char     buildStamp[256];
+    char buildStamp[256];
 };
 
 //! PCI Status
 struct PciStatus {
+    //! PCI Express Command Field
+    uint32_t pciCommand;
 
-   //! PCI Express Command Field
-   uint32_t pciCommand;
+    //! PCI Express Status Field
+    uint32_t pciStatus;
 
-   //! PCI Express Status Field
-   uint32_t pciStatus;
+    //! PCI Express D Command Field
+    uint32_t pciDCommand;
 
-   //! PCI Express D Command Field
-   uint32_t pciDCommand;
+    //! PCI Express D Status Field
+    uint32_t pciDStatus;
 
-   //! PCI Express D Status Field
-   uint32_t pciDStatus;
+    //! PCI Express L Command Field
+    uint32_t pciLCommand;
 
-   //! PCI Express L Command Field
-   uint32_t pciLCommand;
+    //! PCI Express L Status Field
+    uint32_t pciLStatus;
 
-   //! PCI Express L Status Field
-   uint32_t pciLStatus;
+    //! PCI Express Link State
+    uint32_t pciLinkState;
 
-   //! PCI Express Link State
-   uint32_t pciLinkState;
+    //! PCI Express Function Number
+    uint32_t pciFunction;
 
-   //! PCI Express Function Number
-   uint32_t pciFunction;
+    //! PCI Express Device Number
+    uint32_t pciDevice;
 
-   //! PCI Express Device Number
-   uint32_t pciDevice;
+    //! PCI Express Bus Number
+    uint32_t pciBus;
 
-   //! PCI Express Bus Number
-   uint32_t pciBus;
+    //! Number Of PCI Lanes
+    uint32_t pciLanes;
 
-   //! Number Of PCI Lanes
-   uint32_t pciLanes;
-
-   uint32_t pad;
+    uint32_t pad;
 };
 
 //! PGP Lane Status
 struct PgpStatus {
+    //! Lane number associated with this record
+    uint32_t lane;
 
-   //! Lane number associated with this record
-   uint32_t lane;
+    //! Lane loopback status
+    uint32_t loopBack;
 
-   //! Lane loopback status
-   uint32_t loopBack;
+    //! Lane local link ready status
+    uint32_t locLinkReady;
 
-   //! Lane local link ready status
-   uint32_t locLinkReady;
+    //! Lane remote link ready status
+    uint32_t remLinkReady;
 
-   //! Lane remote link ready status
-   uint32_t remLinkReady;
+    //! Lane receive PLL ready status
+    uint32_t rxReady;
 
-   //! Lane receive PLL ready status
-   uint32_t rxReady;
+    //! Lane transmit PLL ready status
+    uint32_t txReady;
 
-   //! Lane transmit PLL ready status
-   uint32_t txReady;
+    //! Lane receive frame counter
+    uint32_t rxCount;
 
-   //! Lane receive frame counter
-   uint32_t rxCount;
+    //! Lane cell error counter
+    uint32_t cellErrCnt;
 
-   //! Lane cell error counter
-   uint32_t cellErrCnt;
+    //! Lane link lost transition counter
+    uint32_t linkDownCnt;
 
-   //! Lane link lost transition counter
-   uint32_t linkDownCnt;
+    //! Lane link error counter
+    uint32_t linkErrCnt;
 
-   //! Lane link error counter
-   uint32_t linkErrCnt;
+    //! Lane FIFO error counter
+    uint32_t fifoErr;
 
-   //! Lane FIFO error counter
-   uint32_t fifoErr;
+    //! Lane current received remote sideband data
+    uint32_t remData;
 
-   //! Lane current received remote sideband data
-   uint32_t remData;
+    //! Lane remote buffer status
+    uint32_t remBuffStatus;
 
-   //! Lane remote buffer status
-   uint32_t remBuffStatus;
-
-   uint32_t pad;
+    uint32_t pad;
 };
 
 //! EVR Control, one per lane
 struct PgpEvrControl {
+    //! Lane number associated with this record
+    uint32_t lane;
 
-   //! Lane number associated with this record
-   uint32_t  lane;
+    //! Global EVR enable for all lanes, 1 = enable, 0 = disabled
+    uint32_t evrEnable;  // Global flag
 
-   //! Global EVR enable for all lanes, 1 = enable, 0 = disabled
-   uint32_t  evrEnable;     // Global flag
+    //! Run trigger enable for this lane, 1 = enable, 0 = disable
+    uint32_t laneRunMask;  // 1 = Run trigger enable
 
-   //! Run trigger enable for this lane, 1 = enable, 0 = disable
-   uint32_t  laneRunMask;   // 1 = Run trigger enable
+    //! EVR Sync enable, 1 = start, 0 = stop
+    uint32_t evrSyncEn;  // 1 = Start, 0 = Stop
 
-   //! EVR Sync enable, 1 = start, 0 = stop
-   uint32_t  evrSyncEn;     // 1 = Start, 0 = Stop
+    //! Sync select, 0 = async, 1 = sync for start/stop
+    uint32_t evrSyncSel;  // 0 = async, 1 = sync for start/stop
 
-   //! Sync select, 0 = async, 1 = sync for start/stop
-   uint32_t  evrSyncSel;    // 0 = async, 1 = sync for start/stop
+    //! Header checking mask, 1 enable bit for each of 4 virtual channels.
+    uint32_t headerMask;  // 1 = Enable header data checking, one bit per VC (4 bits)
 
-   //! Header checking mask, 1 enable bit for each of 4 virtual channels.
-   uint32_t  headerMask;    // 1 = Enable header data checking, one bit per VC (4 bits)
+    //! EVR Sync word, 32-bit timing fidicial to transition start/stop on
+    uint32_t evrSyncWord;  // fiducial to transition start stop
 
-   //! EVR Sync word, 32-bit timing fidicial to transition start/stop on
-   uint32_t  evrSyncWord;   // fiducial to transition start stop
+    //! 8-bit timing code to assert run trigger
+    uint32_t runCode;  // Run code
 
-   //! 8-bit timing code to assert run trigger
-   uint32_t  runCode;       // Run code
+    //! Delay between timing code reception and assertion of run trigger
+    uint32_t runDelay;  // Run delay
 
-   //! Delay between timing code reception and assertion of run trigger
-   uint32_t  runDelay;      // Run delay
+    //! 8-bit timing code to assert accept trigger
+    uint32_t acceptCode;  // Accept code
 
-   //! 8-bit timing code to assert accept trigger
-   uint32_t  acceptCode;    // Accept code
+    //! Delay between timing code reception and assertion of accept trigger
+    uint32_t acceptDelay;  // Accept delay
 
-   //! Delay between timing code reception and assertion of accept trigger
-   uint32_t  acceptDelay;   // Accept delay
-
-   uint32_t  pad;
+    uint32_t pad;
 };
 
 //! EVR Status, one per lane
 struct PgpEvrStatus {
+    //! Lane number associated with this record
+    uint32_t lane;
 
-   //! Lane number associated with this record
-   uint32_t  lane;
+    //! EVR link error counter
+    uint32_t linkErrors;
 
-   //! EVR link error counter
-   uint32_t  linkErrors;
+    //! EVR link up state, 0 = down, 1 = up
+    uint32_t linkUp;
 
-   //! EVR link up state, 0 = down, 1 = up
-   uint32_t  linkUp;
+    //! EVR running status, 0 = stopped, 1 = running
+    uint32_t runStatus;  // 1 = Running, 0 = Stopped
 
-   //! EVR running status, 0 = stopped, 1 = running
-   uint32_t  runStatus;    // 1 = Running, 0 = Stopped
+    //! Current distributed timing seconds value
+    uint32_t evrSeconds;
 
-   //! Current distributed timing seconds value
-   uint32_t  evrSeconds;
+    //! Number of run triggers received
+    uint32_t runCounter;
 
-   //! Number of run triggers received
-   uint32_t  runCounter;
+    //! Number of accepts triggers received
+    uint32_t acceptCounter;
 
-   //! Number of accepts triggers received
-   uint32_t  acceptCounter;
-
-   uint32_t  pad;
+    uint32_t pad;
 };
 
 // Card Types
@@ -228,108 +223,107 @@ struct PgpEvrStatus {
 #ifndef DMA_IN_KERNEL
 
 static inline uint32_t pgpSetDest(uint32_t lane, uint32_t vc) {
-   uint32_t dest;
+    uint32_t dest;
 
-   dest  = lane * 4;
-   dest += vc;
-   return(dest);
+    dest = lane * 4;
+    dest += vc;
+    return (dest);
 }
 
-static inline uint32_t pgpSetFlags(uint32_t cont){
-   return(cont & 0x1);
+static inline uint32_t pgpSetFlags(uint32_t cont) {
+    return (cont & 0x1);
 }
 
 static inline uint32_t pgpGetLane(uint32_t dest) {
-   return(dest / 4);
+    return (dest / 4);
 }
 
 static inline uint32_t pgpGetVc(uint32_t dest) {
-   return(dest % 4);
+    return (dest % 4);
 }
 
 static inline uint32_t pgpGetCont(uint32_t flags) {
-   return(flags & 0x1);
+    return (flags & 0x1);
 }
 
 // Read Card Info
-static inline ssize_t pgpGetInfo(int32_t fd, struct PgpInfo * info) {
-   return(ioctl(fd,PGP_Read_Info,info));
+static inline ssize_t pgpGetInfo(int32_t fd, struct PgpInfo* info) {
+    return (ioctl(fd, PGP_Read_Info, info));
 }
 
 // Read PCI Status
-static inline ssize_t pgpGetPci(int32_t fd, struct PciStatus * status) {
-   return(ioctl(fd,PGP_Read_Pci,status));
+static inline ssize_t pgpGetPci(int32_t fd, struct PciStatus* status) {
+    return (ioctl(fd, PGP_Read_Pci, status));
 }
 
 // Read Lane Status
-static inline ssize_t pgpGetStatus(int32_t fd, uint32_t lane, struct PgpStatus * status) {
-   status->lane = lane;
-   return(ioctl(fd,PGP_Read_Status,status));
+static inline ssize_t pgpGetStatus(int32_t fd, uint32_t lane, struct PgpStatus* status) {
+    status->lane = lane;
+    return (ioctl(fd, PGP_Read_Status, status));
 }
 
 // Set Loopback State For Lane
 static inline ssize_t pgpSetLoop(int32_t fd, uint32_t lane, uint32_t state) {
-   uint32_t temp;
+    uint32_t temp;
 
-   temp = lane & 0xFF;
-   temp |= ((state << 8) & 0x100);
+    temp = lane & 0xFF;
+    temp |= ((state << 8) & 0x100);
 
-   return(ioctl(fd,PGP_Set_Loop,temp));
+    return (ioctl(fd, PGP_Set_Loop, temp));
 }
 
 // Reset counters
 static inline ssize_t pgpCountReset(int32_t fd) {
-   return(ioctl(fd,PGP_Count_Reset,0));
+    return (ioctl(fd, PGP_Count_Reset, 0));
 }
 
 // Set Sideband Data
 static inline ssize_t pgpSetData(int32_t fd, uint32_t lane, uint32_t data) {
-   uint32_t temp;
+    uint32_t temp;
 
-   temp = lane & 0xFF;
-   temp |= ((data << 8) & 0xFF00);
+    temp = lane & 0xFF;
+    temp |= ((data << 8) & 0xFF00);
 
-   return(ioctl(fd,PGP_Set_Data,temp));
+    return (ioctl(fd, PGP_Set_Data, temp));
 }
 
 // Send OpCode
 static inline ssize_t pgpSendOpCode(int32_t fd, uint32_t code) {
-   return(ioctl(fd,PGP_Send_OpCode,code));
+    return (ioctl(fd, PGP_Send_OpCode, code));
 }
 
 // Set EVR Control
-static inline ssize_t pgpSetEvrControl(int32_t fd, uint32_t lane, struct PgpEvrControl * control) {
-   control->lane = lane;
-   return(ioctl(fd,PGP_Set_Evr_Cntrl,control));
+static inline ssize_t pgpSetEvrControl(int32_t fd, uint32_t lane, struct PgpEvrControl* control) {
+    control->lane = lane;
+    return (ioctl(fd, PGP_Set_Evr_Cntrl, control));
 }
 
 // Get EVR Control
-static inline ssize_t pgpGetEvrControl(int32_t fd, uint32_t lane, struct PgpEvrControl * control) {
-   control->lane = lane;
-   return(ioctl(fd,PGP_Get_Evr_Cntrl,control));
+static inline ssize_t pgpGetEvrControl(int32_t fd, uint32_t lane, struct PgpEvrControl* control) {
+    control->lane = lane;
+    return (ioctl(fd, PGP_Get_Evr_Cntrl, control));
 }
 
 // Get EVR Status
-static inline ssize_t pgpGetEvrStatus(int32_t fd, uint32_t lane, struct PgpEvrStatus * status) {
-   status->lane = lane;
-   return(ioctl(fd,PGP_Get_Evr_Status,status));
+static inline ssize_t pgpGetEvrStatus(int32_t fd, uint32_t lane, struct PgpEvrStatus* status) {
+    status->lane = lane;
+    return (ioctl(fd, PGP_Get_Evr_Status, status));
 }
 
 // Reset EVR Counters
 static inline ssize_t pgpResetEvrCount(int32_t fd, uint32_t lane) {
-   return(ioctl(fd,PGP_Rst_Evr_Count,lane));
+    return (ioctl(fd, PGP_Rst_Evr_Count, lane));
 }
 
 // Add destination to mask byte array
-static inline void pgpAddMaskBytes(uint8_t * mask, uint32_t lane, uint32_t vc) {
-   dmaAddMaskBytes(mask,lane*4+vc);
+static inline void pgpAddMaskBytes(uint8_t* mask, uint32_t lane, uint32_t vc) {
+    dmaAddMaskBytes(mask, lane * 4 + vc);
 }
 
 // set lane/vc rx mask, one bit per vc
 static inline ssize_t pgpSetMask(int32_t fd, uint32_t lane, uint32_t vc) {
-   return(dmaSetMask(fd, lane*4+vc));
+    return (dmaSetMask(fd, lane * 4 + vc));
 }
 
 #endif
 #endif
-
