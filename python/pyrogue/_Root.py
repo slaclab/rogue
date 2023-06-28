@@ -1066,4 +1066,3 @@ class Root(pr.Device):
 
             # Set done
             self._updateQueue.task_done()
-
