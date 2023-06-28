@@ -187,7 +187,7 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
             zmq_msg_close(&msg);
          }
          else
-            throw rogue::GeneralError::create("ZmqClient::sendString","Timeout waiting for response after %f Seconds, server may be busy!",seconds);
+            throw rogue::GeneralError::create("ZmqClient::sendString","Timeout waiting for response after %f Seconds.",seconds);
       }
       else break;
    }

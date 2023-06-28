@@ -246,12 +246,17 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._log = pr.logInit(cls=self,name="VirtualClient",path=None)
 
         # Get root name as a connection test
-        self.setTimeout(1000,True)
         self._root = None
-        while self._root is None:
+        self.setTimeout(1000,False)
+
+        try:
             self._root = self._remoteAttr('__ROOT__',None)
+        except Exception as e:
+            print("\n\nFailed to connected to {}:{}!!!! Please Close PyDM Window!!!!\n\n".format(addr,port))
+            return
 
         print("Connected to {} at {}:{}".format(self._root.name,addr,port))
+        self.setTimeout(1000,True)
 
         self._root._parent = self._root
         self._root._root   = self._root
