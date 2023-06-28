@@ -182,9 +182,7 @@ class Root(pr.Device):
                  initRead=False,
                  initWrite=False,
                  pollEn=True,
-                 maxLog=1000,
-                 # Deprecated
-                 serverPort=None):
+                 maxLog=1000):
 
         """Init the node with passed attributes"""
         rogue.interfaces.stream.Master.__init__(self)
@@ -197,8 +195,6 @@ class Root(pr.Device):
         self._maxLog          = maxLog
         self._doHeartbeat     = True # Backdoor flag
 
-        # Deprecated
-        self._serverPort      = serverPort
         # Create log listener to add to SystemLog variable
         formatter = logging.Formatter("%(msg)s")
         handler = RootLogHandler(root=self)
@@ -399,17 +395,6 @@ class Root(pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
 
-        # Start ZMQ server if enabled
-        if self._serverPort is not None:
-            print("========== Deprecation Warning ===============================================")
-            print(" Setting up zmq server through the Root class creator is                      ")
-            print(" no longer supported. Instead create the ZmqServer seperately                 ")
-            print(" add add it as an interface:                                                  ")
-            print("                                                                              ")
-            print("    with Root() as r:                                                         ")
-            print("       r.addInterface(pyrogue.interfaces.ZmqServer(root=r, addr='*', port=0)) ")
-            print("==============================================================================")
-            self.addProtocol(pr.interfaces.ZmqServer(root=self, addr="*", port=self._serverPort))
         # Start update thread
         self._running = True
         self._updateThread = threading.Thread(target=self._updateWorker)
