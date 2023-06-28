@@ -16,67 +16,77 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
 #define __ROGUE_INTERFACES_STREAM_FRAME_ACCESSOR_H__
-#include <rogue/Directives.h>
-#include <stdint.h>
+#include "rogue/Directives.h"
+
 #include <inttypes.h>
+#include <stdint.h>
+
 #include <memory>
-#include <rogue/GeneralError.h>
-#include <rogue/interfaces/stream/FrameIterator.h>
+
+#include "rogue/GeneralError.h"
+#include "rogue/interfaces/stream/FrameIterator.h"
 
 namespace rogue {
-   namespace interfaces {
-      namespace stream {
+namespace interfaces {
+namespace stream {
 
-         //! Frame Accessor
-         template <typename T>
-         class FrameAccessor {
+//! Frame Accessor
+template <typename T>
+class FrameAccessor {
+  private:
+    // Data container
+    T* data_;
 
-            private:
+    // Size value
+    uint32_t size_;
 
-               // Data container
-               T * data_;
+  public:
+    //! Creator
+    FrameAccessor(rogue::interfaces::stream::FrameIterator& iter, uint32_t size) {
+        data_ = (T*)iter.ptr();
+        size_ = size;
 
-               // Size value
-               uint32_t size_;
+        if (size * sizeof(T) > iter.remBuffer())
+            throw rogue::GeneralError::create("FrameAccessor",
+                                              "Attempt to create a FrameAccessor over a multi-buffer range!");
+    }
 
-            public:
+    //! De-reference by index
+    T& operator[](const uint32_t offset) {
+        return data_[offset];
+    }
 
-               //! Creator
-               FrameAccessor(rogue::interfaces::stream::FrameIterator &iter, uint32_t size) {
-                  data_ = (T *)iter.ptr();
-                  size_ = size;
+    //! Access element at location
+    T& at(const uint32_t offset) {
+        if (offset >= size_)
+            throw rogue::GeneralError::create("FrameAccessor",
+                                              "Attempt to access element %" PRIu32 " with size %" PRIu32,
+                                              offset,
+                                              size_);
 
-                  if ( size*sizeof(T) > iter.remBuffer() )
-                     throw rogue::GeneralError::create("FrameAccessor","Attempt to create a FrameAccessor over a multi-buffer range!");
-               }
+        return data_[offset];
+    }
 
-               //! De-reference by index
-               T & operator [](const uint32_t offset) { return data_[offset]; }
+    //! Get size
+    uint32_t size() {
+        return size_;
+    }
 
-               //! Access element at location
-               T & at(const uint32_t offset) {
+    //! Begin iterator
+    T* begin() {
+        return data_;
+    }
 
-                  if ( offset >= size_ )
-                     throw rogue::GeneralError::create("FrameAccessor","Attempt to access element %" PRIu32 " with size %" PRIu32, offset, size_);
-
-                  return data_[offset];
-               }
-
-               //! Get size
-               uint32_t size() { return size_; }
-
-               //! Begin iterator
-               T * begin() { return data_; }
-
-               //! End iterator
-               T * end() { return data_ + size_; }
-         };
-      }
-   }
-}
+    //! End iterator
+    T* end() {
+        return data_ + size_;
+    }
+};
+}  // namespace stream
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

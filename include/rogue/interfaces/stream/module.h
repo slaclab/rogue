@@ -13,18 +13,17 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_STREAM_MODULE_H__
 #define __ROGUE_INTERFACES_STREAM_MODULE_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 namespace rogue {
-   namespace interfaces {
-      namespace stream {
-         void setup_module();
-      }
-   }
+namespace interfaces {
+namespace stream {
+void setup_module();
 }
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

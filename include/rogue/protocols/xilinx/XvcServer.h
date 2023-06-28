@@ -16,40 +16,31 @@
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
-#include <rogue/protocols/xilinx/JtagDriver.h>
-#include <rogue/GeneralError.h>
-#include <rogue/Logging.h>
+#include "rogue/GeneralError.h"
+#include "rogue/Logging.h"
+#include "rogue/protocols/xilinx/JtagDriver.h"
 
-namespace rogue
-{
-   namespace protocols
-   {
-      namespace xilinx
-      {
-         // XVC Server (top) class
-         class XvcServer
-         {
-            private:
+namespace rogue {
+namespace protocols {
+namespace xilinx {
+// XVC Server (top) class
+class XvcServer {
+  private:
+    int sd_;
+    JtagDriver* drv_;
+    unsigned maxMsgSize_;
 
-               int        sd_;
-               JtagDriver *drv_;
-               unsigned   maxMsgSize_;
+  public:
+    XvcServer(uint16_t port, JtagDriver* drv, unsigned maxMsgSize = 32768);
 
-            public:
+    virtual void run(bool& threadEn, rogue::LoggingPtr log);
 
-               XvcServer(
-                         uint16_t    port,
-                         JtagDriver* drv,
-                         unsigned    maxMsgSize = 32768);
-
-               virtual void run(bool &threadEn, rogue::LoggingPtr log);
-
-               virtual ~XvcServer();
-         };
-      }
-   }
-}
+    virtual ~XvcServer();
+};
+}  // namespace xilinx
+}  // namespace protocols
+}  // namespace rogue
 
 #endif

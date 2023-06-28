@@ -16,14 +16,16 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_GENERAL_ERROR_H__
 #define __ROGUE_GENERAL_ERROR_H__
-#include <rogue/Directives.h>
-#include <exception>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <string>
+
+#include <exception>
 #include <memory>
+#include <string>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
@@ -32,30 +34,28 @@
 namespace rogue {
 
 #ifndef NO_PYTHON
-   extern PyObject * generalErrorObj;
+extern PyObject* generalErrorObj;
 #endif
 
-   //! General exception
-   /*
-    * Called for all general errors that should not occur
-    * in the system.
-    */
-   class GeneralError : public std::exception {
+//! General exception
+/*
+ * Called for all general errors that should not occur
+ * in the system.
+ */
+class GeneralError : public std::exception {
+    static const uint32_t BuffSize = 600;
 
-         static const uint32_t BuffSize = 600;
+    char text_[BuffSize];
 
-         char text_[BuffSize];
+  public:
+    GeneralError(std::string src, std::string text);
 
-      public:
-         GeneralError (std::string src,std::string text);
+    static GeneralError create(std::string src, const char* fmt, ...);
 
-         static GeneralError create(std::string src, const char * fmt, ...);
-
-         char const * what() const throw();
-         static void setup_python();
-         static void translate(GeneralError const &e);
-   };
-}
+    char const* what() const throw();
+    static void setup_python();
+    static void translate(GeneralError const& e);
+};
+}  // namespace rogue
 
 #endif
-

@@ -16,62 +16,66 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_V2_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CONTROLLER_V2_H__
-#include <rogue/Directives.h>
-#include <rogue/protocols/packetizer/Controller.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <memory>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <rogue/Queue.h>
-#include <rogue/Logging.h>
-#include <rogue/EnableSharedFromThis.h>
+
+#include <memory>
+
+#include "rogue/EnableSharedFromThis.h"
+#include "rogue/Logging.h"
+#include "rogue/Queue.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/protocols/packetizer/Controller.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace packetizer {
+namespace protocols {
+namespace packetizer {
 
-         class Application;
-         class Transport;
-         class Header;
+class Application;
+class Transport;
+class Header;
 
-         //! Packetizer Controller Class
-         class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV2> {
+//! Packetizer Controller Class
+class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV2> {
+    bool enIbCrc_;
+    bool enObCrc_;
 
-               bool     enIbCrc_;
-               bool     enObCrc_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::packetizer::ControllerV2> create(
+        bool enIbCrc,
+        bool enObCrc,
+        bool enSsi,
+        std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+        std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
-            public:
+    //! Creator
+    ControllerV2(bool enIbCrc,
+                 bool enObCrc,
+                 bool enSsi,
+                 std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
+                 std::shared_ptr<rogue::protocols::packetizer::Application>* app);
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::packetizer::ControllerV2>
-                  create ( bool enIbCrc, bool enObCrc, bool enSsi,
-                           std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           std::shared_ptr<rogue::protocols::packetizer::Application> * app );
+    //! Destructor
+    ~ControllerV2();
 
-               //! Creator
-               ControllerV2( bool enIbCrc, bool enObCrc, bool enSsi,
-                           std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
-                           std::shared_ptr<rogue::protocols::packetizer::Application> * app );
+    //! Frame received at transport interface
+    void transportRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Destructor
-               ~ControllerV2();
-
-               //! Frame received at transport interface
-               void transportRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-
-               //! Frame received at application interface
-               void applicationRx( std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::packetizer::ControllerV2> ControllerV2Ptr;
-
-      }
-   }
+    //! Frame received at application interface
+    void applicationRx(std::shared_ptr<rogue::interfaces::stream::Frame> frame, uint8_t id);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::packetizer::ControllerV2> ControllerV2Ptr;
 
+}  // namespace packetizer
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

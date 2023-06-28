@@ -16,67 +16,66 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_INTERFACES_MEMORY_EMULATOR_H__
 #define __ROGUE_INTERFACES_MEMORY_EMULATOR_H__
-#include <rogue/Directives.h>
-#include <stdint.h>
-#include <vector>
-#include <memory>
+#include "rogue/Directives.h"
 
-#include <rogue/interfaces/memory/Slave.h>
+#include <stdint.h>
+
+#include <memory>
 #include <thread>
+#include <vector>
+
+#include "rogue/interfaces/memory/Slave.h"
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
 #endif
 
-#define MAP_TYPE std::map<uint64_t, uint8_t *>
+#define MAP_TYPE std::map<uint64_t, uint8_t*>
 
 namespace rogue {
-   namespace interfaces {
-      namespace memory {
+namespace interfaces {
+namespace memory {
 
-         //! Memory interface Emlator device
-         /** This memory will respond to transactions, emilator hardware by responding to read
-          * and write transactions.
-          */
-         class Emulate : public Slave {
+//! Memory interface Emlator device
+/** This memory will respond to transactions, emilator hardware by responding to read
+ * and write transactions.
+ */
+class Emulate : public Slave {
+    // Map to store 4K address space chunks
+    MAP_TYPE memMap_;
 
-               // Map to store 4K address space chunks
-               MAP_TYPE memMap_;
+    // Lock
+    std::mutex mtx_;
 
-               // Lock
-               std::mutex mtx_;
+  public:
+    //! Class factory which returns a pointer to a Emulate (EmulatePtr)
+    /** Exposed to Python as rogue.interfaces.memory.Emualte()
+     *
+     * @param min The min transaction size, 0 if not a virtual memory space root
+     * @param min The max transaction size, 0 if not a virtual memory space root
+     */
+    static std::shared_ptr<rogue::interfaces::memory::Emulate> create(uint32_t min, uint32_t max);
 
-            public:
+    // Setup class for use in python
+    static void setup_python();
 
-               //! Class factory which returns a pointer to a Emulate (EmulatePtr)
-               /** Exposed to Python as rogue.interfaces.memory.Emualte()
-                *
-                * @param min The min transaction size, 0 if not a virtual memory space root
-                * @param min The max transaction size, 0 if not a virtual memory space root
-                */
-               static std::shared_ptr<rogue::interfaces::memory::Emulate> create (uint32_t min, uint32_t max);
+    // Create a Emulate device
+    Emulate(uint32_t min, uint32_t max);
 
-               // Setup class for use in python
-               static void setup_python();
+    // Destroy the Emulate
+    ~Emulate();
 
-               // Create a Emulate device
-               Emulate(uint32_t min, uint32_t max);
+    //! Handle the incoming memory transaction
+    void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+};
 
-               // Destroy the Emulate
-               ~Emulate();
-
-               //! Handle the incoming memory transaction
-               void doTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
-         };
-
-         //! Alias for using shared pointer as EmulatePtr
-         typedef std::shared_ptr<rogue::interfaces::memory::Emulate> EmulatePtr;
-      }
-   }
-}
+//! Alias for using shared pointer as EmulatePtr
+typedef std::shared_ptr<rogue::interfaces::memory::Emulate> EmulatePtr;
+}  // namespace memory
+}  // namespace interfaces
+}  // namespace rogue
 
 #endif
-

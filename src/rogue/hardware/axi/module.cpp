@@ -16,32 +16,31 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
-#include <rogue/Directives.h>
-#include <rogue/hardware/axi/AxiMemMap.h>
-#include <rogue/hardware/axi/AxiStreamDma.h>
-#include <rogue/hardware/axi/module.h>
+#include "rogue/Directives.h"
+
+#include "rogue/hardware/axi/module.h"
 
 #include <boost/python.hpp>
+
+#include "rogue/hardware/axi/AxiMemMap.h"
+#include "rogue/hardware/axi/AxiStreamDma.h"
 
 namespace bp  = boost::python;
 namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
 
 void rha::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.axi"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.hardware.axi"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("axi") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("axi") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rha::AxiStreamDma::setup_python();
-   rha::AxiMemMap::setup_python();
-
+    rha::AxiStreamDma::setup_python();
+    rha::AxiMemMap::setup_python();
 }
-

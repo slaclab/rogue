@@ -12,53 +12,51 @@
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
 #define __ROGUE_PROTOCOLS_BATCHER_INVERTER_V1_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <thread>
+
 #include <memory>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/Logging.h>
+#include <thread>
+
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace batcher {
+namespace protocols {
+namespace batcher {
 
-         //!  AXI Stream FIFO
-         class InverterV1 : public rogue::interfaces::stream::Master,
-                            public rogue::interfaces::stream::Slave {
+//!  AXI Stream FIFO
+class InverterV1 : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::batcher::InverterV1> create();
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::batcher::InverterV1> create();
+    //! Creator
+    InverterV1();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Deconstructor
+    ~InverterV1();
 
-               //! Creator
-               InverterV1();
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+};
 
-               //! Deconstructor
-               ~InverterV1();
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::batcher::InverterV1> InverterV1Ptr;
-      }
-   }
-}
+// Convienence
+typedef std::shared_ptr<rogue::protocols::batcher::InverterV1> InverterV1Ptr;
+}  // namespace batcher
+}  // namespace protocols
+}  // namespace rogue
 #endif
-

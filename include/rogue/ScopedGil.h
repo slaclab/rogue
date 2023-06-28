@@ -16,29 +16,27 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_SCOPED_GIL_H__
 #define __ROGUE_SCOPED_GIL_H__
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
 #endif
 
 namespace rogue {
 
-   //! Logging
-   class ScopedGil {
-
+//! Logging
+class ScopedGil {
 #ifndef NO_PYTHON
-         PyGILState_STATE state_;
+    PyGILState_STATE state_;
 #endif
 
-      public:
-         ScopedGil();
-         ~ScopedGil();
-   };
-}
+  public:
+    ScopedGil();
+    ~ScopedGil();
+};
+}  // namespace rogue
 
 #endif
-
