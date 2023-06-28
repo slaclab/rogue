@@ -56,6 +56,8 @@ int main (int argc, char **argv) {
    } catch (...) {
       fprintf(stderr, "Found error running API example:\n");
       PyErr_Print();
-  }
+      return -1;
+   }
+   return 0;
 }
 
