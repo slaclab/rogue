@@ -62,6 +62,21 @@ jobs:
           source setup_rogue.sh
           python -m pytest --cov
 
+      # Compile API Test
+      - name: Compile API Test
+        run: |
+          source setup_rogue.sh
+          cd tests/api_test
+          mkdir build; cd build
+          cmake ..
+          make
+
+      # Run API Test
+      - name: Run API Test
+        run: |
+          source setup_rogue.sh
+          tests/api_test/bin/api_test
+
       # Code Coverage
       - name: Code Coverage
         run: |
