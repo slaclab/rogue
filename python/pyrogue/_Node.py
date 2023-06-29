@@ -557,10 +557,12 @@ class Node(object):
 
     @property
     def nodeList(self):
-        """
-        Get sub-nodes in a list
-        """
-        return [k for k,v in self._nodes.items()]
+        """Get a recursive list of nodes."""
+        lst = []
+        for key,value in self.nodes.items():
+            lst.append(value)
+            lst.extend(value.nodeList)
+        return lst
 
     def getNodes(self,typ,excTyp=None,incGroups=None,excGroups=None):
         """
