@@ -251,7 +251,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         try:
             self._root = self._remoteAttr('__ROOT__',None)
-        except Exception as e:
+        except Exception:
             print("\n\nFailed to connected to {}:{}!!!! Please Close PyDM Window!!!!\n\n".format(addr,port))
             return
 
