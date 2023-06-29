@@ -301,7 +301,7 @@ class EpicsPvServer(object):
         self._started = True
 
         self._stop()
-        self._list = []
+        self._list = {}
 
         if not self._root.running:
             raise Exception("Epics can not be setup on a tree which is not started")
@@ -326,7 +326,13 @@ class EpicsPvServer(object):
 
             if eName is not None:
                 pvh = EpicsPvHolder(self._provider,eName,v,self._log)
-                self._list.append(pvh)
+                self._list[v] = pvh
+
+        # Check for missing map entries
+        if len(self._pvMap) != len(self._list):
+            for k,v in self._pvMap.items():
+                if k not in self._list:
+                    self._log.error(f"Failed to find {k} from P4P mapping in Rogue tree!")
 
         self._server = p4p.server.Server(providers=[self._provider])
 
