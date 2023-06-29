@@ -16,62 +16,61 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_VERSION_H__
 #define __ROGUE_VERSION_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
+
 #include <string>
 
 namespace rogue {
 
-   //! Version
-   class Version {
+//! Version
+class Version {
+    static void init();
+    static void extract(std::string compare, uint32_t* major, uint32_t* minor, uint32_t* maint);
 
-         static void init   ();
-         static void extract(std::string compare, uint32_t *major, uint32_t *minor, uint32_t *maint);
+    static const char _version[];
 
-         static const char _version[];
+    static uint32_t _major;
+    static uint32_t _minor;
+    static uint32_t _maint;
+    static uint32_t _devel;
 
-         static uint32_t _major;
-         static uint32_t _minor;
-         static uint32_t _maint;
-         static uint32_t _devel;
+  public:
+    Version() {}
 
-      public:
+    static std::string current();
 
-         Version() {}
+    static bool greaterThanEqual(std::string compare);
 
-         static std::string current();
+    static bool greaterThan(std::string compare);
 
-         static bool greaterThanEqual(std::string compare);
+    static bool lessThanEqual(std::string compare);
 
-         static bool greaterThan(std::string compare);
+    static bool lessThan(std::string compare);
 
-         static bool lessThanEqual(std::string compare);
+    static void minVersion(std::string compare);
 
-         static bool lessThan(std::string compare);
+    static void maxVersion(std::string compare);
 
-         static void minVersion(std::string compare);
+    static void exactVersion(std::string compare);
 
-         static void maxVersion(std::string compare);
+    static void setup_python();
 
-         static void exactVersion(std::string compare);
+    static uint32_t getMajor();
+    static uint32_t getMinor();
+    static uint32_t getMaint();
+    static uint32_t getDevel();
 
-         static void setup_python();
+    // For debugging
+    static void sleep(uint32_t seconds);
+    static void usleep(uint32_t useconds);
 
-         static uint32_t getMajor ();
-         static uint32_t getMinor ();
-         static uint32_t getMaint ();
-         static uint32_t getDevel ();
-
-         // For debugging
-         static void sleep(uint32_t seconds);
-         static void usleep(uint32_t useconds);
-
-         static std::string pythonVersion();
-   };
-}
+    static std::string pythonVersion();
+};
+}  // namespace rogue
 
 #endif
-

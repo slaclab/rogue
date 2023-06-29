@@ -150,26 +150,6 @@ def streamConnect(source, dest):
 
     master._addSlave(slave)
 
-
-def streamTap(source, tap):
-    """
-    DEPRECATED!
-
-    Parameters
-    ----------
-    source :
-
-    tap :
-
-
-    Returns
-    -------
-
-    """
-    #print("******** Stream TAP is deprecated. Use streamConnect instead. ********")
-    streamConnect(source,tap)
-
-
 def streamConnectBiDir(deviceA, deviceB):
     """
     Attach the passed dest object to the source a stream.

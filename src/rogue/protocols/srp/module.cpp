@@ -18,32 +18,32 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
+
+#include "rogue/protocols/srp/module.h"
+
 #include <boost/python.hpp>
 
-#include <rogue/protocols/srp/module.h>
-#include <rogue/protocols/srp/SrpV0.h>
-#include <rogue/protocols/srp/SrpV3.h>
-#include <rogue/protocols/srp/Cmd.h>
+#include "rogue/protocols/srp/Cmd.h"
+#include "rogue/protocols/srp/SrpV0.h"
+#include "rogue/protocols/srp/SrpV3.h"
 
 namespace bp  = boost::python;
 namespace rps = rogue::protocols::srp;
 
 void rps::setup_module() {
+    // map the IO namespace to a sub-module
+    bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.srp"))));
 
-   // map the IO namespace to a sub-module
-   bp::object module(bp::handle<>(bp::borrowed(PyImport_AddModule("rogue.protocols.srp"))));
+    // make "from mypackage import class1" work
+    bp::scope().attr("srp") = module;
 
-   // make "from mypackage import class1" work
-   bp::scope().attr("srp") = module;
+    // set the current scope to the new sub-module
+    bp::scope io_scope = module;
 
-   // set the current scope to the new sub-module
-   bp::scope io_scope = module;
-
-   rps::SrpV0::setup_python();
-   rps::SrpV3::setup_python();
-   rps::Cmd::setup_python();
+    rps::SrpV0::setup_python();
+    rps::SrpV3::setup_python();
+    rps::Cmd::setup_python();
 }
-

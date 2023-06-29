@@ -17,12 +17,11 @@ import rogue.interfaces.memory as rim
 import threading
 import logging
 import pyrogue as pr
-import pyrogue.interfaces
+import pyrogue.interfaces.stream
 import functools as ft
 import time
 import queue
 import json
-import pickle
 import zipfile
 import traceback
 import datetime
@@ -125,6 +124,8 @@ class RootLogHandler(logging.Handler):
                     for tb in traceback.format_tb(record.exc_info[2]):
                         se['traceBack'].append(tb.rstrip())
 
+                self._root.SystemLogLast.set(json.dumps(se))
+
                 # System log is a running json encoded list
                 with self._root.SystemLog.lock:
                     lst = json.loads(self._root.SystemLog.value())
@@ -135,9 +136,6 @@ class RootLogHandler(logging.Handler):
                     lst.append(se)
                     self._root.SystemLog.set(json.dumps(lst))
 
-                # Log to database
-                if self._root._sqlLog is not None:
-                    self._root._sqlLog.logSyslog(se)
 
             except Exception as e:
                 print("-----------Error Logging Exception -------------")
@@ -147,7 +145,7 @@ class RootLogHandler(logging.Handler):
                 print(self.format(record))
                 print("------------------------------------------------")
 
-class Root(rogue.interfaces.stream.Master,pr.Device):
+class Root(pr.Device):
     """
     Class which serves as the root of a tree of nodes.
     The root is the interface point for tree level access and updates.
@@ -184,13 +182,8 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                  initRead=False,
                  initWrite=False,
                  pollEn=True,
-                 serverPort=0,  # 9099 is the default, 0 for auto
-                 sqlUrl=None,
-                 maxLog=1000,
-                 streamIncGroups=None,
-                 streamExcGroups=['NoStream'],
-                 sqlIncGroups=None,
-                 sqlExcGroups=['NoSql']):
+                 maxLog=1000):
+
         """Init the node with passed attributes"""
         rogue.interfaces.stream.Master.__init__(self)
 
@@ -199,13 +192,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._initRead        = initRead
         self._initWrite       = initWrite
         self._pollEn          = pollEn
-        self._serverPort      = serverPort
-        self._sqlUrl          = sqlUrl
         self._maxLog          = maxLog
-        self._streamIncGroups = streamIncGroups
-        self._streamExcGroups = streamExcGroups
-        self._sqlIncGroups    = sqlIncGroups
-        self._sqlExcGroups    = sqlExcGroups
         self._doHeartbeat     = True # Backdoor flag
 
         # Create log listener to add to SystemLog variable
@@ -221,9 +208,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Polling worker
         self._pollQueue = self._pollQueue = pr.PollQueue(root=self)
 
-        # Zeromq server
-        self._zmqServer  = None
-
         # List of variable listeners
         self._varListeners  = []
         self._varListenLock = threading.Lock()
@@ -233,9 +217,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         self._updateThread = None
         self._updateLock   = threading.Lock()
         self._updateTrack  = {}
-
-        # SQL URL
-        self._sqlLog = None
 
         # Init
         pr.Device.__init__(self, name=name, description=description, expand=expand)
@@ -249,6 +230,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self.add(pr.LocalVariable(name='SystemLog', value=SystemLogInit, mode='RO', hidden=True, groups=['NoStream','NoSql','NoState'],
             description='String containing newline separated system logic entries'))
+
+        self.add(pr.LocalVariable(name='SystemLogLast', value='', mode='RO', hidden=True, groups=['NoStream','NoState'],
+            description='String containing last system log entry'))
 
         self.add(pr.LocalVariable(name='ForceWrite', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Always Write Non Stale Blocks For WriteAll, LoadConfig and setYaml'))
@@ -380,10 +364,13 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         # Finish Initialization
         self._finishInit()
 
-        # Get full list of Devices and Blocks
+        # Get full list of Blocks and Devices with size
         tmpList = []
         for d in self.deviceList:
-            tmpList.append(d)
+
+            if hasattr(d,"size"):
+                tmpList.append(d)
+
             for b in d._blocks:
                 if isinstance(b, rim.Block):
                     tmpList.append(b)
@@ -402,46 +389,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             if (tmpList[i].size != 0) and (tmpList[i]._reqSlaveId() == tmpList[i-1]._reqSlaveId()) and \
                (tmpList[i].address < (tmpList[i-1].address + tmpList[i-1].size)):
 
-                # Allow overlaps between Devices and Blocks if the Device is an ancestor of the Block and the block allows overlap.
-                # Check for instances when device comes before block and when block comes before device
-                # This will be removed in the future and an error will always be raised
-                if (not (isinstance(tmpList[i-1],pr.Device) and isinstance(tmpList[i],rim.Block) and (tmpList[i].path.find(tmpList[i-1].path) == 0 and tmpList[i].overlapEn))) and \
-                        (not (isinstance(tmpList[i],pr.Device) and isinstance(tmpList[i-1],rim.Block) and (tmpList[i-1].path.find(tmpList[i].path) == 0 and tmpList[i-1].overlapEn))):
-
-                    raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
-                                       tmpList[i].path,tmpList[i].address,
-                                       tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
-
-                # Deprecation Error
-                print("")
-                print("========== Deprecation Warning ===============================")
-                print(" Detected overlap between the following Devices/Blocks        ")
-                print("    {} at address={:#x} wht size {}".format(tmpList[i].path,tmpList[i].address,tmpList[i].size))
-                print("    {} at address={:#x} wht size {}".format(tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
-                print(" Creating these types of overlaps can generate inconsistencies")
-                print(" in the variable state and can cause errors. Please consider  ")
-                print(" using a listDevice and or a MemoryDevice class instead.      ")
-                print(" Link variables can be used to map multiple variables to the  ")
-                print(" underlying address space. Future releases of Rogue will treat")
-                print(" these overlaps as errors.")
-                print("==============================================================")
+                raise pr.NodeError("{} at address={:#x} overlaps {} at address={:#x} with size={}".format(
+                                   tmpList[i].path,tmpList[i].address,
+                                   tmpList[i-1].path,tmpList[i-1].address,tmpList[i-1].size))
 
         # Set timeout if not default
         if self._timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
-
-        # Start ZMQ server if enabled
-        if self._serverPort is not None:
-            self._zmqServer  = pr.interfaces.ZmqServer(root=self,addr="*",port=self._serverPort)
-            self._serverPort = self._zmqServer.port()
-            print(f"Start: Started zmqServer on ports {self._serverPort}-{self._serverPort+2}")
-            print(f"    To start a gui: python -m pyrogue gui --server='localhost:{self._serverPort}'")
-            print(f"    To use a virtual client: client = pyrogue.interfaces.VirtualClient(addr='localhost', port={self._serverPort})")
-
-        # Start sql interface
-        if self._sqlUrl is not None:
-            self._sqlLog = pr.interfaces.SqlLogger(self._sqlUrl)
 
         # Start update thread
         self._running = True
@@ -480,28 +435,16 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         if self._pollQueue:
             self._pollQueue._stop()
 
-        if self._zmqServer is not None:
-            self._zmqServer._stop()
-
-        if self._sqlLog is not None:
-            self._sqlLog._stop()
-
         pr.Device._stop(self)
-
-    @property
-    def serverPort(self):
-        """
-"""
-        return self._serverPort
 
     @pr.expose
     @property
     def running(self):
         """
-"""
+        """
         return self._running
 
-    def addVarListener(self,func):
+    def addVarListener(self,func,*,done=None,incGroups=None,excGroups=None):
         """
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
@@ -509,139 +452,19 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
         Parameters
         ----------
         func :
+        done :
+        incGroups :
+        excGroups :
 
         Returns
         -------
         """
-
 
         with self._varListenLock:
-            self._varListeners.append(func)
+            self._varListeners.append((func,done,incGroups,excGroups))
 
-    @pr.expose
-    def get(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.get()
-
-    @pr.expose
-    def getDisp(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.getDisp()
-
-    @pr.expose
-    def value(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.value()
-
-    @pr.expose
-    def valueDisp(self,path):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.valueDisp()
-
-    @pr.expose
-    def set(self,path,value):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        value :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.set(value)
-
-    @pr.expose
-    def setDisp(self,path,value):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        value :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj.setDisp(value)
-
-    @pr.expose
-    def exec(self,path,arg):
-        """
-
-
-        Parameters
-        ----------
-        path :
-
-        arg :
-
-
-        Returns
-        -------
-
-        """
-        obj = self.getNode(path)
-        return obj(arg)
+    def _addVarListenerCpp(self, func, done):
+        self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager
     def updateGroup(self, period=0):
@@ -677,7 +500,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     @contextmanager
     def pollBlock(self):
         """
-"""
+        """
 
         # At with call
         self._pollQueue._blockIncrement()
@@ -873,24 +696,14 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
                     f.write("{}\t".format(v.groups))
                     f.write("{}\n".format(v.description))
 
-
     def _hbeatWorker(self):
         """
-"""
+        """
         while self._running:
             time.sleep(1)
 
             with self.updateGroup():
                 self.Time.set(time.time())
-
-    #def _exit(self):
-    #    self.stop()
-    #    exit()
-
-    #def _restart(self):
-    #    self.stop()
-    #    py = sys.executable
-    #    os.execl(py, py, *sys.argv)
 
     def _rootAttached(self):
         """
@@ -904,69 +717,9 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
 
         self._buildBlocks()
 
-    def _sendYamlFrame(self,yml):
-        """
-        Generate a frame containing the passed string.
-
-        Parameters
-        ----------
-        yml :
-
-
-        Returns
-        -------
-
-        """
-        b = bytearray(yml,'utf-8')
-        frame = self._reqFrame(len(b),True)
-        frame.write(b,0)
-        self._sendFrame(frame)
-
-    def streamYaml(self,modes=['RW','RO','WO'],incGroups=None,excGroups=None):
-        """
-        Generate a frame containing all variables values in yaml format.
-        A hardware read is not generated before the frame is generated.
-        incGroups is a list of groups that the variable must be a member
-        of in order to be included in the stream. excGroups is a list of
-        groups that the variable must not be a member of to include.
-        excGroups takes precedence over incGroups. If excGroups or
-        incGroups are None, the default set of stream include and
-        exclude groups will be used as specified when the Root class was created.
-        By default all variables are included, except for members of the NoStream group.
-
-        Parameters
-        ----------
-        modes :
-             (Default value = ['RW')
-        'RO' :
-
-        'WO'] :
-
-        incGroups :
-             (Default value = None)
-        excGroups :
-             (Default value = None)
-
-        Returns
-        -------
-
-        """
-
-        # Don't send if there are not any Slaves connected
-        if self._slaveCount == 0:
-            return
-
-        # Inherit include and exclude groups from global if not passed
-        if incGroups is None:
-            incGroups = self._streamIncGroups
-        if excGroups is None:
-            excGroups = self._streamExcGroups
-
-        self._sendYamlFrame(self.getYaml(readFirst=False,
-                                         modes=modes,
-                                         incGroups=incGroups,
-                                         excGroups=excGroups,
-                                         recurse=True))
+        # Some variable initialization can run until the blocks are built
+        for v in self.variables.values():
+            v._finishInit()
 
     def _write(self):
         """Write all blocks"""
@@ -1246,6 +999,7 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _clearLog(self):
         """Clear the system log"""
         self.SystemLog.set(SystemLogInit)
+        self.SystemLogLast.set('')
 
     def _queueUpdates(self,var):
         """
@@ -1271,8 +1025,6 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
     def _updateWorker(self):
         """ """
         self._log.info("Starting update thread")
-        strm = {}
-        zmq  = {}
 
         while True:
             uvars = self._updateQueue.get()
@@ -1287,51 +1039,33 @@ class Root(rogue.interfaces.stream.Master,pr.Device):
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
                 for p,v in uvars.items():
-                    try:
-                        val = v._doUpdate()
+                    val = v._doUpdate()
 
-                        # Add to stream
-                        if self._slaveCount() != 0 and v.filterByGroup(self._streamIncGroups, self._streamExcGroups):
-                            strm[p] = val
+                    # Call listener functions,
+                    with self._varListenLock:
+                        for func,doneFunc,incGroups,excGroups in self._varListeners:
+                            if v.filterByGroup(incGroups, excGroups):
+                                try:
+                                    func(p,val)
 
-                        # Add to zmq publish
-                        if not v.inGroup('NoServe'):
-                            zmq[p] = val
+                                except Exception as e:
+                                    if v == self.SystemLog or v == self.SystemLogLast:
+                                        print("------- Error Executing Syslog Listeners -------")
+                                        print("Error: {}".format(e))
+                                        print("------------------------------------------------")
+                                    else:
+                                        pr.logException(self._log,e)
 
-                        # Call listener functions,
-                        with self._varListenLock:
-                            for func in self._varListeners:
-                                func(p,val)
-
-                        # Log to database
-                        if self._sqlLog is not None and v.filterByGroup(self._sqlIncGroups, self._sqlExcGroups):
-                            #print('sql log:',p, val)
-                            self._sqlLog.logVariable(p, val)
-
-                    except Exception as e:
-                        if v == self.SystemLog:
-                            print("------- Error Executing Syslog Listeners -------")
-                            print("Error: {}".format(e))
-                            print("------------------------------------------------")
-                        else:
-                            pr.logException(self._log,e)
+                # Finalize listeners
+                with self._varListenLock:
+                    for func,doneFunc,incGroups,excGroups in self._varListeners:
+                        if doneFunc is not None:
+                            try:
+                                doneFunc()
+                            except Exception as e:
+                                pr.logException(self._log,e)
 
                 self._log.debug(F"Done update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}")
-
-
-                # Generate yaml stream
-                try:
-                    if len(strm) > 0:
-                        self._sendYamlFrame(pr.dataToYaml(strm))
-                        strm = {}
-
-                except Exception as e:
-                    pr.logException(self._log,e)
-
-                # Send over zmq link
-                if self._zmqServer is not None:
-                    self._zmqServer._publish(pickle.dumps(zmq))
-                zmq = {}
 
             # Set done
             self._updateQueue.task_done()

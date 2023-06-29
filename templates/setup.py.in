@@ -34,3 +34,4 @@ setup (
     package_data={'':['../rogue.so'], 'pyrogue.pydm':['examples/*.ui']},
     include_package_data=True,
 )
+

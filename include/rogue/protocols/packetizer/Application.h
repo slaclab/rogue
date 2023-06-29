@@ -13,79 +13,78 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_APPLICATION_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_APPLICATION_H__
-#include <rogue/Directives.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
+
 #include <memory>
-#include <rogue/Queue.h>
+
+#include "rogue/Queue.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace packetizer {
+namespace protocols {
+namespace packetizer {
 
-         class Controller;
+class Controller;
 
-         //! Application Class
-         class Application : public rogue::interfaces::stream::Master,
-                             public rogue::interfaces::stream::Slave {
+//! Application Class
+class Application : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
+    //! Core module
+    std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
-               //! Core module
-               std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+    // ID
+    uint8_t id_;
 
-               // ID
-               uint8_t id_;
+    // Transmission thread
+    std::thread* thread_;
+    bool threadEn_;
 
-               // Transmission thread
-               std::thread* thread_;
-               bool threadEn_;
+    //! Thread background
+    void runThread();
 
-               //! Thread background
-               void runThread();
+    // Application queue
+    rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-               // Application queue
-               rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::packetizer::Application> create(uint8_t id);
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::packetizer::Application> create (uint8_t id);
+    //! Creator
+    Application(uint8_t id);
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Application();
 
-               //! Creator
-               Application(uint8_t id);
+    //! Set Controller
+    void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl);
 
-               //! Destructor
-               ~Application();
+    //! Push frame for transmit
+    void pushFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Set Controller
-               void setController(std::shared_ptr<rogue::protocols::packetizer::Controller> cntl );
+    //! Generate a Frame. Called from master
+    /*
+     * Pass total size required.
+     * Pass flag indicating if zero copy buffers are acceptable
+     */
+    std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq(uint32_t size, bool zeroCopyEn);
 
-               //! Push frame for transmit
-               void pushFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
-
-               //! Generate a Frame. Called from master
-               /*
-                * Pass total size required.
-                * Pass flag indicating if zero copy buffers are acceptable
-                */
-               std::shared_ptr<rogue::interfaces::stream::Frame> acceptReq ( uint32_t size, bool zeroCopyEn);
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::packetizer::Application> ApplicationPtr;
-
-      }
-   }
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::packetizer::Application> ApplicationPtr;
 
+}  // namespace packetizer
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

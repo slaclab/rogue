@@ -1,8 +1,8 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : src/rogue/protocols/epicsV3/CMakeLists.txt
-# Created    : 2018-02-27
+# File       : src/rogue/interfaces/api/CMakeLists.txt
+# Created    : 2023-04-17
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -13,10 +13,4 @@
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
 
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Command.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Pv.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Server.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Value.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Variable.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Work.cpp")
-target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/module.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Bsp.cpp")

@@ -17,54 +17,57 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include <rogue/Directives.h>
-#include <rogue/interfaces/stream/Frame.h>
-#include <rogue/interfaces/stream/Buffer.h>
-#include <rogue/protocols/rssi/Controller.h>
-#include <rogue/protocols/rssi/Transport.h>
-#include <rogue/GeneralError.h>
+ **/
+#include "rogue/Directives.h"
+
+#include "rogue/protocols/rssi/Transport.h"
+
 #include <memory>
-#include <rogue/GilRelease.h>
-#include <rogue/Logging.h>
+
+#include "rogue/GeneralError.h"
+#include "rogue/GilRelease.h"
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Buffer.h"
+#include "rogue/interfaces/stream/Frame.h"
+#include "rogue/protocols/rssi/Controller.h"
 
 namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
-namespace bp  = boost::python;
+namespace bp = boost::python;
 #endif
 
 //! Class creation
-rpr::TransportPtr rpr::Transport::create () {
-   rpr::TransportPtr r = std::make_shared<rpr::Transport>();
-   return(r);
+rpr::TransportPtr rpr::Transport::create() {
+    rpr::TransportPtr r = std::make_shared<rpr::Transport>();
+    return (r);
 }
 
 void rpr::Transport::setup_python() {
 #ifndef NO_PYTHON
 
-   bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master,ris::Slave>, boost::noncopyable >("Transport",bp::init<>());
+    bp::class_<rpr::Transport, rpr::TransportPtr, bp::bases<ris::Master, ris::Slave>, boost::noncopyable>("Transport",
+                                                                                                          bp::init<>());
 
-   bp::implicitly_convertible<rpr::TransportPtr, ris::MasterPtr>();
-   bp::implicitly_convertible<rpr::TransportPtr, ris::SlavePtr>();
+    bp::implicitly_convertible<rpr::TransportPtr, ris::MasterPtr>();
+    bp::implicitly_convertible<rpr::TransportPtr, ris::SlavePtr>();
 #endif
 }
 
 //! Creator
-rpr::Transport::Transport () { }
+rpr::Transport::Transport() {}
 
 //! Destructor
-rpr::Transport::~Transport() { }
+rpr::Transport::~Transport() {}
 
 //! Setup links
-void rpr::Transport::setController( rpr::ControllerPtr cntl ) {
-   cntl_ = cntl;
+void rpr::Transport::setController(rpr::ControllerPtr cntl) {
+    cntl_ = cntl;
 }
 
 //! Accept a frame from master
-void rpr::Transport::acceptFrame ( ris::FramePtr frame ) {
-   cntl_->transportRx(frame);
+void rpr::Transport::acceptFrame(ris::FramePtr frame) {
+    cntl_->transportRx(frame);
 }
-

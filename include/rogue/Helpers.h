@@ -16,39 +16,36 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_HELPERS_H__
 #define __ROGUE_HELPERS_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
 
 // Connect stream
-#define rogueStreamConnect(src,dst) src->addSlave(dst);
+#define rogueStreamConnect(src, dst) src->addSlave(dst);
 
 // Add stream tap, DEPRECATED
-#define rogueStreamTap(src,dst) src->addSlave(dst);
+#define rogueStreamTap(src, dst) src->addSlave(dst);
 
 // Connect stream bi-directionally
-#define rogueStreamConnectBiDir(devA,devB) \
-   devA->addSlave(devB); \
-   devB->addSlave(devA);
+#define rogueStreamConnectBiDir(devA, devB) \
+    devA->addSlave(devB);                   \
+    devB->addSlave(devA);
 
 // Connect memory bus
-#define rogueBusConnect(src,dst) src->setSlave(dst);
+#define rogueBusConnect(src, dst) src->setSlave(dst);
 
 // Global default timeout value
 #define ROGUE_DEFAULT_TIMEOUT 1000000
 
 namespace rogue {
 
-   // Return default timeout value
-   inline void defaultTimeout(struct timeval &tout) {
-      div_t divResult = div(ROGUE_DEFAULT_TIMEOUT,1000000);
-      tout.tv_sec  = divResult.quot;
-      tout.tv_usec = divResult.rem;
-   }
+// Return default timeout value
+inline void defaultTimeout(struct timeval& tout) {
+    div_t divResult = div(ROGUE_DEFAULT_TIMEOUT, 1000000);
+    tout.tv_sec     = divResult.quot;
+    tout.tv_usec    = divResult.rem;
 }
-
-
+}  // namespace rogue
 
 #endif
-

@@ -32,7 +32,7 @@ class myDevice(pyrogue.Device):
 
 class LocalRoot(pyrogue.Root):
     def __init__(self):
-        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root', serverPort=None)
+        pyrogue.Root.__init__(self, name='LocalRoot', description='Local root')
         my_device=myDevice()
         self.add(my_device)
 

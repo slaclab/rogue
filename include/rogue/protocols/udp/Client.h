@@ -13,67 +13,66 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_UDP_CLIENT_H__
 #define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#include <rogue/Directives.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
-#include <rogue/protocols/udp/Core.h>
-#include <rogue/Logging.h>
-#include <thread>
-#include <stdint.h>
+#include "rogue/Directives.h"
+
 #include <netdb.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
+#include <stdint.h>
+#include <sys/socket.h>
+
 #include <memory>
+#include <thread>
+
+#include "rogue/Logging.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+#include "rogue/protocols/udp/Core.h"
 
 namespace rogue {
-   namespace protocols {
-      namespace udp {
+namespace protocols {
+namespace udp {
 
-         class Client : public rogue::protocols::udp::Core,
-                        public rogue::interfaces::stream::Master,
-                        public rogue::interfaces::stream::Slave {
+class Client : public rogue::protocols::udp::Core,
+               public rogue::interfaces::stream::Master,
+               public rogue::interfaces::stream::Slave {
+    //! Address, hostname or ip address
+    std::string address_;
 
-               //! Address, hostname or ip address
-               std::string address_;
+    //! Remote port number
+    uint16_t port_;
 
-               //! Remote port number
-               uint16_t port_;
+    //! Thread background
+    void runThread(std::weak_ptr<int>);
 
-               //! Thread background
-               void runThread(std::weak_ptr<int>);
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::udp::Client> create(std::string host, uint16_t port, bool jumbo);
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::udp::Client>
-                  create (std::string host, uint16_t port, bool jumbo);
+    //! Creator
+    Client(std::string host, uint16_t port, bool jumbo);
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Client();
 
-               //! Creator
-               Client(std::string host, uint16_t port, bool jumbo);
+    //! Stop the interface
+    void stop();
 
-               //! Destructor
-               ~Client();
-
-               //! Stop the interface
-               void stop();
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::udp::Client> ClientPtr;
-
-      }
-   }
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::udp::Client> ClientPtr;
 
+}  // namespace udp
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

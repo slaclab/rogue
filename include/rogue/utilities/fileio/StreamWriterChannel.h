@@ -10,77 +10,78 @@
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
-    * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
 #define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
-#include <rogue/Directives.h>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <thread>
-#include <rogue/interfaces/stream/Slave.h>
+
 #include <memory>
+#include <thread>
+
+#include "rogue/interfaces/stream/Slave.h"
 
 namespace rogue {
-   namespace utilities {
-      namespace fileio {
+namespace utilities {
+namespace fileio {
 
-         class StreamWriter;
+class StreamWriter;
 
-         //! Stream writer central class
-         class StreamWriterChannel : public rogue::interfaces::stream::Slave {
+//! Stream writer central class
+class StreamWriterChannel : public rogue::interfaces::stream::Slave {
+    //! Associated Stream Writer class
+    std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
 
-               //! Associated Stream Writer class
-               std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer_;
+    //! Channel information
+    uint8_t channel_;
 
-               //! Channel information
-               uint8_t channel_;
+    //! Number of frames received by channel
+    uint32_t frameCount_;
 
-               //! Number of frames received by channel
-               uint32_t frameCount_;
+    //! Lock for frameCount_
+    std::mutex mtx_;
 
-               //! Lock for frameCount_
-               std::mutex mtx_;
+    //! Condition variable for frameCount_ updates
+    std::condition_variable cond_;
 
-               //! Condition variable for frameCount_ updates
-               std::condition_variable cond_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> create(
+        std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer,
+        uint8_t channel);
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel>
-                  create (std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
+    //! Creator
+    StreamWriterChannel(std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
 
-               //! Setup class in python
-               static void setup_python();
+    //! Deconstructor
+    ~StreamWriterChannel();
 
-               //! Creator
-               StreamWriterChannel(std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer, uint8_t channel);
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-               //! Deconstructor
-               ~StreamWriterChannel();
+    //! Get number of frames that have been accepted
+    uint32_t getFrameCount();
 
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
+    //! Set the frame count to a specific value
+    void setFrameCount(uint32_t count);
 
-               //! Get number of frames that have been accepted
-               uint32_t getFrameCount();
+    //! Block until a number of frames have been received
+    bool waitFrameCount(uint32_t count, uint64_t timeout);
+};
 
-               //! Set the frame count to a specific value
-               void setFrameCount(uint32_t count);
-
-               //! Block until a number of frames have been received
-               bool waitFrameCount(uint32_t count, uint64_t timeout);
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> StreamWriterChannelPtr;
-      }
-   }
-}
+// Convenience
+typedef std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> StreamWriterChannelPtr;
+}  // namespace fileio
+}  // namespace utilities
+}  // namespace rogue
 
 #endif
-
