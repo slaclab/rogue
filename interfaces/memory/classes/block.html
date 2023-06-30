@@ -4,13 +4,15 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Block &mdash; Rogue v5.18.4 documentation</title>
+  <title>Block &mdash; Rogue v6.0.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
@@ -33,7 +35,7 @@
             Rogue
           </a>
               <div class="version">
-                v5.18.4
+                v6.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -82,6 +84,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
 </ul>
 
         </div>
@@ -163,19 +166,6 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>bulk enable flag </p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block9overlapEnEv">
-<span id="_CPPv3N5rogue10interfaces6memory5Block9overlapEnEv"></span><span id="_CPPv2N5rogue10interfaces6memory5Block9overlapEnEv"></span><span id="rogue::interfaces::memory::Block::overlapEn"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a69c92d09d2461d582c4d942999b54253"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">overlapEn</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block9overlapEnEv" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Return overlap enable flag. </p>
-<p>Return the overlap enable flag</p>
-<p>Exposed as overlapEn property to Python </p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>overlap enable flag </p>
 </dd>
 </dl>
 </dd></dl>
@@ -305,10 +295,10 @@
 
 <dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE">
-<span id="_CPPv3N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE"></span><span id="_CPPv2N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE"></span><span id="rogue::interfaces::memory::Block::addVariables__std::vector:std::shared_ptr:rogue::interfaces::memory::Variable::"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1aed1e3aec51a587ccf9b04611014ad75c"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addVariables</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">variables</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE" title="Permalink to this definition"></a><br /></dt>
+<span id="_CPPv3N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE"></span><span id="_CPPv2N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE"></span><span id="rogue::interfaces::memory::Block::addVariables__std::vector:std::shared_ptr:rogue::interfaces::memory::Variable::"></span><span class="target" id="classrogue_1_1interfaces_1_1memory_1_1Block_1a7f118d95f27d8e084b592bed3440421a"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">addVariables</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">vector</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">memory</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">Variable</span></span><span class="p"><span class="pre">&gt;</span></span><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">variables</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6memory5Block12addVariablesENSt6vectorINSt10shared_ptrIN5rogue10interfaces6memory8VariableEEEEE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Add variables to block, C++ version. </p>
 <p>Add the passed list of variables to this block</p>
-<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1aed1e3aec51a587ccf9b04611014ad75c"><span class="std std-ref">addVariables()</span></a> method to Python</p>
+<p>Exposed as <a class="reference internal" href="#classrogue_1_1interfaces_1_1memory_1_1Block_1a7f118d95f27d8e084b592bed3440421a"><span class="std std-ref">addVariables()</span></a> method to Python</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>variables</strong> – Variable list </p>

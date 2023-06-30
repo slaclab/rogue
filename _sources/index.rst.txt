@@ -22,6 +22,7 @@ branch of Rogue. New documentation is being added incrementally over time.
    logging/index
    custom_module/index
    pydm/index
+   migration/index
 
 Please email rherbst@slac.stanford.edu if you see any errors or have any
 questions about anything in the current documentation. We are still adding

@@ -66,7 +66,7 @@ to epics to allow external control.
    import pyrogue
    import MyWrapper
    import time
-   import pyrogue.protocols.epics
+   import pyrogue.protocols.epicsV4
 
    class TestRoot(pyrogue.Root):
 
@@ -84,16 +84,12 @@ to epics to allow external control.
            self.start()
 
            # Add Epics
-           self.epics = pyrogue.protocols.epics.EpicsCaServer(base='myTest',root=self)
-           self.epics.start()
-           self.epics.dump()
-
-       # Override root class stop method to stop epics on exit
-       def stop(self):
-           self.epics.stop()
-           super().stop()
+           self.epics = pyrogue.protocols.epicsV4.EpicsPvServer(base='myTest',root=self)
+           self.addProtocol(self.epics)
 
    with TestRoot() as r:
+      r.epics.dump()
+
        print("Running")
        try:
            while True:
@@ -135,40 +131,40 @@ In the first terminal:
    Running
 
 In the second terminal we generate two frames from epics. Commands in
-Rogue are exposed as Variables and a caput will initiate the Command
+Rogue are exposed as Variables and a pvput will initiate the Command
 execution. Since our MyFrameGen Command does not take an arg we
 pass a value of 0 to keep epics happy.
 
 .. code::
 
-   $ caget myTest:MyRoot:testMaster:FrameCount
+   $ pvget myTest:MyRoot:testMaster:FrameCount
    myTest:MyRoot:testMaster:FrameCount 0
 
-   $ caget myTest:MyRoot:testSlave:FrameCount
+   $ pvget myTest:MyRoot:testSlave:FrameCount
    myTest:MyRoot:testSlave:FrameCount 0
 
-   $ caput myTest:MyRoot:testMaster:FrameSize 210
+   $ pvput myTest:MyRoot:testMaster:FrameSize 210
    Old : myTest:MyRoot:testMaster:FrameSize 0
    New : myTest:MyRoot:testMaster:FrameSize 210
 
-   $ caput myTest:MyRoot:testMaster:MyFrameGen 0
+   $ pvput myTest:MyRoot:testMaster:MyFrameGen 0
    Old : myTest:MyRoot:testMaster:MyFrameGen 0
    New : myTest:MyRoot:testMaster:MyFrameGen 0
 
-   $ caput myTest:MyRoot:testMaster:MyFrameGen 0
+   $ pvput myTest:MyRoot:testMaster:MyFrameGen 0
    Old : myTest:MyRoot:testMaster:MyFrameGen 0
    New : myTest:MyRoot:testMaster:MyFrameGen 0
 
    $ caget myTest:MyRoot:testMaster:FrameCount
    myTest:MyRoot:testMaster:FrameCount 2
 
-   $ caget myTest:MyRoot:testMaster:ByteCount
+   $ pvget myTest:MyRoot:testMaster:ByteCount
    myTest:MyRoot:testMaster:ByteCount 420
 
-   $ caget myTest:MyRoot:testSlave:FrameCount
+   $ pvget myTest:MyRoot:testSlave:FrameCount
    myTest:MyRoot:testSlave:FrameCount 2
 
-   $ caget myTest:MyRoot:testSlave:ByteCount
+   $ pvget myTest:MyRoot:testSlave:ByteCount
    myTest:MyRoot:testSlave:ByteCount 420
 
 Testing With A GUI
@@ -186,7 +182,7 @@ to start one or more remote GUIs. That process is described in TBD.
    import pyrogue
    import MyWrapper
    import time
-   import pyrogue.protocols.epics
+   import pyrogue.protocols.epicsv4
    import pyrogue.pydm
    import sys
 
@@ -206,14 +202,8 @@ to start one or more remote GUIs. That process is described in TBD.
            self.start()
 
            # Add Epics
-           self.epics = pyrogue.protocols.epics.EpicsCaServer(base='myTest',root=self)
-           self.epics.start()
-           self.epics.dump()
-
-       # Override root class stop method to stop epics on exit
-       def stop(self):
-           self.epics.stop()
-           super().stop()
+           self.epics = pyrogue.protocols.epicsV4.EpicsPvServer(base='myTest',root=self)
+           self.addProtocol(self.epics)
 
    with TestRoot() as r:
        print("Running")

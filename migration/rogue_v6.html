@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Migrating To Rogue V6 &mdash; Rogue v6.0.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Migration Notes" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Rogue
+          </a>
+              <div class="version">
+                v6.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Migration Notes</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Migrating To Rogue V6</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#zmqserver">ZmqServer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sqllogger">SqlLogger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#root-configuration-streaming">Root Configuration Streaming</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#epics-version-3-channel-access-server">EPICS Version 3 Channel Access Server</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rawwrite-and-rawread">RawWrite and RawRead</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Migration Notes</a></li>
+      <li class="breadcrumb-item active">Migrating To Rogue V6</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/migration/rogue_v6.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="migrating-to-rogue-v6">
+<span id="migrating-rogue-v6"></span><h1>Migrating To Rogue V6<a class="headerlink" href="#migrating-to-rogue-v6" title="Permalink to this heading"></a></h1>
+<p>The following instructions covers features that are no longer support in Rogue V6 and how to upgrade your classes to follow the new Rogue V6 styles.</p>
+<section id="zmqserver">
+<h2>ZmqServer<a class="headerlink" href="#zmqserver" title="Permalink to this heading"></a></h2>
+<p>This biggest impacting change in Rogue V6 is to remove the ZmqServer feature from the Root class. It is now treated as an interface to be consistent with the Rogue interface model. In the past the ZmqServer feature was controlled by setting the serverPort arg when instantiating the root class. By default this arg was ‘0’ which resulted in the server port being automatically allocated. Instead you will need to add the zmqServer manually to the root class.</p>
+<p>Similiarly the previous feature which allowed the user to pass the root class to pydm to figure out the server port no longer works. Below is an example of including the ZmqServer in your root class and then using it with pydm.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                              <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Add zmq server, keep it as an attribute so we can access it later</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">ExampleRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
+     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span><span class="n">serverList</span><span class="o">=</span><span class="n">root</span><span class="o">.</span><span class="n">zmqServer</span><span class="o">.</span><span class="n">address</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s1">&#39;Test UI&#39;</span><span class="p">,</span><span class="n">sizeX</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span><span class="n">sizeY</span><span class="o">=</span><span class="mi">500</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>More information can be found int he ZmqServer class documenation (TBD).</p>
+</section>
+<section id="sqllogger">
+<h2>SqlLogger<a class="headerlink" href="#sqllogger" title="Permalink to this heading"></a></h2>
+<p>Similiar to the zmqServer, the sql logger is now removed to be an external interface. See below for example usage of the sql logger:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                              <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Add sql logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">SqlLogger</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="s1">&#39;sqlite:///test.db&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>More information can be found int he SqlLogger class documenation (TBD).</p>
+</section>
+<section id="root-configuration-streaming">
+<h2>Root Configuration Streaming<a class="headerlink" href="#root-configuration-streaming" title="Permalink to this heading"></a></h2>
+<p>In previous versions of rogue the Root class automatically supported the ability to stream configuration changes. This allowed the Root class to be added as a stream source to the StreamWriter class allow for configuration changes and status updates to be logged alongside the event data. In RogueV6 this feature is removed from the Root class with a new Variable streaming class which provides the same functionality. See below for an example of using this new class to stream configuration changes to the StreamWriter. This new method continues to support dumping the current status to the file immediatly after opening and right before closing:.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                              <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Create configuration stream</span>
+        <span class="n">stream</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Create StreamWriter with the configuration stream included as channel 1</span>
+        <span class="n">sw</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">fileio</span><span class="o">.</span><span class="n">StreamWriter</span><span class="p">(</span><span class="n">configStream</span><span class="o">=</span><span class="p">{</span><span class="mi">1</span><span class="p">:</span> <span class="n">stream</span><span class="p">})</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sw</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="epics-version-3-channel-access-server">
+<h2>EPICS Version 3 Channel Access Server<a class="headerlink" href="#epics-version-3-channel-access-server" title="Permalink to this heading"></a></h2>
+<p>Epics version 3 channel access server is removed from Rogue V6. Please use the epics 4 pv access server (P4P) instead:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                              <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
+                              <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+                              <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">pvserv</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">protocols</span><span class="o">.</span><span class="n">epicsV4</span><span class="o">.</span><span class="n">EpicsPvServer</span><span class="p">(</span><span class="n">base</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addProtocol</span><span class="p">(</span><span class="n">pvserv</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="rawwrite-and-rawread">
+<h2>RawWrite and RawRead<a class="headerlink" href="#rawwrite-and-rawread" title="Permalink to this heading"></a></h2>
+<p>The deprecated rawWrite and rawRead calls are removed from Rogue V6. The new array variables added in Rogue V5 make these calls no longer needed. The user should no longer pass a ‘size’ arg to the Device class and then use rawWrite and rawRead to access memory space. Instead a array Variable should be used with the appropriate similiar size. The large Variables can then be configured to be excluded from the bulk read and write transactions and can also have other smaller Variables mapped to specific locations in the overall register space. See below for an example of how a Device can be upgraded to use list Variables instead of the rawWrite and rawRead calls:</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Migration Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
