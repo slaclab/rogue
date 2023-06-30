@@ -22,7 +22,6 @@ from pydm import utilities
 import pyrogue
 from pyrogue.interfaces import VirtualClient
 from matplotlib.pyplot import Figure
-import pickle
 
 
 logger = logging.getLogger(__name__)
@@ -84,7 +83,9 @@ class RogueConnection(PyDMConnection):
 
         if utilities.is_pydm_app():
             self._client = pyrogue.interfaces.VirtualClient(self._host, self._port)
-            self._node = self._client.root.getNode(self._path)
+
+            if self._client.root is not None:
+                self._node = self._client.root.getNode(self._path)
 
         if self._node is not None and not self._node.isinstance(pyrogue.Device):
             self._node.addListener(self._updateVariable)
@@ -122,7 +123,7 @@ class RogueConnection(PyDMConnection):
             if isinstance(varValue.value, list):
                 self.new_value_signal[str].emit(varValue.valueDisp)
             elif isinstance(varValue.value, Figure):
-                self.new_value_signal[str].emit(pickle.dumps(varValue.value).hex())
+                self.new_value_signal[object].emit(varValue.value)
             else:
                 self.new_value_signal[type(varValue.value)].emit(varValue.value)
 
@@ -153,6 +154,9 @@ class RogueConnection(PyDMConnection):
 
 
     def add_listener(self, channel):
+        if self._node is None:
+            return
+
         super(RogueConnection, self).add_listener(channel)
         self.connection_state_signal.emit(True)
 

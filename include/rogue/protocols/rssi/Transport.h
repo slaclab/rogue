@@ -13,56 +13,55 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
 #define __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
-#include <rogue/Directives.h>
-#include <rogue/interfaces/stream/Master.h>
-#include <rogue/interfaces/stream/Slave.h>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <rogue/Queue.h>
+
 #include <memory>
 
+#include "rogue/Queue.h"
+#include "rogue/interfaces/stream/Master.h"
+#include "rogue/interfaces/stream/Slave.h"
+
 namespace rogue {
-   namespace protocols {
-      namespace rssi {
+namespace protocols {
+namespace rssi {
 
-         class Controller;
+class Controller;
 
-         //! RSSI Transport Class
-         class Transport : public rogue::interfaces::stream::Master,
-                           public rogue::interfaces::stream::Slave {
+//! RSSI Transport Class
+class Transport : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
+    //! Core module
+    std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-               //! Core module
-               std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::rssi::Transport> create();
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::rssi::Transport> create ();
+    //! Creator
+    Transport();
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Transport();
 
-               //! Creator
-               Transport();
+    //! Setup links
+    void setController(std::shared_ptr<rogue::protocols::rssi::Controller> cntl);
 
-               //! Destructor
-               ~Transport();
-
-               //! Setup links
-               void setController ( std::shared_ptr<rogue::protocols::rssi::Controller> cntl );
-
-               //! Accept a frame from master
-               void acceptFrame ( std::shared_ptr<rogue::interfaces::stream::Frame> frame );
-         };
-
-         // Convienence
-         typedef std::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
-
-      }
-   }
+    //! Accept a frame from master
+    void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 };
 
-#endif
+// Convienence
+typedef std::shared_ptr<rogue::protocols::rssi::Transport> TransportPtr;
 
+}  // namespace rssi
+}  // namespace protocols
+};  // namespace rogue
+
+#endif

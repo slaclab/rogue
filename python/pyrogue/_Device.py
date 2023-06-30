@@ -109,7 +109,7 @@ class EnableVariable(pr.BaseVariable):
 
             # The following concept will trigger enable listeners
             # directly. This is causing lock contentions in practice
-            # (epics as an example)
+            # (epics4 as an example)
 
             #self._doUpdate()
             #for var in self._listeners:
@@ -176,6 +176,8 @@ class Device(pr.Node,rim.Hub):
                  hubMax=0,
                  guiGroup=None):
 
+        if size != 0:
+            raise pr.NodeError("Size attribute in Device is not supported!")
 
         """Initialize device class"""
         if name is None:
@@ -189,18 +191,7 @@ class Device(pr.Node,rim.Hub):
         self._custBlocks = []
         self._memBase    = memBase
         self._memLock    = threading.RLock()
-        self._size       = size
         self._defaults   = defaults if defaults is not None else {}
-
-        if size != 0:
-            print("")
-            print("============ Deprecation Warning =========================")
-            print(f" Detected non zero size for Device {name}")
-            print(" Creating devices with a non zero size to enable rawWrite ")
-            print(" and rawRead is now deprecated.                           ")
-            print(" The Device size attribute will be removed in a future    ")
-            print(" Rogue release                                            ")
-            print("==========================================================")
 
         self._ifAndProto = []
 
@@ -240,12 +231,6 @@ class Device(pr.Node,rim.Hub):
     def offset(self):
         """ """
         return self._getOffset()
-
-    @pr.expose
-    @property
-    def size(self):
-        """ """
-        return self._size
 
     def addCustomBlock(self, block):
         """
@@ -320,11 +305,7 @@ class Device(pr.Node,rim.Hub):
         -------
 
         """
-        for protocol in protocols:
-            if isinstance(protocol, collections.abc.Iterable):
-                self._ifAndProto.extend(protocol)
-            else:
-                self._ifAndProto.append(protocol)
+        self.addInterface(protocols)
 
     def manage(self, *interfaces):
         """
@@ -715,161 +696,6 @@ class Device(pr.Node,rim.Hub):
 
         for key,value in self.devices.items():
             value._updateBlockEnable()
-
-    def _rawTxnChunker(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, txnType=rim.Write, numWords=1):
-        """
-
-
-        Parameters
-        ----------
-        offset :
-
-        data :
-
-        base : str
-             (Default value = pr.UInt)
-        stride : int
-             (Default value = 4)
-        wordBitSize : int
-             (Default value = 32)
-        txnType : str
-             (Default value = rim.Write)
-        numWords : int
-             (Default value = 1)
-
-        Returns
-        -------
-
-        """
-
-        if not isinstance(base, pr.Model):
-            base = base(wordBitSize)
-
-        if offset + (numWords * stride) > self._size:
-            raise pr.MemoryError(name=self.name, address=offset|self.address,
-                                 msg='Raw transaction outside of device size')
-
-        if base.bitSize > stride*8:
-            raise pr.MemoryError(name=self.name, address=offset|self.address,
-                                 msg='Called raw memory access with wordBitSize > stride')
-
-        if txnType == rim.Write or txnType == rim.Post:
-            if isinstance(data, bytearray):
-                ldata = data
-            elif isinstance(data, collections.abc.Iterable):
-                ldata = b''.join(base.toBytes(word).ljust(stride, b'\0') for word in data)
-            else:
-                ldata = base.toBytes(data)
-
-        else:
-            if data is not None:
-                ldata = data
-            else:
-                ldata = bytearray(numWords*stride)
-
-        with self._memLock:
-            for i in range(offset, offset+len(ldata), self._reqMaxAccess()):
-                sliceOffset = i | self.offset
-                txnSize = min(self._reqMaxAccess(), len(ldata)-(i-offset))
-                #print(f'sliceOffset: {sliceOffset:#x}, ldata: {ldata}, txnSize: {txnSize}, buffOffset: {i-offset}')
-                self._reqTransaction(sliceOffset, ldata, txnSize, i-offset, txnType)
-
-            return ldata
-
-    def _rawWrite(self, offset, data, base=pr.UInt, stride=4, wordBitSize=32, tryCount=1, posted=False):
-        """
-
-
-        Parameters
-        ----------
-        offset :
-
-        data :
-
-        base : str
-             (Default value = pr.UInt)
-        stride : int
-             (Default value = 4)
-        wordBitSize : int
-             (Default value = 32)
-        tryCount : int
-             (Default value = 1)
-        posted : bool
-             (Default value = False)
-
-        Returns
-        -------
-
-        """
-
-        if not isinstance(base, pr.Model):
-            base = base(wordBitSize)
-
-        with self._memLock:
-
-            if posted:
-                txn = rim.Post
-            else:
-                txn = rim.Write
-
-            for _ in range(tryCount):
-                self._clearError()
-                self._rawTxnChunker(offset, data, base, stride, wordBitSize, txn)
-                self._waitTransaction(0)
-
-                if self._getError() == "":
-                    return
-                elif posted:
-                    break
-                self._log.warning("Retrying raw write transaction")
-
-            # If we get here an error has occurred
-            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
-
-    def _rawRead(self, offset, numWords=1, base=pr.UInt, stride=4, wordBitSize=32, data=None, tryCount=1):
-        """
-
-
-        Parameters
-        ----------
-        offset :
-
-        numWords : int
-             (Default value = 1)
-        base : str
-             (Default value = pr.UInt)
-        stride : int
-             (Default value = 4)
-        wordBitSize : int
-             (Default value = 32)
-        data : str
-             (Default value = None)
-        tryCount : int
-             (Default value = 1)
-
-        Returns
-        -------
-
-        """
-
-        if not isinstance(base, pr.Model):
-            base = base(wordBitSize)
-
-        with self._memLock:
-            for _ in range(tryCount):
-                self._clearError()
-                ldata = self._rawTxnChunker(offset, data, base, stride, wordBitSize, txnType=rim.Read, numWords=numWords)
-                self._waitTransaction(0)
-
-                if self._getError() == "":
-                    if numWords == 1:
-                        return base.fromBytes(ldata)
-                    else:
-                        return [base.fromBytes(ldata[i:i+stride]) for i in range(0, len(ldata), stride)]
-                self._log.warning("Retrying raw read transaction")
-
-            # If we get here an error has occurred
-            raise pr.MemoryError (name=self.name, address=offset|self.address, msg=self._getError())
 
     def _buildBlocks(self):
         """ """

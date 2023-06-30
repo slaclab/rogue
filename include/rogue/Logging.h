@@ -16,84 +16,82 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_LOGGING_H__
 #define __ROGUE_LOGGING_H__
-#include <rogue/Directives.h>
-#include <exception>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
-#include <thread>
-#include <mutex>
-#include <vector>
-#include <string>
+
+#include <exception>
 #include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <vector>
 
 namespace rogue {
 
-   //! Filter
-   class LogFilter {
-      public:
+//! Filter
+class LogFilter {
+  public:
+    std::string name_;
+    uint32_t level_;
 
-         std::string name_;
-         uint32_t level_;
+    LogFilter(std::string name, uint32_t level) {
+        name_  = name;
+        level_ = level;
+    }
+};
 
-         LogFilter(std::string name, uint32_t level){
-            name_  = name;
-            level_ = level;
-         }
-   };
+//! Logging
+class Logging {
+    //! Global Logging level
+    static uint32_t gblLevel_;
 
-   //! Logging
-   class Logging {
+    //! Logging level lock
+    static std::mutex levelMtx_;
 
-         //! Global Logging level
-         static uint32_t gblLevel_;
+    //! List of filters
+    static std::vector<rogue::LogFilter*> filters_;
 
-         //! Logging level lock
-         static std::mutex levelMtx_;
+    void intLog(uint32_t level, const char* format, va_list args);
 
-         //! List of filters
-         static std::vector <rogue::LogFilter *> filters_;
+    //! Local logging level
+    uint32_t level_;
 
-         void intLog ( uint32_t level, const char *format, va_list args);
+    //! Logger name
+    std::string name_;
 
-         //! Local logging level
-         uint32_t level_;
+  public:
+    static const uint32_t Critical = 50;
+    static const uint32_t Error    = 40;
+    static const uint32_t Thread   = 35;
+    static const uint32_t Warning  = 30;
+    static const uint32_t Info     = 20;
+    static const uint32_t Debug    = 10;
 
-         //! Logger name
-         std::string name_;
+    static std::shared_ptr<rogue::Logging> create(std::string name, bool quiet = false);
 
-      public:
+    Logging(std::string name, bool quiet = false);
+    ~Logging();
 
-         static const uint32_t Critical = 50;
-         static const uint32_t Error    = 40;
-         static const uint32_t Thread   = 35;
-         static const uint32_t Warning  = 30;
-         static const uint32_t Info     = 20;
-         static const uint32_t Debug    = 10;
+    static void setLevel(uint32_t level);
+    static void setFilter(std::string filter, uint32_t level);
 
-         static std::shared_ptr<rogue::Logging> create(std::string name, bool quiet=false);
+    void log(uint32_t level, const char* fmt, ...);
+    void critical(const char* fmt, ...);
+    void error(const char* fmt, ...);
+    void warning(const char* fmt, ...);
+    void info(const char* fmt, ...);
+    void debug(const char* fmt, ...);
 
-         Logging (std::string name, bool quiet=false);
-         ~Logging();
+    void logThreadId();
 
-         static void setLevel(uint32_t level);
-         static void setFilter(std::string filter, uint32_t level);
+    static void setup_python();
+};
 
-         void log(uint32_t level, const char * fmt, ...);
-         void critical(const char * fmt, ...);
-         void error(const char * fmt, ...);
-         void warning(const char * fmt, ...);
-         void info(const char * fmt, ...);
-         void debug(const char * fmt, ...);
-
-         void logThreadId();
-
-         static void setup_python();
-   };
-
-   typedef std::shared_ptr<rogue::Logging> LoggingPtr;
-}
+typedef std::shared_ptr<rogue::Logging> LoggingPtr;
+}  // namespace rogue
 
 #endif
-

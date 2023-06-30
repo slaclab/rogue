@@ -87,14 +87,6 @@ class DataWriter(PyDMFrame):
         fl.setLabelAlignment(Qt.AlignRight)
         vbl.addLayout(fl)
 
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.BufferSize')
-        w.alarmSensitiveContent = False
-        w.alarmSensitiveBorder  = True
-        w.check_enable_state = lambda: None
-        w.setReadOnly(True)
-        if w.text().isnumeric() and w.text() != '0':
-            fl.addRow('Buffer Size:',w)
-
         w = PyDMLabel(parent=None, init_channel=self._path + '.IsOpen/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
@@ -113,14 +105,6 @@ class DataWriter(PyDMFrame):
         fl.setFormAlignment(Qt.AlignHCenter | Qt.AlignTop)
         fl.setLabelAlignment(Qt.AlignRight)
         vbr.addLayout(fl)
-
-        w = PyRogueLineEdit(parent=None, init_channel=self._path + '.MaxFileSize')
-        w.alarmSensitiveContent = False
-        w.alarmSensitiveBorder  = True
-        w.check_enable_state = lambda: None
-        w.setReadOnly(True)
-        if w.text().isnumeric() and w.text() != '0':
-            fl.addRow('Max Size:',w)
 
         w = PyDMLabel(parent=None, init_channel=self._path + '.FrameCount')
         w.alarmSensitiveContent = False

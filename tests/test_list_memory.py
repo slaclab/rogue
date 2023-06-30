@@ -151,7 +151,6 @@ class DummyTree(pr.Root):
             description="Dummy tree for example",
             timeout=2.0,
             pollEn=False)
-            #serverPort=None)
 
         # Use a memory space emulator
         sim = rogue.interfaces.memory.Emulate(4,0x1000)

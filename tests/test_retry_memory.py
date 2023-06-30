@@ -93,8 +93,7 @@ class DummyTree(pr.Root):
                          name='dummyTree',
                          description="Dummy tree for example",
                          timeout=.01,
-                         pollEn=False,
-                         serverPort=None)
+                         pollEn=False)
 
         # Use a memory space emulator
         sim = pr.interfaces.simulation.MemEmulate(dropCount=2)

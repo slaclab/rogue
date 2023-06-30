@@ -30,10 +30,6 @@ class UartMemory(rogue.interfaces.memory.Slave):
         self._workerThread = threading.Thread(target=self._worker)
         self._workerThread.start()
 
-    # Deprecated
-    def close(self):
-        self.stop()
-
     def _stop(self):
         self._workerQueue.put(None)
         self._workerQueue.join()

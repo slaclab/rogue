@@ -16,7 +16,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_DIRECTIVES_H__
 #define __ROGUE_DIRECTIVES_H__
 
@@ -31,4 +31,3 @@
 #endif
 
 #endif
-

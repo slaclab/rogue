@@ -16,18 +16,17 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
-#include <rogue/ScopedGil.h>
+ **/
+#include "rogue/ScopedGil.h"
 
 rogue::ScopedGil::ScopedGil() {
 #ifndef NO_PYTHON
-   state_ = PyGILState_Ensure();
+    state_ = PyGILState_Ensure();
 #endif
 }
 
 rogue::ScopedGil::~ScopedGil() {
 #ifndef NO_PYTHON
-   PyGILState_Release(state_);
+    PyGILState_Release(state_);
 #endif
 }
-

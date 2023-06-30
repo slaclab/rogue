@@ -13,67 +13,66 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_H__
-#include <rogue/Directives.h>
-#include <thread>
+#include "rogue/Directives.h"
+
 #include <stdint.h>
+
 #include <memory>
+#include <thread>
 
 namespace rogue {
-   namespace protocols {
-      namespace packetizer {
+namespace protocols {
+namespace packetizer {
 
-         class Transport;
-         class Application;
-         class Controller;
+class Transport;
+class Application;
+class Controller;
 
-         //! Core Class
-         class Core {
+//! Core Class
+class Core {
+    //! Transport module
+    std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
 
-               //! Transport module
-               std::shared_ptr<rogue::protocols::packetizer::Transport> tran_;
+    //! Application modules
+    std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
 
-               //! Application modules
-               std::shared_ptr<rogue::protocols::packetizer::Application> app_[256];
+    //! Core module
+    std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
-               //! Core module
-               std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
+  public:
+    //! Class creation
+    static std::shared_ptr<rogue::protocols::packetizer::Core> create(bool enSsi);
 
-            public:
+    //! Setup class in python
+    static void setup_python();
 
-               //! Class creation
-               static std::shared_ptr<rogue::protocols::packetizer::Core> create (bool enSsi);
+    //! Creator
+    Core(bool enSsi);
 
-               //! Setup class in python
-               static void setup_python();
+    //! Destructor
+    ~Core();
 
-               //! Creator
-               Core(bool enSsi);
+    //! Get transport interface
+    std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
 
-               //! Destructor
-               ~Core();
+    //! Application module
+    std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
 
-               //! Get transport interface
-               std::shared_ptr<rogue::protocols::packetizer::Transport> transport();
+    //! Get drop count
+    uint32_t getDropCount();
 
-               //! Application module
-               std::shared_ptr<rogue::protocols::packetizer::Application> application(uint8_t dest);
-
-               //! Get drop count
-               uint32_t getDropCount();
-
-               //! Set timeout
-               void setTimeout(uint32_t timeout);
-         };
-
-         // Convenience
-         typedef std::shared_ptr<rogue::protocols::packetizer::Core> CorePtr;
-
-      }
-   }
+    //! Set timeout
+    void setTimeout(uint32_t timeout);
 };
 
-#endif
+// Convenience
+typedef std::shared_ptr<rogue::protocols::packetizer::Core> CorePtr;
 
+}  // namespace packetizer
+}  // namespace protocols
+};  // namespace rogue
+
+#endif
