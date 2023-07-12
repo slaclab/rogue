@@ -76,7 +76,7 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
    
    do_install() {
       cmake_do_install
-      distutils3_do_install
+      setuptools3_do_install
    }
 
 Update the ROGUE_VERSION line for an updated version when appropriate (min version is 5.6.1). You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
