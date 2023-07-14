@@ -53,12 +53,6 @@ If you already have an anaconda environment that you would like to install Rogue
 
    $ conda install -c tidair-tag -c conda-forge rogue
 
-The above commands will install the latest version of Rogue from the `main` branch. If you want to install the `pre-release` version of Rogue, run the following:
-
-.. code::
-
-   $ conda create -n rogue_dev -c tidair-dev -c conda-forge rogue
-
 Alternatively you can install a specific released version of Rogue:
 
 .. code::
@@ -76,7 +70,7 @@ To activate:
 
    $ conda activate rogue_tag
 
-Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_v6.0.0).
+Replace rogue_tag with the name you used when creating your environment (e.g. rogue_v6.0.0).
 
 
 To deactivate:
@@ -99,8 +93,6 @@ If you want to update Rogue, run the following command after activating the Rogu
 .. code::
 
    $ conda update rogue -c tidair-tag
-
-Replace tidair-tag with tidair-dev for pre-release
 
 Deleting Anaconda Environment
 =============================
