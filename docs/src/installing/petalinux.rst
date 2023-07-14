@@ -32,12 +32,12 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
    S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
    PROVIDES = "rogue"
    EXTRA_OECMAKE += "-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}"
-   
-   inherit cmake python3native setuptools3
+
+   # Note: distutils3 is depreciated in petalinux 2023.1 and need to switch to setuptools3
+   inherit cmake python3native distutils3
    
    DEPENDS += " \
       python3 \
-      python3-setuptools \
       python3-native \
       python3-numpy \
       python3-numpy-native \
@@ -68,15 +68,14 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
    FILES:${PN}-dev += "/usr/include/rogue/*"
    FILES:${PN} += "/usr/lib/*"
    
-   do_configure() {
+   do_configure:prepend() {
       cmake_do_configure
       bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
       bbplain $(sed -i "s/..\/python/python/" ${S}/setup.py)
    }
    
-   do_install() {
+   do_install:prepend() {
       cmake_do_install
-      setuptools3_do_install
    }
 
 Update the ROGUE_VERSION line for an updated version when appropriate (min version is 5.6.1). You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
