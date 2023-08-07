@@ -214,7 +214,7 @@ class BaseVariable(pr.Node):
             self._enum = disp
         elif isinstance(disp, list):
             self._enum = {k:str(k) for k in disp}
-        elif type(value) == bool and enum is None:
+        elif isinstance(type(value), bool) and enum is None:
             self._enum = {False: 'False', True: 'True'}
 
         if self._enum is not None:
