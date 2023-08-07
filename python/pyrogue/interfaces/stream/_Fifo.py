@@ -70,4 +70,3 @@ class Fifo(pyrogue.Device):
 
     def countReset(self):
         self._fifo.clearCnt()
-
