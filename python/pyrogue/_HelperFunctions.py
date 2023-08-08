@@ -349,13 +349,13 @@ def dataToYaml(data):
         -------
 
         """
-        if isinstance(type(data.value), bool):
+        if isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
             enc = 'tag:yaml.org,2002:str'
-        elif isinstance(type(data.value), int):
+        elif isinstance(data.value, int):
             enc = 'tag:yaml.org,2002:int'
-        elif isinstance(type(data.value), float):
+        elif isinstance(data.value, float):
             enc = 'tag:yaml.org,2002:float'
         else:
             enc = 'tag:yaml.org,2002:str'
