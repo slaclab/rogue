@@ -165,7 +165,6 @@ class Device(pr.Node,rim.Hub):
                  description='',
                  memBase=None,
                  offset=0,
-                 size=0,
                  hidden=False,
                  groups=None,
                  expand=False,
@@ -175,9 +174,6 @@ class Device(pr.Node,rim.Hub):
                  hubMin=0,
                  hubMax=0,
                  guiGroup=None):
-
-        if size != 0:
-            raise pr.NodeError("Size attribute in Device is not supported!")
 
         """Initialize device class"""
         if name is None:
