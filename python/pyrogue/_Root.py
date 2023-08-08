@@ -555,7 +555,7 @@ class Root(pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(self,fname,headerEn=False):
+    def saveAddressMap(self,fname):
         """
 
 
@@ -572,7 +572,6 @@ class Root(pr.Device):
         """
 
         # First form header
-        # Changing these names here requires changing the createVariable() method in LibraryBase.cpp
         header  = "Path\t"
         header += "TypeStr\t"
         header += "Address\t"
@@ -637,23 +636,9 @@ class Root(pr.Device):
                 lines.append(data)
 
         with open(fname,'w') as f:
-
-            if headerEn:
-                f.write('// #############################################\n')
-                f.write('// Auto Generated Header File From Rogue\n')
-                f.write('// #############################################\n')
-                f.write('#ifndef __ROGUE_ADDR_MAP_H__\n')
-                f.write('#define __ROGUE_ADDR_MAP_H__\n\n')
-                f.write(f'#define ROGUE_ADDR_MAP "{header}|"\\\n')
-
-                for line in lines:
-                    f.write(f'     "{line}|"\\\n')
-
-                f.write('\n#endif\n')
-            else:
-                f.write(header + '\n')
-                for line in lines:
-                    f.write(line + '\n')
+            f.write(header + '\n')
+            for line in lines:
+                f.write(line + '\n')
 
     @pr.expose
     def saveVariableList(self,fname,polledOnly=False,incGroups=None):
