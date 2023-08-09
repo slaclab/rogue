@@ -140,6 +140,35 @@ uint64_t ris::Slave::getByteCount() {
     return (frameBytes_);
 }
 
+// Ensure passed frame is a single buffer
+bool ris::Slave::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
+    // Frame is a single buffer
+    if (frame->bufferCount() == 1)
+        return true;
+
+    else if (!reqEn)
+        return false;
+
+    else {
+        uint32_t size        = frame->getPayload();
+        ris::FramePtr nFrame = acceptReq(size, true);
+
+        if (nFrame->bufferCount() != 1)
+            return false;
+
+        else {
+            nFrame->setPayload(size);
+
+            ris::FrameIterator srcIter = frame->begin();
+            ris::FrameIterator dstIter = nFrame->begin();
+
+            ris::copyFrame(srcIter, size, dstIter);
+            frame = nFrame;
+            return true;
+        }
+    }
+}
+
 void ris::Slave::setup_python() {
 #ifndef NO_PYTHON
 
