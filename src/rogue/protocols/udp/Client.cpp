@@ -197,7 +197,7 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
     udpLog_->logThreadId();
 
     // Preallocate frame
-    frame = ris::Pool::acceptReq(maxPayload(), false);
+    frame = reqLocalFrame(maxPayload(), false);
 
     while (threadEn_) {
         // Attempt receive
@@ -215,7 +215,7 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
             }
 
             // Get new frame
-            frame = ris::Pool::acceptReq(maxPayload(), false);
+            frame = reqLocalFrame(maxPayload(), false);
         } else {
             // Setup fds for select call
             FD_ZERO(&fds);
