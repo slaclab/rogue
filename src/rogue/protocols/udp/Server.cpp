@@ -200,7 +200,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
     udpLog_->logThreadId();
 
     // Preallocate frame
-    frame = ris::Pool::acceptReq(maxPayload(), false);
+    frame = reqLocalFrame(maxPayload(), false);
 
     while (threadEn_) {
         // Attempt receive
@@ -219,7 +219,7 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
             }
 
             // Get new frame
-            frame = ris::Pool::acceptReq(maxPayload(), false);
+            frame = reqLocalFrame(maxPayload(), false);
 
             // Lock before updating address
             if (memcmp(&remAddr_, &tmpAddr, sizeof(remAddr_)) != 0) {

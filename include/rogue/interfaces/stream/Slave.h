@@ -140,6 +140,15 @@ class Slave : public rogue::interfaces::stream::Pool,
      */
     bool ensureSingleBuffer(std::shared_ptr<rogue::interfaces::stream::Frame>& frame, bool reqEn);
 
+    // Process a local frame request
+    /* Method to service a local frame request
+     *
+     * size Minimum size for requested Frame, larger Frame may be allocated
+     * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
+     * Newly allocated Frame pointer (FramePtr)
+     */
+    std::shared_ptr<rogue::interfaces::stream::Frame> reqLocalFrame(uint32_t size, bool zeroCopyEn);
+
 #ifndef NO_PYTHON
 
     //! Support << operator in python

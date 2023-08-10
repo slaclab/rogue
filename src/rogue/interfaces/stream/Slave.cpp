@@ -151,7 +151,7 @@ bool ris::Slave::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
 
     else {
         uint32_t size        = frame->getPayload();
-        ris::FramePtr nFrame = acceptReq(size, true);
+        ris::FramePtr nFrame = reqLocalFrame(size, true);
 
         if (nFrame->bufferCount() != 1)
             return false;
@@ -167,6 +167,11 @@ bool ris::Slave::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
             return true;
         }
     }
+}
+
+// Process a local frame request
+ris::FramePtr ris::Slave::reqLocalFrame(uint32_t size, bool zeroCopyEn) {
+   return ris::Pool::acceptReq(size,zeroCopyEn);
 }
 
 void ris::Slave::setup_python() {
