@@ -17,8 +17,8 @@ Go to https://www.anaconda.com/download to get the latest version of anaconda. E
 
 .. code::
 
-   $ wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
-   $ bash Anaconda3-2023.03-1-Linux-x86_64.sh
+   $ wget https://repo.anaconda.com/archive/Anaconda3-{version}-Linux-x86_64.sh
+   $ bash Anaconda3-{version}-Linux-x86_64.sh
 
 You do not need to install visual studio.
 
@@ -32,6 +32,7 @@ It is important to use the latest conda solver:
 
 .. code::
 
+    $ conda activate
     $ conda config --set channel_priority strict
     $ conda install -n base conda-libmamba-solver
     $ conda config --set solver libmamba
