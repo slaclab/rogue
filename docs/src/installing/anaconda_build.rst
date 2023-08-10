@@ -7,8 +7,6 @@ Building Rogue Inside Anaconda
 This section provides instructions for downloading and building rogue inside an anaconda environment. These
 instructions are relevant for Linux
 
-See the section :ref:`installing_windows` for additional steps required for Windows.
-
 Getting Anaconda
 ================
 
