@@ -1031,7 +1031,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 raise VariableError(f'ValueBits {valueBits} is greater than valueStrude {valueStride}')
 
             # Override the bitSize
-            bitSize = [numValues * valueStride]
+            bitSize[0] = numValues * valueStride
 
             if self._ndType is None:
                 raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
