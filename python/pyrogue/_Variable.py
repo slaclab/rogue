@@ -954,7 +954,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  highWarning=None,
                  highAlarm=None,
                  base=pr.UInt,
-                 offset=None,
+                 offset,
                  numValues=0,
                  valueBits=0,
                  valueStride=0,
@@ -1017,7 +1017,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
                               pollInterval=pollInterval,updateNotify=updateNotify,
                               guiGroup=guiGroup, **kwargs)
 
-        # If numValues > 0 the bit size array must only have one entry and the total number of bits must be a multiple of the number of values
+        # If numValues > 0 the bit size array must only have one entry
+        # Auto calculate the total number of bits
         if numValues != 0:
             self._nativeType = np.ndarray
             self._ndType = self._base.ndType
@@ -1029,8 +1030,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
             if valueBits > valueStride:
                 raise VariableError(f'ValueBits {valueBits} is greater than valueStrude {valueStride}')
 
-            if (numValues * valueStride) != sum(bitSize):
-                raise VariableError(f'Total bitSize {sum(bitSize)} is not equal to multile of numValues {numValues} and valueStride {valueStride}')
+            # Override the bitSize
+            bitSize = [numValues * valueStride]
 
             if self._ndType is None:
                 raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
