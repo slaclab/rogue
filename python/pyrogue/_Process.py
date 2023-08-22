@@ -67,8 +67,9 @@ class Process(pr.Device):
         self.add(pr.LocalVariable(
             name = 'Step',
             mode = 'RO',
+            pollInterval=1.0,
             value = 1,
-            description = "Total number of loops steps for the process"))
+            description = "Current number of steps"))
 
         self.add(pr.LocalVariable(
             name = 'TotalSteps',
@@ -77,9 +78,8 @@ class Process(pr.Device):
             description = "Total number of loops steps for the process"))
 
         @self.command(hidden=True)
-        def Advance():
-            self.Step += 1
-            self.Progress.set(self.Step.value()/self.TotalSteps.value())
+        def Advance(arg):
+            self._incrementSteps(1)
 
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
@@ -89,6 +89,14 @@ class Process(pr.Device):
         if self._retVar is not None and self._retVar not in self:
             self.add(self._retVar)
 
+    def _incrementSteps(self, incr):
+        with self.Step.lock:
+            self.Step.set(self.Step.value() + incr,write=False)
+        self.Progress.set(self.Step.value()/self.TotalSteps.value(),write=False)
+
+    def _setSteps(self, value):
+        self.Step.set(value,write=False)
+        self.Progress.set(self.Step.value()/self.TotalSteps.value(),write=False)
 
     def _startProcess(self):
         """ """
