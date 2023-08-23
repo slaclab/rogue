@@ -4,18 +4,18 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue With Anaconda &mdash; Rogue v6.0.0 documentation</title>
+  <title>Installing Rogue With Anaconda &mdash; Rogue v6.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e0d1972b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +35,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.0.0
+                v6.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -109,8 +109,8 @@
 <h2>Getting Anaconda<a class="headerlink" href="#getting-anaconda" title="Permalink to this heading"></a></h2>
 <p>Download and install anaconda (or miniconda) if you don’t already have it installed on your machine. Choose an install location with a lot of available diskspace (&gt; 5GB). Anaconda appears to only work reliably in the bash shell.</p>
 <p>Go to <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a> to get the latest version of anaconda. Example steps for installing anaconda are included below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
-$ bash Anaconda3-2023.03-1-Linux-x86_64.sh
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-{version}-Linux-x86_64.sh
+$ bash Anaconda3-{version}-Linux-x86_64.sh
 </pre></div>
 </div>
 <p>You do not need to install visual studio.</p>
@@ -119,7 +119,8 @@ $ bash Anaconda3-2023.03-1-Linux-x86_64.sh
 </pre></div>
 </div>
 <p>It is important to use the latest conda solver:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda config --set channel_priority strict
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate
+$ conda config --set channel_priority strict
 $ conda install -n base conda-libmamba-solver
 $ conda config --set solver libmamba
 </pre></div>
@@ -136,12 +137,8 @@ $ conda config --set solver libmamba
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda install -c tidair-tag -c conda-forge rogue
 </pre></div>
 </div>
-<p>The above commands will install the latest version of Rogue from the <cite>main</cite> branch. If you want to install the <cite>pre-release</cite> version of Rogue, run the following:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_dev -c tidair-dev -c conda-forge rogue
-</pre></div>
-</div>
 <p>Alternatively you can install a specific released version of Rogue:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v5.18.4 -c conda-forge -c tidair-tag rogue=v5.18.4
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda create -n rogue_v6.0.0 -c conda-forge -c tidair-tag rogue=v6.0.0
 </pre></div>
 </div>
 </section>
@@ -152,7 +149,7 @@ $ conda config --set solver libmamba
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_tag
 </pre></div>
 </div>
-<p>Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_5.8.0).</p>
+<p>Replace rogue_tag with the name you used when creating your environment (e.g. rogue_v6.0.0).</p>
 <p>To deactivate:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda deactivate
 </pre></div>
@@ -168,7 +165,6 @@ $ conda config --set solver libmamba
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda update rogue -c tidair-tag
 </pre></div>
 </div>
-<p>Replace tidair-tag with tidair-dev for pre-release</p>
 </section>
 <section id="deleting-anaconda-environment">
 <h2>Deleting Anaconda Environment<a class="headerlink" href="#deleting-anaconda-environment" title="Permalink to this heading"></a></h2>

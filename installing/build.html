@@ -4,18 +4,18 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building Rogue From Source &mdash; Rogue v6.0.0 documentation</title>
+  <title>Building Rogue From Source &mdash; Rogue v6.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e0d1972b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +35,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.0.0
+                v6.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -113,7 +113,7 @@
   <section id="building-rogue-from-source">
 <span id="installing-full-build"></span><h1>Building Rogue From Source<a class="headerlink" href="#building-rogue-from-source" title="Permalink to this heading"></a></h1>
 <p>The following instructions demonstrate how to build rogue outside of the anaconda environment. These
-instructions are only relevant for the Linux and MacOS operating systems. See <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a> or
+instructions are only relevant for the Linux operating systems. See
 <a class="reference internal" href="docker.html#installing-docker"><span class="std std-ref">Installing Rogue Docker</span></a> for Windows and MacOS.</p>
 <section id="installing-packages-required-for-rogue">
 <h2>Installing Packages Required For Rogue<a class="headerlink" href="#installing-packages-required-for-rogue" title="Permalink to this heading"></a></h2>
@@ -152,22 +152,6 @@ $ pacman -S zeromq
 $ pacman -S python-pyqt5
 </pre></div>
 </div>
-</section>
-<section id="macos">
-<h4>MacOs:<a class="headerlink" href="#macos" title="Permalink to this heading"></a></h4>
-<p>Information on the homebrew package manager can be found at: <a class="reference external" href="https://brew.sh/">https://brew.sh/</a></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ brew install cmake
-$ brew install python3
-$ brew install boost
-$ brew install bzip2
-$ brew install python-pip
-$ brew install git
-$ brew install zeromq
-$ brew install pyqt5
-</pre></div>
-</div>
-<p>Epics V3 support is and optional module that will be included in the rogue build
-if the EPICS_BASE directory is set in the user’s environment.</p>
 </section>
 </section>
 </section>

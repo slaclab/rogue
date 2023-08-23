@@ -4,18 +4,18 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Petalinux &mdash; Rogue v6.0.0 documentation</title>
+  <title>Setting Up Rogue In Petalinux &mdash; Rogue v6.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e0d1972b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +35,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.0.0
+                v6.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -102,8 +102,8 @@
 <p>This will create a directory in project-spec/meta-user/recipes-apps/rogue</p>
 <p>The sub-directory ‘files’ can be ignored or removed.</p>
 <p>You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogue.bb with the following content:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ROGUE_VERSION = &quot;5.18.2&quot;
-ROGUE_MD5SUM  = &quot;38bf1bc4108eb08fc56ee9017be40c50&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ROGUE_VERSION = &quot;6.0.0&quot;
+ROGUE_MD5SUM  = &quot;42d6ffe9894c10a5d0e4c43834878e73&quot;
 
 SUMMARY = &quot;Recipe to build Rogue&quot;
 HOMEPAGE =&quot;https://github.com/slaclab/rogue&quot;
@@ -117,6 +117,7 @@ S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}&quot;
 PROVIDES = &quot;rogue&quot;
 EXTRA_OECMAKE += &quot;-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}&quot;
 
+# Note: distutils3 is depreciated in petalinux 2023.1 and need to switch to setuptools3
 inherit cmake python3native distutils3
 
 DEPENDS += &quot; \
@@ -151,14 +152,14 @@ RDEPENDS:${PN} += &quot; \
 FILES:${PN}-dev += &quot;/usr/include/rogue/*&quot;
 FILES:${PN} += &quot;/usr/lib/*&quot;
 
-do_configure() {
+do_configure:prepend() {
    cmake_do_configure
    bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
+   bbplain $(sed -i &quot;s/..\/python/python/&quot; ${S}/setup.py)
 }
 
-do_install() {
+do_install:prepend() {
    cmake_do_install
-   distutils3_do_install
 }
 </pre></div>
 </div>

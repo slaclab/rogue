@@ -4,18 +4,18 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slave &mdash; Rogue v6.0.0 documentation</title>
+  <title>Slave &mdash; Rogue v6.1.0 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=e0d1972b"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -35,7 +35,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.0.0
+                v6.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -197,6 +197,22 @@
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Total number of bytes received. </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb">
+<span id="_CPPv3N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb"></span><span id="_CPPv2N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb"></span><span id="rogue::interfaces::stream::Slave::ensureSingleBuffer__std::shared_ptr:rogue::interfaces::stream::Frame:R.b"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Slave_1acd935c19dce0c05794a4aa62ebbd7e9c"></span><span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">ensureSingleBuffer</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">std</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">shared_ptr</span></span><span class="p"><span class="pre">&lt;</span></span><span class="n"><span class="pre">rogue</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">interfaces</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">stream</span></span><span class="p"><span class="pre">::</span></span><a class="reference internal" href="frame.html#_CPPv4N5rogue10interfaces6stream5FrameE" title="rogue::interfaces::stream::Frame"><span class="n"><span class="pre">Frame</span></span></a><span class="p"><span class="pre">&gt;</span></span><span class="w"> </span><span class="p"><span class="pre">&amp;</span></span><span class="n sig-param"><span class="pre">frame</span></span>, <span class="kt"><span class="pre">bool</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">reqEn</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Slave18ensureSingleBufferERNSt10shared_ptrIN5rogue10interfaces6stream5FrameEEEb" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Ensure frame is a single buffer. </p>
+<p>This method makes sure the passed frame is composed of a single buffer. If the reqNew flag is true and the passed frame is not a single buffer, a new frame will be requested and the frame data will be copied, with the passed frame pointer being updated. The return value will indicate if the frame is a single buffer at the end of the process. A frame lock must be held when this method is called.</p>
+<p>Not exposed to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>frame</strong> – Reference to frame pointer (FramePtr) </p></li>
+<li><p><strong>rewEn</strong> – Flag to determine if a new frame should be requested </p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>

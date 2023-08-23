@@ -4,18 +4,18 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building Rogue Inside Anaconda &mdash; Rogue v6.0.0 documentation</title>
+  <title>Building Rogue Inside Anaconda &mdash; Rogue v6.1.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=e0d1972b"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -35,7 +35,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.0.0
+                v6.1.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -56,7 +56,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#using-rogue-in-anaconda">Using Rogue In Anaconda</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-rogue-in-anaconda">Updating Rogue In Anaconda</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deleting-anaconda-environment">Deleting Anaconda Environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#special-steps-for-macos">Special Steps For MacOS</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
@@ -105,38 +104,34 @@
   <section id="building-rogue-inside-anaconda">
 <span id="installing-anaconda-build"></span><h1>Building Rogue Inside Anaconda<a class="headerlink" href="#building-rogue-inside-anaconda" title="Permalink to this heading"></a></h1>
 <p>This section provides instructions for downloading and building rogue inside an anaconda environment. These
-instructions are relevant for Linux, Ubuntu on Windows and MacOS.</p>
-<p>See MacOS section at the bottom for additional steps required for building rogue in MacOS.</p>
-<p>See the section <a class="reference internal" href="windows.html#installing-windows"><span class="std std-ref">Setting Up Ubuntu On Windows</span></a> for additional steps required for Windows.</p>
+instructions are relevant for Linux</p>
 <section id="getting-anaconda">
 <h2>Getting Anaconda<a class="headerlink" href="#getting-anaconda" title="Permalink to this heading"></a></h2>
 <p>Download and install anaconda (or miniconda) if you don’t already have it installed on your machine. Choose an install location with a lot of available diskspace (&gt; 5GB). Anaconda appears to only work reliably in the bash shell.</p>
 <p>Go to <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a> to get the latest version of anaconda. Example steps for installing anaconda are included below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-5.3.0-Linux-x86_64.sh
-$ bash Anaconda3-5.3.0-Linux-x86_64.sh
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-{version}-Linux-x86_64.sh
+$ bash Anaconda3-{version}-Linux-x86_64.sh
 </pre></div>
 </div>
-<p>You do not need to install visual studio.</p>
 <p>Use the following command to add anaconda to your environment. This can be added to your .bash_profile.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source /path/to/my/anaconda3/etc/profile.d/conda.sh
+</pre></div>
+</div>
+<p>Set your local anaconda to use the update solver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate
+$ conda config --set channel_priority strict
+$ conda install -n base conda-libmamba-solver
+$ conda config --set solver libmamba
 </pre></div>
 </div>
 </section>
 <section id="downloading-rogue-creating-anaconda-environment">
 <h2>Downloading Rogue &amp; Creating Anaconda Environment<a class="headerlink" href="#downloading-rogue-creating-anaconda-environment" title="Permalink to this heading"></a></h2>
 <p>The next step is to download rogue and create a rogue compatible anaconda environment.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate
-$ conda install git
-$ git clone https://github.com/slaclab/rogue.git
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
-</pre></div>
-</div>
-<p>For Linux:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_build -f conda.yml
-</pre></div>
-</div>
-<p>For MacOS:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env create -n rogue_build -f conda_mac.yml
+$ conda activate
+$ conda env create -n rogue_build -f conda.yml
 </pre></div>
 </div>
 <p>You now have an anaconda environment named rogue_build which contains all of the packages required to build and run rogue.</p>
@@ -188,19 +183,6 @@ $ make install
 <h2>Deleting Anaconda Environment<a class="headerlink" href="#deleting-anaconda-environment" title="Permalink to this heading"></a></h2>
 <p>Run the following commands to delete the anaconda environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_build
-</pre></div>
-</div>
-</section>
-<section id="special-steps-for-macos">
-<h2>Special Steps For MacOS<a class="headerlink" href="#special-steps-for-macos" title="Permalink to this heading"></a></h2>
-<p>In order to compile rogue in MacOS you first need to download an install an older version of the MacOS SDK</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/phracker/MacOSX-SDKs
-$ sudo mv MacOSX-SDKs/MacOSX10.9.sdk /opt/
-</pre></div>
-</div>
-<p>You must set the following environment variables to setup anaconda in build mode before creating and activating the rogue environment.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export CONDA_BUILD_SYSROOT=/opt/MacOSX10.9.sdk
-$ export CONDA_BUILD=1
 </pre></div>
 </div>
 </section>
