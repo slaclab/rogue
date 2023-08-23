@@ -69,7 +69,7 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
 
     // printf("Got transaction address=0x%" PRIx64 ", size=%" PRIu32 ", type = %" PRIu32 "\n", addr, size, type);
 
-    rogue::interfaces::memory::TransactionLockPtr lock = tran->lock();
+    rogue::interfaces::memory::TransactionLockPtr tlock = tran->lock();
     {
         std::lock_guard<std::mutex> lock(mtx_);
 

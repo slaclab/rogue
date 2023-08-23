@@ -17,8 +17,8 @@ Go to https://www.anaconda.com/download to get the latest version of anaconda. E
 
 .. code::
 
-   $ wget https://repo.anaconda.com/archive/Anaconda3-2023.03-1-Linux-x86_64.sh
-   $ bash Anaconda3-2023.03-1-Linux-x86_64.sh
+   $ wget https://repo.anaconda.com/archive/Anaconda3-{version}-Linux-x86_64.sh
+   $ bash Anaconda3-{version}-Linux-x86_64.sh
 
 You do not need to install visual studio.
 
@@ -32,6 +32,7 @@ It is important to use the latest conda solver:
 
 .. code::
 
+    $ conda activate
     $ conda config --set channel_priority strict
     $ conda install -n base conda-libmamba-solver
     $ conda config --set solver libmamba
@@ -53,17 +54,11 @@ If you already have an anaconda environment that you would like to install Rogue
 
    $ conda install -c tidair-tag -c conda-forge rogue
 
-The above commands will install the latest version of Rogue from the `main` branch. If you want to install the `pre-release` version of Rogue, run the following:
-
-.. code::
-
-   $ conda create -n rogue_dev -c tidair-dev -c conda-forge rogue
-
 Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_v5.18.4 -c conda-forge -c tidair-tag rogue=v5.18.4
+   $ conda create -n rogue_v6.0.0 -c conda-forge -c tidair-tag rogue=v6.0.0
 
 Using Rogue In Anaconda
 =======================
@@ -76,7 +71,7 @@ To activate:
 
    $ conda activate rogue_tag
 
-Replace rogue_tag with the name you used when creating your environment (rogue_dev or rogue_5.8.0).
+Replace rogue_tag with the name you used when creating your environment (e.g. rogue_v6.0.0).
 
 
 To deactivate:
@@ -99,8 +94,6 @@ If you want to update Rogue, run the following command after activating the Rogu
 .. code::
 
    $ conda update rogue -c tidair-tag
-
-Replace tidair-tag with tidair-dev for pre-release
 
 Deleting Anaconda Environment
 =============================
