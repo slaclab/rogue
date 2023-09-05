@@ -4,15 +4,24 @@ import pyrogue
 from typing import Union
 import copy
 
+import numpy as np
+import matplotlib
+from epicsdbbuilder import WriteRecords
 
 class iocBuilder():
     """
     """
     def __init__(self, root: pyrogue.Root): 
         
-        self.record_dict = {}
         self.device_name = root.name
         self.root = root
+        self.built = False
+        self.func = {
+            int.__name__ : 'aOut',
+            str.__name__: 'stringOut',
+            bool.__name__: 'boolOut',
+            float.__name__: 'aOut',
+        }
 
         from softioc import softioc, builder
         self.running = False
@@ -27,15 +36,17 @@ class iocBuilder():
                             always_update=True,
                             on_update_name=lambda v, n : self.setVariable(self.root, n, v))
             elif isinstance(node, pyrogue._Variable.BaseVariable):
-                name = self.convertToEpicsName(node.path)
-                builder.aOut(name, 
-                            initial_value=1, 
-                            always_update=True,
-                            on_update_name=lambda v, n : self.setVariable(self.root, n, v))
+                self.buildRecord(builder, node)
+                #name = self.convertToEpicsName(node.path)
+                #builder.aOut(name, 
+                #            initial_value=1, 
+                #            always_update=True,
+                #            on_update_name=lambda v, n : self.setVariable(self.root, n, v))
 
             else: print(node)
             #elif isinstance(node, pyrogue.Device):
-        
+       
+        WriteRecords('%s.db' % self.device_name)
         builder.LoadDatabase()
 
     def start(self):
@@ -55,3 +66,20 @@ class iocBuilder():
         path = name.replace(':','.')
         print(path)
         root.getNode(path).set(value)
+
+    def buildRecord(self, builder, node: pyrogue.Node):
+        name = self.convertToEpicsName(node.path)
+        if (type(node.get()) is str): return
+        if isinstance(node.get(), np.ndarray): return
+        if isinstance(node.get(), list): return
+        if isinstance(node.get(), matplotlib.pyplot.Figure): return
+        print(name)
+        print(type(node.get()).__name__)
+        getattr(builder, 
+                self.func[type(node.get()).__name__])(
+                        name, 
+                        initial_value=node.get(), 
+                        always_update=True, 
+                        on_update_name=lambda v, n : self.setVariable(self.root, n, v))
+
+
