@@ -2,11 +2,9 @@
 import pyrogue
 
 from typing import Union
-import copy
 
 import numpy as np
 import matplotlib
-from epicsdbbuilder import WriteRecords
 
 class iocBuilder():
     """
@@ -21,32 +19,25 @@ class iocBuilder():
             str.__name__: 'stringOut',
             bool.__name__: 'boolOut',
             float.__name__: 'aOut',
+            np.ndarray.__name__: 'WaveformOut',
+            list.__name__: 'WaveformOut'
         }
 
-        from softioc import softioc, builder
         self.running = False
+        
+        from softioc import softioc, builder
+        
+        # Set the record prefix
         builder.SetDeviceName(self.device_name)
-        node_list = root.nodeList
-        for node in node_list:
-            if isinstance(node, pyrogue._Command.BaseCommand): continue
-            elif isinstance(node, pyrogue._Device.EnableVariable):
-                name = self.convertToEpicsName(node.path)
-                builder.aOut(name, 
-                            initial_value=1, 
-                            always_update=True,
-                            on_update_name=lambda v, n : self.setVariable(self.root, n, v))
+      
+        for node in root.nodeList:
+            if isinstance(node, pyrogue._Command.BaseCommand): 
+                # Commands will be turned into RPC's
+                continue
             elif isinstance(node, pyrogue._Variable.BaseVariable):
                 self.buildRecord(builder, node)
-                #name = self.convertToEpicsName(node.path)
-                #builder.aOut(name, 
-                #            initial_value=1, 
-                #            always_update=True,
-                #            on_update_name=lambda v, n : self.setVariable(self.root, n, v))
-
             else: print(node)
-            #elif isinstance(node, pyrogue.Device):
        
-        WriteRecords('%s.db' % self.device_name)
         builder.LoadDatabase()
 
     def start(self):
@@ -56,30 +47,41 @@ class iocBuilder():
             softioc.iocInit(dispatcher)
             self.running = True
 
-    def convertToEpicsName(self, path : str) -> str :
-        name = path.replace(self.device_name+'.', '')
-        name = name.replace('.',':')
-        return name
-
-    def setVariable(self, root: pyrogue.Root, name : str, value : Union[int, float]):
-        print(name)
+    def setVariable(self, name : str, value : Union[int, float]):
         path = name.replace(':','.')
-        print(path)
         root.getNode(path).set(value)
 
     def buildRecord(self, builder, node: pyrogue.Node):
-        name = self.convertToEpicsName(node.path)
-        if (type(node.get()) is str): return
-        if isinstance(node.get(), np.ndarray): return
-        if isinstance(node.get(), list): return
+        
+        # Convert the node path to a name compatible with EPICS. This requires
+        # the removal of the ROOT node name which is already included when 
+        # the database is loaded.
+        record_name = node.path[len(self.device_name)+1:].replace('.',':')
+
+        value = node.get()
+        
+        # The maximum number of characters supported by a string record is 40.
+        # TODO: In this case, use a longStringOut
+        if isinstance(value, str) and len(value) > 40:
+            builder.longStringIn(record_name, 
+                                  initial_value=value)
+
+            return
+
+        if isinstance(value, (np.ndarray, list)): 
+            if np.array(value).ndim != 1: 
+                print('Multi-dimensional arrays are not supported.')
+            elif isinstance(np.array(value)[0], bool): 
+                print('Bool type is not supported for waveforms.') 
+            return
+
         if isinstance(node.get(), matplotlib.pyplot.Figure): return
-        print(name)
-        print(type(node.get()).__name__)
+
         getattr(builder, 
-                self.func[type(node.get()).__name__])(
-                        name, 
-                        initial_value=node.get(), 
-                        always_update=True, 
-                        on_update_name=lambda v, n : self.setVariable(self.root, n, v))
+                self.func[type(value).__name__])(
+                    record_name, 
+                    initial_value=value, 
+                    always_update=True, 
+                    on_update_name=lambda v, n : self.setVariable(n, v))
 
 
