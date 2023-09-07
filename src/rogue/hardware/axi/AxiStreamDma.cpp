@@ -270,7 +270,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
 
     // Zero copy is disabled. Allocate from memory.
     if (zeroCopyEn == false || desc_->rawBuff == NULL) {
-        frame = ris::Pool::acceptReq(size, false);
+        frame = reqLocalFrame(size, false);
     }
 
     // Allocate zero copy buffers from driver

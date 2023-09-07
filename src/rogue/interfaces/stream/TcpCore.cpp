@@ -271,7 +271,7 @@ void ris::TcpCore::runThread() {
             size = zmq_msg_size(&(msg[3]));
 
             // Generate frame
-            frame = ris::Pool::acceptReq(size, false);
+            frame = reqLocalFrame(size, false);
             frame->setPayload(size);
 
             // Copy data

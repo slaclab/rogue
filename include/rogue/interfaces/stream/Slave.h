@@ -126,6 +126,29 @@ class Slave : public rogue::interfaces::stream::Pool,
      */
     uint64_t getByteCount();
 
+    //! Ensure frame is a single buffer
+    /** This method makes sure the passed frame is composed of a single buffer.
+     *  If the reqNew flag is true and the passed frame is not a single buffer, a
+     *  new frame will be requested and the frame data will be copied, with the passed
+     *  frame pointer being updated. The return value will indicate if the frame is a
+     *  single buffer at the end of the process. A frame lock must be held when this
+     *  method is called.
+     *
+     * Not exposed to Python
+     * @param frame Reference to frame pointer (FramePtr)
+     * @param rewEn Flag to determine if a new frame should be requested
+     */
+    bool ensureSingleBuffer(std::shared_ptr<rogue::interfaces::stream::Frame>& frame, bool reqEn);
+
+    // Process a local frame request
+    /* Method to service a local frame request
+     *
+     * size Minimum size for requested Frame, larger Frame may be allocated
+     * zeroCopyEn Flag which indicates if a zero copy mode Frame is allowed.
+     * Newly allocated Frame pointer (FramePtr)
+     */
+    std::shared_ptr<rogue::interfaces::stream::Frame> reqLocalFrame(uint32_t size, bool zeroCopyEn);
+
 #ifndef NO_PYTHON
 
     //! Support << operator in python
