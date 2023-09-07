@@ -260,8 +260,6 @@ void rpp::ControllerV2::applicationRx(ris::FramePtr frame, uint8_t tDest) {
     struct timeval currTime;
     struct timeval endTime;
 
-    log_->debug("Entered applicationRx()")
-
     gettimeofday(&startTime, NULL);
     timeradd(&startTime, &timeout_, &endTime);
 
