@@ -235,7 +235,8 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
         tranFrame_[tmpDest]->setLastUser(tmpLuser);
         transSof_[tmpDest]  = true;
         tranCount_[tmpDest] = 0;
-        if (app_[tmpDest]) { app_[tmpDest]->pushFrame(tranFrame_[tmpDest]); }
+        if (app_[tmpDest]) {
+            app_[tmpDest]->pushFrame(tranFrame_[tmpDest]); }
         tranFrame_[tmpDest].reset();
 
         // Detect SSI error
@@ -258,6 +259,8 @@ void rpp::ControllerV2::applicationRx(ris::FramePtr frame, uint8_t tDest) {
     struct timeval startTime;
     struct timeval currTime;
     struct timeval endTime;
+
+    log_->debug("Entered applicationRx()")
 
     gettimeofday(&startTime, NULL);
     timeradd(&startTime, &timeout_, &endTime);
@@ -358,7 +361,7 @@ void rpp::ControllerV2::applicationRx(ris::FramePtr frame, uint8_t tDest) {
                     fUser,
                     tDest,
                     segment,
-                    data[7],
+                    data[7]>>7,
                     lUser,
                     data[size - 7],
                     last);
