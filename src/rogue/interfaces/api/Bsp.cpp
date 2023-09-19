@@ -178,3 +178,9 @@ std::string ria::Bsp::readGet() {
         throw(rogue::GeneralError::create("Bsp::set", "Error getting value on node %s", this->_name.c_str()));
     }
 }
+
+
+boost::python::list ria::Bsp::nodeList() {
+    // Retrieve a python list of all nodes in the root tree. 
+    return static_cast<boost::python::list>(this->_obj.attr("nodeList"));
+}

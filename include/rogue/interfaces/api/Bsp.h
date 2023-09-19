@@ -18,6 +18,7 @@
 #define __ROGUE_INTERFACE_API_BSP_H__
 #include <boost/python.hpp>
 #include <vector>
+#include <iostream>
 
 namespace rogue {
 namespace interfaces {
@@ -26,6 +27,7 @@ namespace api {
 //! Bsp Class
 class Bsp {
   protected:
+    //boost::python::list _node_list;
     boost::python::object _obj;
     bool _isRoot;
     std::string _name;
@@ -75,6 +77,9 @@ class Bsp {
 
     //! Read and get
     std::string readGet();
+
+    //! Get all nodes in tree
+    boost::python::list nodeList(); 
 };
 
 typedef std::shared_ptr<rogue::interfaces::api::Bsp> BspPtr;
