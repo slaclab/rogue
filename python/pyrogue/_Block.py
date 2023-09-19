@@ -12,8 +12,10 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import threading
+import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory as rim
+
 
 
 def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
@@ -228,10 +230,12 @@ class LocalBlock(object):
         """
         with self._lock:
 
-            if index < 0 and (isinstance(value, list) or isinstance(value,dict)):
+            if index < 0 and (isinstance(value, list) or isinstance(value, dict)):
                 changed = True
             elif index >= 0:
                 changed = self._value[index] != value
+            elif isinstance(value, np.ndarray):
+                changed = np.array_equal(self._value, value)
             else:
                 changed = self._value != value
 

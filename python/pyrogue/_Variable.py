@@ -1042,9 +1042,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
         listData = VariableListData(numValues,valueBits,valueStride)
 
         # Setup C++ Base class
-        rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
-                              offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkOpEn, self._updateNotify, self._base, listData, retryCount)
+        rim.Variable.__init__(
+            self,
+            self._name,
+            self._mode,
+            self._minimum,
+            self._maximum,
+            offset,
+            bitOffset,
+            bitSize,
+            overlapEn,
+            verify,
+            self._bulkOpEn,
+            self._updateNotify,
+            self._base,
+            listData,
+            retryCount)
 
 
     ##############################
