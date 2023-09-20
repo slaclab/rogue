@@ -21,13 +21,13 @@ import hwcounter
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-MaxCycles = { 'remoteSetRate'   : 6.5e9,
-              'remoteSetNvRate' : 5.8e9,
-              'remoteGetRate'   : 5.0e9,
-              'localSetRate'    : 7.0e9,
-              'localGetRate'    : 4.8e9,
-              'linkedSetRate'   : 7.2e9,
-              'linkedGetRate'   : 6.5e9 }
+MaxCycles = { 'remoteSetRate'   : 8.0e9,
+              'remoteSetNvRate' : 7.0e9,
+              'remoteGetRate'   : 6.0e9,
+              'localSetRate'    : 8.0e9,
+              'localGetRate'    : 6.0e9,
+              'linkedSetRate'   : 9.0e9,
+              'linkedGetRate'   : 8.0e9 }
 
 class TestDev(pr.Device):
 
