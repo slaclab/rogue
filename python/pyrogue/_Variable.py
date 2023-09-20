@@ -814,10 +814,14 @@ class BaseVariable(pr.Node):
 
                         for val,i in zip(s,idxSlice):
                             self.setDisp(val.strip(), write=writeEach, index=i)
+            else:
+                self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
         # Standard set
         elif self._mode in modes:
             self.setDisp(d,writeEach)
+        else:
+            self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
     def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         """
