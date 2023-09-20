@@ -106,6 +106,7 @@ def test_rate():
 
     with DummyTree() as root:
         count = 100000
+        result = {}
 
         stime = time.time()
         with root.updateGroup():
