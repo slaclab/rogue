@@ -19,3 +19,4 @@ gitpython
 pygithub
 pydm
 matplotlib
+hwcounter

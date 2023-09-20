@@ -14,19 +14,20 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 import time
+import hwcounter
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-MinRate = { 'remoteSetRate'   : 42000,
-            'remoteSetNvRate' : 46000,
-            'remoteGetRate'   : 54000,
-            'localSetRate'    : 36000,
-            'localGetRate'    : 55000,
-            'linkedSetRate'   : 36000,
-            'linkedGetRate'   : 45000 }
+MaxCycles = { 'remoteSetRate'   : 42000,
+              'remoteSetNvRate' : 46000,
+              'remoteGetRate'   : 54000,
+              'localSetRate'    : 36000,
+              'localGetRate'    : 55000,
+              'linkedSetRate'   : 36000,
+              'linkedGetRate'   : 45000 }
 
 class TestDev(pr.Device):
 
@@ -106,57 +107,72 @@ def test_rate():
 
     with DummyTree() as root:
         count = 100000
-        result = {}
+        resultRate = {}
+        resultCycles = {}
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestRemote.set(i)
-        result['remoteSetRate'] = 1/((time.time()-stime) / count)
+        resultCycles['remoteSetRate'] = hwcounter.count_end() - scount
+        resultRate['remoteSetRate'] = int(1/((time.time()-stime) / count))
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestRemoteNoVerify.set(i)
-        result['remoteSetNvRate'] = 1/((time.time()-stime) / count)
+        resultCycles['remoteSetNvRate'] = hwcounter.count_end() - scount
+        resultRate['remoteSetNvRate'] = int(1/((time.time()-stime) / count))
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestRemote.get()
-        result['remoteGetRate'] = 1/((time.time()-stime) / count)
+        resultCycles['remoteGetRate'] = hwcounter.count_end() - scount
+        resultRate['remoteGetRate'] = int(1/((time.time()-stime) / count))
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestLocal.set(i)
-        result['localSetRate'] = 1/((time.time()-stime) / count)
+        resultCycles['localSetRate'] = hwcounter.count_end() - scount
+        resultRate['localSetRate'] = int(1/((time.time()-stime) / count))
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestLocal.get()
-        result['localGetRate'] = 1/((time.time()-stime) / count)
+        resultCycles['localGetRate'] = hwcounter.count_end() - scount
+        resultRate['localGetRate'] = int(1/((time.time()-stime) / count))
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestLink.set(i)
-        result['linkedSetRate'] = 1/((time.time()-stime) / count)
+        resultCycles['linkedSetRate'] = hwcounter.count_end() - scount
+        resultRate['linkedSetRate'] = int(1/((time.time()-stime) / count))
 
         stime = time.time()
+        scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
                 root.TestDev.TestLink.get(i)
-        result['linkedGetRate'] = 1/((time.time()-stime) / count)
+        resultCycles['linkedGetRate'] = hwcounter.count_end() - scount
+        resultRate['linkedGetRate'] = int(1/((time.time()-stime) / count))
 
         passed = True
 
-        for k,v in MinRate.items():
+        for k,v in MaxCycles.items():
 
-            print(f"{k} target {v} result {result[k]}")
+            print(f"{k} cyles {resultCycles[k]}, maximum {v}, rate {resultRate[k]}")
 
-            if result[k] < v:
+            if resultCycles[k] > v:
                 passed = False
 
         if passed is False:
