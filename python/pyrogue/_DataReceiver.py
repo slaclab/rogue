@@ -55,7 +55,7 @@ class DataReceiver(pr.Device,ris.Slave):
         self.add(pr.LocalVariable(name='Data',
                                   typeStr=typeStr,
                                   disp='',
-                                  groups=['NoState'],
+                                  groups=['NoState','NoStream'],
                                   value=value,
                                   hidden=hideData,
                                   description='Data Frame Container'))
