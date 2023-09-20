@@ -140,7 +140,7 @@ jobs:
       - name: Get Image Information
         id: get_image_info
         run: |
-          echo ::set-output name=tag::`git describe --tags`
+          echo tag=`git describe --tags` >> ${GITHUB_OUTPUT}
 
       - name: Get Ruckus
         run: |
@@ -192,8 +192,7 @@ jobs:
         env:
           CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
         run: |
-          echo ::set-output name=token::$CONDA_UPLOAD_TOKEN_TAG
-          echo ::set-output name=os::linux-64
+          echo token=${CONDA_UPLOAD_TOKEN_TAG} >> ${GITHUB_OUTPUT}
 
       - name: Build
         run: |
@@ -222,8 +221,8 @@ jobs:
       - name: Get Image Information
         id: get_image_info
         run: |
-          echo ::set-output name=tag::`git describe --tags`
-          echo ::set-output name=branch::`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'`
+          echo tag=`git describe --tags` >> ${GITHUB_OUTPUT}
+          echo branch=`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'` >> ${GITHUB_OUTPUT}
 
       # Setup docker build environment
       - name: Set up Docker Buildx
