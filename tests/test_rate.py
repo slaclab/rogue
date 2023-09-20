@@ -20,13 +20,13 @@ import time
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-MinRate = { 'remoteSetRate'   : 100000,
-            'remoteSetNvRate' : 100000,
-            'remoteGetRate'   : 100000,
-            'localSetRate'    : 100000,
-            'localGetRate'    : 100000,
-            'linkedSetRate'   : 100000,
-            'linkedGetRate'   : 100000 }
+MinRate = { 'remoteSetRate'   : 42000,
+            'remoteSetNvRate' : 46000,
+            'remoteGetRate'   : 54000,
+            'localSetRate'    : 36000,
+            'localGetRate'    : 55000,
+            'linkedSetRate'   : 36000,
+            'linkedGetRate'   : 45000 }
 
 class TestDev(pr.Device):
 
