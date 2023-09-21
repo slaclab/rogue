@@ -814,10 +814,14 @@ class BaseVariable(pr.Node):
 
                         for val,i in zip(s,idxSlice):
                             self.setDisp(val.strip(), write=writeEach, index=i)
+            else:
+                self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
         # Standard set
         elif self._mode in modes:
             self.setDisp(d,writeEach)
+        else:
+            self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
     def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
         """
@@ -1042,9 +1046,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
         listData = VariableListData(numValues,valueBits,valueStride)
 
         # Setup C++ Base class
-        rim.Variable.__init__(self,self._name,self._mode,self._minimum,self._maximum,
-                              offset, bitOffset, bitSize, overlapEn, verify,
-                              self._bulkOpEn, self._updateNotify, self._base, listData, retryCount)
+        rim.Variable.__init__(
+            self,
+            self._name,
+            self._mode,
+            self._minimum,
+            self._maximum,
+            offset,
+            bitOffset,
+            bitSize,
+            overlapEn,
+            verify,
+            self._bulkOpEn,
+            self._updateNotify,
+            self._base,
+            listData,
+            retryCount)
 
 
     ##############################

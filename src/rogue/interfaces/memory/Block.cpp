@@ -1824,7 +1824,8 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
     if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) { fPoint = fPoint - (1 << var->valueBits_); }
 
     // Convert to float
-    tmp = (double)fPoint / pow(2, var->binPoint_);
+    tmp = (double)fPoint;
+    tmp = tmp / pow(2, var->binPoint_);
     return tmp;
 }
 
