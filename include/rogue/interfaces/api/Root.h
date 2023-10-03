@@ -1,5 +1,8 @@
 #pragma once
 
+#include <map>
+#include <string>
+
 #include <boost/python.hpp>
 
 #include "rogue/interfaces/api/Node.h" 
@@ -29,15 +32,16 @@ class Root : Node {
    void addVarListener(void (*func)(std::string, std::string), void (*done)());
 
    //! Load a YAML configuration from a file.
-   bool loadYaml(std::string &name); 
+   bool loadYaml(const std::string &name); 
 
   private:
 
    //! List of nodes in the tree
    std::vector<Node> _nodes;
 
+   // TODO: This should be an unordered map. 
    //! List of commands in the tree
-   std::vector<Command> _commands; 
+   std::map<std::string, Node> _commands; 
 
 };
 
