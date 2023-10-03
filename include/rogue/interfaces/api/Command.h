@@ -11,7 +11,7 @@ template <typename T> class Command : public Node {
   /**
    * Constructor.
    */
-  Command(const boost::python::object &obj); 
+  Command(const boost::python::object &obj) : Node(obj) {};  
   // Destructor
   ~Command() = default;
 

@@ -14,10 +14,12 @@ Node::Node(const boost::python::object &obj) {
     _base_class = boost::python::extract<std::string>(obj.attr("__class__")
 		    .attr("__bases__")[0].attr("__name__")); 
 
+    /*
     std::cout << "Name: " << _name << std::endl;
     std::cout << "Desciption: " << _description << std::endl;
     std::cout << "Path: " << _path << std::endl;
     std::cout << "Base class: " << _base_class << std::endl;
+    */
 }
 
 }

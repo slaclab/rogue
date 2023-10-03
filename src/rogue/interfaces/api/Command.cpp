@@ -2,10 +2,4 @@
 
 namespace rogue::interfaces::api { 
 
-Command::Command(const boost::python::object &obj) { 
-	
-}
-
-
-
 }

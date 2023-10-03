@@ -9,9 +9,14 @@ namespace rogue::interfaces::api {
 template <typename T> class Variable : public Node { 
 
  public: 
-    Variable(const boost::python::object &obj) : Node(obj) { 
-       value = boost::python::extract<T>(obj.attr("_default"));
-        std::cout << "Value: " << value << std::endl; 
+    Variable(const boost::python::object &obj) : Node(obj) {
+       try {  
+           value = boost::python::extract<T>(obj.attr("_default"));
+           //std::cout << "Value: " << value << std::endl; 
+       } catch (...) { 
+           std::cout << "Value is not set." << std::endl;
+	   return;
+       }
     }; 
     ~Variable() = default;
 
