@@ -194,8 +194,13 @@ class EpicsPvHolder(object):
         self._log.info("Adding {} with type {} init={}".format(self._name,self._valType,varVal.valueDisp))
         try:
             if self._valType == 'ndarray':
-                nt = p4p.nt.NTNDArray()
-                #iv = nt.wrap(varVal.value)
+                # If a 1D array is encountered, use a NTScalar.  Note, if an 
+                # NTScalar is used, the values will be automatically converted
+                # to doubles.
+                if varVal.value.ndim == 1: 
+                    nt = p4p.nt.NTScalar('ad')
+                else: 
+                    nt = p4p.nt.NTNDArray()
                 iv = varVal.value
             elif self._valType == 'enum':
                 nt = p4p.nt.NTEnum(display=False, control=False, valueAlarm=False)
