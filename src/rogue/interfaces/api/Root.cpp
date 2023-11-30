@@ -4,7 +4,6 @@
 #include <boost/python.hpp>
 
 #include "rogue/interfaces/api/Variable.h"
-#include "rogue/GeneralError.h"
 
 namespace rogue::interfaces::api { 
 
@@ -27,8 +26,8 @@ Root::Root(const boost::python::object &obj) : Node(obj) {
 		      .attr("__bases__")[0].attr("__name__"))};
 	//std::cout << "Class name: " << class_name << std::endl;
 	//std::cout << "Base class name: " << base_class << std::endl;
+	std::string node_name{boost::python::extract<std::string>(nodes[i].attr("name"))};	 
         if (class_name.compare("BaseCommand") == 0) {
-	    std::string command_name{boost::python::extract<std::string>(nodes[i].attr("name"))};	 
 	    // Some commands don't have a return type.  In this case, the "retTypeStr"
 	    // attribute is set to None which will lead to an error if extracted
 	    // as a string.  To avoid the error, first try to extract the type as 
@@ -37,27 +36,34 @@ Root::Root(const boost::python::object &obj) : Node(obj) {
 	    boost::python::extract<std::string> ret_type(nodes[i].attr("retTypeStr"));
 	    if (!ret_type.check()) {
 	          //std::cout << "Object with NoneType found." << std::endl;
-              _commands[command_name] = Command<char*>(nodes[i]);
+              _commands[node_name] = Command<char*>(nodes[i]);
 	    } else if (std::string(ret_type).compare("str") == 0) {
-	      _commands[command_name] = Command<std::string>(nodes[i]); 
+	      _commands[node_name] = Command<std::string>(nodes[i]); 
             } 
       } else if (base_class.compare("BaseVariable") == 0) {
 	   
           std::string type{boost::python::extract<std::string>(nodes[i].attr("typeStr"))};
 	  if (type.compare("bool") == 0) { 
-             _nodes.push_back(Variable<bool>(nodes[i])); 
+             _node_vec.push_back(Variable<bool>(nodes[i])); 
+	     _nodes[node_name] = Variable<bool>(nodes[i]);
 	  } else if (type.compare("str") == 0) {
-             _nodes.push_back(Variable<std::string>(nodes[i])); 
+             _node_vec.push_back(Variable<std::string>(nodes[i])); 
+	     _nodes[node_name] = Variable<std::string>(nodes[i]);
 	  } else if (type.compare("float") == 0) {
-             _nodes.push_back(Variable<float>(nodes[i])); 
+             _node_vec.push_back(Variable<float>(nodes[i])); 
+	     _nodes[node_name] = Variable<float>(nodes[i]);
 	  } else if (type.compare("UInt32") == 0) {
-             _nodes.push_back(Variable<uint32_t>(nodes[i])); 
+             _node_vec.push_back(Variable<uint32_t>(nodes[i])); 
+	     _nodes[node_name] = Variable<uint32_t>(nodes[i]);
 	  } else if (type.compare("UInt1") == 0) {
-             _nodes.push_back(Variable<uint8_t>(nodes[i])); 
+             _node_vec.push_back(Variable<uint8_t>(nodes[i])); 
+	     _nodes[node_name] = Variable<uint8_t>(nodes[i]);
 	  } else if (type.compare("UInt64") == 0) {
-             _nodes.push_back(Variable<uint64_t>(nodes[i])); 
+             _node_vec.push_back(Variable<uint64_t>(nodes[i])); 
+	     _nodes[node_name] = Variable<uint64_t>(nodes[i]);
 	  } else if (type.compare("int") == 0) {
-             _nodes.push_back(Variable<int>(nodes[i])); 
+             _node_vec.push_back(Variable<int>(nodes[i])); 
+	     _nodes[node_name] = Variable<int>(nodes[i]);
 	  } else if (type.compare("list") == 0) {
 	  } // else { 
           //    std::cout << "class: " << class_name << std::endl;
@@ -67,7 +73,7 @@ Root::Root(const boost::python::object &obj) : Node(obj) {
       } 
   }
 
-  std::cout << "Total nodes added: " << _nodes.size() << std::endl;
+  std::cout << "Total nodes added: " << _node_vec.size() << std::endl;
   //for (auto & node : _nodes) std::cout << node << "\n";
 }
 

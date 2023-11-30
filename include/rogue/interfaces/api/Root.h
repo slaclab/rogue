@@ -9,6 +9,8 @@
 #include "rogue/interfaces/api/Node.h" 
 #include "rogue/interfaces/api/Command.h" 
 
+#include "rogue/GeneralError.h"
+
 namespace rogue::interfaces::api { 
 class Root : Node {
 
@@ -35,10 +37,21 @@ class Root : Node {
    //! Load a YAML configuration from a file.
    bool loadYaml(const std::string &name); 
 
+   template <typename T> 
+   T getNode(const std::string &name) const {
+       auto it{_nodes.find(name)}; 
+       if (it == _nodes.end()) {
+           throw rogue::GeneralError::create("Root::getNode",
+			                     ("Node "+name+" does not exist.").c_str()); 
+       }
+       return boost::any_cast<T>(it->second);
+   } 
   private:
 
    //! List of nodes in the tree
-   std::vector<Node> _nodes;
+   std::vector<Node> _node_vec;
+
+   std::map<std::string, boost::any> _nodes;
 
    // TODO: This should be an unordered map. 
    //! List of commands in the tree
