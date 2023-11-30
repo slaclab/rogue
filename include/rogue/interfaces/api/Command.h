@@ -6,12 +6,15 @@
 #include "rogue/interfaces/api/Node.h" 
 
 namespace rogue::interfaces::api {
+
 template <typename T> class Command : public Node { 
+ 
  public:
   /**
    * Constructor.
    */
-  Command(const boost::python::object &obj) : Node(obj) {};  
+  Command(const boost::python::object &obj) : Node(obj) {
+  };  
   // Destructor
   ~Command() = default;
 

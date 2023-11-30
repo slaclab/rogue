@@ -4,6 +4,7 @@
 #include <string>
 
 #include <boost/python.hpp>
+#include <boost/any.hpp>
 
 #include "rogue/interfaces/api/Node.h" 
 #include "rogue/interfaces/api/Command.h" 
@@ -41,7 +42,7 @@ class Root : Node {
 
    // TODO: This should be an unordered map. 
    //! List of commands in the tree
-   std::map<std::string, Node> _commands; 
+   std::map<std::string, boost::any> _commands; 
 
 };
 
