@@ -1,4 +1,4 @@
-.. _device_tree_node_device:
+.. _pyrogue_tree_node_device:
 
 ======
 Device 
@@ -23,7 +23,7 @@ Below is an example of creating a Device which ...
 C++ Device Example
 ==================
 
-Below is an example of creating a Device device in C++.
+Below is an example of creating a Device class in C++.
 
 .. code-block:: c
 

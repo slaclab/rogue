@@ -1,4 +1,4 @@
-.. _device_tree_node_variable_remote_variable:
+.. _pyrogue_tree_node_variable_remote_variable:
 
 ==============
 RemoteVariable

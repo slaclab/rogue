@@ -1,4 +1,4 @@
-.. _device_tree_node_root:
+.. _pyrogue_tree_node_root:
 
 ====
 Root

@@ -1,4 +1,4 @@
-.. _device_tree_node_variable:
+.. _pyrogue_tree_node_variable:
 
 ========
 Variable
@@ -42,7 +42,7 @@ A few notes on the above examples ...
 
 .. toctree::
    :maxdepth: 1
-   :caption: Types Of Nodes In The Device Tree:
+   :caption: Types Of Nodes In The PyRogue Tree:
 
    link_variable/index
    local_variable/index

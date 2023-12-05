@@ -1,4 +1,4 @@
-.. _device_tree_node_command_local_command:
+.. _pyrogue_tree_node_command_local_command:
 
 ============
 LocalCommand

@@ -1,4 +1,4 @@
-.. _device_tree_node_command:
+.. _pyrogue_tree_node_command:
 
 =======
 Command 
@@ -11,7 +11,7 @@ In this example ...
 Python Command Example
 ======================
 
-Below is an example of creating a command which ...
+Below is an example of creating a Command which ...
 
 .. code-block:: python
 
@@ -23,7 +23,7 @@ Below is an example of creating a command which ...
 C++ Command Example
 ===================
 
-Below is an example of creating a command device in C++.
+Below is an example of creating a Command device in C++.
 
 .. code-block:: c
 
@@ -42,7 +42,7 @@ A few notes on the above examples ...
 
 .. toctree::
    :maxdepth: 1
-   :caption: Types Of Commands In The Device Tree:
+   :caption: Types Of Commands In The PyRogue Tree:
 
    local_command/index
    remote_command/index
