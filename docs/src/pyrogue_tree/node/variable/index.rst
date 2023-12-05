@@ -42,7 +42,7 @@ A few notes on the above examples ...
 
 .. toctree::
    :maxdepth: 1
-   :caption: Types Of Nodes In The PyRogue Tree:
+   :caption: Types Of Variables In The PyRogue Tree:
 
    link_variable/index
    local_variable/index
