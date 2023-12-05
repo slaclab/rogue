@@ -4,7 +4,7 @@
 Device Tree
 ================
 
-TBD
+The Device Tree implements a tree structure for hierarchical organization of devices ...
 
 .. toctree::
    :maxdepth: 1

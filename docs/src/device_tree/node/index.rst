@@ -4,9 +4,7 @@
 Node 
 ====
 
-The Node class ...
-
-In this example ... 
+The Node class is the base class of all devices ...
 
 .. toctree::
    :maxdepth: 1
