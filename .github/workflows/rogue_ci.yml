@@ -240,7 +240,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./Dockerfile
+          file: ./docker/rogue
           push: true
           tags: tidair/rogue:${{ steps.get_image_info.outputs.tag }}, tidair/rogue:latest
           build-args: branch=${{ steps.get_image_info.outputs.branch }}
