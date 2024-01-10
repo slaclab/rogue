@@ -217,7 +217,7 @@ class Node(object):
 
     @property
     def nodeCount(self):
-        return self._nodeCount
+        return type(self)._nodeCount
 
     @property
     def name(self):
