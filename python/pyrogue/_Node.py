@@ -184,7 +184,7 @@ class Node(object):
         -------
 
         """
-        type(self)._nodeCount += 1
+        pr.Node._nodeCount += 1
 
         # Public attributes
         self._name        = name
@@ -217,7 +217,7 @@ class Node(object):
 
     @property
     def nodeCount(self):
-        return type(self)._nodeCount
+        return pr.Node._nodeCount
 
     @property
     def name(self):
