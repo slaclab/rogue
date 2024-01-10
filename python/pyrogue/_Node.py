@@ -184,7 +184,7 @@ class Node(object):
         -------
 
         """
-        self._nodeCount.next += 1
+        self._nodeCount += 1
 
         # Public attributes
         self._name        = name
