@@ -154,6 +154,7 @@ class Node(object):
     -------
 
     """
+    _nodeCount = 0
 
     def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
         """
@@ -183,6 +184,7 @@ class Node(object):
         -------
 
         """
+        _nodeCount.next += 1
 
         # Public attributes
         self._name        = name
@@ -212,6 +214,10 @@ class Node(object):
 
     def __repr__(self):
         return f'{self.__class__} - {self.path}'
+
+    @property
+    def nodeCount(self):
+        return _nodeCount
 
     @property
     def name(self):
@@ -559,7 +565,7 @@ class Node(object):
     def nodeList(self):
         """Get a recursive list of nodes."""
         lst = []
-        for key,value in self.nodes.items():
+        for key,value in self._nodes.items():
             lst.append(value)
             lst.extend(value.nodeList)
         return lst
