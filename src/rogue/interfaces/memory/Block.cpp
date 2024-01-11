@@ -148,7 +148,7 @@ uint64_t rim::Block::offset() {
 
 // Get full address of this Block
 uint64_t rim::Block::address() {
-    return (reqAddress() | offset_);
+    return (reqAddress() + offset_);
 }
 
 // Get size of this block in bytes.

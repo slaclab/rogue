@@ -64,7 +64,7 @@ uint64_t rim::Hub::getOffset() {
 
 //! Get address
 uint64_t rim::Hub::getAddress() {
-    return (reqAddress() | offset_);
+    return (reqAddress() + offset_);
 }
 
 //! Return id to requesting master
@@ -105,7 +105,7 @@ uint64_t rim::Hub::doAddress() {
     if (root_)
         return (0);
     else
-        return (reqAddress() | offset_);
+        return (reqAddress() + offset_);
 }
 
 //! Post a transaction. Master will call this method with the access attributes.
@@ -113,7 +113,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
     uint32_t maxAccess = getSlave()->doMaxAccess();
 
     // Adjust address
-    tran->address_ |= offset_;
+    tran->address_ += offset_;
 
     // Split into smaller transactions if necessary
     if (tran->size() > maxAccess) {

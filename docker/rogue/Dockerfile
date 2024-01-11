@@ -1,4 +1,4 @@
-FROM ubuntu:22.10
+FROM ubuntu:22.04
 
 # Install system tools
 RUN apt-get update && apt-get install -y \
@@ -21,7 +21,7 @@ RUN pip3 install PyYAML parse click ipython pyzmq packaging matplotlib numpy p4p
 RUN pip3 install pydm>=1.18.0
 
 # Install Rogue
-ARG branch
+ARG branch=main
 WORKDIR /usr/local/src
 RUN git clone https://github.com/slaclab/rogue.git -b $branch
 WORKDIR rogue
