@@ -13,6 +13,24 @@ import rogue
 
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 
+class SimpleVarDevice(pr.Device):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.add(pr.RemoteVariable(
+            name      = 'Var1',
+            offset    =  0x0,
+            bitSize   = 32,
+            bitOffset = 0,
+        ))
+
+        self.add(pr.RemoteVariable(
+            name      = 'Var2',
+            offset    =  0x4,
+            bitSize   = 32,
+            bitOffset = 0,
+        ))
+
 class BlockDevice(pr.Device):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -85,7 +103,12 @@ class BlockRoot(pr.Root):
         self.addInterface(sim)
 
         self.add(BlockDevice(
-            offset     = 0,
+            offset     = 0x0000,
+            memBase    = sim,
+        ))
+
+        self.add(SimpleVarDevice(
+            offset     = 0xF034, # non-4kB aligned base offset
             memBase    = sim,
         ))
 
