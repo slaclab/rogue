@@ -18,17 +18,17 @@ Similiarly the previous feature which allowed the user to pass the root class to
    class ExampleRoot(pyrogue.Root):
 
        def __init__(self):
-           pyrogue.Root.__init__(self,
-                                 description="Example Root",
-                                 timeout=2.0,
-                                 pollEn=True)
+	   pyrogue.Root.__init__(self,
+				 description="Example Root",
+				 timeout=2.0,
+				 pollEn=True)
 
-           # Add zmq server, keep it as an attribute so we can access it later
-           self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='*', port=0)
-           self.addInterface(self.zmqServer)
+	   # Add zmq server, keep it as an attribute so we can access it later
+	   self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='*', port=0)
+	   self.addInterface(self.zmqServer)
 
    with ExampleRoot() as root:
-        pyrogue.pydm.runPyDM(serverList=root.zmqServer.address,title='Test UI',sizeX=1000,sizeY=500)
+	pyrogue.pydm.runPyDM(serverList=root.zmqServer.address,title='Test UI',sizeX=1000,sizeY=500)
 
 
 More information can be found int he ZmqServer class documenation (TBD).
@@ -44,13 +44,13 @@ Similiar to the zmqServer, the sql logger is now removed to be an external inter
    class ExampleRoot(pyrogue.Root):
 
        def __init__(self):
-           pyrogue.Root.__init__(self,
-                                 description="Example Root",
-                                 timeout=2.0,
-                                 pollEn=True)
+	   pyrogue.Root.__init__(self,
+				 description="Example Root",
+				 timeout=2.0,
+				 pollEn=True)
 
-           # Add sql logger
-           self.addInterface(pyrogue.interfaces.SqlLogger(root=self, url='sqlite:///test.db'))
+	   # Add sql logger
+	   self.addInterface(pyrogue.interfaces.SqlLogger(root=self, url='sqlite:///test.db'))
 
 
 More information can be found int he SqlLogger class documenation (TBD).
@@ -66,17 +66,17 @@ In previous versions of rogue the Root class automatically supported the ability
    class ExampleRoot(pyrogue.Root):
 
        def __init__(self):
-           pyrogue.Root.__init__(self,
-                                 description="Example Root",
-                                 timeout=2.0,
-                                 pollEn=True)
+	   pyrogue.Root.__init__(self,
+				 description="Example Root",
+				 timeout=2.0,
+				 pollEn=True)
 
-           # Create configuration stream
-           stream = pyrogue.interfaces.stream.Variable(root=self)
+	   # Create configuration stream
+	   stream = pyrogue.interfaces.stream.Variable(root=self)
 
-           # Create StreamWriter with the configuration stream included as channel 1
-           sw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream})
-           self.add(sw)
+	   # Create StreamWriter with the configuration stream included as channel 1
+	   sw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream})
+	   self.add(sw)
 
 
 EPICS Version 3 Channel Access Server
@@ -89,13 +89,13 @@ Epics version 3 channel access server is removed from Rogue V6. Please use the e
    class ExampleRoot(pyrogue.Root):
 
        def __init__(self):
-           pyrogue.Root.__init__(self,
-                                 description="Example Root",
-                                 timeout=2.0,
-                                 pollEn=True)
+	   pyrogue.Root.__init__(self,
+				 description="Example Root",
+				 timeout=2.0,
+				 pollEn=True)
 
-           pvserv = pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
-           self.addProtocol(pvserv)
+	   pvserv = pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
+	   self.addProtocol(pvserv)
 
 
 RawWrite and RawRead
@@ -105,4 +105,24 @@ The deprecated rawWrite and rawRead calls are removed from Rogue V6. The new arr
 
 
 
+Setting pollInterval
+====================
+
+There API for setting a Variable's pollInterval has
+changed. Previously, it could be set directly:
+
+.. code::
+
+   someVar.pollInterval = 5   # Poll someVar every 5 seconds
+
+This has been deprecated in favor of:
+
+.. code::
+
+   someVar.setPollInterval(5)  # Poll someVar every 5 seconds
+
+
+The reasoning is that a lot happens behind the scences when changing a
+poll interval, and masking this with a setter decorator gives the user
+the impression that it is much simpler than it is.
 
