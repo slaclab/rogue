@@ -24,7 +24,7 @@ Similiarly the previous feature which allowed the user to pass the root class to
 				 pollEn=True)
 
 	   # Add zmq server, keep it as an attribute so we can access it later
-	   self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='*', port=0)
+	   self.zmqServer = pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)
 	   self.addInterface(self.zmqServer)
 
    with ExampleRoot() as root:
