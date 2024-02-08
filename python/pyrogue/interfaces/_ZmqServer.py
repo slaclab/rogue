@@ -20,12 +20,16 @@ class ZmqServer(rogue.interfaces.ZmqServer):
     def __init__(self,*,root,addr,port,incGroups=None, excGroups=['NoServe']):
         rogue.interfaces.ZmqServer.__init__(self,addr,port)
         self._root = root
+        self._addr = addr
         self._root.addVarListener(func=self._varUpdate, done=self._varDone, incGroups=incGroups, excGroups=excGroups)
         self._updateList = {}
 
     @property
     def address(self):
-        return f"localhost:{self.port()}"
+        if self._addr == "*":
+            return f"127.0.0.1:{self.port()}"
+        else:
+            return f"{self._addr}:{self.port()}"
 
     def _doOperation(self,d):
         path    = d['path']   if 'path'   in d else None

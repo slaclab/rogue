@@ -442,7 +442,7 @@ class Device(pr.Node,rim.Hub):
             variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
 
         for x in variables:
-            self.node(x).pollInterval = interval
+            self.node(x).setPollInterval(interval)
 
     def hideVariables(self, hidden, variables=None):
         """
