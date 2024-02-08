@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Migrating To Rogue V6 &mdash; Rogue v6.1.1 documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <title>Migrating To Rogue V6 &mdash; Rogue v6.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=44a91332"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=73519958"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -34,7 +36,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.1.1
+                v6.1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -61,6 +63,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#root-configuration-streaming">Root Configuration Streaming</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#epics-version-3-channel-access-server">EPICS Version 3 Channel Access Server</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rawwrite-and-rawread">RawWrite and RawRead</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-pollinterval">Setting pollInterval</a></li>
 </ul>
 </li>
 </ul>
@@ -108,7 +111,7 @@
                               <span class="n">pollEn</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Add zmq server, keep it as an attribute so we can access it later</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">ZmqServer</span><span class="p">(</span><span class="n">root</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zmqServer</span><span class="p">)</span>
 
 <span class="k">with</span> <span class="n">ExampleRoot</span><span class="p">()</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
@@ -173,6 +176,21 @@
 <section id="rawwrite-and-rawread">
 <h2>RawWrite and RawRead<a class="headerlink" href="#rawwrite-and-rawread" title="Permalink to this heading"></a></h2>
 <p>The deprecated rawWrite and rawRead calls are removed from Rogue V6. The new array variables added in Rogue V5 make these calls no longer needed. The user should no longer pass a ‘size’ arg to the Device class and then use rawWrite and rawRead to access memory space. Instead a array Variable should be used with the appropriate similiar size. The large Variables can then be configured to be excluded from the bulk read and write transactions and can also have other smaller Variables mapped to specific locations in the overall register space. See below for an example of how a Device can be upgraded to use list Variables instead of the rawWrite and rawRead calls:</p>
+</section>
+<section id="setting-pollinterval">
+<h2>Setting pollInterval<a class="headerlink" href="#setting-pollinterval" title="Permalink to this heading"></a></h2>
+<p>There API for setting a Variable’s pollInterval has
+changed. Previously, it could be set directly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">someVar</span><span class="o">.</span><span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">5</span>   <span class="c1"># Poll someVar every 5 seconds</span>
+</pre></div>
+</div>
+<p>This has been deprecated in favor of:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">someVar</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Poll someVar every 5 seconds</span>
+</pre></div>
+</div>
+<p>The reasoning is that a lot happens behind the scences when changing a
+poll interval, and masking this with a setter decorator gives the user
+the impression that it is much simpler than it is.</p>
 </section>
 </section>
 
