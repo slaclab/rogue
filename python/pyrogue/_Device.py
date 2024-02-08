@@ -1010,7 +1010,7 @@ class ArrayDevice(Device):
         if arrayArgs is None:
             arrayArgs = [{} for x in range(number)]
         elif isinstance(arrayArgs, dict):
-            arrayArgs = [arrayArgs for x in range(number)]
+            arrayArgs = [arrayArgs.copy() for x in range(number)]
 
         for i in range(number):
             args = arrayArgs[i]
