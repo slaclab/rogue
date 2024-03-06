@@ -1323,7 +1323,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         BaseVariable._genDocs(self,file)
 
-        for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verify', 'varBytes']:
+        for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verifyEn', 'varBytes']:
             astr = str(getattr(self,a))
 
             if astr != 'None':
