@@ -114,6 +114,11 @@ class Process(PyDMFrame):
                     w.showStepExponent      = False
                     w.writeOnPress          = True
 
+                elif v.isCommand and not v.arg:
+                    w = PyDMPushButton(label='Exec',
+                                       pressValue=1,
+                                       init_channel=self._path + '.{}/disp'.format(v.name))
+
                 else:
                     w = PyRogueLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))
                     w.showUnits             = True
