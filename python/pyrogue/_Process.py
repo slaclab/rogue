@@ -77,10 +77,6 @@ class Process(pr.Device):
             value = 1,
             description = "Total number of loops steps for the process"))
 
-        @self.command(hidden=True)
-        def Advance(arg):
-            self._incrementSteps(1)
-
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
             self.add(self._argVar)
