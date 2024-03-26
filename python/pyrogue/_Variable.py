@@ -31,11 +31,19 @@ def VariableWait(varList, testFunction, timeout=0):
     """
     Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
-    The test function is passed a dictionary containing the current
-    variableValue state index by variable path
+    The test function is passed a list containing the current
+    variableValue state indexed by position as passed in the wait list.
+    Each variableValue entry has an additional field updated which indicates
+    if the variable has refreshed while waiting. This can be used to trigger
+    on any update to the variable, regardless of value.
+
     i.e. w = VariableWait([root.device.var1,root.device.var2],
-                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
-                                            varValues['root.device.var1'].value >= 20)
+                          lambda varValues: varValues[0].value >= 10 and \
+                                            varValues[1].value >= 20)
+
+    i.e. w = VariableWait([root.device.var1,root.device.var2],
+                          lambda varValues: varValues[0].updated and \
+                                            varValues[1].updated)
 
     Parameters
     ----------
@@ -53,13 +61,6 @@ def VariableWait(varList, testFunction, timeout=0):
 
     # Container class
     class varStates(object):
-        """
-
-
-
-
-        """
-
         def __init__(self):
             self.vlist  = odict()
             self.cv     = threading.Condition()
@@ -67,7 +68,6 @@ def VariableWait(varList, testFunction, timeout=0):
         # Method to handle variable updates callback
         def varUpdate(self,path,varValue):
             """
-
 
             Parameters
             ----------
@@ -84,6 +84,7 @@ def VariableWait(varList, testFunction, timeout=0):
             with self.cv:
                 if path in self.vlist:
                     self.vlist[path] = varValue
+                    self.vlist[path].updated = True
                     self.cv.notify()
 
     # Convert single variable to a list
@@ -98,6 +99,7 @@ def VariableWait(varList, testFunction, timeout=0):
         for v in varList:
             v.addListener(states.varUpdate)
             states.vlist[v.path] = v.getVariableValue(read=False)
+            states.vlist[v.path].updated = False
 
     # Go into wait loop
     ret    = False
