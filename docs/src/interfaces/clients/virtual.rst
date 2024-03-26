@@ -77,7 +77,7 @@ The VariableWait helper function can also be used.
 .. code-block:: python
 
    # Wait for the uptime to be greater than 1000 seconds
-   VariableWait(root.AxiVersion.UpTime, lambda varValues: varValues['root.UpTime'].value > 1000)
+   VariableWait([root.AxiVersion.UpTime], lambda varValues: varValues[0].value > 1000)
 
 The VirtualClient maintains a connection to the Rogue core. The status of this connection
 can be directly accessed through the linked attribute. Additionally a callback function
