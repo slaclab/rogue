@@ -132,7 +132,7 @@ Previously Deprecated Legacy GUI has Been Removed
 The legacy GUI has been removed. You can no longer use the following
 code to launch a generic tree GUI.
 
-.. code::
+.. code:: python
    
    import pyrogue.gui
 
@@ -145,7 +145,7 @@ code to launch a generic tree GUI.
 
 Instead, use the new PyDM GUI
 
-.. code::
+.. code:: python
    
    import pyrogue.pydm
 
