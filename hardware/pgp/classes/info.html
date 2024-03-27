@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Info &mdash; Rogue v6.1.3 documentation</title>
+  <title>Info &mdash; Rogue v6.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=d7291d41"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=1ca08d8c"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -37,7 +37,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.1.3
+                v6.1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -50,6 +50,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
@@ -117,66 +118,10 @@
 </div>
 <p>The structure which the above class wraps is shown below. All of these
 members are exposed in the above class.</p>
-<dl class="cpp struct">
-<dt class="sig sig-object cpp" id="_CPPv47PgpInfo">
-<span id="_CPPv37PgpInfo"></span><span id="_CPPv27PgpInfo"></span><span id="PgpInfo"></span><span class="target" id="structPgpInfo"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PgpInfo</span></span></span><a class="headerlink" href="#_CPPv47PgpInfo" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Info. </p>
-<p><em>Title : PGP Card Driver, Shared Header </em></p>
-<p>Description: <em>Definitions and inline functions for interacting with PGP driver. </em></p>
-<p>This file is part of the aes_stream_drivers package. It is subject to the license terms in the LICENSE.txt file found in the top-level directory of this distribution and at: <a class="reference external" href="https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html">https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html</a>. No part of the aes_stream_drivers package, including this file, may be copied, modified, propagated, or distributed except according to the terms <em>contained in the LICENSE.txt file. </em></p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo6serialE">
-<span id="_CPPv3N7PgpInfo6serialE"></span><span id="_CPPv2N7PgpInfo6serialE"></span><span id="PgpInfo::serial__uint64_t"></span><span class="target" id="structPgpInfo_1ae03aaea2ccc8d51413da8455fc9d13ec"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">serial</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo6serialE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Serial #. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo4typeE">
-<span id="_CPPv3N7PgpInfo4typeE"></span><span id="_CPPv2N7PgpInfo4typeE"></span><span id="PgpInfo::type__uint32_t"></span><span class="target" id="structPgpInfo_1aa863b929ab81ac98edd6502845cae300"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">type</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo4typeE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Type. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo7versionE">
-<span id="_CPPv3N7PgpInfo7versionE"></span><span id="_CPPv2N7PgpInfo7versionE"></span><span id="PgpInfo::version__uint32_t"></span><span class="target" id="structPgpInfo_1a85be0f2f33fec3bc4dd36bbefb8f86e4"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">version</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo7versionE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Version. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo8laneMaskE">
-<span id="_CPPv3N7PgpInfo8laneMaskE"></span><span id="_CPPv2N7PgpInfo8laneMaskE"></span><span id="PgpInfo::laneMask__uint32_t"></span><span class="target" id="structPgpInfo_1aeab2a4b1850d18107d8a71f08b1fd4fe"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">laneMask</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo8laneMaskE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Lane Mask. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo9vcPerMaskE">
-<span id="_CPPv3N7PgpInfo9vcPerMaskE"></span><span id="_CPPv2N7PgpInfo9vcPerMaskE"></span><span id="PgpInfo::vcPerMask__uint32_t"></span><span class="target" id="structPgpInfo_1a369ea4f176d759151e29e93465740b8e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">vcPerMask</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo9vcPerMaskE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card VCs per Lane Mask. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo7pgpRateE">
-<span id="_CPPv3N7PgpInfo7pgpRateE"></span><span id="_CPPv2N7PgpInfo7pgpRateE"></span><span id="PgpInfo::pgpRate__uint32_t"></span><span class="target" id="structPgpInfo_1a3632a6cba8695010ac4cbc9bf395fa47"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pgpRate</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo7pgpRateE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Line Rate. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo9promPrgEnE">
-<span id="_CPPv3N7PgpInfo9promPrgEnE"></span><span id="_CPPv2N7PgpInfo9promPrgEnE"></span><span id="PgpInfo::promPrgEn__uint32_t"></span><span class="target" id="structPgpInfo_1afa24a3907803d68acbbf6aa65f706733"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">promPrgEn</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo9promPrgEnE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card Prom Programming Support Flag. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N7PgpInfo10evrSupportE">
-<span id="_CPPv3N7PgpInfo10evrSupportE"></span><span id="_CPPv2N7PgpInfo10evrSupportE"></span><span id="PgpInfo::evrSupport__uint32_t"></span><span class="target" id="structPgpInfo_1aa2d3a745069730ee1be6fc6c0af1a786"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrSupport</span></span></span><a class="headerlink" href="#_CPPv4N7PgpInfo10evrSupportE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>PGP Card EVR Support Flag. </p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenstruct: Cannot find class “PgpInfo” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
 </div>
-</dd></dl>
-
 </section>
 
 

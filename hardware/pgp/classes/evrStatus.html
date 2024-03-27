@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EvrStatus &mdash; Rogue v6.1.3 documentation</title>
+  <title>EvrStatus &mdash; Rogue v6.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=d7291d41"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=1ca08d8c"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -37,7 +37,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.1.3
+                v6.1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -50,6 +50,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
@@ -117,57 +118,10 @@
 </div>
 <p>The structure which the above class wraps is shown below. All of these
 members are exposed in the above class.</p>
-<dl class="cpp struct">
-<dt class="sig sig-object cpp" id="_CPPv412PgpEvrStatus">
-<span id="_CPPv312PgpEvrStatus"></span><span id="_CPPv212PgpEvrStatus"></span><span id="PgpEvrStatus"></span><span class="target" id="structPgpEvrStatus"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PgpEvrStatus</span></span></span><a class="headerlink" href="#_CPPv412PgpEvrStatus" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR Status, one per lane. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus4laneE">
-<span id="_CPPv3N12PgpEvrStatus4laneE"></span><span id="_CPPv2N12PgpEvrStatus4laneE"></span><span id="PgpEvrStatus::lane__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a5e697c01f40dcd30b96bbf8e5ff8d312"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lane</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus4laneE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Lane number associated with this record. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus10linkErrorsE">
-<span id="_CPPv3N12PgpEvrStatus10linkErrorsE"></span><span id="_CPPv2N12PgpEvrStatus10linkErrorsE"></span><span id="PgpEvrStatus::linkErrors__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a5d1be321e43d223d1f52acbf0d949b5a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">linkErrors</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus10linkErrorsE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR link error counter. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus6linkUpE">
-<span id="_CPPv3N12PgpEvrStatus6linkUpE"></span><span id="_CPPv2N12PgpEvrStatus6linkUpE"></span><span id="PgpEvrStatus::linkUp__uint32_t"></span><span class="target" id="structPgpEvrStatus_1ac03aaa471794d209a3382e04412cda72"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">linkUp</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus6linkUpE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR link up state, 0 = down, 1 = up. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus9runStatusE">
-<span id="_CPPv3N12PgpEvrStatus9runStatusE"></span><span id="_CPPv2N12PgpEvrStatus9runStatusE"></span><span id="PgpEvrStatus::runStatus__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a1d9e303a2e82589f5b2ab040169f636e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">runStatus</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus9runStatusE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR running status, 0 = stopped, 1 = running. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus10evrSecondsE">
-<span id="_CPPv3N12PgpEvrStatus10evrSecondsE"></span><span id="_CPPv2N12PgpEvrStatus10evrSecondsE"></span><span id="PgpEvrStatus::evrSeconds__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a37012a78f86b477aab0cb2eb8fdc7dda"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrSeconds</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus10evrSecondsE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Current distributed timing seconds value. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus10runCounterE">
-<span id="_CPPv3N12PgpEvrStatus10runCounterE"></span><span id="_CPPv2N12PgpEvrStatus10runCounterE"></span><span id="PgpEvrStatus::runCounter__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a31fee3c7ee0dc27de3cf3a3c479416b1"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">runCounter</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus10runCounterE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Number of run triggers received. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N12PgpEvrStatus13acceptCounterE">
-<span id="_CPPv3N12PgpEvrStatus13acceptCounterE"></span><span id="_CPPv2N12PgpEvrStatus13acceptCounterE"></span><span id="PgpEvrStatus::acceptCounter__uint32_t"></span><span class="target" id="structPgpEvrStatus_1a26479ad6f9ee1f9ea7a68e832773c28e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptCounter</span></span></span><a class="headerlink" href="#_CPPv4N12PgpEvrStatus13acceptCounterE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Number of accepts triggers received. </p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenstruct: Cannot find class “PgpEvrStatus” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
 </div>
-</dd></dl>
-
 </section>
 
 

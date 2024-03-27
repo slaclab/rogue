@@ -15,6 +15,7 @@ branch of Rogue. New documentation is being added incrementally over time.
    :caption: Contents:
 
    installing/index
+   pyrogue_tree/index
    interfaces/index
    utilities/index
    hardware/index

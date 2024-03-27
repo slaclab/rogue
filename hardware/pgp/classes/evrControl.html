@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>EvrControl &mdash; Rogue v6.1.3 documentation</title>
+  <title>EvrControl &mdash; Rogue v6.1.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=d7291d41"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=1ca08d8c"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -37,7 +37,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.1.3
+                v6.1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -50,6 +50,7 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../../index.html">Hardware</a><ul class="current">
@@ -117,81 +118,10 @@
 </div>
 <p>The structure which the above class wraps is shown below. All of these
 members are exposed in the above class.</p>
-<dl class="cpp struct">
-<dt class="sig sig-object cpp" id="_CPPv413PgpEvrControl">
-<span id="_CPPv313PgpEvrControl"></span><span id="_CPPv213PgpEvrControl"></span><span id="PgpEvrControl"></span><span class="target" id="structPgpEvrControl"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PgpEvrControl</span></span></span><a class="headerlink" href="#_CPPv413PgpEvrControl" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR Control, one per lane. </p>
-<div class="breathe-sectiondef docutils container">
-<p class="breathe-sectiondef-title rubric" id="breathe-section-title-public-members">Public Members</p>
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl4laneE">
-<span id="_CPPv3N13PgpEvrControl4laneE"></span><span id="_CPPv2N13PgpEvrControl4laneE"></span><span id="PgpEvrControl::lane__uint32_t"></span><span class="target" id="structPgpEvrControl_1a7d7507ddd2e73b20c1dc38d5787e41e1"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">lane</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl4laneE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Lane number associated with this record. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl9evrEnableE">
-<span id="_CPPv3N13PgpEvrControl9evrEnableE"></span><span id="_CPPv2N13PgpEvrControl9evrEnableE"></span><span id="PgpEvrControl::evrEnable__uint32_t"></span><span class="target" id="structPgpEvrControl_1ad513daf7da80f9963418aa0f00db6e44"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrEnable</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl9evrEnableE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Global EVR enable for all lanes, 1 = enable, 0 = disabled. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl11laneRunMaskE">
-<span id="_CPPv3N13PgpEvrControl11laneRunMaskE"></span><span id="_CPPv2N13PgpEvrControl11laneRunMaskE"></span><span id="PgpEvrControl::laneRunMask__uint32_t"></span><span class="target" id="structPgpEvrControl_1a294feacc679669cea2a340c6ecd5e6cd"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">laneRunMask</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl11laneRunMaskE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Run trigger enable for this lane, 1 = enable, 0 = disable. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl9evrSyncEnE">
-<span id="_CPPv3N13PgpEvrControl9evrSyncEnE"></span><span id="_CPPv2N13PgpEvrControl9evrSyncEnE"></span><span id="PgpEvrControl::evrSyncEn__uint32_t"></span><span class="target" id="structPgpEvrControl_1aec3d01258c4deb856f9cb44bcb3a1e92"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrSyncEn</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl9evrSyncEnE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR Sync enable, 1 = start, 0 = stop. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl10evrSyncSelE">
-<span id="_CPPv3N13PgpEvrControl10evrSyncSelE"></span><span id="_CPPv2N13PgpEvrControl10evrSyncSelE"></span><span id="PgpEvrControl::evrSyncSel__uint32_t"></span><span class="target" id="structPgpEvrControl_1a78a08f0fb2007869027483428309a936"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrSyncSel</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl10evrSyncSelE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Sync select, 0 = async, 1 = sync for start/stop. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl10headerMaskE">
-<span id="_CPPv3N13PgpEvrControl10headerMaskE"></span><span id="_CPPv2N13PgpEvrControl10headerMaskE"></span><span id="PgpEvrControl::headerMask__uint32_t"></span><span class="target" id="structPgpEvrControl_1a1f1af2399b15ffb671cd9024ef6a530d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">headerMask</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl10headerMaskE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Header checking mask, 1 enable bit for each of 4 virtual channels. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl11evrSyncWordE">
-<span id="_CPPv3N13PgpEvrControl11evrSyncWordE"></span><span id="_CPPv2N13PgpEvrControl11evrSyncWordE"></span><span id="PgpEvrControl::evrSyncWord__uint32_t"></span><span class="target" id="structPgpEvrControl_1aff639156d1b8479e0188d51464f54830"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">evrSyncWord</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl11evrSyncWordE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>EVR Sync word, 32-bit timing fidicial to transition start/stop on. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl7runCodeE">
-<span id="_CPPv3N13PgpEvrControl7runCodeE"></span><span id="_CPPv2N13PgpEvrControl7runCodeE"></span><span id="PgpEvrControl::runCode__uint32_t"></span><span class="target" id="structPgpEvrControl_1a0e616cde63ad93e83c19e44501dc44a9"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">runCode</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl7runCodeE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>8-bit timing code to assert run trigger </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl8runDelayE">
-<span id="_CPPv3N13PgpEvrControl8runDelayE"></span><span id="_CPPv2N13PgpEvrControl8runDelayE"></span><span id="PgpEvrControl::runDelay__uint32_t"></span><span class="target" id="structPgpEvrControl_1a6e55bb57203eb534198591d933343cbd"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">runDelay</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl8runDelayE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Delay between timing code reception and assertion of run trigger. </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl10acceptCodeE">
-<span id="_CPPv3N13PgpEvrControl10acceptCodeE"></span><span id="_CPPv2N13PgpEvrControl10acceptCodeE"></span><span id="PgpEvrControl::acceptCode__uint32_t"></span><span class="target" id="structPgpEvrControl_1a0183de708c213b2c800f006f6db322eb"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptCode</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl10acceptCodeE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>8-bit timing code to assert accept trigger </p>
-</dd></dl>
-
-<dl class="cpp var">
-<dt class="sig sig-object cpp" id="_CPPv4N13PgpEvrControl11acceptDelayE">
-<span id="_CPPv3N13PgpEvrControl11acceptDelayE"></span><span id="_CPPv2N13PgpEvrControl11acceptDelayE"></span><span id="PgpEvrControl::acceptDelay__uint32_t"></span><span class="target" id="structPgpEvrControl_1ae4c184800f1ecb4a5a5d4111203c5f53"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">acceptDelay</span></span></span><a class="headerlink" href="#_CPPv4N13PgpEvrControl11acceptDelayE" title="Permalink to this definition"></a><br /></dt>
-<dd><p>Delay between timing code reception and assertion of accept trigger. </p>
-</dd></dl>
-
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>doxygenstruct: Cannot find class “PgpEvrControl” in doxygen xml output for project “rogue” from directory: ../build/doxyxml</p>
 </div>
-</dd></dl>
-
 </section>
 
 
