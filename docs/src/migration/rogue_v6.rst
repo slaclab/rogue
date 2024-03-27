@@ -126,3 +126,28 @@ The reasoning is that a lot happens behind the scences when changing a
 poll interval, and masking this with a setter decorator gives the user
 the impression that it is much simpler than it is.
 
+Previously Deprecated Legacy GUI has Been Removed
+=================================================
+
+The legacy GUI has been removed. You can no longer use the following
+code to launch a generic tree GUI.
+
+.. code::
+   import pyrogue.gui
+
+   with Root(...) as root:
+       appTop = pyrogue.gui.application(sys.argv)
+       guiTop = pyrogue.gui.GuiTop()
+       guiTop.addTree(root)
+       guiTop.resize(800, 800)
+       appTop.exec_()
+
+Instead, use the new PyDM GUI
+
+.. code::
+   import pyrogue.pydm
+
+   with Root(...) as root:
+       pyrogue.pydm.runPyDM(
+           serverList=root.zmqServer.address,
+           title='GUI Window Title')
