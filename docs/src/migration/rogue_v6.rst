@@ -133,6 +133,7 @@ The legacy GUI has been removed. You can no longer use the following
 code to launch a generic tree GUI.
 
 .. code::
+   
    import pyrogue.gui
 
    with Root(...) as root:
@@ -145,6 +146,7 @@ code to launch a generic tree GUI.
 Instead, use the new PyDM GUI
 
 .. code::
+   
    import pyrogue.pydm
 
    with Root(...) as root:
