@@ -699,7 +699,7 @@ class Fixed(Model):
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
-        self.name = f'Fixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
+        self.name = f'Fixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
 
 class UFixed(Model):
@@ -721,5 +721,5 @@ class UFixed(Model):
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
-        self.name = f'UFixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
+        self.name = f'UFixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
