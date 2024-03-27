@@ -77,10 +77,6 @@ class Process(pr.Device):
             value = 1,
             description = "Total number of loops steps for the process"))
 
-        @self.command(hidden=True)
-        def Advance(arg):
-            self._incrementSteps(1)
-
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
             self.add(self._argVar)
@@ -169,10 +165,11 @@ class Process(pr.Device):
         # No function run example process
         else:
             self.Message.setDisp("Started")
+            self.TotalSteps.set(100)
             for i in range(101):
                 if self._runEn is False:
                     break
                 time.sleep(1)
-                self.Progress.set(i/100)
+                self._setSteps(i+1)
                 self.Message.setDisp(f"Running for {i} seconds.")
             self.Message.setDisp("Done")
