@@ -199,6 +199,31 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // Process Buffer Return
     void retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize);
+
+    //! Get the size of buffers (RX/TX)
+    uint32_t getBuffSize();
+
+    //! Get the number of RX buffers
+    uint32_t getRxBuffCount();
+
+    //! Get the number of TX buffers
+    uint32_t getTxBuffCount();
+
+    //! Get TX buffer in User count
+    uint32_t getTxBuffinUserCount();
+
+    //! Get TX buffer in HW count
+    uint32_t getTxBuffinHwCount();
+
+    //! Get TX buffer in Pre-HW Queue count
+    uint32_t getTxBuffinPreHwQCount();
+
+    //! Get TX buffer in SW Queue count
+    uint32_t getTxBuffinSwQCount();
+
+    //! Get TX buffer missing count
+    uint32_t getTxBuffMissCount();
+
 };
 
 //! Alias for using shared pointer as AxiStreamDmaPtr
