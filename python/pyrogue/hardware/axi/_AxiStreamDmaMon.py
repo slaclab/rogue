@@ -13,7 +13,6 @@
 #-----------------------------------------------------------------------------
 
 import pyrogue as pr
-import rogue.hardware.axi
 
 class AxiStreamDmaMon(pr.Device):
     def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
