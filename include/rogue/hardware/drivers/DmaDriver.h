@@ -56,6 +56,11 @@
 #define DMA_Get_TxBuffinPreHWQ_Count 0x1011
 #define DMA_Get_TxBuffinSWQ_Count   0x1012
 #define DMA_Get_TxBuffMiss_Count    0x1013
+#define DMA_Get_RxBuffinUser_Count  0x1014
+#define DMA_Get_RxBuffinHW_Count    0x1015
+#define DMA_Get_RxBuffinPreHWQ_Count 0x1016
+#define DMA_Get_RxBuffinSWQ_Count   0x1017
+#define DMA_Get_RxBuffMiss_Count    0x1018
 
 /* Mask size */
 #define DMA_MASK_SIZE 512

@@ -206,6 +206,21 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     //! Get the number of RX buffers
     uint32_t getRxBuffCount();
 
+    //! Get RX buffer in User count
+    uint32_t getRxBuffinUserCount();
+
+    //! Get RX buffer in HW count
+    uint32_t getRxBuffinHwCount();
+
+    //! Get RX buffer in Pre-HW Queue count
+    uint32_t getRxBuffinPreHwQCount();
+
+    //! Get RX buffer in SW Queue count
+    uint32_t getRxBuffinSwQCount();
+
+    //! Get RX buffer missing count
+    uint32_t getRxBuffMissCount();
+
     //! Get the number of TX buffers
     uint32_t getTxBuffCount();
 
@@ -223,7 +238,6 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     //! Get TX buffer missing count
     uint32_t getTxBuffMissCount();
-
 };
 
 //! Alias for using shared pointer as AxiStreamDmaPtr

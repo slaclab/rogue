@@ -14,6 +14,140 @@
 
 import pyrogue as pr
 
+class AxiStreamDmaMonRx(pr.Device):
+    def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
+        super(self.__class__, self).__init__(**kwargs)
+
+        # Create a pointer to the AXI Stream DMA object
+        self._dma = axiStreamDma
+
+        # Add variables
+        self.add(pr.LocalVariable(
+            name        = 'BuffCount',
+            description = 'Get the number of RX buffers',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getRxBuffCount(),
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinUserCount',
+            description = 'RX buffer in User count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getRxBuffinUserCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinHwCount',
+            description = 'RX buffer in HW count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getRxBuffinHwCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinPreHwQCount',
+            description = 'RX buffer in Pre-HW Queue count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getRxBuffinPreHwQCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinSwQCount',
+            description = 'RX buffer in SW Queue count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getRxBuffinSwQCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffMissCount',
+            description = 'RX buffer missing count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getRxBuffMissCount(),
+            pollInterval= pollInterval,
+        ))
+
+class AxiStreamDmaMonTx(pr.Device):
+    def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
+        super(self.__class__, self).__init__(**kwargs)
+
+        # Create a pointer to the AXI Stream DMA object
+        self._dma = axiStreamDma
+
+        # Add variables
+        self.add(pr.LocalVariable(
+            name        = 'BuffCount',
+            description = 'Get the number of TX buffers',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getTxBuffCount(),
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinUserCount',
+            description = 'TX buffer in User count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getTxBuffinUserCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinHwCount',
+            description = 'TX buffer in HW count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getTxBuffinHwCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinPreHwQCount',
+            description = 'TX buffer in Pre-HW Queue count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getTxBuffinPreHwQCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffinSwQCount',
+            description = 'TX buffer in SW Queue count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getTxBuffinSwQCount(),
+            pollInterval= pollInterval,
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'BuffMissCount',
+            description = 'TX buffer missing count',
+            mode        = 'RO',
+            value       = 0,
+            typeStr     = 'UInt32',
+            localGet    = lambda: self._dma.getTxBuffMissCount(),
+            pollInterval= pollInterval,
+        ))
+
 class AxiStreamDmaMon(pr.Device):
     def __init__(self, axiStreamDma, pollInterval=1, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
@@ -24,7 +158,7 @@ class AxiStreamDmaMon(pr.Device):
         # Add variables
         self.add(pr.LocalVariable(
             name        = 'BuffSize',
-            description = 'size of buffers (RX/TX)',
+            description = 'Size of buffers (RX/TX)',
             mode        = 'RO',
             value       = 0x0,
             typeStr     = 'UInt32',
@@ -33,70 +167,14 @@ class AxiStreamDmaMon(pr.Device):
             localGet    = lambda: self._dma.getBuffSize(),
         ))
 
-        self.add(pr.LocalVariable(
-            name        = 'RxBuffCount',
-            description = 'Get the number of RX buffers',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getRxBuffCount(),
+        self.add(AxiStreamDmaMonRx(
+            name         = 'Rx',
+            axiStreamDma = axiStreamDma,
+            pollInterval = pollInterval,
         ))
-
-        self.add(pr.LocalVariable(
-            name        = 'TxBuffCount',
-            description = 'Get the number of TX buffers',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getTxBuffCount(),
-        ))
-
-        self.add(pr.LocalVariable(
-            name        = 'TxBuffinUserCount',
-            description = 'TX buffer in User count',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getTxBuffinUserCount(),
-            pollInterval= pollInterval,
-        ))
-
-        self.add(pr.LocalVariable(
-            name        = 'TxBuffinHwCount',
-            description = 'TX buffer in HW count',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getTxBuffinHwCount(),
-            pollInterval= pollInterval,
-        ))
-
-        self.add(pr.LocalVariable(
-            name        = 'TxBuffinPreHwQCount',
-            description = 'TX buffer in Pre-HW Queue count',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getTxBuffinPreHwQCount(),
-            pollInterval= pollInterval,
-        ))
-
-        self.add(pr.LocalVariable(
-            name        = 'TxBuffinSwQCount',
-            description = 'TX buffer in SW Queue count',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getTxBuffinSwQCount(),
-            pollInterval= pollInterval,
-        ))
-
-        self.add(pr.LocalVariable(
-            name        = 'getTxBuffMissCount',
-            description = 'TX buffer missing count',
-            mode        = 'RO',
-            value       = 0,
-            typeStr     = 'UInt32',
-            localGet    = lambda: self._dma.getTxBuffMissCount(),
-            pollInterval= pollInterval,
-        ))
+        
+        self.add(AxiStreamDmaMonTx(
+            name         = 'Tx',
+            axiStreamDma = axiStreamDma,
+            pollInterval = pollInterval,
+        ))        
