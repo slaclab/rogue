@@ -172,9 +172,9 @@ class AxiStreamDmaMon(pr.Device):
             axiStreamDma = axiStreamDma,
             pollInterval = pollInterval,
         ))
-        
+
         self.add(AxiStreamDmaMonTx(
             name         = 'Tx',
             axiStreamDma = axiStreamDma,
             pollInterval = pollInterval,
-        ))        
+        ))
