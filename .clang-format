@@ -15,6 +15,7 @@ AlignConsecutiveAssignments: true
 AlignConsecutiveMacros: true
 AccessModifierOffset: -2
 SortIncludes: true
+IndentPPDirectives: BeforeHash
 IncludeBlocks: Regroup
 IncludeCategories:
     # Rogue Directives.h goes first

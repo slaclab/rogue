@@ -23,9 +23,9 @@
 #define __DMA_DRIVER_H__
 
 #ifdef DMA_IN_KERNEL
-#include <linux/types.h>
+    #include <linux/types.h>
 #else
-#include <stdint.h>
+    #include <stdint.h>
 #endif
 
 /* API Version */
@@ -130,16 +130,16 @@ struct DmaRegisterData {
 
 // Conditional inclusion for non-kernel environments
 #ifndef DMA_IN_KERNEL
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/mman.h>
-#include <sys/signal.h>
-#include <sys/socket.h>
-#include <unistd.h>
+    #include <signal.h>
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <string.h>
+    #include <sys/fcntl.h>
+    #include <sys/ioctl.h>
+    #include <sys/mman.h>
+    #include <sys/signal.h>
+    #include <sys/socket.h>
+    #include <unistd.h>
 
 /**
  * dmaWrite - Writes data to a DMA channel.

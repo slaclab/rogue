@@ -27,7 +27,7 @@
 #define CRCPP_USE_CPP11
 
 #ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
+    #define __STDC_FORMAT_MACROS
 #endif
 
 #endif

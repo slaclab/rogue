@@ -30,7 +30,7 @@
 #include "rogue/interfaces/memory/Slave.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 #define MAP_TYPE std::map<uint64_t, uint8_t*>
