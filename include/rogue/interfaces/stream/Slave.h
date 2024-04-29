@@ -32,7 +32,7 @@
 #include "rogue/interfaces/stream/Pool.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {

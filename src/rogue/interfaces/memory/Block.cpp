@@ -42,10 +42,10 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <numpy/arrayobject.h>
-#include <numpy/ndarraytypes.h>
+    #include <numpy/arrayobject.h>
+    #include <numpy/ndarraytypes.h>
 
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
