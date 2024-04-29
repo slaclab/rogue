@@ -566,6 +566,71 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     }
 }
 
+//! Get the size of buffers (RX/TX)
+uint32_t rha::AxiStreamDma::getBuffSize() {
+    return uint32_t(ioctl(fd_, DMA_Get_Buff_Size, 0));
+}
+
+//! Get the number of RX buffers
+uint32_t rha::AxiStreamDma::getRxBuffCount() {
+    return uint32_t(ioctl(fd_, DMA_Get_RxBuff_Count, 0));
+}
+
+//! Get RX buffer in User count
+uint32_t rha::AxiStreamDma::getRxBuffinUserCount() {
+    return ioctl(fd_, DMA_Get_RxBuffinUser_Count, 0);
+}
+
+//! Get RX buffer in HW count
+uint32_t rha::AxiStreamDma::getRxBuffinHwCount() {
+    return ioctl(fd_, DMA_Get_RxBuffinHW_Count, 0);
+}
+
+//! Get RX buffer in Pre-HW Queue count
+uint32_t rha::AxiStreamDma::getRxBuffinPreHwQCount() {
+    return ioctl(fd_, DMA_Get_RxBuffinPreHWQ_Count, 0);
+}
+
+//! Get RX buffer in SW Queue count
+uint32_t rha::AxiStreamDma::getRxBuffinSwQCount() {
+    return ioctl(fd_, DMA_Get_RxBuffinSWQ_Count, 0);
+}
+
+//! Get RX buffer missing count
+uint32_t rha::AxiStreamDma::getRxBuffMissCount() {
+    return ioctl(fd_, DMA_Get_RxBuffMiss_Count, 0);
+}
+
+//! Get the number of TX buffers
+uint32_t rha::AxiStreamDma::getTxBuffCount() {
+    return uint32_t(ioctl(fd_, DMA_Get_TxBuff_Count, 0));
+}
+
+//! Get TX buffer in User count
+uint32_t rha::AxiStreamDma::getTxBuffinUserCount() {
+    return ioctl(fd_, DMA_Get_TxBuffinUser_Count, 0);
+}
+
+//! Get TX buffer in HW count
+uint32_t rha::AxiStreamDma::getTxBuffinHwCount() {
+    return ioctl(fd_, DMA_Get_TxBuffinHW_Count, 0);
+}
+
+//! Get TX buffer in Pre-HW Queue count
+uint32_t rha::AxiStreamDma::getTxBuffinPreHwQCount() {
+    return ioctl(fd_, DMA_Get_TxBuffinPreHWQ_Count, 0);
+}
+
+//! Get TX buffer in SW Queue count
+uint32_t rha::AxiStreamDma::getTxBuffinSwQCount() {
+    return ioctl(fd_, DMA_Get_TxBuffinSWQ_Count, 0);
+}
+
+//! Get TX buffer missing count
+uint32_t rha::AxiStreamDma::getTxBuffMissCount() {
+    return ioctl(fd_, DMA_Get_TxBuffMiss_Count, 0);
+}
+
 void rha::AxiStreamDma::setup_python() {
 #ifndef NO_PYTHON
 
@@ -575,6 +640,19 @@ void rha::AxiStreamDma::setup_python() {
         .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
         .def("dmaAck", &rha::AxiStreamDma::dmaAck)
         .def("setTimeout", &rha::AxiStreamDma::setTimeout)
+        .def("getBuffSize", &rha::AxiStreamDma::getBuffSize)
+        .def("getRxBuffCount", &rha::AxiStreamDma::getRxBuffCount)
+        .def("getRxBuffinUserCount", &rha::AxiStreamDma::getRxBuffinUserCount)
+        .def("getRxBuffinHwCount", &rha::AxiStreamDma::getRxBuffinHwCount)
+        .def("getRxBuffinPreHwQCount", &rha::AxiStreamDma::getRxBuffinPreHwQCount)
+        .def("getRxBuffinSwQCount", &rha::AxiStreamDma::getRxBuffinSwQCount)
+        .def("getRxBuffMissCount", &rha::AxiStreamDma::getRxBuffMissCount)
+        .def("getTxBuffCount", &rha::AxiStreamDma::getTxBuffCount)
+        .def("getTxBuffinUserCount", &rha::AxiStreamDma::getTxBuffinUserCount)
+        .def("getTxBuffinHwCount", &rha::AxiStreamDma::getTxBuffinHwCount)
+        .def("getTxBuffinPreHwQCount", &rha::AxiStreamDma::getTxBuffinPreHwQCount)
+        .def("getTxBuffinSwQCount", &rha::AxiStreamDma::getTxBuffinSwQCount)
+        .def("getTxBuffMissCount", &rha::AxiStreamDma::getTxBuffMissCount)
         .def("zeroCopyDisable", &rha::AxiStreamDma::zeroCopyDisable);
 
     bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();
