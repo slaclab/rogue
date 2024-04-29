@@ -24,7 +24,7 @@
 #include <stdarg.h>
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 
 PyObject* rogue::generalErrorObj = 0;

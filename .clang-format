@@ -14,6 +14,7 @@ BinPackParameters: false
 AlignConsecutiveAssignments: true
 AlignConsecutiveMacros: true
 AccessModifierOffset: -2
+IndentPPDirectives: BeforeHash
 SortIncludes: true
 IncludeBlocks: Regroup
 IncludeCategories:

@@ -41,7 +41,7 @@ namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
