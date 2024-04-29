@@ -30,7 +30,7 @@
 #include "rogue/ScopedGil.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -183,19 +183,20 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
     rogue::GilRelease noGil;
     zmq_send(this->zmqReq_, snd.c_str(), snd.size(), 0);
 
-   while (1) {
-      zmq_msg_init(&msg);
-      if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
-         seconds += (float)timeout_ / 1000.0;
-         if ( waitRetry_ ) {
-            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
-            zmq_msg_close(&msg);
-         }
-         else
-            throw rogue::GeneralError::create("ZmqClient::sendString","Timeout waiting for response after %f Seconds.",seconds);
-      }
-      else break;
-   }
+    while (1) {
+        zmq_msg_init(&msg);
+        if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
+            seconds += (float)timeout_ / 1000.0;
+            if (waitRetry_) {
+                log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
+                zmq_msg_close(&msg);
+            } else
+                throw rogue::GeneralError::create("ZmqClient::sendString",
+                                                  "Timeout waiting for response after %f Seconds.",
+                                                  seconds);
+        } else
+            break;
+    }
 
     if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
 

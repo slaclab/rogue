@@ -31,13 +31,13 @@
 #include <memory>
 
 #if defined(__linux__)
-#include <sys/syscall.h>
+    #include <sys/syscall.h>
 #elif defined(__APPLE__) && defined(__MACH__)
-#include <pthread.h>
+    #include <pthread.h>
 #endif
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
