@@ -171,7 +171,7 @@ bool ris::Slave::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
 
 // Process a local frame request
 ris::FramePtr ris::Slave::reqLocalFrame(uint32_t size, bool zeroCopyEn) {
-   return ris::Pool::acceptReq(size,zeroCopyEn);
+    return ris::Pool::acceptReq(size, zeroCopyEn);
 }
 
 void ris::Slave::setup_python() {
