@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AxiStreamDma &mdash; Rogue v6.1.4 documentation</title>
+  <title>AxiStreamDma &mdash; Rogue v6.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=1ca08d8c"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=72ae49c0"></script>
         <script src="../../../_static/doctools.js?v=888ff710"></script>
         <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -37,7 +37,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.1.4
+                v6.2.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
@@ -159,6 +159,84 @@
 <dd><p>Strobe ack line (hardware specific) </p>
 <p>This method forwards an ack command to the lower level driver. This is used in some cases to generate a hardware strobe on the dma interface.</p>
 <p>Exposed to python as <a class="reference internal" href="#classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a136a233d1e378f89e585a67fbc033f5c"><span class="std std-ref">dmaAck()</span></a></p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma11getBuffSizeEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma11getBuffSizeEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma11getBuffSizeEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getBuffSize"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a444109f65c7094dfad6f3b8f56e1ffe1"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBuffSize</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma11getBuffSizeEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the size of buffers (RX/TX) </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma14getRxBuffCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma14getRxBuffCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma14getRxBuffCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getRxBuffCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1af850d43203e4b559f50092706fc5377b"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRxBuffCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma14getRxBuffCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of RX buffers. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma20getRxBuffinUserCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma20getRxBuffinUserCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma20getRxBuffinUserCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getRxBuffinUserCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a5298e738270ddf4af9c09d4b9029f9dd"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRxBuffinUserCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma20getRxBuffinUserCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get RX buffer in User count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma18getRxBuffinHwCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma18getRxBuffinHwCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma18getRxBuffinHwCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getRxBuffinHwCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ae8d7ca62f9516968ed5133420e7e376b"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRxBuffinHwCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma18getRxBuffinHwCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get RX buffer in HW count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma22getRxBuffinPreHwQCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma22getRxBuffinPreHwQCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma22getRxBuffinPreHwQCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getRxBuffinPreHwQCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a600c2fb5ef34d8879a3fa0877df775c6"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRxBuffinPreHwQCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma22getRxBuffinPreHwQCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get RX buffer in Pre-HW Queue count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma19getRxBuffinSwQCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma19getRxBuffinSwQCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma19getRxBuffinSwQCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getRxBuffinSwQCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a6dc0337e06c395bc262485af18731761"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRxBuffinSwQCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma19getRxBuffinSwQCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get RX buffer in SW Queue count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma18getRxBuffMissCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma18getRxBuffMissCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma18getRxBuffMissCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getRxBuffMissCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a1d820a77c2e39daf1b89a7cbceb7e347"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getRxBuffMissCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma18getRxBuffMissCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get RX buffer missing count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma14getTxBuffCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma14getTxBuffCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma14getTxBuffCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getTxBuffCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1aeb9d197e0eec42ed00db3cf6c412b52e"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTxBuffCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma14getTxBuffCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of TX buffers. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma20getTxBuffinUserCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma20getTxBuffinUserCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma20getTxBuffinUserCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getTxBuffinUserCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a1eced04dc5265d2826e359b7ffe68840"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTxBuffinUserCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma20getTxBuffinUserCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get TX buffer in User count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma18getTxBuffinHwCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma18getTxBuffinHwCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma18getTxBuffinHwCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getTxBuffinHwCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a5dea9deacaf7b2a23c362c19b6ea7c4a"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTxBuffinHwCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma18getTxBuffinHwCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get TX buffer in HW count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma22getTxBuffinPreHwQCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma22getTxBuffinPreHwQCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma22getTxBuffinPreHwQCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getTxBuffinPreHwQCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1ac5c2a58a450e7485a6341948c068ec04"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTxBuffinPreHwQCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma22getTxBuffinPreHwQCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get TX buffer in Pre-HW Queue count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma19getTxBuffinSwQCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma19getTxBuffinSwQCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma19getTxBuffinSwQCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getTxBuffinSwQCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a580c69a566ee6765d61f74e7f5bfe6b2"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTxBuffinSwQCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma19getTxBuffinSwQCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get TX buffer in SW Queue count. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue8hardware3axi12AxiStreamDma18getTxBuffMissCountEv">
+<span id="_CPPv3N5rogue8hardware3axi12AxiStreamDma18getTxBuffMissCountEv"></span><span id="_CPPv2N5rogue8hardware3axi12AxiStreamDma18getTxBuffMissCountEv"></span><span id="rogue::hardware::axi::AxiStreamDma::getTxBuffMissCount"></span><span class="target" id="classrogue_1_1hardware_1_1axi_1_1AxiStreamDma_1a0afe6161f38a070ddcb265b169584f6d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getTxBuffMissCount</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue8hardware3axi12AxiStreamDma18getTxBuffMissCountEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get TX buffer missing count. </p>
 </dd></dl>
 
 </div>
