@@ -127,7 +127,7 @@ jobs:
 # ----------------------------------------------------------------------------
 
   gen_release:
-    needs: [test_and_document]
+    needs: [full_build_test, small_build_test]
     uses: slaclab/ruckus/.github/workflows/gen_release.yml@main
     with:
       version: '1.0.0'
