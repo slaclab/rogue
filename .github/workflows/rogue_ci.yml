@@ -99,6 +99,8 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: docs/build/html
 
+# ----------------------------------------------------------------------------
+
   small_build_test:
     name: Small Build Test
     runs-on: ubuntu-20.04
@@ -122,39 +124,17 @@ jobs:
           make -j4 install
 
 
+# ----------------------------------------------------------------------------
+
   gen_release:
-    name: Generate Release
-    runs-on: ubuntu-20.04
-    needs: [full_build_test, small_build_test]
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
+    needs: [test_and_document]
+    uses: slaclab/ruckus/.github/workflows/gen_release.yml@main
+    with:
+      version: '1.0.0'
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-
-      - name: Get Image Information
-        id: get_image_info
-        run: |
-          echo tag=`git describe --tags` >> ${GITHUB_OUTPUT}
-
-      - name: Get Ruckus
-        run: |
-          git clone https://github.com/slaclab/ruckus.git
-          python -m pip install --upgrade pip
-          pip install -r ruckus/scripts/pip_requirements.txt
-
-      - name: Gen Release
-        env:
-          TRAVIS_REPO_SLUG: ${{ github.repository }}
-          TRAVIS_TAG: ${{ steps.get_image_info.outputs.tag }}
-          GH_REPO_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          python ruckus/scripts/releaseGen.py
+# ----------------------------------------------------------------------------
 
   conda_build:
     name: Anaconda Build
@@ -206,6 +186,8 @@ jobs:
           source ${HOME}/miniconda/etc/profile.d/conda.sh
           anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/*/*.tar.bz2
 
+# ----------------------------------------------------------------------------
+
   docker_build:
     name: Docker Build
     runs-on: ubuntu-20.04
@@ -245,3 +227,4 @@ jobs:
           tags: tidair/rogue:${{ steps.get_image_info.outputs.tag }}, tidair/rogue:latest
           build-args: branch=${{ steps.get_image_info.outputs.branch }}
 
+# ----------------------------------------------------------------------------
