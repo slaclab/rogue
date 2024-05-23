@@ -566,6 +566,26 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     }
 }
 
+//! Get the DMA Driver's Git Version
+std::string rha::AxiStreamDma::getGitVersion() {
+   char gitv[32];
+   memset(gitv, 0, 32);
+
+   if (ioctl(fd_, DMA_Get_GITV, gitv) < 0) {
+      return "";
+   }
+
+   // Ensure null-termination
+   gitv[32 - 1] = '\0';
+
+   return std::string(gitv);
+}
+
+//! Get the DMA Driver's API Version
+uint32_t rha::AxiStreamDma::getApiVersion() {
+    return uint32_t(ioctl(fd_, DMA_Get_Version, 0));
+}
+
 //! Get the size of buffers (RX/TX)
 uint32_t rha::AxiStreamDma::getBuffSize() {
     return uint32_t(ioctl(fd_, DMA_Get_Buff_Size, 0));
@@ -640,6 +660,8 @@ void rha::AxiStreamDma::setup_python() {
         .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
         .def("dmaAck", &rha::AxiStreamDma::dmaAck)
         .def("setTimeout", &rha::AxiStreamDma::setTimeout)
+        .def("getGitVersion", &rha::AxiStreamDma::getGitVersion)
+        .def("getApiVersion", &rha::AxiStreamDma::getApiVersion)
         .def("getBuffSize", &rha::AxiStreamDma::getBuffSize)
         .def("getRxBuffCount", &rha::AxiStreamDma::getRxBuffCount)
         .def("getRxBuffinUserCount", &rha::AxiStreamDma::getRxBuffinUserCount)
