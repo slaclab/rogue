@@ -51,9 +51,6 @@ def runPyDM(serverList='localhost:9090', ui=None, title=None, sizeX=800, sizeY=1
                                hide_menu_bar=True,
                                hide_status_bar=True)
 
-    # Setup signal handling for CTRL+C
-    signal.signal(signal.SIGINT, pydmSignalHandler)
-
     # Setup signal handling for CTRL+C and SIGTERM for handling termination signal
     signal.signal(signal.SIGINT, pydmSignalHandler)
     signal.signal(signal.SIGTERM, pydmSignalHandler)
