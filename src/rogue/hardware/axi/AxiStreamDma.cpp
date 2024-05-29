@@ -88,13 +88,21 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     if ((ret->fd = ::open(path.c_str(), O_RDWR)) < 0)
         throw(rogue::GeneralError::create("AxiStreamDma::openShared", "Failed to open device file: %s", path.c_str()));
 
-    if (dmaCheckVersion(ret->fd) < 0) {
+    // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
+    if (dmaGetApiVersion(ret->fd) < 0x06) {
         ::close(ret->fd);
         throw(rogue::GeneralError("AxiStreamDma::openShared",
                                   "Bad kernel driver version detected. Please re-compile kernel driver.\n \
       Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
       To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
       \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
+    }
+
+    // Check for mismatch in the rogue/loaded_driver API versions
+    if (dmaCheckVersion(ret->fd) < 0) {
+        ::close(ret->fd);
+        throw(rogue::GeneralError("AxiStreamDma::openShared",
+                                  "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
     // Result may be that rawBuff = NULL
