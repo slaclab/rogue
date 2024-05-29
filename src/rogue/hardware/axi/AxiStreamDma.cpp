@@ -101,7 +101,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     // Should this just be a warning?
     ret->rawBuff = dmaMapDma(ret->fd, &(ret->bCount), &(ret->bSize));
     if (ret->rawBuff == NULL) {
-        ret->bCount = ioctl(ret->fd, DMA_Get_Buff_Count, 0);
+        ret->bCount = dmaGetBuffCount(ret->fd);
 
         // New map limit should be 8K more than the total number of buffers we require
         uint32_t mapSize = ret->bCount + 8192;
@@ -568,87 +568,77 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
 
 //! Get the DMA Driver's Git Version
 std::string rha::AxiStreamDma::getGitVersion() {
-   char gitv[32];
-   memset(gitv, 0, 32);
-
-   if (ioctl(fd_, DMA_Get_GITV, gitv) < 0) {
-      return "";
-   }
-
-   // Ensure null-termination
-   gitv[32 - 1] = '\0';
-
-   return std::string(gitv);
+    return dmaGetGitVersion(fd_);
 }
 
 //! Get the DMA Driver's API Version
 uint32_t rha::AxiStreamDma::getApiVersion() {
-    return uint32_t(ioctl(fd_, DMA_Get_Version, 0));
+    return dmaGetApiVersion(fd_);
 }
 
 //! Get the size of buffers (RX/TX)
 uint32_t rha::AxiStreamDma::getBuffSize() {
-    return uint32_t(ioctl(fd_, DMA_Get_Buff_Size, 0));
+    return dmaGetBuffSize(fd_);
 }
 
 //! Get the number of RX buffers
 uint32_t rha::AxiStreamDma::getRxBuffCount() {
-    return uint32_t(ioctl(fd_, DMA_Get_RxBuff_Count, 0));
+    return dmaGetRxBuffCount(fd_);
 }
 
 //! Get RX buffer in User count
 uint32_t rha::AxiStreamDma::getRxBuffinUserCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinUser_Count, 0);
+    return dmaGetRxBuffinUserCount(fd_);
 }
 
 //! Get RX buffer in HW count
 uint32_t rha::AxiStreamDma::getRxBuffinHwCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinHW_Count, 0);
+    return dmaGetRxBuffinHwCount(fd_);
 }
 
 //! Get RX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinPreHwQCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinPreHWQ_Count, 0);
+    return dmaGetRxBuffinPreHwQCount(fd_);
 }
 
 //! Get RX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinSwQCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinSWQ_Count, 0);
+    return dmaGetRxBuffinSwQCount(fd_);
 }
 
 //! Get RX buffer missing count
 uint32_t rha::AxiStreamDma::getRxBuffMissCount() {
-    return ioctl(fd_, DMA_Get_RxBuffMiss_Count, 0);
+    return dmaGetRxBuffMissCount(fd_);
 }
 
 //! Get the number of TX buffers
 uint32_t rha::AxiStreamDma::getTxBuffCount() {
-    return uint32_t(ioctl(fd_, DMA_Get_TxBuff_Count, 0));
+    return dmaGetTxBuffCount(fd_);
 }
 
 //! Get TX buffer in User count
 uint32_t rha::AxiStreamDma::getTxBuffinUserCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinUser_Count, 0);
+    return dmaGetTxBuffinUserCount(fd_);
 }
 
 //! Get TX buffer in HW count
 uint32_t rha::AxiStreamDma::getTxBuffinHwCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinHW_Count, 0);
+    return dmaGetTxBuffinHwCount(fd_);
 }
 
 //! Get TX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinPreHwQCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinPreHWQ_Count, 0);
+    return dmaGetTxBuffinPreHwQCount(fd_);
 }
 
 //! Get TX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinSwQCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinSWQ_Count, 0);
+    return dmaGetTxBuffinSwQCount(fd_);
 }
 
 //! Get TX buffer missing count
 uint32_t rha::AxiStreamDma::getTxBuffMissCount() {
-    return ioctl(fd_, DMA_Get_TxBuffMiss_Count, 0);
+    return dmaGetTxBuffMissCount(fd_);
 }
 
 void rha::AxiStreamDma::setup_python() {
