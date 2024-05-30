@@ -643,7 +643,7 @@ static inline ssize_t dmaGetBuffCount(int32_t fd) {
  * Returns: The DMA Driver's Git Version string
  */
 static inline std::string dmaGetGitVersion(int32_t fd) {
-   char gitv[32];
+   char gitv[32] = {0}; // Initialize with zeros to ensure null-termination
    if (ioctl(fd, DMA_Get_GITV, gitv) < 0) {
       return "";
    }
