@@ -18,23 +18,23 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 
 .. code::
 
-   ROGUE_VERSION = "6.1.4"
-   ROGUE_MD5SUM  = "659c7f5c894f6915e2bd15f922cdab3b"
-
+   ROGUE_VERSION = "6.2.0"
+   ROGUE_MD5SUM  = "51c4eda8f7f53dbd4b66a497df9fd5a6"
+   
    SUMMARY = "Recipe to build Rogue"
    HOMEPAGE ="https://github.com/slaclab/rogue"
    LICENSE = "MIT"
    LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
-
+   
    SRC_URI = "https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz"
    SRC_URI[md5sum] = "${ROGUE_MD5SUM}"
-
+   
    S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
    PROVIDES = "rogue"
    EXTRA_OECMAKE += "-DROGUE_INSTALL=system -DROGUE_VERSION=v${ROGUE_VERSION}"
-
+   
    inherit cmake python3native setuptools3
-
+   
    DEPENDS += " \
       python3 \
       python3-native \
@@ -51,7 +51,7 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
       boost \
       cmake \
    "
-
+   
    RDEPENDS:${PN} += " \
       python3-numpy \
       python3-pyzmq \
@@ -63,20 +63,20 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
       python3-json \
       python3-logging \
    "
-
+   
    FILES:${PN}-dev += "/usr/include/rogue/*"
    FILES:${PN} += "/usr/lib/*"
-
+   
    do_configure:prepend() {
       cmake_do_configure
       bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
       bbplain $(sed -i "s/..\/python/python/" ${S}/setup.py)
    }
-
+   
    do_install:prepend() {
       cmake_do_install
    }
-
+   
    do_install:append() {
       # Ensure the target directory exists
       install -d ${D}${PYTHON_SITEPACKAGES_DIR}
