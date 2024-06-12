@@ -13,7 +13,7 @@ This biggest impacting change in Rogue V6 is to remove the ZmqServer feature fro
 
 Similiarly the previous feature which allowed the user to pass the root class to pydm to figure out the server port no longer works. Below is an example of including the ZmqServer in your root class and then using it with pydm.
 
-.. code::
+.. code-block:: python
 
    class ExampleRoot(pyrogue.Root):
 
@@ -39,7 +39,7 @@ SqlLogger
 
 Similiar to the zmqServer, the sql logger is now removed to be an external interface. See below for example usage of the sql logger:
 
-.. code::
+.. code-block:: python
 
    class ExampleRoot(pyrogue.Root):
 
@@ -61,7 +61,7 @@ Root Configuration Streaming
 
 In previous versions of rogue the Root class automatically supported the ability to stream configuration changes. This allowed the Root class to be added as a stream source to the StreamWriter class allow for configuration changes and status updates to be logged alongside the event data. In RogueV6 this feature is removed from the Root class with a new Variable streaming class which provides the same functionality. See below for an example of using this new class to stream configuration changes to the StreamWriter. This new method continues to support dumping the current status to the file immediatly after opening and right before closing:.
 
-.. code::
+.. code-block:: python
 
    class ExampleRoot(pyrogue.Root):
 
@@ -84,7 +84,7 @@ EPICS Version 3 Channel Access Server
 
 Epics version 3 channel access server is removed from Rogue V6. Please use the epics 4 pv access server (P4P) instead:
 
-.. code::
+.. code-block:: python
 
    class ExampleRoot(pyrogue.Root):
 
@@ -107,7 +107,7 @@ The ``_rawWrite(address, wrValue)`` and ``rdValue = _rawRead(address)`` can be r
 
 For a single write/read:
 
-.. code::
+.. code-block:: python
 
     # Declare register
     self.add(
@@ -130,7 +130,7 @@ For a single write/read:
 
 For a block write:
 
-.. code::
+.. code-block:: python
 
     # Declare ram register
     ## bitSize: ram size in bits (e.g.: 1024 words of 32b)
@@ -170,13 +170,13 @@ Setting pollInterval
 There API for setting a Variable's pollInterval has
 changed. Previously, it could be set directly:
 
-.. code::
+.. code-block:: python
 
    someVar.pollInterval = 5   # Poll someVar every 5 seconds
 
 This has been deprecated in favor of:
 
-.. code::
+.. code-block:: python
 
    someVar.setPollInterval(5)  # Poll someVar every 5 seconds
 
@@ -191,7 +191,7 @@ Previously Deprecated Legacy GUI has Been Removed
 The legacy GUI has been removed. You can no longer use the following
 code to launch a generic tree GUI.
 
-.. code::
+.. code-block:: python
    
    import pyrogue.gui
 
@@ -204,7 +204,7 @@ code to launch a generic tree GUI.
 
 Instead, use the new PyDM GUI
 
-.. code::
+.. code-block:: python
    
    import pyrogue.pydm
 
