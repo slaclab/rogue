@@ -108,6 +108,7 @@ The ``_rawWrite(address, wrValue)`` and ``rdValue = _rawRead(address)`` can be r
 For a single write/read:
 
 .. code::
+
     # Declare register
     self.add(
         pr.RemoteVariable(
@@ -130,6 +131,7 @@ For a single write/read:
 For a block write:
 
 .. code::
+
     # Declare ram register
     ## bitSize: ram size in bits (e.g.: 1024 words of 32b)
     ## numValues: number of words (e.g.: 1024 words)
