@@ -103,6 +103,63 @@ RawWrite and RawRead
 
 The deprecated rawWrite and rawRead calls are removed from Rogue V6. The new array variables added in Rogue V5 make these calls no longer needed. The user should no longer pass a 'size' arg to the Device class and then use rawWrite and rawRead to access memory space. Instead a array Variable should be used with the appropriate similiar size. The large Variables can then be configured to be excluded from the bulk read and write transactions and can also have other smaller Variables mapped to specific locations in the overall register space. See below for an example of how a Device can be upgraded to use list Variables instead of the rawWrite and rawRead calls:
 
+The ``_rawWrite(address, wrValue)`` and ``rdValue = _rawRead(address)`` can be replaced as following.
+
+For a single write/read:
+
+.. code::
+    # Declare register
+    self.add(
+        pr.RemoteVariable(
+            name='egReg',
+            description='Example',
+            offset=address,
+            bitSize=32,
+            bitOffset=0,
+            base=pr.UInt,
+            mode='RW',
+       )
+    )
+
+    # Write
+    self.egReg.set(wrValue)
+
+    # Read
+    rdValue = self.egReg.get()
+
+For a block write:
+
+.. code::
+    # Declare ram register
+    ## bitSize: ram size in bits (e.g.: 1024 words of 32b)
+    ## numValues: number of words (e.g.: 1024 words)
+    ## valueBits: word size (e.g.: 32bits)
+    ## valueStride: word size (e.g.: 32bits)
+
+    self.add(pr.RemoteVariable(
+        name         = 'ramReg',
+        description  = 'Example',
+        offset       = address,
+        bitSize      = 32*1024,
+        bitOffset    = 0,
+        numValues    = 1024,
+        valueBits    = 32,
+        valueStride  = 32,
+        bulkOpEn     = False, # FALSE for large variables
+        base         = pr.Int,
+        mode         = "RW",
+    ))
+
+    # For the example, a random array of 1024 words is generated
+    values = np.random.rand(1024)
+
+    # Loop through the values
+    for idx in range(len(values)):
+        self.ramReg.set(value=values[idx], index=idx, write=False)
+
+    # Send the write command
+    self.ramReg.write()
+
 
 
 Setting pollInterval
