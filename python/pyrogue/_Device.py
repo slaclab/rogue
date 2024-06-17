@@ -715,6 +715,7 @@ class Device(pr.Node,rim.Hub):
 
         # Sort var list by offset, size
         remVars.sort(key=lambda x: (x.offset, x.varBytes))
+        print(remVars)
         blocks = []
         blk = None
 
