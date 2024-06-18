@@ -26,6 +26,7 @@
     #include <linux/types.h>
 #else
     #include <stdint.h>
+    #include <string>
 #endif
 
 /* API Version */
