@@ -11,7 +11,7 @@
 import pyrogue as pr
 import rogue
 
-#rogue.Logging.setLevel(rogue.Logging.Debug)
+rogue.Logging.setLevel(rogue.Logging.Debug)
 
 class SimpleVarDevice(pr.Device):
     def __init__(self, **kwargs):
@@ -41,7 +41,6 @@ class BlockDevice(pr.Device):
             name         = "DataBlock",
             description  = "Large Data Block",
             offset       = 0,
-            bitSize      = 32 * numRegs,
             bitOffset    = 0,
             numValues    = numRegs,
             valueBits    = 32,
@@ -70,7 +69,6 @@ class BlockDevice(pr.Device):
             name         = "ListVar",
             description  = "List Variable",
             offset       = (numRegs//2)*4,
-            bitSize      = 32 * numRegs//2,
             bitOffset    = 0,
             numValues    = numRegs//2,
             valueBits    = 32,
