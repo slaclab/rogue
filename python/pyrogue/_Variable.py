@@ -1039,8 +1039,6 @@ class RemoteVariable(BaseVariable,rim.Variable):
             # Override the bitSize
             bitSize[0] = numValues * valueBits
 
-            print(f"List var: numValues={numValues}, valueStride={valueStride}, bitSize={bitSize[0]}")
-
             if self._ndType is None:
                 raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
 
