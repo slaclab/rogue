@@ -11,7 +11,7 @@
 import pyrogue as pr
 import rogue
 
-rogue.Logging.setLevel(rogue.Logging.Debug)
+#rogue.Logging.setLevel(rogue.Logging.Debug)
 
 class SimpleVarDevice(pr.Device):
     def __init__(self, **kwargs):

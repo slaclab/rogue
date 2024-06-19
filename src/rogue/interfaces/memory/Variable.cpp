@@ -181,7 +181,9 @@ rim::Variable::Variable(std::string name,
         highTranByte_ = (uint32_t*)malloc(sizeof(uint32_t));
 
         // Init remaining fields
-        valueBytes_ = 0;
+        valueBytes_ = byteSize_;
+        valueBits_ = bitTotal_;
+        valueStride_ = bitTotal_;
     }
 
     // List variables
