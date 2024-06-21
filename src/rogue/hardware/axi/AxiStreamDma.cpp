@@ -88,7 +88,8 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     if ((ret->fd = ::open(path.c_str(), O_RDWR)) < 0)
         throw(rogue::GeneralError::create("AxiStreamDma::openShared", "Failed to open device file: %s", path.c_str()));
 
-    if (dmaCheckVersion(ret->fd) < 0) {
+    // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
+    if (dmaGetApiVersion(ret->fd) < 0x06) {
         ::close(ret->fd);
         throw(rogue::GeneralError("AxiStreamDma::openShared",
                                   "Bad kernel driver version detected. Please re-compile kernel driver.\n \
@@ -97,11 +98,18 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
       \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
     }
 
+    // Check for mismatch in the rogue/loaded_driver API versions
+    if (dmaCheckVersion(ret->fd) < 0) {
+        ::close(ret->fd);
+        throw(rogue::GeneralError("AxiStreamDma::openShared",
+                                  "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
+    }
+
     // Result may be that rawBuff = NULL
     // Should this just be a warning?
     ret->rawBuff = dmaMapDma(ret->fd, &(ret->bCount), &(ret->bSize));
     if (ret->rawBuff == NULL) {
-        ret->bCount = ioctl(ret->fd, DMA_Get_Buff_Count, 0);
+        ret->bCount = dmaGetBuffCount(ret->fd);
 
         // New map limit should be 8K more than the total number of buffers we require
         uint32_t mapSize = ret->bCount + 8192;
@@ -566,69 +574,79 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     }
 }
 
+//! Get the DMA Driver's Git Version
+std::string rha::AxiStreamDma::getGitVersion() {
+    return dmaGetGitVersion(fd_);
+}
+
+//! Get the DMA Driver's API Version
+uint32_t rha::AxiStreamDma::getApiVersion() {
+    return dmaGetApiVersion(fd_);
+}
+
 //! Get the size of buffers (RX/TX)
 uint32_t rha::AxiStreamDma::getBuffSize() {
-    return uint32_t(ioctl(fd_, DMA_Get_Buff_Size, 0));
+    return dmaGetBuffSize(fd_);
 }
 
 //! Get the number of RX buffers
 uint32_t rha::AxiStreamDma::getRxBuffCount() {
-    return uint32_t(ioctl(fd_, DMA_Get_RxBuff_Count, 0));
+    return dmaGetRxBuffCount(fd_);
 }
 
 //! Get RX buffer in User count
 uint32_t rha::AxiStreamDma::getRxBuffinUserCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinUser_Count, 0);
+    return dmaGetRxBuffinUserCount(fd_);
 }
 
 //! Get RX buffer in HW count
 uint32_t rha::AxiStreamDma::getRxBuffinHwCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinHW_Count, 0);
+    return dmaGetRxBuffinHwCount(fd_);
 }
 
 //! Get RX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinPreHwQCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinPreHWQ_Count, 0);
+    return dmaGetRxBuffinPreHwQCount(fd_);
 }
 
 //! Get RX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getRxBuffinSwQCount() {
-    return ioctl(fd_, DMA_Get_RxBuffinSWQ_Count, 0);
+    return dmaGetRxBuffinSwQCount(fd_);
 }
 
 //! Get RX buffer missing count
 uint32_t rha::AxiStreamDma::getRxBuffMissCount() {
-    return ioctl(fd_, DMA_Get_RxBuffMiss_Count, 0);
+    return dmaGetRxBuffMissCount(fd_);
 }
 
 //! Get the number of TX buffers
 uint32_t rha::AxiStreamDma::getTxBuffCount() {
-    return uint32_t(ioctl(fd_, DMA_Get_TxBuff_Count, 0));
+    return dmaGetTxBuffCount(fd_);
 }
 
 //! Get TX buffer in User count
 uint32_t rha::AxiStreamDma::getTxBuffinUserCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinUser_Count, 0);
+    return dmaGetTxBuffinUserCount(fd_);
 }
 
 //! Get TX buffer in HW count
 uint32_t rha::AxiStreamDma::getTxBuffinHwCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinHW_Count, 0);
+    return dmaGetTxBuffinHwCount(fd_);
 }
 
 //! Get TX buffer in Pre-HW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinPreHwQCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinPreHWQ_Count, 0);
+    return dmaGetTxBuffinPreHwQCount(fd_);
 }
 
 //! Get TX buffer in SW Queue count
 uint32_t rha::AxiStreamDma::getTxBuffinSwQCount() {
-    return ioctl(fd_, DMA_Get_TxBuffinSWQ_Count, 0);
+    return dmaGetTxBuffinSwQCount(fd_);
 }
 
 //! Get TX buffer missing count
 uint32_t rha::AxiStreamDma::getTxBuffMissCount() {
-    return ioctl(fd_, DMA_Get_TxBuffMiss_Count, 0);
+    return dmaGetTxBuffMissCount(fd_);
 }
 
 void rha::AxiStreamDma::setup_python() {
@@ -640,6 +658,8 @@ void rha::AxiStreamDma::setup_python() {
         .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
         .def("dmaAck", &rha::AxiStreamDma::dmaAck)
         .def("setTimeout", &rha::AxiStreamDma::setTimeout)
+        .def("getGitVersion", &rha::AxiStreamDma::getGitVersion)
+        .def("getApiVersion", &rha::AxiStreamDma::getApiVersion)
         .def("getBuffSize", &rha::AxiStreamDma::getBuffSize)
         .def("getRxBuffCount", &rha::AxiStreamDma::getRxBuffCount)
         .def("getRxBuffinUserCount", &rha::AxiStreamDma::getRxBuffinUserCount)

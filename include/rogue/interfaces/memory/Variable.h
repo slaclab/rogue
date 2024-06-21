@@ -67,19 +67,19 @@ class Variable {
     // Bit reverse flag
     bool bitReverse_;
 
-    // Total number of bits for this value
+    // Total number of used bits for this value, used for standard non list variables
     uint32_t bitTotal_;
 
     // Fast copy base array
     uint32_t* fastByte_;
 
-    // Total bytes (rounded up) for this value
+    // Total bytes (rounded up) for this value, based upon bitTotal_
     uint32_t byteSize_;
 
-    // Variable coverage bytes
+    // Variable coverage bytes, regardless of if bits are used
     uint32_t varBytes_;
 
-    // Variable offset
+    // Variable offset, in bytes
     uint64_t offset_;
 
     // Array of bit offsets
@@ -110,16 +110,10 @@ class Variable {
     bool verifyEn_;
 
     // Low byte value
-    uint32_t lowTranByte_;
+    uint32_t* lowTranByte_;
 
     // High byte value
-    uint32_t highTranByte_;
-
-    // Low byte value for list variables
-    uint32_t* listLowTranByte_;
-
-    // High byte value for list variables
-    uint32_t* listHighTranByte_;
+    uint32_t* highTranByte_;
 
     // Poiner to custom data
     void* customData_;

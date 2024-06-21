@@ -200,6 +200,12 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     // Process Buffer Return
     void retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize);
 
+    //! Get the DMA Driver's Git Version
+    std::string getGitVersion();
+
+    //! Get the DMA Driver's API Version
+    uint32_t getApiVersion();
+
     //! Get the size of buffers (RX/TX)
     uint32_t getBuffSize();
 
