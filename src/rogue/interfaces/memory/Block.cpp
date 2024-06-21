@@ -196,11 +196,11 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
         } else {
             if (type == rim::Read || type == rim::Verify) {
                 if (index < 0 || index >= var->numValues_) {
-                    lowByte  = var->lowTranByte_;
-                    highByte = var->highTranByte_;
+                    lowByte  = var->lowTranByte_[0];
+                    highByte = var->highTranByte_[0];
                 } else {
-                    lowByte  = var->listLowTranByte_[index];
-                    highByte = var->listHighTranByte_[index];
+                    lowByte  = var->lowTranByte_[index];
+                    highByte = var->highTranByte_[index];
                 }
             } else {
                 lowByte  = var->staleLowByte_;
@@ -474,38 +474,82 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
         // If variable modes mismatch, set block to read/write
         if (mode_ != (*vit)->mode_) mode_ = "RW";
 
-        // Update variable masks
-        for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
-            // Variable allows overlaps, add to overlap enable mask
-            if ((*vit)->overlapEn_) setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+        // Update variable masks for standard variable
+        if ((*vit)->numValues_ == 0 ) {
 
-            // Otherwise add to exclusive mask and check for existing mapping
-            else {
-                if (anyBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
-                    throw(rogue::GeneralError::create("Block::addVariables",
-                                                      "Variable bit overlap detected for block %s with address 0x%.8x",
-                                                      path_.c_str(),
-                                                      address()));
+            for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
 
-                setBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                // Variable allows overlaps, add to overlap enable mask
+                if ((*vit)->overlapEn_) setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+
+                // Otherwise add to exclusive mask and check for existing mapping
+                else {
+                    if (anyBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
+                        throw(rogue::GeneralError::create("Block::addVariables",
+                                                          "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
+                                                          path_.c_str(),
+                                                          address(),
+                                                          (*vit)->name_.c_str()));
+
+                    setBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                }
+
+                // update verify mask
+                if ((*vit)->mode_ == "RW" && (*vit)->verifyEn_) {
+                    verifyEn_ = true;
+                    setBits(verifyMask_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                }
+
+                bLog_->debug(
+                    "Adding variable %s to block %s at offset 0x%.8x, bitIdx=%i, bitOffset %i, bitSize %i, mode %s, verifyEn "
+                    "%d " PRIx64,
+                    (*vit)->name_.c_str(),
+                    path_.c_str(),
+                    offset_,
+                    x,
+                    (*vit)->bitOffset_[x],
+                    (*vit)->bitSize_[x],
+                    (*vit)->mode_.c_str(),
+                    (*vit)->verifyEn_);
             }
 
-            // update verify mask
-            if ((*vit)->mode_ == "RW" && (*vit)->verifyEn_) {
-                verifyEn_ = true;
-                setBits(verifyMask_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
-            }
+        // List variables
+        } else{
 
-            bLog_->debug(
-                "Adding variable %s to block %s at offset 0x%.8x,  bitOffset %i, bitSize %i, mode %s, verifyEn "
-                "%d " PRIx64,
-                (*vit)->name_.c_str(),
-                path_.c_str(),
-                offset_,
-                (*vit)->bitOffset_[x],
-                (*vit)->bitSize_[x],
-                (*vit)->mode_.c_str(),
-                (*vit)->verifyEn_);
+            for (x = 0; x < (*vit)->numValues_; x++) {
+
+                // Variable allows overlaps, add to overlap enable mask
+                if ((*vit)->overlapEn_) setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+
+                // Otherwise add to exclusive mask and check for existing mapping
+                else {
+                    if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
+                        throw(rogue::GeneralError::create("Block::addVariables",
+                                                          "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
+                                                          path_.c_str(),
+                                                          address(),
+                                                          (*vit)->name_.c_str()));
+
+                    setBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                }
+
+                // update verify mask
+                if ((*vit)->mode_ == "RW" && (*vit)->verifyEn_) {
+                    verifyEn_ = true;
+                    setBits(verifyMask_, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                }
+
+                bLog_->debug(
+                    "Adding variable %s to block %s at offset 0x%.8x, index=%i, valueOffset=%i, valueBits %i, mode %s, verifyEn %d",
+                    (*vit)->name_.c_str(),
+                    path_.c_str(),
+                    offset_,
+                    x,
+                    x * (*vit)->valueStride_ + (*vit)->bitOffset_[0],
+                    (*vit)->valueBits_,
+                    (*vit)->mode_.c_str(),
+                    (*vit)->verifyEn_);
+            }
         }
     }
 
@@ -513,7 +557,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
     for (x = 0; x < size_; x++) {
         if (oleMask[x] & excMask[x])
             throw(rogue::GeneralError::create("Block::addVariables",
-                                              "Variable bit overlap detected for block %s with address 0x%.8x",
+                                              "Variable bit mask overlap detected for block %s with address 0x%.8x",
                                               path_.c_str(),
                                               address()));
     }
@@ -599,6 +643,7 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
 
     // List variable
     if (var->numValues_ != 0) {
+
         // Verify range
         if (index < 0 || index >= var->numValues_)
             throw(rogue::GeneralError::create("Block::setBytes",
@@ -614,20 +659,20 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
             copyBits(blockData_, var->bitOffset_[0] + (index * var->valueStride_), buff, 0, var->valueBits_);
 
         if (var->stale_) {
-            if (var->listLowTranByte_[index] < var->staleLowByte_) var->staleLowByte_ = var->listLowTranByte_[index];
+            if (var->lowTranByte_[index] < var->staleLowByte_) var->staleLowByte_ = var->lowTranByte_[index];
 
-            if (var->listHighTranByte_[index] > var->staleHighByte_)
-                var->staleHighByte_ = var->listHighTranByte_[index];
+            if (var->highTranByte_[index] > var->staleHighByte_)
+                var->staleHighByte_ = var->highTranByte_[index];
         } else {
-            var->staleLowByte_  = var->listLowTranByte_[index];
-            var->staleHighByte_ = var->listHighTranByte_[index];
+            var->staleLowByte_  = var->lowTranByte_[index];
+            var->staleHighByte_ = var->highTranByte_[index];
         }
     }
 
     // Standard variable
     else {
-        var->staleLowByte_  = var->lowTranByte_;
-        var->staleHighByte_ = var->highTranByte_;
+        var->staleLowByte_  = var->lowTranByte_[0];
+        var->staleHighByte_ = var->highTranByte_[0];
 
         // Fast copy
         if (var->fastByte_ != NULL)
