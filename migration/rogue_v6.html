@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Migrating To Rogue V6 &mdash; Rogue v6.2.0 documentation</title>
+  <title>Migrating To Rogue V6 &mdash; Rogue v6.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
 
@@ -15,7 +15,7 @@
   
         <script src="../_static/jquery.js?v=5d32c60e"></script>
         <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=72ae49c0"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=037b0399"></script>
         <script src="../_static/doctools.js?v=888ff710"></script>
         <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -36,7 +36,7 @@
             Rogue
           </a>
               <div class="version">
-                v6.2.0
+                v6.3.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -104,7 +104,7 @@
 <h2>ZmqServer<a class="headerlink" href="#zmqserver" title="Permalink to this heading"></a></h2>
 <p>This biggest impacting change in Rogue V6 is to remove the ZmqServer feature from the Root class. It is now treated as an interface to be consistent with the Rogue interface model. In the past the ZmqServer feature was controlled by setting the serverPort arg when instantiating the root class. By default this arg was ‘0’ which resulted in the server port being automatically allocated. Instead you will need to add the zmqServer manually to the root class.</p>
 <p>Similiarly the previous feature which allowed the user to pass the root class to pydm to figure out the server port no longer works. Below is an example of including the ZmqServer in your root class and then using it with pydm.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -125,7 +125,7 @@
 <section id="sqllogger">
 <h2>SqlLogger<a class="headerlink" href="#sqllogger" title="Permalink to this heading"></a></h2>
 <p>Similiar to the zmqServer, the sql logger is now removed to be an external interface. See below for example usage of the sql logger:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -142,7 +142,7 @@
 <section id="root-configuration-streaming">
 <h2>Root Configuration Streaming<a class="headerlink" href="#root-configuration-streaming" title="Permalink to this heading"></a></h2>
 <p>In previous versions of rogue the Root class automatically supported the ability to stream configuration changes. This allowed the Root class to be added as a stream source to the StreamWriter class allow for configuration changes and status updates to be logged alongside the event data. In RogueV6 this feature is removed from the Root class with a new Variable streaming class which provides the same functionality. See below for an example of using this new class to stream configuration changes to the StreamWriter. This new method continues to support dumping the current status to the file immediatly after opening and right before closing:.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -162,7 +162,7 @@
 <section id="epics-version-3-channel-access-server">
 <h2>EPICS Version 3 Channel Access Server<a class="headerlink" href="#epics-version-3-channel-access-server" title="Permalink to this heading"></a></h2>
 <p>Epics version 3 channel access server is removed from Rogue V6. Please use the epics 4 pv access server (P4P) instead:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
@@ -178,16 +178,70 @@
 <section id="rawwrite-and-rawread">
 <h2>RawWrite and RawRead<a class="headerlink" href="#rawwrite-and-rawread" title="Permalink to this heading"></a></h2>
 <p>The deprecated rawWrite and rawRead calls are removed from Rogue V6. The new array variables added in Rogue V5 make these calls no longer needed. The user should no longer pass a ‘size’ arg to the Device class and then use rawWrite and rawRead to access memory space. Instead a array Variable should be used with the appropriate similiar size. The large Variables can then be configured to be excluded from the bulk read and write transactions and can also have other smaller Variables mapped to specific locations in the overall register space. See below for an example of how a Device can be upgraded to use list Variables instead of the rawWrite and rawRead calls:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">_rawWrite(address,</span> <span class="pre">wrValue)</span></code> and <code class="docutils literal notranslate"><span class="pre">rdValue</span> <span class="pre">=</span> <span class="pre">_rawRead(address)</span></code> can be replaced as following.</p>
+<p>For a single write/read:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Declare register</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
+    <span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">&#39;egReg&#39;</span><span class="p">,</span>
+        <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Example&#39;</span><span class="p">,</span>
+        <span class="n">offset</span><span class="o">=</span><span class="n">address</span><span class="p">,</span>
+        <span class="n">bitSize</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+        <span class="n">bitOffset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">base</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">UInt</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+   <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Write</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">egReg</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">wrValue</span><span class="p">)</span>
+
+<span class="c1"># Read</span>
+<span class="n">rdValue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">egReg</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>For a block write:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Declare ram register</span>
+<span class="c1">## bitSize: ram size in bits (e.g.: 1024 words of 32b)</span>
+<span class="c1">## numValues: number of words (e.g.: 1024 words)</span>
+<span class="c1">## valueBits: word size (e.g.: 32bits)</span>
+<span class="c1">## valueStride: word size (e.g.: 32bits)</span>
+
+<span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">(</span>
+    <span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;ramReg&#39;</span><span class="p">,</span>
+    <span class="n">description</span>  <span class="o">=</span> <span class="s1">&#39;Example&#39;</span><span class="p">,</span>
+    <span class="n">offset</span>       <span class="o">=</span> <span class="n">address</span><span class="p">,</span>
+    <span class="n">bitSize</span>      <span class="o">=</span> <span class="mi">32</span><span class="o">*</span><span class="mi">1024</span><span class="p">,</span>
+    <span class="n">bitOffset</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">numValues</span>    <span class="o">=</span> <span class="mi">1024</span><span class="p">,</span>
+    <span class="n">valueBits</span>    <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="n">valueStride</span>  <span class="o">=</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="n">bulkOpEn</span>     <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="c1"># FALSE for large variables</span>
+    <span class="n">base</span>         <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">Int</span><span class="p">,</span>
+    <span class="n">mode</span>         <span class="o">=</span> <span class="s2">&quot;RW&quot;</span><span class="p">,</span>
+<span class="p">))</span>
+
+<span class="c1"># For the example, a random array of 1024 words is generated</span>
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+
+<span class="c1"># Loop through the values</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">ramReg</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="n">values</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Send the write command</span>
+<span class="bp">self</span><span class="o">.</span><span class="n">ramReg</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+</pre></div>
+</div>
 </section>
 <section id="setting-pollinterval">
 <h2>Setting pollInterval<a class="headerlink" href="#setting-pollinterval" title="Permalink to this heading"></a></h2>
 <p>There API for setting a Variable’s pollInterval has
 changed. Previously, it could be set directly:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">someVar</span><span class="o">.</span><span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">5</span>   <span class="c1"># Poll someVar every 5 seconds</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">someVar</span><span class="o">.</span><span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">5</span>   <span class="c1"># Poll someVar every 5 seconds</span>
 </pre></div>
 </div>
 <p>This has been deprecated in favor of:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">someVar</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Poll someVar every 5 seconds</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">someVar</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>  <span class="c1"># Poll someVar every 5 seconds</span>
 </pre></div>
 </div>
 <p>The reasoning is that a lot happens behind the scences when changing a
@@ -198,7 +252,7 @@ the impression that it is much simpler than it is.</p>
 <h2>Previously Deprecated Legacy GUI has Been Removed<a class="headerlink" href="#previously-deprecated-legacy-gui-has-been-removed" title="Permalink to this heading"></a></h2>
 <p>The legacy GUI has been removed. You can no longer use the following
 code to launch a generic tree GUI.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.gui</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.gui</span>
 
 <span class="k">with</span> <span class="n">Root</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">appTop</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
@@ -209,7 +263,7 @@ code to launch a generic tree GUI.</p>
 </pre></div>
 </div>
 <p>Instead, use the new PyDM GUI</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.pydm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.pydm</span>
 
 <span class="k">with</span> <span class="n">Root</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
