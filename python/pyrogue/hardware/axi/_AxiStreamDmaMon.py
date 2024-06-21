@@ -157,6 +157,25 @@ class AxiStreamDmaMon(pr.Device):
 
         # Add variables
         self.add(pr.LocalVariable(
+            name        = 'GitVersion',
+            description = 'DMA\'s Driver GIT Version string',
+            mode        = 'RO',
+            value       = '',
+            localGet    = lambda: self._dma.getGitVersion(),
+        ))
+
+        self.add(pr.LocalVariable(
+            name        = 'ApiVersion',
+            description = 'DMA\'s Driver API Version',
+            mode        = 'RO',
+            value       = 0x0,
+            typeStr     = 'UInt8',
+            units       = 'Bytes',
+            disp        = '{:#x}',
+            localGet    = lambda: self._dma.getApiVersion(),
+        ))
+
+        self.add(pr.LocalVariable(
             name        = 'BuffSize',
             description = 'Size of buffers (RX/TX)',
             mode        = 'RO',

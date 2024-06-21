@@ -26,6 +26,7 @@
     #include <linux/types.h>
 #else
     #include <stdint.h>
+    #include <string>
 #endif
 
 /* API Version */
@@ -61,6 +62,7 @@
 #define DMA_Get_RxBuffinPreHWQ_Count 0x1016
 #define DMA_Get_RxBuffinSWQ_Count    0x1017
 #define DMA_Get_RxBuffMiss_Count     0x1018
+#define DMA_Get_GITV                 0x1019
 
 /* Mask size */
 #define DMA_MASK_SIZE 512
@@ -477,6 +479,66 @@ static inline ssize_t dmaGetRxBuffCount(int32_t fd) {
 }
 
 /**
+ * dmaGetRxBuffinUserCount - Get the receive buffer count in user
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of receive buffers in user.
+ *
+ * Returns: The count of receive buffers in user
+ */
+static inline ssize_t dmaGetRxBuffinUserCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_RxBuffinUser_Count, 0));
+}
+
+/**
+ * dmaGetRxBuffinHwCount - Get the receive buffer count in hardware
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of receive buffers in hardware.
+ *
+ * Returns: The count of receive buffers in hardware
+ */
+static inline ssize_t dmaGetRxBuffinHwCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_RxBuffinHW_Count, 0));
+}
+
+/**
+ * dmaGetRxBuffinPreHwQCount - Get the receive buffer count in pre-hardware queue
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of receive buffers in pre-hardware queue
+ *
+ * Returns: The count of receive buffers in pre-hardware queue
+ */
+static inline ssize_t dmaGetRxBuffinPreHwQCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_RxBuffinPreHWQ_Count, 0));
+}
+
+/**
+ * dmaGetRxBuffinSwQCount - Get the receive buffer count in software queue
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of receive buffers in software queue
+ *
+ * Returns: The count of receive buffers in software queue
+ */
+static inline ssize_t dmaGetRxBuffinSwQCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_RxBuffinSWQ_Count, 0));
+}
+
+/**
+ * dmaGetRxBuffMissCount - Get the receive buffer missing count
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of receive buffer missing
+ *
+ * Returns: The count of receive buffers missing
+ */
+static inline ssize_t dmaGetRxBuffMissCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_RxBuffMiss_Count, 0));
+}
+
+/**
  * dmaGetTxBuffCount - Get the transmit buffer count.
  * @fd: File descriptor to use.
  *
@@ -489,6 +551,66 @@ static inline ssize_t dmaGetTxBuffCount(int32_t fd) {
 }
 
 /**
+ * dmaGetTxBuffinUserCount - Get the transmit buffer count in user
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of transmit buffers in user.
+ *
+ * Returns: The count of transmit buffers in user
+ */
+static inline ssize_t dmaGetTxBuffinUserCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_TxBuffinUser_Count, 0));
+}
+
+/**
+ * dmaGetTxBuffinHwCount - Get the transmit buffer count in hardware
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of transmit buffers in hardware.
+ *
+ * Returns: The count of transmit buffers in hardware
+ */
+static inline ssize_t dmaGetTxBuffinHwCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_TxBuffinHW_Count, 0));
+}
+
+/**
+ * dmaGetTxBuffinPreHwQCount - Get the transmit buffer count in pre-hardware queue
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of transmit buffers in pre-hardware queue
+ *
+ * Returns: The count of transmit buffers in pre-hardware queue
+ */
+static inline ssize_t dmaGetTxBuffinPreHwQCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_TxBuffinPreHWQ_Count, 0));
+}
+
+/**
+ * dmaGetTxBuffinSwQCount - Get the transmit buffer count in software queue
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of transmit buffers in software queue
+ *
+ * Returns: The count of transmit buffers in software queue
+ */
+static inline ssize_t dmaGetTxBuffinSwQCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_TxBuffinSWQ_Count, 0));
+}
+
+/**
+ * dmaGetTxBuffMissCount - Get the transmit buffer missing count
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of transmit buffer missing
+ *
+ * Returns: The count of transmit buffers missing
+ */
+static inline ssize_t dmaGetTxBuffMissCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_TxBuffMiss_Count, 0));
+}
+
+/**
  * dmaGetBuffSize - Get the buffer size.
  * @fd: File descriptor to use.
  *
@@ -498,6 +620,36 @@ static inline ssize_t dmaGetTxBuffCount(int32_t fd) {
  */
 static inline ssize_t dmaGetBuffSize(int32_t fd) {
     return (ioctl(fd, DMA_Get_Buff_Size, 0));
+}
+
+/**
+ * dmaGetBuffCount - Get the buffer count.
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the count of DMA buffers.
+ *
+ * Returns: The count of DMA buffers.
+ */
+static inline ssize_t dmaGetBuffCount(int32_t fd) {
+    return (ioctl(fd, DMA_Get_Buff_Count, 0));
+}
+
+
+/**
+ * dmaGetGitVersion - Get the DMA Driver's Git Version
+ * @fd: File descriptor to use.
+ *
+ * This function retrieves the DMA Driver's Git Version string
+ *
+ * Returns: The DMA Driver's Git Version string
+ */
+static inline std::string dmaGetGitVersion(int32_t fd) {
+   char gitv[32] = {0}; // Initialize with zeros to ensure null-termination
+   if (ioctl(fd, DMA_Get_GITV, gitv) < 0) {
+      return "";
+   }
+   gitv[32 - 1] = '\0'; // Ensure null-termination
+   return std::string(gitv);
 }
 
 /**
@@ -671,6 +823,18 @@ static inline ssize_t dmaCheckVersion(int32_t fd) {
     int32_t version;
     version = ioctl(fd, DMA_Get_Version);
     return ((version == DMA_VERSION) ? 0 : -1);
+}
+
+/**
+ * dmaGetApiVersion - Get API version of the DMA driver.
+ * @fd: File descriptor for the DMA device.
+ *
+ * Get the API version of the DMA driver
+ *
+ * Return: The API version of the DMA driver
+ */
+static inline ssize_t dmaGetApiVersion(int32_t fd) {
+    return (ioctl(fd, DMA_Get_Version, 0));
 }
 
 /**
