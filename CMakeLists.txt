@@ -45,8 +45,9 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON )
+
    # Find newest python interpreter first
-   set(Python3_FIND_STRATEGY "VERSION")
+   set(Python3_FIND_STRATEGY "LOCATION")
    find_package(Python3 QUIET REQUIRED COMPONENTS Interpreter Development)
 
    # Find Numpy
@@ -68,10 +69,6 @@ if ( NOT NO_PYTHON )
    # Hint for boost on anaconda
    if (DEFINED ENV{CONDA_PREFIX})
       set(Boost_ROOT $ENV{CONDA_PREFIX})
-
-   # SLAC AFS custom path
-   elseif (DEFINED ENV{BOOST_PATH})
-      set(Boost_ROOT $ENV{BOOST_PATH})
    endif()
 
    # libboost_python3.7 style libraries
