@@ -46,7 +46,11 @@ rim::EmulatePtr rim::Emulate::create(uint32_t min, uint32_t max) {
 }
 
 //! Create an block
-rim::Emulate::Emulate(uint32_t min, uint32_t max) : Slave(min, max) {}
+rim::Emulate::Emulate(uint32_t min, uint32_t max) : Slave(min, max) {
+   totAlloc_ = 0;
+   totSize_ = 0;
+   log_ = rogue::Logging::create("memory.Emulate");
+}
 
 //! Destroy a block
 rim::Emulate::~Emulate() {
@@ -82,7 +86,12 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
             size -= size4k;
             addr += size4k;
 
-            if (memMap_.find(addr4k) == memMap_.end()) memMap_.insert(std::make_pair(addr4k, (uint8_t*)malloc(0x1000)));
+            if (memMap_.find(addr4k) == memMap_.end()) {
+               memMap_.insert(std::make_pair(addr4k, (uint8_t*)malloc(0x1000)));
+               totSize_ += 0x1000;
+               totAlloc_ ++;
+               log_->debug("Allocating block at 0x%x. Total Blocks %i, Total Size = %i", addr4k, totAlloc_, totSize_);
+            }
 
             // Write or post
             if (tran->type() == rogue::interfaces::memory::Write || tran->type() == rogue::interfaces::memory::Post) {

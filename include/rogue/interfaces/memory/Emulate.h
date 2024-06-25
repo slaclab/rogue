@@ -44,11 +44,19 @@ namespace memory {
  * and write transactions.
  */
 class Emulate : public Slave {
+
     // Map to store 4K address space chunks
     MAP_TYPE memMap_;
 
     // Lock
     std::mutex mtx_;
+
+    // Total allocated memory
+    uint32_t totAlloc_;
+    uint32_t totSize_;
+
+    //! Log
+    std::shared_ptr<rogue::Logging> log_;
 
   public:
     //! Class factory which returns a pointer to a Emulate (EmulatePtr)
