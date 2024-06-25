@@ -90,7 +90,6 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
                memMap_.insert(std::make_pair(addr4k, (uint8_t*)malloc(0x1000)));
                totSize_ += 0x1000;
                totAlloc_ ++;
-               printf("Got Here\n");
                log_->debug("Allocating block at 0x%x. Total Blocks %i, Total Size = %i", addr4k, totAlloc_, totSize_);
             }
 
