@@ -175,11 +175,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
         msgCnt = 5;
         zmq_msg_init_size(&(msg[4]), size);
         std::memcpy(zmq_msg_data(&(msg[4])), tran->begin(), size);
-    }
 
     // Read transaction
-    else
+    } else {
         msgCnt = 4;
+    }
 
     bridgeLog_->debug("Requested transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32
                       ", cnt=%" PRIu32 ", port: %s",

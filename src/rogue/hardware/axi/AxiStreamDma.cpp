@@ -460,11 +460,11 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
 #endif
         }
         decCounter(size);
-    }
 
     // Buffer is allocated from Pool class
-    else
+    } else {
         Pool::retBuffer(data, meta, size);
+    }
 }
 
 //! Run thread
