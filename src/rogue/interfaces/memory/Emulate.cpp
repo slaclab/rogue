@@ -47,9 +47,9 @@ rim::EmulatePtr rim::Emulate::create(uint32_t min, uint32_t max) {
 
 //! Create an block
 rim::Emulate::Emulate(uint32_t min, uint32_t max) : Slave(min, max) {
-   totAlloc_ = 0;
-   totSize_ = 0;
-   log_ = rogue::Logging::create("memory.Emulate");
+    totAlloc_ = 0;
+    totSize_ = 0;
+    log_ = rogue::Logging::create("memory.Emulate");
 }
 
 //! Destroy a block
