@@ -169,7 +169,6 @@ rim::Variable::Variable(std::string name,
 
     // Not a list variable
     if (numValues_ == 0) {
-
         // Compute bit total
         bitTotal_ = bitSize_[0];
         for (x = 1; x < bitSize_.size(); x++) bitTotal_ += bitSize_[x];
@@ -187,7 +186,6 @@ rim::Variable::Variable(std::string name,
 
     // List variables
     } else {
-
         // Compute bit total
         bitTotal_ = bitSize_[0];
 
@@ -208,7 +206,6 @@ rim::Variable::Variable(std::string name,
     // Determine if fast byte copies can be utilized
     // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte aligned
     if ((bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0)) {
-
         // Standard variable
         if (numValues_ == 0) {
             fastByte_ = (uint32_t*)malloc(sizeof(uint32_t));
@@ -459,7 +456,6 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
     // Standard variable
     if ( numValues_ == 0 ) {
-
         // Compute total bit range of accessed bytes
         varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) / ((float)minSize * 8.0)) * minSize;
 
@@ -472,7 +468,6 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
     // List variable
     } else {
-
         for (x = 0; x < numValues_; x++) {
             lowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueStride_) / ((float)minSize * 8.0)) * minSize;
             highTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)x * (float)valueStride_ + valueBits_) / ((float)minSize * 8.0)) * minSize - 1;

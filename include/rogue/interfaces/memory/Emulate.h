@@ -44,7 +44,6 @@ namespace memory {
  * and write transactions.
  */
 class Emulate : public Slave {
-
     // Map to store 4K address space chunks
     MAP_TYPE memMap_;
 

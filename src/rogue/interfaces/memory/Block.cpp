@@ -276,10 +276,7 @@ void rim::Block::startTransaction(uint32_t type, bool forceWr, bool check, rim::
 
         try {
             if (check || retryCount_ > 0) checkTransaction();
-
-            // Success
-            count = retryCount_;
-
+            count = retryCount_;  // Success
         } catch (rogue::GeneralError err) {
             fWr = true;  // Stale state is now lost
 
@@ -319,10 +316,7 @@ void rim::Block::startTransactionPy(uint32_t type, bool forceWr, bool check, rim
 
         try {
             if (check || retryCount_ > 0) upd = checkTransaction();
-
-            // Success
-            count = retryCount_;
-
+            count = retryCount_;  // Success
         } catch (rogue::GeneralError err) {
             fWr = true;  // Stale state is now lost
 
@@ -475,9 +469,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
 
         // Update variable masks for standard variable
         if ((*vit)->numValues_ == 0 ) {
-
             for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
-
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
                     setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
@@ -514,10 +506,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             }
 
         // List variables
-        } else{
-
+        } else {
             for (x = 0; x < (*vit)->numValues_; x++) {
-
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
                     setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
@@ -645,7 +635,6 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
 
     // List variable
     if (var->numValues_ != 0) {
-
         // Verify range
         if (index < 0 || index >= var->numValues_)
             throw(rogue::GeneralError::create("Block::setBytes",
