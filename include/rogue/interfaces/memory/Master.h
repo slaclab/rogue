@@ -28,6 +28,7 @@
 #include <memory>
 #include <thread>
 #include <vector>
+#include <string>
 
 #include "rogue/Logging.h"
 

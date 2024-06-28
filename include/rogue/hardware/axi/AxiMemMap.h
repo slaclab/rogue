@@ -23,6 +23,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 #include "rogue/Queue.h"

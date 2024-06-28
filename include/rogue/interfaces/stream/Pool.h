@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <thread>
+#include <queue>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Queue.h"

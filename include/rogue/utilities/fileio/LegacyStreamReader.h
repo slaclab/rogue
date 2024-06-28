@@ -24,6 +24,7 @@
 #include <map>
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/interfaces/stream/Master.h"
 

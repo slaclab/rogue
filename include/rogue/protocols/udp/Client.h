@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Master.h"

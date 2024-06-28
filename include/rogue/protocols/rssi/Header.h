@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <string>
 
 #include "rogue/interfaces/stream/Frame.h"
 

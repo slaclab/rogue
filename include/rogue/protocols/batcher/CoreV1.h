@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <thread>
+#include <vector>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"

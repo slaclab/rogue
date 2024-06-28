@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 

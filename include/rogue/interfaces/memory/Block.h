@@ -25,6 +25,7 @@
 #include <memory>
 #include <thread>
 #include <vector>
+#include <string>
 
 #include "rogue/interfaces/memory/Master.h"
 

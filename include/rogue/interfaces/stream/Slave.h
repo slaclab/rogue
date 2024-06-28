@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"

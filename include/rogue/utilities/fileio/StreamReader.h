@@ -25,6 +25,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <string>
 
 #include "rogue/interfaces/stream/Master.h"
 

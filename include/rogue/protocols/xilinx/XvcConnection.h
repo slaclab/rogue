@@ -21,6 +21,8 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
+#include <vector>
+
 #include "rogue/GeneralError.h"
 #include "rogue/protocols/xilinx/JtagDriver.h"
 

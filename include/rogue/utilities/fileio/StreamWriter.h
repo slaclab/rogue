@@ -39,6 +39,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <string>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"

@@ -16,8 +16,12 @@
  **/
 #ifndef __ROGUE_INTERFACE_API_BSP_H__
 #define __ROGUE_INTERFACE_API_BSP_H__
+
 #include <boost/python.hpp>
+
+#include <memory>
 #include <vector>
+#include <string>
 
 namespace rogue {
 namespace interfaces {
