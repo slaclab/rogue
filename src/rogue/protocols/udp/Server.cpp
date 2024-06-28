@@ -177,10 +177,7 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
             } else if ((res = sendmsg(fd_, &msg, 0)) < 0) {
                 udpLog_->warning("UDP Write Call Failed");
             }
-        }
-
-        // Continue while write result was zero
-        while (res == 0);
+        } while (res == 0);  // Continue while write result was zero
     }
 }
 

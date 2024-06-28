@@ -416,10 +416,7 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
                         throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed!!!!"));
                     }
                 }
-            }
-
-            // Exit out if return flag was set false
-            while (res == 0);
+            } while (res == 0);  // Exit out if return flag was set false
         }
     }
 
