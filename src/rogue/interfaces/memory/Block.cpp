@@ -467,7 +467,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
         if (mode_ != (*vit)->mode_) mode_ = "RW";
 
         // Update variable masks for standard variable
-        if ((*vit)->numValues_ == 0 ) {
+        if ((*vit)->numValues_ == 0) {
             for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
