@@ -449,8 +449,8 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 
-            if ( dmaRetIndexes(fd_,count,ret) < 0 )
-               throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
+            if ( dmaRetIndexes(fd_, count, ret) < 0 )
+               throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
 
             decCounter(size*count);
             printf("Return done\n");
