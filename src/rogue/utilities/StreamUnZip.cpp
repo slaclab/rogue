@@ -109,9 +109,9 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
             if ((wBuff + 1) == newFrame->endBuffer()) {
                 ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
                 wBuff                  = newFrame->appendFrame(tmpFrame);
-            } else
+            } else {
                 ++wBuff;
-
+            }
             strm.next_out  = (char*)(*wBuff)->begin();
             strm.avail_out = (*wBuff)->getAvailable();
         }

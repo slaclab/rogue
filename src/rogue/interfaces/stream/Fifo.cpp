@@ -92,7 +92,7 @@ ris::Fifo::~Fifo() {
 //! Return the number of elements in the Fifo
 std::size_t ris::Fifo::size() {
     return queue_.size();
-};
+}
 
 //! Return the number of dropped frames
 std::size_t ris::Fifo::dropCnt() const {
@@ -121,9 +121,9 @@ void ris::Fifo::acceptFrame(ris::FramePtr frame) {
     ris::FrameLockPtr lock = frame->lock();
 
     // Do we copy the frame?
-    if (noCopy_)
+    if (noCopy_) {
         nFrame = frame;
-    else {
+    } else {
         // Get size, adjust if trim is enabled
         size = frame->getPayload();
         if (trimSize_ != 0 && trimSize_ < size) size = trimSize_;

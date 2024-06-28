@@ -247,8 +247,9 @@ void rim::Master::waitTransaction(uint32_t id) {
             if (it != tranMap_.end()) {
                 tran = it->second;
                 tranMap_.erase(it);
-            } else
+            } else {
                 break;
+            }
         }
 
         // Outside of lock
@@ -280,10 +281,9 @@ void rim::Master::copyBits(uint8_t* dstData, uint32_t dstLsb, uint8_t* srcData, 
             dstByte += bytes;
             srcByte += bytes;
             rem -= (bytes * 8);
-        }
 
         // Not aligned
-        else {
+        } else {
             dstData[dstByte] &= ((0x1 << dstBit) ^ 0xFF);
             dstData[dstByte] |= ((srcData[srcByte] >> srcBit) & 0x1) << dstBit;
             srcByte += (++srcBit / 8);
@@ -362,10 +362,9 @@ void rim::Master::setBits(uint8_t* dstData, uint32_t lsb, uint32_t size) {
             memset(&(dstData[dstByte]), 0xFF, bytes);
             dstByte += bytes;
             rem -= (bytes * 8);
-        }
 
         // Not aligned
-        else {
+        } else {
             dstData[dstByte] |= (0x1 << dstBit);
             dstByte += (++dstBit / 8);
             dstBit %= 8;
@@ -421,10 +420,9 @@ bool rim::Master::anyBits(uint8_t* dstData, uint32_t lsb, uint32_t size) {
             if (dstData[dstByte] != 0) ret = true;
             dstByte += 1;
             rem -= 8;
-        }
 
         // Not aligned
-        else {
+        } else {
             if ((dstData[dstByte] & (0x1 << dstBit)) != 0) ret = true;
             dstByte += (++dstBit / 8);
             dstBit %= 8;
@@ -468,10 +466,11 @@ void rim::Master::rshiftPy(bp::object p) {
     boost::python::extract<rim::SlavePtr> get_slave(p);
 
     // Test extraction
-    if (get_slave.check()) slv = get_slave();
+    if (get_slave.check()) {
+        slv = get_slave();
 
     // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getMemorySlave")) {
+    } else if (PyObject_HasAttrString(p.ptr(), "_getMemorySlave")) {
         // Attempt to convert returned object to slave pointer
         boost::python::extract<rim::SlavePtr> get_slave(p.attr("_getMemorySlave")());
 

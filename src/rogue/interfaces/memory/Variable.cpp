@@ -184,10 +184,9 @@ rim::Variable::Variable(std::string name,
         valueBytes_ = byteSize_;
         valueBits_ = bitTotal_;
         valueStride_ = bitTotal_;
-    }
 
     // List variables
-    else {
+    } else {
 
         // Compute bit total
         bitTotal_ = bitSize_[0];
@@ -211,10 +210,11 @@ rim::Variable::Variable(std::string name,
     if ((bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0)) {
 
         // Standard variable
-        if (numValues_ == 0) fastByte_ = (uint32_t*)malloc(sizeof(uint32_t));
+        if (numValues_ == 0) {
+            fastByte_ = (uint32_t*)malloc(sizeof(uint32_t));
 
         // List variable
-        else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
+        } else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
             fastByte_ = (uint32_t*)malloc(numValues_ * sizeof(uint32_t));
         }
     }
@@ -469,10 +469,9 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         // Compute the highest byte, aligned to min access
         highTranByte_[0] = varBytes_ - 1;
         staleHighByte_ = highTranByte_[0];
-    }
 
     // List variable
-    else {
+    } else {
 
         for (x = 0; x < numValues_; x++) {
             lowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueStride_) / ((float)minSize * 8.0)) * minSize;
@@ -486,10 +485,11 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
 
     // Adjust fast copy locations
     if (fastByte_ != NULL) {
-        if (numValues_ == 0) fastByte_[0] = bitOffset_[0] / 8;
+        if (numValues_ == 0) {
+            fastByte_[0] = bitOffset_[0] / 8;
 
         // List variable
-        else {
+        } else {
             for (x = 0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueStride_ * x)) / 8;
         }
     }
@@ -705,8 +705,9 @@ std::string rim::Variable::getDumpValue(bool read) {
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
                         ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
-                } else
+                } else {
                     ret << (block_->*getUInt_)(this, index);
+                }
                 break;
 
             case rim::Int:
@@ -715,8 +716,9 @@ std::string rim::Variable::getDumpValue(bool read) {
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
                         ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
-                } else
+                } else {
                     ret << (block_->*getInt_)(this, index);
+                }
                 break;
 
             case rim::Bool:
@@ -851,9 +853,9 @@ std::string rim::Variable::getString(int32_t index) {
 }
 
 void rim::Variable::getValue(std::string& retString, int32_t index) {
-    if (getString_ == NULL)
+    if (getString_ == NULL) {
         throw(rogue::GeneralError::create("Variable::getValue", "Wrong get type for variable %s", path_.c_str()));
-    else {
+    } else {
         block_->read(this, index);
         block_->getValue(this, retString, index);
     }

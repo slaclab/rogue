@@ -266,10 +266,11 @@ void rim::Slave::lshiftPy(boost::python::object p) {
     boost::python::extract<rim::MasterPtr> get_master(p);
 
     // Test extraction
-    if (get_master.check()) mst = get_master();
+    if (get_master.check()) {
+        mst = get_master();
 
     // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getMemoryMaster")) {
+    } else if (PyObject_HasAttrString(p.ptr(), "_getMemoryMaster")) {
         // Attempt to convert returned object to master pointer
         boost::python::extract<rim::MasterPtr> get_master(p.attr("_getMemoryMaster")());
 

@@ -63,10 +63,9 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     if ((it = sharedBuffers_.find(path)) != sharedBuffers_.end()) {
         ret = it->second;
         log->debug("Reusing existing shared file descriptor for %s", path.c_str());
-    }
 
     // Create new record
-    else {
+    } else {
         ret = std::make_shared<rha::AxiStreamDmaShared>(path);
         log->debug("Opening new shared file descriptor for %s", path.c_str());
     }
@@ -279,10 +278,9 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
     // Zero copy is disabled. Allocate from memory.
     if (zeroCopyEn == false || desc_->rawBuff == NULL) {
         frame = reqLocalFrame(size, false);
-    }
 
     // Allocate zero copy buffers from driver
-    else {
+    } else {
         rogue::GilRelease noGil;
 
         // Create empty frame
@@ -353,17 +351,17 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
         if (it == frame->beginBuffer()) {
             fuser = frame->getFirstUser();
             if (enSsi_) fuser |= 0x2;
-        } else
+        } else {
             fuser = 0;
+        }
 
         // Last Buffer
         if (it == (frame->endBuffer() - 1)) {
             cont  = 0;
             luser = frame->getLastUser();
-        }
 
         // Continue flag is set if this is not the last (*it)er
-        else {
+        } else {
             cont  = 1;
             luser = 0;
         }
@@ -390,10 +388,9 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
                 meta |= 0x40000000;
                 (*it)->setMeta(meta);
             }
-        }
 
         // Write to pgp with (*it)er copy in driver
-        else {
+        } else {
             // Keep trying since select call can fire
             // but write fails because we did not win the (*it)er lock
             do {
@@ -523,10 +520,9 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
                     rxCount = rxSize[0];
                 else
                     rxCount = 1;
-            }
 
             // Zero copy read
-            else {
+            } else {
                 // Attempt read, dest is not needed since only one lane/vc is open
                 rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 

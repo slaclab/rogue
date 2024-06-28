@@ -123,9 +123,9 @@ double ru::Prbs::updateTime(struct timeval* last) {
     if (timercmp(&per, &cmp, >)) {
         ret = (float)per.tv_sec + (float(per.tv_usec) / 1e6);
         gettimeofday(last, NULL);
-    } else
+    } else {
         ret = 0.0;
-
+    }
     return ret;
 }
 
@@ -369,9 +369,9 @@ void ru::Prbs::genFrame(uint32_t size) {
 
         // Generate payload
         while (frIter != frEnd) {
-            if (sendCount_)
+            if (sendCount_) {
                 ris::toFrame(frIter, byteWidth_, wCount);
-            else {
+            } else {
                 flfsr(data);
                 ris::toFrame(frIter, byteWidth_, data);
             }

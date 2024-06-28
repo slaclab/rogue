@@ -237,8 +237,9 @@ void rim::TcpClient::runThread() {
                 more     = 0;
                 moreSize = 8;
                 zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
-            } else
+            } else {
                 more = 1;
+            }
         } while (threadEn_ && more);
 
         // Proper message received

@@ -90,8 +90,9 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
                                               addr.c_str()));
 
         reqPort = port + 1;
-    } else
+    } else {
         reqPort = port + 2;
+    }
 
     // Setup request port
     temp = "tcp://";
@@ -190,12 +191,14 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
             if (waitRetry_) {
                 log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
                 zmq_msg_close(&msg);
-            } else
+            } else {
                 throw rogue::GeneralError::create("ZmqClient::sendString",
                                                   "Timeout waiting for response after %f Seconds.",
                                                   seconds);
-        } else
+            }
+        } else {
             break;
+        }
     }
 
     if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
@@ -251,13 +254,15 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
                     log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",
                                 seconds);
                     zmq_msg_close(&rxMsg);
-                } else
+                } else {
                     throw rogue::GeneralError::create(
                         "ZmqClient::send",
                         "Timeout waiting for response after %f Seconds, server may be busy!",
                         seconds);
-            } else
+                }
+            } else {
                 break;
+            }
         }
     }
 

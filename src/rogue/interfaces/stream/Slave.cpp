@@ -143,20 +143,20 @@ uint64_t ris::Slave::getByteCount() {
 // Ensure passed frame is a single buffer
 bool ris::Slave::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
     // Frame is a single buffer
-    if (frame->bufferCount() == 1)
+    if (frame->bufferCount() == 1) {
         return true;
 
-    else if (!reqEn)
+    } else if (!reqEn) {
         return false;
 
-    else {
+    } else {
         uint32_t size        = frame->getPayload();
         ris::FramePtr nFrame = reqLocalFrame(size, true);
 
-        if (nFrame->bufferCount() != 1)
+        if (nFrame->bufferCount() != 1) {
             return false;
 
-        else {
+        } else {
             nFrame->setPayload(size);
 
             ris::FrameIterator srcIter = frame->begin();
@@ -205,10 +205,11 @@ bp::object ris::Slave::lshiftPy(bp::object p) {
     boost::python::extract<ris::MasterPtr> get_master(p);
 
     // Test extraction
-    if (get_master.check()) mst = get_master();
+    if (get_master.check()) {
+       mst = get_master();
 
     // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
+    } else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
         // Attempt to convert returned object to master pointer
         boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
 

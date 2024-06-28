@@ -98,10 +98,9 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
                 // printf("Write data to 4k=0x%" PRIx64 ", offset=0x%" PRIx64 ", size=%" PRIu64 "\n", addr4k, off4k,
                 // size4k);
                 memcpy(memMap_[addr4k] + off4k, ptr, size4k);
-            }
 
             // Read or verify
-            else {
+            } else {
                 // printf("Read data from 4k=0x%" PRIx64 ", offset=0x%" PRIx64 ", size=%" PRIu64 "\n", addr4k, off4k,
                 // size4k);
                 memcpy(ptr, memMap_[addr4k] + off4k, size4k);

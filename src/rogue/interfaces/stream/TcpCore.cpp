@@ -112,10 +112,9 @@ ris::TcpCore::TcpCore(std::string addr, uint16_t port, bool server) {
                                               " at address %s, another process may be using this port",
                                               port + 1,
                                               addr.c_str()));
-    }
 
     // Client mode
-    else {
+    } else {
         this->pullAddr_.append(std::to_string(static_cast<long long>(port + 1)));
         this->pushAddr_.append(std::to_string(static_cast<long long>(port)));
 
@@ -248,8 +247,9 @@ void ris::TcpCore::runThread() {
                 more     = 0;
                 moreSize = 8;
                 zmq_getsockopt(this->zmqPull_, ZMQ_RCVMORE, &more, &moreSize);
-            } else
+            } else {
                 more = 1;
+            }
         } while (threadEn_ && more);
 
         // Proper message received

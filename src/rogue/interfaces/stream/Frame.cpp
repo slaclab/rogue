@@ -184,16 +184,16 @@ void ris::Frame::setPayload(uint32_t pSize) {
         size_ += loc;
 
         // Beyond the fill point, empty buffer
-        if (lSize == 0) (*it)->setPayloadEmpty();
+        if (lSize == 0) {
+            (*it)->setPayloadEmpty();
 
         // Size exists in current buffer
-        else if (lSize <= loc) {
+        } else if (lSize <= loc) {
             (*it)->setPayload(lSize);
             lSize = 0;
-        }
 
         // Size is beyond current buffer
-        else {
+        } else {
             lSize -= loc;
             (*it)->setPayloadFull();
         }

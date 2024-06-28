@@ -82,8 +82,9 @@ void rogue::interfaces::ZmqServer::start() {
             res = this->tryConnect();
             if (res) break;
         }
-    } else
+    } else {
         res = this->tryConnect();
+    }
 
     if (!res) {
         if (port == 0)

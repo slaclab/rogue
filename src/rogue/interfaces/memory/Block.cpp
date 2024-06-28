@@ -229,10 +229,9 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
             tSize      = verifySize_;
             tData      = verifyData_ + verifyBase_;
             verifyInp_ = true;
-        }
 
         // Not a verify transaction
-        else {
+        } else {
             // Derive offset and size based upon min transaction size
             tOff  = lowByte;
             tSize = (highByte - lowByte) + 1;
@@ -480,10 +479,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             for (x = 0; x < (*vit)->bitOffset_.size(); x++) {
 
                 // Variable allows overlaps, add to overlap enable mask
-                if ((*vit)->overlapEn_) setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                if ((*vit)->overlapEn_) {
+                    setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
 
                 // Otherwise add to exclusive mask and check for existing mapping
-                else {
+                } else {
                     if (anyBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
                         throw(rogue::GeneralError::create("Block::addVariables",
                                                           "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
@@ -519,10 +519,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
             for (x = 0; x < (*vit)->numValues_; x++) {
 
                 // Variable allows overlaps, add to overlap enable mask
-                if ((*vit)->overlapEn_) setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                if ((*vit)->overlapEn_) {
+                    setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
 
                 // Otherwise add to exclusive mask and check for existing mapping
-                else {
+                } else {
                     if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
                         throw(rogue::GeneralError::create("Block::addVariables",
                                                           "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
@@ -638,8 +639,9 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
         buff = (uint8_t*)malloc(var->valueBytes_);
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
-    } else
+    } else {
         buff = (uint8_t*)data;
+    }
 
     // List variable
     if (var->numValues_ != 0) {
@@ -667,21 +669,20 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
             var->staleLowByte_  = var->lowTranByte_[index];
             var->staleHighByte_ = var->highTranByte_[index];
         }
-    }
 
     // Standard variable
-    else {
+    } else {
         var->staleLowByte_  = var->lowTranByte_[0];
         var->staleHighByte_ = var->highTranByte_[0];
 
         // Fast copy
-        if (var->fastByte_ != NULL)
+        if (var->fastByte_ != NULL) {
             memcpy(blockData_ + var->fastByte_[0], buff, var->valueBytes_);
 
-        else if (var->bitOffset_.size() == 1)
+        } else if (var->bitOffset_.size() == 1) {
             copyBits(blockData_, var->bitOffset_[0], buff, 0, var->bitSize_[0]);
 
-        else {
+        } else {
             srcBit = 0;
             for (x = 0; x < var->bitOffset_.size(); x++) {
                 copyBits(blockData_, var->bitOffset_[x], buff, srcBit, var->bitSize_[x]);
@@ -716,17 +717,16 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
 
         else
             copyBits(data, 0, blockData_, var->bitOffset_[0] + (index * var->valueStride_), var->valueBits_);
-    }
 
-    else {
+    } else {
         // Fast copy
-        if (var->fastByte_ != NULL)
+        if (var->fastByte_ != NULL) {
             memcpy(data, blockData_ + var->fastByte_[0], var->valueBytes_);
 
-        else if (var->bitOffset_.size() == 1)
+        } else if (var->bitOffset_.size() == 1) {
             copyBits(data, 0, blockData_, var->bitOffset_[0], var->bitSize_[0]);
 
-        else {
+        } else {
             dstBit = 0;
             for (x = 0; x < var->bitOffset_.size(); x++) {
                 copyBits(data, dstBit, blockData_, var->bitOffset_[x], var->bitSize_[x]);
@@ -758,10 +758,9 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
         throw(rogue::GeneralError::create("Block::setPyFunc",
                                           "Passing ndarray not supported for %s",
                                           var->name_.c_str()));
-    }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -786,10 +785,9 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
             setBytes((uint8_t*)valueBuf.buf, var, index + x);
             PyBuffer_Release(&valueBuf);
         }
-    }
 
     // Single value
-    else {
+    } else {
         // Call python function
         bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
 
@@ -813,10 +811,8 @@ bp::object rim::Block::getPyFunc(rim::Variable* var, int32_t index) {
                                           "Accessing unindexed value not support for %s",
                                           var->name_.c_str()));
 
-    }
-
     // Single value
-    else {
+    } else {
         memset(getBuffer, 0, var->valueBytes_);
 
         getBytes(getBuffer, var, index);
@@ -931,15 +927,14 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
         } else if (PyArray_TYPE(arr) == NPY_UINT32) {
             uint32_t* src = reinterpret_cast<uint32_t*>(PyArray_DATA(arr));
             for (x = 0; x < dims[0]; x++) setUInt(src[x], var, index + x);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setUIntPy",
                                               "Passed nparray is not of type (uint64 or uint32) for %s",
                                               var->name_.c_str()));
-
-    }
+        }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -962,10 +957,9 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
 
             setUInt(tmp, var, index + x);
         }
-    }
 
     // Passed scalar numpy value
-    else if (PyArray_CheckScalar(value.ptr())) {
+    } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_UINT64) {
             uint64_t val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
@@ -974,9 +968,10 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
             uint32_t val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
             setUInt(val, var, index);
-        } else
+        } else {
             throw(
                 rogue::GeneralError::create("Block::setUIntPy", "Failed to extract value for %s.", var->name_.c_str()));
+        }
     } else {
         bp::extract<uint64_t> tmp(value);
 
@@ -1090,15 +1085,14 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
         } else if (PyArray_TYPE(arr) == NPY_INT32) {
             int32_t* src = reinterpret_cast<int32_t*>(PyArray_DATA(arr));
             for (x = 0; x < dims[0]; x++) setInt(src[x], var, index + x);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setIntPy",
                                               "Passed nparray is not of type (int64 or int32) for %s",
                                               var->name_.c_str()));
-
-    }
+        }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -1121,10 +1115,9 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
 
             setInt(tmp, var, index + x);
         }
-    }
 
     // Passed scalar numpy value
-    else if (PyArray_CheckScalar(value.ptr())) {
+    } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT64) {
             int64_t val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
@@ -1133,9 +1126,10 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
             int32_t val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
             setInt(val, var, index);
-        } else
+        } else {
             throw(
                 rogue::GeneralError::create("Block::setIntPy", "Failed to extract value for %s.", var->name_.c_str()));
+        }
     } else {
         bp::extract<int64_t> tmp(value);
 
@@ -1250,15 +1244,14 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
         if (PyArray_TYPE(arr) == NPY_BOOL) {
             bool* src = reinterpret_cast<bool*>(PyArray_DATA(arr));
             for (x = 0; x < dims[0]; x++) setBool(src[x], var, index + x);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setBoolPy",
                                               "Passed nparray is not of type (bool) for %s",
                                               var->name_.c_str()));
-
-    }
+        }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -1281,17 +1274,17 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
 
             setBool(tmp, var, index + x);
         }
-    }
 
     // Passed scalar numpy value
-    else if (PyArray_CheckScalar(value.ptr())) {
+    } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_BOOL) {
             bool val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
             setBool(val, var, index);
-        } else
+        } else {
             throw(
                 rogue::GeneralError::create("Block::setBoolPy", "Failed to extract value for %s.", var->name_.c_str()));
+        }
     } else {
         bp::extract<bool> tmp(value);
 
@@ -1320,9 +1313,8 @@ bp::object rim::Block::getBoolPy(rim::Variable* var, int32_t index) {
 
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
-    }
 
-    else {
+    } else {
         bp::handle<> handle(bp::borrowed(getBool(var, index) ? Py_True : Py_False));
         ret = bp::object(handle);
     }
@@ -1460,14 +1452,14 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
         if (PyArray_TYPE(arr) == NPY_FLOAT32) {
             float* src = reinterpret_cast<float*>(PyArray_DATA(arr));
             for (x = 0; x < dims[0]; x++) setFloat(src[x], var, index + x);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
                                               "Passed nparray is not of type (float32) for %s",
                                               var->name_.c_str()));
-    }
+        }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -1490,18 +1482,18 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
 
             setFloat(tmp, var, index + x);
         }
-    }
 
     // Passed scalar numpy value
-    else if (PyArray_CheckScalar(value.ptr())) {
+    } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT32) {
             float val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
             setFloat(val, var, index);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setFloatPy",
                                               "Failed to extract value for %s.",
                                               var->name_.c_str()));
+        }
     } else {
         bp::extract<float> tmp(value);
 
@@ -1531,9 +1523,8 @@ bp::object rim::Block::getFloatPy(rim::Variable* var, int32_t index) {
 
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
-    }
 
-    else {
+    } else {
         PyObject* val = Py_BuildValue("f", getFloat(var, index));
 
         if (val == NULL) throw(rogue::GeneralError::create("Block::getFloatPy", "Failed to generate Float"));
@@ -1606,15 +1597,14 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
         if (PyArray_TYPE(arr) == NPY_FLOAT64) {
             double* src = reinterpret_cast<double*>(PyArray_DATA(arr));
             for (x = 0; x < dims[0]; x++) setDouble(src[x], var, index + x);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
                                               "Passed nparray is not of type (double) for %s",
                                               var->name_.c_str()));
-
-    }
+        }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -1637,18 +1627,18 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
 
             setDouble(tmp, var, index + x);
         }
-    }
 
     // Passed scalar numpy value
-    else if (PyArray_CheckScalar(value.ptr())) {
+    } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64) {
             double val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
             setDouble(val, var, index);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setDoublePy",
                                               "Failed to extract value for %s.",
                                               var->name_.c_str()));
+        }
     } else {
         bp::extract<double> tmp(value);
 
@@ -1678,9 +1668,8 @@ bp::object rim::Block::getDoublePy(rim::Variable* var, int32_t index) {
 
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
-    }
 
-    else {
+    } else {
         PyObject* val = Py_BuildValue("d", getDouble(var, index));
 
         if (val == NULL) throw(rogue::GeneralError::create("Block::getDoublePy", "Failed to generate Double"));
@@ -1753,15 +1742,14 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
         if (PyArray_TYPE(arr) == NPY_FLOAT64) {
             double* src = reinterpret_cast<double*>(PyArray_DATA(arr));
             for (x = 0; x < dims[0]; x++) setFixed(src[x], var, index + x);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
                                               "Passed nparray is not of type (double) for %s",
                                               var->name_.c_str()));
-
-    }
+        }
 
     // Is passed value a list
-    else if (PyList_Check(value.ptr())) {
+    } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
 
@@ -1784,18 +1772,18 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
 
             setFixed(tmp, var, index + x);
         }
-    }
 
     // Passed scalar numpy value
-    else if (PyArray_CheckScalar(value.ptr())) {
+    } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64) {
             double val;
             PyArray_ScalarAsCtype(value.ptr(), &val);
             setFixed(val, var, index);
-        } else
+        } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
                                               "Failed to extract value for %s.",
                                               var->name_.c_str()));
+        }
     } else {
         bp::extract<double> tmp(value);
 
@@ -1825,9 +1813,8 @@ bp::object rim::Block::getFixedPy(rim::Variable* var, int32_t index) {
 
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
-    }
 
-    else {
+    } else {
         PyObject* val = Py_BuildValue("d", getFixed(var, index));
 
         if (val == NULL) throw(rogue::GeneralError::create("Block::getFixedPy", "Failed to generate Fixed"));

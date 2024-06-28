@@ -162,8 +162,9 @@ void rim::TcpServer::runThread() {
                 more     = 0;
                 moreSize = 8;
                 zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
-            } else
+            } else {
                 more = 1;
+            }
         } while (threadEn_ && more);
 
         // Proper message received
@@ -189,8 +190,9 @@ void rim::TcpServer::runThread() {
                     for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                     continue;  // while (1)
                 }
-            } else
+            } else {
                 zmq_msg_init_size(&(msg[4]), size);
+            }
 
             // Data pointer
             data = (uint8_t*)zmq_msg_data(&(msg[4]));
@@ -223,8 +225,9 @@ void rim::TcpServer::runThread() {
 
             // Send message
             for (x = 0; x < 6; x++) zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE);
-        } else
+        } else {
             for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+        }
     }
 }
 

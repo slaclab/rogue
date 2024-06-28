@@ -98,8 +98,9 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
             if (++rBuff != frame->endBuffer()) {
                 strm.next_in  = (char*)(*rBuff)->begin();
                 strm.avail_in = (*rBuff)->getPayload();
-            } else
+            } else {
                 done = true;
+            }
         }
 
         // Update write buffer if necessary
@@ -108,9 +109,9 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
             if ((wBuff + 1) == newFrame->endBuffer()) {
                 ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
                 wBuff                  = newFrame->appendFrame(tmpFrame);
-            } else
+            } else {
                 ++wBuff;
-
+            }
             strm.next_out  = (char*)(*wBuff)->begin();
             strm.avail_out = (*wBuff)->getAvailable();
         }

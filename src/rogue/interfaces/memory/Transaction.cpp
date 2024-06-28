@@ -241,8 +241,9 @@ std::string rim::Transaction::wait() {
                         id_,
                         address_,
                         size_);
-        } else
+        } else {
             cond_.wait_for(lock, std::chrono::microseconds(1000));
+        }
     }
 
     // Reset
@@ -270,9 +271,9 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
     if (ref == NULL || timercmp(&startTime_, &(ref->startTime_), >=)) {
         timeradd(&currTime, &timeout_, &endTime_);
 
-        if (warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0)
+        if (warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0) {
             warnTime_ = endTime_;
-        else if (timercmp(&warnTime_, &currTime, >=)) {
+        } else if (timercmp(&warnTime_, &currTime, >=)) {
             log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32
                           ", address=0x%016" PRIx64 ", size=%" PRIu32,
                           type_,

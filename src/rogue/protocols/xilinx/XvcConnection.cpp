@@ -213,9 +213,9 @@ void rpx::XvcConnection::run() {
                 tl_ = bytes;
 
                 bump(2 * bytes);
-            } else
+            } else {
                 throw(rogue::GeneralError::create("XvcConnection::run()", "Unsupported message received"));
-
+            }
             flush();
 
             /* Repeat until all the characters from the first chunk are exhausted* (most likely the chunk just contained
