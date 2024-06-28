@@ -42,7 +42,7 @@ class Client {
     //! Client module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::rssi::Client> create(uint32_t segSize);
 

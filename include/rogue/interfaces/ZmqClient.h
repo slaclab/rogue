@@ -55,7 +55,7 @@ class ZmqClient {
 
     void runThread();
 
-  public:
+ public:
     static std::shared_ptr<rogue::interfaces::ZmqClient> create(std::string addr, uint16_t port, bool doString);
 
     //! Setup class in python
@@ -90,7 +90,7 @@ typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
 
 //! Stream slave class, wrapper to enable python overload of virtual methods
 class ZmqClientWrap : public rogue::interfaces::ZmqClient, public boost::python::wrapper<rogue::interfaces::ZmqClient> {
-  public:
+ public:
     ZmqClientWrap(std::string addr, uint16_t port, bool doString);
 
     void doUpdate(boost::python::object data);

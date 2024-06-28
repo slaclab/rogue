@@ -71,7 +71,7 @@ class Variable;
 
 //! Memory interface Block device
 class Block : public Master {
-  protected:
+ protected:
     // Mutex
     std::mutex mtx_;
 
@@ -164,7 +164,7 @@ class Block : public Master {
     // Custom cleanup function called before delete
     virtual void customClean();
 
-  public:
+ public:
     //! Class factory which returns a pointer to a Block (BlockPtr)
     /** Exposed to Python as rogue.interfaces.memory.Block()
      *
@@ -248,7 +248,7 @@ class Block : public Master {
     //! Get block python transactions flag
     bool blockPyTrans();
 
-  private:
+ private:
     //! Start a c++ transaction for this block, internal version
     /** Start a c++ transaction with the passed type and access range
      *
@@ -264,7 +264,7 @@ class Block : public Master {
                              rogue::interfaces::memory::Variable* var,
                              int32_t index);
 
-  public:
+ public:
     //! Start a c++ transaction for this block
     /** Start a c++ transaction with the passed type and access range
      *

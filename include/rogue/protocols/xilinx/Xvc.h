@@ -44,7 +44,7 @@ const unsigned int kMaxArgs = 3;
 class Xvc : public rogue::interfaces::stream::Master,
             public rogue::interfaces::stream::Slave,
             public rogue::protocols::xilinx::JtagDriver {
-  protected:
+ protected:
     unsigned mtu_;
 
     // Use rogue frames to exchange data with other rogue objects
@@ -63,7 +63,7 @@ class Xvc : public rogue::interfaces::stream::Master,
     // TCP server for Vivado client
     void runThread();
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::xilinx::Xvc> create(uint16_t port);
 

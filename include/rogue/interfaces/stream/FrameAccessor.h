@@ -36,14 +36,14 @@ namespace stream {
 //! Frame Accessor
 template <typename T>
 class FrameAccessor {
-  private:
+ private:
     // Data container
     T* data_;
 
     // Size value
     uint32_t size_;
 
-  public:
+ public:
     //! Creator
     FrameAccessor(rogue::interfaces::stream::FrameIterator& iter, uint32_t size) {
         data_ = (T*)iter.ptr();

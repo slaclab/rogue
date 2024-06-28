@@ -57,7 +57,7 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
-  public:
+ public:
     //! Class factory which returns a AxiMemMapPtr to a newly created AxiMemMap object
     /** Exposed to Python as rogue.hardware.axi.AxiMemMap()
      * @param path Path to device. i.e /dev/datadev_0

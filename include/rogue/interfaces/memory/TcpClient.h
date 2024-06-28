@@ -72,7 +72,7 @@ class TcpClient : public rogue::interfaces::memory::Slave {
     // Lock
     std::mutex bridgeMtx_;
 
-  public:
+ public:
     //! Create a TcpClient object and return as a TcpServerPtr
     /**The creator takes an address and port. The passed address is the address of
      * the remote TcpServer to connect to, and can either be an IP address or hostname.

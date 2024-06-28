@@ -47,7 +47,7 @@ class GeneralError : public std::exception {
 
     char text_[BuffSize];
 
-  public:
+ public:
     GeneralError(std::string src, std::string text);
 
     static GeneralError create(std::string src, const char* fmt, ...);

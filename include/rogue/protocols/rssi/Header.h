@@ -45,12 +45,12 @@ class Header {
     //! compute checksum
     uint16_t compSum(uint8_t* data, uint8_t size);
 
-  public:
+ public:
     //! Header Size
     static const int32_t HeaderSize = 8;
     static const uint32_t SynSize   = 24;
 
-  private:
+ private:
     //! Frame pointer
     std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
 
@@ -60,7 +60,7 @@ class Header {
     //! Transmit count
     uint32_t count_;
 
-  public:
+ public:
     //! Create
     static std::shared_ptr<rogue::protocols::rssi::Header> create(
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);

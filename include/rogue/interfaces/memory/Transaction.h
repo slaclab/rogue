@@ -61,11 +61,11 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     friend class Master;
     friend class Hub;
 
-  public:
+ public:
     //! Alias for using uint8_t * as Transaction::iterator
     typedef uint8_t* iterator;
 
-  private:
+ private:
     // Class instance counter
     static uint32_t classIdx_;
 
@@ -75,7 +75,7 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Conditional
     std::condition_variable cond_;
 
-  protected:
+ protected:
     // Transaction timeout
     struct timeval timeout_;
 
@@ -141,7 +141,7 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     // Wait for the transaction to complete, called by Master
     std::string wait();
 
-  public:
+ public:
     // Setup class for use in python
     static void setup_python();
 

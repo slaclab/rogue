@@ -139,7 +139,7 @@ namespace CRCPP {
         performed at compile-time instead of at runtime.
 */
 class CRC {
-  public:
+ public:
     // Forward declaration
     template <typename CRCType, crcpp_uint16 CRCWidth>
     struct Table;
@@ -177,7 +177,7 @@ class CRC {
 
         CRCType operator[](unsigned char index) const;
 
-      private:
+     private:
         void InitTable();
 
         Parameters<CRCType, CRCWidth> parameters;  ///< CRC parameters used to construct the table
@@ -280,7 +280,7 @@ class CRC {
     CRC& operator=(CRC&& other) = delete;
 #endif
 
-  private:
+ private:
 #ifndef CRCPP_USE_CPP11
     CRC();
     CRC(const CRC& other);

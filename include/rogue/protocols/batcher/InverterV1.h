@@ -37,7 +37,7 @@ namespace batcher {
 
 //!  AXI Stream FIFO
 class InverterV1 : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::batcher::InverterV1> create();
 

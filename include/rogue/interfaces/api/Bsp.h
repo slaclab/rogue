@@ -25,12 +25,12 @@ namespace api {
 
 //! Bsp Class
 class Bsp {
-  protected:
+ protected:
     boost::python::object _obj;
     bool _isRoot;
     std::string _name;
 
-  public:
+ public:
     //! Class factory
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(boost::python::object obj);
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(std::string modName, std::string rootClass);

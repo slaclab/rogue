@@ -50,7 +50,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // Application queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::Application> create(uint8_t id);
 

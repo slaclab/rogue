@@ -58,7 +58,7 @@ class Emulate : public Slave {
     //! Log
     std::shared_ptr<rogue::Logging> log_;
 
-  public:
+ public:
     //! Class factory which returns a pointer to a Emulate (EmulatePtr)
     /** Exposed to Python as rogue.interfaces.memory.Emualte()
      *

@@ -69,7 +69,7 @@ namespace xilinx {
 // If a timeout occurs then 'xfer' must throw a TimeoutErr().
 //
 class JtagDriver {
-  protected:
+ protected:
     //! Remote port number
     uint16_t port_;
 
@@ -86,7 +86,7 @@ class JtagDriver {
     // Log
     std::shared_ptr<rogue::Logging> log_;
 
-  private:
+ private:
     unsigned wordSize_;
     unsigned memDepth_;
 
@@ -107,7 +107,7 @@ class JtagDriver {
 
     virtual void setHdr(uint8_t* buf, Header hdr);
 
-  protected:
+ protected:
     static Header getHdr(uint8_t* buf);
 
     static const Header PVERS = 0x00000000;
@@ -161,7 +161,7 @@ class JtagDriver {
     virtual unsigned getMemDepth();
     virtual uint32_t getPeriodNs();
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::xilinx::JtagDriver> create(uint16_t port);
 

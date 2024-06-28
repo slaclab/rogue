@@ -47,7 +47,7 @@ class XvcConnection {
     unsigned long supVecLen_;
     unsigned long chunk_;
 
-  public:
+ public:
     XvcConnection(int sd, JtagDriver* drv, unsigned long maxVecLen_ = 32768);
 
     // fill rx buffer to 'n' octets (from TCP connection)

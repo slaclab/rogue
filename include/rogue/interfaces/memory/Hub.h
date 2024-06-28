@@ -67,7 +67,7 @@ class Hub : public Master, public Slave {
     //! Log
     std::shared_ptr<rogue::Logging> log_;
 
-  public:
+ public:
     //! Class factory which returns a pointer to a Hub (HubPtr)
     /** Exposed to Python as rogue.interfaces.memory.Hub()
      *
@@ -170,7 +170,7 @@ typedef std::shared_ptr<rogue::interfaces::memory::Hub> HubPtr;
 
 // Memory Hub class, wrapper to enable python overload of virtual methods
 class HubWrap : public rogue::interfaces::memory::Hub, public boost::python::wrapper<rogue::interfaces::memory::Hub> {
-  public:
+ public:
     // Constructor
     HubWrap(uint64_t offset, uint32_t min, uint32_t max);
 

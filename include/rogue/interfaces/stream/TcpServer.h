@@ -40,7 +40,7 @@ namespace stream {
 /** This class is a wrapper around TcpCore which operates in server mode.
  */
 class TcpServer : public rogue::interfaces::stream::TcpCore {
-  public:
+ public:
     //! Create a TcpServer object and return as a TcpServerPtr
     /**The creator takes an address and port. The passed address can either be
      * an IP address or hostname. The address string  defines which network interface

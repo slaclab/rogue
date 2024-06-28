@@ -48,7 +48,7 @@ namespace stream {
  * utilized when a connection has been established.
  */
 class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfaces::stream::Slave {
-  protected:
+ protected:
     // Inbound Address
     std::string pullAddr_;
 
@@ -77,7 +77,7 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
     // Lock
     std::mutex bridgeMtx_;
 
-  public:
+ public:
     //! Create a TcpCore object and return as a TcpCorePtr
     /**The creator takes an address, port and server mode flag. The passed
      * address can either be an IP address or hostname. When running in server

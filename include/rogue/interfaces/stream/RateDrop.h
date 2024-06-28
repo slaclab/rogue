@@ -53,7 +53,7 @@ class RateDrop : public rogue::interfaces::stream::Master, public rogue::interfa
 
     struct timeval nextPeriod_;
 
-  public:
+ public:
     //! Create a RateDrop object and return as a RateDropPtr
     /** @param period Set to true to define the parameter as a period value.
      * @param value Period value or drop count

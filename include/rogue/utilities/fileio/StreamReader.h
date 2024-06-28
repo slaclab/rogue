@@ -65,7 +65,7 @@ class StreamReader : public rogue::interfaces::stream::Master {
     //! Active lock
     std::mutex mtx_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::fileio::StreamReader> create();
 

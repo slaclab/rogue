@@ -124,7 +124,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
 
     static double updateTime(struct timeval* last);
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::Prbs> create();
 

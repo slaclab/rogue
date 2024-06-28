@@ -43,7 +43,7 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     //! Thread background
     void runThread();
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::Transport> create();
 
