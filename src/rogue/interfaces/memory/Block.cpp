@@ -174,11 +174,10 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
     std::vector<rim::VariablePtr>::iterator vit;
 
     // Check for valid combinations
-    if ((type == rim::Write and ((mode_ == "RO") || (!stale_ && !forceWr))) ||
-        (type == rim::Post and (mode_ == "RO")) || (type == rim::Read and ((mode_ == "WO") || stale_)) ||
-        (type == rim::Verify and ((mode_ == "WO") || (mode_ == "RO") || stale_ || !verifyReq_)))
+    if ((type == rim::Write && ((mode_ == "RO") || (!stale_ && !forceWr))) ||
+        (type == rim::Post && (mode_ == "RO")) || (type == rim::Read && ((mode_ == "WO") || stale_)) ||
+        (type == rim::Verify && ((mode_ == "WO") || (mode_ == "RO") || stale_ || !verifyReq_)))
         return;
-
     {
         rogue::GilRelease noGil;
         std::lock_guard<std::mutex> lock(mtx_);
