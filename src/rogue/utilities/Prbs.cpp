@@ -412,7 +412,7 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
 
     rogue::GilRelease noGil;
 
-    while (not rxEnable_) usleep(10000);
+    while (!rxEnable_) usleep(10000);
 
     ris::FrameLockPtr fLock = frame->lock();
     std::lock_guard<std::mutex> lock(pMtx_);

@@ -174,7 +174,7 @@ void rim::Transaction::done() {
             parentTran->subTranMap_.erase(id_);
 
             // If this is the last sub-transaction, notify parent transaction it is all done
-            if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_) parentTran->done();
+            if (parentTran->subTranMap_.empty() && parentTran->doneCreatingSubTransactions_) parentTran->done();
         }
     }
 }
@@ -203,7 +203,7 @@ void rim::Transaction::errorStr(std::string error) {
             parentTran->subTranMap_.erase(id_);
 
             // If this is the last sub-transaction, notify parent transaction it is all done
-            if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+            if (parentTran->subTranMap_.empty() && parentTran->doneCreatingSubTransactions_)
                 parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s.\n",
                                   id_,
                                   error.c_str());

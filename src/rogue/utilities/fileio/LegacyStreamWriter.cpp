@@ -101,7 +101,7 @@ void ruf::LegacyStreamWriter::writeFile(uint8_t channel, std::shared_ptr<rogue::
 
     if (frame->getPayload() == 0) return;
 
-    if (channel != RawData and channel != YamlData) {
+    if (channel != RawData && channel != YamlData) {
         throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "Invalid channel"));
     }
 
