@@ -71,7 +71,7 @@ class Xvc : public rogue::interfaces::stream::Master,
     static void setup_python();
 
     //! Creator
-    Xvc(uint16_t port);
+    explicit Xvc(uint16_t port);
 
     //! Destructor
     ~Xvc();

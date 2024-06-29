@@ -58,7 +58,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     static void setup_python();
 
     //! Creator
-    Application(uint8_t id);
+    explicit Application(uint8_t id);
 
     //! Destructor
     ~Application();

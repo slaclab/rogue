@@ -147,7 +147,7 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     static void setup_python();
 
     // Create a Transaction. Do not call directly. Only called from the Master class.
-    Transaction(struct timeval timeout);
+    explicit Transaction(struct timeval timeout);
 
     // Destroy the Transaction.
     ~Transaction();

@@ -70,7 +70,7 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     static void setup_python();
 
     // Class Creator
-    AxiMemMap(std::string path);
+    explicit AxiMemMap(std::string path);
 
     // Destructor
     ~AxiMemMap();

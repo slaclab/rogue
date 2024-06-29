@@ -50,7 +50,7 @@ class Server {
     static void setup_python();
 
     //! Creator
-    Server(uint32_t segSize);
+    explicit Server(uint32_t segSize);
 
     //! Destructor
     ~Server();

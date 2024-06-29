@@ -69,7 +69,7 @@ class Core {
     static void setup_python();
 
     //! Creator
-    Core(bool jumbo);
+    explicit Core(bool jumbo);
 
     //! Destructor
     ~Core();

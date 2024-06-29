@@ -48,7 +48,7 @@ class TransactionLock {
         std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
     // Transaction lock constructor
-    TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+    explicit TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
     // Setup class for use in python
     static void setup_python();

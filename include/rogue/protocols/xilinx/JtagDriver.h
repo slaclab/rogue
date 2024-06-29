@@ -168,7 +168,7 @@ class JtagDriver {
     //! Setup class in python
     static void setup_python();
 
-    JtagDriver(uint16_t port);
+    explicit JtagDriver(uint16_t port);
 
     // initialization after full construction
     virtual void init();

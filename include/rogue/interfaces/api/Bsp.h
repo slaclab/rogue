@@ -40,7 +40,7 @@ class Bsp {
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(std::string modName, std::string rootClass);
 
     //! Create the object
-    Bsp(boost::python::object obj);
+    explicit Bsp(boost::python::object obj);
     Bsp(std::string modName, std::string rootClass);
     ~Bsp();
 

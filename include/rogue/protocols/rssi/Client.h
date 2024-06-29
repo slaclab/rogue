@@ -50,7 +50,7 @@ class Client {
     static void setup_python();
 
     //! Creator
-    Client(uint32_t segSize);
+    explicit Client(uint32_t segSize);
 
     //! Destructor
     ~Client();

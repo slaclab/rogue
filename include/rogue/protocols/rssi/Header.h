@@ -67,7 +67,7 @@ class Header {
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     //! Creator
-    Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    explicit Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     //! Destructor
     ~Header();

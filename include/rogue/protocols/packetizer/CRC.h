@@ -165,10 +165,10 @@ class CRC {
     template <typename CRCType, crcpp_uint16 CRCWidth>
     struct Table {
         // Constructors are intentionally NOT marked explicit.
-        Table(const Parameters<CRCType, CRCWidth>& parameters);
+        Table(const Parameters<CRCType, CRCWidth>& parameters);  //NOLINT
 
 #ifdef CRCPP_USE_CPP11
-        Table(Parameters<CRCType, CRCWidth>&& parameters);
+        Table(Parameters<CRCType, CRCWidth>&& parameters);  //NOLINT
 #endif
 
         const Parameters<CRCType, CRCWidth>& GetParameters() const;
