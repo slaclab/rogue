@@ -20,6 +20,7 @@
 #include <map>
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Master.h"
@@ -31,8 +32,8 @@ namespace axi {
 
 //! Storage class for shared memory buffers
 class AxiStreamDmaShared {
-  public:
-    AxiStreamDmaShared(std::string path);
+ public:
+    explicit AxiStreamDmaShared(std::string path);
 
     //! Shared FD
     int32_t fd;
@@ -112,7 +113,7 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     //! Close shared buffer space
     static void closeShared(std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>);
 
-  public:
+ public:
     //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiStreamDma object
     /** Exposed to Python as rogue.hardware.axi.AxiStreamDma()
      *

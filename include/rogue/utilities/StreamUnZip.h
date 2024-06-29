@@ -33,7 +33,7 @@ namespace utilities {
 
 //! Stream compressor
 class StreamUnZip : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::StreamUnZip> create();
 

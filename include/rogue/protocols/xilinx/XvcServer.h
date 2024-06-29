@@ -27,12 +27,12 @@ namespace protocols {
 namespace xilinx {
 // XVC Server (top) class
 class XvcServer {
-  private:
+ private:
     int sd_;
     JtagDriver* drv_;
     unsigned maxMsgSize_;
 
-  public:
+ public:
     XvcServer(uint16_t port, JtagDriver* drv, unsigned maxMsgSize = 32768);
 
     virtual void run(bool& threadEn, rogue::LoggingPtr log);

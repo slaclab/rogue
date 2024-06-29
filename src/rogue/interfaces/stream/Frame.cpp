@@ -184,16 +184,16 @@ void ris::Frame::setPayload(uint32_t pSize) {
         size_ += loc;
 
         // Beyond the fill point, empty buffer
-        if (lSize == 0) (*it)->setPayloadEmpty();
+        if (lSize == 0) {
+            (*it)->setPayloadEmpty();
 
         // Size exists in current buffer
-        else if (lSize <= loc) {
+        } else if (lSize <= loc) {
             (*it)->setPayload(lSize);
             lSize = 0;
-        }
 
         // Size is beyond current buffer
-        else {
+        } else {
             lSize -= loc;
             (*it)->setPayloadFull();
         }
@@ -370,7 +370,7 @@ void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     }
 
     ris::FrameIterator beg = this->begin() + offset;
-    ris::fromFrame(beg, count, (uint8_t*)pyBuf.buf);
+    ris::fromFrame(beg, count, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
 
@@ -396,7 +396,7 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 
     minPayload(offset + count);
     ris::FrameIterator beg = this->begin() + offset;
-    ris::toFrame(beg, count, (uint8_t*)pyBuf.buf);
+    ris::toFrame(beg, count, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
 

@@ -55,7 +55,7 @@ class SrpV0 : public rogue::interfaces::stream::Master,
                      uint32_t& frameLen,
                      bool tx);
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::srp::SrpV0> create();
 

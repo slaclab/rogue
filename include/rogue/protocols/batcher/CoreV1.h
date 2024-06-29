@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <thread>
+#include <vector>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"
@@ -58,7 +59,7 @@ class CoreV1 {
     //! Sequence number
     uint32_t seq_;
 
-  public:
+ public:
     //! Setup class in python
     static void setup_python();
 

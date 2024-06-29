@@ -15,6 +15,7 @@ sqlalchemy
 pyserial
 numpy
 flake8
+cpplint
 gitpython
 pygithub
 pydm

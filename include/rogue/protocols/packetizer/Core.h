@@ -42,7 +42,7 @@ class Core {
     //! Core module
     std::shared_ptr<rogue::protocols::packetizer::Controller> cntl_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::Core> create(bool enSsi);
 
@@ -50,7 +50,7 @@ class Core {
     static void setup_python();
 
     //! Creator
-    Core(bool enSsi);
+    explicit Core(bool enSsi);
 
     //! Destructor
     ~Core();

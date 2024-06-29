@@ -26,6 +26,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/interfaces/memory/Master.h"
@@ -78,7 +79,7 @@ class Slave : public rogue::EnableSharedFromThis<rogue::interfaces::memory::Slav
     // Slave Name
     std::string name_;
 
-  public:
+ public:
     //! Class factory which returns a pointer to a Slave (SlavePtr)
     /** Exposed as rogue.interfaces.memory.Slave() to Python
      *
@@ -228,7 +229,7 @@ typedef std::shared_ptr<rogue::interfaces::memory::Slave> SlavePtr;
 // Memory slave class, wrapper to enable python overload of virtual methods
 class SlaveWrap : public rogue::interfaces::memory::Slave,
                   public boost::python::wrapper<rogue::interfaces::memory::Slave> {
-  public:
+ public:
     // Constructor
     SlaveWrap(uint32_t min, uint32_t max);
 

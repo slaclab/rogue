@@ -16,8 +16,12 @@
  **/
 #ifndef __ROGUE_INTERFACE_API_BSP_H__
 #define __ROGUE_INTERFACE_API_BSP_H__
+
 #include <boost/python.hpp>
+
+#include <memory>
 #include <vector>
+#include <string>
 
 namespace rogue {
 namespace interfaces {
@@ -25,18 +29,18 @@ namespace api {
 
 //! Bsp Class
 class Bsp {
-  protected:
+ protected:
     boost::python::object _obj;
     bool _isRoot;
     std::string _name;
 
-  public:
+ public:
     //! Class factory
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(boost::python::object obj);
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(std::string modName, std::string rootClass);
 
     //! Create the object
-    Bsp(boost::python::object obj);
+    explicit Bsp(boost::python::object obj);
     Bsp(std::string modName, std::string rootClass);
     ~Bsp();
 

@@ -113,9 +113,9 @@ bool ruf::StreamReader::nextFile() {
     if (fd_ >= 0) {
         ::close(fd_);
         fd_ = -1;
-    } else
+    } else {
         return (false);
-
+    }
     if (fdIdx_ == 0) return (false);
 
     fdIdx_++;

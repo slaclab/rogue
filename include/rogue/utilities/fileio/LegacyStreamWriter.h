@@ -41,11 +41,11 @@ class StreamWriterChannel;
 
 //! Stream writer central class
 class LegacyStreamWriter : public StreamWriter {
-  protected:
+ protected:
     //! Write data to file. Called from StreamWriterChannel
     virtual void writeFile(uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-  public:
+ public:
     // Data types.
     // Count is n*32bits for type = 0, byte count for all others
     enum DataType {

@@ -44,7 +44,7 @@ class FrameLock {
     std::shared_ptr<rogue::interfaces::stream::Frame> frame_;
     bool locked_;
 
-  public:
+ public:
     // Class factory which returns a pointer to a FrameLock (FrameLockPtr)
     /* Only called by Frame object.
      * Create a new Frame lock on the passed Frame.
@@ -54,7 +54,7 @@ class FrameLock {
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     // Frame lock constructor
-    FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    explicit FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     // Setup class for use in python
     static void setup_python();

@@ -45,7 +45,7 @@ class CoreV2 {
     //! Core module
     std::shared_ptr<rogue::protocols::packetizer::ControllerV2> cntl_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::CoreV2> create(bool enIbCrc, bool enObCrc, bool enSsi);
 

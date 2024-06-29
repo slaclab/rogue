@@ -36,7 +36,7 @@ namespace utilities {
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
     //! Max size
-    const static uint32_t MaxBytes = 64;
+    static const uint32_t MaxBytes = 64;
 
     //! PRBS taps
     uint8_t* taps_;
@@ -124,7 +124,7 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
 
     static double updateTime(struct timeval* last);
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::Prbs> create();
 

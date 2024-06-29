@@ -173,8 +173,9 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
 
         // Detect SSI error
         if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80);
-    } else
+    } else {
         tranCount_[0]++;
+    }
 }
 
 //! Frame received at application interface

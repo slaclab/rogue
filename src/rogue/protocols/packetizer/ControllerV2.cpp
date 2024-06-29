@@ -144,8 +144,9 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
             crc_[tmpDest] = CRC::Calculate(data, size - 4, crcTable_, crc_[tmpDest]);
 
         crcErr = (tmpCrc != crc_[tmpDest]);
-    } else
+    } else {
         crcErr = false;
+    }
 
     log_->debug("transportRx: Raw header: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8
                 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,

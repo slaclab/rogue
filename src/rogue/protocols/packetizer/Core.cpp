@@ -50,9 +50,7 @@ void rpp::Core::setup_python() {
     bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable>("Core", bp::init<bool>())
         .def("transport", &rpp::Core::transport)
         .def("application", &rpp::Core::application)
-        .def("getDropCount", &rpp::Core::getDropCount)
-
-        ;
+        .def("getDropCount", &rpp::Core::getDropCount);
 #endif
 }
 

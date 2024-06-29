@@ -26,6 +26,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"
@@ -61,7 +62,7 @@ class Slave : public rogue::interfaces::stream::Pool,
     uint64_t frameCount_;
     uint64_t frameBytes_;
 
-  public:
+ public:
     //! Class factory which returns a pointer to a Slave (SlavePtr)
     /** Create a new Slave
      *
@@ -169,7 +170,7 @@ typedef std::shared_ptr<rogue::interfaces::stream::Slave> SlavePtr;
 // Stream slave class, wrapper to enable python overload of virtual methods
 class SlaveWrap : public rogue::interfaces::stream::Slave,
                   public boost::python::wrapper<rogue::interfaces::stream::Slave> {
-  public:
+ public:
     // Accept frame
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 

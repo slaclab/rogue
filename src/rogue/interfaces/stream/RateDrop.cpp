@@ -90,10 +90,9 @@ void ris::RateDrop::acceptFrame(ris::FramePtr frame) {
             sendFrame(frame);
             dropCount_ = 0;
         }
-    }
 
     // Dropping based upon time
-    else {
+    } else {
         gettimeofday(&currTime, NULL);
 
         if (timercmp(&currTime, &(nextPeriod_), >)) {

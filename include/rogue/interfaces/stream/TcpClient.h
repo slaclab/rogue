@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"
@@ -40,7 +41,7 @@ namespace stream {
 /** This class is a wrapper around TcpCore which operates in client mode.
  */
 class TcpClient : public rogue::interfaces::stream::TcpCore {
-  public:
+ public:
     //! Create a TcpClient object and return as a TcpClientPtr
     /**The creator takes an address and port. The passed server address can either
      * be an IP address or hostname. The stream bridge requires two TCP ports.

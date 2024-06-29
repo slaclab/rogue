@@ -44,7 +44,6 @@ namespace memory {
  * and write transactions.
  */
 class Emulate : public Slave {
-
     // Map to store 4K address space chunks
     MAP_TYPE memMap_;
 
@@ -58,7 +57,7 @@ class Emulate : public Slave {
     //! Log
     std::shared_ptr<rogue::Logging> log_;
 
-  public:
+ public:
     //! Class factory which returns a pointer to a Emulate (EmulatePtr)
     /** Exposed to Python as rogue.interfaces.memory.Emualte()
      *

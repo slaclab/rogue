@@ -50,7 +50,6 @@ int main(int argc, char** argv) {
         Py_BEGIN_ALLOW_THREADS;
         sleep(60);
         Py_END_ALLOW_THREADS;
-
     } catch (...) {
         fprintf(stderr, "Found error running API example:\n");
         PyErr_Print();

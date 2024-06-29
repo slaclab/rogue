@@ -644,12 +644,12 @@ static inline ssize_t dmaGetBuffCount(int32_t fd) {
  * Returns: The DMA Driver's Git Version string
  */
 static inline std::string dmaGetGitVersion(int32_t fd) {
-   char gitv[32] = {0}; // Initialize with zeros to ensure null-termination
-   if (ioctl(fd, DMA_Get_GITV, gitv) < 0) {
-      return "";
-   }
-   gitv[32 - 1] = '\0'; // Ensure null-termination
-   return std::string(gitv);
+    char gitv[32] = {0};  // Initialize with zeros to ensure null-termination
+    if (ioctl(fd, DMA_Get_GITV, gitv) < 0) {
+        return "";
+    }
+    gitv[32 - 1] = '\0';  // Ensure null-termination
+    return std::string(gitv);
 }
 
 /**
@@ -676,7 +676,7 @@ static inline void** dmaMapDma(int32_t fd, uint32_t* count, uint32_t* size) {
     if (count != NULL) *count = bCount;
     if (size != NULL) *size = bSize;
 
-    if ((ret = (void**)malloc(sizeof(void*) * bCount)) == 0) return (NULL);
+    if ((ret = reinterpret_cast<void**>(malloc(sizeof(void*) * bCount))) == 0) return (NULL);
 
     // Attempt to map
     gCount = 0;

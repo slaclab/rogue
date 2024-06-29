@@ -44,7 +44,7 @@ const unsigned int kMaxArgs = 3;
 class Xvc : public rogue::interfaces::stream::Master,
             public rogue::interfaces::stream::Slave,
             public rogue::protocols::xilinx::JtagDriver {
-  protected:
+ protected:
     unsigned mtu_;
 
     // Use rogue frames to exchange data with other rogue objects
@@ -63,7 +63,7 @@ class Xvc : public rogue::interfaces::stream::Master,
     // TCP server for Vivado client
     void runThread();
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::xilinx::Xvc> create(uint16_t port);
 
@@ -71,7 +71,7 @@ class Xvc : public rogue::interfaces::stream::Master,
     static void setup_python();
 
     //! Creator
-    Xvc(uint16_t port);
+    explicit Xvc(uint16_t port);
 
     //! Destructor
     ~Xvc();
@@ -85,14 +85,14 @@ class Xvc : public rogue::interfaces::stream::Master,
     // Receive frame
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    virtual unsigned long getMaxVectorSize() final;
+    uint64_t getMaxVectorSize() final;
 
-    virtual int xfer(uint8_t* txBuffer,
-                     unsigned txBytes,
-                     uint8_t* hdBuffer,
-                     unsigned hdBytes,
-                     uint8_t* rxBuffer,
-                     unsigned rxBytes) final;
+    int xfer(uint8_t* txBuffer,
+             unsigned txBytes,
+             uint8_t* hdBuffer,
+             unsigned hdBytes,
+             uint8_t* rxBuffer,
+             unsigned rxBytes) final;
 };
 
 // Convenience

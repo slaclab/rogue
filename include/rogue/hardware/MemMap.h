@@ -60,7 +60,7 @@ class MemMap : public rogue::interfaces::memory::Slave {
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
-  public:
+ public:
     //! Class factory which returns a MemMapPtr to a newly created MemMap object
     /** Exposed to Python as rogue.hardware.MemMap()
      * @param base Base address to map

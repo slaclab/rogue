@@ -48,7 +48,7 @@ ris::BufferPtr ris::Buffer::create(ris::PoolPtr source, void* data, uint32_t met
  */
 ris::Buffer::Buffer(ris::PoolPtr source, void* data, uint32_t meta, uint32_t size, uint32_t alloc) {
     source_    = source;
-    data_      = (uint8_t*)data;
+    data_      = reinterpret_cast<uint8_t*>(data);
     meta_      = meta;
     rawSize_   = size;
     allocSize_ = alloc;

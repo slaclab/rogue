@@ -34,7 +34,7 @@ namespace rogue {
 
 //! Filter
 class LogFilter {
-  public:
+ public:
     std::string name_;
     uint32_t level_;
 
@@ -63,7 +63,7 @@ class Logging {
     //! Logger name
     std::string name_;
 
-  public:
+ public:
     static const uint32_t Critical = 50;
     static const uint32_t Error    = 40;
     static const uint32_t Thread   = 35;
@@ -73,7 +73,7 @@ class Logging {
 
     static std::shared_ptr<rogue::Logging> create(std::string name, bool quiet = false);
 
-    Logging(std::string name, bool quiet = false);
+    explicit Logging(std::string name, bool quiet = false);
     ~Logging();
 
     static void setLevel(uint32_t level);

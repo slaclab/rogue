@@ -50,7 +50,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     // Application queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> queue_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::Application> create(uint8_t id);
 
@@ -58,7 +58,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     static void setup_python();
 
     //! Creator
-    Application(uint8_t id);
+    explicit Application(uint8_t id);
 
     //! Destructor
     ~Application();

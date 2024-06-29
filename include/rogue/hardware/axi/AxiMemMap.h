@@ -23,6 +23,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 #include "rogue/Queue.h"
@@ -57,7 +58,7 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
-  public:
+ public:
     //! Class factory which returns a AxiMemMapPtr to a newly created AxiMemMap object
     /** Exposed to Python as rogue.hardware.axi.AxiMemMap()
      * @param path Path to device. i.e /dev/datadev_0
@@ -69,7 +70,7 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     static void setup_python();
 
     // Class Creator
-    AxiMemMap(std::string path);
+    explicit AxiMemMap(std::string path);
 
     // Destructor
     ~AxiMemMap();

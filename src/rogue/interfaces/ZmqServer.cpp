@@ -82,8 +82,9 @@ void rogue::interfaces::ZmqServer::start() {
             res = this->tryConnect();
             if (res) break;
         }
-    } else
+    } else {
         res = this->tryConnect();
+    }
 
     if (!res) {
         if (port == 0)
@@ -162,7 +163,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp = "tcp://";
     temp.append(this->addr_);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(this->basePort_)));
+    temp.append(std::to_string(static_cast<int64_t>(this->basePort_)));
 
     if (zmq_bind(this->zmqPub_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
@@ -176,7 +177,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp = "tcp://";
     temp.append(this->addr_);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(this->basePort_ + 1)));
+    temp.append(std::to_string(static_cast<int64_t>(this->basePort_ + 1)));
 
     if (zmq_bind(this->zmqRep_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
@@ -190,7 +191,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp = "tcp://";
     temp.append(this->addr_);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(this->basePort_ + 2)));
+    temp.append(std::to_string(static_cast<int64_t>(this->basePort_ + 2)));
 
     if (zmq_bind(this->zmqStr_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);

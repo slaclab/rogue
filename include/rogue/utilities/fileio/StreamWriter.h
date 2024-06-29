@@ -39,6 +39,7 @@
 #include <memory>
 #include <mutex>
 #include <thread>
+#include <string>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"
@@ -54,7 +55,7 @@ class StreamWriterChannel;
 class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio::StreamWriter> {
     friend class StreamWriterChannel;
 
-  protected:
+ protected:
     // Log
     std::shared_ptr<rogue::Logging> log_;
 
@@ -114,7 +115,7 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     //! Write data to file. Called from StreamWriterChannel
     virtual void writeFile(uint8_t channel, std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::fileio::StreamWriter> create();
 

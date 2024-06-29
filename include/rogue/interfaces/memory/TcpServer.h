@@ -25,6 +25,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/memory/Master.h"
@@ -66,7 +67,7 @@ class TcpServer : public rogue::interfaces::memory::Master {
     std::thread* thread_;
     bool threadEn_;
 
-  public:
+ public:
     //! Create a TcpServer object and return as a TcpServerPtr
     /**The creator takes an address and port. The passed address can either be
      * an IP address or hostname. The address string  defines which network interface

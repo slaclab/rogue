@@ -69,7 +69,7 @@ namespace xilinx {
 // If a timeout occurs then 'xfer' must throw a TimeoutErr().
 //
 class JtagDriver {
-  protected:
+ protected:
     //! Remote port number
     uint16_t port_;
 
@@ -86,7 +86,7 @@ class JtagDriver {
     // Log
     std::shared_ptr<rogue::Logging> log_;
 
-  private:
+ private:
     unsigned wordSize_;
     unsigned memDepth_;
 
@@ -107,7 +107,7 @@ class JtagDriver {
 
     virtual void setHdr(uint8_t* buf, Header hdr);
 
-  protected:
+ protected:
     static Header getHdr(uint8_t* buf);
 
     static const Header PVERS = 0x00000000;
@@ -131,7 +131,7 @@ class JtagDriver {
     static Xid getXid(Header x);
     static uint32_t getCmd(Header x);
     static unsigned getErr(Header x);
-    static unsigned long getLen(Header x);
+    static uint64_t getLen(Header x);
 
     // returns error message or NULL (unknown error)
     static const char* getMsg(unsigned error);
@@ -161,14 +161,14 @@ class JtagDriver {
     virtual unsigned getMemDepth();
     virtual uint32_t getPeriodNs();
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::xilinx::JtagDriver> create(uint16_t port);
 
     //! Setup class in python
     static void setup_python();
 
-    JtagDriver(uint16_t port);
+    explicit JtagDriver(uint16_t port);
 
     // initialization after full construction
     virtual void init();
@@ -191,7 +191,7 @@ class JtagDriver {
     //                    if 0 then no the target does not have memory and if
     //                    there is reliable transport there is no limit to vector
     //                    length.
-    virtual unsigned long query();
+    virtual uint64_t query();
 
     // Max. vector size (in bytes) this driver supports - may be different
     // from what the target supports and the minimum will be used...
@@ -199,7 +199,7 @@ class JtagDriver {
     // must handle typically contains two vectors and a header, so
     // the driver must consider this when computing the max. supported
     // vector size)
-    virtual unsigned long getMaxVectorSize() {
+    virtual uint64_t getMaxVectorSize() {
         return 0;
     }
 
@@ -207,7 +207,7 @@ class JtagDriver {
 
     // send tms and tdi vectors of length numBits (each) and receive tdo
     // little-endian (first send/received at lowest offset)
-    virtual void sendVectors(unsigned long numBits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo);
+    virtual void sendVectors(uint64_t numBits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo);
 
     virtual void dumpInfo(FILE* f = stdout);
 

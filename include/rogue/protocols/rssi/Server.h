@@ -42,7 +42,7 @@ class Server {
     //! Server module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::rssi::Server> create(uint32_t segSize);
 
@@ -50,7 +50,7 @@ class Server {
     static void setup_python();
 
     //! Creator
-    Server(uint32_t segSize);
+    explicit Server(uint32_t segSize);
 
     //! Destructor
     ~Server();

@@ -77,7 +77,7 @@ class Buffer {
     // Error state
     uint32_t error_;
 
-  public:
+ public:
     //! Alias for using uint8_t * as Buffer::iterator
     typedef uint8_t* iterator;
 

@@ -24,6 +24,7 @@
 #include <map>
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/interfaces/stream/Master.h"
 
@@ -64,7 +65,7 @@ class LegacyStreamReader : public rogue::interfaces::stream::Master {
     //! Active lock
     std::mutex mtx_;
 
-  public:
+ public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::fileio::LegacyStreamReader> create();
 

@@ -20,6 +20,7 @@
 
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/Logging.h"
 
@@ -59,7 +60,7 @@ class ZmqServer {
 
     bool tryConnect();
 
-  public:
+ public:
     static std::shared_ptr<rogue::interfaces::ZmqServer> create(std::string addr, uint16_t port);
 
     //! Setup class in python
@@ -87,7 +88,7 @@ typedef std::shared_ptr<rogue::interfaces::ZmqServer> ZmqServerPtr;
 
 //! Stream slave class, wrapper to enable python overload of virtual methods
 class ZmqServerWrap : public rogue::interfaces::ZmqServer, public boost::python::wrapper<rogue::interfaces::ZmqServer> {
-  public:
+ public:
     ZmqServerWrap(std::string addr, uint16_t port);
 
     boost::python::object doRequest(boost::python::object data);
