@@ -88,7 +88,7 @@ void ris::Slave::acceptFrame(ris::FramePtr frame) {
         char buffer[1000];
 
         log_->critical("Got Size=%" PRIu32 ", Error=%" PRIu8 ", Data:", frame->getPayload(), frame->getError());
-        sprintf(buffer, "     ");
+        snprintf(buffer, sizeof(buffer), "     ");
 
         count = 0;
         for (it = frame->begin(); (count < debug_) && (it != frame->end()); ++it) {
@@ -98,7 +98,7 @@ void ris::Slave::acceptFrame(ris::FramePtr frame) {
             snprintf(buffer + strlen(buffer), 1000 - strlen(buffer), " 0x%.2x", val);
             if (((count + 1) % 8) == 0) {
                 log_->critical(buffer);
-                sprintf(buffer, "     ");
+                snprintf(buffer, sizeof(buffer), "     ");
             }
         }
 

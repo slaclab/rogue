@@ -217,7 +217,7 @@ void rim::Transaction::error(const char* fmt, ...) {
     char buffer[10000];
 
     va_start(args, fmt);
-    vsnprintf(buffer, 10000, fmt, args);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
 
     errorStr(std::string(buffer));

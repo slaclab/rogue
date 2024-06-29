@@ -471,19 +471,20 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
             flfsr(expData);
 
             if (!std::equal(frIter, frIter + byteWidth_, expData)) {
-                sprintf(debugA,
+                snprintf(debugA, sizeof(debugA),
                         "Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32,
                         pos,
                         rxCount_,
                         (size / byteWidth_) - 1);
+
                 for (x = 0; x < byteWidth_; x++) {
-                    sprintf(debugB,
+                    snprintf(debugB, sizeof(debugB),
                             "\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8,
                             pos,
                             x,
                             *(frIter + x),
                             *(expData + x));
-                    strcat(debugA, debugB);
+                    snprintf(debugA + strlen(debugA), sizeof(debugA) - strlen(debugA), "%s", debugB);
                 }
                 rxLog_->warning(debugA);
                 rxErrCount_++;
