@@ -68,8 +68,8 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
     this->zmqResp_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
     this->zmqReq_  = zmq_socket(this->zmqCtx_, ZMQ_PULL);
 
-    this->respAddr_.append(std::to_string(static_cast<long long>(port + 1)));
-    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
+    this->respAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+    this->reqAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
     this->bridgeLog_->debug("Creating response client port: %s", this->respAddr_.c_str());
 

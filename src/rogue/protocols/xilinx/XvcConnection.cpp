@@ -22,7 +22,7 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
-rpx::XvcConnection::XvcConnection(int sd, JtagDriver* drv, unsigned long maxVecLen)
+rpx::XvcConnection::XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen)
     : drv_(drv),
       maxVecLen_(maxVecLen),
       supVecLen_(0) {
@@ -67,10 +67,10 @@ ssize_t rpx::XvcConnection::readTo(void* buf, size_t count) {
 }
 
 // fill rx buffer to 'n' octets
-void rpx::XvcConnection::fill(unsigned long n) {
+void rpx::XvcConnection::fill(uint64_t n) {
     uint8_t* p = rp_ + rl_;
     int got;
-    unsigned long k = n;
+    uint64_t k = n;
 
     if (n <= rl_) return;
 
@@ -87,15 +87,15 @@ void rpx::XvcConnection::fill(unsigned long n) {
 }
 
 // mark 'n' octets as 'consumed'
-void rpx::XvcConnection::bump(unsigned long n) {
+void rpx::XvcConnection::bump(uint64_t n) {
     rp_ += n;
     rl_ -= n;
     if (rl_ == 0) { rp_ = &rxb_[0]; }
 }
 
 void rpx::XvcConnection::allocBufs() {
-    unsigned long tgtVecLen;
-    unsigned long overhead = 128;  // headers and such;
+    uint64_t tgtVecLen;
+    uint64_t overhead = 128;  // headers and such;
 
     // Determine the vector size supported by the target
     tgtVecLen = drv_->query();
@@ -142,9 +142,9 @@ void rpx::XvcConnection::flush() {
 void rpx::XvcConnection::run() {
     int got;
     uint32_t bits, bitsLeft, bitsSent;
-    unsigned long bytes;
-    unsigned long vecLen;
-    unsigned long off;
+    uint64_t bytes;
+    uint64_t vecLen;
+    uint64_t off;
 
     allocBufs();
 

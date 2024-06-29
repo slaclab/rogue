@@ -41,25 +41,25 @@ class XvcConnection {
 
     uint8_t* rp_;
     vector<uint8_t> rxb_;
-    unsigned long rl_;
-    unsigned long tl_;
+    uint64_t rl_;
+    uint64_t tl_;
 
     vector<uint8_t> txb_;
-    unsigned long maxVecLen_;
-    unsigned long supVecLen_;
-    unsigned long chunk_;
+    uint64_t maxVecLen_;
+    uint64_t supVecLen_;
+    uint64_t chunk_;
 
  public:
-    XvcConnection(int sd, JtagDriver* drv, unsigned long maxVecLen_ = 32768);
+    XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen_ = 32768);
 
     // fill rx buffer to 'n' octets (from TCP connection)
-    virtual void fill(unsigned long n);
+    virtual void fill(uint64_t n);
 
     // send tx buffer to TCP connection
     virtual void flush();
 
     // discard 'n' octets from rx buffer (mark as consumed)
-    virtual void bump(unsigned long n);
+    virtual void bump(uint64_t n);
 
     // (re)allocated buffers
     virtual void allocBufs();

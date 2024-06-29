@@ -74,7 +74,7 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
         temp = "tcp://";
         temp.append(addr);
         temp.append(":");
-        temp.append(std::to_string(static_cast<long long>(port)));
+        temp.append(std::to_string(static_cast<int64_t>(port)));
 
         if (zmq_setsockopt(this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0)
             throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket subscribe"));
@@ -98,7 +98,7 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
     temp = "tcp://";
     temp.append(addr);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(reqPort)));
+    temp.append(std::to_string(static_cast<int64_t>(reqPort)));
 
     waitRetry_ = false;  // Don't keep waiting after timeout
     timeout_   = 1000;   // 1 second

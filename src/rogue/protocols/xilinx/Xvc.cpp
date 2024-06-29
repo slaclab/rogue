@@ -121,9 +121,9 @@ void rpx::Xvc::acceptFrame(ris::FramePtr frame) {
     // All we need to do is ensure that as soon as the new frame comes in, it's stored in the queue.
 }
 
-unsigned long rpx::Xvc::getMaxVectorSize() {
+uint64_t rpx::Xvc::getMaxVectorSize() {
     // MTU lim; 2*vector size + header must fit!
-    unsigned long mtuLim = (mtu_ - getWordSize()) / 2;
+    uint64_t mtuLim = (mtu_ - getWordSize()) / 2;
 
     return mtuLim;
 }

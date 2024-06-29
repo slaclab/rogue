@@ -85,7 +85,7 @@ class Xvc : public rogue::interfaces::stream::Master,
     // Receive frame
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    virtual unsigned long getMaxVectorSize() final;
+    virtual uint64_t getMaxVectorSize() final;
 
     virtual int xfer(uint8_t* txBuffer,
                      unsigned txBytes,

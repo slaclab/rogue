@@ -75,8 +75,8 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port) : rim::Slave(4, 0xFFF
     if (zmq_setsockopt(this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0)
         throw(rogue::GeneralError("memory::TcpClient::TcpClient", "Failed to set socket immediate"));
 
-    this->respAddr_.append(std::to_string(static_cast<long long>(port + 1)));
-    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
+    this->respAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+    this->reqAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
     this->bridgeLog_->debug("Creating response client port: %s", this->respAddr_.c_str());
 

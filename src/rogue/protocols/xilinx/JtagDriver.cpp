@@ -82,7 +82,7 @@ unsigned rpx::JtagDriver::getErr(Header x) {
     return (x & ERR_MASK) >> ERR_SHIFT;
 }
 
-unsigned long rpx::JtagDriver::getLen(Header x) {
+uint64_t rpx::JtagDriver::getLen(Header x) {
     if (getCmd(x) != CMD_S)
         throw(
             rogue::GeneralError::create("JtagDriver::getLen()", "Cannot extract length from non-shift command header"));
@@ -207,7 +207,7 @@ int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8
     return (0);
 }
 
-unsigned long rpx::JtagDriver::query() {
+uint64_t rpx::JtagDriver::query() {
     Header hdr;
     unsigned siz;
 
@@ -228,7 +228,7 @@ unsigned long rpx::JtagDriver::query() {
     log_->debug("Query result: wordSize %" PRId32 ", memDepth %" PRId32 ", period %l" PRId32 "ns\n",
                 wordSize_,
                 memDepth_,
-                (unsigned long)periodNs_);
+                (uint64_t)periodNs_);
 
     if (0 == memDepth_)
         retry_ = 0;
@@ -255,9 +255,9 @@ uint32_t rpx::JtagDriver::setPeriodNs(uint32_t requestedPeriod) {
     return UNKNOWN_PERIOD == currentPeriod ? requestedPeriod : currentPeriod;
 }
 
-void rpx::JtagDriver::sendVectors(unsigned long bits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo) {
+void rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo) {
     unsigned wsz            = getWordSize();
-    unsigned long bytesCeil = (bits + 8 - 1) / 8;
+    uint64_t bytesCeil = (bits + 8 - 1) / 8;
     unsigned wholeWords     = bytesCeil / wsz;
     unsigned wholeWordBytes = wholeWords * wsz;
     unsigned wordCeilBytes  = ((bytesCeil + wsz - 1) / wsz) * wsz;
@@ -292,7 +292,7 @@ void rpx::JtagDriver::dumpInfo(FILE* f) {
     fprintf(f, "Word size:                  %d\n", getWordSize());
     fprintf(f, "Target Memory Depth (bytes) %d\n", getWordSize() * getMemDepth());
     fprintf(f, "Max. Vector Length  (bytes) %ld\n", getMaxVectorSize());
-    fprintf(f, "TCK Period             (ns) %ld\n", (unsigned long)getPeriodNs());
+    fprintf(f, "TCK Period             (ns) %ld\n", (uint64_t)getPeriodNs());
 }
 
 void rpx::JtagDriver::setup_python() {
