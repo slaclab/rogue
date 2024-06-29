@@ -24,7 +24,6 @@
 #include <inttypes.h>
 #include <stdarg.h>
 #include <string.h>
-#include <sys/syscall.h>
 #include <sys/time.h>
 #include <unistd.h>
 
