@@ -159,7 +159,7 @@ ris::BufferPtr ris::Pool::allocBuffer(uint32_t size, uint32_t* total) {
     if (dataQ_.size() > 0) {
         data = dataQ_.front();
         dataQ_.pop();
-    } else if ((data = (uint8_t*)malloc(bAlloc)) == NULL) {
+    } else if ((data = reinterpret_cast<uint8_t*>(malloc(bAlloc))) == NULL) {
         throw(
             rogue::GeneralError::create("Pool::allocBuffer", "Failed to allocate buffer with size = %" PRIu32, bAlloc));
     }

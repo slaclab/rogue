@@ -99,13 +99,13 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
     verifyBase_ = 0;  // Verify Range
     verifySize_ = 0;  // Verify Range
 
-    blockData_ = (uint8_t*)malloc(size_);
+    blockData_ = reinterpret_cast<uint8_t*>(malloc(size_));
     memset(blockData_, 0, size_);
 
-    verifyData_ = (uint8_t*)malloc(size_);
+    verifyData_ = reinterpret_cast<uint8_t*>(malloc(size_));
     memset(verifyData_, 0, size_);
 
-    verifyMask_ = (uint8_t*)malloc(size_);
+    verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
     memset(verifyMask_, 0, size_);
 }
 
@@ -625,11 +625,11 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
 
     // Change byte order, need to make a copy
     if (var->byteReverse_) {
-        buff = (uint8_t*)malloc(var->valueBytes_);
+        buff = reinterpret_cast<uint8_t*>(malloc(var->valueBytes_));
         memcpy(buff, data, var->valueBytes_);
         reverseBytes(buff, var->valueBytes_);
     } else {
-        buff = (uint8_t*)data;
+        buff = const_cast<uint8_t*>(reinterpret_cast<const uint8_t*>(data));
     }
 
     // List variable
@@ -770,7 +770,7 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                                   "Failed to extract byte array for %s",
                                                   var->name_.c_str()));
 
-            setBytes((uint8_t*)valueBuf.buf, var, index + x);
+            setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index + x);
             PyBuffer_Release(&valueBuf);
         }
 
@@ -784,7 +784,7 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                               "Failed to extract byte array from pyFunc return value for %s",
                                               var->name_.c_str()));
 
-        setBytes((uint8_t*)valueBuf.buf, var, index);
+        setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
         PyBuffer_Release(&valueBuf);
     }
 }
@@ -838,7 +838,7 @@ void rim::Block::setByteArrayPy(bp::object& value, rim::Variable* var, int32_t i
                                           "Failed to extract byte array for %s",
                                           var->name_.c_str()));
 
-    setBytes((uint8_t*)valueBuf.buf, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(valueBuf.buf), var, index);
     PyBuffer_Release(&valueBuf);
 }
 
@@ -1021,14 +1021,14 @@ void rim::Block::setUInt(const uint64_t& val, rim::Variable* var, int32_t index)
                                           var->minValue_,
                                           var->maxValue_));
 
-    setBytes((uint8_t*)&val, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(const_cast<uint64_t*>(&val)), var, index);
 }
 
 // Get data using unsigned int
 uint64_t rim::Block::getUInt(rim::Variable* var, int32_t index) {
     uint64_t tmp = 0;
 
-    getBytes((uint8_t*)&tmp, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     return tmp;
 }
@@ -1180,14 +1180,14 @@ void rim::Block::setInt(const int64_t& val, rim::Variable* var, int32_t index) {
                                           var->maxValue_));
 
     // This works because all bits between the msb and bit 64 are set to '1' for a negative value
-    setBytes((uint8_t*)&val, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(const_cast<int64_t*>(&val)), var, index);
 }
 
 // Get data using int
 int64_t rim::Block::getInt(rim::Variable* var, int32_t index) {
     int64_t tmp = 0;
 
-    getBytes((uint8_t*)&tmp, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     if (var->valueBits_ != 64) {
         if (tmp >= (uint64_t)pow(2, var->valueBits_ - 1)) tmp -= (uint64_t)pow(2, var->valueBits_);
@@ -1314,14 +1314,14 @@ bp::object rim::Block::getBoolPy(rim::Variable* var, int32_t index) {
 // Set data using bool
 void rim::Block::setBool(const bool& value, rim::Variable* var, int32_t index) {
     uint8_t val = (uint8_t)value;
-    setBytes((uint8_t*)&val, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(&val), var, index);
 }
 
 // Get data using bool
 bool rim::Block::getBool(rim::Variable* var, int32_t index) {
     uint8_t tmp = 0;
 
-    getBytes((uint8_t*)&tmp, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     return tmp ? true : false;
 }
@@ -1380,7 +1380,7 @@ void rim::Block::setString(const std::string& value, rim::Variable* var, int32_t
 
     memset(getBuffer, 0, var->valueBytes_);
 
-    strncpy((char*)getBuffer, value.c_str(), var->valueBytes_ - 1);
+    strncpy(reinterpret_cast<char*>(getBuffer), value.c_str(), var->valueBytes_ - 1);
 
     setBytes(getBuffer, var, index);
 }
@@ -1398,7 +1398,7 @@ void rim::Block::getString(rim::Variable* var, std::string& retString, int32_t i
 
     memset(getBuffer, 0, var->valueBytes_ + 1);
 
-    getBytes((uint8_t*)getBuffer, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(getBuffer), var, index);
 
     retString = getBuffer;
 }
@@ -1536,14 +1536,14 @@ void rim::Block::setFloat(const float& val, rim::Variable* var, int32_t index) {
                                           var->minValue_,
                                           var->maxValue_));
 
-    setBytes((uint8_t*)&val, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(const_cast<float*>(&val)), var, index);
 }
 
 // Get data using float
 float rim::Block::getFloat(rim::Variable* var, int32_t index) {
     float tmp = 0;
 
-    getBytes((uint8_t*)&tmp, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     return tmp;
 }
@@ -1681,14 +1681,14 @@ void rim::Block::setDouble(const double& val, rim::Variable* var, int32_t index)
                                           var->minValue_,
                                           var->maxValue_));
 
-    setBytes((uint8_t*)&val, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(const_cast<double*>(&val)), var, index);
 }
 
 // Get data using double
 double rim::Block::getDouble(rim::Variable* var, int32_t index) {
     double tmp = 0;
 
-    getBytes((uint8_t*)&tmp, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     return tmp;
 }
@@ -1831,7 +1831,7 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
     // Check for positive edge case
     uint64_t mask = 1 << (var->valueBits_ - 1);
     if (val > 0 && ((fPoint & mask) != 0)) { fPoint -= 1; }
-    setBytes((uint8_t*)&fPoint, var, index);
+    setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
 }
 
 // Get data using fixed point
@@ -1839,12 +1839,12 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
     int64_t fPoint = 0;
     double tmp;
 
-    getBytes((uint8_t*)&fPoint, var, index);
+    getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
     // Do two-complement if negative
     if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) { fPoint = fPoint - (1 << var->valueBits_); }
 
     // Convert to float
-    tmp = (double)fPoint;
+    tmp = static_cast<double>(fPoint);
     tmp = tmp / pow(2, var->binPoint_);
     return tmp;
 }
@@ -1880,7 +1880,7 @@ void rim::Block::rateTest() {
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
-    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+    durr = dtime.tv_sec + static_cast<float>(dtime.tv_usec) / 1.0e6;
     rate = count / durr;
 
     printf("\nBlock c++ raw: Read %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);
@@ -1888,13 +1888,13 @@ void rim::Block::rateTest() {
     gettimeofday(&stime, NULL);
     waitTransaction(0);
     for (x = 0; x < count; ++x) {
-        reqTransaction(0, 4, (uint8_t*)&count, rim::Write);
+        reqTransaction(0, 4, reinterpret_cast<uint8_t*>(&count), rim::Write);
         waitTransaction(0);
     }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
-    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+    durr = dtime.tv_sec + static_cast<float>(dtime.tv_usec) / 1.0e6;
     rate = count / durr;
 
     printf("\nBlock c++ raw: Wrote %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);

@@ -40,22 +40,22 @@ namespace ris = rogue::interfaces::stream;
 
 //! Set 16-bit uint value
 void rpr::Header::setUInt16(uint8_t* data, uint8_t byte, uint16_t value) {
-    *((uint16_t*)(&(data[byte]))) = htons(value);
+    *reinterpret_cast<uint16_t*>(&data[byte]) = htons(value);
 }
 
 //! Get 16-bit uint value
 uint16_t rpr::Header::getUInt16(uint8_t* data, uint8_t byte) {
-    return (ntohs(*((uint16_t*)(&(data[byte])))));
+    return ntohs(*reinterpret_cast<uint16_t*>(&data[byte]));
 }
 
 //! Set 32-bit uint value
 void rpr::Header::setUInt32(uint8_t* data, uint8_t byte, uint32_t value) {
-    *((uint32_t*)(&(data[byte]))) = htonl(value);
+    *reinterpret_cast<uint32_t*>(&(data[byte])) = htonl(value);
 }
 
 //! Get 32-bit uint value
 uint32_t rpr::Header::getUInt32(uint8_t* data, uint8_t byte) {
-    return (ntohl(*((uint32_t*)(&(data[byte])))));
+    return ntohl(*reinterpret_cast<uint32_t*>(&(data[byte])));
 }
 
 //! compute checksum

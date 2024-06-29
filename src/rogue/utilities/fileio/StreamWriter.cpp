@@ -177,7 +177,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
         // Buffer is enabled
         if (size != 0) {
             // Create new buffer
-            if ((buffer_ = (uint8_t*)malloc(size)) == NULL)
+            if ((buffer_ = reinterpret_cast<uint8_t*>(malloc(size))) == NULL)
                 throw(rogue::GeneralError::create("StreamWriter::setBufferSize",
                                                   "Failed to allocate buffer with size = %" PRIu32,
                                                   size));

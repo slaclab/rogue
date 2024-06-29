@@ -80,11 +80,11 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
 
     // Setup decompression pointers
     rBuff         = frame->beginBuffer();
-    strm.next_in  = (char*)(*rBuff)->begin();
+    strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
     strm.avail_in = (*rBuff)->getPayload();
 
     wBuff          = newFrame->beginBuffer();
-    strm.next_out  = (char*)(*wBuff)->begin();
+    strm.next_out = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
     // Use the iterators to move data
@@ -99,7 +99,7 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
         // Update read buffer if necessary
         if (strm.avail_in == 0) {
             ++rBuff;
-            strm.next_in  = (char*)(*rBuff)->begin();
+            strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
             strm.avail_in = (*rBuff)->getPayload();
         }
 
@@ -112,7 +112,7 @@ void ru::StreamUnZip::acceptFrame(ris::FramePtr frame) {
             } else {
                 ++wBuff;
             }
-            strm.next_out  = (char*)(*wBuff)->begin();
+            strm.next_out = reinterpret_cast<char*>((*wBuff)->begin());
             strm.avail_out = (*wBuff)->getAvailable();
         }
     } while (1);

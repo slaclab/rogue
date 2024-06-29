@@ -195,7 +195,7 @@ void rim::TcpServer::runThread() {
             }
 
             // Data pointer
-            data = (uint8_t*)zmq_msg_data(&(msg[4]));
+            data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[4])));
 
             bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
                               ", type=%" PRIu32,

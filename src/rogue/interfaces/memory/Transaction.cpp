@@ -318,7 +318,7 @@ void rim::Transaction::setData(boost::python::object p, uint32_t offset) {
                                           size_));
     }
 
-    std::memcpy(begin() + offset, (uint8_t*)pyBuf.buf, count);
+    std::memcpy(begin() + offset, reinterpret_cast<uint8_t*>(pyBuf.buf), count);
     PyBuffer_Release(&pyBuf);
 }
 
@@ -341,7 +341,7 @@ void rim::Transaction::getData(boost::python::object p, uint32_t offset) {
                                           size_));
     }
 
-    std::memcpy((uint8_t*)pyBuf.buf, begin() + offset, count);
+    std::memcpy(reinterpret_cast<uint8_t*>(pyBuf.buf), begin() + offset, count);
     PyBuffer_Release(&pyBuf);
 }
 

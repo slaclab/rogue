@@ -125,7 +125,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
         for (unsigned int i = 0; i < numberOfTransactions; ++i) {
             rim::TransactionPtr subTran = tran->createSubTransaction();
-            subTran->iter_              = (uint8_t*)(tran->begin() + i * maxAccess);
+            subTran->iter_              = reinterpret_cast<uint8_t*>(tran->begin() + i * maxAccess);
             if (tran->size() >= ((i + 1) * maxAccess)) {
                 subTran->size_ = maxAccess;
             } else {

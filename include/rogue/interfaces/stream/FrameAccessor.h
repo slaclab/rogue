@@ -46,7 +46,7 @@ class FrameAccessor {
  public:
     //! Creator
     FrameAccessor(rogue::interfaces::stream::FrameIterator& iter, uint32_t size) {
-        data_ = (T*)iter.ptr();
+        data_ = reinterpret_cast<T*>(iter.ptr());
         size_ = size;
 
         if (size * sizeof(T) > iter.remBuffer())

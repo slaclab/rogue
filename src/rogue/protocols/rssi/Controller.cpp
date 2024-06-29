@@ -703,7 +703,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
 //! Convert rssi time to microseconds
 void rpr::Controller::convTime(struct timeval& tme, uint32_t rssiTime) {
     float units = std::pow(10, -TimeoutUnit);
-    float value = units * (float)rssiTime;
+    float value = units * static_cast<float>(rssiTime);
 
     uint32_t usec = (uint32_t)(value / 1e-6);
 

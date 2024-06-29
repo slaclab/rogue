@@ -131,7 +131,7 @@ uint32_t rpx::JtagDriver::cvtPerNs(Header reply) {
 
     if (0 == rawVal) { return UNKNOWN_PERIOD; }
 
-    tmp = ((double)rawVal) * 4.0 / 256.0;
+    tmp = static_cast<double>(rawVal) * 4.0 / 256.0;
 
     return (uint32_t)round(pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ());
 }

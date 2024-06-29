@@ -259,7 +259,7 @@ void rim::TcpClient::runThread() {
             std::memcpy(&type, zmq_msg_data(&(msg[3])), 4);
 
             memset(result, 0, 1000);
-            std::strncpy(result, (char*)zmq_msg_data(&(msg[5])), zmq_msg_size(&(msg[5])));
+            std::strncpy(result, reinterpret_cast<char*>(zmq_msg_data(&(msg[5]))), zmq_msg_size(&(msg[5])));
 
             // Find Transaction
             if ((tran = getTransaction(id)) == NULL) {

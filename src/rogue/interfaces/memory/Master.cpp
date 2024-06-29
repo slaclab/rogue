@@ -155,7 +155,7 @@ void rim::Master::setTimeout(uint64_t timeout) {
 uint32_t rim::Master::reqTransaction(uint64_t address, uint32_t size, void* data, uint32_t type) {
     rim::TransactionPtr tran = rim::Transaction::create(sumTime_);
 
-    tran->iter_    = (uint8_t*)data;
+    tran->iter_    = reinterpret_cast<uint8_t*>(data);
     tran->size_    = size;
     tran->address_ = address;
     tran->type_    = type;
@@ -197,7 +197,7 @@ uint32_t rim::Master::reqTransactionPy(uint64_t address,
     }
 
     tran->pyValid_ = true;
-    tran->iter_    = ((uint8_t*)tran->pyBuf_.buf) + offset;
+    tran->iter_    = reinterpret_cast<uint8_t*>(tran->pyBuf_.buf) + offset;
     tran->type_    = type;
     tran->address_ = address;
 
@@ -335,7 +335,7 @@ void rim::Master::copyBitsPy(boost::python::object dst,
                                           srcBuf.len * 8));
     }
 
-    copyBits((uint8_t*)dstBuf.buf, dstLsb, (uint8_t*)srcBuf.buf, srcLsb, size);
+    copyBits(reinterpret_cast<uint8_t*>(dstBuf.buf), dstLsb, reinterpret_cast<uint8_t*>(srcBuf.buf), srcLsb, size);
 
     PyBuffer_Release(&srcBuf);
     PyBuffer_Release(&dstBuf);
@@ -392,7 +392,7 @@ void rim::Master::setBitsPy(boost::python::object dst, uint32_t lsb, uint32_t si
                                           dstBuf.len * 8));
     }
 
-    setBits((uint8_t*)dstBuf.buf, lsb, size);
+    setBits(reinterpret_cast<uint8_t*>(dstBuf.buf), lsb, size);
 
     PyBuffer_Release(&dstBuf);
 }
@@ -453,7 +453,7 @@ bool rim::Master::anyBitsPy(boost::python::object dst, uint32_t lsb, uint32_t si
                                           dstBuf.len * 8));
     }
 
-    ret = anyBits((uint8_t*)dstBuf.buf, lsb, size);
+    ret = anyBits(reinterpret_cast<uint8_t*>(dstBuf.buf), lsb, size);
 
     PyBuffer_Release(&dstBuf);
     return ret;

@@ -202,7 +202,7 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
 
     // Copy data
     ris::FrameIterator iter = frame->begin();
-    data                    = (uint8_t*)zmq_msg_data(&(msg[3]));
+    data                    = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
     ris::fromFrame(iter, frame->getPayload(), data);
 
     // Send data
@@ -267,7 +267,7 @@ void ris::TcpCore::runThread() {
             std::memcpy(&err, zmq_msg_data(&(msg[2])), 1);
 
             // Get message info
-            data = (uint8_t*)zmq_msg_data(&(msg[3]));
+            data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
             size = zmq_msg_size(&(msg[3]));
 
             // Generate frame

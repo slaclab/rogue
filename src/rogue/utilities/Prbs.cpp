@@ -81,7 +81,7 @@ ru::Prbs::Prbs() {
 
     // Init 4 taps
     tapCnt_  = 4;
-    taps_    = (uint8_t*)malloc(sizeof(uint8_t) * tapCnt_);
+    taps_    = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt_));
     taps_[0] = 1;
     taps_[1] = 2;
     taps_[2] = 6;
@@ -121,7 +121,7 @@ double ru::Prbs::updateTime(struct timeval* last) {
     timersub(&now, last, &per);
 
     if (timercmp(&per, &cmp, >)) {
-        ret = (float)per.tv_sec + (float(per.tv_usec) / 1e6);
+        ret = static_cast<float>(per.tv_sec) + static_cast<float>(per.tv_usec) / 1e6;
         gettimeofday(last, NULL);
     } else {
         ret = 0.0;
@@ -149,7 +149,7 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
 
     free(taps_);
     tapCnt_ = tapCnt;
-    taps_   = (uint8_t*)malloc(sizeof(uint8_t) * tapCnt);
+    taps_   = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
 
     for (i = 0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
@@ -163,7 +163,7 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
     if (PyObject_GetBuffer(p.ptr(), &pyBuf, PyBUF_SIMPLE) < 0)
         throw(rogue::GeneralError("Prbs::setTapsPy", "Python Buffer Error"));
 
-    setTaps(pyBuf.len, (uint8_t*)pyBuf.buf);
+    setTaps(pyBuf.len, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
 
@@ -387,8 +387,8 @@ void ru::Prbs::genFrame(uint32_t size) {
     txBytes_ += size;
 
     if ((per = updateTime(&lastTxTime_)) > 0.0) {
-        txRate_      = (float)(txCount_ - lastTxCount_) / per;
-        txBw_        = (float)(txBytes_ - lastTxBytes_) / per;
+        txRate_      = static_cast<float>(txCount_ - lastTxCount_) / per;
+        txBw_        = static_cast<float>(txBytes_ - lastTxBytes_) / per;
         lastTxCount_ = txCount_;
         lastTxBytes_ = txBytes_;
     }
@@ -498,8 +498,8 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
     rxBytes_ += size;
 
     if ((per = updateTime(&lastRxTime_)) > 0.0) {
-        rxRate_      = (float)(rxCount_ - lastRxCount_) / per;
-        rxBw_        = (float)(rxBytes_ - lastRxBytes_) / per;
+        rxRate_      = static_cast<float>(rxCount_ - lastRxCount_) / per;
+        rxBw_        = static_cast<float>(rxBytes_ - lastRxBytes_) / per;
         lastRxCount_ = rxCount_;
         lastRxBytes_ = rxBytes_;
     }

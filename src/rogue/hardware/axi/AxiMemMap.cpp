@@ -114,7 +114,7 @@ void rha::AxiMemMap::runThread() {
     uint8_t* ptr;
 
     dataSize = sizeof(uint32_t);
-    ptr      = (uint8_t*)(&data);
+    ptr      = reinterpret_cast<uint8_t*>(&data);
 
     log_->logThreadId();
 
