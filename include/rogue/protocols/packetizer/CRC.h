@@ -1658,7 +1658,7 @@ inline const CRC::Parameters<crcpp_uint64, 64>& CRC::CRC_64() {
 #endif  // CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
 
 #ifdef CRCPP_USE_NAMESPACE
-}
+} //NOLINT
 #endif
 
 #endif  // CRCPP_CRC_H_
