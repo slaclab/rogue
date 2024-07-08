@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : C++ API Bsp
  * ----------------------------------------------------------------------------
- * File       : Bsp.cpp
- * Created    : 2023-04-18
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      C++ API BSP (Board Support Package)
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
- **/
+**/
 #include "rogue/interfaces/api/Bsp.h"
 
 #include <boost/make_shared.hpp>

@@ -1,11 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Transaction
  * ----------------------------------------------------------------------------
- * File       : Transaction.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-20
- * Last update: 2016-09-20
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory master interface.

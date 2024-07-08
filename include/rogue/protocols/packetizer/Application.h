@@ -1,6 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Application Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Application Interface

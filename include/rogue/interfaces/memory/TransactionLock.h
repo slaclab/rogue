@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Transaction Lock
  * ----------------------------------------------------------------------------
- * File       : TransactionLock.h
- * Created    : 2018-03-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Transaction lock

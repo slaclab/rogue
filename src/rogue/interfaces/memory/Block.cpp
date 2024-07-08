@@ -1,11 +1,9 @@
-/*
- *-----------------------------------------------------------------------------
- * Title      : Memory Block
+/**
  * ----------------------------------------------------------------------------
- * File       : Block.cpp
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Interface between RemoteVariables and lower level memory transactions.
+ *      Interface between RemoteVariables and lower level memory transactions.
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -15,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
- **/
+**/
 
 #include "rogue/Directives.h"
 

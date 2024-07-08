@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue FileIO - File Reader
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
 # Module for reading file data.

@@ -1,13 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream frame container
  * ----------------------------------------------------------------------------
- * File       : Frame.h
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

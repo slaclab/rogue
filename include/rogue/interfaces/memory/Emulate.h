@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory slave emulator
  * ----------------------------------------------------------------------------
- * File       : Emulator.h
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * A memory space emulator. Allows user to test a Rogue tree without real hardware.

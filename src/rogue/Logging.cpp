@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Logging interface
  * ----------------------------------------------------------------------------
- * File       : Logging.cpp
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Logging interface for pyrogue

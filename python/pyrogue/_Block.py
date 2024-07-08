@@ -1,7 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Block Class
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
-# File       : pyrogue/_Block.py
+#  Description:
+#       PyRogue base module - Block Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory

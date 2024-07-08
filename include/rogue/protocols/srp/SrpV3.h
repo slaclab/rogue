@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) SrpV3
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
- *    SRP Version 3
+ *    SLAC Register Protocol (SRP) SrpV3
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

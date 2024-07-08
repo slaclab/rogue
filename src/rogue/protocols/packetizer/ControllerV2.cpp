@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
- * File       : ControllerV2.cpp
- * Created    : 2018-02-02
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller V1

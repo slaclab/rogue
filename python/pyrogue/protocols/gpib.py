@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue protocols / GPIB register protocol
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
 # Module to interface to GPIB devices

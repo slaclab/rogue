@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Application Port
  * ----------------------------------------------------------------------------
- * File       : Application.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * RSSI Application Port

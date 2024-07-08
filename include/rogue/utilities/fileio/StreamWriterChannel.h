@@ -1,7 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility. Channel interface.
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to act as a slave interface to the StreamWriter. Each
  *    slave is associated with a tag. The tag is included in the bank header

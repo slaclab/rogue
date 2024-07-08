@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Variable
  * ----------------------------------------------------------------------------
- * File       : Variable.cpp
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.

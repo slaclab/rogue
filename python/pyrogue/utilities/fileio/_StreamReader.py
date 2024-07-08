@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue FileIO - Stream Reader
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
 # Module for reading stream data.

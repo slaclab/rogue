@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Block
  * ----------------------------------------------------------------------------
- * File       : Block.h
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.

@@ -1,7 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility.
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.
  *    This class writes files using the legacy data format of XmlDaq

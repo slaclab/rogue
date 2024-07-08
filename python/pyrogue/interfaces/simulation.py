@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue simulation support
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
 # Module containing simulation support classes and routines

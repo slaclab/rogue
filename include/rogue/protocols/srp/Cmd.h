@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Command Protocol
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
- *    CMD Version 0
+ *    SLAC Command Protocol, Version 0
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

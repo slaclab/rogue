@@ -1,12 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Controller Class
  * ----------------------------------------------------------------------------
- * File       : Controller.h
- * Created    : 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * RSSI Controller
+ *      RSSI Controller Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -16,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
- **/
+**/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
 #define __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
 #include "rogue/Directives.h"

@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : AXI DMA Interface Class
  * ----------------------------------------------------------------------------
- * File       : AxiStreamDma.h
- * Created    : 2017-03-21
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Class for interfacing to AxiStreamDma Driver.

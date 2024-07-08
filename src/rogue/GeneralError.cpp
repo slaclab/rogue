@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : General Error
  * ----------------------------------------------------------------------------
- * File       : GeneralError.cpp
- * Created    : 2017-12-05
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * General exception for Rogue

@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Variable
  * ----------------------------------------------------------------------------
- * File       : Variable.h
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Base class for RemoteVariable as well as direct C++ access

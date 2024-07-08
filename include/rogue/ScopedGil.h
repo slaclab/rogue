@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Scoped GIL
  * ----------------------------------------------------------------------------
- * File       : ScopedGil.h
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Acquire the GIL for the scope of this class.

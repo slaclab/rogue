@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Common virtual class to enable shared_from_this() calls.
  * ----------------------------------------------------------------------------
- * File       : EnableSharedFromThis.h
- * Created    : 2019-11-15
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * This is a common parent class that must be used instead of std::enable_shared_from_this

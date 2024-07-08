@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Client Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Client
+ *      RSSI Client Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
- **/
+**/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
 #define __ROGUE_PROTOCOLS_RSSI_CLIENT_H__
 #include "rogue/Directives.h"

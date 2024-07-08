@@ -1,13 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream Buffer Container
  * ----------------------------------------------------------------------------
- * File       : Buffer.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Raw Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : MemMap.h
- * Created    : 2019-11-18
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      Raw Memory Mapped Access
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
- **/
+**/
 #ifndef __ROGUE_HARDWARE_MEM_MAP_H__
 #define __ROGUE_HARDWARE_MEM_MAP_H__
 #include "rogue/Directives.h"

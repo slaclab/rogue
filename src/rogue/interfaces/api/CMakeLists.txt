@@ -1,8 +1,5 @@
 # ----------------------------------------------------------------------------
-# Title      : ROGUE CMAKE Control
-# ----------------------------------------------------------------------------
-# File       : src/rogue/interfaces/api/CMakeLists.txt
-# Created    : 2023-04-17
+# Company    : SLAC National Accelerator Laboratory
 # ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory

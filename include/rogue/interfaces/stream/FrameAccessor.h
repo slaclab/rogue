@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream frame accessor
  * ----------------------------------------------------------------------------
- * File       : FrameAccessor.h
- * Created    : 2018-03-06
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame iterator
