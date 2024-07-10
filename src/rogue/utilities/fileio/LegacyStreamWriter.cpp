@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility.
  * ----------------------------------------------------------------------------
- * File          : LegacyStreamWriter.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
@@ -101,7 +96,7 @@ void ruf::LegacyStreamWriter::writeFile(uint8_t channel, std::shared_ptr<rogue::
 
     if (frame->getPayload() == 0) return;
 
-    if (channel != RawData and channel != YamlData) {
+    if (channel != RawData && channel != YamlData) {
         throw(rogue::GeneralError("LegacyStreamWriter::writeFile", "Invalid channel"));
     }
 

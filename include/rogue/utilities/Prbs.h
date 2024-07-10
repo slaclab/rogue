@@ -1,7 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : PRBS Receive And Transmit Class
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class used to generate and receive PRBS test data.
  *-----------------------------------------------------------------------------
@@ -36,7 +36,7 @@ namespace utilities {
  */
 class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::stream::Master {
     //! Max size
-    const static uint32_t MaxBytes = 64;
+    static const uint32_t MaxBytes = 64;
 
     //! PRBS taps
     uint8_t* taps_;

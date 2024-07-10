@@ -1,6 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : AxiStreamDma Interface Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      AxiStreamDma Interface Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -19,6 +22,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"
@@ -32,7 +36,7 @@ namespace axi {
 //! Storage class for shared memory buffers
 class AxiStreamDmaShared {
   public:
-    AxiStreamDmaShared(std::string path);
+    explicit AxiStreamDmaShared(std::string path);
 
     //! Shared FD
     int32_t fd;

@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
- * File       : ZmqClient.cpp
- * Created    : 2019-05-02
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -74,7 +74,7 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
         temp = "tcp://";
         temp.append(addr);
         temp.append(":");
-        temp.append(std::to_string(static_cast<long long>(port)));
+        temp.append(std::to_string(static_cast<int64_t>(port)));
 
         if (zmq_setsockopt(this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0)
             throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket subscribe"));
@@ -90,14 +90,15 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
                                               addr.c_str()));
 
         reqPort = port + 1;
-    } else
+    } else {
         reqPort = port + 2;
+    }
 
     // Setup request port
     temp = "tcp://";
     temp.append(addr);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(reqPort)));
+    temp.append(std::to_string(static_cast<int64_t>(reqPort)));
 
     waitRetry_ = false;  // Don't keep waiting after timeout
     timeout_   = 1000;   // 1 second
@@ -186,16 +187,18 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
     while (1) {
         zmq_msg_init(&msg);
         if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
-            seconds += (float)timeout_ / 1000.0;
+            seconds += static_cast<float>(timeout_) / 1000.0;
             if (waitRetry_) {
                 log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
                 zmq_msg_close(&msg);
-            } else
+            } else {
                 throw rogue::GeneralError::create("ZmqClient::sendString",
                                                   "Timeout waiting for response after %f Seconds.",
                                                   seconds);
-        } else
+            }
+        } else {
             break;
+        }
     }
 
     if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
@@ -246,18 +249,20 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
         while (1) {
             zmq_msg_init(&rxMsg);
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
-                seconds += (float)timeout_ / 1000.0;
+                seconds += static_cast<float>(timeout_) / 1000.0;
                 if (waitRetry_) {
                     log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",
                                 seconds);
                     zmq_msg_close(&rxMsg);
-                } else
+                } else {
                     throw rogue::GeneralError::create(
                         "ZmqClient::send",
                         "Timeout waiting for response after %f Seconds, server may be busy!",
                         seconds);
-            } else
+                }
+            } else {
                 break;
+            }
         }
     }
 
@@ -283,7 +288,9 @@ void rogue::interfaces::ZmqClientWrap::doUpdate(bp::object data) {
     if (bp::override f = this->get_override("_doUpdate")) {
         try {
             f(data);
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
     rogue::interfaces::ZmqClient::doUpdate(data);
 }

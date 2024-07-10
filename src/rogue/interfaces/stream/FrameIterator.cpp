@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream iterator container
  * ----------------------------------------------------------------------------
- * File       : FrameIterator.h
- * Created    : 2018-03-06
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame iterator
@@ -59,10 +56,9 @@ void ris::FrameIterator::increment(int32_t diff) {
             buffEnd_  = frameSize_;
             buff_     = frame_->endBuffer();
             data_     = NULL;
-        }
 
-        // Move forward in buffer chain
-        else {
+            // Move forward in buffer chain
+        } else {
             // Increment current buffer until we find the location of the data position
             // Iterator always contains one extra buffer index
             while (framePos_ >= buffEnd_) {
@@ -91,10 +87,9 @@ void ris::FrameIterator::decrement(int32_t diff) {
             buffEnd_  = frameSize_;
             buff_     = frame_->endBuffer();
             data_     = NULL;
-        }
 
-        // Move backwards in buffer chain
-        else {
+            // Move backwards in buffer chain
+        } else {
             // Decrement current buffer until the desired frame position is greater than
             // the bottom of the buffer
             while (framePos_ < buffBeg_) {

@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream interface slave
  * ----------------------------------------------------------------------------
- * File       : Slave.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave
@@ -25,6 +21,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/EnableSharedFromThis.h"

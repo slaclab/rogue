@@ -1,6 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Header Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * RSSI header
@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <string>
 
 #include "rogue/interfaces/stream/Frame.h"
 
@@ -66,7 +67,7 @@ class Header {
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     //! Creator
-    Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    explicit Header(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     //! Destructor
     ~Header();

@@ -34,19 +34,25 @@ jobs:
           cache: 'pip'
           cache-dependency-path: 'pip_requirements.txt'
 
+      # Install dependencies
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
           pip install -r pip_requirements.txt
 
-      # Flake 8 check
-      - name: Flake8 Tests
+      # Python Linter
+      - name: Python Linter
         run: |
           python -m compileall -f ./python/
           flake8 --count ./python/
           python -m compileall -f ./tests
           flake8 --count ./tests/
+
+      # C++ Linter
+      - name: C++ Linter
+        run: |
+          find . -name '*.h' -o -name '*.cpp' | xargs cpplint
 
       # Rogue
       - name: Build Rogue

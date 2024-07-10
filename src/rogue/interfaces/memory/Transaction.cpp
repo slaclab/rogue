@@ -1,11 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Transaction
  * ----------------------------------------------------------------------------
- * File       : Transaction.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-20
- * Last update: 2016-09-20
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory master interface.
@@ -112,7 +107,9 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 //! Get expired state
 bool rim::Transaction::expired() {
     bool done = false;
-    if (isSubTransaction_) { done = parentTransaction_.expired(); }
+    if (isSubTransaction_) {
+        done = parentTransaction_.expired();
+    }
     return done || (iter_ == NULL || done_);
 }
 
@@ -174,7 +171,7 @@ void rim::Transaction::done() {
             parentTran->subTranMap_.erase(id_);
 
             // If this is the last sub-transaction, notify parent transaction it is all done
-            if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_) parentTran->done();
+            if (parentTran->subTranMap_.empty() && parentTran->doneCreatingSubTransactions_) parentTran->done();
         }
     }
 }
@@ -203,7 +200,7 @@ void rim::Transaction::errorStr(std::string error) {
             parentTran->subTranMap_.erase(id_);
 
             // If this is the last sub-transaction, notify parent transaction it is all done
-            if (parentTran->subTranMap_.empty() and parentTran->doneCreatingSubTransactions_)
+            if (parentTran->subTranMap_.empty() && parentTran->doneCreatingSubTransactions_)
                 parentTran->error("Transaction error. Subtransaction %" PRIu32 " failed with error: %s.\n",
                                   id_,
                                   error.c_str());
@@ -217,7 +214,7 @@ void rim::Transaction::error(const char* fmt, ...) {
     char buffer[10000];
 
     va_start(args, fmt);
-    vsnprintf(buffer, 10000, fmt, args);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
     va_end(args);
 
     errorStr(std::string(buffer));
@@ -241,8 +238,9 @@ std::string rim::Transaction::wait() {
                         id_,
                         address_,
                         size_);
-        } else
+        } else {
             cond_.wait_for(lock, std::chrono::microseconds(1000));
+        }
     }
 
     // Reset
@@ -270,9 +268,9 @@ void rim::Transaction::refreshTimer(rim::TransactionPtr ref) {
     if (ref == NULL || timercmp(&startTime_, &(ref->startTime_), >=)) {
         timeradd(&currTime, &timeout_, &endTime_);
 
-        if (warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0)
+        if (warnTime_.tv_sec == 0 && warnTime_.tv_usec == 0) {
             warnTime_ = endTime_;
-        else if (timercmp(&warnTime_, &currTime, >=)) {
+        } else if (timercmp(&warnTime_, &currTime, >=)) {
             log_->warning("Transaction timer refresh! Possible slow link! type=%" PRIu32 " id=%" PRIu32
                           ", address=0x%016" PRIx64 ", size=%" PRIu32,
                           type_,
@@ -317,7 +315,7 @@ void rim::Transaction::setData(boost::python::object p, uint32_t offset) {
                                           size_));
     }
 
-    std::memcpy(begin() + offset, (uint8_t*)pyBuf.buf, count);
+    std::memcpy(begin() + offset, reinterpret_cast<uint8_t*>(pyBuf.buf), count);
     PyBuffer_Release(&pyBuf);
 }
 
@@ -340,7 +338,7 @@ void rim::Transaction::getData(boost::python::object p, uint32_t offset) {
                                           size_));
     }
 
-    std::memcpy((uint8_t*)pyBuf.buf, begin() + offset, count);
+    std::memcpy(reinterpret_cast<uint8_t*>(pyBuf.buf), begin() + offset, count);
     PyBuffer_Release(&pyBuf);
 }
 

@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * File       : TcpClient.h
- * Created    : 2019-01-30
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Client Network Bridge
@@ -24,6 +21,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"

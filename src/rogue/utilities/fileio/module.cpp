@@ -1,14 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Python Module For Stream Interface
  * ----------------------------------------------------------------------------
- * File       : module.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * Python module setup
+ * Python Module For Stream Interface
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

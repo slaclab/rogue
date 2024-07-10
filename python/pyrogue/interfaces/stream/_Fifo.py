@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : AXI Stream FIFO
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
 # Python wrapper for the AXI Stream FIFO C++ device.

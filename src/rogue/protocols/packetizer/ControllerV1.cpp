@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
- * File       : ControllerV1.cpp
- * Created    : 2018-02-02
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller V1
@@ -168,13 +165,16 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     if (tmpEof) {
         tranFrame_[0]->setLastUser(tmpLuser);
         tranCount_[0] = 0;
-        if (app_[tranDest_]) { app_[tranDest_]->pushFrame(tranFrame_[0]); }
+        if (app_[tranDest_]) {
+            app_[tranDest_]->pushFrame(tranFrame_[0]);
+        }
         tranFrame_[0].reset();
 
         // Detect SSI error
         if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80);
-    } else
+    } else {
         tranCount_[0]++;
+    }
 }
 
 //! Frame received at application interface

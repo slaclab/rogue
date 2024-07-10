@@ -1,7 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file reader utility.
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to read data files.
  *-----------------------------------------------------------------------------
@@ -23,6 +23,7 @@
 #include <condition_variable>
 #include <map>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/interfaces/stream/Master.h"

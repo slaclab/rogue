@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Release GIL within scope.
  * ----------------------------------------------------------------------------
- * File       : GilRelease.cpp
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Release GIL for the scope of this class.

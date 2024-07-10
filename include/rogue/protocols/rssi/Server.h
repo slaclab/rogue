@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Server Class
  * ----------------------------------------------------------------------------
- * File       : Server.h
- * Created    : 2017-06-13
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      RSSI Server Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -50,7 +50,7 @@ class Server {
     static void setup_python();
 
     //! Creator
-    Server(uint32_t segSize);
+    explicit Server(uint32_t segSize);
 
     //! Destructor
     ~Server();

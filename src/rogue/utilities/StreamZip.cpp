@@ -1,9 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Rogue stream compressor
  * ----------------------------------------------------------------------------
- * File          : StreamZip.cpp
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Stream modules to compress a data stream
  *-----------------------------------------------------------------------------
@@ -80,11 +78,11 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
 
     // Setup decompression pointers
     rBuff         = frame->beginBuffer();
-    strm.next_in  = (char*)(*rBuff)->begin();
+    strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
     strm.avail_in = (*rBuff)->getPayload();
 
     wBuff          = newFrame->beginBuffer();
-    strm.next_out  = (char*)(*wBuff)->begin();
+    strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
     // Use the iterators to move data
@@ -96,10 +94,11 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
         // Update read buffer if necessary
         if (strm.avail_in == 0 && (!done)) {
             if (++rBuff != frame->endBuffer()) {
-                strm.next_in  = (char*)(*rBuff)->begin();
+                strm.next_in  = reinterpret_cast<char*>((*rBuff)->begin());
                 strm.avail_in = (*rBuff)->getPayload();
-            } else
+            } else {
                 done = true;
+            }
         }
 
         // Update write buffer if necessary
@@ -108,10 +107,10 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
             if ((wBuff + 1) == newFrame->endBuffer()) {
                 ris::FramePtr tmpFrame = this->reqFrame(frame->getPayload(), true);
                 wBuff                  = newFrame->appendFrame(tmpFrame);
-            } else
+            } else {
                 ++wBuff;
-
-            strm.next_out  = (char*)(*wBuff)->begin();
+            }
+            strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
             strm.avail_out = (*wBuff)->getAvailable();
         }
     } while (ret != BZ_STREAM_END);

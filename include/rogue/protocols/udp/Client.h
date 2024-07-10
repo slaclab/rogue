@@ -1,6 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : UDP Client Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * UDP Client
@@ -25,6 +25,7 @@
 #include <sys/socket.h>
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"

@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Frame Lock
  * ----------------------------------------------------------------------------
- * File       : FrameLock.h
- * Created    : 2018-03-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Frame lock
@@ -54,7 +51,7 @@ class FrameLock {
         std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     // Frame lock constructor
-    FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
+    explicit FrameLock(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
     // Setup class for use in python
     static void setup_python();

@@ -165,10 +165,10 @@ class CRC {
     template <typename CRCType, crcpp_uint16 CRCWidth>
     struct Table {
         // Constructors are intentionally NOT marked explicit.
-        Table(const Parameters<CRCType, CRCWidth>& parameters);
+        Table(const Parameters<CRCType, CRCWidth>& parameters);  // NOLINT
 
 #ifdef CRCPP_USE_CPP11
-        Table(Parameters<CRCType, CRCWidth>&& parameters);
+        Table(Parameters<CRCType, CRCWidth>&& parameters);  // NOLINT
 #endif
 
         const Parameters<CRCType, CRCWidth>& GetParameters() const;
@@ -273,11 +273,11 @@ class CRC {
 #endif
 
 #ifdef CRCPP_USE_CPP11
-    CRC()                 = delete;
-    CRC(const CRC& other) = delete;
+    CRC()                            = delete;
+    CRC(const CRC& other)            = delete;
     CRC& operator=(const CRC& other) = delete;
     CRC(CRC&& other)                 = delete;
-    CRC& operator=(CRC&& other) = delete;
+    CRC& operator=(CRC&& other)      = delete;
 #endif
 
   private:
@@ -553,7 +553,9 @@ inline CRCType CRC::Finalize(CRCType remainder, CRCType finalXOR, bool reflectOu
     static crcpp_constexpr CRCType BIT_MASK =
         (CRCType(1) << (CRCWidth - CRCType(1))) | ((CRCType(1) << (CRCWidth - CRCType(1))) - CRCType(1));
 
-    if (reflectOutput) { remainder = Reflect(remainder, CRCWidth); }
+    if (reflectOutput) {
+        remainder = Reflect(remainder, CRCWidth);
+    }
 
     return (remainder ^ finalXOR) & BIT_MASK;
 }
@@ -583,7 +585,9 @@ inline CRCType CRC::UndoFinalize(CRCType crc, CRCType finalXOR, bool reflectOutp
 
     crc = (crc & BIT_MASK) ^ finalXOR;
 
-    if (reflectOutput) { crc = Reflect(crc, CRCWidth); }
+    if (reflectOutput) {
+        crc = Reflect(crc, CRCWidth);
+    }
 
     return crc;
 }
@@ -1658,7 +1662,7 @@ inline const CRC::Parameters<crcpp_uint64, 64>& CRC::CRC_64() {
 #endif  // CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
 
 #ifdef CRCPP_USE_NAMESPACE
-}
+}  // NOLINT
 #endif
 
 #endif  // CRCPP_CRC_H_

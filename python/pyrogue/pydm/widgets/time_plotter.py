@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM Debug Tree Widget
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue PyDM Debug Tree Widget
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -9,7 +12,6 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-
 import pyrogue
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets.debug_tree import makeVariableViewWidget
