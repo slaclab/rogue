@@ -55,7 +55,7 @@ class CoreV1 {
     //! Sequence number
     uint32_t seq_;
 
- public:
+  public:
     //! Setup class in python
     static void setup_python();
 

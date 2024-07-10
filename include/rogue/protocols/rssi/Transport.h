@@ -37,7 +37,7 @@ class Transport : public rogue::interfaces::stream::Master, public rogue::interf
     //! Core module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::rssi::Transport> create();
 

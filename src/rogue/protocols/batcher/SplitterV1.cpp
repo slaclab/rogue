@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #include "rogue/Directives.h"
 
 #include "rogue/protocols/batcher/SplitterV1.h"

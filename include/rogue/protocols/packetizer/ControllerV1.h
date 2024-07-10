@@ -39,7 +39,7 @@ class Header;
 
 //! Packetizer Controller Class
 class ControllerV1 : public Controller, public rogue::EnableSharedFromThis<rogue::protocols::packetizer::ControllerV1> {
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::ControllerV1> create(
         bool enSsi,

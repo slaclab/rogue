@@ -35,7 +35,7 @@ namespace srp {
  * carnying the SRP protocol.
  */
 class Cmd : public rogue::interfaces::stream::Master {
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::srp::Cmd> create();
 

@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
 #define __ROGUE_PROTOCOLS_RSSI_CONTROLLER_H__
 #include "rogue/Directives.h"
@@ -132,7 +132,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     // Application frame transmit timeout
     struct timeval timeout_;
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::rssi::Controller> create(
         uint32_t segSize,
@@ -231,7 +231,7 @@ class Controller : public rogue::EnableSharedFromThis<rogue::protocols::rssi::Co
     //! Start connection
     void start();
 
- private:
+  private:
     // Method to transit a frame with proper updates
     void transportTx(std::shared_ptr<rogue::protocols::rssi::Header> head, bool seqUpdate, bool txReset);
 

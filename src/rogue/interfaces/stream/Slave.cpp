@@ -114,7 +114,9 @@ void ris::SlaveWrap::acceptFrame(ris::FramePtr frame) {
             try {
                 pb(frame);
                 return;
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     ris::Slave::acceptFrame(frame);
@@ -203,9 +205,9 @@ bp::object ris::Slave::lshiftPy(bp::object p) {
 
     // Test extraction
     if (get_master.check()) {
-       mst = get_master();
+        mst = get_master();
 
-    // Otherwise look for indirect call
+        // Otherwise look for indirect call
     } else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
         // Attempt to convert returned object to master pointer
         boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());

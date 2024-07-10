@@ -30,7 +30,7 @@ class ScopedGil {
     PyGILState_STATE state_;
 #endif
 
- public:
+  public:
     ScopedGil();
     ~ScopedGil();
 };

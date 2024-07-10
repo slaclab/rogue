@@ -147,9 +147,9 @@ void ris::Master::equalsPy(boost::python::object p) {
 
     // Test extraction
     if (get_master.check()) {
-       rMst = get_master();
+        rMst = get_master();
 
-    // Otherwise look for indirect call
+        // Otherwise look for indirect call
     } else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
         // Attempt to convert returned object to master pointer
         boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
@@ -167,7 +167,7 @@ void ris::Master::equalsPy(boost::python::object p) {
     if (get_slave.check()) {
         rSlv = get_slave();
 
-    // Otherwise look for indirect call
+        // Otherwise look for indirect call
     } else if (PyObject_HasAttrString(p.ptr(), "_getStreamSlave")) {
         // Attempt to convert returned object to slave pointer
         boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
@@ -197,7 +197,7 @@ bp::object ris::Master::rshiftPy(bp::object p) {
     if (get_slave.check()) {
         slv = get_slave();
 
-    // Otherwise look for indirect call
+        // Otherwise look for indirect call
     } else if (PyObject_HasAttrString(p.ptr(), "_getStreamSlave")) {
         // Attempt to convert returned object to slave pointer
         boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());

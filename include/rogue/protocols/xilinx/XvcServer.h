@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_SERVER_H__
@@ -28,12 +28,12 @@ namespace protocols {
 namespace xilinx {
 // XVC Server (top) class
 class XvcServer {
- private:
+  private:
     int sd_;
     JtagDriver* drv_;
     unsigned maxMsgSize_;
 
- public:
+  public:
     XvcServer(uint16_t port, JtagDriver* drv, unsigned maxMsgSize = 32768);
 
     virtual void run(bool& threadEn, rogue::LoggingPtr log);

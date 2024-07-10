@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
 #define __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
@@ -50,7 +50,7 @@ class XvcConnection {
     uint64_t supVecLen_;
     uint64_t chunk_;
 
- public:
+  public:
     XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen_ = 32768);
 
     // fill rx buffer to 'n' octets (from TCP connection)

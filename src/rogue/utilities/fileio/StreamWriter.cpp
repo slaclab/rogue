@@ -306,7 +306,7 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
         }
         currSize_ += size;
         totSize_ += size;
-    // Append to buffer if non zero
+        // Append to buffer if non zero
     } else if (buffSize_ > 0 && size > 0) {
         std::memcpy(buffer_ + currBuffer_, data, size);
         currBuffer_ += size;

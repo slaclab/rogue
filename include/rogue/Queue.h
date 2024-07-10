@@ -27,7 +27,7 @@
 namespace rogue {
 template <typename T>
 class Queue {
- private:
+  private:
     std::queue<T> queue_;
     mutable std::mutex mtx_;
     std::condition_variable pushCond_;
@@ -37,7 +37,7 @@ class Queue {
     bool busy_;
     bool run_;
 
- public:
+  public:
     Queue() {
         max_   = 0;
         thold_ = 0;

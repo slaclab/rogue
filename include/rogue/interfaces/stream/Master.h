@@ -55,7 +55,7 @@ class Master : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Mas
     // Default slave if not connected
     std::shared_ptr<rogue::interfaces::stream::Slave> defSlave_;
 
- public:
+  public:
     //! Class factory which returns a pointer to a Master object (MasterPtr)
     /** Create a new Master
      *

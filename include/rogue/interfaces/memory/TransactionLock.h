@@ -39,7 +39,7 @@ class TransactionLock {
     std::shared_ptr<rogue::interfaces::memory::Transaction> tran_;
     bool locked_;
 
- public:
+  public:
     // Class factory which returns a pointer to a TransactionLock (TransactionLockPtr)
     static std::shared_ptr<rogue::interfaces::memory::TransactionLock> create(
         std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);

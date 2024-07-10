@@ -43,7 +43,7 @@ const uint32_t MaxStdPayload   = StdMTU - HdrSize;
 
 //! UDP Core
 class Core {
- protected:
+  protected:
     std::shared_ptr<rogue::Logging> udpLog_;
 
     //! Jumbo frames enables
@@ -64,7 +64,7 @@ class Core {
     //! mutex
     std::mutex udpMtx_;
 
- public:
+  public:
     //! Setup class in python
     static void setup_python();
 

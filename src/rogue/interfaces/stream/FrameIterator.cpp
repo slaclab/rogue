@@ -57,7 +57,7 @@ void ris::FrameIterator::increment(int32_t diff) {
             buff_     = frame_->endBuffer();
             data_     = NULL;
 
-        // Move forward in buffer chain
+            // Move forward in buffer chain
         } else {
             // Increment current buffer until we find the location of the data position
             // Iterator always contains one extra buffer index
@@ -88,7 +88,7 @@ void ris::FrameIterator::decrement(int32_t diff) {
             buff_     = frame_->endBuffer();
             data_     = NULL;
 
-        // Move backwards in buffer chain
+            // Move backwards in buffer chain
         } else {
             // Decrement current buffer until the desired frame position is greater than
             // the bottom of the buffer

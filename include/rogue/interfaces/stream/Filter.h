@@ -45,7 +45,7 @@ class Filter : public rogue::interfaces::stream::Master, public rogue::interface
     bool dropErrors_;
     uint8_t channel_;
 
- public:
+  public:
     //! Create a Filter object and return as a FilterPtr
     /** @param dropErrors Set to True to drop errored Frames
      * @param channel Set channel number to allow through the filter.

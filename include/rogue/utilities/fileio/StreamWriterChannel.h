@@ -50,7 +50,7 @@ class StreamWriterChannel : public rogue::interfaces::stream::Slave {
     //! Condition variable for frameCount_ updates
     std::condition_variable cond_;
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::fileio::StreamWriterChannel> create(
         std::shared_ptr<rogue::utilities::fileio::StreamWriter> writer,

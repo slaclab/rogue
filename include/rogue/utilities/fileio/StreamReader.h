@@ -24,8 +24,8 @@
 #include <map>
 #include <memory>
 #include <mutex>
-#include <thread>
 #include <string>
+#include <thread>
 
 #include "rogue/interfaces/stream/Master.h"
 
@@ -66,7 +66,7 @@ class StreamReader : public rogue::interfaces::stream::Master {
     //! Active lock
     std::mutex mtx_;
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::utilities::fileio::StreamReader> create();
 

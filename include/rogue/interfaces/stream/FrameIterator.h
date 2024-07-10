@@ -40,7 +40,7 @@ class Buffer;
 class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint8_t> {
     friend class Frame;
 
- private:
+  private:
     // Creator
     FrameIterator(std::shared_ptr<rogue::interfaces::stream::Frame> frame, bool write, bool end);
 
@@ -74,7 +74,7 @@ class FrameIterator : public std::iterator<std::random_access_iterator_tag, uint
     // decrement position
     inline void decrement(int32_t diff);
 
- public:
+  public:
     //! Create an empty iterator for later assignment.
     FrameIterator();
 

@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #include "rogue/Directives.h"
 
 #include "rogue/hardware/axi/AxiMemMap.h"
@@ -71,8 +71,9 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
     // Check for mismatch in the rogue/loaded_driver API versions
     if (dmaCheckVersion(fd_) < 0) {
         ::close(fd_);
-        throw(rogue::GeneralError("AxiMemMap::AxiMemMap",
-                                  "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
+        throw(rogue::GeneralError(
+            "AxiMemMap::AxiMemMap",
+            "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
     // Start read thread

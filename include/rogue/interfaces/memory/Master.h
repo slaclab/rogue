@@ -22,9 +22,9 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <thread>
 #include <vector>
-#include <string>
 
 #include "rogue/Logging.h"
 
@@ -48,7 +48,7 @@ class Transaction;
 class Master {
     friend class Transaction;
 
- private:
+  private:
     //! Alias for map
     typedef std::map<uint32_t, std::shared_ptr<rogue::interfaces::memory::Transaction> > TransactionMap;
 
@@ -70,7 +70,7 @@ class Master {
     //! Log
     std::shared_ptr<rogue::Logging> log_;
 
- public:
+  public:
     //! Class factory which returns a pointer to a Master (MasterPtr)
     /** Exposed as rogue.interfaces.memory.Master() to Python
      */
@@ -284,11 +284,11 @@ class Master {
     std::shared_ptr<rogue::interfaces::memory::Slave>& operator>>(
         std::shared_ptr<rogue::interfaces::memory::Slave>& other);
 
- protected:
+  protected:
     //! Internal transaction
     uint32_t intTransaction(std::shared_ptr<rogue::interfaces::memory::Transaction> tran);
 
- public:
+  public:
     //! Wait for one or more transactions to complete
     /** This method is called to wait on transaction completion or timeout.
      * Passing an id of zero will wait for all current pending transactions to

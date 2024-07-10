@@ -13,14 +13,14 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_ZMQ_CLIENT_H__
 #define __ROGUE_ZMQ_CLIENT_H__
 #include "rogue/Directives.h"
 
 #include <memory>
-#include <thread>
 #include <string>
+#include <thread>
 
 #include "rogue/Logging.h"
 
@@ -56,7 +56,7 @@ class ZmqClient {
 
     void runThread();
 
- public:
+  public:
     static std::shared_ptr<rogue::interfaces::ZmqClient> create(std::string addr, uint16_t port, bool doString);
 
     //! Setup class in python
@@ -91,7 +91,7 @@ typedef std::shared_ptr<rogue::interfaces::ZmqClient> ZmqClientPtr;
 
 //! Stream slave class, wrapper to enable python overload of virtual methods
 class ZmqClientWrap : public rogue::interfaces::ZmqClient, public boost::python::wrapper<rogue::interfaces::ZmqClient> {
- public:
+  public:
     ZmqClientWrap(std::string addr, uint16_t port, bool doString);
 
     void doUpdate(boost::python::object data);

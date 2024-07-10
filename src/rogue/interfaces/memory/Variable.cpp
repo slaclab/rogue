@@ -178,11 +178,11 @@ rim::Variable::Variable(std::string name,
         highTranByte_ = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
 
         // Init remaining fields
-        valueBytes_ = byteSize_;
-        valueBits_ = bitTotal_;
+        valueBytes_  = byteSize_;
+        valueBits_   = bitTotal_;
         valueStride_ = bitTotal_;
 
-    // List variables
+        // List variables
     } else {
         // Compute bit total
         bitTotal_ = bitSize_[0];
@@ -202,13 +202,14 @@ rim::Variable::Variable(std::string name,
     fastByte_ = NULL;
 
     // Determine if fast byte copies can be utilized
-    // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte aligned
+    // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte
+    // aligned
     if ((bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0)) {
         // Standard variable
         if (numValues_ == 0) {
             fastByte_ = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
 
-        // List variable
+            // List variable
         } else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
             fastByte_ = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
         }
@@ -453,27 +454,41 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
     }
 
     // Standard variable
-    if ( numValues_ == 0 ) {
+    if (numValues_ == 0) {
         // Compute total bit range of accessed bytes
-        varBytes_ = static_cast<int>(std::ceil(static_cast<float>(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) / (static_cast<float>(minSize) * 8.0))) * minSize;
+        varBytes_ = static_cast<int>(std::ceil(
+                        static_cast<float>(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) /
+                        (static_cast<float>(minSize) * 8.0))) *
+                    minSize;
 
         // Compute the lowest byte, aligned to min access
-        lowTranByte_[0] = static_cast<int>(std::floor(static_cast<float>(bitOffset_[0]) / (static_cast<float>(minSize) * 8.0))) * minSize;
+        lowTranByte_[0] =
+            static_cast<int>(std::floor(static_cast<float>(bitOffset_[0]) / (static_cast<float>(minSize) * 8.0))) *
+            minSize;
 
         // Compute the highest byte, aligned to min access
         highTranByte_[0] = varBytes_ - 1;
-        staleHighByte_ = highTranByte_[0];
+        staleHighByte_   = highTranByte_[0];
 
-    // List variable
+        // List variable
     } else {
         for (x = 0; x < numValues_; x++) {
-            lowTranByte_[x] = static_cast<uint32_t>(std::floor((static_cast<float>(bitOffset_[0]) + static_cast<float>(x) * static_cast<float>(valueStride_)) / (static_cast<float>(minSize) * 8.0))) * minSize;
-            highTranByte_[x] = static_cast<uint32_t>(std::ceil((static_cast<float>(bitOffset_[0]) + static_cast<float>(x) * static_cast<float>(valueStride_) + valueBits_) / (static_cast<float>(minSize) * 8.0))) * minSize - 1;
+            lowTranByte_[x] =
+                static_cast<uint32_t>(std::floor(
+                    (static_cast<float>(bitOffset_[0]) + static_cast<float>(x) * static_cast<float>(valueStride_)) /
+                    (static_cast<float>(minSize) * 8.0))) *
+                minSize;
+            highTranByte_[x] = static_cast<uint32_t>(
+                                   std::ceil((static_cast<float>(bitOffset_[0]) +
+                                              static_cast<float>(x) * static_cast<float>(valueStride_) + valueBits_) /
+                                             (static_cast<float>(minSize) * 8.0))) *
+                                   minSize -
+                               1;
         }
 
         // Compute total bit range of accessed bytes
-        varBytes_ = highTranByte_[numValues_-1] - lowTranByte_[0] + 1;
-        staleHighByte_ = highTranByte_[numValues_-1];
+        varBytes_      = highTranByte_[numValues_ - 1] - lowTranByte_[0] + 1;
+        staleHighByte_ = highTranByte_[numValues_ - 1];
     }
 
     // Adjust fast copy locations
@@ -481,13 +496,13 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         if (numValues_ == 0) {
             fastByte_[0] = bitOffset_[0] / 8;
 
-        // List variable
+            // List variable
         } else {
             for (x = 0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueStride_ * x)) / 8;
         }
     }
 
-    staleLowByte_  = lowTranByte_[0];
+    staleLowByte_ = lowTranByte_[0];
 }
 
 void rim::Variable::updatePath(std::string path) {
@@ -605,7 +620,9 @@ void rim::VariableWrap::queueUpdate() {
         try {
             pb();
             return;
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
 }
 
@@ -634,7 +651,9 @@ void rim::Variable::rateTest() {
     uint32_t ret;
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) { ret = getUInt(); }
+    for (x = 0; x < count; ++x) {
+        ret = getUInt();
+    }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
@@ -644,7 +663,9 @@ void rim::Variable::rateTest() {
     printf("\nVariable c++ get: Read %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) { setUInt(x); }
+    for (x = 0; x < count; ++x) {
+        setUInt(x);
+    }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);

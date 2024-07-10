@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #include "rogue/Directives.h"
 
 #include "rogue/hardware/MemMap.h"
@@ -60,7 +60,8 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4, 0xFFFFFFFF) {
 
     if (fd_ < 0) throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to open device file: %s", MAP_DEVICE));
 
-    if ((map_ = reinterpret_cast<uint8_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, base))) == reinterpret_cast<void*>(-1))
+    if ((map_ = reinterpret_cast<uint8_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, base))) ==
+        reinterpret_cast<void*>(-1))
         throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to map memory to user space."));
 
     log_->debug("Created map to 0x%" PRIx64 " with size 0x%" PRIx32, base, size);

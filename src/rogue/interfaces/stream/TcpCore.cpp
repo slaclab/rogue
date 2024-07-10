@@ -110,7 +110,7 @@ ris::TcpCore::TcpCore(std::string addr, uint16_t port, bool server) {
                                               port + 1,
                                               addr.c_str()));
 
-    // Client mode
+        // Client mode
     } else {
         this->pullAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
         this->pushAddr_.append(std::to_string(static_cast<int64_t>(port)));

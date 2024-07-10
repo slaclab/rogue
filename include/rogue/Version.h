@@ -36,7 +36,7 @@ class Version {
     static uint32_t _maint;
     static uint32_t _devel;
 
- public:
+  public:
     Version() {}
 
     static std::string current();

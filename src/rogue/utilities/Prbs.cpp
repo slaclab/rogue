@@ -197,7 +197,9 @@ void ru::Prbs::flfsr(uint8_t* data) {
 void ru::Prbs::runThread() {
     txLog_->logThreadId();
 
-    while (threadEn_) { genFrame(txSize_); }
+    while (threadEn_) {
+        genFrame(txSize_);
+    }
 }
 
 //! Auto run data generation
@@ -466,19 +468,21 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
             flfsr(expData);
 
             if (!std::equal(frIter, frIter + byteWidth_, expData)) {
-                snprintf(debugA, sizeof(debugA),
-                        "Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32,
-                        pos,
-                        rxCount_,
-                        (size / byteWidth_) - 1);
+                snprintf(debugA,
+                         sizeof(debugA),
+                         "Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32,
+                         pos,
+                         rxCount_,
+                         (size / byteWidth_) - 1);
 
                 for (x = 0; x < byteWidth_; x++) {
-                    snprintf(debugB, sizeof(debugB),
-                            "\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8,
-                            pos,
-                            x,
-                            *(frIter + x),
-                            *(expData + x));
+                    snprintf(debugB,
+                             sizeof(debugB),
+                             "\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8,
+                             pos,
+                             x,
+                             *(frIter + x),
+                             *(expData + x));
                     snprintf(debugA + strlen(debugA), sizeof(debugA) - strlen(debugA), "%s", debugB);
                 }
                 rxLog_->warning(debugA);

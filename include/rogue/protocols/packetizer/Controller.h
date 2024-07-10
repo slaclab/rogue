@@ -37,7 +37,7 @@ class Header;
 
 //! Packetizer Controller Class
 class Controller {
- protected:
+  protected:
     // parameters
     bool enSsi_;
     uint32_t appIndex_;
@@ -65,7 +65,7 @@ class Controller {
 
     rogue::Queue<std::shared_ptr<rogue::interfaces::stream::Frame>> tranQueue_;
 
- public:
+  public:
     //! Creator
     Controller(std::shared_ptr<rogue::protocols::packetizer::Transport> tran,
                std::shared_ptr<rogue::protocols::packetizer::Application>* app,

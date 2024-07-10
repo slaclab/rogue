@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_HARDWARE_MEM_MAP_H__
 #define __ROGUE_HARDWARE_MEM_MAP_H__
 #include "rogue/Directives.h"
@@ -60,7 +60,7 @@ class MemMap : public rogue::interfaces::memory::Slave {
     // Queue
     rogue::Queue<std::shared_ptr<rogue::interfaces::memory::Transaction>> queue_;
 
- public:
+  public:
     //! Class factory which returns a MemMapPtr to a newly created MemMap object
     /** Exposed to Python as rogue.hardware.MemMap()
      * @param base Base address to map

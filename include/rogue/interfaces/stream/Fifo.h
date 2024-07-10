@@ -66,7 +66,7 @@ class Fifo : public rogue::interfaces::stream::Master, public rogue::interfaces:
     // Thread background
     void runThread();
 
- public:
+  public:
     //! Create a Fifo object and return as a FifoPtr
     /** Exposed as rogue.interfaces.stream.Fifo() to Python
      * @param maxDepth Set to a non-zero value to configured fixed size mode.

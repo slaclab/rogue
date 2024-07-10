@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
 #define __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
 #include "rogue/Directives.h"
@@ -22,8 +22,8 @@
 
 #include <map>
 #include <memory>
-#include <thread>
 #include <string>
+#include <thread>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Master.h"
@@ -35,7 +35,7 @@ namespace axi {
 
 //! Storage class for shared memory buffers
 class AxiStreamDmaShared {
- public:
+  public:
     explicit AxiStreamDmaShared(std::string path);
 
     //! Shared FD
@@ -116,7 +116,7 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
     //! Close shared buffer space
     static void closeShared(std::shared_ptr<rogue::hardware::axi::AxiStreamDmaShared>);
 
- public:
+  public:
     //! Class factory which returns a AxiStreamDmaPtr to a newly created AxiStreamDma object
     /** Exposed to Python as rogue.hardware.axi.AxiStreamDma()
      *

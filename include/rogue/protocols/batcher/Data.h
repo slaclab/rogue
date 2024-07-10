@@ -47,7 +47,7 @@ class Data {
     //! Last user
     uint8_t lUser_;
 
- public:
+  public:
     //! Setup class in python
     static void setup_python();
 

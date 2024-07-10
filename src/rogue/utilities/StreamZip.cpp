@@ -82,7 +82,7 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
     strm.avail_in = (*rBuff)->getPayload();
 
     wBuff          = newFrame->beginBuffer();
-    strm.next_out = reinterpret_cast<char*>((*wBuff)->begin());
+    strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
     strm.avail_out = (*wBuff)->getAvailable();
 
     // Use the iterators to move data
@@ -110,7 +110,7 @@ void ru::StreamZip::acceptFrame(ris::FramePtr frame) {
             } else {
                 ++wBuff;
             }
-            strm.next_out = reinterpret_cast<char*>((*wBuff)->begin());
+            strm.next_out  = reinterpret_cast<char*>((*wBuff)->begin());
             strm.avail_out = (*wBuff)->getAvailable();
         }
     } while (ret != BZ_STREAM_END);

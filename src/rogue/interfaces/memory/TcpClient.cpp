@@ -173,7 +173,7 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
         zmq_msg_init_size(&(msg[4]), size);
         std::memcpy(zmq_msg_data(&(msg[4])), tran->begin(), size);
 
-    // Read transaction
+        // Read transaction
     } else {
         msgCnt = 4;
     }

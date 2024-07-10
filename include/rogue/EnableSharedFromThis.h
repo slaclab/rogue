@@ -25,13 +25,13 @@
 namespace rogue {
 
 class EnableSharedFromThisBase : public std::enable_shared_from_this<rogue::EnableSharedFromThisBase> {
- public:
+  public:
     virtual ~EnableSharedFromThisBase() {}
 };
 
 template <typename T>
 class EnableSharedFromThis : virtual public EnableSharedFromThisBase {
- public:
+  public:
     std::shared_ptr<T> shared_from_this() {
         return std::dynamic_pointer_cast<T>(EnableSharedFromThisBase::shared_from_this());
     }

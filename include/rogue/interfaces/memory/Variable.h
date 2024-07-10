@@ -46,7 +46,7 @@ typedef std::shared_ptr<rogue::interfaces::memory::Variable> VariablePtr;
 class Variable {
     friend class Block;
 
- protected:
+  protected:
     // Associated block
     rogue::interfaces::memory::Block* block_;
 
@@ -240,7 +240,7 @@ class Variable {
 
     double (rogue::interfaces::memory::Block::*getFixed_)(rogue::interfaces::memory::Variable*, int32_t index);
 
- public:
+  public:
     //! Class factory which returns a pointer to a Variable (VariablePtr)
     /** Exposed to Python as rogue.interfaces.memory.Variable()
      *
@@ -554,7 +554,7 @@ class VariableWrap : public rogue::interfaces::memory::Variable,
                      public boost::python::wrapper<rogue::interfaces::memory::Variable> {
     boost::python::object model_;
 
- public:
+  public:
     // Create a Variable
     VariableWrap(std::string name,
                  std::string mode,

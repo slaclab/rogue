@@ -236,11 +236,11 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
     // Reset
     if (head->rst) {
         if (state_ == StOpen || state_ == StWaitSyn) {
-           stQueue_.push(head);
+            stQueue_.push(head);
         }
 
-    // Syn frame goes to state machine if state = open
-    // or we are waiting for ack replay
+        // Syn frame goes to state machine if state = open
+        // or we are waiting for ack replay
     } else if (head->syn) {
         if (state_ == StOpen || state_ == StWaitSyn) {
             lastSeqRx_ = head->sequence;
@@ -248,7 +248,7 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
             stQueue_.push(head);
         }
 
-    // Data or NULL in the correct sequence go to application
+        // Data or NULL in the correct sequence go to application
     } else if (state_ == StOpen && (head->nul || frame->getPayload() > rpr::Header::HeaderSize)) {
         if (head->sequence == nextSeqRx_) {
             // log_->warning("Data or NULL in the correct sequence go to application: nextSeqRx_=0x%" PRIx8,
@@ -289,7 +289,7 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
             // Notify after the last sequence update
             stCond_.notify_all();
 
-        // Check if received frame is already in out of order queue
+            // Check if received frame is already in out of order queue
         } else if ((it = oooQueue_.find(head->sequence)) != oooQueue_.end()) {
             log_->warning("Dropped duplicate frame. server=%" PRIu8 ", head->sequence=%" PRIu32
                           ", next sequence=%" PRIu32,
@@ -298,9 +298,9 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
                           nextSeqRx_);
             dropCount_++;
 
-        // Add to out of order queue in case things arrive out of order
-        // Make sure received sequence is in window. There may be a better way
-        // to do this while handling the 8 bit rollover
+            // Add to out of order queue in case things arrive out of order
+            // Make sure received sequence is in window. There may be a better way
+            // to do this while handling the 8 bit rollover
         } else {
             uint8_t x         = nextSeqRx_;
             uint8_t windowEnd = (nextSeqRx_ + curMaxBuffers_ + 1);
@@ -390,7 +390,7 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
 
     // Connection is closed
     if (state_ != StOpen) {
-       return;
+        return;
     }
 
     // Wait while busy either by flow control or buffer starvation
@@ -778,7 +778,7 @@ struct timeval& rpr::Controller::stateClosedWait() {
             state_ = StClosed;
             log_->warning("Closing link. Server=%" PRIu8, server_);
 
-        // Syn ack
+            // Syn ack
         } else if (head->syn && (head->ack || server_)) {
             curMaxBuffers_ = head->maxOutstandingSegments;
             curMaxSegment_ = head->maxSegmentSize;
@@ -803,7 +803,7 @@ struct timeval& rpr::Controller::stateClosedWait() {
             }
             gettimeofday(&stTime_, NULL);
 
-        // reset counters
+            // reset counters
         } else {
             curMaxBuffers_ = locMaxBuffers_;
             curMaxSegment_ = locMaxSegment_;
@@ -814,7 +814,7 @@ struct timeval& rpr::Controller::stateClosedWait() {
             curMaxCumAck_  = locMaxCumAck_;
         }
 
-    // Generate syn after try period passes
+        // Generate syn after try period passes
     } else if ((!server_) && timePassed(stTime_, tryPeriodD1_)) {
         // Allocate frame
         head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize, false));

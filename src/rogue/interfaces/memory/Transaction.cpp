@@ -107,7 +107,9 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 //! Get expired state
 bool rim::Transaction::expired() {
     bool done = false;
-    if (isSubTransaction_) { done = parentTransaction_.expired(); }
+    if (isSubTransaction_) {
+        done = parentTransaction_.expired();
+    }
     return done || (iter_ == NULL || done_);
 }
 

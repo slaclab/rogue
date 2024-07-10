@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #include "rogue/Directives.h"
 
@@ -172,8 +172,8 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
     std::vector<rim::VariablePtr>::iterator vit;
 
     // Check for valid combinations
-    if ((type == rim::Write && ((mode_ == "RO") || (!stale_ && !forceWr))) ||
-        (type == rim::Post && (mode_ == "RO")) || (type == rim::Read && ((mode_ == "WO") || stale_)) ||
+    if ((type == rim::Write && ((mode_ == "RO") || (!stale_ && !forceWr))) || (type == rim::Post && (mode_ == "RO")) ||
+        (type == rim::Read && ((mode_ == "WO") || stale_)) ||
         (type == rim::Verify && ((mode_ == "WO") || (mode_ == "RO") || stale_ || !verifyReq_)))
         return;
     {
@@ -188,7 +188,9 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
             highByte = size_ - 1;
             if (type == rim::Write || type == rim::Post) {
                 stale_ = false;
-                for (vit = variables_.begin(); vit != variables_.end(); ++vit) { (*vit)->stale_ = false; }
+                for (vit = variables_.begin(); vit != variables_.end(); ++vit) {
+                    (*vit)->stale_ = false;
+                }
             }
         } else {
             if (type == rim::Read || type == rim::Verify) {
@@ -227,7 +229,7 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
             tData      = verifyData_ + verifyBase_;
             verifyInp_ = true;
 
-        // Not a verify transaction
+            // Not a verify transaction
         } else {
             // Derive offset and size based upon min transaction size
             tOff  = lowByte;
@@ -471,14 +473,15 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                 if ((*vit)->overlapEn_) {
                     setBits(oleMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
 
-                // Otherwise add to exclusive mask and check for existing mapping
+                    // Otherwise add to exclusive mask and check for existing mapping
                 } else {
                     if (anyBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]))
-                        throw(rogue::GeneralError::create("Block::addVariables",
-                                                          "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
-                                                          path_.c_str(),
-                                                          address(),
-                                                          (*vit)->name_.c_str()));
+                        throw(rogue::GeneralError::create(
+                            "Block::addVariables",
+                            "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
+                            path_.c_str(),
+                            address(),
+                            (*vit)->name_.c_str()));
 
                     setBits(excMask, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
                 }
@@ -490,7 +493,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                 }
 
                 bLog_->debug(
-                    "Adding variable %s to block %s at offset 0x%.8x, bitIdx=%i, bitOffset %i, bitSize %i, mode %s, verifyEn "
+                    "Adding variable %s to block %s at offset 0x%.8x, bitIdx=%i, bitOffset %i, bitSize %i, mode %s, "
+                    "verifyEn "
                     "%d " PRIx64,
                     (*vit)->name_.c_str(),
                     path_.c_str(),
@@ -502,21 +506,22 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     (*vit)->verifyEn_);
             }
 
-        // List variables
+            // List variables
         } else {
             for (x = 0; x < (*vit)->numValues_; x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
                     setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
 
-                // Otherwise add to exclusive mask and check for existing mapping
+                    // Otherwise add to exclusive mask and check for existing mapping
                 } else {
                     if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
-                        throw(rogue::GeneralError::create("Block::addVariables",
-                                                          "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
-                                                          path_.c_str(),
-                                                          address(),
-                                                          (*vit)->name_.c_str()));
+                        throw(rogue::GeneralError::create(
+                            "Block::addVariables",
+                            "Variable bit overlap detected for block %s with address 0x%.8x and variable %s",
+                            path_.c_str(),
+                            address(),
+                            (*vit)->name_.c_str()));
 
                     setBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
                 }
@@ -528,7 +533,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                 }
 
                 bLog_->debug(
-                    "Adding variable %s to block %s at offset 0x%.8x, index=%i, valueOffset=%i, valueBits %i, mode %s, verifyEn %d",
+                    "Adding variable %s to block %s at offset 0x%.8x, index=%i, valueOffset=%i, valueBits %i, mode %s, "
+                    "verifyEn %d",
                     (*vit)->name_.c_str(),
                     path_.c_str(),
                     offset_,
@@ -649,14 +655,13 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
         if (var->stale_) {
             if (var->lowTranByte_[index] < var->staleLowByte_) var->staleLowByte_ = var->lowTranByte_[index];
 
-            if (var->highTranByte_[index] > var->staleHighByte_)
-                var->staleHighByte_ = var->highTranByte_[index];
+            if (var->highTranByte_[index] > var->staleHighByte_) var->staleHighByte_ = var->highTranByte_[index];
         } else {
             var->staleLowByte_  = var->lowTranByte_[index];
             var->staleHighByte_ = var->highTranByte_[index];
         }
 
-    // Standard variable
+        // Standard variable
     } else {
         var->staleLowByte_  = var->lowTranByte_[0];
         var->staleHighByte_ = var->highTranByte_[0];
@@ -722,7 +727,9 @@ void rim::Block::getBytes(uint8_t* data, rim::Variable* var, uint32_t index) {
     }
 
     // Change byte order
-    if (var->byteReverse_) { reverseBytes(data, var->valueBytes_); }
+    if (var->byteReverse_) {
+        reverseBytes(data, var->valueBytes_);
+    }
 }
 
 //////////////////////////////////////////
@@ -745,7 +752,7 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
                                           "Passing ndarray not supported for %s",
                                           var->name_.c_str()));
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -772,7 +779,7 @@ void rim::Block::setPyFunc(bp::object& value, rim::Variable* var, int32_t index)
             PyBuffer_Release(&valueBuf);
         }
 
-    // Single value
+        // Single value
     } else {
         // Call python function
         bp::object ret = ((rim::VariableWrap*)var)->toBytes(value);
@@ -797,7 +804,7 @@ bp::object rim::Block::getPyFunc(rim::Variable* var, int32_t index) {
                                           "Accessing unindexed value not support for %s",
                                           var->name_.c_str()));
 
-    // Single value
+        // Single value
     } else {
         memset(getBuffer, 0, var->valueBytes_);
 
@@ -919,7 +926,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
         }
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -944,7 +951,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
             setUInt(tmp, var, index + x);
         }
 
-    // Passed scalar numpy value
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_UINT64) {
             uint64_t val;
@@ -1077,7 +1084,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                               var->name_.c_str()));
         }
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -1102,7 +1109,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
             setInt(tmp, var, index + x);
         }
 
-    // Passed scalar numpy value
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_INT64) {
             int64_t val;
@@ -1236,7 +1243,7 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
         }
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -1261,7 +1268,7 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
             setBool(tmp, var, index + x);
         }
 
-    // Passed scalar numpy value
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_BOOL) {
             bool val;
@@ -1444,7 +1451,7 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
                                               var->name_.c_str()));
         }
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -1469,7 +1476,7 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
             setFloat(tmp, var, index + x);
         }
 
-    // Passed scalar numpy value
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT32) {
             float val;
@@ -1589,7 +1596,7 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
                                               var->name_.c_str()));
         }
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -1614,7 +1621,7 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
             setDouble(tmp, var, index + x);
         }
 
-    // Passed scalar numpy value
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64) {
             double val;
@@ -1734,7 +1741,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                               var->name_.c_str()));
         }
 
-    // Is passed value a list
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl   = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -1759,7 +1766,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
             setFixed(tmp, var, index + x);
         }
 
-    // Passed scalar numpy value
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         if (PyArray_DescrFromScalar(value.ptr())->type_num == NPY_FLOAT64) {
             double val;
@@ -1828,7 +1835,9 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
     int64_t fPoint = (int64_t)round(val * pow(2, var->binPoint_));
     // Check for positive edge case
     uint64_t mask = 1 << (var->valueBits_ - 1);
-    if (val > 0 && ((fPoint & mask) != 0)) { fPoint -= 1; }
+    if (val > 0 && ((fPoint & mask) != 0)) {
+        fPoint -= 1;
+    }
     setBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
 }
 
@@ -1839,7 +1848,9 @@ double rim::Block::getFixed(rim::Variable* var, int32_t index) {
 
     getBytes(reinterpret_cast<uint8_t*>(&fPoint), var, index);
     // Do two-complement if negative
-    if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) { fPoint = fPoint - (1 << var->valueBits_); }
+    if ((fPoint & (1 << (var->valueBits_ - 1))) != 0) {
+        fPoint = fPoint - (1 << var->valueBits_);
+    }
 
     // Convert to float
     tmp = static_cast<double>(fPoint);

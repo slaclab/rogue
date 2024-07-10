@@ -43,7 +43,7 @@ class Application : public rogue::interfaces::stream::Master, public rogue::inte
     //! Thread background
     void runThread();
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::rssi::Application> create();
 

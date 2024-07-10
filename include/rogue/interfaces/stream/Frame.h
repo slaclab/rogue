@@ -77,14 +77,14 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     // Size values dirty flags
     bool sizeDirty_;
 
- protected:
+  protected:
     // Set size values dirty
     void setSizeDirty();
 
     // Frame lock
     std::mutex lock_;
 
- public:
+  public:
     //! Alias for using std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator as Buffer::iterator
     typedef std::vector<std::shared_ptr<rogue::interfaces::stream::Buffer> >::iterator BufferIterator;
 

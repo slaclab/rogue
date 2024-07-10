@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 #ifndef __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #define __ROGUE_PROTOCOLS_RSSI_SERVER_H__
 #include "rogue/Directives.h"
@@ -42,7 +42,7 @@ class Server {
     //! Server module
     std::shared_ptr<rogue::protocols::rssi::Controller> cntl_;
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::rssi::Server> create(uint32_t segSize);
 

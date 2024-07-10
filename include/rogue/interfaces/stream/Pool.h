@@ -21,8 +21,8 @@
 #include <stdint.h>
 
 #include <memory>
-#include <thread>
 #include <queue>
+#include <thread>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Queue.h"
@@ -71,7 +71,7 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
     // Buffer queue count
     uint32_t poolSize_;
 
- public:
+  public:
     // Class creator
     Pool();
 
@@ -152,7 +152,7 @@ class Pool : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Pool>
      */
     uint32_t getPoolSize();
 
- protected:
+  protected:
     //! Allocate and Create a Buffer
     /** This method is the default Buffer allocator. The requested
      * buffer is created from either a malloc call or fulling a free entry from

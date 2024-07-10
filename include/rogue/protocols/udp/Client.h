@@ -25,8 +25,8 @@
 #include <sys/socket.h>
 
 #include <memory>
-#include <thread>
 #include <string>
+#include <thread>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Master.h"
@@ -49,7 +49,7 @@ class Client : public rogue::protocols::udp::Core,
     //! Thread background
     void runThread(std::weak_ptr<int>);
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::udp::Client> create(std::string host, uint16_t port, bool jumbo);
 

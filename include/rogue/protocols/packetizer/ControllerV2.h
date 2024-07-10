@@ -42,7 +42,7 @@ class ControllerV2 : public Controller, public rogue::EnableSharedFromThis<rogue
     bool enIbCrc_;
     bool enObCrc_;
 
- public:
+  public:
     //! Class creation
     static std::shared_ptr<rogue::protocols::packetizer::ControllerV2> create(
         bool enIbCrc,

@@ -61,7 +61,7 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
         ret = it->second;
         log->debug("Reusing existing shared file descriptor for %s", path.c_str());
 
-    // Create new record
+        // Create new record
     } else {
         ret = std::make_shared<rha::AxiStreamDmaShared>(path);
         log->debug("Opening new shared file descriptor for %s", path.c_str());
@@ -98,8 +98,9 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     // Check for mismatch in the rogue/loaded_driver API versions
     if (dmaCheckVersion(ret->fd) < 0) {
         ::close(ret->fd);
-        throw(rogue::GeneralError("AxiStreamDma::openShared",
-                                  "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
+        throw(rogue::GeneralError(
+            "AxiStreamDma::openShared",
+            "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
     // Result may be that rawBuff = NULL
@@ -129,7 +130,9 @@ void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
     desc->openCount--;
 
     if (desc->openCount == 0) {
-        if (desc->rawBuff != NULL) { dmaUnMapDma(desc->fd, desc->rawBuff); }
+        if (desc->rawBuff != NULL) {
+            dmaUnMapDma(desc->fd, desc->rawBuff);
+        }
 
         ::close(desc->fd);
         desc->fd      = -1;
@@ -277,7 +280,7 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
     if (zeroCopyEn == false || desc_->rawBuff == NULL) {
         frame = reqLocalFrame(size, false);
 
-    // Allocate zero copy buffers from driver
+        // Allocate zero copy buffers from driver
     } else {
         rogue::GilRelease noGil;
 
@@ -358,7 +361,7 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
             cont  = 0;
             luser = frame->getLastUser();
 
-        // Continue flag is set if this is not the last (*it)er
+            // Continue flag is set if this is not the last (*it)er
         } else {
             cont  = 1;
             luser = 0;
@@ -387,7 +390,7 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
                 (*it)->setMeta(meta);
             }
 
-        // Write to pgp with (*it)er copy in driver
+            // Write to pgp with (*it)er copy in driver
         } else {
             // Keep trying since select call can fire
             // but write fails because we did not win the (*it)er lock
@@ -458,7 +461,7 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
         }
         decCounter(size);
 
-    // Buffer is allocated from Pool class
+        // Buffer is allocated from Pool class
     } else {
         Pool::retBuffer(data, meta, size);
     }
@@ -516,7 +519,7 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
                 else
                     rxCount = 1;
 
-            // Zero copy read
+                // Zero copy read
             } else {
                 // Attempt read, dest is not needed since only one lane/vc is open
                 rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);

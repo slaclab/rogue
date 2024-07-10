@@ -180,7 +180,9 @@ void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
             try {
                 pb(transaction);
                 return;
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     rim::Hub::doTransaction(transaction);

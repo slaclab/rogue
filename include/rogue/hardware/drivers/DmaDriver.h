@@ -26,6 +26,7 @@
     #include <linux/types.h>
 #else
     #include <stdint.h>
+
     #include <string>
 #endif
 
@@ -633,7 +634,6 @@ static inline ssize_t dmaGetBuffSize(int32_t fd) {
 static inline ssize_t dmaGetBuffCount(int32_t fd) {
     return (ioctl(fd, DMA_Get_Buff_Count, 0));
 }
-
 
 /**
  * dmaGetGitVersion - Get the DMA Driver's Git Version

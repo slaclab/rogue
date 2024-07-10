@@ -13,7 +13,7 @@
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
-**/
+ **/
 
 #include "rogue/Directives.h"
 
@@ -130,7 +130,9 @@ uint32_t rpx::JtagDriver::cvtPerNs(Header reply) {
     unsigned rawVal = (reply >> XID_SHIFT) & 0xff;
     double tmp;
 
-    if (0 == rawVal) { return UNKNOWN_PERIOD; }
+    if (0 == rawVal) {
+        return UNKNOWN_PERIOD;
+    }
 
     tmp = static_cast<double>(rawVal) * 4.0 / 256.0;
 
@@ -148,7 +150,9 @@ unsigned rpx::JtagDriver::getMemDepth() {
 rpx::JtagDriver::Header rpx::JtagDriver::getHdr(uint8_t* buf) {
     Header hdr;
     memcpy(&hdr, buf, sizeof(hdr));
-    if (!isLE()) { hdr = ntohl(hdr); }
+    if (!isLE()) {
+        hdr = ntohl(hdr);
+    }
     return hdr;
 }
 
@@ -198,7 +202,9 @@ int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8
                 throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Protocol error"));
             }
             if (xid == XID_ANY || xid == getXid(hdr)) {
-                if (phdr) { *phdr = hdr; }
+                if (phdr) {
+                    *phdr = hdr;
+                }
                 return got;
             }
         } catch (rogue::GeneralError&) {}
@@ -258,7 +264,7 @@ uint32_t rpx::JtagDriver::setPeriodNs(uint32_t requestedPeriod) {
 
 void rpx::JtagDriver::sendVectors(uint64_t bits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo) {
     unsigned wsz            = getWordSize();
-    uint64_t bytesCeil = (bits + 8 - 1) / 8;
+    uint64_t bytesCeil      = (bits + 8 - 1) / 8;
     unsigned wholeWords     = bytesCeil / wsz;
     unsigned wholeWordBytes = wholeWords * wsz;
     unsigned wordCeilBytes  = ((bytesCeil + wsz - 1) / wsz) * wsz;

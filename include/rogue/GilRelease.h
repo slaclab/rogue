@@ -31,7 +31,7 @@ class GilRelease {
     PyThreadState* state_;
 #endif
 
- public:
+  public:
     GilRelease();
     ~GilRelease();
     void acquire();
