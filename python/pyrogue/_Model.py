@@ -433,7 +433,7 @@ class Int(UInt):
 
     def minValue(self):
         """ """
-        return -1 * ((2**(self.bitSize-1))-1)
+        return -1 * (2**(self.bitSize-1))
 
     def maxValue(self):
         """ """
