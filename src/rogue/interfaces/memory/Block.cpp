@@ -196,7 +196,12 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
             if (type == rim::Read || type == rim::Verify) {
                 if (index < 0 || index >= var->numValues_) {
                     lowByte  = var->lowTranByte_[0];
-                    highByte = var->highTranByte_[0];
+
+                    if ( var->numValues_ == 0 ) {
+                        highByte = var->highTranByte_[0];
+                    } else {
+                        highByte = var->highTranByte_[var->numValues_-1];
+                    }
                 } else {
                     lowByte  = var->lowTranByte_[index];
                     highByte = var->highTranByte_[index];
