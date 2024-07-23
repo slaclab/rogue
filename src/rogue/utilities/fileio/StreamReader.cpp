@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file reader utility.
  * ----------------------------------------------------------------------------
- * File          : StreamReader.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to read data files.
  *-----------------------------------------------------------------------------
@@ -113,9 +108,9 @@ bool ruf::StreamReader::nextFile() {
     if (fd_ >= 0) {
         ::close(fd_);
         fd_ = -1;
-    } else
+    } else {
         return (false);
-
+    }
     if (fdIdx_ == 0) return (false);
 
     fdIdx_++;

@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
- * File       : ControllerV2.cpp
- * Created    : 2018-02-02
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller V1
@@ -144,8 +141,9 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
             crc_[tmpDest] = CRC::Calculate(data, size - 4, crcTable_, crc_[tmpDest]);
 
         crcErr = (tmpCrc != crc_[tmpDest]);
-    } else
+    } else {
         crcErr = false;
+    }
 
     log_->debug("transportRx: Raw header: 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8
                 ", 0x%" PRIx8 ", 0x%" PRIx8 ", 0x%" PRIx8,
@@ -235,7 +233,9 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
         tranFrame_[tmpDest]->setLastUser(tmpLuser);
         transSof_[tmpDest]  = true;
         tranCount_[tmpDest] = 0;
-        if (app_[tmpDest]) { app_[tmpDest]->pushFrame(tranFrame_[tmpDest]); }
+        if (app_[tmpDest]) {
+            app_[tmpDest]->pushFrame(tranFrame_[tmpDest]);
+        }
         tranFrame_[tmpDest].reset();
 
         // Detect SSI error

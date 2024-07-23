@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Model Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Model Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -430,7 +433,7 @@ class Int(UInt):
 
     def minValue(self):
         """ """
-        return -1 * ((2**(self.bitSize-1))-1)
+        return -1 * (2**(self.bitSize-1))
 
     def maxValue(self):
         """ """

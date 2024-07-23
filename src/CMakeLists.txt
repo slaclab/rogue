@@ -1,9 +1,6 @@
 # ----------------------------------------------------------------------------
 # Title      : ROGUE CMAKE Control
 # ----------------------------------------------------------------------------
-# File       : src/CMakeLists.txt
-# Created    : 2018-02-27
-# ----------------------------------------------------------------------------
 # This file is part of the rogue software package. It is subject to 
 # the license terms in the LICENSE.txt file found in the top-level directory 
 # of this distribution and at: 

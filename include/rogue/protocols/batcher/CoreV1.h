@@ -1,13 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Batcher Version 1, Core
  * ----------------------------------------------------------------------------
- * File          : Core.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 10/26/2018
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
- *    AXI Batcher V1
+ *    SLAC AXI Batcher V1
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -26,6 +22,7 @@
 
 #include <memory>
 #include <thread>
+#include <vector>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"

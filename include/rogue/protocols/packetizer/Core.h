@@ -1,6 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Core Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Core
@@ -50,7 +50,7 @@ class Core {
     static void setup_python();
 
     //! Creator
-    Core(bool enSsi);
+    explicit Core(bool enSsi);
 
     //! Destructor
     ~Core();

@@ -1,13 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Client Class
  * ----------------------------------------------------------------------------
- * File       : Client.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Client
+ * RSSI Client Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

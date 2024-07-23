@@ -1,6 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : XVC Server Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Rogue implementation of the XVC Server
@@ -71,7 +71,7 @@ class Xvc : public rogue::interfaces::stream::Master,
     static void setup_python();
 
     //! Creator
-    Xvc(uint16_t port);
+    explicit Xvc(uint16_t port);
 
     //! Destructor
     ~Xvc();
@@ -85,14 +85,14 @@ class Xvc : public rogue::interfaces::stream::Master,
     // Receive frame
     void acceptFrame(std::shared_ptr<rogue::interfaces::stream::Frame> frame);
 
-    virtual unsigned long getMaxVectorSize() final;
+    uint64_t getMaxVectorSize() final;
 
-    virtual int xfer(uint8_t* txBuffer,
-                     unsigned txBytes,
-                     uint8_t* hdBuffer,
-                     unsigned hdBytes,
-                     uint8_t* rxBuffer,
-                     unsigned rxBytes) final;
+    int xfer(uint8_t* txBuffer,
+             unsigned txBytes,
+             uint8_t* hdBuffer,
+             unsigned hdBytes,
+             uint8_t* rxBuffer,
+             unsigned rxBytes) final;
 };
 
 // Convenience

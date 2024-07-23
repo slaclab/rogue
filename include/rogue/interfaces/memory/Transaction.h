@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Transaction
  * ----------------------------------------------------------------------------
- * File       : Transaction.h
- * Created    : 2019-03-08
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Transaction
@@ -27,6 +24,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <thread>
 
 #include "rogue/EnableSharedFromThis.h"
@@ -146,7 +144,7 @@ class Transaction : public rogue::EnableSharedFromThis<rogue::interfaces::memory
     static void setup_python();
 
     // Create a Transaction. Do not call directly. Only called from the Master class.
-    Transaction(struct timeval timeout);
+    explicit Transaction(struct timeval timeout);
 
     // Destroy the Transaction.
     ~Transaction();

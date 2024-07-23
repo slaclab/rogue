@@ -1,6 +1,7 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue Simple ZMQ Client for Rogue
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
+# Description:
 # To use in Matlab first you need the zmq package in your
 # python installation:
 #

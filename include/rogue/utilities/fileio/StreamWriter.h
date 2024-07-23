@@ -1,7 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility.
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
@@ -38,6 +38,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <thread>
 
 #include "rogue/EnableSharedFromThis.h"

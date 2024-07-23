@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Master
  * ----------------------------------------------------------------------------
- * File       : Constants.h
- * Created    : 2016-12-05
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory error and transaction constants.

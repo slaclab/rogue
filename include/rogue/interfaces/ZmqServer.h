@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
- * File       : ZmqServer.h
- * Created    : 2019-05-02
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -19,6 +19,7 @@
 #include "rogue/Directives.h"
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"

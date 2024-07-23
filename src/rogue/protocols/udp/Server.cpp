@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : UDP Server Class
  * ----------------------------------------------------------------------------
- * File       : Server.h
- * Created    : 2018-03-02
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * UDP Server
@@ -174,12 +171,10 @@ void rpu::Server::acceptFrame(ris::FramePtr frame) {
                                   timeout_.tv_sec,
                                   timeout_.tv_usec);
                 res = 0;
-            } else if ((res = sendmsg(fd_, &msg, 0)) < 0)
+            } else if ((res = sendmsg(fd_, &msg, 0)) < 0) {
                 udpLog_->warning("UDP Write Call Failed");
-        }
-
-        // Continue while write result was zero
-        while (res == 0);
+            }
+        } while (res == 0);  // Continue while write result was zero
     }
 }
 
@@ -211,9 +206,9 @@ void rpu::Server::runThread(std::weak_ptr<int> lockPtr) {
 
         if (res > 0) {
             // Message was too big
-            if (res > avail)
+            if (res > avail) {
                 udpLog_->warning("Receive data was too large. Dropping.");
-            else {
+            } else {
                 buff->setPayload(res);
                 sendFrame(frame);
             }

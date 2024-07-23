@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream interface slave
  * ----------------------------------------------------------------------------
- * File       : Slave.cpp
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface slave
@@ -88,7 +85,7 @@ void ris::Slave::acceptFrame(ris::FramePtr frame) {
         char buffer[1000];
 
         log_->critical("Got Size=%" PRIu32 ", Error=%" PRIu8 ", Data:", frame->getPayload(), frame->getError());
-        sprintf(buffer, "     ");
+        snprintf(buffer, sizeof(buffer), "     ");
 
         count = 0;
         for (it = frame->begin(); (count < debug_) && (it != frame->end()); ++it) {
@@ -98,7 +95,7 @@ void ris::Slave::acceptFrame(ris::FramePtr frame) {
             snprintf(buffer + strlen(buffer), 1000 - strlen(buffer), " 0x%.2x", val);
             if (((count + 1) % 8) == 0) {
                 log_->critical(buffer);
-                sprintf(buffer, "     ");
+                snprintf(buffer, sizeof(buffer), "     ");
             }
         }
 
@@ -117,7 +114,9 @@ void ris::SlaveWrap::acceptFrame(ris::FramePtr frame) {
             try {
                 pb(frame);
                 return;
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     ris::Slave::acceptFrame(frame);
@@ -143,20 +142,20 @@ uint64_t ris::Slave::getByteCount() {
 // Ensure passed frame is a single buffer
 bool ris::Slave::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
     // Frame is a single buffer
-    if (frame->bufferCount() == 1)
+    if (frame->bufferCount() == 1) {
         return true;
 
-    else if (!reqEn)
+    } else if (!reqEn) {
         return false;
 
-    else {
+    } else {
         uint32_t size        = frame->getPayload();
         ris::FramePtr nFrame = reqLocalFrame(size, true);
 
-        if (nFrame->bufferCount() != 1)
+        if (nFrame->bufferCount() != 1) {
             return false;
 
-        else {
+        } else {
             nFrame->setPayload(size);
 
             ris::FrameIterator srcIter = frame->begin();
@@ -205,10 +204,11 @@ bp::object ris::Slave::lshiftPy(bp::object p) {
     boost::python::extract<ris::MasterPtr> get_master(p);
 
     // Test extraction
-    if (get_master.check()) mst = get_master();
+    if (get_master.check()) {
+        mst = get_master();
 
-    // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
+        // Otherwise look for indirect call
+    } else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
         // Attempt to convert returned object to master pointer
         boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
 

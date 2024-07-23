@@ -1,13 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream frame container
  * ----------------------------------------------------------------------------
- * File       : Frame.h
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -184,16 +180,16 @@ void ris::Frame::setPayload(uint32_t pSize) {
         size_ += loc;
 
         // Beyond the fill point, empty buffer
-        if (lSize == 0) (*it)->setPayloadEmpty();
+        if (lSize == 0) {
+            (*it)->setPayloadEmpty();
 
-        // Size exists in current buffer
-        else if (lSize <= loc) {
+            // Size exists in current buffer
+        } else if (lSize <= loc) {
             (*it)->setPayload(lSize);
             lSize = 0;
-        }
 
-        // Size is beyond current buffer
-        else {
+            // Size is beyond current buffer
+        } else {
             lSize -= loc;
             (*it)->setPayloadFull();
         }
@@ -370,7 +366,7 @@ void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     }
 
     ris::FrameIterator beg = this->begin() + offset;
-    ris::fromFrame(beg, count, (uint8_t*)pyBuf.buf);
+    ris::fromFrame(beg, count, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
 
@@ -396,7 +392,7 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 
     minPayload(offset + count);
     ris::FrameIterator beg = this->begin() + offset;
-    ris::toFrame(beg, count, (uint8_t*)pyBuf.buf);
+    ris::toFrame(beg, count, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
 
@@ -437,7 +433,9 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     PyObject* obj = p.ptr();
 
     // Check that this is a PyArrayObject
-    if (!PyArray_Check(obj)) { throw(rogue::GeneralError("Frame::putNumpy", "Object is not a numpy array")); }
+    if (!PyArray_Check(obj)) {
+        throw(rogue::GeneralError("Frame::putNumpy", "Object is not a numpy array"));
+    }
 
     // Cast to an array object and check that the numpy array
     // data buffer is write-able and contiguous
@@ -445,7 +443,9 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     PyArrayObject* arr = reinterpret_cast<decltype(arr)>(obj);
     int flags          = PyArray_FLAGS(arr);
     bool ctg           = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
-    if (!ctg) { arr = PyArray_GETCONTIGUOUS(arr); }
+    if (!ctg) {
+        arr = PyArray_GETCONTIGUOUS(arr);
+    }
 
     // Get the number of bytes in both the source and destination buffers
     uint32_t size  = getSize();
@@ -471,7 +471,9 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     ris::toFrame(beg, count, src);
 
     // If were forced to make a temporary copy, release it
-    if (!ctg) { Py_XDECREF(arr); }
+    if (!ctg) {
+        Py_XDECREF(arr);
+    }
 
     return;
 }

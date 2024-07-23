@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : C++ API Bsp
  * ----------------------------------------------------------------------------
- * File       : Bsp.h
- * Created    : 2023-04-17
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      C++ API BSP (Board Support Package)
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -16,7 +16,10 @@
  **/
 #ifndef __ROGUE_INTERFACE_API_BSP_H__
 #define __ROGUE_INTERFACE_API_BSP_H__
+
 #include <boost/python.hpp>
+#include <memory>
+#include <string>
 #include <vector>
 
 namespace rogue {
@@ -36,7 +39,7 @@ class Bsp {
     static std::shared_ptr<rogue::interfaces::api::Bsp> create(std::string modName, std::string rootClass);
 
     //! Create the object
-    Bsp(boost::python::object obj);
+    explicit Bsp(boost::python::object obj);
     Bsp(std::string modName, std::string rootClass);
     ~Bsp();
 
