@@ -33,10 +33,10 @@ AlarmToInt = {'None':0, 'Good':0, 'AlarmMinor':1, 'AlarmMajor':2}
 
 
 def parseAddress(address):
-    # "rogue://index/<path>/<mode>"
+    # "rogue://index/<path>/<mode>/<index>"
     # or
-    # "rogue://host:port/<path>/<mode>"
-    # Mode: 'Value', 'Disp', 'Name' or 'Path'
+    # "rogue://host:port/<path>/<mode>/<index>"
+    # Mode: 'value', 'disp', 'name' or 'path'
     envList = os.getenv('ROGUE_SERVERS')
 
     if envList is None:
@@ -58,12 +58,13 @@ def parseAddress(address):
     port = int(data_server[1])
     path = data[1]
     mode = 'value' if (len(data) < 3) else data[2]
+    index = -1 if (len(data) < 4) else int(data[3])
 
-    return (host,port,path,mode)
+    return (host,port,path,mode,index)
 
 
 def nodeFromAddress(address):
-    host, port, path, mode = parseAddress(address)
+    host, port, path, mode, index = parseAddress(address)
     client = VirtualClient(host, port)
     return client.root.getNode(path)
 
@@ -75,7 +76,7 @@ class RogueConnection(PyDMConnection):
 
         self.app = QApplication.instance()
 
-        self._host, self._port, self._path, self._mode = parseAddress(channel.address)
+        self._host, self._port, self._path, self._mode, self._index = parseAddress(channel.address)
 
         self._cmd    = False
         self._int    = False
@@ -204,7 +205,7 @@ class RogueConnection(PyDMConnection):
                 self.new_value_signal[str].emit(self._node.path)
             else:
                 self.write_access_signal.emit(self._cmd or self._node.mode!='RO')
-                self._updateVariable(self._node.path,self._node.getVariableValue(read=False))
+                self._updateVariable(self._node.path,self._node.getVariableValue(read=False, index=self._index))
 
         else:
             self.new_value_signal[str].emit(self._node.name)
