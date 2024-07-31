@@ -487,7 +487,7 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         }
 
         // Compute total bit range of accessed bytes
-        varBytes_      = highTranByte_[numValues_ - 1];
+        varBytes_      = highTranByte_[numValues_ - 1] + 1;
         staleHighByte_ = highTranByte_[numValues_ - 1];
     }
 
