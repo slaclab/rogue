@@ -154,7 +154,7 @@ class RogueConnection(PyDMConnection):
         if self._cmd:
             self._node.__call__(val)
         else:
-            self._node.setDisp(val)
+            self._node.setDisp(val,index=self._index)
 
 
     def add_listener(self, channel):
