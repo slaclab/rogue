@@ -115,6 +115,10 @@ class RogueConnection(PyDMConnection):
 
 
     def _updateVariable(self,path,varValue):
+
+        if self._index != -1:
+            varValue = self._node.getVariableValue(read=False, index=self._index)
+
         if self._mode == 'name':
             self.new_value_signal[str].emit(self._node.name)
         elif self._mode == 'path':

@@ -19,7 +19,7 @@
      <item>
       <widget class="QTabWidget" name="tabWidget">
        <property name="currentIndex">
-        <number>4</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="tab_6">
         <property name="sizePolicy">
@@ -34,6 +34,16 @@
         <layout class="QVBoxLayout" name="verticalLayout_12">
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_11">
+           <item>
+            <widget class="PyDMLineEdit" name="PyDMLineEdit">
+             <property name="toolTip">
+              <string/>
+             </property>
+             <property name="channel" stdset="0">
+              <string>rogue://0/root.AxiVersion.TestListA/disp/3</string>
+             </property>
+            </widget>
+           </item>
            <item>
             <widget class="DebugTree" name="DebugTree_2">
              <property name="sizePolicy">
@@ -105,7 +115,7 @@
            </property>
            <property name="yAxes">
             <stringlist>
-             <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Test Plot Scatter&quot;, &quot;minRange&quot;: -1.0, &quot;maxRange&quot;: 1.0, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
+             <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Test Plot Scatter&quot;, &quot;minRange&quot;: -1.04, &quot;maxRange&quot;: 1.04, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
             </stringlist>
            </property>
            <property name="curves">
@@ -125,7 +135,7 @@
            </property>
            <property name="yAxes">
             <stringlist>
-             <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Test Plot Time&quot;, &quot;minRange&quot;: -1.0, &quot;maxRange&quot;: 1.0, &quot;autoRange&quot;: true, &quot;logMode&quot;: null}</string>
+             <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Test Plot Time&quot;, &quot;minRange&quot;: -1.04, &quot;maxRange&quot;: 1.04, &quot;autoRange&quot;: true, &quot;logMode&quot;: null}</string>
             </stringlist>
            </property>
            <property name="curves">
@@ -151,7 +161,7 @@
            </property>
            <property name="yAxes">
             <stringlist>
-             <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Test Array Waveform&quot;, &quot;minRange&quot;: -1.0, &quot;maxRange&quot;: 1.0, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
+             <string>{&quot;name&quot;: &quot;Axis 1&quot;, &quot;orientation&quot;: &quot;left&quot;, &quot;label&quot;: &quot;Test Array Waveform&quot;, &quot;minRange&quot;: -1.04, &quot;maxRange&quot;: 1.04, &quot;autoRange&quot;: true, &quot;logMode&quot;: false}</string>
             </stringlist>
            </property>
            <property name="curves">
@@ -297,6 +307,11 @@
    <extends>QFrame</extends>
    <header>pydm.widgets.frame</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PyDMLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>pydm.widgets.line_edit</header>
   </customwidget>
  </customwidgets>
  <resources/>
