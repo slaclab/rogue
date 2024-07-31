@@ -127,8 +127,8 @@ def VariableWait(varList, testFunction, timeout=0):
 
 class VariableValue(object):
     """ """
-    def __init__(self, var, read=False):
-        self.value     = var.get(read=read)
+    def __init__(self, var, read=False, index=-1):
+        self.value     = var.get(read=read,index=index)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
@@ -572,7 +572,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def getVariableValue(self,read=True):
+    def getVariableValue(self,read=True,index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -582,6 +582,8 @@ class BaseVariable(pr.Node):
         ----------
         read : bool
              (Default value = True)
+        index : int
+             (Default value = -1)
 
         Returns
         -------
@@ -590,7 +592,7 @@ class BaseVariable(pr.Node):
             Listeners will be informed of the update.
 
         """
-        return VariableValue(self,read=read)
+        return VariableValue(self,read=read,index=index)
 
     @pr.expose
     def value(self, index=-1):
