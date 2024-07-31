@@ -518,9 +518,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                 if ((*vit)->overlapEn_) {
                     setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
 
-                    // Otherwise add to exclusive mask and check for existing mapping
+                // Otherwise add to exclusive mask and check for existing mapping
                 } else {
-
                     if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
                         throw(rogue::GeneralError::create(
                             "Block::addVariables",
