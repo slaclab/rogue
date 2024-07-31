@@ -16,7 +16,7 @@ import rogue.interfaces.memory
 import numpy as np
 import random
 
-rogue.Logging.setLevel(rogue.Logging.Debug)
+#rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
