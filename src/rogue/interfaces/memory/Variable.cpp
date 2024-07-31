@@ -470,7 +470,7 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         highTranByte_[0] = varBytes_ - 1;
         staleHighByte_   = highTranByte_[0];
 
-        // List variable
+    // List variable
     } else {
         for (x = 0; x < numValues_; x++) {
             lowTranByte_[x] =
@@ -484,10 +484,11 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
                                              (static_cast<float>(minSize) * 8.0))) *
                                    minSize -
                                1;
+            printf("Idx = %i, low = %i, high = %i\n", x, lowTranByte_[x], highTranByte_[x]);
         }
 
         // Compute total bit range of accessed bytes
-        varBytes_      = highTranByte_[numValues_ - 1] - lowTranByte_[0] + 1;
+        varBytes_      = highTranByte_[numValues_ - 1];
         staleHighByte_ = highTranByte_[numValues_ - 1];
     }
 

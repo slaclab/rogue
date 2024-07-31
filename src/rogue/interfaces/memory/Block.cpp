@@ -511,7 +511,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     (*vit)->verifyEn_);
             }
 
-            // List variables
+        // List variables
         } else {
             for (x = 0; x < (*vit)->numValues_; x++) {
                 // Variable allows overlaps, add to overlap enable mask
@@ -520,6 +520,9 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
 
                     // Otherwise add to exclusive mask and check for existing mapping
                 } else {
+
+                    printf("Overlap Check size = %i, index = %i, base = %i, bits = %i\n", size_, x, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+
                     if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
                         throw(rogue::GeneralError::create(
                             "Block::addVariables",
