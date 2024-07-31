@@ -35,16 +35,6 @@
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <item>
-            <widget class="PyDMLineEdit" name="PyDMLineEdit">
-             <property name="toolTip">
-              <string/>
-             </property>
-             <property name="channel" stdset="0">
-              <string>rogue://0/root.AxiVersion.TestListA/disp/3</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <widget class="DebugTree" name="DebugTree_2">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -307,11 +297,6 @@
    <extends>QFrame</extends>
    <header>pydm.widgets.frame</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>PyDMLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>pydm.widgets.line_edit</header>
   </customwidget>
  </customwidgets>
  <resources/>
