@@ -484,7 +484,6 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
                                              (static_cast<float>(minSize) * 8.0))) *
                                    minSize -
                                1;
-            printf("Idx = %i, low = %i, high = %i\n", x, lowTranByte_[x], highTranByte_[x]);
         }
 
         // Compute total bit range of accessed bytes
