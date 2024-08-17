@@ -202,7 +202,7 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
         if (res > 0) {
             // Message was too big
             if (res > avail) {
-                udpLog_->warning("Receive data was too large. Rx=%i, avail=%i Dropping.",res,avail);
+                udpLog_->warning("Receive data was too large. Rx=%i, avail=%i Dropping.", res, avail);
             } else {
                 buff->setPayload(res);
                 sendFrame(frame);
