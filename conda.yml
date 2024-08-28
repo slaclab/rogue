@@ -27,3 +27,4 @@ dependencies:
   - matplotlib
   - pytest
   - pytest-cov
+  - pyqt=5.12
