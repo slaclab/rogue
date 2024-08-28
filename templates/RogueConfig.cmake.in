@@ -26,8 +26,9 @@ set(NO_PYTHON   @NO_PYTHON@)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON )
-   # Search for newest version of Python3 first
-   set(Python3_FIND_STRATEGY "VERSION")
+
+   # Find newest python interpreter first
+   set(Python3_FIND_STRATEGY "LOCATION")
    find_package(Python3 QUIET REQUIRED COMPONENTS Interpreter Development)
 
    # Find Numpy
@@ -49,10 +50,6 @@ if ( NOT NO_PYTHON )
    # Hint for boost on anaconda
    if (DEFINED ENV{CONDA_PREFIX})
       set(Boost_ROOT $ENV{CONDA_PREFIX})
-
-   # SLAC AFS custom path
-   elseif (DEFINED ENV{BOOST_PATH})
-      set(Boost_ROOT $ENV{BOOST_PATH})
    endif()
 
    # libboost_python3.7 style libraries
@@ -88,6 +85,7 @@ if ( NOT NO_PYTHON )
       message("")
       message(FATAL_ERROR "Failed to find boost libraries!")
    endif()
+
 else()
    add_definitions( -DNO_PYTHON )
 endif()

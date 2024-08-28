@@ -33,7 +33,7 @@ class WriteVariable(ExternalTool):
         ExternalTool.__init__(self, icon=icon, name=name, group=group, use_with_widgets=use_with_widgets)
 
     def call(self, channels, sender):
-        addr, port, path, mode = parseAddress(channels[0].address)
+        addr, port, path, mode, index = parseAddress(channels[0].address)
         self._client = VirtualClient(addr, port)
         node = self._client.root.getNode(path)
 

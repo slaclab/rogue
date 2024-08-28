@@ -18,8 +18,8 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 
 .. code::
 
-   ROGUE_VERSION = "6.1.4"
-   ROGUE_MD5SUM  = "659c7f5c894f6915e2bd15f922cdab3b"
+   ROGUE_VERSION = "6.4.0"
+   ROGUE_MD5SUM  = "acbd2b178af84776efbd78cdf3f5db7d"
 
    SUMMARY = "Recipe to build Rogue"
    HOMEPAGE ="https://github.com/slaclab/rogue"
@@ -84,14 +84,14 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
       install -m 0755 ${S}/python/rogue.so ${D}${PYTHON_SITEPACKAGES_DIR}
    }
 
-Update the ROGUE_VERSION line for an updated version when appropriate (min version is 6.1.3). You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
+Update the ROGUE_VERSION line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
 
 .. code::
 
    > wget https://github.com/slaclab/rogue/archive/vx.x.x.tar.gz
    > md5sum vx.x.x.tar.gz
 
-If your rogue application requires additional python libraries you can add them to the DEPENDS += line in the above text.
+RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text. 
 
 To enable compilation and installation of the rogue package in your petalinux project execute the following command:
 
