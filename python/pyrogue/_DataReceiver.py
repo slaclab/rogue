@@ -38,27 +38,31 @@ class DataReceiver(pr.Device,ris.Slave):
 
         self.add(pr.LocalVariable(name='FrameCount',
                                   value=0,
+                                  mode = 'RO',
                                   pollInterval=1,
                                   description='Frame Rx Counter'))
 
         self.add(pr.LocalVariable(name='ErrorCount',
                                   value=0,
+                                  mode = 'RO',
                                   pollInterval=1,
                                   description='Frame Error Counter'))
 
         self.add(pr.LocalVariable(name='ByteCount',
                                   value=0,
+                                  mode = 'RO',
                                   pollInterval=1,
                                   description='Byte Rx Counter'))
 
         self.add(pr.LocalVariable(name='Updated',
                                   value=False,
+                                  mode = 'RO',
                                   description='Data has been updated flag'))
 
         self.add(pr.LocalVariable(name='Data',
                                   typeStr=typeStr,
                                   disp='',
-                                  groups=['NoState','NoStream'],
+                                  groups=['NoState','NoStream', 'NoConfig'],
                                   value=value,
                                   hidden=hideData,
                                   description='Data Frame Container'))
