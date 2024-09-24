@@ -1,4 +1,6 @@
 #-----------------------------------------------------------------------------
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
 # This file is part of the rogue library utilities. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:

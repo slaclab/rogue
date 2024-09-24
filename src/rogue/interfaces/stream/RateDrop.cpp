@@ -1,11 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Stream Interface Rate Drop
  * ----------------------------------------------------------------------------
- * File          : RateDrop.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 08/25/2020
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Drops frames at a specified rate.
  *-----------------------------------------------------------------------------
@@ -35,7 +31,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -90,10 +86,9 @@ void ris::RateDrop::acceptFrame(ris::FramePtr frame) {
             sendFrame(frame);
             dropCount_ = 0;
         }
-    }
 
-    // Dropping based upon time
-    else {
+        // Dropping based upon time
+    } else {
         gettimeofday(&currTime, NULL);
 
         if (timercmp(&currTime, &(nextPeriod_), >)) {

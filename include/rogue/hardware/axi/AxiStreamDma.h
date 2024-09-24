@@ -1,6 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : AxiStreamDma Interface Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      AxiStreamDma Interface Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -19,6 +22,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"
@@ -32,7 +36,7 @@ namespace axi {
 //! Storage class for shared memory buffers
 class AxiStreamDmaShared {
   public:
-    AxiStreamDmaShared(std::string path);
+    explicit AxiStreamDmaShared(std::string path);
 
     //! Shared FD
     int32_t fd;
@@ -199,6 +203,51 @@ class AxiStreamDma : public rogue::interfaces::stream::Master, public rogue::int
 
     // Process Buffer Return
     void retBuffer(uint8_t* data, uint32_t meta, uint32_t rawSize);
+
+    //! Get the DMA Driver's Git Version
+    std::string getGitVersion();
+
+    //! Get the DMA Driver's API Version
+    uint32_t getApiVersion();
+
+    //! Get the size of buffers (RX/TX)
+    uint32_t getBuffSize();
+
+    //! Get the number of RX buffers
+    uint32_t getRxBuffCount();
+
+    //! Get RX buffer in User count
+    uint32_t getRxBuffinUserCount();
+
+    //! Get RX buffer in HW count
+    uint32_t getRxBuffinHwCount();
+
+    //! Get RX buffer in Pre-HW Queue count
+    uint32_t getRxBuffinPreHwQCount();
+
+    //! Get RX buffer in SW Queue count
+    uint32_t getRxBuffinSwQCount();
+
+    //! Get RX buffer missing count
+    uint32_t getRxBuffMissCount();
+
+    //! Get the number of TX buffers
+    uint32_t getTxBuffCount();
+
+    //! Get TX buffer in User count
+    uint32_t getTxBuffinUserCount();
+
+    //! Get TX buffer in HW count
+    uint32_t getTxBuffinHwCount();
+
+    //! Get TX buffer in Pre-HW Queue count
+    uint32_t getTxBuffinPreHwQCount();
+
+    //! Get TX buffer in SW Queue count
+    uint32_t getTxBuffinSwQCount();
+
+    //! Get TX buffer missing count
+    uint32_t getTxBuffMissCount();
 };
 
 //! Alias for using shared pointer as AxiStreamDmaPtr

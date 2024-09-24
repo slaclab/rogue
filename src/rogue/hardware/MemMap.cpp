@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Raw Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : MemMap.cpp
- * Created    : 2019-11-18
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      Raw Memory Mapped Access
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -40,7 +40,7 @@ namespace rh  = rogue::hardware;
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -60,7 +60,8 @@ rh::MemMap::MemMap(uint64_t base, uint32_t size) : rim::Slave(4, 0xFFFFFFFF) {
 
     if (fd_ < 0) throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to open device file: %s", MAP_DEVICE));
 
-    if ((map_ = (uint8_t*)mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, base)) == (void*)-1)
+    if ((map_ = reinterpret_cast<uint8_t*>(mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd_, base))) ==
+        reinterpret_cast<void*>(-1))
         throw(rogue::GeneralError::create("MemMap::MemMap", "Failed to map memory to user space."));
 
     log_->debug("Created map to 0x%" PRIx64 " with size 0x%" PRIx32, base, size);
@@ -81,7 +82,7 @@ void rh::MemMap::stop() {
         threadEn_ = false;
         queue_.stop();
         thread_->join();
-        munmap((void*)map_, size_);
+        munmap(reinterpret_cast<void*>(const_cast<uint8_t*>(map_)), size_);
         ::close(fd_);
     }
 }
@@ -129,8 +130,8 @@ void rh::MemMap::runThread() {
                 continue;
             }
 
-            tPtr = (uint32_t*)tran->begin();
-            mPtr = (uint32_t*)(map_ + tran->address());
+            tPtr = reinterpret_cast<uint32_t*>(tran->begin());
+            mPtr = const_cast<uint32_t*>(reinterpret_cast<volatile uint32_t*>(map_ + tran->address()));
 
             while (count != tran->size()) {
                 // Write or post

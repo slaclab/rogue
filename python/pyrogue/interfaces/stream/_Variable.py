@@ -1,5 +1,5 @@
 #-----------------------------------------------------------------------------
-# Title      : Variable Update Streamer
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
 # Class to generate variable update streams

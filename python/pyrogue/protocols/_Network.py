@@ -1,8 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue protocols / Network wrappers
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
 # Description:
-# Module containing protocol modules
+#       PyRogue protocols / Network wrappers
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -28,10 +28,10 @@ class UdpRssiPack(pr.Device):
 
         if server:
             self._udp  = rogue.protocols.udp.Server(port,jumbo)
-            self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload())
+            self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload()-8)
         else:
             self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
-            self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload())
+            self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload()-8)
 
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True,enSsi) # ibCRC = False, obCRC = True

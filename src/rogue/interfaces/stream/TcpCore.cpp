@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream Network Core
  * ----------------------------------------------------------------------------
- * File       : TcpCore.h
- * Created    : 2019-01-30
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream Network Core
@@ -38,7 +35,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -92,8 +89,8 @@ ris::TcpCore::TcpCore(std::string addr, uint16_t port, bool server) {
 
     // Server mode
     if (server) {
-        this->pullAddr_.append(std::to_string(static_cast<long long>(port)));
-        this->pushAddr_.append(std::to_string(static_cast<long long>(port + 1)));
+        this->pullAddr_.append(std::to_string(static_cast<int64_t>(port)));
+        this->pushAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
 
         this->bridgeLog_->debug("Creating pull server port: %s", this->pullAddr_.c_str());
 
@@ -112,12 +109,11 @@ ris::TcpCore::TcpCore(std::string addr, uint16_t port, bool server) {
                                               " at address %s, another process may be using this port",
                                               port + 1,
                                               addr.c_str()));
-    }
 
-    // Client mode
-    else {
-        this->pullAddr_.append(std::to_string(static_cast<long long>(port + 1)));
-        this->pushAddr_.append(std::to_string(static_cast<long long>(port)));
+        // Client mode
+    } else {
+        this->pullAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+        this->pushAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
         this->bridgeLog_->debug("Creating pull client port: %s", this->pullAddr_.c_str());
 
@@ -203,7 +199,7 @@ void ris::TcpCore::acceptFrame(ris::FramePtr frame) {
 
     // Copy data
     ris::FrameIterator iter = frame->begin();
-    data                    = (uint8_t*)zmq_msg_data(&(msg[3]));
+    data                    = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
     ris::fromFrame(iter, frame->getPayload(), data);
 
     // Send data
@@ -248,8 +244,9 @@ void ris::TcpCore::runThread() {
                 more     = 0;
                 moreSize = 8;
                 zmq_getsockopt(this->zmqPull_, ZMQ_RCVMORE, &more, &moreSize);
-            } else
+            } else {
                 more = 1;
+            }
         } while (threadEn_ && more);
 
         // Proper message received
@@ -267,7 +264,7 @@ void ris::TcpCore::runThread() {
             std::memcpy(&err, zmq_msg_data(&(msg[2])), 1);
 
             // Get message info
-            data = (uint8_t*)zmq_msg_data(&(msg[3]));
+            data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[3])));
             size = zmq_msg_size(&(msg[3]));
 
             // Generate frame

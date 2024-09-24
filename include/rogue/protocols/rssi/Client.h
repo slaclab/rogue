@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Client Class
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
- * UDP Client
+ *      RSSI Client Class
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -50,7 +50,7 @@ class Client {
     static void setup_python();
 
     //! Creator
-    Client(uint32_t segSize);
+    explicit Client(uint32_t segSize);
 
     //! Destructor
     ~Client();

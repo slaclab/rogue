@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Master
  * ----------------------------------------------------------------------------
- * File       : Master.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-20
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory master interface.
@@ -26,13 +22,14 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <thread>
 #include <vector>
 
 #include "rogue/Logging.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {

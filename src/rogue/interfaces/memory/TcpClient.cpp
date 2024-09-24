@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Client Network Bridge
  * ----------------------------------------------------------------------------
- * File       : TcpClient.cpp
- * Created    : 2019-01-30
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Client Network Bridge
@@ -38,7 +35,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -75,8 +72,8 @@ rim::TcpClient::TcpClient(std::string addr, uint16_t port) : rim::Slave(4, 0xFFF
     if (zmq_setsockopt(this->zmqReq_, ZMQ_IMMEDIATE, &opt, sizeof(int32_t)) != 0)
         throw(rogue::GeneralError("memory::TcpClient::TcpClient", "Failed to set socket immediate"));
 
-    this->respAddr_.append(std::to_string(static_cast<long long>(port + 1)));
-    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
+    this->respAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+    this->reqAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
     this->bridgeLog_->debug("Creating response client port: %s", this->respAddr_.c_str());
 
@@ -175,11 +172,11 @@ void rim::TcpClient::doTransaction(rim::TransactionPtr tran) {
         msgCnt = 5;
         zmq_msg_init_size(&(msg[4]), size);
         std::memcpy(zmq_msg_data(&(msg[4])), tran->begin(), size);
-    }
 
-    // Read transaction
-    else
+        // Read transaction
+    } else {
         msgCnt = 4;
+    }
 
     bridgeLog_->debug("Requested transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32 ", type=%" PRIu32
                       ", cnt=%" PRIu32 ", port: %s",
@@ -237,8 +234,9 @@ void rim::TcpClient::runThread() {
                 more     = 0;
                 moreSize = 8;
                 zmq_getsockopt(this->zmqResp_, ZMQ_RCVMORE, &more, &moreSize);
-            } else
+            } else {
                 more = 1;
+            }
         } while (threadEn_ && more);
 
         // Proper message received
@@ -258,7 +256,7 @@ void rim::TcpClient::runThread() {
             std::memcpy(&type, zmq_msg_data(&(msg[3])), 4);
 
             memset(result, 0, 1000);
-            std::strncpy(result, (char*)zmq_msg_data(&(msg[5])), zmq_msg_size(&(msg[5])));
+            std::strncpy(result, reinterpret_cast<char*>(zmq_msg_data(&(msg[5]))), zmq_msg_size(&(msg[5])));
 
             // Find Transaction
             if ((tran = getTransaction(id)) == NULL) {

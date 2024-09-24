@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility.
  * ----------------------------------------------------------------------------
- * File          : StreamWriter.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
@@ -58,7 +53,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -177,7 +172,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
         // Buffer is enabled
         if (size != 0) {
             // Create new buffer
-            if ((buffer_ = (uint8_t*)malloc(size)) == NULL)
+            if ((buffer_ = reinterpret_cast<uint8_t*>(malloc(size))) == NULL)
                 throw(rogue::GeneralError::create("StreamWriter::setBufferSize",
                                                   "Failed to allocate buffer with size = %" PRIu32,
                                                   size));
@@ -311,10 +306,8 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
         }
         currSize_ += size;
         totSize_ += size;
-    }
-
-    // Append to buffer if non zero
-    else if (buffSize_ > 0 && size > 0) {
+        // Append to buffer if non zero
+    } else if (buffSize_ > 0 && size > 0) {
         std::memcpy(buffer_ + currBuffer_, data, size);
         currBuffer_ += size;
     }

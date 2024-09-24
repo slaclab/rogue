@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory slave emulator
  * ----------------------------------------------------------------------------
- * File       : Emulator.pp
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * A memory space emulator. Allows user to test a Rogue tree without real hardware.
@@ -35,7 +33,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -46,7 +44,11 @@ rim::EmulatePtr rim::Emulate::create(uint32_t min, uint32_t max) {
 }
 
 //! Create an block
-rim::Emulate::Emulate(uint32_t min, uint32_t max) : Slave(min, max) {}
+rim::Emulate::Emulate(uint32_t min, uint32_t max) : Slave(min, max) {
+    totAlloc_ = 0;
+    totSize_  = 0;
+    log_      = rogue::Logging::create("memory.Emulate");
+}
 
 //! Destroy a block
 rim::Emulate::~Emulate() {
@@ -82,17 +84,21 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
             size -= size4k;
             addr += size4k;
 
-            if (memMap_.find(addr4k) == memMap_.end()) memMap_.insert(std::make_pair(addr4k, (uint8_t*)malloc(0x1000)));
+            if (memMap_.find(addr4k) == memMap_.end()) {
+                memMap_.insert(std::make_pair(addr4k, reinterpret_cast<uint8_t*>(malloc(0x1000))));
+                totSize_ += 0x1000;
+                totAlloc_++;
+                log_->debug("Allocating block at 0x%x. Total Blocks %i, Total Size = %i", addr4k, totAlloc_, totSize_);
+            }
 
             // Write or post
             if (tran->type() == rogue::interfaces::memory::Write || tran->type() == rogue::interfaces::memory::Post) {
                 // printf("Write data to 4k=0x%" PRIx64 ", offset=0x%" PRIx64 ", size=%" PRIu64 "\n", addr4k, off4k,
                 // size4k);
                 memcpy(memMap_[addr4k] + off4k, ptr, size4k);
-            }
 
-            // Read or verify
-            else {
+                // Read or verify
+            } else {
                 // printf("Read data from 4k=0x%" PRIx64 ", offset=0x%" PRIx64 ", size=%" PRIu64 "\n", addr4k, off4k,
                 // size4k);
                 memcpy(ptr, memMap_[addr4k] + off4k, size4k);

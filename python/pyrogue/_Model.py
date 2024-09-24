@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Model Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Model Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -430,7 +433,7 @@ class Int(UInt):
 
     def minValue(self):
         """ """
-        return -1 * ((2**(self.bitSize-1))-1)
+        return -1 * (2**(self.bitSize-1))
 
     def maxValue(self):
         """ """
@@ -699,7 +702,7 @@ class Fixed(Model):
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
-        self.name = f'Fixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
+        self.name = f'Fixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
 
 class UFixed(Model):
@@ -721,5 +724,5 @@ class UFixed(Model):
 
     def __init__(self, bitSize, binPoint):
         super().__init__(bitSize,binPoint)
-        self.name = f'UFixed_{self.bitSize-self.binPoint-1}_{self.binPoint}'
+        self.name = f'UFixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)

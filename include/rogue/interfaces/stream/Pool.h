@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream memory pool
  * ----------------------------------------------------------------------------
- * File       : Pool.h
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream memory pool
@@ -24,6 +21,7 @@
 #include <stdint.h>
 
 #include <memory>
+#include <queue>
 #include <thread>
 
 #include "rogue/EnableSharedFromThis.h"

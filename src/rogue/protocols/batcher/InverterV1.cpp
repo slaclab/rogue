@@ -1,19 +1,18 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Inverter Version 1
  * ----------------------------------------------------------------------------
- * File          : InverterV1.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 10/26/2018
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      SLAC Inverter Version 1
+ * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
  * of this distribution and at:
- * https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
  * No part of the rogue software platform, including this file, may be
  * copied, modified, propagated, or distributed except according to the terms
  * contained in the LICENSE.txt file.
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
  **/
 #include "rogue/Directives.h"
 
@@ -39,7 +38,7 @@ namespace rpb = rogue::protocols::batcher;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

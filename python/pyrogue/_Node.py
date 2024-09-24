@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Node Classes
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Node Classes
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -154,6 +157,7 @@ class Node(object):
     -------
 
     """
+    _nodeCount = 0
 
     def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
         """
@@ -183,6 +187,7 @@ class Node(object):
         -------
 
         """
+        pr.Node._nodeCount += 1
 
         # Public attributes
         self._name        = name
@@ -212,6 +217,10 @@ class Node(object):
 
     def __repr__(self):
         return f'{self.__class__} - {self.path}'
+
+    @property
+    def nodeCount(self):
+        return pr.Node._nodeCount
 
     @property
     def name(self):
@@ -559,7 +568,7 @@ class Node(object):
     def nodeList(self):
         """Get a recursive list of nodes."""
         lst = []
-        for key,value in self.nodes.items():
+        for key,value in self._nodes.items():
             lst.append(value)
             lst.extend(value.nodeList)
         return lst

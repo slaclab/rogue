@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : AXI DMA Interface Class
  * ----------------------------------------------------------------------------
- * File       : AxiStreamDma.h
- * Created    : 2017-03-21
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Class for interfacing to AxiStreamDma Driver.
@@ -38,7 +35,7 @@ namespace rha = rogue::hardware::axi;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -63,10 +60,9 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     if ((it = sharedBuffers_.find(path)) != sharedBuffers_.end()) {
         ret = it->second;
         log->debug("Reusing existing shared file descriptor for %s", path.c_str());
-    }
 
-    // Create new record
-    else {
+        // Create new record
+    } else {
         ret = std::make_shared<rha::AxiStreamDmaShared>(path);
         log->debug("Opening new shared file descriptor for %s", path.c_str());
     }
@@ -88,20 +84,30 @@ rha::AxiStreamDmaSharedPtr rha::AxiStreamDma::openShared(std::string path, rogue
     if ((ret->fd = ::open(path.c_str(), O_RDWR)) < 0)
         throw(rogue::GeneralError::create("AxiStreamDma::openShared", "Failed to open device file: %s", path.c_str()));
 
-    if (dmaCheckVersion(ret->fd) < 0) {
+    // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
+    if (dmaGetApiVersion(ret->fd) < 0x06) {
         ::close(ret->fd);
         throw(rogue::GeneralError("AxiStreamDma::openShared",
-                                  "Bad kernel driver version detected. Please re-compile kernel driver.\n \
-      Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
-      To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
-      \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
+                                  R"(Bad kernel driver version detected. Please re-compile kernel driver.
+          Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API.
+          To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:
+          \t\taes-stream-driver = v5.16.0 (or later)
+          \t\trogue = v5.13.0 (or later))"));
+    }
+
+    // Check for mismatch in the rogue/loaded_driver API versions
+    if (dmaCheckVersion(ret->fd) < 0) {
+        ::close(ret->fd);
+        throw(rogue::GeneralError(
+            "AxiStreamDma::openShared",
+            "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
     }
 
     // Result may be that rawBuff = NULL
     // Should this just be a warning?
     ret->rawBuff = dmaMapDma(ret->fd, &(ret->bCount), &(ret->bSize));
     if (ret->rawBuff == NULL) {
-        ret->bCount = ioctl(ret->fd, DMA_Get_Buff_Count, 0);
+        ret->bCount = dmaGetBuffCount(ret->fd);
 
         // New map limit should be 8K more than the total number of buffers we require
         uint32_t mapSize = ret->bCount + 8192;
@@ -124,7 +130,9 @@ void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
     desc->openCount--;
 
     if (desc->openCount == 0) {
-        if (desc->rawBuff != NULL) { dmaUnMapDma(desc->fd, desc->rawBuff); }
+        if (desc->rawBuff != NULL) {
+            dmaUnMapDma(desc->fd, desc->rawBuff);
+        }
 
         ::close(desc->fd);
         desc->fd      = -1;
@@ -271,10 +279,9 @@ ris::FramePtr rha::AxiStreamDma::acceptReq(uint32_t size, bool zeroCopyEn) {
     // Zero copy is disabled. Allocate from memory.
     if (zeroCopyEn == false || desc_->rawBuff == NULL) {
         frame = reqLocalFrame(size, false);
-    }
 
-    // Allocate zero copy buffers from driver
-    else {
+        // Allocate zero copy buffers from driver
+    } else {
         rogue::GilRelease noGil;
 
         // Create empty frame
@@ -345,17 +352,17 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
         if (it == frame->beginBuffer()) {
             fuser = frame->getFirstUser();
             if (enSsi_) fuser |= 0x2;
-        } else
+        } else {
             fuser = 0;
+        }
 
         // Last Buffer
         if (it == (frame->endBuffer() - 1)) {
             cont  = 0;
             luser = frame->getLastUser();
-        }
 
-        // Continue flag is set if this is not the last (*it)er
-        else {
+            // Continue flag is set if this is not the last (*it)er
+        } else {
             cont  = 1;
             luser = 0;
         }
@@ -382,10 +389,9 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
                 meta |= 0x40000000;
                 (*it)->setMeta(meta);
             }
-        }
 
-        // Write to pgp with (*it)er copy in driver
-        else {
+            // Write to pgp with (*it)er copy in driver
+        } else {
             // Keep trying since select call can fire
             // but write fails because we did not win the (*it)er lock
             do {
@@ -410,10 +416,7 @@ void rha::AxiStreamDma::acceptFrame(ris::FramePtr frame) {
                         throw(rogue::GeneralError("AxiStreamDma::acceptFrame", "AXIS Write Call Failed!!!!"));
                     }
                 }
-            }
-
-            // Exit out if return flag was set false
-            while (res == 0);
+            } while (res == 0);  // Exit out if return flag was set false
         }
     }
 
@@ -443,8 +446,8 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
             if ( count > 100 ) count = 100;
             for (x=0; x < count; x++) ret[x] = retQueue_.pop() & 0x3FFFFFFF;
 
-            if ( dmaRetIndexes(fd_,count,ret) < 0 )
-               throw(rogue::GeneralError("AxiStreamDma::retBuffer","AXIS Return Buffer Call Failed!!!!"));
+            if ( dmaRetIndexes(fd_, count, ret) < 0 )
+               throw(rogue::GeneralError("AxiStreamDma::retBuffer", "AXIS Return Buffer Call Failed!!!!"));
 
             decCounter(size*count);
             printf("Return done\n");
@@ -457,11 +460,11 @@ void rha::AxiStreamDma::retBuffer(uint8_t* data, uint32_t meta, uint32_t size) {
 #endif
         }
         decCounter(size);
-    }
 
-    // Buffer is allocated from Pool class
-    else
+        // Buffer is allocated from Pool class
+    } else {
         Pool::retBuffer(data, meta, size);
+    }
 }
 
 //! Run thread
@@ -515,10 +518,9 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
                     rxCount = rxSize[0];
                 else
                     rxCount = 1;
-            }
 
-            // Zero copy read
-            else {
+                // Zero copy read
+            } else {
                 // Attempt read, dest is not needed since only one lane/vc is open
                 rxCount = dmaReadBulkIndex(fd_, RxBufferCount, rxSize, meta, rxFlags, rxError, NULL);
 
@@ -566,6 +568,81 @@ void rha::AxiStreamDma::runThread(std::weak_ptr<int> lockPtr) {
     }
 }
 
+//! Get the DMA Driver's Git Version
+std::string rha::AxiStreamDma::getGitVersion() {
+    return dmaGetGitVersion(fd_);
+}
+
+//! Get the DMA Driver's API Version
+uint32_t rha::AxiStreamDma::getApiVersion() {
+    return dmaGetApiVersion(fd_);
+}
+
+//! Get the size of buffers (RX/TX)
+uint32_t rha::AxiStreamDma::getBuffSize() {
+    return dmaGetBuffSize(fd_);
+}
+
+//! Get the number of RX buffers
+uint32_t rha::AxiStreamDma::getRxBuffCount() {
+    return dmaGetRxBuffCount(fd_);
+}
+
+//! Get RX buffer in User count
+uint32_t rha::AxiStreamDma::getRxBuffinUserCount() {
+    return dmaGetRxBuffinUserCount(fd_);
+}
+
+//! Get RX buffer in HW count
+uint32_t rha::AxiStreamDma::getRxBuffinHwCount() {
+    return dmaGetRxBuffinHwCount(fd_);
+}
+
+//! Get RX buffer in Pre-HW Queue count
+uint32_t rha::AxiStreamDma::getRxBuffinPreHwQCount() {
+    return dmaGetRxBuffinPreHwQCount(fd_);
+}
+
+//! Get RX buffer in SW Queue count
+uint32_t rha::AxiStreamDma::getRxBuffinSwQCount() {
+    return dmaGetRxBuffinSwQCount(fd_);
+}
+
+//! Get RX buffer missing count
+uint32_t rha::AxiStreamDma::getRxBuffMissCount() {
+    return dmaGetRxBuffMissCount(fd_);
+}
+
+//! Get the number of TX buffers
+uint32_t rha::AxiStreamDma::getTxBuffCount() {
+    return dmaGetTxBuffCount(fd_);
+}
+
+//! Get TX buffer in User count
+uint32_t rha::AxiStreamDma::getTxBuffinUserCount() {
+    return dmaGetTxBuffinUserCount(fd_);
+}
+
+//! Get TX buffer in HW count
+uint32_t rha::AxiStreamDma::getTxBuffinHwCount() {
+    return dmaGetTxBuffinHwCount(fd_);
+}
+
+//! Get TX buffer in Pre-HW Queue count
+uint32_t rha::AxiStreamDma::getTxBuffinPreHwQCount() {
+    return dmaGetTxBuffinPreHwQCount(fd_);
+}
+
+//! Get TX buffer in SW Queue count
+uint32_t rha::AxiStreamDma::getTxBuffinSwQCount() {
+    return dmaGetTxBuffinSwQCount(fd_);
+}
+
+//! Get TX buffer missing count
+uint32_t rha::AxiStreamDma::getTxBuffMissCount() {
+    return dmaGetTxBuffMissCount(fd_);
+}
+
 void rha::AxiStreamDma::setup_python() {
 #ifndef NO_PYTHON
 
@@ -575,6 +652,21 @@ void rha::AxiStreamDma::setup_python() {
         .def("setDriverDebug", &rha::AxiStreamDma::setDriverDebug)
         .def("dmaAck", &rha::AxiStreamDma::dmaAck)
         .def("setTimeout", &rha::AxiStreamDma::setTimeout)
+        .def("getGitVersion", &rha::AxiStreamDma::getGitVersion)
+        .def("getApiVersion", &rha::AxiStreamDma::getApiVersion)
+        .def("getBuffSize", &rha::AxiStreamDma::getBuffSize)
+        .def("getRxBuffCount", &rha::AxiStreamDma::getRxBuffCount)
+        .def("getRxBuffinUserCount", &rha::AxiStreamDma::getRxBuffinUserCount)
+        .def("getRxBuffinHwCount", &rha::AxiStreamDma::getRxBuffinHwCount)
+        .def("getRxBuffinPreHwQCount", &rha::AxiStreamDma::getRxBuffinPreHwQCount)
+        .def("getRxBuffinSwQCount", &rha::AxiStreamDma::getRxBuffinSwQCount)
+        .def("getRxBuffMissCount", &rha::AxiStreamDma::getRxBuffMissCount)
+        .def("getTxBuffCount", &rha::AxiStreamDma::getTxBuffCount)
+        .def("getTxBuffinUserCount", &rha::AxiStreamDma::getTxBuffinUserCount)
+        .def("getTxBuffinHwCount", &rha::AxiStreamDma::getTxBuffinHwCount)
+        .def("getTxBuffinPreHwQCount", &rha::AxiStreamDma::getTxBuffinPreHwQCount)
+        .def("getTxBuffinSwQCount", &rha::AxiStreamDma::getTxBuffinSwQCount)
+        .def("getTxBuffMissCount", &rha::AxiStreamDma::getTxBuffMissCount)
         .def("zeroCopyDisable", &rha::AxiStreamDma::zeroCopyDisable);
 
     bp::implicitly_convertible<rha::AxiStreamDmaPtr, ris::MasterPtr>();

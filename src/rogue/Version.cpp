@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Rogue Version
  * ----------------------------------------------------------------------------
- * File       : Version.cpp
- * Created    : 2017-05-17
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Version helpers for Rogue
@@ -32,7 +29,7 @@
 #include "rogue/GilRelease.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream memory pool
  * ----------------------------------------------------------------------------
- * File       : Pool.cpp
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream memory pool
@@ -37,7 +34,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -52,7 +49,9 @@ ris::Pool::Pool() {
 
 //! Destructor
 ris::Pool::~Pool() {
-    while (!dataQ_.empty()) { free(dataQ_.front()); }
+    while (!dataQ_.empty()) {
+        free(dataQ_.front());
+    }
 }
 
 //! Get allocated memory
@@ -159,9 +158,10 @@ ris::BufferPtr ris::Pool::allocBuffer(uint32_t size, uint32_t* total) {
     if (dataQ_.size() > 0) {
         data = dataQ_.front();
         dataQ_.pop();
-    } else if ((data = (uint8_t*)malloc(bAlloc)) == NULL)
+    } else if ((data = reinterpret_cast<uint8_t*>(malloc(bAlloc))) == NULL) {
         throw(
             rogue::GeneralError::create("Pool::allocBuffer", "Failed to allocate buffer with size = %" PRIu32, bAlloc));
+    }
 
     // Only use lower 24 bits of meta.
     // Upper 8 bits may have special meaning to sub-class

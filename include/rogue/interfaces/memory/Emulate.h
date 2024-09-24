@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory slave emulator
  * ----------------------------------------------------------------------------
- * File       : Emulator.h
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * A memory space emulator. Allows user to test a Rogue tree without real hardware.
@@ -30,7 +28,7 @@
 #include "rogue/interfaces/memory/Slave.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 #define MAP_TYPE std::map<uint64_t, uint8_t*>
@@ -49,6 +47,13 @@ class Emulate : public Slave {
 
     // Lock
     std::mutex mtx_;
+
+    // Total allocated memory
+    uint32_t totAlloc_;
+    uint32_t totSize_;
+
+    //! Log
+    std::shared_ptr<rogue::Logging> log_;
 
   public:
     //! Class factory which returns a pointer to a Emulate (EmulatePtr)

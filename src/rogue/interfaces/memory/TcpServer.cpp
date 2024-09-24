@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Server Network Bridge
  * ----------------------------------------------------------------------------
- * File       : TcpServer.cpp
- * Created    : 2019-01-30
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Server Network Bridge
@@ -36,7 +33,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -68,8 +65,8 @@ rim::TcpServer::TcpServer(std::string addr, uint16_t port) {
     this->zmqResp_ = zmq_socket(this->zmqCtx_, ZMQ_PUSH);
     this->zmqReq_  = zmq_socket(this->zmqCtx_, ZMQ_PULL);
 
-    this->respAddr_.append(std::to_string(static_cast<long long>(port + 1)));
-    this->reqAddr_.append(std::to_string(static_cast<long long>(port)));
+    this->respAddr_.append(std::to_string(static_cast<int64_t>(port + 1)));
+    this->reqAddr_.append(std::to_string(static_cast<int64_t>(port)));
 
     this->bridgeLog_->debug("Creating response client port: %s", this->respAddr_.c_str());
 
@@ -162,8 +159,9 @@ void rim::TcpServer::runThread() {
                 more     = 0;
                 moreSize = 8;
                 zmq_getsockopt(this->zmqReq_, ZMQ_RCVMORE, &more, &moreSize);
-            } else
+            } else {
                 more = 1;
+            }
         } while (threadEn_ && more);
 
         // Proper message received
@@ -189,11 +187,12 @@ void rim::TcpServer::runThread() {
                     for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
                     continue;  // while (1)
                 }
-            } else
+            } else {
                 zmq_msg_init_size(&(msg[4]), size);
+            }
 
             // Data pointer
-            data = (uint8_t*)zmq_msg_data(&(msg[4]));
+            data = reinterpret_cast<uint8_t*>(zmq_msg_data(&(msg[4])));
 
             bridgeLog_->debug("Starting transaction id=%" PRIu32 ", addr=0x%" PRIx64 ", size=%" PRIu32
                               ", type=%" PRIu32,
@@ -223,8 +222,9 @@ void rim::TcpServer::runThread() {
 
             // Send message
             for (x = 0; x < 6; x++) zmq_sendmsg(this->zmqResp_, &(msg[x]), (x == 5) ? 0 : ZMQ_SNDMORE);
-        } else
+        } else {
             for (x = 0; x < msgCnt; x++) zmq_msg_close(&(msg[x]));
+        }
     }
 }
 

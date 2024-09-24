@@ -1,9 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file reader utility.
  * ----------------------------------------------------------------------------
- * File          : LegacyStreamReader.cpp
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to read data files generated using LegacyFileWriter
  *-----------------------------------------------------------------------------
@@ -41,7 +39,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -112,9 +110,9 @@ bool ruf::LegacyStreamReader::nextFile() {
     if (fd_ >= 0) {
         ::close(fd_);
         fd_ = -1;
-    } else
+    } else {
         return (false);
-
+    }
     if (fdIdx_ == 0) return (false);
 
     fdIdx_++;
@@ -178,7 +176,9 @@ void ruf::LegacyStreamReader::runThread() {
             size = header & 0x0FFFFFFF;
             chan = header >> 28;
 
-            if (chan == 0) { size = size * 4; }
+            if (chan == 0) {
+                size = size * 4;
+            }
 
             // cout << "Frame with size" << size << "and channel" << chan;
             log.info("Got frame with header %" PRIx32 ", size %" PRIu32 " and channel %" PRIu8, header, size, chan);

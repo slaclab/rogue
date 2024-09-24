@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM Read Recursive Tool
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue PyDM Read Recursive Tool
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -31,7 +34,7 @@ class ReadRecursive(ExternalTool):
         ExternalTool.__init__(self, icon=icon, name=name, group=group, use_with_widgets=use_with_widgets)
 
     def call(self, channels, sender):
-        addr, port, path, mode = parseAddress(channels[0].address)
+        addr, port, path, mode, index = parseAddress(channels[0].address)
         self._client = VirtualClient(addr, port)
         node = self._client.root.getNode(path)
 

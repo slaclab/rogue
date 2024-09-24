@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue PyDM Process Widget
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue PyDM Process Widget
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -113,6 +116,11 @@ class Process(PyDMFrame):
                     w.alarmSensitiveBorder  = True
                     w.showStepExponent      = False
                     w.writeOnPress          = True
+
+                elif v.isCommand and not v.arg:
+                    w = PyDMPushButton(label='Exec',
+                                       pressValue=1,
+                                       init_channel=self._path + '.{}/disp'.format(v.name))
 
                 else:
                     w = PyRogueLineEdit(parent=None, init_channel=self._path + '.{}/disp'.format(v.name))

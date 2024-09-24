@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream interface master
  * ----------------------------------------------------------------------------
- * File       : Master.h
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface master
@@ -34,7 +31,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -92,20 +89,20 @@ void ris::Master::sendFrame(FramePtr frame) {
 // Ensure passed frame is a single buffer
 bool ris::Master::ensureSingleBuffer(ris::FramePtr& frame, bool reqEn) {
     // Frame is a single buffer
-    if (frame->bufferCount() == 1)
+    if (frame->bufferCount() == 1) {
         return true;
 
-    else if (!reqEn)
+    } else if (!reqEn) {
         return false;
 
-    else {
+    } else {
         uint32_t size        = frame->getPayload();
         ris::FramePtr nFrame = reqFrame(size, true);
 
-        if (nFrame->bufferCount() != 1)
+        if (nFrame->bufferCount() != 1) {
             return false;
 
-        else {
+        } else {
             nFrame->setPayload(size);
 
             ris::FrameIterator srcIter = frame->begin();
@@ -149,30 +146,36 @@ void ris::Master::equalsPy(boost::python::object p) {
     boost::python::extract<ris::MasterPtr> get_master(p);
 
     // Test extraction
-    if (get_master.check()) rMst = get_master();
+    if (get_master.check()) {
+        rMst = get_master();
 
-    // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
+        // Otherwise look for indirect call
+    } else if (PyObject_HasAttrString(p.ptr(), "_getStreamMaster")) {
         // Attempt to convert returned object to master pointer
         boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
 
         // Test extraction
-        if (get_master.check()) rMst = get_master();
+        if (get_master.check()) {
+            rMst = get_master();
+        }
     }
 
     // Attempt to access object as a stream slave
     boost::python::extract<ris::SlavePtr> get_slave(p);
 
     // Test extraction
-    if (get_slave.check()) rSlv = get_slave();
+    if (get_slave.check()) {
+        rSlv = get_slave();
 
-    // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getStreamSlave")) {
+        // Otherwise look for indirect call
+    } else if (PyObject_HasAttrString(p.ptr(), "_getStreamSlave")) {
         // Attempt to convert returned object to slave pointer
         boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
 
         // Test extraction
-        if (get_slave.check()) rSlv = get_slave();
+        if (get_slave.check()) {
+            rSlv = get_slave();
+        }
     }
 
     if (rMst == NULL || rSlv == NULL || lSlv == NULL)
@@ -191,15 +194,18 @@ bp::object ris::Master::rshiftPy(bp::object p) {
     boost::python::extract<ris::SlavePtr> get_slave(p);
 
     // Test extraction
-    if (get_slave.check()) slv = get_slave();
+    if (get_slave.check()) {
+        slv = get_slave();
 
-    // Otherwise look for indirect call
-    else if (PyObject_HasAttrString(p.ptr(), "_getStreamSlave")) {
+        // Otherwise look for indirect call
+    } else if (PyObject_HasAttrString(p.ptr(), "_getStreamSlave")) {
         // Attempt to convert returned object to slave pointer
         boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
 
         // Test extraction
-        if (get_slave.check()) slv = get_slave();
+        if (get_slave.check()) {
+            slv = get_slave();
+        }
     }
 
     if (slv != NULL)

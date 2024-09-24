@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Transaction Lock
  * ----------------------------------------------------------------------------
- * File       : TransactionLock.h
- * Created    : 2018-03-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory Transaction lock
@@ -48,7 +45,7 @@ class TransactionLock {
         std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
     // Transaction lock constructor
-    TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
+    explicit TransactionLock(std::shared_ptr<rogue::interfaces::memory::Transaction> transaction);
 
     // Setup class for use in python
     static void setup_python();

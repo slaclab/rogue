@@ -1,11 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) Filter
  * ----------------------------------------------------------------------------
- * File          : Filter.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 11/01/2018
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    AXI Stream Filter
  *-----------------------------------------------------------------------------
@@ -35,7 +31,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

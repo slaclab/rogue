@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Process Device Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Process Device Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -76,10 +79,6 @@ class Process(pr.Device):
             mode = 'RO',
             value = 1,
             description = "Total number of loops steps for the process"))
-
-        @self.command(hidden=True)
-        def Advance(arg):
-            self._incrementSteps(1)
 
         # Add arg variable if not already added
         if self._argVar is not None and self._argVar not in self:
@@ -169,10 +168,11 @@ class Process(pr.Device):
         # No function run example process
         else:
             self.Message.setDisp("Started")
+            self.TotalSteps.set(100)
             for i in range(101):
                 if self._runEn is False:
                     break
                 time.sleep(1)
-                self.Progress.set(i/100)
+                self._setSteps(i+1)
                 self.Message.setDisp(f"Running for {i} seconds.")
             self.Message.setDisp("Done")

@@ -1,11 +1,6 @@
-
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Controller
  * ----------------------------------------------------------------------------
- * File       : Controller.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * RSSI Controller
@@ -240,21 +235,21 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Reset
     if (head->rst) {
-        if (state_ == StOpen || state_ == StWaitSyn) { stQueue_.push(head); }
-    }
+        if (state_ == StOpen || state_ == StWaitSyn) {
+            stQueue_.push(head);
+        }
 
-    // Syn frame goes to state machine if state = open
-    // or we are waiting for ack replay
-    else if (head->syn) {
+        // Syn frame goes to state machine if state = open
+        // or we are waiting for ack replay
+    } else if (head->syn) {
         if (state_ == StOpen || state_ == StWaitSyn) {
             lastSeqRx_ = head->sequence;
             nextSeqRx_ = lastSeqRx_ + 1;
             stQueue_.push(head);
         }
-    }
 
-    // Data or NULL in the correct sequence go to application
-    else if (state_ == StOpen && (head->nul || frame->getPayload() > rpr::Header::HeaderSize)) {
+        // Data or NULL in the correct sequence go to application
+    } else if (state_ == StOpen && (head->nul || frame->getPayload() > rpr::Header::HeaderSize)) {
         if (head->sequence == nextSeqRx_) {
             // log_->warning("Data or NULL in the correct sequence go to application: nextSeqRx_=0x%" PRIx8,
             // nextSeqRx_);
@@ -293,22 +288,20 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
             // Notify after the last sequence update
             stCond_.notify_all();
-        }
 
-        // Check if received frame is already in out of order queue
-        else if ((it = oooQueue_.find(head->sequence)) != oooQueue_.end()) {
+            // Check if received frame is already in out of order queue
+        } else if ((it = oooQueue_.find(head->sequence)) != oooQueue_.end()) {
             log_->warning("Dropped duplicate frame. server=%" PRIu8 ", head->sequence=%" PRIu32
                           ", next sequence=%" PRIu32,
                           server_,
                           head->sequence,
                           nextSeqRx_);
             dropCount_++;
-        }
 
-        // Add to out of order queue in case things arrive out of order
-        // Make sure received sequence is in window. There may be a better way
-        // to do this while handling the 8 bit rollover
-        else {
+            // Add to out of order queue in case things arrive out of order
+            // Make sure received sequence is in window. There may be a better way
+            // to do this while handling the 8 bit rollover
+        } else {
             uint8_t x         = nextSeqRx_;
             uint8_t windowEnd = (nextSeqRx_ + curMaxBuffers_ + 1);
 
@@ -359,9 +352,9 @@ ris::FramePtr rpr::Controller::applicationTx() {
         if (head->nul) {
             head.reset();
             frame.reset();
-        } else
+        } else {
             (*(frame->beginBuffer()))->adjustHeader(rpr::Header::HeaderSize);
-
+        }
     } while (!frame);
 
     return (frame);
@@ -396,7 +389,9 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
     flock->unlock();
 
     // Connection is closed
-    if (state_ != StOpen) return;
+    if (state_ != StOpen) {
+        return;
+    }
 
     // Wait while busy either by flow control or buffer starvation
     while (txListCount_ >= curMaxBuffers_) {
@@ -703,7 +698,7 @@ int8_t rpr::Controller::retransmit(uint8_t id) {
 //! Convert rssi time to microseconds
 void rpr::Controller::convTime(struct timeval& tme, uint32_t rssiTime) {
     float units = std::pow(10, -TimeoutUnit);
-    float value = units * (float)rssiTime;
+    float value = units * static_cast<float>(rssiTime);
 
     uint32_t usec = (uint32_t)(value / 1e-6);
 
@@ -782,10 +777,9 @@ struct timeval& rpr::Controller::stateClosedWait() {
         if (head->rst) {
             state_ = StClosed;
             log_->warning("Closing link. Server=%" PRIu8, server_);
-        }
 
-        // Syn ack
-        else if (head->syn && (head->ack || server_)) {
+            // Syn ack
+        } else if (head->syn && (head->ack || server_)) {
             curMaxBuffers_ = head->maxOutstandingSegments;
             curMaxSegment_ = head->maxSegmentSize;
             curCumAckTout_ = head->cumulativeAckTimeout;
@@ -804,13 +798,13 @@ struct timeval& rpr::Controller::stateClosedWait() {
             if (server_) {
                 state_ = StSendSynAck;
                 return (zeroTme_);
-            } else
+            } else {
                 state_ = StSendSeqAck;
+            }
             gettimeofday(&stTime_, NULL);
-        }
 
-        // reset counters
-        else {
+            // reset counters
+        } else {
             curMaxBuffers_ = locMaxBuffers_;
             curMaxSegment_ = locMaxSegment_;
             curCumAckTout_ = locCumAckTout_;
@@ -819,10 +813,9 @@ struct timeval& rpr::Controller::stateClosedWait() {
             curMaxRetran_  = locMaxRetran_;
             curMaxCumAck_  = locMaxCumAck_;
         }
-    }
 
-    // Generate syn after try period passes
-    else if ((!server_) && timePassed(stTime_, tryPeriodD1_)) {
+        // Generate syn after try period passes
+    } else if ((!server_) && timePassed(stTime_, tryPeriodD1_)) {
         // Allocate frame
         head = rpr::Header::create(tran_->reqFrame(rpr::Header::SynSize, false));
 
@@ -845,8 +838,9 @@ struct timeval& rpr::Controller::stateClosedWait() {
         // Update state
         gettimeofday(&stTime_, NULL);
         state_ = StWaitSyn;
-    } else if (server_)
+    } else if (server_) {
         state_ = StWaitSyn;
+    }
 
     return (tryPeriodD4_);
 }

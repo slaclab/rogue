@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Variable Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Variable Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -31,11 +34,19 @@ def VariableWait(varList, testFunction, timeout=0):
     """
     Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
-    The test function is passed a dictionary containing the current
-    variableValue state index by variable path
+    The test function is passed a list containing the current
+    variableValue state indexed by position as passed in the wait list.
+    Each variableValue entry has an additional field updated which indicates
+    if the variable has refreshed while waiting. This can be used to trigger
+    on any update to the variable, regardless of value.
+
     i.e. w = VariableWait([root.device.var1,root.device.var2],
-                          lambda varValues: varValues['root.device.var1'].value >= 10 and \
-                                            varValues['root.device.var1'].value >= 20)
+                          lambda varValues: varValues[0].value >= 10 and \
+                                            varValues[1].value >= 20)
+
+    i.e. w = VariableWait([root.device.var1,root.device.var2],
+                          lambda varValues: varValues[0].updated and \
+                                            varValues[1].updated)
 
     Parameters
     ----------
@@ -53,13 +64,6 @@ def VariableWait(varList, testFunction, timeout=0):
 
     # Container class
     class varStates(object):
-        """
-
-
-
-
-        """
-
         def __init__(self):
             self.vlist  = odict()
             self.cv     = threading.Condition()
@@ -67,7 +71,6 @@ def VariableWait(varList, testFunction, timeout=0):
         # Method to handle variable updates callback
         def varUpdate(self,path,varValue):
             """
-
 
             Parameters
             ----------
@@ -84,6 +87,7 @@ def VariableWait(varList, testFunction, timeout=0):
             with self.cv:
                 if path in self.vlist:
                     self.vlist[path] = varValue
+                    self.vlist[path].updated = True
                     self.cv.notify()
 
     # Convert single variable to a list
@@ -98,6 +102,7 @@ def VariableWait(varList, testFunction, timeout=0):
         for v in varList:
             v.addListener(states.varUpdate)
             states.vlist[v.path] = v.getVariableValue(read=False)
+            states.vlist[v.path].updated = False
 
     # Go into wait loop
     ret    = False
@@ -122,8 +127,8 @@ def VariableWait(varList, testFunction, timeout=0):
 
 class VariableValue(object):
     """ """
-    def __init__(self, var, read=False):
-        self.value     = var.get(read=read)
+    def __init__(self, var, read=False, index=-1):
+        self.value     = var.get(read=read,index=index)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
         self.enum      = var.enum
@@ -567,7 +572,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def getVariableValue(self,read=True):
+    def getVariableValue(self,read=True,index=-1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -577,6 +582,8 @@ class BaseVariable(pr.Node):
         ----------
         read : bool
              (Default value = True)
+        index : int
+             (Default value = -1)
 
         Returns
         -------
@@ -585,7 +592,7 @@ class BaseVariable(pr.Node):
             Listeners will be informed of the update.
 
         """
-        return VariableValue(self,read=read)
+        return VariableValue(self,read=read,index=index)
 
     @pr.expose
     def value(self, index=-1):
@@ -1035,7 +1042,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 raise VariableError(f'ValueBits {valueBits} is greater than valueStrude {valueStride}')
 
             # Override the bitSize
-            bitSize[0] = numValues * valueStride
+            bitSize[0] = numValues * valueBits
 
             if self._ndType is None:
                 raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
@@ -1323,7 +1330,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
         BaseVariable._genDocs(self,file)
 
-        for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verify', 'varBytes']:
+        for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verifyEn', 'varBytes']:
             astr = str(getattr(self,a))
 
             if astr != 'None':

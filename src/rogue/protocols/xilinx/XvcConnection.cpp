@@ -1,18 +1,19 @@
-//-----------------------------------------------------------------------------
-// Title      : JTAG Support
-//-----------------------------------------------------------------------------
-// Company    : SLAC National Accelerator Laboratory
-//-----------------------------------------------------------------------------
-// Description:
-//-----------------------------------------------------------------------------
-// This file is part of 'SLAC Firmware Standard Library'.
-// It is subject to the license terms in the LICENSE.txt file found in the
-// top-level directory of this distribution and at:
-//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-// No part of 'SLAC Firmware Standard Library', including this file,
-// may be copied, modified, propagated, or distributed except according to
-// the terms contained in the LICENSE.txt file.
-//-----------------------------------------------------------------------------
+/**
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *    JTAG support
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+ **/
 
 #include "rogue/protocols/xilinx/XvcConnection.h"
 
@@ -22,7 +23,7 @@
 
 namespace rpx = rogue::protocols::xilinx;
 
-rpx::XvcConnection::XvcConnection(int sd, JtagDriver* drv, unsigned long maxVecLen)
+rpx::XvcConnection::XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen)
     : drv_(drv),
       maxVecLen_(maxVecLen),
       supVecLen_(0) {
@@ -67,10 +68,10 @@ ssize_t rpx::XvcConnection::readTo(void* buf, size_t count) {
 }
 
 // fill rx buffer to 'n' octets
-void rpx::XvcConnection::fill(unsigned long n) {
+void rpx::XvcConnection::fill(uint64_t n) {
     uint8_t* p = rp_ + rl_;
     int got;
-    unsigned long k = n;
+    uint64_t k = n;
 
     if (n <= rl_) return;
 
@@ -87,15 +88,17 @@ void rpx::XvcConnection::fill(unsigned long n) {
 }
 
 // mark 'n' octets as 'consumed'
-void rpx::XvcConnection::bump(unsigned long n) {
+void rpx::XvcConnection::bump(uint64_t n) {
     rp_ += n;
     rl_ -= n;
-    if (rl_ == 0) { rp_ = &rxb_[0]; }
+    if (rl_ == 0) {
+        rp_ = &rxb_[0];
+    }
 }
 
 void rpx::XvcConnection::allocBufs() {
-    unsigned long tgtVecLen;
-    unsigned long overhead = 128;  // headers and such;
+    uint64_t tgtVecLen;
+    uint64_t overhead = 128;  // headers and such;
 
     // Determine the vector size supported by the target
     tgtVecLen = drv_->query();
@@ -142,9 +145,9 @@ void rpx::XvcConnection::flush() {
 void rpx::XvcConnection::run() {
     int got;
     uint32_t bits, bitsLeft, bitsSent;
-    unsigned long bytes;
-    unsigned long vecLen;
-    unsigned long off;
+    uint64_t bytes;
+    uint64_t vecLen;
+    uint64_t off;
 
     allocBufs();
 
@@ -164,7 +167,7 @@ void rpx::XvcConnection::run() {
 
                 drv_->query();  // informs the driver that there is a new connection
 
-                tl_ = sprintf((char*)&txb_[0], "xvcServer_v1.0:%ld\n", maxVecLen_);
+                tl_ = snprintf(reinterpret_cast<char*>(&txb_[0]), sizeof(txb_), "xvcServer_v1.0:%ld\n", maxVecLen_);
 
                 bump(8);
             } else if (0 == ::memcmp(rp_, "se", 2)) {
@@ -189,7 +192,9 @@ void rpx::XvcConnection::run() {
                 fill(10);
 
                 bits = 0;
-                for (got = 9; got >= 6; got--) { bits = (bits << 8) | rp_[got]; }
+                for (got = 9; got >= 6; got--) {
+                    bits = (bits << 8) | rp_[got];
+                }
                 bytes = (bits + 7) / 8;
 
                 if (bytes > maxVecLen_)
@@ -206,16 +211,18 @@ void rpx::XvcConnection::run() {
                 // bother...).
                 for (off = 0, bitsLeft = bits; bitsLeft > 0; bitsLeft -= bitsSent, off += vecLen) {
                     bitsSent = 8 * vecLen;
-                    if (bitsLeft < bitsSent) { bitsSent = bitsLeft; }
+                    if (bitsLeft < bitsSent) {
+                        bitsSent = bitsLeft;
+                    }
 
                     drv_->sendVectors(bitsSent, rp_ + off, rp_ + bytes + off, &txb_[0] + off);
                 }
                 tl_ = bytes;
 
                 bump(2 * bytes);
-            } else
+            } else {
                 throw(rogue::GeneralError::create("XvcConnection::run()", "Unsupported message received"));
-
+            }
             flush();
 
             /* Repeat until all the characters from the first chunk are exhausted* (most likely the chunk just contained

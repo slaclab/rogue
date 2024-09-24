@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Logging interface
  * ----------------------------------------------------------------------------
- * File       : Logging.cpp
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Logging interface for pyrogue
@@ -24,20 +21,19 @@
 #include <inttypes.h>
 #include <stdarg.h>
 #include <string.h>
-#include <sys/syscall.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 #include <memory>
 
 #if defined(__linux__)
-#include <sys/syscall.h>
+    #include <sys/syscall.h>
 #elif defined(__APPLE__) && defined(__MACH__)
-#include <pthread.h>
+    #include <pthread.h>
 #endif
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -105,7 +101,7 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
 
     struct timeval tme;
     char buffer[1000];
-    vsnprintf(buffer, 1000, fmt, args);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
     gettimeofday(&tme, NULL);
     printf("%l" PRIi32 ".%06l" PRIi32 ":%s: %s\n", tme.tv_sec, tme.tv_usec, name_.c_str(), buffer);
 }

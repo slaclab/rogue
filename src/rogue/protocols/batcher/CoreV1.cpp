@@ -1,11 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Batcher Core, Version 1
  * ----------------------------------------------------------------------------
- * File          : CoreV1.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 10/26/2018
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    AXI Batcher V1 (https://confluence.slac.stanford.edu/x/th1SDg)
  *

@@ -1,11 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Python Module
  * ----------------------------------------------------------------------------
- * File       : module.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Python module setup

@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : C++ API Bsp
  * ----------------------------------------------------------------------------
- * File       : Bsp.cpp
- * Created    : 2023-04-18
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      C++ API BSP (Board Support Package)
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -55,7 +55,9 @@ ria::Bsp::Bsp(std::string modName, std::string rootClass) {
 }
 
 ria::Bsp::~Bsp() {
-    if (this->_isRoot) { this->_obj.attr("stop")(); }
+    if (this->_isRoot) {
+        this->_obj.attr("stop")();
+    }
 }
 
 void ria::Bsp::addVarListener(void (*func)(std::string, std::string), void (*done)()) {
@@ -109,14 +111,18 @@ std::shared_ptr<rogue::interfaces::api::Bsp> ria::Bsp::getNode(std::string name)
 std::string ria::Bsp::operator()(std::string arg) {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")(arg))));
-    } catch (...) { throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str())); }
+    } catch (...) {
+        throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
+    }
 }
 
 //! Execute command operator without arg
 std::string ria::Bsp::operator()() {
     try {
         return (std::string(bp::extract<char*>(this->_obj.attr("callDisp")())));
-    } catch (...) { throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str())); }
+    } catch (...) {
+        throw(rogue::GeneralError::create("Bsp::()", "Error executing node %s", this->_name.c_str()));
+    }
 }
 
 //! Execute command
