@@ -85,7 +85,8 @@ class UpdateTracker(object):
 
         """
         self._list[var.path] = var
-        self._check()
+        if self._period != 0:
+            self._check()
 
 class RootLogHandler(logging.Handler):
     """Class to listen to log entries and add them to syslog variable"""
@@ -482,19 +483,24 @@ class Root(pr.Device):
         tid = threading.get_ident()
 
         # At with call
-        with self._updateLock:
-            if tid not in self._updateTrack:
+        try:
+           self._updateTrack[tid].increment(period)
+        except:
+            with self._updateLock:
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+                self._updateTrack[tid].increment(period)
 
-            self._updateTrack[tid].increment(period)
+            #if tid not in self._updateTrack:
+            #    self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+
+            #self._updateTrack[tid].increment(period)
 
         try:
             yield
         finally:
 
             # After with is done
-            with self._updateLock:
-                self._updateTrack[tid].decrement()
+            self._updateTrack[tid].decrement()
 
     @contextmanager
     def pollBlock(self):
@@ -1000,10 +1006,40 @@ class Root(pr.Device):
         """
         tid = threading.get_ident()
 
-        with self._updateLock:
-            if tid not in self._updateTrack:
-                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
-            self._updateTrack[tid].update(var)
+        try:
+           self._updateTrack[tid].update(var)
+        except:
+            with self._updateLock:
+               self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+               self._updateTrack[tid].update(var)
+
+            #if tid not in self._updateTrack:
+            #    self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+            #self._updateTrack[tid].update(var)
+
+    # Perform update on each variable and recurse the listeners list
+    def _updateVarWithRecurse(self, v):
+
+        val = v._doUpdate()
+
+        # Call listener functions,
+        with self._varListenLock:
+            for func,doneFunc,incGroups,excGroups in self._varListeners:
+                if v.filterByGroup(incGroups, excGroups):
+                    try:
+                        func(p,val)
+
+                    except Exception as e:
+                        if v == self.SystemLog or v == self.SystemLogLast:
+                            print("------- Error Executing Syslog Listeners -------")
+                            print("Error: {}".format(e))
+                            print("------------------------------------------------")
+                        else:
+                            pr.logException(self._log,e)
+
+        # Process listeners
+        for l in v._listeners:
+            self._updateVarWithRecurse(l)
 
     # Worker thread
     def _updateWorker(self):
