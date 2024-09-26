@@ -65,11 +65,12 @@ class UpdateTracker(object):
         self._check()
 
     def _check(self):
-        if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
-            #print(f"Update fired {time.time()}")
-            self._last = time.time()
-            self._q.put(self._list)
-            self._list = {}
+        if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
+            if len(self._list) != 0:
+                #print(f"Update fired {time.time()}")
+                self._last = time.time()
+                self._q.put(self._list)
+                self._list = {}
 
     def update(self,var):
         """
@@ -85,8 +86,7 @@ class UpdateTracker(object):
 
         """
         self._list[var.path] = var
-        if self._period != 0:
-            self._check()
+        self._check()
 
 class RootLogHandler(logging.Handler):
     """Class to listen to log entries and add them to syslog variable"""
