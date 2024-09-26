@@ -1008,30 +1008,6 @@ class Root(pr.Device):
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                 self._updateTrack[tid].update(var)
 
-    # Perform update on each variable and recurse the listeners list
-    def _updateVarWithRecurse(self, p, v):
-
-        val = v._doUpdate()
-
-        # Call listener functions,
-        with self._varListenLock:
-            for func,doneFunc,incGroups,excGroups in self._varListeners:
-                if v.filterByGroup(incGroups, excGroups):
-                    try:
-                        func(p,val)
-
-                    except Exception as e:
-                        if v == self.SystemLog or v == self.SystemLogLast:
-                            print("------- Error Executing Syslog Listeners -------")
-                            print("Error: {}".format(e))
-                            print("------------------------------------------------")
-                        else:
-                            pr.logException(self._log,e)
-
-        # Process listeners
-        for vl in v._listeners:
-            self._updateVarWithRecurse(vl.path, vl)
-
     # Worker thread
     def _updateWorker(self):
         """ """
@@ -1049,10 +1025,35 @@ class Root(pr.Device):
             # Process list
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
-                for p,v in uvars.items():
-                    self._updateVarWithRecurse(p,v)
 
-                # Finalize listeners
+                # Copy list and add listeners
+                nvars = uvars.copy()
+                for p,v in uvars.items():
+                    for vl in v._listeners:
+                        nvars[vl.path] = vl
+
+                # Process the new list
+                for p,v in nvars.items():
+
+                    # Process updates
+                    val = v._doUpdate()
+
+                    # Call root listener functions,
+                    with self._varListenLock:
+                        for func,doneFunc,incGroups,excGroups in self._varListeners:
+                            if v.filterByGroup(incGroups, excGroups):
+                                try:
+                                    func(p,val)
+
+                                except Exception as e:
+                                    if v == self.SystemLog or v == self.SystemLogLast:
+                                        print("------- Error Executing Syslog Listeners -------")
+                                        print("Error: {}".format(e))
+                                        print("------------------------------------------------")
+                                    else:
+                                        pr.logException(self._log,e)
+
+                # Finalize root listeners
                 with self._varListenLock:
                     for func,doneFunc,incGroups,excGroups in self._varListeners:
                         if doneFunc is not None:
