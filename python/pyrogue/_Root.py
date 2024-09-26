@@ -1002,14 +1002,14 @@ class Root(pr.Device):
         tid = threading.get_ident()
 
         try:
-           self._updateTrack[tid].update(var)
+            self._updateTrack[tid].update(var)
         except Exception:
             with self._updateLock:
-               self._updateTrack[tid] = UpdateTracker(self._updateQueue)
-               self._updateTrack[tid].update(var)
+                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+                self._updateTrack[tid].update(var)
 
     # Perform update on each variable and recurse the listeners list
-    def _updateVarWithRecurse(self, v):
+    def _updateVarWithRecurse(self, p, v):
 
         val = v._doUpdate()
 
@@ -1029,8 +1029,8 @@ class Root(pr.Device):
                             pr.logException(self._log,e)
 
         # Process listeners
-        for l in v._listeners:
-            self._updateVarWithRecurse(l)
+        for vl in v._listeners:
+            self._updateVarWithRecurse(vl.path, vl)
 
     # Worker thread
     def _updateWorker(self):
@@ -1050,7 +1050,7 @@ class Root(pr.Device):
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
                 for p,v in uvars.items():
-                    self._updateVarWithRecurse(v)
+                    self._updateVarWithRecurse(p,v)
 
                 # Finalize listeners
                 with self._varListenLock:
