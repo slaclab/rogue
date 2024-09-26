@@ -484,16 +484,11 @@ class Root(pr.Device):
 
         # At with call
         try:
-           self._updateTrack[tid].increment(period)
-        except:
+            self._updateTrack[tid].increment(period)
+        except Exception:
             with self._updateLock:
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                 self._updateTrack[tid].increment(period)
-
-            #if tid not in self._updateTrack:
-            #    self._updateTrack[tid] = UpdateTracker(self._updateQueue)
-
-            #self._updateTrack[tid].increment(period)
 
         try:
             yield
@@ -1008,14 +1003,10 @@ class Root(pr.Device):
 
         try:
            self._updateTrack[tid].update(var)
-        except:
+        except Exception:
             with self._updateLock:
                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                self._updateTrack[tid].update(var)
-
-            #if tid not in self._updateTrack:
-            #    self._updateTrack[tid] = UpdateTracker(self._updateQueue)
-            #self._updateTrack[tid].update(var)
 
     # Perform update on each variable and recurse the listeners list
     def _updateVarWithRecurse(self, v):
