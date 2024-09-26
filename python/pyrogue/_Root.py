@@ -1059,22 +1059,7 @@ class Root(pr.Device):
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
                 for p,v in uvars.items():
-                    val = v._doUpdate()
-
-                    # Call listener functions,
-                    with self._varListenLock:
-                        for func,doneFunc,incGroups,excGroups in self._varListeners:
-                            if v.filterByGroup(incGroups, excGroups):
-                                try:
-                                    func(p,val)
-
-                                except Exception as e:
-                                    if v == self.SystemLog or v == self.SystemLogLast:
-                                        print("------- Error Executing Syslog Listeners -------")
-                                        print("Error: {}".format(e))
-                                        print("------------------------------------------------")
-                                    else:
-                                        pr.logException(self._log,e)
+                    self._updateVarWithRecurse(v)
 
                 # Finalize listeners
                 with self._varListenLock:
