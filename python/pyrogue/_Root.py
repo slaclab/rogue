@@ -65,11 +65,12 @@ class UpdateTracker(object):
         self._check()
 
     def _check(self):
-        if len(self._list) != 0 and (self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period)):
-            #print(f"Update fired {time.time()}")
-            self._last = time.time()
-            self._q.put(self._list)
-            self._list = {}
+        if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
+            if len(self._list) != 0:
+                #print(f"Update fired {time.time()}")
+                self._last = time.time()
+                self._q.put(self._list)
+                self._list = {}
 
     def update(self,var):
         """
@@ -482,19 +483,19 @@ class Root(pr.Device):
         tid = threading.get_ident()
 
         # At with call
-        with self._updateLock:
-            if tid not in self._updateTrack:
-                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
-
+        try:
             self._updateTrack[tid].increment(period)
+        except Exception:
+            with self._updateLock:
+                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+                self._updateTrack[tid].increment(period)
 
         try:
             yield
         finally:
 
             # After with is done
-            with self._updateLock:
-                self._updateTrack[tid].decrement()
+            self._updateTrack[tid].decrement()
 
     @contextmanager
     def pollBlock(self):
@@ -1000,10 +1001,19 @@ class Root(pr.Device):
         """
         tid = threading.get_ident()
 
-        with self._updateLock:
-            if tid not in self._updateTrack:
-                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+        try:
             self._updateTrack[tid].update(var)
+        except Exception:
+            with self._updateLock:
+                self._updateTrack[tid] = UpdateTracker(self._updateQueue)
+                self._updateTrack[tid].update(var)
+
+    # Recursively add listeners to update list
+    def _recurseAddListeners(self, nvars, var):
+        for vl in var._listeners:
+            nvars[vl.path] = vl
+
+            self._recurseAddListeners(nvars, vl)
 
     # Worker thread
     def _updateWorker(self):
@@ -1022,10 +1032,19 @@ class Root(pr.Device):
             # Process list
             elif len(uvars) > 0:
                 self._log.debug(F'Process update group. Length={len(uvars)}. Entry={list(uvars.keys())[0]}')
+
+                # Copy list and add listeners
+                nvars = uvars.copy()
                 for p,v in uvars.items():
+                    self._recurseAddListeners(nvars, v)
+
+                # Process the new list
+                for p,v in nvars.items():
+
+                    # Process updates
                     val = v._doUpdate()
 
-                    # Call listener functions,
+                    # Call root listener functions,
                     with self._varListenLock:
                         for func,doneFunc,incGroups,excGroups in self._varListeners:
                             if v.filterByGroup(incGroups, excGroups):
@@ -1040,7 +1059,7 @@ class Root(pr.Device):
                                     else:
                                         pr.logException(self._log,e)
 
-                # Finalize listeners
+                # Finalize root listeners
                 with self._varListenLock:
                     for func,doneFunc,incGroups,excGroups in self._varListeners:
                         if doneFunc is not None:

@@ -860,9 +860,6 @@ class BaseVariable(pr.Node):
         """ """
         self._root._queueUpdates(self)
 
-        for var in self._listeners:
-            var._queueUpdate()
-
     def _doUpdate(self):
         """ """
         val = VariableValue(self)

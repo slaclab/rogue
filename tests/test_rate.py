@@ -16,6 +16,9 @@ import rogue.interfaces.memory
 import time
 import hwcounter
 
+#import cProfile, pstats, io
+#from pstats import SortKey
+
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
 #logger = logging.getLogger('pyrogue')
@@ -105,6 +108,9 @@ class DummyTree(pr.Root):
 
 def test_rate():
 
+    #pr = cProfile.Profile()
+    #pr.enable()
+
     with DummyTree() as root:
         count = 100000
         resultRate = {}
@@ -177,6 +183,15 @@ def test_rate():
 
         if passed is False:
             raise AssertionError('Rate check failed')
+
+
+    #pr.disable()
+
+    #s = io.StringIO()
+    #sortby = SortKey.CUMULATIVE
+    #ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    #ps.print_stats()
+    #print(s.getvalue())
 
 if __name__ == "__main__":
     test_rate()
