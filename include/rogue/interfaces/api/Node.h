@@ -13,7 +13,7 @@ class Node {
      * @param[in] obj Boost wrapped python object representing a pyrogue.Node 
      *  object.
      */
-    Node(const boost::python::object &obj);
+    Node(boost::python::object& obj);
 
     //! Destructor
     ~Node() = default;

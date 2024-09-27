@@ -2,7 +2,7 @@
 
 namespace rogue::interfaces::api { 
 
-Node::Node(const boost::python::object &obj) { 
+Node::Node(boost::python::object& obj) { 
     _obj = obj;
 
     _name = boost::python::extract<std::string>(obj.attr("_name"));
