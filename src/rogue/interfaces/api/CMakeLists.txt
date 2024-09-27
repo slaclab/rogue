@@ -12,3 +12,5 @@
 
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Bsp.cpp")
 target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Node.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Root.cpp")
+target_sources(rogue-core PRIVATE "${CMAKE_CURRENT_LIST_DIR}/Variable.cpp")
