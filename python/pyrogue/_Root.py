@@ -1008,6 +1008,13 @@ class Root(pr.Device):
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                 self._updateTrack[tid].update(var)
 
+    # Recursively add listeners to update list
+    def _recurseAddListeners(self, nvars, var):
+        for vl in var._listeners:
+            nvars[vl.path] = vl
+
+            self._recurseAddListeners(nvars, vl)
+
     # Worker thread
     def _updateWorker(self):
         """ """
@@ -1029,8 +1036,7 @@ class Root(pr.Device):
                 # Copy list and add listeners
                 nvars = uvars.copy()
                 for p,v in uvars.items():
-                    for vl in v._listeners:
-                        nvars[vl.path] = vl
+                    self._recurseAddListeners(nvars, v)
 
                 # Process the new list
                 for p,v in nvars.items():
