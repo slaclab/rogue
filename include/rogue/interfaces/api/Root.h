@@ -15,7 +15,15 @@
 
 namespace rogue::interfaces::api { 
 
-typedef boost::variant<Variable<bool>, Variable<int>> node_types;
+typedef boost::variant<Variable<bool>, 
+		       Variable<int>, 
+		       Variable<float>,
+		       Variable<uint8_t>, 
+		       Variable<uint32_t>, 
+		       Variable<uint64_t>, 
+		       Variable<uintmax_t>, 
+		       Variable<std::string>
+		      > node_types;
 
 class Root : Node {
 
@@ -30,16 +38,15 @@ class Root : Node {
   //! Default constuctor
   ~Root() = default; 
 
-   /**
    template <typename T> 
-   T getNode(const std::string &name) const {
+   T getNode(std::string name) const {
        auto it{_nodes.find(name)}; 
        if (it == _nodes.end()) {
            throw rogue::GeneralError::create("Root::getNode",
 			                     ("Node "+name+" does not exist.").c_str()); 
        }
-       return boost::any_cast<T>(it->second);
-   }**/
+       return boost::get<T>(_nodes.at(name));
+   }
 
   //! Setup the tree and start the polling thread.
   void start();
