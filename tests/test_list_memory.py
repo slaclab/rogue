@@ -457,7 +457,7 @@ def test_memory():
 
                 if resB[i] != Int32ListA[::2][i]:
                     raise AssertionError(f'Stripe Verification Failure for Int32ListA at position {i}')
-            
+
             for i in range(16, 32):
 
                 if resA[i] != UInt32ListA[i]:
@@ -466,7 +466,7 @@ def test_memory():
                 if resB[i] != Int32ListA[i]:
                     raise AssertionError(f'Stripe Verification Failure for Int32ListA at position {i}')
 
-            
+
 
 def run_gui():
     import pyrogue.pydm
