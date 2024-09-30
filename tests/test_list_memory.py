@@ -444,6 +444,30 @@ def test_memory():
             # Test value shift
             _ = resA[0] >> 5
 
+            root.ListDevice.UInt32List.set(UInt32ListA[::2])
+            root.ListDevice.Int32List.set(Int32ListA[::2])
+
+            resA = root.ListDevice.UInt32List.get()
+            resB = root.ListDevice.Int32List.get()
+
+            for i in range(16):
+
+                if resA[i] != UInt32ListA[::2][i]:
+                    raise AssertionError(f'Stripe Verification Failure for UInt32ListA at position {i}')
+
+                if resB[i] != Int32ListA[::2][i]:
+                    raise AssertionError(f'Stripe Verification Failure for Int32ListA at position {i}')
+
+            for i in range(16, 32):
+
+                if resA[i] != UInt32ListA[i]:
+                    raise AssertionError(f'Stripe Verification Failure for UInt32ListA at position {i}')
+
+                if resB[i] != Int32ListA[i]:
+                    raise AssertionError(f'Stripe Verification Failure for Int32ListA at position {i}')
+
+
+
 def run_gui():
     import pyrogue.pydm
 
