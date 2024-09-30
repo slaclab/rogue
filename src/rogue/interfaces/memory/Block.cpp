@@ -1070,7 +1070,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
-        npy_intp* strides  = PyArray_STRIDES(arr);        
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setIntPy",
@@ -1241,7 +1241,7 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
-        npy_intp* strides  = PyArray_STRIDES(arr);        
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setBoolPy",
@@ -1264,7 +1264,7 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
             for (x = 0; x < dims[0]; x++) {
                 value = src + x * strides[0];
                 setBool(*value, var, index + x);
-            }            
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setBoolPy",
                                               "Passed nparray is not of type (bool) for %s",
@@ -1454,7 +1454,7 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
-        npy_intp* strides  = PyArray_STRIDES(arr);                
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setFloatPy",
@@ -1477,7 +1477,7 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
             for (x = 0; x < dims[0]; x++) {
                 value = src + x * strides[0];
                 setFloat(*value, var, index + x);
-            }            
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
                                               "Passed nparray is not of type (float32) for %s",
@@ -1627,7 +1627,7 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
             for (x = 0; x < dims[0]; x++) {
                 value = src + x * strides[0];
                 setDouble(*value, var, index + x);
-            }              
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
                                               "Passed nparray is not of type (double) for %s",
@@ -1754,7 +1754,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
-        npy_intp* strides  = PyArray_STRIDES(arr);                
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setFixedPy",
@@ -1777,7 +1777,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
             for (x = 0; x < dims[0]; x++) {
                 value = src + x * strides[0];
                 setFixed(*value, var, index + x);
-            }              
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
                                               "Passed nparray is not of type (double) for %s",
