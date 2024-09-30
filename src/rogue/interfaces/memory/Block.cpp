@@ -904,7 +904,6 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        uint8_t* src       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setUIntPy",
@@ -922,16 +921,16 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_UINT64) {
-            uint64_t* value = reinterpret_cast<uint64_t*>(src);
+            uint64_t* src   = reinterpret_cast<uint64_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(uint64_t);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<uint64_t*>(src + x * strides[0]);
-                setUInt(*value, var, index + x);
+                setUInt(src[x * stride], var, index + x);
             }
         } else if (PyArray_TYPE(arr) == NPY_UINT32) {
-            uint32_t* value = reinterpret_cast<uint32_t*>(src);
+            uint32_t* src   = reinterpret_cast<uint32_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(uint32_t);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<uint32_t*>(src + x * strides[0]);
-                setUInt(*value, var, index + x);
+                setUInt(src[x * stride], var, index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setUIntPy",
@@ -1070,7 +1069,6 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        uint8_t* src       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setIntPy",
@@ -1088,16 +1086,16 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_INT64) {
-            int64_t* value = reinterpret_cast<int64_t*>(src);
+            int64_t* src   = reinterpret_cast<int64_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(int64_t);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<int64_t*>(src + x * strides[0]);
-                setInt(*value, var, index + x);
+                setInt(src[x * stride], var, index + x);
             }
         } else if (PyArray_TYPE(arr) == NPY_INT32) {
-            int32_t* value = reinterpret_cast<int32_t*>(src);
+            int32_t* src   = reinterpret_cast<int32_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(int32_t);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<int32_t*>(src + x * strides[0]);
-                setInt(*value, var, index + x);
+                setInt(src[x * stride], var, index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setIntPy",
@@ -1240,7 +1238,6 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        uint8_t* src       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setBoolPy",
@@ -1258,10 +1255,10 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_BOOL) {
-            bool* value = reinterpret_cast<bool*>(src);
+            bool* src   = reinterpret_cast<bool*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(bool);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<bool*>(src + x * strides[0]);
-                setBool(*value, var, index + x);
+                setBool(src[x * stride], var, index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setBoolPy",
@@ -1453,7 +1450,6 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        uint8_t* src       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setFloatPy",
@@ -1471,10 +1467,10 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_FLOAT32) {
-            float* value = reinterpret_cast<float*>(src);
+            float* src   = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(float);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<float*>(src + x * strides[0]);
-                setFloat(*value, var, index + x);
+                setFloat(src[x * stride], var, index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
@@ -1603,7 +1599,6 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        uint8_t* src       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setDoublePy",
@@ -1621,10 +1616,10 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_FLOAT64) {
-            double* value = reinterpret_cast<double*>(src);
+            double* src   = reinterpret_cast<double*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(double);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<double*>(src + x * strides[0]);
-                setDouble(*value, var, index + x);
+                setDouble(src[x * stride], var, index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
@@ -1753,7 +1748,6 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        uint8_t* src       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setFixedPy",
@@ -1771,10 +1765,10 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_FLOAT64) {
-            double* value = reinterpret_cast<double*>(src);
+            double* src   = reinterpret_cast<double*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(double);
             for (x = 0; x < dims[0]; x++) {
-                value = reinterpret_cast<double*>(src + x * strides[0]);
-                setFixed(*value, var, index + x);
+                setFixed(src[x * stride], var, index + x);
             }
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
