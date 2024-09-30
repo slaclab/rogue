@@ -904,7 +904,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
         npy_intp* strides  = PyArray_STRIDES(arr);
-        void* src          = PyArray_DATA(arr);        
+        void* src          = PyArray_DATA(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setUIntPy",
