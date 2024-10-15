@@ -30,8 +30,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-    #include <numpy/arrayobject.h>
-    #include <numpy/ndarraytypes.h>
+    #include <numpy/ndarrayobject.h>
 
     #include <boost/python.hpp>
 namespace bp = boost::python;
@@ -397,9 +396,13 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 }
 
 //! Read the specified number of bytes at the specified offset of frame data into a numpy array
-boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
+boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, int dtype) {
     // Retrieve the size, in bytes of the data
     npy_intp size = getPayload();
+
+    if (count == 0) {
+        count = size - offset;
+    }
 
     // Check this does not request data past the EOF
     if ((offset + count) > size) {
@@ -413,7 +416,7 @@ boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
 
     // Create a numpy array to receive it and locate the destination data buffer
     npy_intp dims[1]   = {count};
-    PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_UINT8);
+    PyObject* obj      = PyArray_SimpleNew(1, dims, dtype);
     PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
     uint8_t* dst       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
@@ -502,7 +505,10 @@ void ris::Frame::setup_python() {
         .def("getLastUser", &ris::Frame::getLastUser)
         .def("setChannel", &ris::Frame::setChannel)
         .def("getChannel", &ris::Frame::getChannel)
-        .def("getNumpy", &ris::Frame::getNumpy)
+        .def("getNumpy", &ris::Frame::getNumpy, (
+            bp::arg("offset")=0,
+            bp::arg("count")=0,
+            bp::arg("dtype")=NPY_UINT8))
         .def("putNumpy", &ris::Frame::putNumpy)
         .def("_debug", &ris::Frame::debug);
 #endif

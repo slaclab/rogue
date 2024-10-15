@@ -28,6 +28,8 @@
 #include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
+    #include <numpy/ndarrayobject.h>
+
     #include <boost/python.hpp>
 #endif
 
@@ -354,7 +356,7 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      *  @param[in]   size The number of bytes to write
      *
      */
-    boost::python::object getNumpy(uint32_t offset, uint32_t size);
+    boost::python::object getNumpy(uint32_t offset = 0, uint32_t size = 0, int dtype = NPY_UINT8);
 
     //! Python Frame data write using a numpy array as the source
     /*
