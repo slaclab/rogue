@@ -396,7 +396,7 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 }
 
 //! Read the specified number of bytes at the specified offset of frame data into a numpy array
-boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, int dtype) {
+boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, bp::object dtype) {
     // Retrieve the size, in bytes of the data
     npy_intp size = getPayload();
 
@@ -414,9 +414,20 @@ boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, int 
                                           size));
     }
 
+
+    // Convert Python dtype object to NumPy type
+    int numpy_type;
+    PyObject* dtype_pyobj = dtype.ptr();  // Get the raw PyObject from the Boost.Python object
+    if (PyArray_DescrCheck(dtype_pyobj)) {
+        numpy_type = ((PyArray_Descr*)dtype_pyobj)->type_num;
+    } else {
+        throw(rogue::GeneralError::create("Frame::getNumpy",
+                                          "Invalid dtype argument. Must be a NumPy dtype object."));
+    }
+    
     // Create a numpy array to receive it and locate the destination data buffer
     npy_intp dims[1]   = {count};
-    PyObject* obj      = PyArray_SimpleNew(1, dims, dtype);
+    PyObject* obj      = PyArray_SimpleNew(1, dims, numpy_type);
     PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
     uint8_t* dst       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
@@ -488,6 +499,14 @@ void ris::Frame::setup_python() {
 
     _import_array();
 
+    // Create a NumPy dtype object from the NPY_UINT8 constant
+    PyObject* dtype_uint8 = reinterpret_cast<PyObject*>(PyArray_DescrFromType(NPY_UINT8));
+    if (!dtype_uint8) {
+        throw(rogue::GeneralError::create("Frame::setup_python",
+                                          "Failed to create default dtype object for NPY_UINT8."));
+    }
+    
+
     bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame", bp::no_init)
         .def("lock", &ris::Frame::lock)
         .def("getSize", &ris::Frame::getSize)
@@ -508,7 +527,7 @@ void ris::Frame::setup_python() {
         .def("getNumpy", &ris::Frame::getNumpy, (
             bp::arg("offset")=0,
             bp::arg("count")=0,
-            bp::arg("dtype")=NPY_UINT8))
+            bp::arg("dtype")=bp::object(bp::handle<>(bp::borrowed(dtype_uint8)))))
         .def("putNumpy", &ris::Frame::putNumpy)
         .def("_debug", &ris::Frame::debug);
 #endif

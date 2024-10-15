@@ -353,10 +353,10 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      *  @return The read data as a 1-D numpy byte array
      *
      *  @param[in] offset The byte offset into the frame to write to
-     *  @param[in]   size The number of bytes to write
+     *  @param[in]  count The number of bytes to write
      *
      */
-    boost::python::object getNumpy(uint32_t offset = 0, uint32_t count = 0, int dtype = NPY_UINT8);
+    boost::python::object getNumpy(uint32_t offset, uint32_t count, boost::python::object dtype);
 
     //! Python Frame data write using a numpy array as the source
     /*
