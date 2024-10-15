@@ -512,8 +512,10 @@ void ris::Frame::setup_python() {
         .def("getSize", &ris::Frame::getSize)
         .def("getAvailable", &ris::Frame::getAvailable)
         .def("getPayload", &ris::Frame::getPayload)
-        .def("read", &ris::Frame::readPy)
-        .def("write", &ris::Frame::writePy)
+        .def("read", &ris::Frame::readPy, (
+            bp::arg("offset")=0))
+        .def("write", &ris::Frame::writePy, (
+            bp::arg("offset")=0))
         .def("setError", &ris::Frame::setError)
         .def("getError", &ris::Frame::getError)
         .def("setFlags", &ris::Frame::setFlags)
@@ -528,7 +530,8 @@ void ris::Frame::setup_python() {
             bp::arg("offset")=0,
             bp::arg("count")=0,
             bp::arg("dtype")=bp::object(bp::handle<>(bp::borrowed(dtype_uint8)))))
-        .def("putNumpy", &ris::Frame::putNumpy)
+        .def("putNumpy", &ris::Frame::putNumpy, (
+            bp::arg("offset")=0))
         .def("_debug", &ris::Frame::debug);
 #endif
 }
