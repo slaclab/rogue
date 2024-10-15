@@ -341,10 +341,17 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     //! Python Frame data read function
     /** Read data from Frame into a python bytearray which is allocated and returned
      *
-     * Exposed as readBa() to Python
+     * Exposed as getBa() to Python
      * @param offset First location of Frame data to copy to byte array
      */
-    boost::python::object readBytearrayPy(uint32_t offset);
+    boost::python::object getBytearrayPy(uint32_t offset);
+
+    //! Python Frame data read function
+    /** Read data from Frame into a python bytearray which is allocated and returned as a memoryview
+     *
+     * Exposed as getMemoryview() to Python
+     */
+    boost::python::object getMemoryviewPy();
     
 
     //! Python Frame data write function

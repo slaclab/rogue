@@ -370,8 +370,8 @@ void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     PyBuffer_Release(&pyBuf);
 }
 
-//! Allocate a bytearray and read bytes from frame into it, starting at offset
-bp::object ris::Frame::readBytearrayPy(uint32_t offset) {
+//! Allocate a bytearray and read bytes from frame into it starting at offset, return array
+bp::object ris::Frame::getBytearrayPy(uint32_t offset) {
     // Get the size of the frame
     uint32_t size = getPayload();
 
@@ -383,6 +383,29 @@ bp::object ris::Frame::readBytearrayPy(uint32_t offset) {
 
     return byteArray;
 }
+
+//! Allocate a bytearray and  from frame into it starting at offset, return memoryview to array
+bp::object ris::Frame::getMemoryviewPy() {
+    // Get the size of the frame
+    uint32_t size = getPayload();
+
+    // Create a Python bytearray to hold the data
+    bp::object byteArray(bp::handle<>(PyByteArray_FromStringAndSize(nullptr, size)));
+
+    this->readPy(byteArray, 0);
+
+    // Create a memoryview from the bytearray
+    PyObject* memoryView = PyMemoryView_FromObject(byteArray.ptr());
+    if (!memoryView) {
+        throw(rogue::GeneralError::create("Frame::getMemoryviewPy",
+                                          "Failed to create memoryview."));
+    }
+
+    // Return the memoryview as a Python object
+    return bp::object(bp::handle<>(memoryView));    
+
+}
+
 
 
 //! Write python buffer to frame, starting at offset. Python Version
@@ -530,8 +553,9 @@ void ris::Frame::setup_python() {
         .def("getPayload", &ris::Frame::getPayload)
         .def("read", &ris::Frame::readPy, (
             bp::arg("offset")=0))
-        .def("readBa", &ris::Frame::readBytearrayPy, (
+        .def("getBa", &ris::Frame::getBytearrayPy, (
             bp::arg("offset")=0))
+        .def("getMemoryview", &ris::Frame::getMemoryviewPy)
         .def("write", &ris::Frame::writePy, (
             bp::arg("offset")=0))
         .def("setError", &ris::Frame::setError)
