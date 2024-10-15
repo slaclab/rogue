@@ -424,7 +424,7 @@ boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, bp::
         throw(rogue::GeneralError::create("Frame::getNumpy",
                                           "Invalid dtype argument. Must be a NumPy dtype object."));
     }
-    
+
     // Create a numpy array to receive it and locate the destination data buffer
     npy_intp dims[1]   = {count};
     PyObject* obj      = PyArray_SimpleNew(1, dims, numpy_type);
@@ -505,7 +505,7 @@ void ris::Frame::setup_python() {
         throw(rogue::GeneralError::create("Frame::setup_python",
                                           "Failed to create default dtype object for NPY_UINT8."));
     }
-    
+
 
     bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame", bp::no_init)
         .def("lock", &ris::Frame::lock)
