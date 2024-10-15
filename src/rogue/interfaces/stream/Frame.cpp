@@ -344,7 +344,8 @@ ris::FrameIterator ris::Frame::endWrite() {
 
 #ifndef NO_PYTHON
 
-//! Read up to count bytes from frame, starting from offset. Python version.
+
+//! Read bytes from frame into a passed bytearray, starting from offset. Python version.
 void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     Py_buffer pyBuf;
 
@@ -368,6 +369,20 @@ void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     ris::fromFrame(beg, count, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
+
+//! Allocate a bytearray and read bytes from frame into it, starting at offset
+bp::object ris::Frame::readBytearrayPy(uint32_t offset) {
+    // Get the size of the frame
+    uint32_t size = getPayload();
+
+    // Create a Python bytearray to hold the data
+    boost::python::object byteArray = boost::python::eval("bytearray")(size - offset);
+
+    this->readPy(byteArray, offset);
+
+    return byteArray;
+}
+
 
 //! Write python buffer to frame, starting at offset. Python Version
 void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
@@ -513,6 +528,8 @@ void ris::Frame::setup_python() {
         .def("getAvailable", &ris::Frame::getAvailable)
         .def("getPayload", &ris::Frame::getPayload)
         .def("read", &ris::Frame::readPy, (
+            bp::arg("offset")=0))
+        .def("readBa", &ris::Frame::readBytearrayPy, (
             bp::arg("offset")=0))
         .def("write", &ris::Frame::writePy, (
             bp::arg("offset")=0))

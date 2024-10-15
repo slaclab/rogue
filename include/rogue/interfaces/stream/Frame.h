@@ -327,6 +327,7 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     rogue::interfaces::stream::FrameIterator endWrite();
 
 #ifndef NO_PYTHON
+    
 
     //! Python Frame data read function
     /** Read data from Frame into passed Python byte array.
@@ -336,6 +337,15 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * @param offset First location of Frame data to copy to byte array
      */
     void readPy(boost::python::object p, uint32_t offset);
+
+    //! Python Frame data read function
+    /** Read data from Frame into a python bytearray which is allocated and returned
+     *
+     * Exposed as readBa() to Python
+     * @param offset First location of Frame data to copy to byte array
+     */
+    boost::python::object readBytearrayPy(uint32_t offset);
+    
 
     //! Python Frame data write function
     /** Write data into from Frame from passed Python byte array.
