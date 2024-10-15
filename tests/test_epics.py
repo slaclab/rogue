@@ -10,11 +10,15 @@
 #-----------------------------------------------------------------------------
 
 import time
+import threading
+
 import pyrogue as pr
 import pyrogue.protocols.epicsV4
 import rogue.interfaces.memory
 
 from p4p.client.thread import Context
+from p4p.nt import NTScalar
+from p4p.rpc import rpc, rpcproxy, rpccall, quickRPCServer
 
 epics_prefix='test_ioc'
 
@@ -53,6 +57,21 @@ class SimpleDev(pr.Device):
             mode      = "WO",
         ))
 
+        self.add(pr.LocalCommand(
+            name        = 'LocalSubtractCmd',
+            description = 'Command that subtracts two numbers',
+            function    = self.subtract
+        ))
+
+    @rpc(NTScalar('d'))
+    def subtract(self, lhs, rhs):
+        return float(lhs) - float(rhs)
+
+@rpcproxy
+class ExampleProxy(object):
+    @rpccall('%ssubtract')
+    def subtract(lhs='d', rhs='d'):
+        pass
 
 class LocalRoot(pr.Root):
     def __init__(self):
@@ -80,11 +99,18 @@ class LocalRoot(pr.Root):
         self.addInterface(mc)
 
         # Add Device
-        self.add(SimpleDev(
+        simple_dev = SimpleDev(
             name    = 'SimpleDev',
             offset  = 0x0000,
             memBase = mc,
-        ))
+        )
+        self.add(simple_dev)
+
+        server_thread = threading.Thread(target=quickRPCServer, kwargs={
+            'provider': 'Example',
+            'prefix': epics_prefix,
+            'target': simple_dev})
+        server_thread.start()
 
 class LocalRootWithEpics(LocalRoot):
     def __init__(self, use_map=False):
@@ -98,6 +124,8 @@ class LocalRootWithEpics(LocalRoot):
                 'LocalRoot.SimpleDev.LocalRwFloat' : epics_prefix+':LocalRoot:SimpleDev:LocalRwFloat',
                 'LocalRoot.SimpleDev.RemoteRwInt'  : epics_prefix+':LocalRoot:SimpleDev:RemoteRwInt',
                 'LocalRoot.SimpleDev.RemoteWoInt'  : epics_prefix+':LocalRoot:SimpleDev:RemoteWoInt',
+                'LocalRoot.SimpleDev.LocalSubtractCmd'  :
+                epics_prefix+':LocalRoot:SimpleDev:LocalSubtractCmd',
             }
         else:
             pv_map=None
@@ -122,6 +150,7 @@ def test_local_root():
     # https://mdavidsaver.github.io/p4p/client.html#usage
     print( Context.providers() )
     ctxt = Context('pva')
+    proxy = ExampleProxy(context=ctxt, format=epics_prefix)
 
     for s in pv_map_states:
         with LocalRootWithEpics(use_map=s) as root:
@@ -169,10 +198,13 @@ def test_local_root():
             if test_result != test_value:
                 raise AssertionError('pv_name={}: test_value={}; test_result={}'.format(pv_name, test_value, test_result))
 
-            # Test WO a variable holding an scalar value
-            pv_name=device_epics_prefix+':RemoteWoInt'
-            test_value=314
-            ctxt.put(pv_name, test_value)
+            # Test RPC defined above
+            test_values = [10.0, 1.0]
+            test_result = proxy.subtract(test_values[0], test_values[1])
+            if test_result.raw.value != (test_values[0] - test_values[1]):
+                raise AssertionError('{}: test_value={}; test_result={}'.format('RPC subtract',
+                                     test_values, test_result.raw.value))
+
 
         # Allow epics client to reset
         time.sleep(5)
