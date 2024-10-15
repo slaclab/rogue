@@ -376,7 +376,8 @@ bp::object ris::Frame::readBytearrayPy(uint32_t offset) {
     uint32_t size = getPayload();
 
     // Create a Python bytearray to hold the data
-    boost::python::object byteArray = boost::python::eval("bytearray")(size - offset);
+    bp::object byteArray(bp::handle<>(PyByteArray_FromStringAndSize(nullptr, size - offset)));
+
 
     this->readPy(byteArray, offset);
 
