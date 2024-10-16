@@ -87,12 +87,12 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
         return;
     }
 
-    tmpIdx = uint32_t(data[0]) >> 4;
-    tmpIdx |= uint32_t(data[1]) << 4;
+    tmpIdx = static_cast<uint32_t>(data[0]) >> 4;
+    tmpIdx |= static_cast<uint32_t>(data[1]) << 4;
 
-    tmpCount = uint32_t(data[2]);
-    tmpCount |= uint32_t(data[3]) << 8;
-    tmpCount |= uint32_t(data[4]) << 16;
+    tmpCount = static_cast<uint32_t>(data[2]);
+    tmpCount |= static_cast<uint32_t>(data[3]) << 8;
+    tmpCount |= static_cast<uint32_t>(data[4]) << 16;
 
     tmpDest  = data[5];
     tmpId    = data[6];
