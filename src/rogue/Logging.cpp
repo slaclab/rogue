@@ -20,11 +20,14 @@
 
 #include <inttypes.h>
 #include <stdarg.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
+#include <string>
+#include <vector>
 
 #if defined(__linux__)
     #include <sys/syscall.h>
@@ -156,7 +159,7 @@ void rogue::Logging::logThreadId() {
 #elif defined(__APPLE__) && defined(__MACH__)
     uint64_t tid64;
     pthread_threadid_np(NULL, &tid64);
-    tid = (uint32_t)tid64;
+    tid = static_cast<uint32_t>(tid64);
 #else
     tid = 0;
 #endif

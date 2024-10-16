@@ -19,10 +19,11 @@
 #include "rogue/interfaces/memory/Master.h"
 
 #include <inttypes.h>
-#include <stdlib.h>
 
+#include <cstdlib>
 #include <cstring>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

@@ -20,6 +20,7 @@
 
 #include <inttypes.h>
 
+#include <cstdio>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -219,7 +220,7 @@ void ris::Frame::minPayload(uint32_t size) {
 void ris::Frame::adjustPayload(int32_t value) {
     uint32_t size = getPayload();
 
-    if (value < 0 && (uint32_t)abs(value) > size)
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > size)
         throw(rogue::GeneralError::create("Frame::adjustPayload",
                                           "Attempt to reduce payload by %" PRIi32 " in frame with size %" PRIu32,
                                           value,
@@ -433,9 +434,7 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     PyObject* obj = p.ptr();
 
     // Check that this is a PyArrayObject
-    if (!PyArray_Check(obj)) {
-        throw(rogue::GeneralError("Frame::putNumpy", "Object is not a numpy array"));
-    }
+    if (!PyArray_Check(obj)) { throw(rogue::GeneralError("Frame::putNumpy", "Object is not a numpy array")); }
 
     // Cast to an array object and check that the numpy array
     // data buffer is write-able and contiguous
@@ -443,9 +442,7 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     PyArrayObject* arr = reinterpret_cast<decltype(arr)>(obj);
     int flags          = PyArray_FLAGS(arr);
     bool ctg           = flags & (NPY_ARRAY_C_CONTIGUOUS | NPY_ARRAY_F_CONTIGUOUS);
-    if (!ctg) {
-        arr = PyArray_GETCONTIGUOUS(arr);
-    }
+    if (!ctg) { arr = PyArray_GETCONTIGUOUS(arr); }
 
     // Get the number of bytes in both the source and destination buffers
     uint32_t size  = getSize();
@@ -471,9 +468,7 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
     ris::toFrame(beg, count, src);
 
     // If were forced to make a temporary copy, release it
-    if (!ctg) {
-        Py_XDECREF(arr);
-    }
+    if (!ctg) { Py_XDECREF(arr); }
 
     return;
 }

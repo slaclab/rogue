@@ -24,6 +24,7 @@
 #include <unistd.h>
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"

@@ -18,14 +18,17 @@
 
 #include "rogue/interfaces/memory/Variable.h"
 
-#include <string.h>
 #include <sys/time.h>
 
 #include <cmath>
+#include <cstdio>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -470,7 +473,7 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         highTranByte_[0] = varBytes_ - 1;
         staleHighByte_   = highTranByte_[0];
 
-    // List variable
+        // List variable
     } else {
         for (x = 0; x < numValues_; x++) {
             lowTranByte_[x] =
@@ -620,9 +623,7 @@ void rim::VariableWrap::queueUpdate() {
         try {
             pb();
             return;
-        } catch (...) {
-            PyErr_Print();
-        }
+        } catch (...) { PyErr_Print(); }
     }
 }
 
@@ -651,9 +652,7 @@ void rim::Variable::rateTest() {
     uint32_t ret;
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) {
-        ret = getUInt();
-    }
+    for (x = 0; x < count; ++x) { ret = getUInt(); }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
@@ -663,9 +662,7 @@ void rim::Variable::rateTest() {
     printf("\nVariable c++ get: Read %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) {
-        setUInt(x);
-    }
+    for (x = 0; x < count; ++x) { setUInt(x); }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
@@ -702,7 +699,7 @@ std::string rim::Variable::getDumpValue(bool read) {
     else
         index = 0;
 
-    while (index < (int32_t)numValues_) {
+    while (index < static_cast<int32_t>(numValues_)) {
         ret << " ";
 
         switch (modelId_) {
@@ -710,7 +707,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                 (block_->*getByteArray_)(byteData, this, index);
                 ret << "0x";
                 for (x = 0; x < valueBytes_; x++)
-                    ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                    ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 break;
 
             case rim::UInt:
@@ -718,7 +715,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                     (block_->*getByteArray_)(byteData, this, index);
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
-                        ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                        ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 } else {
                     ret << (block_->*getUInt_)(this, index);
                 }
@@ -729,7 +726,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                     (block_->*getByteArray_)(byteData, this, index);
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
-                        ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                        ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 } else {
                     ret << (block_->*getInt_)(this, index);
                 }

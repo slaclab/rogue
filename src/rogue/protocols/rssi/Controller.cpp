@@ -17,14 +17,15 @@
 #include "rogue/protocols/rssi/Controller.h"
 
 #include <inttypes.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 #include <cmath>
+#include <cstdlib>
+#include <cstring>
+#include <map>
 #include <memory>
+#include <utility>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -235,9 +236,7 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Reset
     if (head->rst) {
-        if (state_ == StOpen || state_ == StWaitSyn) {
-            stQueue_.push(head);
-        }
+        if (state_ == StOpen || state_ == StWaitSyn) { stQueue_.push(head); }
 
         // Syn frame goes to state machine if state = open
         // or we are waiting for ack replay
@@ -389,9 +388,7 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
     flock->unlock();
 
     // Connection is closed
-    if (state_ != StOpen) {
-        return;
-    }
+    if (state_ != StOpen) { return; }
 
     // Wait while busy either by flow control or buffer starvation
     while (txListCount_ >= curMaxBuffers_) {
@@ -700,7 +697,7 @@ void rpr::Controller::convTime(struct timeval& tme, uint32_t rssiTime) {
     float units = std::pow(10, -TimeoutUnit);
     float value = units * static_cast<float>(rssiTime);
 
-    uint32_t usec = (uint32_t)(value / 1e-6);
+    uint32_t usec = static_cast<uint32_t>(value / 1e-6);
 
     div_t divResult = div(usec, 1000000);
     tme.tv_sec      = divResult.quot;

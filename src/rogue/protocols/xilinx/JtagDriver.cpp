@@ -21,11 +21,13 @@
 
 #include <arpa/inet.h>
 #include <dlfcn.h>
-#include <math.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <sys/socket.h>
 
+#include <cmath>
+#include <cstdio>
+#include <memory>
 #include <string>
 
 namespace rpx = rogue::protocols::xilinx;
@@ -130,13 +132,11 @@ uint32_t rpx::JtagDriver::cvtPerNs(Header reply) {
     unsigned rawVal = (reply >> XID_SHIFT) & 0xff;
     double tmp;
 
-    if (0 == rawVal) {
-        return UNKNOWN_PERIOD;
-    }
+    if (0 == rawVal) { return UNKNOWN_PERIOD; }
 
     tmp = static_cast<double>(rawVal) * 4.0 / 256.0;
 
-    return (uint32_t)round(pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ());
+    return static_cast<uint32_t>(round(pow(10.0, tmp) * 1.0E9 / REF_FREQ_HZ()));
 }
 
 unsigned rpx::JtagDriver::getWordSize() {
@@ -150,9 +150,7 @@ unsigned rpx::JtagDriver::getMemDepth() {
 rpx::JtagDriver::Header rpx::JtagDriver::getHdr(uint8_t* buf) {
     Header hdr;
     memcpy(&hdr, buf, sizeof(hdr));
-    if (!isLE()) {
-        hdr = ntohl(hdr);
-    }
+    if (!isLE()) { hdr = ntohl(hdr); }
     return hdr;
 }
 
@@ -202,9 +200,7 @@ int rpx::JtagDriver::xferRel(uint8_t* txb, unsigned txBytes, Header* phdr, uint8
                 throw(rogue::GeneralError::create("JtagDriver::xferRel()", "Protocol error"));
             }
             if (xid == XID_ANY || xid == getXid(hdr)) {
-                if (phdr) {
-                    *phdr = hdr;
-                }
+                if (phdr) { *phdr = hdr; }
                 return got;
             }
         } catch (rogue::GeneralError&) {}
@@ -235,7 +231,7 @@ uint64_t rpx::JtagDriver::query() {
     log_->debug("Query result: wordSize %" PRId32 ", memDepth %" PRId32 ", period %l" PRId32 "ns\n",
                 wordSize_,
                 memDepth_,
-                (uint64_t)periodNs_);
+                static_cast<uint64_t>(periodNs_));
 
     if (0 == memDepth_)
         retry_ = 0;
@@ -299,7 +295,7 @@ void rpx::JtagDriver::dumpInfo(FILE* f) {
     fprintf(f, "Word size:                  %d\n", getWordSize());
     fprintf(f, "Target Memory Depth (bytes) %d\n", getWordSize() * getMemDepth());
     fprintf(f, "Max. Vector Length  (bytes) %ld\n", getMaxVectorSize());
-    fprintf(f, "TCK Period             (ns) %ld\n", (uint64_t)getPeriodNs());
+    fprintf(f, "TCK Period             (ns) %ld\n", static_cast<uint64_t>(getPeriodNs()));
 }
 
 void rpx::JtagDriver::setup_python() {

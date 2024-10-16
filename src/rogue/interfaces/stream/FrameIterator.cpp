@@ -156,7 +156,7 @@ uint8_t* ris::FrameIterator::ptr() const {
 //! De-reference by index
 uint8_t ris::FrameIterator::operator[](const uint32_t offset) const {
     ris::FrameIterator ret(*this);
-    ret.increment((int32_t)offset);
+    ret.increment(static_cast<int32_t>(offset));
     return *ret;
 }
 

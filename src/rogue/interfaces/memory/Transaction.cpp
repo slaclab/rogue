@@ -22,7 +22,9 @@
 #include <stdarg.h>
 #include <sys/time.h>
 
+#include <cstdio>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -107,9 +109,7 @@ rim::TransactionLockPtr rim::Transaction::lock() {
 //! Get expired state
 bool rim::Transaction::expired() {
     bool done = false;
-    if (isSubTransaction_) {
-        done = parentTransaction_.expired();
-    }
+    if (isSubTransaction_) { done = parentTransaction_.expired(); }
     return done || (iter_ == NULL || done_);
 }
 

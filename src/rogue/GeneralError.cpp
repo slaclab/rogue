@@ -20,6 +20,9 @@
 
 #include <stdarg.h>
 
+#include <cstdio>
+#include <string>
+
 #ifndef NO_PYTHON
     #include <boost/python.hpp>
 namespace bp = boost::python;
