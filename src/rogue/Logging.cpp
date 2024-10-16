@@ -20,14 +20,14 @@
 
 #include <inttypes.h>
 #include <stdarg.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
-#include <memory>
-#include <vector>
-#include <string>
 #include <cstdio>
+#include <cstring>
+#include <memory>
+#include <string>
+#include <vector>
 
 #if defined(__linux__)
     #include <sys/syscall.h>

@@ -19,10 +19,10 @@
 #include "rogue/protocols/udp/Client.h"
 
 #include <inttypes.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
+#include <cstdlib>
+#include <cstring>
 #include <memory>
 #include <string>
 

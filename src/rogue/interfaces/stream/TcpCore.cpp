@@ -19,9 +19,9 @@
 #include "rogue/interfaces/stream/TcpCore.h"
 
 #include <inttypes.h>
-#include <string.h>
 #include <zmq.h>
 
+#include <cstring>
 #include <memory>
 #include <string>
 

@@ -17,11 +17,11 @@
 #include "rogue/protocols/packetizer/ControllerV1.h"
 
 #include <inttypes.h>
-#include <math.h>
-#include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cmath>
+#include <cstdlib>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -165,9 +165,7 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     if (tmpEof) {
         tranFrame_[0]->setLastUser(tmpLuser);
         tranCount_[0] = 0;
-        if (app_[tranDest_]) {
-            app_[tranDest_]->pushFrame(tranFrame_[0]);
-        }
+        if (app_[tranDest_]) { app_[tranDest_]->pushFrame(tranFrame_[0]); }
         tranFrame_[0].reset();
 
         // Detect SSI error

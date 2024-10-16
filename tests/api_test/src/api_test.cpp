@@ -9,10 +9,10 @@
  * ----------------------------------------------------------------------------
  **/
 
-#include "rogue/interfaces/api/Bsp.h"
-
-#include <string>
 #include <cstdio>
+#include <string>
+
+#include "rogue/interfaces/api/Bsp.h"
 
 void varListener(std::string path, std::string value) {
     printf("Var Listener: %s = %s\n", path.c_str(), value.c_str());

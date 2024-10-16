@@ -19,13 +19,12 @@
 #include "rogue/protocols/xilinx/Xvc.h"
 
 #include <dlfcn.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
+#include <algorithm>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
-#include <algorithm>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

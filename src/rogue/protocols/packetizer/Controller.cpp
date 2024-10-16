@@ -17,8 +17,8 @@
 #include "rogue/protocols/packetizer/Controller.h"
 
 #include <inttypes.h>
-#include <math.h>
 
+#include <cmath>
 #include <memory>
 
 #include "rogue/GeneralError.h"

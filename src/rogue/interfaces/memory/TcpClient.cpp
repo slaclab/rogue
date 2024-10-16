@@ -19,7 +19,6 @@
 #include "rogue/interfaces/memory/TcpClient.h"
 
 #include <inttypes.h>
-#include <string.h>
 #include <zmq.h>
 
 #include <cstring>

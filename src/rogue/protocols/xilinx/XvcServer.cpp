@@ -19,12 +19,12 @@
 
 #include <arpa/inet.h>
 #include <dlfcn.h>
-#include <math.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 
+#include <cmath>
 #include <string>
 
 #include "rogue/protocols/xilinx/XvcConnection.h"
@@ -75,9 +75,7 @@ void rpx::XvcServer::run(bool& threadEn, rogue::LoggingPtr log) {
             try {
                 XvcConnection conn(sd_, drv_, maxMsgSize_);
                 conn.run();
-            } catch (rogue::GeneralError& e) {
-                log->debug("Sub-connection failed");
-            }
+            } catch (rogue::GeneralError& e) { log->debug("Sub-connection failed"); }
         }
     }
 }

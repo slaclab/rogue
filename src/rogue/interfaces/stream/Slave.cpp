@@ -21,12 +21,12 @@
 #include "rogue/interfaces/stream/Slave.h"
 
 #include <inttypes.h>
-#include <string.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
 #include <string>
-#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -115,9 +115,7 @@ void ris::SlaveWrap::acceptFrame(ris::FramePtr frame) {
             try {
                 pb(frame);
                 return;
-            } catch (...) {
-                PyErr_Print();
-            }
+            } catch (...) { PyErr_Print(); }
         }
     }
     ris::Slave::acceptFrame(frame);

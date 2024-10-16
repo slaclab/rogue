@@ -133,16 +133,17 @@ struct DmaRegisterData {
 
 // Conditional inclusion for non-kernel environments
 #ifndef DMA_IN_KERNEL
-    #include <signal.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
     #include <sys/fcntl.h>
     #include <sys/ioctl.h>
     #include <sys/mman.h>
     #include <sys/signal.h>
     #include <sys/socket.h>
     #include <unistd.h>
+
+    #include <csignal>
+    #include <cstdio>
+    #include <cstdlib>
+    #include <cstring>
 
 /**
  * dmaWrite - Writes data to a DMA channel.
@@ -167,7 +168,7 @@ static inline ssize_t dmaWrite(int32_t fd, const void* buf, size_t size, uint32_
     w.flags = flags;
     w.size  = size;
     w.is32  = (sizeof(void*) == 4);
-    w.data  = (uint64_t)buf;//NOLINT
+    w.data  = (uint64_t)buf;  // NOLINT
 
     return (write(fd, &w, sizeof(struct DmaWriteData)));
 }
@@ -237,7 +238,7 @@ static inline ssize_t dmaWriteVector(int32_t fd,
         w.flags = (x == 0) ? begFlags : ((x == (iovlen - 1)) ? endFlags : midFlags);
         w.size  = iov[x].iov_len;
         w.is32  = (sizeof(void*) == 4);
-        w.data  = (uint64_t)iov[x].iov_base;//NOLINT
+        w.data  = (uint64_t)iov[x].iov_base;  // NOLINT
 
         do {
             res = write(fd, &w, sizeof(struct DmaWriteData));
@@ -288,7 +289,7 @@ static inline ssize_t dmaWriteIndexVector(int32_t fd,
         w.flags = (x == 0) ? begFlags : ((x == (iovlen - 1)) ? endFlags : midFlags);
         w.size  = iov[x].iov_len;
         w.is32  = (sizeof(void*) == 4);
-        w.index = (uint32_t)(((uint64_t)iov[x].iov_base) & 0xFFFFFFFF);//NOLINT
+        w.index = (uint32_t)(((uint64_t)iov[x].iov_base) & 0xFFFFFFFF);  // NOLINT
 
         do {
             res = write(fd, &w, sizeof(struct DmaWriteData));
@@ -324,7 +325,7 @@ static inline ssize_t dmaRead(int32_t fd, void* buf, size_t maxSize, uint32_t* f
     memset(&r, 0, sizeof(struct DmaReadData));
     r.size = maxSize;
     r.is32 = (sizeof(void*) == 4);
-    r.data = (uint64_t)buf;//NOLINT
+    r.data = (uint64_t)buf;  // NOLINT
 
     ret = read(fd, &r, sizeof(struct DmaReadData));
 
@@ -645,9 +646,7 @@ static inline ssize_t dmaGetBuffCount(int32_t fd) {
  */
 static inline std::string dmaGetGitVersion(int32_t fd) {
     char gitv[32] = {0};  // Initialize with zeros to ensure null-termination
-    if (ioctl(fd, DMA_Get_GITV, gitv) < 0) {
-        return "";
-    }
+    if (ioctl(fd, DMA_Get_GITV, gitv) < 0) { return ""; }
     gitv[32 - 1] = '\0';  // Ensure null-termination
     return std::string(gitv);
 }

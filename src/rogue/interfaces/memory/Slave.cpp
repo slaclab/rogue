@@ -100,9 +100,7 @@ rim::TransactionPtr rim::Slave::getTransaction(uint32_t index) {
 
         // Clean up if we found an expired transaction, overtime this will clean up
         // the list, even if it deletes one expired transaction per call
-        if (exp != tranMap_.end()) {
-            tranMap_.erase(exp);
-        }
+        if (exp != tranMap_.end()) { tranMap_.erase(exp); }
     }
     return ret;
 }
@@ -190,9 +188,7 @@ uint32_t rim::SlaveWrap::doMinAccess() {
         if (boost::python::override pb = this->get_override("_doMinAccess")) {
             try {
                 return (pb());
-            } catch (...) {
-                PyErr_Print();
-            }
+            } catch (...) { PyErr_Print(); }
         }
     }
     return (rim::Slave::doMinAccess());
@@ -211,9 +207,7 @@ uint32_t rim::SlaveWrap::doMaxAccess() {
         if (boost::python::override pb = this->get_override("_doMaxAccess")) {
             try {
                 return (pb());
-            } catch (...) {
-                PyErr_Print();
-            }
+            } catch (...) { PyErr_Print(); }
         }
     }
     return (rim::Slave::doMaxAccess());
@@ -232,9 +226,7 @@ uint64_t rim::SlaveWrap::doAddress() {
         if (boost::python::override pb = this->get_override("_doAddress")) {
             try {
                 return (pb());
-            } catch (...) {
-                PyErr_Print();
-            }
+            } catch (...) { PyErr_Print(); }
         }
     }
     return (rim::Slave::doAddress());
@@ -254,9 +246,7 @@ void rim::SlaveWrap::doTransaction(rim::TransactionPtr transaction) {
             try {
                 pb(transaction);
                 return;
-            } catch (...) {
-                PyErr_Print();
-            }
+            } catch (...) { PyErr_Print(); }
         }
     }
     rim::Slave::doTransaction(transaction);

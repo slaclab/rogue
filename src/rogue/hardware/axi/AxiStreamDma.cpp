@@ -19,11 +19,11 @@
 #include "rogue/hardware/axi/AxiStreamDma.h"
 
 #include <inttypes.h>
-#include <stdlib.h>
 
-#include <memory>
-#include <map>
 #include <cstdio>
+#include <cstdlib>
+#include <map>
+#include <memory>
 #include <string>
 
 #include "rogue/GeneralError.h"
@@ -133,9 +133,7 @@ void rha::AxiStreamDma::closeShared(rha::AxiStreamDmaSharedPtr desc) {
     desc->openCount--;
 
     if (desc->openCount == 0) {
-        if (desc->rawBuff != NULL) {
-            dmaUnMapDma(desc->fd, desc->rawBuff);
-        }
+        if (desc->rawBuff != NULL) { dmaUnMapDma(desc->fd, desc->rawBuff); }
 
         ::close(desc->fd);
         desc->fd      = -1;

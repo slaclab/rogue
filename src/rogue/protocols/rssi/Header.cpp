@@ -19,9 +19,9 @@
 #include <arpa/inet.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <string.h>
 #include <sys/time.h>
 
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <memory>

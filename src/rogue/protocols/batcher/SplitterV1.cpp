@@ -18,9 +18,9 @@
 
 #include "rogue/protocols/batcher/SplitterV1.h"
 
-#include <math.h>
 #include <stdint.h>
 
+#include <cmath>
 #include <memory>
 #include <thread>
 

@@ -21,13 +21,13 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
-#include <thread>
 #include <string>
+#include <thread>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -177,9 +177,7 @@ void ruf::LegacyStreamReader::runThread() {
             size = header & 0x0FFFFFFF;
             chan = header >> 28;
 
-            if (chan == 0) {
-                size = size * 4;
-            }
+            if (chan == 0) { size = size * 4; }
 
             // cout << "Frame with size" << size << "and channel" << chan;
             log.info("Got frame with header %" PRIx32 ", size %" PRIu32 " and channel %" PRIu8, header, size, chan);
