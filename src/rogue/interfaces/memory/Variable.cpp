@@ -705,7 +705,7 @@ std::string rim::Variable::getDumpValue(bool read) {
     else
         index = 0;
 
-    while (index < (int32_t)numValues_) {
+    while (index < static_cast<int32_t>(numValues_)) {
         ret << " ";
 
         switch (modelId_) {
@@ -713,7 +713,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                 (block_->*getByteArray_)(byteData, this, index);
                 ret << "0x";
                 for (x = 0; x < valueBytes_; x++)
-                    ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                    ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 break;
 
             case rim::UInt:
@@ -721,7 +721,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                     (block_->*getByteArray_)(byteData, this, index);
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
-                        ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                        ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 } else {
                     ret << (block_->*getUInt_)(this, index);
                 }
@@ -732,7 +732,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                     (block_->*getByteArray_)(byteData, this, index);
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
-                        ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                        ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 } else {
                     ret << (block_->*getInt_)(this, index);
                 }

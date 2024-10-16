@@ -159,7 +159,7 @@ void rogue::Logging::logThreadId() {
 #elif defined(__APPLE__) && defined(__MACH__)
     uint64_t tid64;
     pthread_threadid_np(NULL, &tid64);
-    tid = (uint32_t)tid64;
+    tid = static_cast<uint32_t>(tid64);
 #else
     tid = 0;
 #endif

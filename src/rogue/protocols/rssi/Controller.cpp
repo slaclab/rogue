@@ -702,7 +702,7 @@ void rpr::Controller::convTime(struct timeval& tme, uint32_t rssiTime) {
     float units = std::pow(10, -TimeoutUnit);
     float value = units * static_cast<float>(rssiTime);
 
-    uint32_t usec = (uint32_t)(value / 1e-6);
+    uint32_t usec = static_cast<uint32_t>(value / 1e-6);
 
     div_t divResult = div(usec, 1000000);
     tme.tv_sec      = divResult.quot;

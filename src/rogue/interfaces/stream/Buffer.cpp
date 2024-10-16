@@ -78,14 +78,14 @@ void ris::Buffer::setMeta(uint32_t meta) {
 //! Adjust header by passed value
 void ris::Buffer::adjustHeader(int32_t value) {
     // Decreasing header size
-    if (value < 0 && (uint32_t)abs(value) > headRoom_)
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > headRoom_)
         throw(rogue::GeneralError::create("Buffer::adjustHeader",
                                           "Attempt to reduce header with size %" PRIu32 " by %" PRIi32,
                                           headRoom_,
                                           value));
 
     // Increasing header size
-    if (value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)))
+    if (value > 0 && static_cast<uint32_t>(value) > (rawSize_ - (headRoom_ + tailRoom_)))
         throw(rogue::GeneralError::create("Buffer::adjustHeader",
                                           "Attempt to increase header by %" PRIi32 " in buffer with size %" PRIu32,
                                           value,
@@ -112,14 +112,14 @@ void ris::Buffer::zeroHeader() {
 //! Adjust tail by passed value
 void ris::Buffer::adjustTail(int32_t value) {
     // Decreasing tail size
-    if (value < 0 && (uint32_t)abs(value) > tailRoom_)
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > tailRoom_)
         throw(rogue::GeneralError::create("Buffer::adjustTail",
                                           "Attempt to reduce tail with size %" PRIu32 " by %" PRIi32,
                                           tailRoom_,
                                           value));
 
     // Increasing tail size
-    if (value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)))
+    if (value > 0 && static_cast<uint32_t>(value) > (rawSize_ - (headRoom_ + tailRoom_)))
         throw(rogue::GeneralError::create("Buffer::adjustTail",
                                           "Attempt to increase header by %" PRIi32 " in buffer with size %" PRIu32,
                                           value,
@@ -227,7 +227,7 @@ void ris::Buffer::minPayload(uint32_t size) {
 
 //! Adjust payload size
 void ris::Buffer::adjustPayload(int32_t value) {
-    if (value < 0 && (uint32_t)abs(value) > getPayload())
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > getPayload())
         throw(rogue::GeneralError::create("Buffer::adjustPayload",
                                           "Attempt to decrease payload by %" PRIi32 " in buffer with size %" PRIu32,
                                           value,

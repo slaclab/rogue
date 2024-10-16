@@ -575,7 +575,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
     x   = 0;
 
     while (rem > 0) {
-        ss << "0x" << std::setfill('0') << std::hex << std::setw(2) << (uint32_t)(verifyMask_[x]) << " ";
+        ss << "0x" << std::setfill('0') << std::hex << std::setw(2) << static_cast<uint32_t>(verifyMask_[x]) << " ";
         x++;
         rem--;
         if (rem == 0 || x % 10 == 0) {
@@ -1013,7 +1013,7 @@ bp::object rim::Block::getUIntPy(rim::Variable* var, int32_t index) {
             PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
             uint32_t* dst      = reinterpret_cast<uint32_t*>(PyArray_DATA(arr));
 
-            for (x = 0; x < var->numValues_; x++) dst[x] = (uint32_t)getUInt(var, x);
+            for (x = 0; x < var->numValues_; x++) dst[x] = static_cast<uint32_t>(getUInt(var, x));
         }
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
@@ -1178,7 +1178,7 @@ bp::object rim::Block::getIntPy(rim::Variable* var, int32_t index) {
             PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
             int32_t* dst       = reinterpret_cast<int32_t*>(PyArray_DATA(arr));
 
-            for (x = 0; x < var->numValues_; x++) dst[x] = (int32_t)getInt(var, x);
+            for (x = 0; x < var->numValues_; x++) dst[x] = static_cast<int32_t>(getInt(var, x));
         }
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
@@ -1217,7 +1217,9 @@ int64_t rim::Block::getInt(rim::Variable* var, int32_t index) {
     getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     if (var->valueBits_ != 64) {
-        if (tmp >= (uint64_t)pow(2, var->valueBits_ - 1)) tmp -= (uint64_t)pow(2, var->valueBits_);
+        if (tmp >= static_cast<uint64_t>(pow(2, var->valueBits_ - 1))) {
+            tmp -= static_cast<uint64_t>(pow(2, var->valueBits_));
+        }
     }
     return tmp;
 }
@@ -1870,7 +1872,7 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
                                           var->maxValue_));
 
     // Convert
-    int64_t fPoint = (int64_t)round(val * pow(2, var->binPoint_));
+    int64_t fPoint = static_cast<int64_t>(round(val * pow(2, var->binPoint_)));
     // Check for positive edge case
     uint64_t mask = 1 << (var->valueBits_ - 1);
     if (val > 0 && ((fPoint & mask) != 0)) {
