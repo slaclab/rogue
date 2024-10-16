@@ -371,14 +371,19 @@ void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
 }
 
 //! Allocate a bytearray and read bytes from frame into it starting at offset, return array
-bp::object ris::Frame::getBytearrayPy(uint32_t offset) {
+bp::object ris::Frame::getBytearrayPy(uint32_t offset, uint32_t count) {
     // Get the size of the frame
     uint32_t size = getPayload();
+    
+    if (count == 0) {
+        count = size - offset;
+    }
+    
 
     // Create a Python bytearray to hold the data
-    bp::object byteArray(bp::handle<>(PyByteArray_FromStringAndSize(nullptr, size - offset)));
+    bp::object byteArray(bp::handle<>(PyByteArray_FromStringAndSize(nullptr, count)));
 
-
+    // readPy will check bounds
     this->readPy(byteArray, offset);
 
     return byteArray;
@@ -554,7 +559,8 @@ void ris::Frame::setup_python() {
         .def("read", &ris::Frame::readPy, (
             bp::arg("offset")=0))
         .def("getBa", &ris::Frame::getBytearrayPy, (
-            bp::arg("offset")=0))
+            bp::arg("offset")=0,
+            bp::arg("count")=0))
         .def("getMemoryview", &ris::Frame::getMemoryviewPy)
         .def("write", &ris::Frame::writePy, (
             bp::arg("offset")=0))
