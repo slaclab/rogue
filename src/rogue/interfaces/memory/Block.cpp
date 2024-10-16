@@ -28,6 +28,9 @@
 #include <iomanip>
 #include <memory>
 #include <sstream>
+#include <vector>
+#include <string>
+#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

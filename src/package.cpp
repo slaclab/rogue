@@ -17,6 +17,8 @@
 
 #include "rogue/Directives.h"
 
+#include <cstdio>
+
 #include <boost/python.hpp>
 
 #include "rogue/Version.h"

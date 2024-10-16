@@ -22,6 +22,9 @@
 #include <stdlib.h>
 
 #include <memory>
+#include <map>
+#include <cstdio>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

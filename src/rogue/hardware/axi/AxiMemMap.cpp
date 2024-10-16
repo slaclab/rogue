@@ -29,6 +29,7 @@
 #include <cstring>
 #include <memory>
 #include <thread>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

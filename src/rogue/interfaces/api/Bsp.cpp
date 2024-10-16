@@ -17,7 +17,9 @@
 #include "rogue/interfaces/api/Bsp.h"
 
 #include <boost/make_shared.hpp>
+
 #include <string>
+#include <memory>
 
 #include "rogue/GeneralError.h"
 

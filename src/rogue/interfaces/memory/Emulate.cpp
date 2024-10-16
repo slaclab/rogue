@@ -24,6 +24,8 @@
 #include <string.h>
 
 #include <memory>
+#include <string>
+#include <utility>
 
 #include "rogue/GilRelease.h"
 #include "rogue/interfaces/memory/Constants.h"

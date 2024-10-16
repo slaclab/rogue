@@ -24,6 +24,7 @@
 
 #include <cmath>
 #include <memory>
+#include <string>
 
 #include "rogue/GilRelease.h"
 #include "rogue/ScopedGil.h"

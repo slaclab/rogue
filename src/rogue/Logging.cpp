@@ -25,6 +25,9 @@
 #include <unistd.h>
 
 #include <memory>
+#include <vector>
+#include <string>
+#include <cstdio>
 
 #if defined(__linux__)
     #include <sys/syscall.h>

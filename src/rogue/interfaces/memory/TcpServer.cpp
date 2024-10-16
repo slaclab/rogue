@@ -24,6 +24,7 @@
 
 #include <cstring>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

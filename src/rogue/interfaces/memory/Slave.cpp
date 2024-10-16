@@ -19,6 +19,7 @@
 #include "rogue/interfaces/memory/Slave.h"
 
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
