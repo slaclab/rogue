@@ -50,9 +50,9 @@ jobs:
           flake8 --count ./tests/
 
       # C++ Linter
-#       - name: C++ Linter
-#         run: |
-#           find . -name '*.h' -o -name '*.cpp' | xargs cpplint
+      - name: C++ Linter
+        run: |
+          find . -name '*.h' -o -name '*.cpp' | xargs cpplint
 
       # Rogue
       - name: Build Rogue
