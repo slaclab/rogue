@@ -31,6 +31,7 @@
 #include <memory>
 #include <stdexcept>
 #include <vector>
+#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/Logging.h"
