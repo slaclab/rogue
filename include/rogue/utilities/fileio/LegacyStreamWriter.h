@@ -20,11 +20,10 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
-#define __ROGUE_UTILITIES_FILEIO_LEGACY_STREAM_WRITER_H__
+#ifndef ROGUE_UTILITIES_FILEIO_LEGACYSTREAMWRITER_H
+#define ROGUE_UTILITIES_FILEIO_LEGACYSTREAMWRITER_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <map>
 #include <memory>

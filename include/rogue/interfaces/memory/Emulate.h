@@ -15,11 +15,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_INTERFACES_MEMORY_EMULATOR_H__
-#define __ROGUE_INTERFACES_MEMORY_EMULATOR_H__
+#ifndef ROGUE_INTERFACES_MEMORY_EMULATE_H
+#define ROGUE_INTERFACES_MEMORY_EMULATE_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

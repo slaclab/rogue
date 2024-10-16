@@ -20,13 +20,10 @@
 
 #include "rogue/interfaces/stream/Slave.h"
 
-#include <inttypes.h>
-#include <string.h>
-#include <unistd.h>
 
+#include <cstdio>
 #include <memory>
 #include <string>
-#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

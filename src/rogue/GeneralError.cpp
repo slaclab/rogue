@@ -18,7 +18,7 @@
 
 #include "rogue/GeneralError.h"
 
-#include <stdarg.h>
+#include <cstdarg>
 
 #include <cstdio>
 #include <string>

@@ -18,11 +18,9 @@
 
 #include "rogue/interfaces/stream/RateDrop.h"
 
-#include <stdint.h>
-#include <sys/time.h>
 
-#include <memory>
 #include <cstdio>
+#include <memory>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"

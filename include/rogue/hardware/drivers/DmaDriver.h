@@ -19,14 +19,13 @@
  * ----------------------------------------------------------------------------
  **/
 
-#ifndef __DMA_DRIVER_H__
-#define __DMA_DRIVER_H__
+#ifndef ROGUE_HARDWARE_DRIVERS_DMADRIVER_H
+#define ROGUE_HARDWARE_DRIVERS_DMADRIVER_H
 
 #ifdef DMA_IN_KERNEL
     #include <linux/types.h>
 #else
-    #include <stdint.h>
-
+    
     #include <string>
 #endif
 
@@ -90,7 +89,7 @@ struct DmaWriteData {
     uint32_t size;
     uint32_t is32;
     uint32_t pad;
-};
+} __attribute__((aligned(32)));
 
 /**
  * struct DmaReadData - Structure representing a DMA read operation.
@@ -116,7 +115,7 @@ struct DmaReadData {
     uint32_t size;
     uint32_t is32;
     int32_t ret;
-};
+} __attribute__((packed)) __attribute__((aligned(64)));
 
 /**
  * struct DmaRegisterData - Register data structure.
@@ -129,21 +128,11 @@ struct DmaReadData {
 struct DmaRegisterData {
     uint64_t address;
     uint32_t data;
-};
+} __attribute__((aligned(16)));
 
 // Conditional inclusion for non-kernel environments
 #ifndef DMA_IN_KERNEL
-    #include <signal.h>
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <string.h>
-    #include <sys/fcntl.h>
-    #include <sys/ioctl.h>
-    #include <sys/mman.h>
-    #include <sys/signal.h>
-    #include <sys/socket.h>
-    #include <unistd.h>
-
+                               
 /**
  * dmaWrite - Writes data to a DMA channel.
  * @fd: File descriptor for the DMA device.
@@ -159,7 +148,7 @@ struct DmaRegisterData {
  *
  * Return: Number of bytes written, or a negative error code on failure.
  */
-static inline ssize_t dmaWrite(int32_t fd, const void* buf, size_t size, uint32_t flags, uint32_t dest) {
+static inline ssize_t dmaWrite(int32_t fd, const void* buf, uint32_t flags, uint32_t dest) {
     struct DmaWriteData w;
 
     memset(&w, 0, sizeof(struct DmaWriteData));
@@ -186,7 +175,7 @@ static inline ssize_t dmaWrite(int32_t fd, const void* buf, size_t size, uint32_
  *
  * Return: Number of bytes written, or a negative error code on failure.
  */
-static inline ssize_t dmaWriteIndex(int32_t fd, uint32_t index, size_t size, uint32_t flags, uint32_t dest) {
+static inline ssize_t dmaWriteIndex(int32_t fd, uint32_t index, uint32_t flags, uint32_t dest) {
     struct DmaWriteData w;
 
     memset(&w, 0, sizeof(struct DmaWriteData));
@@ -219,14 +208,13 @@ static inline ssize_t dmaWriteIndex(int32_t fd, uint32_t index, size_t size, uin
  */
 static inline ssize_t dmaWriteVector(int32_t fd,
                                      struct iovec* iov,
-                                     size_t iovlen,
                                      uint32_t begFlags,
                                      uint32_t midFlags,
                                      uint32_t endFlags,
                                      uint32_t dest) {
-    uint32_t x;
-    ssize_t ret;
-    ssize_t res;
+    uint32_t x = 0;
+    ssize_t ret = 0;
+    ssize_t res = 0;
     struct DmaWriteData w;
 
     ret = 0;
@@ -270,14 +258,13 @@ static inline ssize_t dmaWriteVector(int32_t fd,
  */
 static inline ssize_t dmaWriteIndexVector(int32_t fd,
                                           struct iovec* iov,
-                                          size_t iovlen,
                                           uint32_t begFlags,
                                           uint32_t midFlags,
                                           uint32_t endFlags,
                                           uint32_t dest) {
-    uint32_t x;
-    ssize_t ret;
-    ssize_t res;
+    uint32_t x = 0;
+    ssize_t ret = 0;
+    ssize_t res = 0;
     struct DmaWriteData w;
 
     ret = 0;
@@ -317,9 +304,9 @@ static inline ssize_t dmaWriteIndexVector(int32_t fd,
  *
  * Return: Size of the data received, or negative on failure.
  */
-static inline ssize_t dmaRead(int32_t fd, void* buf, size_t maxSize, uint32_t* flags, uint32_t* error, uint32_t* dest) {
+static inline ssize_t dmaRead(int32_t fd, void* buf, uint32_t* flags, uint32_t* error, uint32_t* dest) {
     struct DmaReadData r;
-    ssize_t ret;
+    ssize_t ret = 0;
 
     memset(&r, 0, sizeof(struct DmaReadData));
     r.size = maxSize;
@@ -328,11 +315,15 @@ static inline ssize_t dmaRead(int32_t fd, void* buf, size_t maxSize, uint32_t* f
 
     ret = read(fd, &r, sizeof(struct DmaReadData));
 
-    if (ret <= 0) return (ret);
+    if (ret <= 0) { return (ret);
+}
 
-    if (dest != NULL) *dest = r.dest;
-    if (flags != NULL) *flags = r.flags;
-    if (error != NULL) *error = r.error;
+    if (dest != NULL) { *dest = r.dest;
+}
+    if (flags != NULL) { *flags = r.flags;
+}
+    if (error != NULL) { *error = r.error;
+}
 
     return (r.ret);
 }
@@ -360,9 +351,12 @@ static inline ssize_t dmaReadIndex(int32_t fd, uint32_t* index, uint32_t* flags,
 
     if (ret <= 0) return (ret);
 
-    if (dest != NULL) *dest = r.dest;
-    if (flags != NULL) *flags = r.flags;
-    if (error != NULL) *error = r.error;
+    if (dest != NULL) { *dest = r.dest;
+}
+    if (flags != NULL) { *flags = r.flags;
+}
+    if (error != NULL) { *error = r.error;
+}
 
     *index = r.index;
     return (r.ret);
@@ -663,18 +657,20 @@ static inline std::string dmaGetGitVersion(int32_t fd) {
  * Returns: Pointer to an array of pointers to the mapped buffers, or NULL on failure.
  */
 static inline void** dmaMapDma(int32_t fd, uint32_t* count, uint32_t* size) {
-    void* temp;
-    void** ret;
-    uint32_t bCount;
-    uint32_t gCount;
-    uint32_t bSize;
-    off_t offset;
+    void* temp = NULL;
+    void** ret = NULL;
+    uint32_t bCount = 0;
+    uint32_t gCount = 0;
+    uint32_t bSize = 0;
+    off_t offset = 0;
 
     bSize  = ioctl(fd, DMA_Get_Buff_Size, 0);
     bCount = ioctl(fd, DMA_Get_Buff_Count, 0);
 
-    if (count != NULL) *count = bCount;
-    if (size != NULL) *size = bSize;
+    if (count != NULL) { *count = bCount;
+}
+    if (size != NULL) { *size = bSize;
+}
 
     if ((ret = reinterpret_cast<void**>(malloc(sizeof(void*) * bCount))) == 0) return (NULL);
 
@@ -706,9 +702,9 @@ static inline void** dmaMapDma(int32_t fd, uint32_t* count, uint32_t* size) {
  * Returns: 0 on success.
  */
 static inline ssize_t dmaUnMapDma(int32_t fd, void** buffer) {
-    uint32_t bCount;
-    uint32_t bSize;
-    uint32_t x;
+    uint32_t bCount = 0;
+    uint32_t bSize = 0;
+    uint32_t x = 0;
 
     bCount = ioctl(fd, DMA_Get_Buff_Count, 0);
     bSize  = ioctl(fd, DMA_Get_Buff_Size, 0);
@@ -744,7 +740,7 @@ static inline ssize_t dmaSetDebug(int32_t fd, uint32_t level) {
  */
 static inline void dmaAssignHandler(int32_t fd, void (*handler)(int32_t)) {
     struct sigaction act;
-    int32_t oflags;
+    int32_t oflags = 0;
 
     act.sa_handler = handler;
     sigemptyset(&act.sa_mask);
@@ -788,8 +784,8 @@ static inline void dmaInitMaskBytes(uint8_t* mask) {
  * bit based on the destination index.
  */
 static inline void dmaAddMaskBytes(uint8_t* mask, uint32_t dest) {
-    uint32_t byte;
-    uint32_t bit;
+    uint32_t byte = 0;
+    uint32_t bit = 0;
 
     if (dest < 8 * (DMA_MASK_SIZE)) {
         byte = dest / 8;
@@ -820,7 +816,7 @@ static inline ssize_t dmaSetMaskBytes(int32_t fd, uint8_t* mask) {
  * Return: 0 if the version matches, -1 otherwise.
  */
 static inline ssize_t dmaCheckVersion(int32_t fd) {
-    int32_t version;
+    int32_t version = 0;
     version = ioctl(fd, DMA_Get_Version);
     return ((version == DMA_VERSION) ? 0 : -1);
 }
@@ -868,7 +864,7 @@ static inline ssize_t dmaWriteRegister(int32_t fd, uint64_t address, uint32_t da
  */
 static inline ssize_t dmaReadRegister(int32_t fd, uint64_t address, uint32_t* data) {
     struct DmaRegisterData reg;
-    ssize_t res;
+    ssize_t res = 0;
 
     // Initialize register data structure
     reg.address = address;
@@ -878,7 +874,8 @@ static inline ssize_t dmaReadRegister(int32_t fd, uint64_t address, uint32_t* da
     res = ioctl(fd, DMA_Read_Register, &reg);
 
     // If data pointer is valid, update it with the read value
-    if (data != NULL) *data = reg.data;
+    if (data != NULL) { *data = reg.data;
+}
 
     return res;
 }
@@ -896,9 +893,9 @@ static inline ssize_t dmaReadRegister(int32_t fd, uint64_t address, uint32_t* da
  * Return: A pointer to the mapped memory region in user space, or MAP_FAILED on failure.
  */
 static inline void* dmaMapRegister(int32_t fd, off_t offset, uint32_t size) {
-    uint32_t bSize;
-    uint32_t bCount;
-    off_t intOffset;
+    uint32_t bSize = 0;
+    uint32_t bCount = 0;
+    off_t intOffset = 0;
 
     // Obtain buffer size and count from the DMA device
     bSize  = ioctl(fd, DMA_Get_Buff_Size, 0);
@@ -922,11 +919,11 @@ static inline void* dmaMapRegister(int32_t fd, off_t offset, uint32_t size) {
  *
  * Return: Always returns 0 indicating success.
  */
-static inline ssize_t dmaUnMapRegister(int32_t fd, void* ptr, uint32_t size) {
+static inline ssize_t dmaUnMapRegister(void* ptr, uint32_t size) {
     // Unmap the memory region
     munmap(ptr, size);
     return 0;
 }
 
 #endif  // !DMA_IN_KERNEL
-#endif  // __DMA_DRIVER_H__
+#endif // ROGUE_HARDWARE_DRIVERS_DMADRIVER_H

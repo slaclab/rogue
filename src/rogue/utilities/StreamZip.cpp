@@ -19,9 +19,7 @@
 #include "rogue/utilities/StreamZip.h"
 
 #include <bzlib.h>
-#include <inttypes.h>
-#include <stdarg.h>
-#include <unistd.h>
+#include <cstdarg>
 
 #include <memory>
 

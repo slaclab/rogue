@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_MODULE_H__
-#define __ROGUE_MODULE_H__
+#ifndef ROGUE_MODULE_H
+#define ROGUE_MODULE_H
 #include "rogue/Directives.h"
 
 namespace rogue {

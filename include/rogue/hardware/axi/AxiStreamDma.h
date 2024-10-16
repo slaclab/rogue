@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
-#define __ROGUE_HARDWARE_AXI_AXI_STREAM_DMA_H__
+#ifndef ROGUE_HARDWARE_AXI_AXISTREAMDMA_H
+#define ROGUE_HARDWARE_AXI_AXISTREAMDMA_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <map>
 #include <memory>

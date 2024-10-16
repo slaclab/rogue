@@ -18,8 +18,6 @@
 
 #include "rogue/interfaces/stream/Filter.h"
 
-#include <inttypes.h>
-#include <stdint.h>
 
 #include <memory>
 

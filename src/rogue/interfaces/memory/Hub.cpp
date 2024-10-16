@@ -20,7 +20,6 @@
 
 #include "rogue/interfaces/memory/Hub.h"
 
-#include <inttypes.h>
 
 #include <cmath>
 #include <memory>

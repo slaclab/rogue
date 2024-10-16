@@ -18,13 +18,6 @@
 
 #include "rogue/hardware/MemMap.h"
 
-#include <fcntl.h>
-#include <inttypes.h>
-#include <stdio.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include <cstring>
 #include <memory>

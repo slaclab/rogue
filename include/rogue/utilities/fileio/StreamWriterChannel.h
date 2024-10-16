@@ -16,11 +16,10 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
-#define __ROGUE_UTILITIES_FILEIO_STREAM_WRITER_CHANNEL_H__
+#ifndef ROGUE_UTILITIES_FILEIO_STREAMWRITERCHANNEL_H
+#define ROGUE_UTILITIES_FILEIO_STREAMWRITERCHANNEL_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

@@ -16,8 +16,6 @@
  **/
 #include "rogue/protocols/packetizer/Controller.h"
 
-#include <inttypes.h>
-#include <math.h>
 
 #include <memory>
 

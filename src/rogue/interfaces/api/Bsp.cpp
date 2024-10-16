@@ -18,8 +18,8 @@
 
 #include <boost/make_shared.hpp>
 
-#include <string>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 

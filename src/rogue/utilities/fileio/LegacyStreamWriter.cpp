@@ -31,10 +31,6 @@
 
 #include "rogue/utilities/fileio/LegacyStreamWriter.h"
 
-#include <fcntl.h>
-#include <inttypes.h>
-#include <stdint.h>
-#include <unistd.h>
 
 #include <memory>
 #include <thread>

@@ -19,18 +19,15 @@
 
 #include "rogue/interfaces/memory/Block.h"
 
-#include <inttypes.h>
-#include <string.h>
-#include <sys/time.h>
 
 #include <cmath>
+#include <cstdio>
 #include <exception>
 #include <iomanip>
 #include <memory>
 #include <sstream>
-#include <vector>
 #include <string>
-#include <cstdio>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

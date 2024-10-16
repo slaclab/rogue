@@ -20,8 +20,6 @@
 
 #include "rogue/interfaces/stream/Pool.h"
 
-#include <inttypes.h>
-#include <unistd.h>
 
 #include <memory>
 #include <string>

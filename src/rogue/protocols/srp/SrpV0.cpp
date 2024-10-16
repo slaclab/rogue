@@ -18,9 +18,6 @@
 
 #include "rogue/protocols/srp/SrpV0.h"
 
-#include <inttypes.h>
-#include <stdint.h>
-#include <string.h>
 
 #include <memory>
 #include <thread>

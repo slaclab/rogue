@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
-#define __ROGUE_INTERFACES_MEMORY_TRANSACTION_H__
+#ifndef ROGUE_INTERFACES_MEMORY_TRANSACTION_H
+#define ROGUE_INTERFACES_MEMORY_TRANSACTION_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <condition_variable>
 #include <map>

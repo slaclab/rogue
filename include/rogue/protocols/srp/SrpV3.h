@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_PROTOCOLS_SRP_SRPV3_H__
-#define __ROGUE_PROTOCOLS_SRP_SRPV3_H__
+#ifndef ROGUE_PROTOCOLS_SRP_SRPV3_H
+#define ROGUE_PROTOCOLS_SRP_SRPV3_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

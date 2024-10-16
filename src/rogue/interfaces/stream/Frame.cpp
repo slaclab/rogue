@@ -18,10 +18,9 @@
 
 #include "rogue/interfaces/stream/Frame.h"
 
-#include <inttypes.h>
 
-#include <memory>
 #include <cstdio>
+#include <memory>
 
 #include "rogue/GeneralError.h"
 #include "rogue/interfaces/stream/Buffer.h"

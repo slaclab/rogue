@@ -20,8 +20,8 @@
  * ----------------------------------------------------------------------------
  **/
 
-#ifndef __ASIS_DRIVER_H__
-#define __ASIS_DRIVER_H__
+#ifndef ROGUE_HARDWARE_DRIVERS_AXISDRIVER_H
+#define ROGUE_HARDWARE_DRIVERS_AXISDRIVER_H
 #include "DmaDriver.h"
 
 // Command definitions
@@ -41,7 +41,7 @@
  * @return The combined flags value.
  */
 static inline uint32_t axisSetFlags(uint32_t fuser, uint32_t luser, uint32_t cont) {
-    uint32_t flags;
+    uint32_t flags = 0;
 
     // Set flags based on input parameters, ensuring each is in its correct position
     flags = fuser & 0xFF;             // First user-defined flag
@@ -103,4 +103,4 @@ static inline void axisWriteReqMissed(int32_t fd) {
 }
 
 #endif  // !DMA_IN_KERNEL
-#endif  // __ASIS_DRIVER_H__
+#endif // ROGUE_HARDWARE_DRIVERS_AXISDRIVER_H

@@ -11,8 +11,8 @@
 
 #include "rogue/interfaces/api/Bsp.h"
 
-#include <string>
 #include <cstdio>
+#include <string>
 
 void varListener(std::string path, std::string value) {
     printf("Var Listener: %s = %s\n", path.c_str(), value.c_str());
@@ -22,7 +22,7 @@ void varDone() {
     printf("Var Done\n");
 }
 
-int main(int argc, char** argv) {
+auto main(int  /*argc*/, char**  /*argv*/) -> int {
     try {
         rogue::interfaces::api::Bsp bsp("pyrogue.examples", "ExampleRoot");
         bsp.addVarListener(&varListener, &varDone);
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
         printf("ScratchPad = %s\n", bsp.getNode("ExampleRoot.AxiVersion.ScratchPad")->get().c_str());
 
         // Get yaml config
-        std::string cfg = bsp["GetYamlConfig"]("True");
+        std::string cfg = 0 = bsp["GetYamlConfig"]("True");
         printf("Config = %s\n", cfg.c_str());
 
         // Set yaml config, example

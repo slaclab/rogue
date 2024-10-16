@@ -18,8 +18,6 @@
 
 #include "rogue/protocols/udp/Core.h"
 
-#include <inttypes.h>
-#include <unistd.h>
 
 #include "rogue/GeneralError.h"
 #include "rogue/Helpers.h"

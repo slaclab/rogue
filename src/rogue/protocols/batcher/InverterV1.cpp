@@ -18,8 +18,6 @@
 
 #include "rogue/protocols/batcher/InverterV1.h"
 
-#include <math.h>
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

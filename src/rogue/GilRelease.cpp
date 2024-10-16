@@ -18,7 +18,6 @@
 
 #include "rogue/GilRelease.h"
 
-#include <stdint.h>
 
 #ifndef NO_PYTHON
     #include <boost/python.hpp>

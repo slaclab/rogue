@@ -15,12 +15,10 @@
  * ----------------------------------------------------------------------------
  **/
 
-#ifndef __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
-#define __ROGUE_PROTOCOLS_XILINX_XVC_CONNECTION_H__
+#ifndef ROGUE_PROTOCOLS_XILINX_XVCCONNECTION_H
+#define ROGUE_PROTOCOLS_XILINX_XVCCONNECTION_H
 #include "rogue/Directives.h"
 
-#include <netinet/in.h>
-#include <sys/socket.h>
 
 #include <vector>
 

@@ -19,7 +19,6 @@
 
 #include "rogue/interfaces/ZmqServer.h"
 
-#include <inttypes.h>
 #include <zmq.h>
 
 #include <memory>

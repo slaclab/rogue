@@ -18,14 +18,10 @@
 
 #include "rogue/utilities/Prbs.h"
 
-#include <inttypes.h>
-#include <stdarg.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
+#include <cstdarg>
 
-#include <memory>
 #include <cstdio>
+#include <memory>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

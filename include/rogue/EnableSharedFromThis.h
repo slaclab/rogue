@@ -16,8 +16,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_ENABLE_SHARED_FROM_THIS_H__
-#define __ROGUE_ENABLE_SHARED_FROM_THIS_H__
+#ifndef ROGUE_ENABLESHAREDFROMTHIS_H
+#define ROGUE_ENABLESHAREDFROMTHIS_H
 #include "rogue/Directives.h"
 
 #include <memory>

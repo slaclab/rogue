@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_INTERFACE_API_BSP_H__
-#define __ROGUE_INTERFACE_API_BSP_H__
+#ifndef ROGUE_INTERFACES_API_BSP_H
+#define ROGUE_INTERFACES_API_BSP_H
 
 #include <boost/python.hpp>
 #include <memory>

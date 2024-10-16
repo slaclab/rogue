@@ -18,20 +18,15 @@
 
 #include "rogue/Logging.h"
 
-#include <inttypes.h>
-#include <stdarg.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
+#include <cstdarg>
 
-#include <memory>
-#include <vector>
-#include <string>
 #include <cstdio>
+#include <memory>
+#include <string>
+#include <vector>
 
 #if defined(__linux__)
-    #include <sys/syscall.h>
-#elif defined(__APPLE__) && defined(__MACH__)
+    #elif defined(__APPLE__) && defined(__MACH__)
     #include <pthread.h>
 #endif
 

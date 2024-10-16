@@ -18,17 +18,15 @@
 
 #include "rogue/interfaces/memory/Variable.h"
 
-#include <string.h>
-#include <sys/time.h>
 
 #include <cmath>
+#include <cstdio>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <sstream>
-#include <vector>
-#include <cstdio>
 #include <string>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

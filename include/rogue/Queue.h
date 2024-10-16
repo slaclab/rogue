@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_QUEUE_H__
-#define __ROGUE_QUEUE_H__
+#ifndef ROGUE_QUEUE_H
+#define ROGUE_QUEUE_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <condition_variable>
 #include <mutex>

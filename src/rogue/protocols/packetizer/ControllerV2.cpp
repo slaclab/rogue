@@ -16,11 +16,6 @@
  **/
 #include "rogue/protocols/packetizer/ControllerV2.h"
 
-#include <inttypes.h>
-#include <math.h>
-#include <stdlib.h>
-#include <sys/time.h>
-#include <unistd.h>
 
 #include <memory>
 

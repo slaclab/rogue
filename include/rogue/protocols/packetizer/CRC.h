@@ -55,8 +55,8 @@
    CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS  - Define to include definitions for little-used CRCs.
 */
 
-#ifndef CRCPP_CRC_H_
-#define CRCPP_CRC_H_
+#ifndef ROGUE_PROTOCOLS_PACKETIZER_CRC_H
+#define ROGUE_PROTOCOLS_PACKETIZER_CRC_H
 
 #include <climits>  // Includes CHAR_BIT
 #ifdef CRCPP_USE_CPP11
@@ -64,8 +64,7 @@
     #include <cstdint>  // Includes ::std::uint8_t, ::std::uint16_t, ::std::uint32_t, ::std::uint64_t
 #else
     #include <stddef.h>  // Includes size_t
-    #include <stdint.h>  // Includes uint8_t, uint16_t, uint32_t, uint64_t
-#endif
+    #endif
 #include <limits>   // Includes ::std::numeric_limits
 #include <utility>  // Includes ::std::move
 
@@ -1665,4 +1664,4 @@ inline const CRC::Parameters<crcpp_uint64, 64>& CRC::CRC_64() {
 }  // NOLINT
 #endif
 
-#endif  // CRCPP_CRC_H_
+#endif // ROGUE_PROTOCOLS_PACKETIZER_CRC_H

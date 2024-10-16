@@ -18,8 +18,6 @@
 
 #include "rogue/interfaces/memory/TcpServer.h"
 
-#include <inttypes.h>
-#include <string.h>
 #include <zmq.h>
 
 #include <cstring>

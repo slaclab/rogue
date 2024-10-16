@@ -18,7 +18,6 @@
 
 #include "rogue/interfaces/stream/Fifo.h"
 
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

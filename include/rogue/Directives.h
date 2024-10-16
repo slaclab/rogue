@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_DIRECTIVES_H__
-#define __ROGUE_DIRECTIVES_H__
+#ifndef ROGUE_DIRECTIVES_H
+#define ROGUE_DIRECTIVES_H
 
 #define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #define PY_SSIZE_T_CLEAN
@@ -24,7 +24,7 @@
 #define CRCPP_USE_CPP11
 
 #ifndef __STDC_FORMAT_MACROS
-    #define __STDC_FORMAT_MACROS
+    #define STDC_FORMAT_MACROS
 #endif
 
 #endif

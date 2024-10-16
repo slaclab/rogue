@@ -19,16 +19,10 @@
 
 #include "rogue/protocols/xilinx/JtagDriver.h"
 
-#include <arpa/inet.h>
-#include <dlfcn.h>
-#include <math.h>
-#include <netinet/in.h>
-#include <pthread.h>
-#include <sys/socket.h>
 
-#include <string>
-#include <memory>
 #include <cstdio>
+#include <memory>
+#include <string>
 
 namespace rpx = rogue::protocols::xilinx;
 

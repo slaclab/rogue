@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_HELPERS_H__
-#define __ROGUE_HELPERS_H__
+#ifndef ROGUE_HELPERS_H
+#define ROGUE_HELPERS_H
 #include "rogue/Directives.h"
 
 // Connect stream
@@ -27,7 +27,7 @@
 // Connect stream bi-directionally
 #define rogueStreamConnectBiDir(devA, devB) \
     devA->addSlave(devB);                   \
-    devB->addSlave(devA);
+    (devB)->addSlave(devA);
 
 // Connect memory bus
 #define rogueBusConnect(src, dst) src->setSlave(dst);

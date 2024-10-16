@@ -18,7 +18,6 @@
 
 #include "rogue/interfaces/stream/Master.h"
 
-#include <unistd.h>
 
 #include <memory>
 #include <vector>

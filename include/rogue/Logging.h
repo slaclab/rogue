@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_LOGGING_H__
-#define __ROGUE_LOGGING_H__
+#ifndef ROGUE_LOGGING_H
+#define ROGUE_LOGGING_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <exception>
 #include <memory>

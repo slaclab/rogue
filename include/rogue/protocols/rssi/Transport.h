@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
-#define __ROGUE_PROTOCOLS_RSSI_TRANSPORT_H__
+#ifndef ROGUE_PROTOCOLS_RSSI_TRANSPORT_H
+#define ROGUE_PROTOCOLS_RSSI_TRANSPORT_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <memory>
 

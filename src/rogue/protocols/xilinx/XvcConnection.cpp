@@ -17,9 +17,6 @@
 
 #include "rogue/protocols/xilinx/XvcConnection.h"
 
-#include <arpa/inet.h>
-#include <netinet/tcp.h>
-#include <sys/select.h>
 
 #include <cstdio>
 

@@ -18,12 +18,10 @@
 
 #include "rogue/hardware/axi/AxiStreamDma.h"
 
-#include <inttypes.h>
-#include <stdlib.h>
 
-#include <memory>
-#include <map>
 #include <cstdio>
+#include <map>
+#include <memory>
 #include <string>
 
 #include "rogue/GeneralError.h"

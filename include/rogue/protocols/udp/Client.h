@@ -14,15 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_PROTOCOLS_UDP_CLIENT_H__
-#define __ROGUE_PROTOCOLS_UDP_CLIENT_H__
+#ifndef ROGUE_PROTOCOLS_UDP_CLIENT_H
+#define ROGUE_PROTOCOLS_UDP_CLIENT_H
 #include "rogue/Directives.h"
 
-#include <netdb.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <stdint.h>
-#include <sys/socket.h>
 
 #include <memory>
 #include <string>

@@ -19,12 +19,10 @@
 #include "rogue/Version.h"
 
 #include <RogueConfig.h>
-#include <inttypes.h>
-#include <unistd.h>
 
+#include <cstdio>
 #include <sstream>
 #include <string>
-#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

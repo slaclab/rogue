@@ -18,8 +18,6 @@
 
 #include "rogue/interfaces/memory/Master.h"
 
-#include <inttypes.h>
-#include <stdlib.h>
 
 #include <cstring>
 #include <memory>

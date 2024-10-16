@@ -14,12 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_INTERFACES_STREAM_MASTER_H__
-#define __ROGUE_INTERFACES_STREAM_MASTER_H__
+#ifndef ROGUE_INTERFACES_STREAM_MASTER_H
+#define ROGUE_INTERFACES_STREAM_MASTER_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
-#include <stdio.h>
 
 #include <memory>
 #include <mutex>

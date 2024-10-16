@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_GIL_RELEASE_H__
-#define __ROGUE_GIL_RELEASE_H__
+#ifndef ROGUE_GILRELEASE_H
+#define ROGUE_GILRELEASE_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 #ifndef NO_PYTHON
     #include <boost/python.hpp>
 #endif

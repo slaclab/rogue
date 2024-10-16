@@ -40,9 +40,6 @@
  **/
 #include "rogue/protocols/batcher/CoreV1.h"
 
-#include <inttypes.h>
-#include <math.h>
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

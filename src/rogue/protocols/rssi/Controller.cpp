@@ -16,16 +16,10 @@
  **/
 #include "rogue/protocols/rssi/Controller.h"
 
-#include <inttypes.h>
-#include <math.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
 
 #include <cmath>
-#include <memory>
 #include <map>
+#include <memory>
 #include <utility>
 
 #include "rogue/GeneralError.h"

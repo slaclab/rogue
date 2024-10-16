@@ -18,14 +18,10 @@
 
 #include "rogue/utilities/fileio/StreamReader.h"
 
-#include <fcntl.h>
-#include <inttypes.h>
-#include <stdint.h>
-#include <unistd.h>
 
 #include <memory>
-#include <thread>
 #include <string>
+#include <thread>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

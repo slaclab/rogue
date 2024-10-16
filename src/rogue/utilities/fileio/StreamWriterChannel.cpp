@@ -20,8 +20,6 @@
 
 #include "rogue/utilities/fileio/StreamWriterChannel.h"
 
-#include <stdint.h>
-#include <sys/time.h>
 
 #include <memory>
 #include <thread>

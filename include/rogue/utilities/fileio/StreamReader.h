@@ -14,11 +14,10 @@
  * contained in the LICENSE.txt file.
  *-----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_UTILITIES_FILEIO_STREAM_READER_H__
-#define __ROGUE_UTILITIES_FILEIO_STREAM_READER_H__
+#ifndef ROGUE_UTILITIES_FILEIO_STREAMREADER_H
+#define ROGUE_UTILITIES_FILEIO_STREAMREADER_H
 #include "rogue/Directives.h"
 
-#include <stdint.h>
 
 #include <condition_variable>
 #include <map>

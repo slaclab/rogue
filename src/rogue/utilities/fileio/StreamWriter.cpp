@@ -32,18 +32,12 @@
 
 #include "rogue/utilities/fileio/StreamWriter.h"
 
-#include <fcntl.h>
-#include <inttypes.h>
-#include <stdint.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
 
 #include <cstring>
-#include <memory>
-#include <thread>
 #include <map>
+#include <memory>
 #include <string>
+#include <thread>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

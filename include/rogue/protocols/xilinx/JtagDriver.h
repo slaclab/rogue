@@ -15,23 +15,17 @@
  * ----------------------------------------------------------------------------
  **/
 
-#ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
-#define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
+#ifndef ROGUE_PROTOCOLS_XILINX_JTAGDRIVER_H
+#define ROGUE_PROTOCOLS_XILINX_JTAGDRIVER_H
 
 #include "rogue/Directives.h"
 
-#include <errno.h>
-#include <inttypes.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 
+#include <cstdio>
 #include <exception>
 #include <memory>
 #include <stdexcept>
 #include <vector>
-#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/Logging.h"

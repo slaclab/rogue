@@ -16,7 +16,6 @@
  **/
 #include "rogue/protocols/batcher/Data.h"
 
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

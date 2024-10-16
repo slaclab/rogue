@@ -14,8 +14,8 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
-#ifndef __ROGUE_ZMQ_CLIENT_H__
-#define __ROGUE_ZMQ_CLIENT_H__
+#ifndef ROGUE_INTERFACES_ZMQCLIENT_H
+#define ROGUE_INTERFACES_ZMQCLIENT_H
 #include "rogue/Directives.h"
 
 #include <memory>

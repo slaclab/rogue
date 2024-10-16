@@ -18,7 +18,6 @@
 
 #include "rogue/protocols/srp/Cmd.h"
 
-#include <stdint.h>
 
 #include <memory>
 #include <thread>

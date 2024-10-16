@@ -16,11 +16,6 @@
  **/
 #include "rogue/protocols/rssi/Header.h"
 
-#include <arpa/inet.h>
-#include <inttypes.h>
-#include <stdint.h>
-#include <string.h>
-#include <sys/time.h>
 
 #include <iomanip>
 #include <iostream>

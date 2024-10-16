@@ -19,12 +19,11 @@
 
 #include "rogue/interfaces/ZmqClient.h"
 
-#include <inttypes.h>
 #include <zmq.h>
 
+#include <cstdio>
 #include <memory>
 #include <string>
-#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
