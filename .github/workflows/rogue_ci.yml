@@ -49,10 +49,10 @@ jobs:
           python -m compileall -f ./tests
           flake8 --count ./tests/
 
-#      # C++ Linter
-#      - name: C++ Linter
-#        run: |
-#          find . -name '*.h' -o -name '*.cpp' | xargs cpplint
+      # C++ Linter
+      - name: C++ Linter
+        run: |
+          find . -name '*.h' -o -name '*.cpp' | xargs cpplint
 
       # Rogue
       - name: Build Rogue
