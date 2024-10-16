@@ -42,6 +42,8 @@
 #include <cstring>
 #include <memory>
 #include <thread>
+#include <map>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -298,7 +300,7 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
     // Attempted write is larger than buffer, raw write
     // This is called if buffer is disabled
     if (size > buffSize_) {
-        if (write(fd_, data, size) != (int32_t)size) {
+        if (write(fd_, data, size) != static_cast<int32_t>(size)) {
             ::close(fd_);
             fd_ = -1;
             log_->error("Write failed, closing file!");
@@ -347,7 +349,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 //! Flush file
 void ruf::StreamWriter::flush() {
     if (currBuffer_ > 0) {
-        if (write(fd_, buffer_, currBuffer_) != (int32_t)currBuffer_) {
+        if (write(fd_, buffer_, currBuffer_) != static_cast<int32_t>(currBuffer_)) {
             ::close(fd_);
             fd_ = -1;
             log_->error("Write failed, closing file!");

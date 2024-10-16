@@ -27,6 +27,8 @@
 #include <sys/socket.h>
 
 #include <string>
+#include <memory>
+#include <cstdio>
 
 namespace rpx = rogue::protocols::xilinx;
 

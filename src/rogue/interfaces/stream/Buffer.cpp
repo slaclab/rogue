@@ -20,6 +20,7 @@
 #include <inttypes.h>
 
 #include <memory>
+#include <cstdio>
 
 #include "rogue/GeneralError.h"
 #include "rogue/interfaces/stream/Frame.h"

@@ -22,6 +22,7 @@
 #include <sys/time.h>
 
 #include <memory>
+#include <cstdio>
 
 #include "rogue/Logging.h"
 #include "rogue/interfaces/stream/Frame.h"

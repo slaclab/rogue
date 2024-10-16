@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include <memory>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

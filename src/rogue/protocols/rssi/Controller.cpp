@@ -25,6 +25,8 @@
 
 #include <cmath>
 #include <memory>
+#include <map>
+#include <utility>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

@@ -26,6 +26,9 @@
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <vector>
+#include <cstdio>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
