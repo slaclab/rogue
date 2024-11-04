@@ -327,7 +327,7 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     rogue::interfaces::stream::FrameIterator endWrite();
 
 #ifndef NO_PYTHON
-    
+
 
     //! Python Frame data read function
     /** Read data from Frame into passed Python byte array.
@@ -353,7 +353,7 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      * Exposed as getMemoryview() to Python
      */
     boost::python::object getMemoryviewPy();
-    
+
 
     //! Python Frame data write function
     /** Write data into from Frame from passed Python byte array.
