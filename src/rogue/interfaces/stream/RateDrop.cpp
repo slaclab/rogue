@@ -21,6 +21,7 @@
 #include <stdint.h>
 #include <sys/time.h>
 
+#include <cstdio>
 #include <memory>
 
 #include "rogue/Logging.h"
@@ -57,12 +58,12 @@ ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave()
 
     if ((!period) || value == 0) {
         periodFlag_ = false;
-        dropCount_  = (uint32_t)value;
-        dropTarget_ = (uint32_t)value;
+        dropCount_  = static_cast<uint32_t>(value);
+        dropTarget_ = static_cast<uint32_t>(value);
     } else {
         periodFlag_ = true;
 
-        per = (uint32_t)(value * 1e6);
+        per = static_cast<uint32_t>(value * 1e6);
 
         div_t divResult     = div(per, 1000000);
         timePeriod_.tv_sec  = divResult.quot;

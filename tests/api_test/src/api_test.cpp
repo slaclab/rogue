@@ -9,6 +9,9 @@
  * ----------------------------------------------------------------------------
  **/
 
+#include <cstdio>
+#include <string>
+
 #include "rogue/interfaces/api/Bsp.h"
 
 void varListener(std::string path, std::string value) {

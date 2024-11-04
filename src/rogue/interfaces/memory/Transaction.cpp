@@ -22,7 +22,9 @@
 #include <stdarg.h>
 #include <sys/time.h>
 
+#include <cstdio>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
