@@ -464,7 +464,7 @@ boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, bp::
     int numpy_type;
     PyObject* dtype_pyobj = dtype.ptr();  // Get the raw PyObject from the Boost.Python object
     if (PyArray_DescrCheck(dtype_pyobj)) {
-        numpy_type = ((PyArray_Descr*)dtype_pyobj)->type_num;
+        numpy_type = (reinterpret_case<PyArray_Descr*>(dtype_pyobj))->type_num;
     } else {
         throw(rogue::GeneralError::create("Frame::getNumpy",
                                           "Invalid dtype argument. Must be a NumPy dtype object."));
