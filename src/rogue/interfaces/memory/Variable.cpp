@@ -623,7 +623,9 @@ void rim::VariableWrap::queueUpdate() {
         try {
             pb();
             return;
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
 }
 
@@ -652,7 +654,9 @@ void rim::Variable::rateTest() {
     uint32_t ret;
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) { ret = getUInt(); }
+    for (x = 0; x < count; ++x) {
+        ret = getUInt();
+    }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
@@ -662,7 +666,9 @@ void rim::Variable::rateTest() {
     printf("\nVariable c++ get: Read %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) { setUInt(x); }
+    for (x = 0; x < count; ++x) {
+        setUInt(x);
+    }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);

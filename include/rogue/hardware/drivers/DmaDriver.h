@@ -646,7 +646,9 @@ static inline ssize_t dmaGetBuffCount(int32_t fd) {
  */
 static inline std::string dmaGetGitVersion(int32_t fd) {
     char gitv[32] = {0};  // Initialize with zeros to ensure null-termination
-    if (ioctl(fd, DMA_Get_GITV, gitv) < 0) { return ""; }
+    if (ioctl(fd, DMA_Get_GITV, gitv) < 0) {
+        return "";
+    }
     gitv[32 - 1] = '\0';  // Ensure null-termination
     return std::string(gitv);
 }

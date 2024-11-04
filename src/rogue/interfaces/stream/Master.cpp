@@ -156,7 +156,9 @@ void ris::Master::equalsPy(boost::python::object p) {
         boost::python::extract<ris::MasterPtr> get_master(p.attr("_getStreamMaster")());
 
         // Test extraction
-        if (get_master.check()) { rMst = get_master(); }
+        if (get_master.check()) {
+            rMst = get_master();
+        }
     }
 
     // Attempt to access object as a stream slave
@@ -172,7 +174,9 @@ void ris::Master::equalsPy(boost::python::object p) {
         boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
 
         // Test extraction
-        if (get_slave.check()) { rSlv = get_slave(); }
+        if (get_slave.check()) {
+            rSlv = get_slave();
+        }
     }
 
     if (rMst == NULL || rSlv == NULL || lSlv == NULL)
@@ -200,7 +204,9 @@ bp::object ris::Master::rshiftPy(bp::object p) {
         boost::python::extract<ris::SlavePtr> get_slave(p.attr("_getStreamSlave")());
 
         // Test extraction
-        if (get_slave.check()) { slv = get_slave(); }
+        if (get_slave.check()) {
+            slv = get_slave();
+        }
     }
 
     if (slv != NULL)

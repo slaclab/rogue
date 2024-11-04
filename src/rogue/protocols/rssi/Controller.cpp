@@ -236,7 +236,9 @@ void rpr::Controller::transportRx(ris::FramePtr frame) {
 
     // Reset
     if (head->rst) {
-        if (state_ == StOpen || state_ == StWaitSyn) { stQueue_.push(head); }
+        if (state_ == StOpen || state_ == StWaitSyn) {
+            stQueue_.push(head);
+        }
 
         // Syn frame goes to state machine if state = open
         // or we are waiting for ack replay
@@ -388,7 +390,9 @@ void rpr::Controller::applicationRx(ris::FramePtr frame) {
     flock->unlock();
 
     // Connection is closed
-    if (state_ != StOpen) { return; }
+    if (state_ != StOpen) {
+        return;
+    }
 
     // Wait while busy either by flow control or buffer starvation
     while (txListCount_ >= curMaxBuffers_) {

@@ -93,7 +93,9 @@ void rpx::XvcConnection::fill(uint64_t n) {
 void rpx::XvcConnection::bump(uint64_t n) {
     rp_ += n;
     rl_ -= n;
-    if (rl_ == 0) { rp_ = &rxb_[0]; }
+    if (rl_ == 0) {
+        rp_ = &rxb_[0];
+    }
 }
 
 void rpx::XvcConnection::allocBufs() {
@@ -192,7 +194,9 @@ void rpx::XvcConnection::run() {
                 fill(10);
 
                 bits = 0;
-                for (got = 9; got >= 6; got--) { bits = (bits << 8) | rp_[got]; }
+                for (got = 9; got >= 6; got--) {
+                    bits = (bits << 8) | rp_[got];
+                }
                 bytes = (bits + 7) / 8;
 
                 if (bytes > maxVecLen_)
@@ -209,7 +213,9 @@ void rpx::XvcConnection::run() {
                 // bother...).
                 for (off = 0, bitsLeft = bits; bitsLeft > 0; bitsLeft -= bitsSent, off += vecLen) {
                     bitsSent = 8 * vecLen;
-                    if (bitsLeft < bitsSent) { bitsSent = bitsLeft; }
+                    if (bitsLeft < bitsSent) {
+                        bitsSent = bitsLeft;
+                    }
 
                     drv_->sendVectors(bitsSent, rp_ + off, rp_ + bytes + off, &txb_[0] + off);
                 }

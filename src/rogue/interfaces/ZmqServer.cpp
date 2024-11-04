@@ -243,7 +243,9 @@ bp::object rogue::interfaces::ZmqServerWrap::doRequest(bp::object data) {
     if (bp::override f = this->get_override("_doRequest")) {
         try {
             return (f(data));
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
     return (rogue::interfaces::ZmqServer::doRequest(data));
 }
@@ -258,7 +260,9 @@ std::string rogue::interfaces::ZmqServerWrap::doString(std::string data) {
         if (bp::override f = this->get_override("_doString")) {
             try {
                 return (f(data));
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     return (rogue::interfaces::ZmqServer::doString(data));
