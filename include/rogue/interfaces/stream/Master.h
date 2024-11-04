@@ -19,8 +19,8 @@
 #include "rogue/Directives.h"
 
 #include <stdint.h>
-#include <stdio.h>
 
+#include <cstdio>
 #include <memory>
 #include <mutex>
 #include <string>

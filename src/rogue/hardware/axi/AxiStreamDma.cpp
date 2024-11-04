@@ -19,9 +19,12 @@
 #include "rogue/hardware/axi/AxiStreamDma.h"
 
 #include <inttypes.h>
-#include <stdlib.h>
 
+#include <cstdio>
+#include <cstdlib>
+#include <map>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"

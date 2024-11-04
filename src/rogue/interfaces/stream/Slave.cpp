@@ -21,9 +21,10 @@
 #include "rogue/interfaces/stream/Slave.h"
 
 #include <inttypes.h>
-#include <string.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
 #include <string>
 
