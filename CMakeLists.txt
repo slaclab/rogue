@@ -336,6 +336,8 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.csh @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.sh @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.fish.in
+               ${PROJECT_BINARY_DIR}/setup_rogue.fish @ONLY)
 
 # Create the python install script
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
@@ -357,7 +359,7 @@ install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${CMAKE_INSTAL
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
-   install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION ${ROGUE_DIR})
+   install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh ${PROJECT_BINARY_DIR}/setup_rogue.fish DESTINATION ${ROGUE_DIR})
 endif()
 
 # Install header files for non local installs

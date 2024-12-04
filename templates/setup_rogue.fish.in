@@ -1,0 +1,24 @@
+
+if test -z "$LD_LIBRARY_PATH"
+   set LD_LIBRARY_PATH ""
+end
+
+if test -z "$PYTHONPATH"
+   set PYTHONPATH ""
+end
+
+# Rogue directory
+export ROGUE_DIR=@ROGUE_DIR@
+export ROGUE_VERSION=@ROGUE_VERSION@
+
+# Setup python path
+export PYTHONPATH={$ROGUE_DIR}/python:{$PYTHONPATH}
+
+# Setup library path
+export LD_LIBRARY_PATH={$ROGUE_DIR}/lib:{$LD_LIBRARY_PATH}
+
+# PYDM environment
+export PYQTDESIGNERPATH={$ROGUE_DIR}/python/pyrogue/pydm:{$PYQTDESIGNERPATH}
+export PYDM_DATA_PLUGINS_PATH={$ROGUE_DIR}/python/pyrogue/pydm/data_plugins
+export PYDM_TOOLS_PATH={$ROGUE_DIR}/python/pyrogue/pydm/tools
+
