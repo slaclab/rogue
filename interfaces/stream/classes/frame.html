@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frame &mdash; Rogue v6.4.2 documentation</title>
+  <title>Frame &mdash; Rogue v6.4.3 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=1ea0fc24"></script>
+      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=bad8783d"></script>
       <script src="../../../_static/doctools.js?v=888ff710"></script>
       <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -492,6 +492,30 @@
 </dd></dl>
 
 <dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Frame::getBytearrayPy__uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a50cb994e97bb6ed6a1c0aa62b3571c5b"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getBytearrayPy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame14getBytearrayPyE8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Python <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data read function. </p>
+<p>Read data from <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> into a python bytearray which is allocated and returned</p>
+<p>Exposed as getBa() to Python </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>offset</strong> – First location of <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data to copy to byte array </p></li>
+<li><p><strong>count</strong> – Number of bytes to read </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame15getMemoryviewPyEv">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame15getMemoryviewPyEv"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame15getMemoryviewPyEv"></span><span id="rogue::interfaces::stream::Frame::getMemoryviewPy"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1afd93e35b34ef525eaa51a4a9e489247d"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getMemoryviewPy</span></span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame15getMemoryviewPyEv" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Python <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data read function. </p>
+<p>Read data from <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> into a python bytearray which is allocated and returned as a memoryview</p>
+<p>Exposed as getMemoryview() to Python </p>
+</dd></dl>
+
+<dl class="cpp function">
 <dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t">
 <span id="_CPPv3N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t"></span><span id="rogue::interfaces::stream::Frame::writePy__boost::python::object.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a2d8dc04f70a9e8cc0274bd3763209604"></span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">writePy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">p</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame7writePyEN5boost6python6objectE8uint32_t" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Python <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data write function. </p>
@@ -508,8 +532,8 @@
 </dd></dl>
 
 <dl class="cpp function">
-<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t">
-<span id="_CPPv3N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t"></span><span id="rogue::interfaces::stream::Frame::getNumpy__uint32_t.uint32_t"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1a9286f942e04b80bffc42becb23fb8ea6"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getNumpy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">size</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_t" title="Permalink to this definition"></a><br /></dt>
+<dt class="sig sig-object cpp" id="_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_tN5boost6python6objectE">
+<span id="_CPPv3N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_tN5boost6python6objectE"></span><span id="_CPPv2N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_tN5boost6python6objectE"></span><span id="rogue::interfaces::stream::Frame::getNumpy__uint32_t.uint32_t.boost::python::object"></span><span class="target" id="classrogue_1_1interfaces_1_1stream_1_1Frame_1ac0d9a88fa59a9da4359177c811ecca17"></span><span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">getNumpy</span></span></span><span class="sig-paren">(</span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">offset</span></span>, <span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">count</span></span>, <span class="n"><span class="pre">boost</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">python</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">object</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">dtype</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N5rogue10interfaces6stream5Frame8getNumpyE8uint32_t8uint32_tN5boost6python6objectE" title="Permalink to this definition"></a><br /></dt>
 <dd><p>Python <a class="reference internal" href="#classrogue_1_1interfaces_1_1stream_1_1Frame"><span class="std std-ref">Frame</span></a> data read returning a numpy array. </p>
 </dd></dl>
 
