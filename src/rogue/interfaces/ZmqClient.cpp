@@ -22,6 +22,7 @@
 #include <inttypes.h>
 #include <zmq.h>
 
+#include <cstdio>
 #include <memory>
 #include <string>
 

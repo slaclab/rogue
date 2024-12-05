@@ -21,11 +21,12 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"

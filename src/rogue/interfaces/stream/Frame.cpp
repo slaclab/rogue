@@ -20,6 +20,7 @@
 
 #include <inttypes.h>
 
+#include <cstdio>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -30,8 +31,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-    #include <numpy/arrayobject.h>
-    #include <numpy/ndarraytypes.h>
+    #include <numpy/ndarrayobject.h>
 
     #include <boost/python.hpp>
 namespace bp = boost::python;
@@ -219,7 +219,7 @@ void ris::Frame::minPayload(uint32_t size) {
 void ris::Frame::adjustPayload(int32_t value) {
     uint32_t size = getPayload();
 
-    if (value < 0 && (uint32_t)abs(value) > size)
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > size)
         throw(rogue::GeneralError::create("Frame::adjustPayload",
                                           "Attempt to reduce payload by %" PRIi32 " in frame with size %" PRIu32,
                                           value,
@@ -345,7 +345,7 @@ ris::FrameIterator ris::Frame::endWrite() {
 
 #ifndef NO_PYTHON
 
-//! Read up to count bytes from frame, starting from offset. Python version.
+//! Read bytes from frame into a passed bytearray, starting from offset. Python version.
 void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     Py_buffer pyBuf;
 
@@ -368,6 +368,44 @@ void ris::Frame::readPy(boost::python::object p, uint32_t offset) {
     ris::FrameIterator beg = this->begin() + offset;
     ris::fromFrame(beg, count, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
+}
+
+//! Allocate a bytearray and read bytes from frame into it starting at offset, return array
+bp::object ris::Frame::getBytearrayPy(uint32_t offset, uint32_t count) {
+    // Get the size of the frame
+    uint32_t size = getPayload();
+
+    if (count == 0) {
+        count = size - offset;
+    }
+
+    // Create a Python bytearray to hold the data
+    bp::object byteArray(bp::handle<>(PyByteArray_FromStringAndSize(nullptr, count)));
+
+    // readPy will check bounds
+    this->readPy(byteArray, offset);
+
+    return byteArray;
+}
+
+//! Allocate a bytearray and  from frame into it starting at offset, return memoryview to array
+bp::object ris::Frame::getMemoryviewPy() {
+    // Get the size of the frame
+    uint32_t size = getPayload();
+
+    // Create a Python bytearray to hold the data
+    bp::object byteArray(bp::handle<>(PyByteArray_FromStringAndSize(nullptr, size)));
+
+    this->readPy(byteArray, 0);
+
+    // Create a memoryview from the bytearray
+    PyObject* memoryView = PyMemoryView_FromObject(byteArray.ptr());
+    if (!memoryView) {
+        throw(rogue::GeneralError::create("Frame::getMemoryviewPy", "Failed to create memoryview."));
+    }
+
+    // Return the memoryview as a Python object
+    return bp::object(bp::handle<>(memoryView));
 }
 
 //! Write python buffer to frame, starting at offset. Python Version
@@ -397,9 +435,13 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 }
 
 //! Read the specified number of bytes at the specified offset of frame data into a numpy array
-boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
+boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, bp::object dtype) {
     // Retrieve the size, in bytes of the data
     npy_intp size = getPayload();
+
+    if (count == 0) {
+        count = size - offset;
+    }
 
     // Check this does not request data past the EOF
     if ((offset + count) > size) {
@@ -411,9 +453,18 @@ boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
                                           size));
     }
 
+    // Convert Python dtype object to NumPy type
+    int numpy_type;
+    PyObject* dtype_pyobj = dtype.ptr();  // Get the raw PyObject from the Boost.Python object
+    if (PyArray_DescrCheck(dtype_pyobj)) {
+        numpy_type = (reinterpret_cast<PyArray_Descr*>(dtype_pyobj))->type_num;
+    } else {
+        throw(rogue::GeneralError::create("Frame::getNumpy", "Invalid dtype argument. Must be a NumPy dtype object."));
+    }
+
     // Create a numpy array to receive it and locate the destination data buffer
     npy_intp dims[1]   = {count};
-    PyObject* obj      = PyArray_SimpleNew(1, dims, NPY_UINT8);
+    PyObject* obj      = PyArray_SimpleNew(1, dims, numpy_type);
     PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
     uint8_t* dst       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
@@ -485,13 +536,22 @@ void ris::Frame::setup_python() {
 
     _import_array();
 
+    // Create a NumPy dtype object from the NPY_UINT8 constant
+    PyObject* dtype_uint8 = reinterpret_cast<PyObject*>(PyArray_DescrFromType(NPY_UINT8));
+    if (!dtype_uint8) {
+        throw(
+            rogue::GeneralError::create("Frame::setup_python", "Failed to create default dtype object for NPY_UINT8."));
+    }
+
     bp::class_<ris::Frame, ris::FramePtr, boost::noncopyable>("Frame", bp::no_init)
         .def("lock", &ris::Frame::lock)
         .def("getSize", &ris::Frame::getSize)
         .def("getAvailable", &ris::Frame::getAvailable)
         .def("getPayload", &ris::Frame::getPayload)
-        .def("read", &ris::Frame::readPy)
-        .def("write", &ris::Frame::writePy)
+        .def("read", &ris::Frame::readPy, (bp::arg("offset") = 0))
+        .def("getBa", &ris::Frame::getBytearrayPy, (bp::arg("offset") = 0, bp::arg("count") = 0))
+        .def("getMemoryview", &ris::Frame::getMemoryviewPy)
+        .def("write", &ris::Frame::writePy, (bp::arg("offset") = 0))
         .def("setError", &ris::Frame::setError)
         .def("getError", &ris::Frame::getError)
         .def("setFlags", &ris::Frame::setFlags)
@@ -502,8 +562,12 @@ void ris::Frame::setup_python() {
         .def("getLastUser", &ris::Frame::getLastUser)
         .def("setChannel", &ris::Frame::setChannel)
         .def("getChannel", &ris::Frame::getChannel)
-        .def("getNumpy", &ris::Frame::getNumpy)
-        .def("putNumpy", &ris::Frame::putNumpy)
+        .def("getNumpy",
+             &ris::Frame::getNumpy,
+             (bp::arg("offset") = 0,
+              bp::arg("count")  = 0,
+              bp::arg("dtype")  = bp::object(bp::handle<>(bp::borrowed(dtype_uint8)))))
+        .def("putNumpy", &ris::Frame::putNumpy, (bp::arg("offset") = 0))
         .def("_debug", &ris::Frame::debug);
 #endif
 }

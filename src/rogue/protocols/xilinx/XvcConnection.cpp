@@ -21,6 +21,8 @@
 #include <netinet/tcp.h>
 #include <sys/select.h>
 
+#include <cstdio>
+
 namespace rpx = rogue::protocols::xilinx;
 
 rpx::XvcConnection::XvcConnection(int sd, JtagDriver* drv, uint64_t maxVecLen)

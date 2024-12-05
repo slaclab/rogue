@@ -20,10 +20,11 @@
 
 #include <inttypes.h>
 #include <stdarg.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
 
 #include "rogue/GeneralError.h"

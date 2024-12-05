@@ -20,12 +20,12 @@
 
 #include <fcntl.h>
 #include <inttypes.h>
-#include <stdio.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <cstring>
 #include <memory>
 #include <thread>

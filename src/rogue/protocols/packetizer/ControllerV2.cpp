@@ -17,11 +17,11 @@
 #include "rogue/protocols/packetizer/ControllerV2.h"
 
 #include <inttypes.h>
-#include <math.h>
-#include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cmath>
+#include <cstdlib>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -118,21 +118,21 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
     tmpId    = data[3];
 
     // Header word 1
-    tmpCount = uint32_t(data[4]) << 0;
-    tmpCount |= uint32_t(data[5]) << 8;
+    tmpCount = static_cast<uint32_t>(data[4]) << 0;
+    tmpCount |= static_cast<uint32_t>(data[5]) << 8;
     tmpSof = ((data[7] & 0x80) ? true : false);  // SOF (PACKETIZER2_HDR_SOF_BIT_C = 63)
 
     // Tail word 0
     tmpLuser = data[size - 8];
     tmpEof   = ((data[size - 7] & 0x1) ? true : false);
-    last     = uint32_t(data[size - 6]);
+    last     = static_cast<uint32_t>(data[size - 6]);
 
     if (enIbCrc_) {
         // Tail word 1
-        tmpCrc = uint32_t(data[size - 1]) << 0;
-        tmpCrc |= uint32_t(data[size - 2]) << 8;
-        tmpCrc |= uint32_t(data[size - 3]) << 16;
-        tmpCrc |= uint32_t(data[size - 4]) << 24;
+        tmpCrc = static_cast<uint32_t>(data[size - 1]) << 0;
+        tmpCrc |= static_cast<uint32_t>(data[size - 2]) << 8;
+        tmpCrc |= static_cast<uint32_t>(data[size - 3]) << 16;
+        tmpCrc |= static_cast<uint32_t>(data[size - 4]) << 24;
 
         // Compute CRC
         if (tmpSof)
@@ -179,7 +179,7 @@ void rpp::ControllerV2::transportRx(ris::FramePtr frame) {
 
     // Shorten message by removing tail and adjusting for last value
     // Do this before adjusting tail reservation
-    buff->adjustPayload(-8 + ((int32_t)last - 8));
+    buff->adjustPayload(-8 + (static_cast<int32_t>(last) - 8));
 
     // Add 8 bytes to headroom and tail reservation
     buff->adjustHeader(8);

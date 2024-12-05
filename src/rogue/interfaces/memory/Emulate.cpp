@@ -21,9 +21,11 @@
 #include "rogue/interfaces/memory/Emulate.h"
 
 #include <inttypes.h>
-#include <string.h>
 
+#include <cstring>
 #include <memory>
+#include <string>
+#include <utility>
 
 #include "rogue/GilRelease.h"
 #include "rogue/interfaces/memory/Constants.h"
