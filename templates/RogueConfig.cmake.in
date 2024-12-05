@@ -49,7 +49,7 @@ if ( NOT NO_PYTHON )
 
    # Hint for boost on anaconda
    if (DEFINED ENV{CONDA_PREFIX})
-      set(Boost_ROOT $ENV{CONDA_PREFIX})
+      set(BOOST_ROOT $ENV{CONDA_PREFIX})
    endif()
 
    # libboost_python3.7 style libraries
