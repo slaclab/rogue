@@ -31,6 +31,8 @@ class EnableVariable(pr.BaseVariable):
             groups='Enable',
             disp={False: 'False', True: 'True', 'parent': 'ParentFalse', 'deps': 'ExtDepFalse'})
 
+        self.allowed_values = {True, False, 'parent', 'deps'}
+
         if deps is None:
             self._deps   = []
             self._depDis = False
@@ -97,6 +99,10 @@ class EnableVariable(pr.BaseVariable):
         -------
 
         """
+        if value not in self.allowed_values:
+            raise pr.VariableError(
+                f'Error calling {self.path}.set({value=}) - value must be one of {self.allowed_values}')
+        
         if value != 'parent' and value != 'deps':
             old = self.value()
 

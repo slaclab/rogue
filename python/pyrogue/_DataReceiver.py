@@ -88,7 +88,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
         """
         # Do nothing if not yet started or enabled
-        if self.running is False or self.RxEnable.value() is False:
+        if self.running is False or self.RxEnable.value() == False:
             return
 
         # Lock frame
