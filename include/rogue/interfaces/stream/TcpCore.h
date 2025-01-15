@@ -91,13 +91,13 @@ class TcpCore : public rogue::interfaces::stream::Master, public rogue::interfac
      * @param server Server flag. Set to True to run in server mode.
      * @return TcpCore object as a TcpCorePtr
      */
-    static std::shared_ptr<rogue::interfaces::stream::TcpCore> create(std::string addr, uint16_t port, bool server);
+    static std::shared_ptr<rogue::interfaces::stream::TcpCore> create(const std::string& addr, uint16_t port, bool server);
 
     // Setup class for use in python
     static void setup_python();
 
     // Create a TcpCore object
-    TcpCore(std::string addr, uint16_t port, bool server);
+    TcpCore(const std::string& addr, uint16_t port, bool server);
 
     // Destroy the TcpCore
     ~TcpCore();
