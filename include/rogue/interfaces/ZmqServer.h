@@ -61,12 +61,12 @@ class ZmqServer {
     bool tryConnect();
 
   public:
-    static std::shared_ptr<rogue::interfaces::ZmqServer> create(std::string addr, uint16_t port);
+    static std::shared_ptr<rogue::interfaces::ZmqServer> create(const std::string& addr, uint16_t port);
 
     //! Setup class in python
     static void setup_python();
 
-    ZmqServer(std::string addr, uint16_t port);
+    ZmqServer(const std::string& addr, uint16_t port);
     virtual ~ZmqServer();
 
 #ifndef NO_PYTHON
@@ -75,7 +75,7 @@ class ZmqServer {
     virtual boost::python::object doRequest(boost::python::object data);
 #endif
 
-    virtual std::string doString(std::string data);
+    virtual std::string doString(const std::string& data);
 
     uint16_t port();
 
@@ -95,9 +95,9 @@ class ZmqServerWrap : public rogue::interfaces::ZmqServer, public boost::python:
 
     boost::python::object defDoRequest(boost::python::object data);
 
-    std::string doString(std::string data);
+    std::string doString(const std::string& data);
 
-    std::string defDoString(std::string data);
+    std::string defDoString(const std::string& data);
 };
 
 typedef std::shared_ptr<rogue::interfaces::ZmqServerWrap> ZmqServerWrapPtr;
