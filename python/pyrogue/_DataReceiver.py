@@ -56,8 +56,8 @@ class DataReceiver(pr.Device,ris.Slave):
 
         self.add(pr.LocalVariable(name='Updated',
                                   value=False,
-                                  mode = 'RO',
-                                  description='Data has been updated flag'))
+                                  mode = 'RW',
+                                  description='Data has been updated flag. Set in the TRUE in DataReceiver and reset to zero by application'))
 
         self.add(pr.LocalVariable(name='Data',
                                   typeStr=typeStr,
