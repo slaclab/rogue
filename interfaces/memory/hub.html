@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Memory Hub Example &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+  <title>Memory Hub Example &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../../_static/doctools.js?v=888ff710"></script>
       <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -123,15 +123,15 @@ transaction to be executed at a time.</p>
 <h2>Python Raw Hub Example<a class="headerlink" href="#python-raw-hub-example" title="Permalink to this heading"></a></h2>
 <p>Below is an example of creating a raw Hub device which translates memory
 transactions in Python.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
-<span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span>
 
 <span class="c1"># Create a subclass of a memory Hub</span>
 <span class="c1"># This hub has an offset of 0</span>
-<span class="k">class</span> <span class="nc">MyHub</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Hub</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyHub</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">memory</span><span class="o">.</span><span class="n">Hub</span><span class="p">):</span>
 
     <span class="c1"># Init method must call the parent class init</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="c1"># Here we set the offset and a new root min and</span>
         <span class="c1"># max transaction size</span>
@@ -141,7 +141,7 @@ transactions in Python.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
 
     <span class="c1"># Entry point for incoming transaction</span>
-    <span class="k">def</span> <span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
 
         <span class="c1"># First lock the memory space to avoid</span>
         <span class="c1"># overlapping paged transactions</span>
@@ -221,14 +221,14 @@ transactions in Python.</p>
 the Hub to interact in a standard PyRogue tree. It will have its own base address and
 size in the downstream address map, but expose a separate upstream address map for
 translated transactions. More information about the Device class is included at TBD.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
-<span class="kn">import</span> <span class="nn">rogue.interfaces.memory</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span>
 
 <span class="c1"># Create a subclass of a Device</span>
-<span class="k">class</span> <span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyTranslationDevice</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
     <span class="c1"># Init method with the same signature as a Device</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
                  <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
                  <span class="n">memBase</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -246,7 +246,7 @@ translated transactions. More information about the Device class is included at 
 
     <span class="c1"># Same code from previous section with the exception that the existing Device</span>
     <span class="c1"># lock is used instead of a separate lock as above.</span>
-    <span class="k">def</span> <span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doTransaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">transaction</span><span class="p">):</span>
 
         <span class="c1"># First lock the memory space to avoid</span>
         <span class="c1"># overlapping paged transactions</span>
@@ -258,11 +258,11 @@ translated transactions. More information about the Device class is included at 
 <h2>Using Python Device Hub<a class="headerlink" href="#using-python-device-hub" title="Permalink to this heading"></a></h2>
 <p>Below is an example of how the above Device would be used in a PyRogue tree.
 More information about the PyRogue Root class is included at TBD.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 
-<span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add FPGA device at 0x1000 which hosts paged master</span>
@@ -398,7 +398,7 @@ in progress.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

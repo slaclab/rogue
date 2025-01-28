@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Receiving Frames &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+  <title>Receiving Frames &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../../_static/doctools.js?v=888ff710"></script>
       <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -114,16 +114,16 @@ to receive frames from python masters and python subclasses to receive frames fr
 <section id="python-slave-subclass">
 <h2>Python Slave Subclass<a class="headerlink" href="#python-slave-subclass" title="Permalink to this heading"></a></h2>
 <p>Implementing a Slave subclass in python is easy, but may result in a lower level of performance.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">rogue.interfaces.stream</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
 
-<span class="k">class</span> <span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">rogue</span><span class="o">.</span><span class="n">interfaces</span><span class="o">.</span><span class="n">stream</span><span class="o">.</span><span class="n">Slave</span><span class="p">):</span>
 
     <span class="c1"># Init method must call the parent class init</span>
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
     <span class="c1"># Method which is called when a frame is received</span>
-    <span class="k">def</span> <span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frame</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_acceptFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">frame</span><span class="p">):</span>
 
         <span class="c1"># First it is good practice to hold a lock on the frame data.</span>
         <span class="k">with</span> <span class="n">frame</span><span class="o">.</span><span class="n">lock</span><span class="p">():</span>
@@ -287,7 +287,7 @@ advanced methods of access frame and buffer data.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

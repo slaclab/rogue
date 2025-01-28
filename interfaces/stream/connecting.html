@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Connecting Streams &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
+  <title>Connecting Streams &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../../_static/doctools.js?v=888ff710"></script>
       <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../_static/js/theme.js"></script>
@@ -110,7 +110,7 @@ will request new frames. The primary slave is also the last slave to receive dat
 from the master. This is an important distinction when interfacing to a slave which will
 empty the frame when processing the data, such as a DMA driver in zero copy mode.</p>
 <p>A stream master and slave are connected using the following command in python:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 
 <span class="n">myMaster</span> <span class="o">&gt;&gt;</span> <span class="n">mySlave</span>
 
@@ -129,7 +129,7 @@ empty the frame when processing the data, such as a DMA driver in zero copy mode
 <p>Additional receivers can be added to a master. This allows more than
 one Slave to receive data from a Master. Each additional slave will be passed the frame in turn before
 it is passed to the primary slave:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 
 <span class="c1"># Connections can go in the opposite direction</span>
 <span class="n">mySlave</span> <span class="o">&lt;&lt;</span> <span class="n">myMaster</span>
@@ -142,7 +142,7 @@ it is passed to the primary slave:</p>
 <p>In some cases rogue entities can serve as both a stream Master and Slave. This is often the case when
 using a network protocol such as UDP or TCP. Two dual purpose endpoints can be connected together
 to create a bi-directional data stream using the following command in python:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 
 <span class="n">endPointA</span> <span class="o">==</span> <span class="n">endPointB</span>
 
@@ -171,7 +171,7 @@ slave for endPointB. A similar command is available in C++:</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

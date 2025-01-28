@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>Wrapping Custom Module With PyRogue Device &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../_static/doctools.js?v=888ff710"></script>
       <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -96,13 +96,13 @@ file can be created as MyWrapper.py and included in the same python directory as
 the output of the <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> step.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source Code For MyWrapper.py</span>
 
-<span class="kn">import</span> <span class="nn">rogue</span>
-<span class="kn">import</span> <span class="nn">pyrogue</span>
-<span class="kn">import</span> <span class="nn">MyModule</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MyModule</span>
 
-<span class="k">class</span> <span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomSlave</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
-   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
 
        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;My Custom Stream Slave&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -120,17 +120,17 @@ the output of the <a class="reference internal" href="makefile.html#custom-makef
                                       <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span><span class="o">.</span><span class="n">getTotalBytes</span><span class="p">))</span>
 
    <span class="c1"># Method called by streamConnect and streamConnectBiDir to access slave</span>
-   <span class="k">def</span> <span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mySlave</span>
 
    <span class="c1"># Support &lt;&lt; operator</span>
-   <span class="k">def</span> <span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
        <span class="k">return</span> <span class="n">other</span>
 
-<span class="k">class</span> <span class="nc">MyCustomMaster</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomMaster</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
 
-   <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
 
        <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;My Custom Stream Master&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -158,11 +158,11 @@ the output of the <a class="reference internal" href="makefile.html#custom-makef
                                      <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span><span class="o">.</span><span class="n">myFrameGen</span><span class="p">))</span>
 
    <span class="c1"># Method called by streamConnect and streamConnectBiDir to access master</span>
-   <span class="k">def</span> <span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_myMast</span>
 
    <span class="c1"># Support &gt;&gt; operator</span>
-   <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+   <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
        <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
        <span class="k">return</span> <span class="n">other</span>
 </pre></div>
@@ -180,7 +180,7 @@ the output of the <a class="reference internal" href="makefile.html#custom-makef
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

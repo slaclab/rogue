@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Module Source &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>Custom Module Source &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../_static/doctools.js?v=888ff710"></script>
       <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -118,7 +118,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
 
    <span class="n">public</span><span class="p">:</span>
 
-      <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">static</span> <span class="k">class</span> <span class="nc">creator</span> <span class="n">to</span> <span class="k">return</span> <span class="n">our</span> <span class="n">custom</span> <span class="k">class</span> <span class="nc">wrapped</span> <span class="k">with</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">pointer</span>
+      <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">static</span> <span class="k">class</span><span class="w"> </span><span class="nc">creator</span> <span class="n">to</span> <span class="k">return</span> <span class="n">our</span> <span class="n">custom</span> <span class="k">class</span><span class="w"> </span><span class="nc">wrapped</span> <span class="k">with</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">pointer</span>
       <span class="n">static</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
          <span class="n">static</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">boost</span><span class="p">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomSlave</span><span class="o">&gt;</span><span class="p">();</span>
          <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
@@ -142,7 +142,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
       <span class="o">//</span> <span class="n">Receive</span> <span class="n">a</span> <span class="n">frame</span>
       <span class="n">void</span> <span class="n">acceptFrame</span> <span class="p">(</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">Frame</span><span class="o">&gt;</span> <span class="n">frame</span> <span class="p">)</span> <span class="p">{</span>
 
-         <span class="o">//</span> <span class="n">Acquire</span> <span class="n">lock</span> <span class="n">on</span> <span class="n">frame</span><span class="o">.</span> <span class="n">Will</span> <span class="n">be</span> <span class="n">release</span> <span class="n">when</span> <span class="n">lock</span> <span class="k">class</span> <span class="nc">goes</span> <span class="n">out</span> <span class="n">of</span> <span class="n">scope</span>
+         <span class="o">//</span> <span class="n">Acquire</span> <span class="n">lock</span> <span class="n">on</span> <span class="n">frame</span><span class="o">.</span> <span class="n">Will</span> <span class="n">be</span> <span class="n">release</span> <span class="n">when</span> <span class="n">lock</span> <span class="k">class</span><span class="w"> </span><span class="nc">goes</span> <span class="n">out</span> <span class="n">of</span> <span class="n">scope</span>
          <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">FrameLockPtr</span> <span class="n">lock</span> <span class="o">=</span> <span class="n">frame</span><span class="o">-&gt;</span><span class="n">lock</span><span class="p">();</span>
 
          <span class="o">//</span> <span class="n">Increment</span> <span class="n">frame</span> <span class="n">counter</span>
@@ -180,13 +180,13 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
 
    <span class="n">public</span><span class="p">:</span>
 
-      <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">static</span> <span class="k">class</span> <span class="nc">creator</span> <span class="n">to</span> <span class="k">return</span> <span class="n">our</span> <span class="n">custom</span> <span class="k">class</span> <span class="nc">wrapped</span> <span class="k">with</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">pointer</span>
+      <span class="o">//</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">static</span> <span class="k">class</span><span class="w"> </span><span class="nc">creator</span> <span class="n">to</span> <span class="k">return</span> <span class="n">our</span> <span class="n">custom</span> <span class="k">class</span><span class="w"> </span><span class="nc">wrapped</span> <span class="k">with</span> <span class="n">a</span> <span class="n">shared</span> <span class="n">pointer</span>
       <span class="n">static</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span> <span class="n">create</span><span class="p">()</span> <span class="p">{</span>
          <span class="n">static</span> <span class="n">boost</span><span class="p">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">boost</span><span class="p">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">MyCustomMaster</span><span class="o">&gt;</span><span class="p">();</span>
          <span class="k">return</span><span class="p">(</span><span class="n">ret</span><span class="p">);</span>
       <span class="p">}</span>
 
-      <span class="o">//</span> <span class="n">Standard</span> <span class="k">class</span> <span class="nc">creator</span> <span class="n">which</span> <span class="ow">is</span> <span class="n">called</span> <span class="n">by</span> <span class="n">create</span>
+      <span class="o">//</span> <span class="n">Standard</span> <span class="k">class</span><span class="w"> </span><span class="nc">creator</span> <span class="n">which</span> <span class="ow">is</span> <span class="n">called</span> <span class="n">by</span> <span class="n">create</span>
       <span class="n">MyCustomMaster</span><span class="p">()</span> <span class="p">:</span> <span class="n">rogue</span><span class="p">::</span><span class="n">interfaces</span><span class="p">::</span><span class="n">stream</span><span class="p">::</span><span class="n">Master</span><span class="p">()</span> <span class="p">{</span>
          <span class="n">frameCount_</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
          <span class="n">byteCount_</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -282,7 +282,7 @@ are included in <a class="reference internal" href="wrapper.html#custom-wrapper"
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

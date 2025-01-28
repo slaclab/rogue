@@ -5,14 +5,14 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=fa44fd50" />
+  <title>pyrogue.utilities.fileio._FileReader &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../../../../_static/doctools.js?v=888ff710"></script>
       <script src="../../../../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../../../../_static/js/theme.js"></script>
@@ -93,19 +93,19 @@
 <span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
 <span class="c1"># contained in the LICENSE.txt file.</span>
 <span class="c1">#-----------------------------------------------------------------------------</span>
-<span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">struct</span>
-<span class="kn">import</span> <span class="nn">numpy</span>
-<span class="kn">import</span> <span class="nn">yaml</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">dataclasses</span><span class="w"> </span><span class="kn">import</span> <span class="n">dataclass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 
 <span class="n">RogueHeaderSize</span>  <span class="o">=</span> <span class="mi">8</span>
 <span class="n">RogueHeaderPack</span>  <span class="o">=</span> <span class="s1">&#39;IHBB&#39;</span>
 
 <span class="c1"># Default header as a named tuple</span>
 <div class="viewcode-block" id="RogueHeader"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.RogueHeader">[docs]</a><span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">RogueHeader</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RogueHeader</span><span class="p">:</span>
     <span class="n">size</span> <span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 4 Bytes, uint32, I</span>
     <span class="n">flags</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 2 bytes, uint16, H</span>
     <span class="n">error</span><span class="p">:</span> <span class="nb">int</span>     <span class="c1"># 1 bytes, uint8,  B</span>
@@ -134,7 +134,7 @@
 
 <span class="c1"># Batcher Header</span>
 <span class="nd">@dataclass</span>
-<span class="k">class</span> <span class="nc">BatchHeader</span><span class="p">:</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BatchHeader</span><span class="p">:</span>
     <span class="n">size</span><span class="p">:</span> <span class="nb">int</span>   <span class="c1"># 4 Bytes, uint32, I</span>
     <span class="n">tdest</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
     <span class="n">fUser</span><span class="p">:</span> <span class="nb">int</span>  <span class="c1"># 1 Byte, uint8, B</span>
@@ -163,12 +163,12 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="k">class</span> <span class="nc">FileReaderException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">FileReaderException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; File reader exception &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
 
-<div class="viewcode-block" id="FileReader"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader">[docs]</a><span class="k">class</span> <span class="nc">FileReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FileReader"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader">[docs]</a><span class="k">class</span><span class="w"> </span><span class="nc">FileReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A lightweight file reader for Rogue.</span>
 
@@ -198,7 +198,7 @@
 <span class="sd">        Current configuration/status dictionary</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">,</span> <span class="n">configChan</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">log</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batched</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_configChan</span> <span class="o">=</span> <span class="n">configChan</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_currFile</span>   <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fileSize</span>   <span class="o">=</span> <span class="mi">0</span>
@@ -224,7 +224,7 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">access</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="n">os</span><span class="o">.</span><span class="n">R_OK</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="n">FileReaderException</span><span class="p">(</span><span class="s2">&quot;Failed to read file </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">_nextRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_nextRecord</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
 
             <span class="c1"># Hit end of file</span>
@@ -258,7 +258,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">return</span> <span class="kc">True</span>
 
-<div class="viewcode-block" id="FileReader.records"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.records">[docs]</a>    <span class="k">def</span> <span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="FileReader.records"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.records">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Generator which returns (header, data) tuples</span>
 
@@ -338,18 +338,18 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processed a total of </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span><span class="si">}</span><span class="s2"> data records&quot;</span><span class="p">)</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">currCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">currCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_currCount</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">totCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">totCount</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_totCount</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">configDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">configDict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
-<div class="viewcode-block" id="FileReader.configValue"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.configValue">[docs]</a>    <span class="k">def</span> <span class="nf">configValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="FileReader.configValue"><a class="viewcode-back" href="../../../../utilities/fileio/python_reader.html#pyrogue.utilities.fileio.FileReader.configValue">[docs]</a>    <span class="k">def</span><span class="w"> </span><span class="nf">configValue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Get a configuration or status value</span>
 
@@ -380,7 +380,7 @@
 
         <span class="k">return</span> <span class="n">obj</span></div>
 
-    <span class="k">def</span> <span class="nf">_updateConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_updateConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
         <span class="c1"># Combination of dictUpdate and keyValueUpdate from pyrogue helpers</span>
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">new</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -397,10 +397,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
 
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span>
 
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
         <span class="k">pass</span></div>
 </pre></div>
 
@@ -411,7 +411,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

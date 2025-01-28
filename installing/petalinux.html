@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Petalinux &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>Setting Up Rogue In Petalinux &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../_static/doctools.js?v=888ff710"></script>
       <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -100,8 +100,12 @@
 <p>This will create a directory in project-spec/meta-user/recipes-apps/rogue</p>
 <p>The sub-directory ‘files’ can be ignored or removed.</p>
 <p>You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogue.bb with the following content:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ROGUE_VERSION = &quot;6.4.0&quot;
-ROGUE_MD5SUM  = &quot;acbd2b178af84776efbd78cdf3f5db7d&quot;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#
+# This file is the rogue recipe and tested on Petalinux 2024.2
+#
+
+ROGUE_VERSION = &quot;6.4.3&quot;
+ROGUE_MD5SUM  = &quot;4e7bac5a2098c9b33f6aca5d5ba5a96a&quot;
 
 SUMMARY = &quot;Recipe to build Rogue&quot;
 HOMEPAGE =&quot;https://github.com/slaclab/rogue&quot;
@@ -149,17 +153,19 @@ RDEPENDS:${PN} += &quot; \
 FILES:${PN}-dev += &quot;/usr/include/rogue/*&quot;
 FILES:${PN} += &quot;/usr/lib/*&quot;
 
-do_configure:prepend() {
+do_configure() {
+   setup_target_config
    cmake_do_configure
+   cmake --build ${B}
    bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
    bbplain $(sed -i &quot;s/..\/python/python/&quot; ${S}/setup.py)
+   setuptools3_do_configure
 }
 
-do_install:prepend() {
+do_install() {
+   setup_target_config
    cmake_do_install
-}
-
-do_install:append() {
+   setuptools3_do_install
    # Ensure the target directory exists
    install -d ${D}${PYTHON_SITEPACKAGES_DIR}
    # Install the rogue.so file into the Python site-packages directory
@@ -201,7 +207,7 @@ do_install:append() {
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

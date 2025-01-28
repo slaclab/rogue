@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Testing The Custom Module &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>Testing The Custom Module &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../_static/doctools.js?v=888ff710"></script>
       <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -97,12 +97,12 @@
 by the <a class="reference internal" href="sourcefile.html#custom-sourcefile"><span class="std std-ref">Custom Module Source</span></a>, <a class="reference internal" href="makefile.html#custom-makefile"><span class="std std-ref">Building The Custom Module</span></a> and <a class="reference internal" href="wrapper.html#custom-wrapper"><span class="std std-ref">Wrapping Custom Module With PyRogue Device</span></a> steps.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myTest.py</span>
 
-<span class="kn">import</span> <span class="nn">pyrogue</span>
-<span class="kn">import</span> <span class="nn">MyWrapper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MyWrapper</span>
 
-<span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
@@ -143,14 +143,14 @@ Got  400 bytes in 2 frames
 to epics to allow external control.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsTest.py</span>
 
-<span class="kn">import</span> <span class="nn">pyrogue</span>
-<span class="kn">import</span> <span class="nn">MyWrapper</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">pyrogue.protocols.epicsV4</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MyWrapper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols.epicsV4</span>
 
-<span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
@@ -252,16 +252,16 @@ In this test we start the GUI in the main script with the core Rogue. It is also
 to start one or more remote GUIs. That process is described in TBD.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Source for myEpicsGuiTest.py</span>
 
-<span class="kn">import</span> <span class="nn">pyrogue</span>
-<span class="kn">import</span> <span class="nn">MyWrapper</span>
-<span class="kn">import</span> <span class="nn">time</span>
-<span class="kn">import</span> <span class="nn">pyrogue.protocols.epicsv4</span>
-<span class="kn">import</span> <span class="nn">pyrogue.pydm</span>
-<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">MyWrapper</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.protocols.epicsv4</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
 
-<span class="k">class</span> <span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;MyRoot&quot;</span><span class="p">)</span>
 
         <span class="c1"># Add master and slave devices</span>
@@ -301,7 +301,7 @@ to start one or more remote GUIs. That process is described in TBD.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

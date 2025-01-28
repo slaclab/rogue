@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Migrating To Rogue V6 &mdash; Rogue v6.4.3 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=fa44fd50" />
+  <title>Migrating To Rogue V6 &mdash; Rogue v6.4.4 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=bad8783d"></script>
+      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7151e8f0"></script>
       <script src="../_static/doctools.js?v=888ff710"></script>
       <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
@@ -99,9 +99,9 @@
 <h2>ZmqServer<a class="headerlink" href="#zmqserver" title="Permalink to this heading"></a></h2>
 <p>This biggest impacting change in Rogue V6 is to remove the ZmqServer feature from the Root class. It is now treated as an interface to be consistent with the Rogue interface model. In the past the ZmqServer feature was controlled by setting the serverPort arg when instantiating the root class. By default this arg was ‘0’ which resulted in the server port being automatically allocated. Instead you will need to add the zmqServer manually to the root class.</p>
 <p>Similiarly the previous feature which allowed the user to pass the root class to pydm to figure out the server port no longer works. Below is an example of including the ZmqServer in your root class and then using it with pydm.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -120,9 +120,9 @@
 <section id="sqllogger">
 <h2>SqlLogger<a class="headerlink" href="#sqllogger" title="Permalink to this heading"></a></h2>
 <p>Similiar to the zmqServer, the sql logger is now removed to be an external interface. See below for example usage of the sql logger:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -137,9 +137,9 @@
 <section id="root-configuration-streaming">
 <h2>Root Configuration Streaming<a class="headerlink" href="#root-configuration-streaming" title="Permalink to this heading"></a></h2>
 <p>In previous versions of rogue the Root class automatically supported the ability to stream configuration changes. This allowed the Root class to be added as a stream source to the StreamWriter class allow for configuration changes and status updates to be logged alongside the event data. In RogueV6 this feature is removed from the Root class with a new Variable streaming class which provides the same functionality. See below for an example of using this new class to stream configuration changes to the StreamWriter. This new method continues to support dumping the current status to the file immediatly after opening and right before closing:.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -157,9 +157,9 @@
 <section id="epics-version-3-channel-access-server">
 <h2>EPICS Version 3 Channel Access Server<a class="headerlink" href="#epics-version-3-channel-access-server" title="Permalink to this heading"></a></h2>
 <p>Epics version 3 channel access server is removed from Rogue V6. Please use the epics 4 pv access server (P4P) instead:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">ExampleRoot</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">pyrogue</span><span class="o">.</span><span class="n">Root</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
                               <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Example Root&quot;</span><span class="p">,</span>
                               <span class="n">timeout</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
@@ -247,7 +247,7 @@ the impression that it is much simpler than it is.</p>
 <h2>Previously Deprecated Legacy GUI has Been Removed<a class="headerlink" href="#previously-deprecated-legacy-gui-has-been-removed" title="Permalink to this heading"></a></h2>
 <p>The legacy GUI has been removed. You can no longer use the following
 code to launch a generic tree GUI.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.gui</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.gui</span>
 
 <span class="k">with</span> <span class="n">Root</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">appTop</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">application</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
@@ -258,7 +258,7 @@ code to launch a generic tree GUI.</p>
 </pre></div>
 </div>
 <p>Instead, use the new PyDM GUI</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pyrogue.pydm</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue.pydm</span>
 
 <span class="k">with</span> <span class="n">Root</span><span class="p">(</span><span class="o">...</span><span class="p">)</span> <span class="k">as</span> <span class="n">root</span><span class="p">:</span>
     <span class="n">pyrogue</span><span class="o">.</span><span class="n">pydm</span><span class="o">.</span><span class="n">runPyDM</span><span class="p">(</span>
@@ -279,7 +279,7 @@ code to launch a generic tree GUI.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2019, SLAC National Accelerator Laboratory.</p>
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
