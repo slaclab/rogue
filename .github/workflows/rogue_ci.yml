@@ -20,7 +20,7 @@ on: [push]
 jobs:
   full_build_test:
     name: Full Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -30,7 +30,7 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.12
           cache: 'pip'
           cache-dependency-path: 'pip_requirements.txt'
 
