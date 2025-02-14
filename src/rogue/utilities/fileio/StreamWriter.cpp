@@ -71,6 +71,8 @@ void ruf::StreamWriter::setup_python() {
         .def("open", &ruf::StreamWriter::open)
         .def("close", &ruf::StreamWriter::close)
         .def("isOpen", &ruf::StreamWriter::isOpen)
+        .def("setRaw", &ruf::StreamWriter::setRaw)
+        .def("getRaw", &ruf::StreamWriter::getRaw)
         .def("setBufferSize", &ruf::StreamWriter::setBufferSize)
         .def("setMaxSize", &ruf::StreamWriter::setMaxSize)
         .def("setDropErrors", &ruf::StreamWriter::setDropErrors)
