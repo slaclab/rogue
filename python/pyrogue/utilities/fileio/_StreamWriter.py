@@ -31,7 +31,7 @@ class StreamWriter(pyrogue.DataWriter):
             self._writer = writer
 
         if rawMode:
-            self_writer.setRaw(True)
+            self._writer.setRaw(True)
 
         # Connect configuration stream
         for k,v in self._configStream.items():
