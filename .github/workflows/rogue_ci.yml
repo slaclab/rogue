@@ -41,6 +41,13 @@ jobs:
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev bzip2 libbz2-dev
           pip install -r pip_requirements.txt
 
+      - name: Check for trailing whitespace
+        run: |
+          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} .; then
+            echo "Error: Trailing whitespace found in the repository!"
+            exit 1
+          fi
+
       # Python Linter
       - name: Python Linter
         run: |
