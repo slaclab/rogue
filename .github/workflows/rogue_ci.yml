@@ -41,10 +41,17 @@ jobs:
           sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev bzip2 libbz2-dev
           pip install -r pip_requirements.txt
 
-      - name: Check for trailing whitespace
+      - name: Check for trailing whitespace and tabs
         run: |
+          # Check for trailing whitespace
           if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} .; then
             echo "Error: Trailing whitespace found in the repository!"
+            exit 1
+          fi
+          
+          # Check for tab characters instead of spaces
+          if grep -rnI $'\t' --include=\*.{cpp,h,py} .; then
+            echo "Error: Tab characters found in the repository! Please use spaces for indentation."
             exit 1
           fi
 
