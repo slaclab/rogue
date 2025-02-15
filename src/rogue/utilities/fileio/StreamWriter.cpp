@@ -278,22 +278,19 @@ void ruf::StreamWriter::writeFile(uint8_t channel, std::shared_ptr<rogue::interf
     std::unique_lock<std::mutex> lock(mtx_);
 
     if (fd_ >= 0) {
-
         // Raw mode
         if ( raw_ ) {
            size = frame->getPayload();
            checkSize(size);
-        }
 
         // Written size has extra 4 bytes in non raw mode
         // Check file size, including size header
-        else {
+        } else {
            size = frame->getPayload() + 4;
            checkSize(size + 4);
         }
 
-        if ( ! raw_ ) {
-
+        if (!raw_) {
            // First write size
            intWrite(&size, 4);
 
