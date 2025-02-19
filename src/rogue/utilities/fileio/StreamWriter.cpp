@@ -71,6 +71,8 @@ void ruf::StreamWriter::setup_python() {
         .def("open", &ruf::StreamWriter::open)
         .def("close", &ruf::StreamWriter::close)
         .def("isOpen", &ruf::StreamWriter::isOpen)
+        .def("setRaw", &ruf::StreamWriter::setRaw)
+        .def("getRaw", &ruf::StreamWriter::getRaw)
         .def("setBufferSize", &ruf::StreamWriter::setBufferSize)
         .def("setMaxSize", &ruf::StreamWriter::setMaxSize)
         .def("setDropErrors", &ruf::StreamWriter::setDropErrors)
@@ -95,6 +97,7 @@ ruf::StreamWriter::StreamWriter() {
     currBuffer_ = 0;
     dropErrors_ = false;
     isOpen_     = false;
+    raw_        = false;
 
     log_ = rogue::Logging::create("fileio.StreamWriter");
 }
@@ -154,6 +157,16 @@ void ruf::StreamWriter::close() {
 //! Get open status
 bool ruf::StreamWriter::isOpen() {
     return (isOpen_);
+}
+
+//! Set raw mode
+void ruf::StreamWriter::setRaw(bool raw) {
+   raw_ = raw;
+}
+
+//! Get raw mode flag
+bool ruf::StreamWriter::getRaw() {
+   return raw_;
 }
 
 //! Set buffering size, 0 to disable
@@ -265,20 +278,28 @@ void ruf::StreamWriter::writeFile(uint8_t channel, std::shared_ptr<rogue::interf
     std::unique_lock<std::mutex> lock(mtx_);
 
     if (fd_ >= 0) {
-        // Written size has extra 4 bytes
-        size = frame->getPayload() + 4;
+        // Raw mode
+        if ( raw_ ) {
+           size = frame->getPayload();
+           checkSize(size);
 
+        // Written size has extra 4 bytes in non raw mode
         // Check file size, including size header
-        checkSize(size + 4);
+        } else {
+           size = frame->getPayload() + 4;
+           checkSize(size + 4);
+        }
 
-        // First write size
-        intWrite(&size, 4);
+        if (!raw_) {
+           // First write size
+           intWrite(&size, 4);
 
-        // Create EVIO header
-        value = frame->getFlags();
-        value |= (frame->getError() << 16);
-        value |= (channel << 24);
-        intWrite(&value, 4);
+           // Create EVIO header
+           value = frame->getFlags();
+           value |= (frame->getError() << 16);
+           value |= (channel << 24);
+           intWrite(&value, 4);
+        }
 
         // Write buffers
         for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) intWrite((*it)->begin(), (*it)->getPayload());
