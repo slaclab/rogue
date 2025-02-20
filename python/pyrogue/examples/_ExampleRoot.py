@@ -51,8 +51,8 @@ class ExampleRoot(pyrogue.Root):
 
         # Add Device
         self.add(pyrogue.examples.AxiVersion(memBase=sim,
-                                        guiGroup='TestGroup',
-                                        offset=0x0))
+                                             guiGroup='TestGroup',
+                                             offset=0x0))
         self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
 
         # Create configuration stream
@@ -128,7 +128,9 @@ class ExampleRoot(pyrogue.Root):
 
         # Remote memory command slave example
         osSlave = pyrogue.examples.OsMemSlave()
-        self.add(pyrogue.examples.OsMemMaster(memBse=osSlave)
+        osSlave.setName("OsSlave")
+        self.addInterface(osSlave)
+        self.add(pyrogue.examples.OsMemMaster(memBase=osSlave))
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)

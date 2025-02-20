@@ -14,59 +14,60 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 import pyrogue
+import pyrogue.interfaces
 import subprocess
 
-class OsMemSlave(pyrogue.OsCommandMemorySlave):
+class OsMemSlave(pyrogue.interfaces.OsCommandMemorySlave):
 
     def __init__(self):
         super().__init__()
 
-    @command(base=pyrogue.Float(32),addr=0x00)
-    def uptime(arg):
+        @self.command(base=pyrogue.Float(32),addr=0x00)
+        def uptime(self, arg):
 
-        # Read, ignore write
-        if arg is None:
+            # Read, ignore write
+            if arg is None:
 
-            res = subprocess.run(['update','-r'], capture_output=True, text=True)
-            return float(res.stdout.split()[1])
+                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                return float(res.stdout.split()[1])
 
-    @command(base=pyrogue.Float(32),addr=0x04)
-    def load1min(arg):
+        @self.command(base=pyrogue.Float(32),addr=0x04)
+        def load1min(self, arg):
 
-        # Read, ignore write
-        if arg is None:
+            # Read, ignore write
+            if arg is None:
 
-            res = subprocess.run(['update','-r'], capture_output=True, text=True)
-            return float(res.stdout.split()[3])
+                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                return float(res.stdout.split()[3])
 
-    @command(base=pyrogue.Float(32),addr=0x08)
-    def load5min(arg):
+        @self.command(base=pyrogue.Float(32),addr=0x08)
+        def load5min(self, arg):
 
-        # Read, ignore write
-        if arg is None:
+            # Read, ignore write
+            if arg is None:
 
-            res = subprocess.run(['update','-r'], capture_output=True, text=True)
-            return float(res.stdout.split()[4])
+                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                return float(res.stdout.split()[4])
 
-    @command(base=pyrogue.Float(32),addr=0x0C)
-    def load15min(arg):
+        @self.command(base=pyrogue.Float(32),addr=0x0C)
+        def load15min(self, arg):
 
-        # Read, ignore write
-        if arg is None:
+            # Read, ignore write
+            if arg is None:
 
-            res = subprocess.run(['update','-r'], capture_output=True, text=True)
-            return float(res.stdout.split()[5])
+                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                return float(res.stdout.split()[5])
 
-    @command(base=pyrogue.Uint(32),addr=0x10)
-    def echoFile(arg):
+        @self.command(base=pyrogue.UInt(32),addr=0x10)
+        def echoFile(self, arg):
 
-        # Write
-        if arg is not None:
-            subprocess.run(['echo', str(arg), '>>', 'osCmdTest.txt'])
+            # Write
+            if arg is not None:
+                subprocess.run(['bash','-c',f'echo {arg} >> /tmp/osCmdTest.txt'])
 
-        # Read
-        else:
+            # Read
+            else:
 
-            res = subprocess.run(['tail','-1', 'osCmdText.txt'], capture_output=True, text=True)
-            return int(res.stdout)
+                res = subprocess.run(['tail','-1', '/tmp/osCmdTest.txt'], capture_output=True, text=True)
+                return int(res.stdout)
 

@@ -24,7 +24,8 @@ class OsMemMaster(pr.Device):
             description      = 'OS Memory Master Device',
             **kwargs):
 
-        super().__init__(
+        pr.Device.__init__(
+            self,
             name        = name,
             description = description,
             **kwargs)

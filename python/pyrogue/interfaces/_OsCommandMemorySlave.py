@@ -27,14 +27,8 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
         size    = transaction.size()
         type    = transaction.type()
 
-        if (address % self._minWidth) != 0:
-            transaction.error("Transaction address {address:#x} is not aligned to min width {self._minWidth:#x}")
-            return
-        elif size > self._maxSize:
-            transaction.error("Transaction size {size} exceeds max {self._maxSize}")
-            return
-        elif address not in self._cmdList:
-            transaction.error("Transaction address {address:#08x} not found in os command list")
+        if address not in self._cmdList:
+            transaction.error(f"Transaction address {address:#08x} not found in os command list")
             return
 
         # Write
@@ -44,26 +38,26 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
                 ba = bytearray(size)
                 transaction.getData(ba,0)
 
-                arg = self._cmdList['base'].fromBytes(ba)
-                self._cmdList.['func'](arg=arg)
+                arg = self._cmdList[address]['base'].fromBytes(ba)
+                self._cmdList[address]['func'](self,arg=arg)
                 transaction.done()
-            except Exception:
-                transaction.error("Transaction write error in command at {address:#08x}")
+            except Exception as msg:
+                transaction.error(f"Transaction write error in command at {address:#08x}: {msg}")
 
         # Read
         else:
 
             try:
-                ret = self._cmdList.['func'](arg=None)
-                ba = self._cmdList['base'].toBytes(ret)
+                ret = self._cmdList[address]['func'](self,arg=None)
+                ba = self._cmdList[address]['base'].toBytes(ret)
 
                 transaction.setData(ba,0)
                 transaction.done()
 
-            except Exception:
-                transaction.error("Transaction read error in command at {address:#08x}")
+            except Exception as msg:
+                transaction.error(f"Transaction read error in command at {address:#08x}: {msg}")
 
-    def command(self, *, addr, base):
+    def command(self, addr, base):
         def _decorator(func):
 
             if addr in self._cmdList:
