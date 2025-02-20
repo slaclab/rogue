@@ -63,7 +63,7 @@ class ExampleRoot(pyrogue.Root):
         self.add(self._prbsTx)
 
         # Add Data Writer, configuration goes to channel 1
-        self._fw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream})
+        self._fw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream},rawMode=True)
         self.add(self._fw)
         self._prbsTx >> self._fw.getChannel(0)
 
