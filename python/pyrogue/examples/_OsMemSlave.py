@@ -70,4 +70,3 @@ class OsMemSlave(pyrogue.interfaces.OsCommandMemorySlave):
 
                 res = subprocess.run(['tail','-1', '/tmp/osCmdTest.txt'], capture_output=True, text=True)
                 return int(res.stdout)
-

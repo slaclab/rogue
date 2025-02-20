@@ -82,5 +82,3 @@ class OsMemMaster(pr.Device):
             base         = pr.UInt,
             mode         = 'RW',
         ))
-
-

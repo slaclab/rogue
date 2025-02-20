@@ -61,10 +61,9 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
         def _decorator(func):
 
             if addr in self._cmdList:
-                raise pyrogue.CommandError(f"Duplicate address in command generation")
+                raise pyrogue.CommandError("Duplicate address in command generation")
 
             self._cmdList[addr] = {'base' : base, 'func' : func}
 
             return func
         return _decorator
-
