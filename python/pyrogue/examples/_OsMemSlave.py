@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+#-----------------------------------------------------------------------------
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       Example OS Memory Slave
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to
+# the license terms in the LICENSE.txt file found in the top-level directory
+# of this distribution and at:
+#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+# No part of the rogue software platform, including this file, may be
+# copied, modified, propagated, or distributed except according to the terms
+# contained in the LICENSE.txt file.
+#-----------------------------------------------------------------------------
+import pyrogue
+import subprocess
+
+class OsMemSlave(pyrogue.OsCommandMemorySlave):
+
+    def __init__(self):
+        super().__init__()
+
+    @command(base=pyrogue.Float(32),addr=0x00)
+    def uptime(arg):
+
+        # Read, ignore write
+        if arg is None:
+
+            res = subprocess.run(['update','-r'], capture_output=True, text=True)
+            return float(res.stdout.split()[1])
+
+    @command(base=pyrogue.Float(32),addr=0x04)
+    def load1min(arg):
+
+        # Read, ignore write
+        if arg is None:
+
+            res = subprocess.run(['update','-r'], capture_output=True, text=True)
+            return float(res.stdout.split()[3])
+
+    @command(base=pyrogue.Float(32),addr=0x08)
+    def load5min(arg):
+
+        # Read, ignore write
+        if arg is None:
+
+            res = subprocess.run(['update','-r'], capture_output=True, text=True)
+            return float(res.stdout.split()[4])
+
+    @command(base=pyrogue.Float(32),addr=0x0C)
+    def load15min(arg):
+
+        # Read, ignore write
+        if arg is None:
+
+            res = subprocess.run(['update','-r'], capture_output=True, text=True)
+            return float(res.stdout.split()[5])
+
+    @command(base=pyrogue.Uint(32),addr=0x10)
+    def echoFile(arg):
+
+        # Write
+        if arg is not None:
+            subprocess.run(['echo', str(arg), '>>', 'osCmdTest.txt'])
+
+        # Read
+        else:
+
+            res = subprocess.run(['tail','-1', 'osCmdText.txt'], capture_output=True, text=True)
+            return int(res.stdout)
+

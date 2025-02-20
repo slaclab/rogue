@@ -126,6 +126,10 @@ class ExampleRoot(pyrogue.Root):
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
             self.addProtocol(self._epics4)
 
+
+        osSlave = pyrogue.examples.OsMemSlave()
+        self.add(pyrogue.examples.OsMemMaster(memBse=osSlave)
+
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)
         self._sdata = np.append(self._sdata,val)
