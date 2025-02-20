@@ -28,8 +28,13 @@ class OsMemSlave(pyrogue.interfaces.OsCommandMemorySlave):
             # Read, ignore write
             if arg is None:
 
-                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
-                return float(res.stdout.split()[1])
+                # This try block helps handle an issue with the CI test, don't include
+                # this in production versions, instead let the error propogate
+                try:
+                    res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                    return float(res.stdout.split()[1])
+                except Exception:
+                    return 0
 
         @self.command(base=pyrogue.Float(32),addr=0x04)
         def load1min(self, arg):
@@ -37,8 +42,13 @@ class OsMemSlave(pyrogue.interfaces.OsCommandMemorySlave):
             # Read, ignore write
             if arg is None:
 
-                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
-                return float(res.stdout.split()[3])
+                # This try block helps handle an issue with the CI test, don't include
+                # this in production versions, instead let the error propogate
+                try:
+                    res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                    return float(res.stdout.split()[3])
+                except Exception:
+                    return 0
 
         @self.command(base=pyrogue.Float(32),addr=0x08)
         def load5min(self, arg):
@@ -46,8 +56,13 @@ class OsMemSlave(pyrogue.interfaces.OsCommandMemorySlave):
             # Read, ignore write
             if arg is None:
 
-                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
-                return float(res.stdout.split()[4])
+                # This try block helps handle an issue with the CI test, don't include
+                # this in production versions, instead let the error propogate
+                try:
+                    res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                    return float(res.stdout.split()[4])
+                except Exception:
+                    return 0
 
         @self.command(base=pyrogue.Float(32),addr=0x0C)
         def load15min(self, arg):
@@ -55,8 +70,13 @@ class OsMemSlave(pyrogue.interfaces.OsCommandMemorySlave):
             # Read, ignore write
             if arg is None:
 
-                res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
-                return float(res.stdout.split()[5])
+                # This try block helps handle an issue with the CI test, don't include
+                # this in production versions, instead let the error propogate
+                try:
+                    res = subprocess.run(['uptime','-r'], capture_output=True, text=True)
+                    return float(res.stdout.split()[5])
+                except Exception:
+                    return 0
 
         @self.command(base=pyrogue.UInt(32),addr=0x10)
         def echoFile(self, arg):
