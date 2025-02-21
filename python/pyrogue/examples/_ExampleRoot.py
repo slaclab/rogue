@@ -51,8 +51,8 @@ class ExampleRoot(pyrogue.Root):
 
         # Add Device
         self.add(pyrogue.examples.AxiVersion(memBase=sim,
-                                        guiGroup='TestGroup',
-                                        offset=0x0))
+                                             guiGroup='TestGroup',
+                                             offset=0x0))
         self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
 
         # Create configuration stream
@@ -125,6 +125,12 @@ class ExampleRoot(pyrogue.Root):
         if epics4En:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
             self.addProtocol(self._epics4)
+
+        # Remote memory command slave example
+        osSlave = pyrogue.examples.OsMemSlave()
+        osSlave.setName("OsSlave")
+        self.addInterface(osSlave)
+        self.add(pyrogue.examples.OsMemMaster(memBase=osSlave))
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)
