@@ -21,7 +21,7 @@ import rogue
 class StreamWriter(pyrogue.DataWriter):
     """Stream Writer Wrapper"""
 
-    def __init__(self, *, configStream={}, writer=None, **kwargs):
+    def __init__(self, *, configStream={}, writer=None, rawMode=False, **kwargs):
         pyrogue.DataWriter.__init__(self, **kwargs)
         self._configStream = configStream
 
@@ -29,6 +29,9 @@ class StreamWriter(pyrogue.DataWriter):
             self._writer = rogue.utilities.fileio.StreamWriter()
         else:
             self._writer = writer
+
+        if rawMode:
+            self._writer.setRaw(True)
 
         # Connect configuration stream
         for k,v in self._configStream.items():
