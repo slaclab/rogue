@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The TCP Bridge &mdash; Rogue v6.4.4 documentation</title>
+  <title>Using The TCP Bridge &mdash; Rogue v6.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
-      <script src="../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -108,14 +108,14 @@
            <div itemprop="articleBody">
              
   <section id="using-the-tcp-bridge">
-<span id="interfaces-stream-using-tcp"></span><h1>Using The TCP Bridge<a class="headerlink" href="#using-the-tcp-bridge" title="Permalink to this heading"></a></h1>
+<span id="interfaces-stream-using-tcp"></span><h1>Using The TCP Bridge<a class="headerlink" href="#using-the-tcp-bridge" title="Link to this heading"></a></h1>
 <p>The stream TCP bridge classes allows a Rogue stream to be bridged over a TCP network interface. The bridge
 consists of a server and a client. The server, <a class="reference internal" href="classes/tcpServer.html#interfaces-stream-tcp-server"><span class="std std-ref">TcpServer</span></a>, listens for incoming
 connections on a pair of TCP ports.  The client, <a class="reference internal" href="classes/tcpClient.html#interfaces-stream-tcp-client"><span class="std std-ref">TcpClient</span></a>, connects to the server
 at a specific address. Both ends of the bridge are bi-directional allowing a full duplex stream to be bridged
 between the server and client.</p>
 <section id="python-server">
-<h2>Python Server<a class="headerlink" href="#python-server" title="Permalink to this heading"></a></h2>
+<h2>Python Server<a class="headerlink" href="#python-server" title="Link to this heading"></a></h2>
 <p>The following code demonstrates a Python server with a local receiver and transmitter device.  The local transmitter
 will send data to a remote receiver on the client. The local receiver will receive data from a remote transmitter
 on the client. The Python server is able to interface with either a Python or C++ client.</p>
@@ -138,7 +138,7 @@ on the client. The Python server is able to interface with either a Python or C+
 </div>
 </section>
 <section id="python-client">
-<h2>Python Client<a class="headerlink" href="#python-client" title="Permalink to this heading"></a></h2>
+<h2>Python Client<a class="headerlink" href="#python-client" title="Link to this heading"></a></h2>
 <p>The following code demonstrates a Python client with a local receiver and transmitter device. The local transmitter
 will send data to a remote receiver on the server. The local receiver will receive data from a remote transmitter
 on the server.  The Python client is able to interface with either a Python or C++ server.</p>
@@ -160,7 +160,7 @@ on the server.  The Python client is able to interface with either a Python or C
 </div>
 </section>
 <section id="c-server">
-<h2>C++ Server<a class="headerlink" href="#c-server" title="Permalink to this heading"></a></h2>
+<h2>C++ Server<a class="headerlink" href="#c-server" title="Link to this heading"></a></h2>
 <p>The following code demonstrates a C++ server with a local receiver and transmitter device. The local transmitter
 will send data to a remote receiver on the client. The local receiver will receive data from a remote transmitter
 on the client.  The C++ server is able to interface with either a Python or C++ client.</p>
@@ -182,7 +182,7 @@ on the client.  The C++ server is able to interface with either a Python or C++ 
 </div>
 </section>
 <section id="c-client">
-<h2>C++ Client<a class="headerlink" href="#c-client" title="Permalink to this heading"></a></h2>
+<h2>C++ Client<a class="headerlink" href="#c-client" title="Link to this heading"></a></h2>
 <p>The following code demonstrates a C++ client with a local receiver and transmitter device.  The local transmitter
 will send data to a remote receiver on the server. The local receiver will receive data from a remote transmitter
 on the server.  The C++ client is able to interface with either a Python or C++ server.</p>
@@ -203,7 +203,7 @@ on the server.  The C++ client is able to interface with either a Python or C++ 
 </div>
 </section>
 <section id="resource-configuration-for-multiple-streams">
-<h2>Resource Configuration For Multiple Streams<a class="headerlink" href="#resource-configuration-for-multiple-streams" title="Permalink to this heading"></a></h2>
+<h2>Resource Configuration For Multiple Streams<a class="headerlink" href="#resource-configuration-for-multiple-streams" title="Link to this heading"></a></h2>
 <p>To use multiple rogue streams, ensure that the appropriate operating-system-level settings have been enabled.  The following (non-optimized) settings allow for the parallel launch of 2043 TCP servers on a RedHat Enterprise Linux 7.9 machine.  See the steps below.</p>
 <p>Use sysctl calls to set max number of open files/sockets, threads and max_map_count:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sysctl</span> <span class="o">-</span><span class="n">w</span> <span class="n">fs</span><span class="o">.</span><span class="n">file</span><span class="o">-</span><span class="nb">max</span><span class="o">=</span><span class="mi">262140</span>

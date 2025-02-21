@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Model &mdash; Rogue v6.4.4 documentation</title>
+  <title>Model &mdash; Rogue v6.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js?v=7151e8f0"></script>
-      <script src="../../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -113,11 +113,11 @@
            <div itemprop="articleBody">
              
   <section id="model">
-<span id="interfaces-memory-model"></span><h1>Model<a class="headerlink" href="#model" title="Permalink to this heading"></a></h1>
+<span id="interfaces-memory-model"></span><h1>Model<a class="headerlink" href="#model" title="Link to this heading"></a></h1>
 <p>The Model class define a data type for use with a Block.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.Model">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model" title="Link to this definition"></a></dt>
 <dd><p>Class which describes how a data type is represented and accessed
 using the Rogue Variables and Blocks</p>
 <dl class="field-list simple">
@@ -130,7 +130,7 @@ using the Rogue Variables and Blocks</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.name">
-<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyrogue.Model.name" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyrogue.Model.name" title="Link to this definition"></a></dt>
 <dd><p>String representation of the Model type</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -141,7 +141,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.fstring">
-<span class="sig-name descname"><span class="pre">fstring</span></span><a class="headerlink" href="#pyrogue.Model.fstring" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fstring</span></span><a class="headerlink" href="#pyrogue.Model.fstring" title="Link to this definition"></a></dt>
 <dd><p>Not sure what this is, Where is it used?</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -152,7 +152,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.encoding">
-<span class="sig-name descname"><span class="pre">encoding</span></span><a class="headerlink" href="#pyrogue.Model.encoding" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">encoding</span></span><a class="headerlink" href="#pyrogue.Model.encoding" title="Link to this definition"></a></dt>
 <dd><p>Encoding type for converting between string and byte arrays. i.e. UTF-8</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -163,7 +163,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.pytype">
-<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Model.pytype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Model.pytype" title="Link to this definition"></a></dt>
 <dd><p>Python type class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -174,7 +174,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.defaultdisp">
-<span class="sig-name descname"><span class="pre">defaultdisp</span></span><a class="headerlink" href="#pyrogue.Model.defaultdisp" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">defaultdisp</span></span><a class="headerlink" href="#pyrogue.Model.defaultdisp" title="Link to this definition"></a></dt>
 <dd><p>Default display formatting string. May be overriden by the Variable disp parameter.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -185,7 +185,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.signed">
-<span class="sig-name descname"><span class="pre">signed</span></span><a class="headerlink" href="#pyrogue.Model.signed" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">signed</span></span><a class="headerlink" href="#pyrogue.Model.signed" title="Link to this definition"></a></dt>
 <dd><p>Flag indicating if value is signed. Default=False</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -196,7 +196,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.endianness">
-<span class="sig-name descname"><span class="pre">endianness</span></span><a class="headerlink" href="#pyrogue.Model.endianness" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">endianness</span></span><a class="headerlink" href="#pyrogue.Model.endianness" title="Link to this definition"></a></dt>
 <dd><p>Endianness indicator. ‘little’ or ‘big’. Default=’little’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -207,7 +207,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.bitReverse">
-<span class="sig-name descname"><span class="pre">bitReverse</span></span><a class="headerlink" href="#pyrogue.Model.bitReverse" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">bitReverse</span></span><a class="headerlink" href="#pyrogue.Model.bitReverse" title="Link to this definition"></a></dt>
 <dd><p>Bit reversal flag.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -218,7 +218,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.modelId">
-<span class="sig-name descname"><span class="pre">modelId</span></span><a class="headerlink" href="#pyrogue.Model.modelId" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">modelId</span></span><a class="headerlink" href="#pyrogue.Model.modelId" title="Link to this definition"></a></dt>
 <dd><p>Block processing ID. See <span class="xref std std-ref">interfaces_memory_constants_ptype</span></p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -229,7 +229,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.isBigEndian">
-<span class="sig-name descname"><span class="pre">isBigEndian</span></span><a class="headerlink" href="#pyrogue.Model.isBigEndian" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">isBigEndian</span></span><a class="headerlink" href="#pyrogue.Model.isBigEndian" title="Link to this definition"></a></dt>
 <dd><p>True if endianness = ‘big’</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -240,7 +240,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Model.ndType">
-<span class="sig-name descname"><span class="pre">ndType</span></span><a class="headerlink" href="#pyrogue.Model.ndType" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">ndType</span></span><a class="headerlink" href="#pyrogue.Model.ndType" title="Link to this definition"></a></dt>
 <dd><p>numpy type value (bool, int32, int64, uint32, uin64, float32, float64)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -251,7 +251,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Model.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.toBytes" title="Link to this definition"></a></dt>
 <dd><p>Convert the python value to byte array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -262,7 +262,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Model.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.fromBytes" title="Link to this definition"></a></dt>
 <dd><p>Convert the python value to byte array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -273,7 +273,7 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Model.fromString">
-<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.fromString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.fromString" title="Link to this definition"></a></dt>
 <dd><p>Convert the string to a python value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -284,59 +284,59 @@ using the Rogue Variables and Blocks</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Model.minValue">
-<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.minValue" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">minValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.minValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.minValue" title="Link to this definition"></a></dt>
 <dd><p>Return the minimum value for the Model type</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Model.maxValue">
-<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.maxValue" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">maxValue</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Model.maxValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Model.maxValue" title="Link to this definition"></a></dt>
 <dd><p>Return the maximum value for the Model type</p>
 </dd></dl>
 
 </dd></dl>
 
 <section id="standard-models">
-<h2>Standard Models<a class="headerlink" href="#standard-models" title="Permalink to this heading"></a></h2>
+<h2>Standard Models<a class="headerlink" href="#standard-models" title="Link to this heading"></a></h2>
 <p>The following are pre-defined models for various data types.</p>
 <section id="uint">
-<span id="interfaces-memory-model-uint"></span><h3>UInt<a class="headerlink" href="#uint" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-uint"></span><h3>UInt<a class="headerlink" href="#uint" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.UInt">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UInt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UInt</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt" title="Link to this definition"></a></dt>
 <dd><p>Model class for unsigned integers</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.UInt.pytype">
-<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.UInt.pytype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.UInt.pytype" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UInt.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.toBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – </p>
+<dd class="field-odd"><p><strong>value</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UInt.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ba</strong> – </p>
+<dd class="field-odd"><p><strong>ba</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UInt.fromString">
-<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UInt.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UInt.fromString" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>string</strong> – </p>
+<dd class="field-odd"><p><strong>string</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -345,36 +345,36 @@ using the Rogue Variables and Blocks</p>
 
 </section>
 <section id="uintbe">
-<span id="interfaces-memory-model-uintbe"></span><h3>UIntBE<a class="headerlink" href="#uintbe" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-uintbe"></span><h3>UIntBE<a class="headerlink" href="#uintbe" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.UIntBE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UIntBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntBE" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UIntBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntBE" title="Link to this definition"></a></dt>
 <dd><p>Model class for big endian unsigned integers</p>
 </dd></dl>
 
 </section>
 <section id="uintreversed">
-<span id="interfaces-memory-model-uintreversed"></span><h3>UIntReversed<a class="headerlink" href="#uintreversed" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-uintreversed"></span><h3>UIntReversed<a class="headerlink" href="#uintreversed" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.UIntReversed">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UIntReversed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">UIntReversed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed" title="Link to this definition"></a></dt>
 <dd><p>Model class for unsigned integers, stored in reverse bit order</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UIntReversed.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.toBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – </p>
+<dd class="field-odd"><p><strong>value</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.UIntReversed.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#UIntReversed.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.UIntReversed.fromBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ba</strong> – </p>
+<dd class="field-odd"><p><strong>ba</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -383,37 +383,37 @@ using the Rogue Variables and Blocks</p>
 
 </section>
 <section id="int">
-<span id="interfaces-memory-model-int"></span><h3>Int<a class="headerlink" href="#int" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-int"></span><h3>Int<a class="headerlink" href="#int" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.Int">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int" title="Link to this definition"></a></dt>
 <dd><p>Model class for integers</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Int.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.toBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – </p>
+<dd class="field-odd"><p><strong>value</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Int.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ba</strong> – </p>
+<dd class="field-odd"><p><strong>ba</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Int.fromString">
-<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Int.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Int.fromString" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>string</strong> – </p>
+<dd class="field-odd"><p><strong>string</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -422,52 +422,52 @@ using the Rogue Variables and Blocks</p>
 
 </section>
 <section id="intbe">
-<span id="interfaces-memory-model-intbe"></span><h3>IntBE<a class="headerlink" href="#intbe" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-intbe"></span><h3>IntBE<a class="headerlink" href="#intbe" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.IntBE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">IntBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#IntBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.IntBE" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">IntBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#IntBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.IntBE" title="Link to this definition"></a></dt>
 <dd><p>Model class for big endian integers</p>
 </dd></dl>
 
 </section>
 <section id="bool">
-<span id="interfaces-memory-model-bool"></span><h3>Bool<a class="headerlink" href="#bool" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-bool"></span><h3>Bool<a class="headerlink" href="#bool" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.Bool">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool" title="Link to this definition"></a></dt>
 <dd><p>Model class for booleans</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Bool.pytype">
-<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Bool.pytype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Bool.pytype" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Bool.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.toBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – </p>
+<dd class="field-odd"><p><strong>value</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Bool.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.fromBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ba</strong> – </p>
+<dd class="field-odd"><p><strong>ba</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Bool.fromString">
-<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.fromString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Bool.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Bool.fromString" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>string</strong> – </p>
+<dd class="field-odd"><p><strong>string</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -476,43 +476,43 @@ using the Rogue Variables and Blocks</p>
 
 </section>
 <section id="string">
-<span id="interfaces-memory-model-string"></span><h3>String<a class="headerlink" href="#string" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-string"></span><h3>String<a class="headerlink" href="#string" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.String">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">String</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">String</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String" title="Link to this definition"></a></dt>
 <dd><p>Model class for strings</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.String.pytype">
-<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.String.pytype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.String.pytype" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.String.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.toBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – </p>
+<dd class="field-odd"><p><strong>value</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.String.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.fromBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ba</strong> – </p>
+<dd class="field-odd"><p><strong>ba</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.String.fromString">
-<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.fromString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#String.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.String.fromString" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>string</strong> – </p>
+<dd class="field-odd"><p><strong>string</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -521,43 +521,43 @@ using the Rogue Variables and Blocks</p>
 
 </section>
 <section id="float">
-<span id="interfaces-memory-model-float"></span><h3>Float<a class="headerlink" href="#float" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-float"></span><h3>Float<a class="headerlink" href="#float" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.Float">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float" title="Link to this definition"></a></dt>
 <dd><p>Model class for 32-bit floats</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Float.pytype">
-<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Float.pytype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Float.pytype" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Float.toBytes">
-<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.toBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">toBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.toBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.toBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>value</strong> – </p>
+<dd class="field-odd"><p><strong>value</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Float.fromBytes">
-<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.fromBytes" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromBytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ba</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.fromBytes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.fromBytes" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>ba</strong> – </p>
+<dd class="field-odd"><p><strong>ba</strong></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pyrogue.Float.fromString">
-<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.fromString" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fromString</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Float.fromString"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Float.fromString" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>string</strong> – </p>
+<dd class="field-odd"><p><strong>string</strong></p>
 </dd>
 </dl>
 </dd></dl>
@@ -566,37 +566,37 @@ using the Rogue Variables and Blocks</p>
 
 </section>
 <section id="floatbe">
-<span id="interfaces-memory-model-floatbe"></span><h3>FloatBE<a class="headerlink" href="#floatbe" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-floatbe"></span><h3>FloatBE<a class="headerlink" href="#floatbe" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.FloatBE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">FloatBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#FloatBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.FloatBE" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">FloatBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#FloatBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.FloatBE" title="Link to this definition"></a></dt>
 <dd><p>Model class for 32-bit floats stored as big endian</p>
 </dd></dl>
 
 </section>
 <section id="double">
-<span id="interfaces-memory-model-double"></span><h3>Double<a class="headerlink" href="#double" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-double"></span><h3>Double<a class="headerlink" href="#double" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.Double">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Double</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Double</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Double"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Double" title="Link to this definition"></a></dt>
 <dd><p>Model class for 64-bit floats</p>
 </dd></dl>
 
 </section>
 <section id="doublebe">
-<span id="interfaces-memory-model-doublebe"></span><h3>DoubleBE<a class="headerlink" href="#doublebe" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-doublebe"></span><h3>DoubleBE<a class="headerlink" href="#doublebe" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.DoubleBE">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">DoubleBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#DoubleBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.DoubleBE" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">DoubleBE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#DoubleBE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.DoubleBE" title="Link to this definition"></a></dt>
 <dd><p>Model class for 64-bit floats stored as big endian</p>
 </dd></dl>
 
 </section>
 <section id="fixed">
-<span id="interfaces-memory-model-fixed"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Permalink to this heading"></a></h3>
+<span id="interfaces-memory-model-fixed"></span><h3>Fixed<a class="headerlink" href="#fixed" title="Link to this heading"></a></h3>
 <dl class="py class">
 <dt class="sig sig-object py" id="pyrogue.Fixed">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Fixed" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Fixed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Model.html#Fixed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Fixed" title="Link to this definition"></a></dt>
 <dd><p>Model class for fixed point signed integers</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -608,7 +608,7 @@ using the Rogue Variables and Blocks</p>
 </dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pyrogue.Fixed.pytype">
-<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Fixed.pytype" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">pytype</span></span><a class="headerlink" href="#pyrogue.Fixed.pytype" title="Link to this definition"></a></dt>
 <dd><p>alias of <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a></p>
 </dd></dl>
 

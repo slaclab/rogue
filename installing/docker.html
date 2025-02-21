@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue Docker &mdash; Rogue v6.4.4 documentation</title>
+  <title>Installing Rogue Docker &mdash; Rogue v6.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=7151e8f0"></script>
-      <script src="../_static/doctools.js?v=888ff710"></script>
-      <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -99,7 +99,7 @@
            <div itemprop="articleBody">
              
   <section id="installing-rogue-docker">
-<span id="installing-docker"></span><h1>Installing Rogue Docker<a class="headerlink" href="#installing-rogue-docker" title="Permalink to this heading"></a></h1>
+<span id="installing-docker"></span><h1>Installing Rogue Docker<a class="headerlink" href="#installing-rogue-docker" title="Link to this heading"></a></h1>
 <p>Docker images with rogue are automatically generated and uploaded to Docker hub, in the following repositories:</p>
 <p>Docker images with tagged (stable) version of rogue:
 <a class="reference external" href="https://hub.docker.com/r/tidair/rogue/">https://hub.docker.com/r/tidair/rogue/</a></p>
@@ -107,7 +107,7 @@
 <a class="reference external" href="https://hub.docker.com/r/tidair/rogue-dev/">https://hub.docker.com/r/tidair/rogue-dev/</a></p>
 <p>The images can be used to run rogue applications as one would normally do using a local installation of rogue.</p>
 <section id="how-to-get-the-container">
-<h2>How To Get The Container<a class="headerlink" href="#how-to-get-the-container" title="Permalink to this heading"></a></h2>
+<h2>How To Get The Container<a class="headerlink" href="#how-to-get-the-container" title="Link to this heading"></a></h2>
 <p>To get the most recent version of the docker image, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker pull tidair/rogue
 </pre></div>
@@ -124,7 +124,7 @@
 </ul>
 </section>
 <section id="how-to-run-the-container">
-<h2>How To Run The Container<a class="headerlink" href="#how-to-run-the-container" title="Permalink to this heading"></a></h2>
+<h2>How To Run The Container<a class="headerlink" href="#how-to-run-the-container" title="Link to this heading"></a></h2>
 <p>To run a rogue application inside a container, you must first have a copy of the application in in your host OS. Also, your host must have a direct connection to your target FPGA.</p>
 <p>Then you can run the container, for example, like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run -ti -v &lt;APP_DIR&gt;:/python tidair/rogue /python/&lt;APP_NAME&gt;
@@ -143,7 +143,7 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
 </div>
 </section>
 <section id="gui-on-a-linux-os">
-<h2>GUI On A Linux OS<a class="headerlink" href="#gui-on-a-linux-os" title="Permalink to this heading"></a></h2>
+<h2>GUI On A Linux OS<a class="headerlink" href="#gui-on-a-linux-os" title="Link to this heading"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run -ti \
    -u $(id -u) \
    -e DISPLAY=unix$DISPLAY \
@@ -156,7 +156,7 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
 </div>
 </section>
 <section id="gui-on-a-max-os">
-<h2>GUI On A MAX OS<a class="headerlink" href="#gui-on-a-max-os" title="Permalink to this heading"></a></h2>
+<h2>GUI On A MAX OS<a class="headerlink" href="#gui-on-a-max-os" title="Link to this heading"></a></h2>
 <p>First install XQuartz. Then run it from the command line using <cite>open -a XQuartz</cite>. In the XQuartz preferences, go to the “Security” tab and make sure you’ve got “Allow connections from network clients” ticked.</p>
 <p>Now run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ IP=$(ifconfig en0 | grep inet | awk &#39;$1==&quot;inet&quot; {print $2}&#39;)
@@ -171,7 +171,7 @@ $ docker run -ti -e DISPLAY=$IP:0 -v &lt;APP_DIR&gt;:/python tidair/rogue /pytho
 </ul>
 </section>
 <section id="how-to-build-a-custom-docker-image-with-rogue">
-<h2>How To Build A Custom Docker Image With Rogue<a class="headerlink" href="#how-to-build-a-custom-docker-image-with-rogue" title="Permalink to this heading"></a></h2>
+<h2>How To Build A Custom Docker Image With Rogue<a class="headerlink" href="#how-to-build-a-custom-docker-image-with-rogue" title="Link to this heading"></a></h2>
 <p>You can create custom docker image, using the Docker image containing rogue as a starting point. Just start your <cite>Dockerfile</cite> with this line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">tidair</span><span class="o">/</span><span class="n">rogue</span><span class="p">:</span><span class="o">&lt;</span><span class="n">TAG</span><span class="o">&gt;</span>
 </pre></div>

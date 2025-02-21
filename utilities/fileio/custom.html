@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Custom Writers &mdash; Rogue v6.4.4 documentation</title>
+  <title>Custom Writers &mdash; Rogue v6.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
-      <script src="../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -98,7 +98,7 @@
            <div itemprop="articleBody">
              
   <section id="custom-writers">
-<span id="utilities-fileio-custom"></span><h1>Custom Writers<a class="headerlink" href="#custom-writers" title="Permalink to this heading"></a></h1>
+<span id="utilities-fileio-custom"></span><h1>Custom Writers<a class="headerlink" href="#custom-writers" title="Link to this heading"></a></h1>
 <p>Rogue provides a standard class <a class="reference internal" href="classes/writer.html#utilities-fileio-writer"><span class="std std-ref">StreamWriter</span></a> for storing stream data
 in Rogue. In some cases the user may want to implement a custom file format or may need to record
 data in a pre-defined for certain DAQ systems. Rogue provides the ability to sub-class the StreamWriter
@@ -107,7 +107,7 @@ writing. To write a custom data format the user simply needs to sub-class the St
 the writeFile virtual method.</p>
 <p>See <a class="reference internal" href="../../custom_module/index.html#custom-module"><span class="std std-ref">Creating Custom Modules</span></a> for more information about using this custom class in a Rogue library.</p>
 <section id="custom-writer-subclass">
-<h2>Custom Writer Subclass<a class="headerlink" href="#custom-writer-subclass" title="Permalink to this heading"></a></h2>
+<h2>Custom Writer Subclass<a class="headerlink" href="#custom-writer-subclass" title="Link to this heading"></a></h2>
 <p>The example below shows an example sub-class for writing Frame data to a text file.</p>
 <div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/utilities/fileio/StreamWriter.h&gt;</span>
 <span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/stream/Frame.h&gt;</span>

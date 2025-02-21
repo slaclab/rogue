@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using A Rate Drop Object &mdash; Rogue v6.4.4 documentation</title>
+  <title>Using A Rate Drop Object &mdash; Rogue v6.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
-      <script src="../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -104,13 +104,13 @@
            <div itemprop="articleBody">
              
   <section id="using-a-rate-drop-object">
-<span id="interfaces-stream-using-rate-drop"></span><h1>Using A Rate Drop Object<a class="headerlink" href="#using-a-rate-drop-object" title="Permalink to this heading"></a></h1>
+<span id="interfaces-stream-using-rate-drop"></span><h1>Using A Rate Drop Object<a class="headerlink" href="#using-a-rate-drop-object" title="Link to this heading"></a></h1>
 <p>A <a class="reference internal" href="classes/rateDrop.html#interfaces-stream-rate-drop"><span class="std std-ref">RateDrop</span></a> object provides a mechanism for rate limiting stream frames
 for receivers which can not keep up with data at the expected full rate. The RateDrop class allows
 the user to drop limit the frame rate either by dropping every n frames, or by specifying a minimum time
 period between frames.</p>
 <section id="ratedrop-example">
-<h2>RateDrop Example<a class="headerlink" href="#ratedrop-example" title="Permalink to this heading"></a></h2>
+<h2>RateDrop Example<a class="headerlink" href="#ratedrop-example" title="Link to this heading"></a></h2>
 <p>The following python example shows how to limit the data rate in an incoming stream to 10hz.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.stream</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>

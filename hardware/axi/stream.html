@@ -1,21 +1,21 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Using The AxiStreamDma Class &mdash; Rogue v6.4.4 documentation</title>
+  <title>Using The AxiStreamDma Class &mdash; Rogue v6.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../../_static/jquery.js?v=5d32c60e"></script>
       <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js?v=7151e8f0"></script>
-      <script src="../../_static/doctools.js?v=888ff710"></script>
-      <script src="../../_static/sphinx_highlight.js?v=4825356b"></script>
+      <script src="../../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
@@ -98,7 +98,7 @@
            <div itemprop="articleBody">
              
   <section id="using-the-axistreamdma-class">
-<span id="hardware-axi-stream"></span><h1>Using The AxiStreamDma Class<a class="headerlink" href="#using-the-axistreamdma-class" title="Permalink to this heading"></a></h1>
+<span id="hardware-axi-stream"></span><h1>Using The AxiStreamDma Class<a class="headerlink" href="#using-the-axistreamdma-class" title="Link to this heading"></a></h1>
 <p>The AxiStreamDma class allows you to connect stream sources and destinations to
 a channel on the PCI Express board or Zynq FPGA fabric using the generic
 AXI Stream drivers. The set of hardware which use this include but are not
@@ -118,7 +118,7 @@ the custom sender and receiver described in <a class="reference internal" href="
 created in <a class="reference internal" href="../../interfaces/memory/master.html#interfaces-memory-master-ex"><span class="std std-ref">Memory Master Example</span></a>.</p>
 <p>See <a class="reference internal" href="classes/axiStreamDma.html#hardware-axi-axi-stream-dma"><span class="std std-ref">AxiStreamDma</span></a> for more information about the AxiStreamDma class methods.</p>
 <section id="python-axistreamdma-example">
-<h2>Python AxiStreamDma Example<a class="headerlink" href="#python-axistreamdma-example" title="Permalink to this heading"></a></h2>
+<h2>Python AxiStreamDma Example<a class="headerlink" href="#python-axistreamdma-example" title="Link to this heading"></a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.hardware.axi</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">rogue.protocols.srp</span>
@@ -157,40 +157,40 @@ created in <a class="reference internal" href="../../interfaces/memory/master.ht
 </div>
 </section>
 <section id="c-axistreamdma-example">
-<h2>C++ AxiStreamDma Example<a class="headerlink" href="#c-axistreamdma-example" title="Permalink to this heading"></a></h2>
+<h2>C++ AxiStreamDma Example<a class="headerlink" href="#c-axistreamdma-example" title="Link to this heading"></a></h2>
 <p>The equivalent code in C++ is show below:</p>
-<div class="highlight-c notranslate"><div class="highlight"><pre><span></span>#include &lt;rogue/hardware/axi/AxiStreamDma.h&gt;
-#include &lt;rogue/protocols/srp/SrpV3.h&gt;
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/hardware/axi/AxiStreamDma.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/protocols/srp/SrpV3.h&gt;</span>
 
-// If you want to disable zero copy execute this command first.
-// Normally you want zero copy enabled
-rogue::hardware::axi::axiAxiStreamDma::zeroCopyDisable(&#39;/dev/datadev_0&#39;);
+<span class="c1">// If you want to disable zero copy execute this command first.</span>
+<span class="c1">// Normally you want zero copy enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">axiAxiStreamDma</span><span class="o">::</span><span class="n">zeroCopyDisable</span><span class="p">(</span><span class="err">&#39;</span><span class="o">/</span><span class="n">dev</span><span class="o">/</span><span class="n">datadev_0</span><span class="err">&#39;</span><span class="p">);</span>
 
-// First attach to destination 0 for register traffic, ssi enabled
-rogue::hardware::axi::AxiStreamDmaPtr regChan = rogue::hardware::axi::AxiStreamDma::create(&quot;/dev/datadev_0&quot;, 0, true);
+<span class="c1">// First attach to destination 0 for register traffic, ssi enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span><span class="w"> </span><span class="n">regChan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
 
-// Create an SRP engine
-rogue::protocols::srp::SrpV3Ptr srp = rogue::protocols::srp::SrpV3::create();
+<span class="c1">// Create an SRP engine</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3Ptr</span><span class="w"> </span><span class="n">srp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">protocols</span><span class="o">::</span><span class="n">srp</span><span class="o">::</span><span class="n">SrpV3</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
-// Connect the SRP engine to the register DMA
-*regChan == srp;
+<span class="c1">// Connect the SRP engine to the register DMA</span>
+<span class="o">*</span><span class="n">regChan</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">srp</span><span class="p">;</span>
 
-// Create a memory master
-MyMemMasterPtr memMast = MyMemMaster.create();
+<span class="c1">// Create a memory master</span>
+<span class="n">MyMemMasterPtr</span><span class="w"> </span><span class="n">memMast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyMemMaster</span><span class="p">.</span><span class="n">create</span><span class="p">();</span>
 
-// Connect memory master to SRP
-*memMast &gt;&gt; srp;
+<span class="c1">// Connect memory master to SRP</span>
+<span class="o">*</span><span class="n">memMast</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">srp</span><span class="p">;</span>
 
-// Next attach to destination 1 for data traffic, ssi enabled
-rogue::hardware::axi::AxiStreamDmaPtr dataChan = rogue::hardware::axi::AxiStreamDma::create(&quot;/dev/datadev_0&quot;, 1, true);
+<span class="c1">// Next attach to destination 1 for data traffic, ssi enabled</span>
+<span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDmaPtr</span><span class="w"> </span><span class="n">dataChan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="n">hardware</span><span class="o">::</span><span class="n">axi</span><span class="o">::</span><span class="n">AxiStreamDma</span><span class="o">::</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;/dev/datadev_0&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span>
 
-// Create a master
-MyCustomMasterPtr myMast = MyCustomMaster::create();
+<span class="c1">// Create a master</span>
+<span class="n">MyCustomMasterPtr</span><span class="w"> </span><span class="n">myMast</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomMaster</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
-// Create a slave
-MyCustomSlavePtr mySlave = MyCustomSlave::create();
+<span class="c1">// Create a slave</span>
+<span class="n">MyCustomSlavePtr</span><span class="w"> </span><span class="n">mySlave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MyCustomSlave</span><span class="o">::</span><span class="n">create</span><span class="p">();</span>
 
-*(*myMast &gt;&gt; dataChan) &gt;&gt; mySlave
+<span class="o">*</span><span class="p">(</span><span class="o">*</span><span class="n">myMast</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">dataChan</span><span class="p">)</span><span class="w"> </span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">mySlave</span>
 </pre></div>
 </div>
 </section>
