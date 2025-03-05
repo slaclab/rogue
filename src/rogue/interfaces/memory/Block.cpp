@@ -905,7 +905,9 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
         }
     };
 
+    // Passed value is a numpy value
     if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
         PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(value.ptr());
         npy_intp ndims = PyArray_NDIM(arr);
         npy_intp* dims = PyArray_SHAPE(arr);
@@ -915,6 +917,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                               "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
                                               ndims,
                                               var->name_.c_str()));
+
         if ((index + dims[0]) > var->numValues_)
             throw(rogue::GeneralError::create("Block::setUIntPy",
                                               "Overflow error for passed array with length %" PRIu32
@@ -955,6 +958,8 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                                   "Passed nparray is not of an accepted unsigned int type (uint64, uint32, uint16, uint8) for %s",
                                                   var->name_.c_str()));
         }
+
+        // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
@@ -974,6 +979,8 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                                   var->name_.c_str()));
             setUInt(tmp, var, index + i);
         }
+
+        // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         int type_num = PyArray_DescrFromScalar(value.ptr())->type_num;
         switch(type_num) {
@@ -1014,9 +1021,13 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
     }
 }
 
+// Get data using unsigned int
 bp::object rim::Block::getUIntPy(rim::Variable* var, int32_t index) {
     bp::object ret;
+
+    // Unindexed with a list variable
     if (index < 0 && var->numValues_ > 0) {
+        // Create a numpy array to receive it and locate the destination data buffer
         npy_intp dims[1] = {var->numValues_};
         int npType;
         // Choose numpy type based on the variable's valueBits.
@@ -1112,7 +1123,9 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
         }
     };
 
+     // Passed value is a numpy value
     if (PyArray_Check(value.ptr())) {
+        // Cast to an array object and check that the numpy array
         PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(value.ptr());
         npy_intp ndims = PyArray_NDIM(arr);
         npy_intp* dims = PyArray_SHAPE(arr);
@@ -1122,6 +1135,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                               "Invalid number of dimensions (%" PRIu32 ") for passed ndarray for %s",
                                               ndims,
                                               var->name_.c_str()));
+
         if ((index + dims[0]) > var->numValues_)
             throw(rogue::GeneralError::create("Block::setIntPy",
                                               "Overflow error for passed array with length %" PRIu32
@@ -1162,9 +1176,12 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                                   "Passed nparray is not of an accepted signed int type (int64, int32, int16, int8) for %s",
                                                   var->name_.c_str()));
         }
+
+    // Is passed value a list
     } else if (PyList_Check(value.ptr())) {
         bp::list vl = bp::extract<bp::list>(value);
         uint32_t vlen = len(vl);
+
         if ((index + vlen) > var->numValues_)
             throw(rogue::GeneralError::create("Block::setIntPy",
                                               "Overflow error for passed list with length %" PRIu32
@@ -1181,6 +1198,8 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                                   var->name_.c_str()));
             setInt(tmp, var, index + i);
         }
+
+    // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         int type_num = PyArray_DescrFromScalar(value.ptr())->type_num;
         switch(type_num) {
@@ -1215,15 +1234,20 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
         }
     } else {
         bp::extract<int64_t> tmp(value);
+
         if (!tmp.check())
             throw(rogue::GeneralError::create("Block::setIntPy", "Failed to extract value for %s.", var->name_.c_str()));
         setInt(tmp, var, index);
     }
 }
 
+// Get data using int
 bp::object rim::Block::getIntPy(rim::Variable* var, int32_t index) {
     bp::object ret;
+
+    // Unindexed with a list variable
     if (index < 0 && var->numValues_ > 0) {
+        // Create a numpy array to receive it and locate the destination data buffer
         npy_intp dims[1] = {var->numValues_};
         int npType;
         if (var->valueBits_ <= 8) npType = NPY_INT8;
