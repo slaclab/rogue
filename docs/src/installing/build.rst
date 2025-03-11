@@ -21,7 +21,7 @@ The following packages are required to build the rogue library:
 Package Manager Install
 -----------------------
 
-Ubuntu 22.04 (Debian-based systems)
+Debian-based systems (Ubuntu 22.04 or later)
 ########################
 
 .. code::
@@ -36,7 +36,7 @@ Ubuntu 22.04 (Debian-based systems)
    $ sudo apt install python3-pyqt5
    $ sudo apt install python3-pyqt5.qtsvg
 
-Rocky 9 (RHEL-based systems)
+RHEL-based systems (E.g. Rocky 9)
 ########################
 
 .. code::
