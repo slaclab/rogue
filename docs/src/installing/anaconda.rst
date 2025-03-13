@@ -58,7 +58,7 @@ Alternatively you can install a specific released version of Rogue:
 
 .. code::
 
-   $ conda create -n rogue_v6.1.3 -c conda-forge -c tidair-tag rogue=v6.1.3
+   $ conda create -n rogue_v6.5.0 -c conda-forge -c tidair-tag rogue=v6.5.0
 
 Using Rogue In Anaconda
 =======================
@@ -71,7 +71,7 @@ To activate:
 
    $ conda activate rogue_tag
 
-Replace rogue_tag with the name you used when creating your environment (e.g. rogue_v6.1.3).
+Replace rogue_tag with the name you used when creating your environment (e.g. rogue_v6.5.0).
 
 
 To deactivate:
