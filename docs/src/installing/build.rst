@@ -13,28 +13,44 @@ Installing Packages Required For Rogue
 
 The following packages are required to build the rogue library:
 
-* cmake   >= 3.5
+* cmake   >= 3.15
 * Boost   >= 1.58
-* python3 >= 3.6
+* python3 >= 3.7
 * bz2
 
 Package Manager Install
 -----------------------
 
-Ubuntu 18.04 (or later)
+Debian-based systems (Ubuntu 22.04 or later)
 ########################
 
 .. code::
 
-   $ apt-get install cmake
-   $ apt-get install python3
-   $ apt-get install libboost-all-dev
-   $ apt-get install libbz2-dev
-   $ apt-get install python3-pip
-   $ apt-get install git
-   $ apt-get install libzmq3-dev
-   $ apt-get install python3-pyqt5
-   $ apt-get install python3-pyqt5.qtsvg
+   $ sudo apt install cmake
+   $ sudo apt install python3
+   $ sudo apt install libboost-all-dev
+   $ sudo apt install libbz2-dev
+   $ sudo apt install python3-pip
+   $ sudo apt install git
+   $ sudo apt install libzmq3-dev
+   $ sudo apt install python3-pyqt5
+   $ sudo apt install python3-pyqt5.qtsvg
+
+RHEL-based systems (E.g. Rocky 9)
+########################
+
+.. code::
+
+   $ sudo dnf install -y cmake
+   $ sudo dnf install -y python3
+   $ sudo dnf install -y boost-devel
+   $ sudo dnf install -y bzip2-devel
+   $ sudo dnf install -y python3-pip
+   $ sudo dnf install -y git
+   $ sudo dnf install -y zeromq-devel
+   $ sudo dnf install -y python3-qt5
+   $ sudo dnf install -y python3-pyqt5-sip
+   $ sudo dnf install -y qt5-qtsvg-devel
 
 archlinux:
 ##########
@@ -75,9 +91,9 @@ Local Install
    $ mkdir build
    $ cd build
    $ cmake .. -DROGUE_INSTALL=local
-   $ make
+   $ make -j$(nproc)
    $ make install
-   $ source ../setup_rogue.csh (or .sh)
+   $ source ../setup_rogue.sh (or .csh)
 
 Custom Install
 --------------
@@ -92,9 +108,9 @@ Make sure you have permission to install into the passed install directory, if n
    $ mkdir build
    $ cd build
    $ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
-   $ make
+   $ make -j$(nproc)
    $ make install
-   $ source /path/to/custom/dir/setup_rogue.csh (or .sh)
+   $ source /path/to/custom/dir/setup_rogue.sh (or .csh)
 
 
 System Install
@@ -110,7 +126,7 @@ Make sure you have permission to install into the /usr/local/ directory, if not 
    $ mkdir build
    $ cd build
    $ cmake .. -DROGUE_INSTALL=system
-   $ make
+   $ make -j$(nproc)
    $ make install
 
 Updating Rogue
