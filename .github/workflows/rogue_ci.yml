@@ -74,7 +74,7 @@ jobs:
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
-          make -j4 install
+          make -j$(nproc) install
 
       # Run Tests
       - name: Rogue Tests
@@ -141,7 +141,7 @@ jobs:
         run: |
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
-          make -j4 install
+          make -j$(nproc) install
 
 
 # ----------------------------------------------------------------------------
