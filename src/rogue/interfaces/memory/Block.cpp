@@ -20,14 +20,17 @@
 #include "rogue/interfaces/memory/Block.h"
 
 #include <inttypes.h>
-#include <string.h>
 #include <sys/time.h>
 
 #include <cmath>
+#include <cstdio>
+#include <cstring>
 #include <exception>
 #include <iomanip>
 #include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -195,12 +198,12 @@ void rim::Block::intStartTransaction(uint32_t type, bool forceWr, bool check, ri
         } else {
             if (type == rim::Read || type == rim::Verify) {
                 if (index < 0 || index >= var->numValues_) {
-                    lowByte  = var->lowTranByte_[0];
+                    lowByte = var->lowTranByte_[0];
 
-                    if ( var->numValues_ == 0 ) {
+                    if (var->numValues_ == 0) {
                         highByte = var->highTranByte_[0];
                     } else {
-                        highByte = var->highTranByte_[var->numValues_-1];
+                        highByte = var->highTranByte_[var->numValues_ - 1];
                     }
                 } else {
                     lowByte  = var->lowTranByte_[index];
@@ -511,14 +514,14 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     (*vit)->verifyEn_);
             }
 
-        // List variables
+            // List variables
         } else {
             for (x = 0; x < (*vit)->numValues_; x++) {
                 // Variable allows overlaps, add to overlap enable mask
                 if ((*vit)->overlapEn_) {
                     setBits(oleMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
 
-                // Otherwise add to exclusive mask and check for existing mapping
+                    // Otherwise add to exclusive mask and check for existing mapping
                 } else {
                     if (anyBits(excMask, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_))
                         throw(rogue::GeneralError::create(
@@ -572,7 +575,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
     x   = 0;
 
     while (rem > 0) {
-        ss << "0x" << std::setfill('0') << std::hex << std::setw(2) << (uint32_t)(verifyMask_[x]) << " ";
+        ss << "0x" << std::setfill('0') << std::hex << std::setw(2) << static_cast<uint32_t>(verifyMask_[x]) << " ";
         x++;
         rem--;
         if (rem == 0 || x % 10 == 0) {
@@ -903,6 +906,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setUIntPy",
@@ -920,11 +924,17 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_UINT64) {
-            uint64_t* src = reinterpret_cast<uint64_t*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setUInt(src[x], var, index + x);
+            uint64_t* src   = reinterpret_cast<uint64_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(uint64_t);
+            for (x = 0; x < dims[0]; x++) {
+                setUInt(src[x * stride], var, index + x);
+            }
         } else if (PyArray_TYPE(arr) == NPY_UINT32) {
-            uint32_t* src = reinterpret_cast<uint32_t*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setUInt(src[x], var, index + x);
+            uint32_t* src   = reinterpret_cast<uint32_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(uint32_t);
+            for (x = 0; x < dims[0]; x++) {
+                setUInt(src[x * stride], var, index + x);
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setUIntPy",
                                               "Passed nparray is not of type (uint64 or uint32) for %s",
@@ -1003,7 +1013,7 @@ bp::object rim::Block::getUIntPy(rim::Variable* var, int32_t index) {
             PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
             uint32_t* dst      = reinterpret_cast<uint32_t*>(PyArray_DATA(arr));
 
-            for (x = 0; x < var->numValues_; x++) dst[x] = (uint32_t)getUInt(var, x);
+            for (x = 0; x < var->numValues_; x++) dst[x] = static_cast<uint32_t>(getUInt(var, x));
         }
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
@@ -1061,6 +1071,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setIntPy",
@@ -1078,11 +1089,17 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_INT64) {
-            int64_t* src = reinterpret_cast<int64_t*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setInt(src[x], var, index + x);
+            int64_t* src    = reinterpret_cast<int64_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(int64_t);
+            for (x = 0; x < dims[0]; x++) {
+                setInt(src[x * stride], var, index + x);
+            }
         } else if (PyArray_TYPE(arr) == NPY_INT32) {
-            int32_t* src = reinterpret_cast<int32_t*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setInt(src[x], var, index + x);
+            int32_t* src    = reinterpret_cast<int32_t*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(int32_t);
+            for (x = 0; x < dims[0]; x++) {
+                setInt(src[x * stride], var, index + x);
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setIntPy",
                                               "Passed nparray is not of type (int64 or int32) for %s",
@@ -1161,7 +1178,7 @@ bp::object rim::Block::getIntPy(rim::Variable* var, int32_t index) {
             PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
             int32_t* dst       = reinterpret_cast<int32_t*>(PyArray_DATA(arr));
 
-            for (x = 0; x < var->numValues_; x++) dst[x] = (int32_t)getInt(var, x);
+            for (x = 0; x < var->numValues_; x++) dst[x] = static_cast<int32_t>(getInt(var, x));
         }
         boost::python::handle<> handle(obj);
         ret = bp::object(handle);
@@ -1200,7 +1217,9 @@ int64_t rim::Block::getInt(rim::Variable* var, int32_t index) {
     getBytes(reinterpret_cast<uint8_t*>(&tmp), var, index);
 
     if (var->valueBits_ != 64) {
-        if (tmp >= (uint64_t)pow(2, var->valueBits_ - 1)) tmp -= (uint64_t)pow(2, var->valueBits_);
+        if (tmp >= static_cast<uint64_t>(pow(2, var->valueBits_ - 1))) {
+            tmp -= static_cast<uint64_t>(pow(2, var->valueBits_));
+        }
     }
     return tmp;
 }
@@ -1223,6 +1242,7 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setBoolPy",
@@ -1240,8 +1260,11 @@ void rim::Block::setBoolPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_BOOL) {
-            bool* src = reinterpret_cast<bool*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setBool(src[x], var, index + x);
+            bool* src       = reinterpret_cast<bool*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(bool);
+            for (x = 0; x < dims[0]; x++) {
+                setBool(src[x * stride], var, index + x);
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setBoolPy",
                                               "Passed nparray is not of type (bool) for %s",
@@ -1431,6 +1454,7 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setFloatPy",
@@ -1448,8 +1472,11 @@ void rim::Block::setFloatPy(bp::object& value, rim::Variable* var, int32_t index
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_FLOAT32) {
-            float* src = reinterpret_cast<float*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setFloat(src[x], var, index + x);
+            float* src      = reinterpret_cast<float*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(float);
+            for (x = 0; x < dims[0]; x++) {
+                setFloat(src[x * stride], var, index + x);
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
                                               "Passed nparray is not of type (float32) for %s",
@@ -1576,6 +1603,7 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setDoublePy",
@@ -1593,8 +1621,11 @@ void rim::Block::setDoublePy(bp::object& value, rim::Variable* var, int32_t inde
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_FLOAT64) {
-            double* src = reinterpret_cast<double*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setDouble(src[x], var, index + x);
+            double* src     = reinterpret_cast<double*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(double);
+            for (x = 0; x < dims[0]; x++) {
+                setDouble(src[x * stride], var, index + x);
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setFLoatPy",
                                               "Passed nparray is not of type (double) for %s",
@@ -1721,6 +1752,7 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
         PyArrayObject* arr = reinterpret_cast<decltype(arr)>(value.ptr());
         npy_intp ndims     = PyArray_NDIM(arr);
         npy_intp* dims     = PyArray_SHAPE(arr);
+        npy_intp* strides  = PyArray_STRIDES(arr);
 
         if (ndims != 1)
             throw(rogue::GeneralError::create("Block::setFixedPy",
@@ -1738,8 +1770,11 @@ void rim::Block::setFixedPy(bp::object& value, rim::Variable* var, int32_t index
                                               var->name_.c_str()));
 
         if (PyArray_TYPE(arr) == NPY_FLOAT64) {
-            double* src = reinterpret_cast<double*>(PyArray_DATA(arr));
-            for (x = 0; x < dims[0]; x++) setFixed(src[x], var, index + x);
+            double* src     = reinterpret_cast<double*>(PyArray_DATA(arr));
+            npy_intp stride = strides[0] / sizeof(double);
+            for (x = 0; x < dims[0]; x++) {
+                setFixed(src[x * stride], var, index + x);
+            }
         } else {
             throw(rogue::GeneralError::create("Block::setFixedPy",
                                               "Passed nparray is not of type (double) for %s",
@@ -1837,7 +1872,7 @@ void rim::Block::setFixed(const double& val, rim::Variable* var, int32_t index) 
                                           var->maxValue_));
 
     // Convert
-    int64_t fPoint = (int64_t)round(val * pow(2, var->binPoint_));
+    int64_t fPoint = static_cast<int64_t>(round(val * pow(2, var->binPoint_)));
     // Check for positive edge case
     uint64_t mask = 1 << (var->valueBits_ - 1);
     if (val > 0 && ((fPoint & mask) != 0)) {

@@ -19,10 +19,11 @@
 #include "rogue/interfaces/stream/TcpCore.h"
 
 #include <inttypes.h>
-#include <string.h>
 #include <zmq.h>
 
+#include <cstring>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -40,13 +41,13 @@ namespace bp = boost::python;
 #endif
 
 //! Class creation
-ris::TcpCorePtr ris::TcpCore::create(std::string addr, uint16_t port, bool server) {
+ris::TcpCorePtr ris::TcpCore::create(const std::string& addr, uint16_t port, bool server) {
     ris::TcpCorePtr r = std::make_shared<ris::TcpCore>(addr, port, server);
     return (r);
 }
 
 //! Creator
-ris::TcpCore::TcpCore(std::string addr, uint16_t port, bool server) {
+ris::TcpCore::TcpCore(const std::string& addr, uint16_t port, bool server) {
     int32_t opt;
     std::string logstr;
 

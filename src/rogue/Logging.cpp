@@ -20,11 +20,14 @@
 
 #include <inttypes.h>
 #include <stdarg.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
+#include <string>
+#include <vector>
 
 #if defined(__linux__)
     #include <sys/syscall.h>
@@ -54,12 +57,12 @@ std::mutex rogue::Logging::levelMtx_;
 std::vector<rogue::LogFilter*> rogue::Logging::filters_;
 
 // Crate logger
-rogue::LoggingPtr rogue::Logging::create(std::string name, bool quiet) {
+rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
     return log;
 }
 
-rogue::Logging::Logging(std::string name, bool quiet) {
+rogue::Logging::Logging(const std::string& name, bool quiet) {
     std::vector<rogue::LogFilter*>::iterator it;
 
     name_ = "pyrogue." + name;
@@ -86,7 +89,7 @@ void rogue::Logging::setLevel(uint32_t level) {
     levelMtx_.unlock();
 }
 
-void rogue::Logging::setFilter(std::string name, uint32_t level) {
+void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
     levelMtx_.lock();
 
     rogue::LogFilter* flt = new rogue::LogFilter(name, level);
@@ -156,7 +159,7 @@ void rogue::Logging::logThreadId() {
 #elif defined(__APPLE__) && defined(__MACH__)
     uint64_t tid64;
     pthread_threadid_np(NULL, &tid64);
-    tid = (uint32_t)tid64;
+    tid = static_cast<uint32_t>(tid64);
 #else
     tid = 0;
 #endif

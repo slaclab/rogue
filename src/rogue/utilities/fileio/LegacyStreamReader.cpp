@@ -21,11 +21,12 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"
@@ -81,9 +82,9 @@ void ruf::LegacyStreamReader::open(std::string file) {
     intClose();
 
     // Determine if we read a group of files
-    if (file.substr(file.find_last_of(".")) == ".1") {
+    if (file.substr(file.find_last_of('.')) == ".1") {
         fdIdx_    = 1;
-        baseName_ = file.substr(0, file.find_last_of("."));
+        baseName_ = file.substr(0, file.find_last_of('.'));
     } else {
         fdIdx_    = 0;
         baseName_ = file;

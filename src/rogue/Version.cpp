@@ -22,6 +22,7 @@
 #include <inttypes.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <sstream>
 #include <string>
 
@@ -57,7 +58,7 @@ void rogue::Version::init() {
         throw(rogue::GeneralError("Version:init", "Invalid compiled version string"));
 }
 
-void rogue::Version::extract(std::string compare, uint32_t* major, uint32_t* minor, uint32_t* maint) {
+void rogue::Version::extract(const std::string& compare, uint32_t* major, uint32_t* minor, uint32_t* maint) {
     if (sscanf(compare.c_str(), "%" PRIu32 ".%" PRIu32 ".%" PRIu32, major, minor, maint) != 3)
         throw(rogue::GeneralError("Version:extract", "Invalid version string"));
 }
@@ -67,7 +68,7 @@ std::string rogue::Version::current() {
     return ret;
 }
 
-bool rogue::Version::greaterThanEqual(std::string compare) {
+bool rogue::Version::greaterThanEqual(const std::string& compare) {
     uint32_t cmajor, cminor, cmaint;
     init();
     extract(compare, &cmajor, &cminor, &cmaint);
@@ -77,7 +78,7 @@ bool rogue::Version::greaterThanEqual(std::string compare) {
     return (true);
 }
 
-bool rogue::Version::greaterThan(std::string compare) {
+bool rogue::Version::greaterThan(const std::string& compare) {
     uint32_t cmajor, cminor, cmaint;
     init();
     extract(compare, &cmajor, &cminor, &cmaint);
@@ -87,7 +88,7 @@ bool rogue::Version::greaterThan(std::string compare) {
     return (false);
 }
 
-bool rogue::Version::lessThanEqual(std::string compare) {
+bool rogue::Version::lessThanEqual(const std::string& compare) {
     uint32_t cmajor, cminor, cmaint;
     init();
     extract(compare, &cmajor, &cminor, &cmaint);
@@ -97,7 +98,7 @@ bool rogue::Version::lessThanEqual(std::string compare) {
     return (true);
 }
 
-bool rogue::Version::lessThan(std::string compare) {
+bool rogue::Version::lessThan(const std::string& compare) {
     uint32_t cmajor, cminor, cmaint;
     init();
     extract(compare, &cmajor, &cminor, &cmaint);
@@ -107,17 +108,17 @@ bool rogue::Version::lessThan(std::string compare) {
     return (false);
 }
 
-void rogue::Version::minVersion(std::string compare) {
+void rogue::Version::minVersion(const std::string& compare) {
     if (lessThan(compare))
         throw(rogue::GeneralError("Version:minVersion", "Installed rogue is less than minimum version"));
 }
 
-void rogue::Version::maxVersion(std::string compare) {
+void rogue::Version::maxVersion(const std::string& compare) {
     if (greaterThan(compare))
         throw(rogue::GeneralError("Version:maxVersion", "Installed rogue is greater than maximum version"));
 }
 
-void rogue::Version::exactVersion(std::string compare) {
+void rogue::Version::exactVersion(const std::string& compare) {
     if (lessThan(compare) || greaterThan(compare))
         throw(rogue::GeneralError("Version:exactVersion", "Installed rogue is not exact version"));
 }

@@ -20,8 +20,8 @@
 
 #include <inttypes.h>
 #include <stdint.h>
-#include <string.h>
 
+#include <cstring>
 #include <memory>
 #include <thread>
 
