@@ -31,7 +31,7 @@
     #include <boost/python.hpp>
 #endif
 
-#define MAP_TYPE std::map<uint64_t, uint8_t*>
+#define EMULATE_MAP_TYPE std::map<uint64_t, uint8_t*>
 
 namespace rogue {
 namespace interfaces {
@@ -43,7 +43,7 @@ namespace memory {
  */
 class Emulate : public Slave {
     // Map to store 4K address space chunks
-    MAP_TYPE memMap_;
+    EMULATE_MAP_TYPE memMap_;
 
     // Lock
     std::mutex mtx_;
