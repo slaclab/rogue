@@ -16,6 +16,7 @@ import pyrogue
 import pyrogue.pydm.widgets
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
+from pyrogue import RemoteVariable, BaseVariable
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
@@ -50,6 +51,8 @@ class DebugDev(QTreeWidgetItem):
 
         self._top._tree.setItemWidget(self,0,w)
         self.setToolTip(0,self._dev.description)
+
+        self._top._tree.setItemWidget(self, 3, QLabel(f'0x{self._dev.offset:X}', parent=None))
 
         w = PyDMPushButton(
             label='Read',
@@ -221,20 +224,22 @@ class DebugHolder(QTreeWidgetItem):
 
         self.setText(1,self._var.mode)
         self.setText(2,f'{self._var.typeStr}   ') # Pad to look nicer
+        if hasattr(self._var, 'offset') and hasattr(self._var, 'bitOffset'):
+            self.setText(3, f'0x{self._var.offset:X}:{self._var.bitOffset[0]}')
         self.setToolTip(0,self._var.description)
 
         w = makeVariableViewWidget(self)
 
         if self._var.isCommand:
+            self._top._tree.setItemWidget(self,5,w)
+            width = fm.width('0xAAAAAAAA    ')
+            if width > self._top._colWidths[5]:
+                self._top._colWidths[5] = width
+        else:
             self._top._tree.setItemWidget(self,4,w)
             width = fm.width('0xAAAAAAAA    ')
             if width > self._top._colWidths[4]:
                 self._top._colWidths[4] = width
-        else:
-            self._top._tree.setItemWidget(self,3,w)
-            width = fm.width('0xAAAAAAAA    ')
-            if width > self._top._colWidths[3]:
-                self._top._colWidths[3] = width
 
 
 class DebugTree(PyDMFrame):
@@ -248,7 +253,7 @@ class DebugTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [300,50,75,400,75]
+        self._colWidths = [300,50,75,75,400,75]
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -266,11 +271,11 @@ class DebugTree(PyDMFrame):
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 
-        self._tree.setColumnCount(5)
-        self._tree.setHeaderLabels(['Node','Mode','Type','Value', 'Command'])
+        self._tree.setColumnCount(6)
+        self._tree.setHeaderLabels(['Node','Mode','Type', 'Offset:BitOffset','Value', 'Command'])
         header = self._tree.header()
         header.setStretchLastSection(False)
-        header.setSectionResizeMode(3, QHeaderView.Stretch)
+        header.setSectionResizeMode(4, QHeaderView.Stretch)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -297,6 +302,7 @@ class DebugTree(PyDMFrame):
         self.setUpdatesEnabled(False)
         item._expand()
         self._tree.setColumnWidth(0,self._colWidths[0])
+        self._tree.setColumnWidth(3,self._colWidths[3])
         self._tree.resizeColumnToContents(1)
         self._tree.resizeColumnToContents(2)
         self.setUpdatesEnabled(True)
