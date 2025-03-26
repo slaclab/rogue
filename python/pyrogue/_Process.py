@@ -29,6 +29,7 @@ class Process(pr.Device):
         self._argVar = argVariable
         self._retVar = returnVariable
         self._function = function
+        self._lastProgressTime = 0
 
         self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'arg'])
 
@@ -88,14 +89,25 @@ class Process(pr.Device):
         if self._retVar is not None and self._retVar not in self:
             self.add(self._retVar)
 
+    def _checkProgressInterval(self):
+        now = time.time()
+        if now - self._lastProgressTime > 1:
+            self._lastProgressTime = now
+            return True
+        return False
+
     def _incrementSteps(self, incr):
-        with self.Step.lock:
-            self.Step.set(self.Step.value() + incr,write=False)
-        self.Progress.set(self.Step.value()/self.TotalSteps.value(),write=False)
+        write = self._checkProgressInterval()
+        with self.root.updateGroup():
+            with self.Step.lock:
+                self.Step.set(self.Step.value() + incr, write=write)
+            self.Progress.set(self.Step.value()/self.TotalSteps.value(), write=write)
 
     def _setSteps(self, value):
-        self.Step.set(value,write=False)
-        self.Progress.set(self.Step.value()/self.TotalSteps.value(),write=False)
+        write = self._checkProgressInterval()
+        with self.root.updateGroup():
+            self.Step.set(value, write=write)
+            self.Progress.set(self.Step.value()/self.TotalSteps.value(), write=write)
 
     def _startProcess(self):
         """ """
