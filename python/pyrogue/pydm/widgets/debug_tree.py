@@ -21,10 +21,26 @@ from pyrogue import RemoteVariable, BaseVariable
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 
-from qtpy.QtCore import Property, Slot, QEvent
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
-from qtpy.QtGui import QFontMetrics
+from qtpy.QtCore import Property, Slot, QEvent, Qt, QPoint
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView, QMenu
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel, QAction
+from qtpy.QtGui import QFontMetrics, QClipboard, QGuiApplication
+
+class Col:
+    """
+    Column indices
+    """
+    Node    = 0
+    Mode    = 1
+    Type    = 2
+    Offset  = 3
+    Value   = 4
+    Command = 5
+
+    NumCols = 6
+    ColumnNames =  ['Node', 'Mode', 'Type', 'Offset:BitOffset', 'Value', 'Command']
+    ColumnWidths = [ 300,    50,     75,     75,                 400,     75]       # Default column widths
+
 
 
 class DebugDev(QTreeWidgetItem):
@@ -49,17 +65,17 @@ class DebugDev(QTreeWidgetItem):
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = False
 
-        self._top._tree.setItemWidget(self,0,w)
-        self.setToolTip(0,self._dev.description)
+        self._top._tree.setItemWidget(self, Col.Node, w)
+        self.setToolTip(Col.Node, self._dev.description)
 
-        self._top._tree.setItemWidget(self, 3, QLabel(f'0x{self._dev.offset:X}', parent=None))
+        self._top._tree.setItemWidget(self, Col.Offset, QLabel(f'0x{self._dev.offset:X}', parent=None))
 
         w = PyDMPushButton(
             label='Read',
             pressValue=True,
             init_channel=self._path + '.ReadDevice')
 
-        self._top._tree.setItemWidget(self, 4, w)
+        self._top._tree.setItemWidget(self, Col.Value, w)
 
 
         if self._top._node == dev:
@@ -130,7 +146,7 @@ class DebugGroup(QTreeWidgetItem):
 
         self._lab = QLabel(parent=None, text=self._name)
 
-        self._top._tree.setItemWidget(self,0,self._lab)
+        self._top._tree.setItemWidget(self, Col.Node, self._lab)
         self._dummy = QTreeWidgetItem(self) # One dummy item to add expand control
         self.setExpanded(False)
 
@@ -219,27 +235,27 @@ class DebugHolder(QTreeWidgetItem):
         if rightEdge > self._top._colWidths[0]:
             self._top._colWidths[0] = rightEdge
 
-        self._top._tree.setItemWidget(self,0,w)
-        self.setToolTip(0,self._var.description)
+        self._top._tree.setItemWidget(self, Col.Node, w)
+        self.setToolTip(Col.Node, self._var.description)
 
-        self.setText(1,self._var.mode)
-        self.setText(2,f'{self._var.typeStr}   ') # Pad to look nicer
+        self.setText(Col.Mode, self._var.mode)
+        self.setText(Col.Type, f'{self._var.typeStr}   ') # Pad to look nicer
         if hasattr(self._var, 'offset') and hasattr(self._var, 'bitOffset'):
-            self.setText(3, f'0x{self._var.offset:X}:{self._var.bitOffset[0]}')
-        self.setToolTip(0,self._var.description)
+            self.setText(Col.Offset, f'0x{self._var.offset:X}:{self._var.bitOffset[0]}')
+        self.setToolTip(Col.Node,self._var.description)
 
         w = makeVariableViewWidget(self)
 
         if self._var.isCommand:
-            self._top._tree.setItemWidget(self,5,w)
+            self._top._tree.setItemWidget(self, Col.Command,w)
             width = fm.width('0xAAAAAAAA    ')
-            if width > self._top._colWidths[5]:
-                self._top._colWidths[5] = width
+            if width > self._top._colWidths[Col.Command]:
+                self._top._colWidths[Col.Command] = width
         else:
-            self._top._tree.setItemWidget(self,4,w)
+            self._top._tree.setItemWidget(self,Col.Value,w)
             width = fm.width('0xAAAAAAAA    ')
-            if width > self._top._colWidths[4]:
-                self._top._colWidths[4] = width
+            if width > self._top._colWidths[Col.Value]:
+                self._top._colWidths[Col.Value] = width
 
 
 class DebugTree(PyDMFrame):
@@ -253,7 +269,7 @@ class DebugTree(PyDMFrame):
         self._excGroups = excGroups
         self._tree      = None
 
-        self._colWidths = [300,50,75,75,400,75]
+        self._colWidths = Col.ColumnWidths.copy()
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
@@ -271,11 +287,14 @@ class DebugTree(PyDMFrame):
         self._tree = QTreeWidget()
         vb.addWidget(self._tree)
 
-        self._tree.setColumnCount(6)
-        self._tree.setHeaderLabels(['Node','Mode','Type', 'Offset:BitOffset','Value', 'Command'])
+        self._tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self._tree.customContextMenuRequested.connect(self._openContextMenu)
+
+        self._tree.setColumnCount(Col.NumCols)
+        self._tree.setHeaderLabels(Col.ColumnNames)
         header = self._tree.header()
         header.setStretchLastSection(False)
-        header.setSectionResizeMode(4, QHeaderView.Stretch)
+        header.setSectionResizeMode(Col.Value, QHeaderView.Stretch)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
@@ -296,15 +315,65 @@ class DebugTree(PyDMFrame):
         DebugDev(path = self._path, top=self, parent=self._tree, dev=self._node, noExpand=False)
         self.setUpdatesEnabled(True)
 
+    def _copyPath(self, checked, point):
+        item = self._tree.itemAt(point)
+        if item is not None and hasattr(item, '_path'):
+            QGuiApplication.clipboard().setText(item._path)
+
+    def _copyColumnText(self, checked, point: QPoint):
+        item = self._tree.itemAt(point)
+        if item is not None:
+            QGuiApplication.clipboard().setText(
+                item.text(self._tree.columnAt(point.x()))
+            )
+
+    def _hideColumn(self, checked, point: QPoint):
+        col = self._tree.columnAt(point.x())
+        self._tree.setColumnHidden(self._tree.columnAt(point.x()), True)
+
+    def _toggleColumn(self, checked, col: int):
+        self._tree.setColumnHidden(col, not checked)
+
+    def _showAllCols(self, checked):
+        for i in range(Col.NumCols):
+            self._tree.setColumnHidden(i, False)
+
+    def _openContextMenu(self, point):
+        # Generate base context menu from PyDM. We can't override generate_context_menu because
+        # it doesn't give us the point where the mouse right clicked, which we need to implement the 'copy' actions
+        menu = super(DebugTree, self).generate_context_menu()
+        menu.addSeparator()
+        menu.addAction('&Copy').triggered.connect(
+            lambda c : self._copyColumnText(c, point)
+        )
+        menu.addAction('Copy Path').triggered.connect(
+            lambda c : self._copyPath(c, point)
+        )
+        menu.addSeparator()
+        menu.addAction('&Hide Column').triggered.connect(
+            lambda c : self._hideColumn(c, point)
+        )
+        menu.addAction('Show All Columns').triggered.connect(self._showAllCols)
+
+        menu.addSection('Columns')
+        for i in range(Col.NumCols):
+            a = menu.addAction(Col.ColumnNames[i])
+            a.setCheckable(True)
+            a.setChecked(not self._tree.isColumnHidden(i))
+            a.triggered.connect(
+                lambda c, i=i: self._toggleColumn(c, int(i))
+            )
+
+        menu.exec_(self._tree.viewport().mapToGlobal(point))
 
     @Slot(QTreeWidgetItem)
     def _expandCb(self,item):
         self.setUpdatesEnabled(False)
         item._expand()
-        self._tree.setColumnWidth(0,self._colWidths[0])
-        self._tree.setColumnWidth(3,self._colWidths[3])
-        self._tree.resizeColumnToContents(1)
-        self._tree.resizeColumnToContents(2)
+        self._tree.setColumnWidth(Col.Node, self._colWidths[Col.Node])
+        self._tree.setColumnWidth(Col.Offset, self._colWidths[Col.Offset])
+        self._tree.resizeColumnToContents(Col.Mode)
+        self._tree.resizeColumnToContents(Col.Type)
         self.setUpdatesEnabled(True)
 
     @Property(str)
