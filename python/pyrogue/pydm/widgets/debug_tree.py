@@ -38,8 +38,8 @@ class Col:
     Command = 5
 
     NumCols = 6
-    ColumnNames =  ['Node', 'Mode', 'Type', 'Offset:BitOffset', 'Value', 'Command']
-    ColumnWidths = [ 300,    50,     75,     75,                 400,     75]       # Default column widths
+    ColumnNames =  ['Node', 'Mode', 'Type', 'ByteOffset [BitRange]', 'Value', 'Command']
+    ColumnWidths = [ 300,    50,     75,     100,                400,     75]       # Default column widths
 
 
 
@@ -75,7 +75,7 @@ class DebugDev(QTreeWidgetItem):
             pressValue=True,
             init_channel=self._path + '.ReadDevice')
 
-        self._top._tree.setItemWidget(self, Col.Value, w)
+        self._top._tree.setItemWidget(self, Col.Command, w)
 
 
         if self._top._node == dev:
@@ -240,8 +240,9 @@ class DebugHolder(QTreeWidgetItem):
 
         self.setText(Col.Mode, self._var.mode)
         self.setText(Col.Type, f'{self._var.typeStr}   ') # Pad to look nicer
-        if hasattr(self._var, 'offset') and hasattr(self._var, 'bitOffset'):
-            self.setText(Col.Offset, f'0x{self._var.offset:X}:{self._var.bitOffset[0]}')
+        if hasattr(self._var, 'offset') and hasattr(self._var, 'bitOffset') and hasattr(self._var, 'bitSize'):
+            bo = self._var.bitOffset[0]
+            self.setText(Col.Offset, f'0x{self._var.offset:X} [{bo+self._var.bitSize[0]-1}:{bo}]')
         self.setToolTip(Col.Node,self._var.description)
 
         w = makeVariableViewWidget(self)
@@ -295,6 +296,8 @@ class DebugTree(PyDMFrame):
         header = self._tree.header()
         header.setStretchLastSection(False)
         header.setSectionResizeMode(Col.Value, QHeaderView.Stretch)
+
+        self._tree.setColumnHidden(Col.Offset, True)
 
         self._tree.itemExpanded.connect(self._expandCb)
 
