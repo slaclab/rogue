@@ -170,17 +170,6 @@ def makeVariableViewWidget(parent):
         w.alarmSensitiveBorder  = True
         w.installEventFilter(parent._top)
 
-    elif parent._var.minimum is not None and parent._var.maximum is not None and parent._var.disp == '{}' and (parent._var.mode != 'RO' or parent._var.isCommand):
-        w = PyDMSpinbox(parent=None, init_channel=parent._path)
-        w.precision             = 0
-        w.showUnits             = False
-        w.precisionFromPV       = False
-        w.alarmSensitiveContent = False
-        w.alarmSensitiveBorder  = True
-        w.showStepExponent      = False
-        w.writeOnPress          = True
-        w.installEventFilter(parent._top)
-
     else:
         w = PyRogueLineEdit(parent=None, init_channel=parent._path + '/disp')
 
