@@ -1,5 +1,7 @@
-
 # Rogue
+
+[DOE Code](https://www.osti.gov/doecode/biblio/8153)
+
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
 *Current documentation can be found at:*

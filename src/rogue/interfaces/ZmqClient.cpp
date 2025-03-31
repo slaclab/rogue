@@ -35,7 +35,7 @@
 namespace bp = boost::python;
 #endif
 
-rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(std::string addr, uint16_t port, bool doString) {
+rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(const std::string& addr, uint16_t port, bool doString) {
     rogue::interfaces::ZmqClientPtr ret = std::make_shared<rogue::interfaces::ZmqClient>(addr, port, doString);
     return (ret);
 }
@@ -58,7 +58,7 @@ void rogue::interfaces::ZmqClient::setup_python() {
 #endif
 }
 
-rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool doString) {
+rogue::interfaces::ZmqClient::ZmqClient(const std::string& addr, uint16_t port, bool doString) {
     std::string temp;
     uint32_t val;
     uint32_t reqPort;
@@ -166,7 +166,7 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
         throw(rogue::GeneralError("ZmqClient::setTimeout", "Failed to set socket timeout"));
 }
 
-std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::string attr, std::string arg) {
+std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, const std::string& attr, const std::string& arg) {
     std::string snd;
     std::string ret;
     zmq_msg_t msg;
@@ -209,19 +209,19 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
     return data;
 }
 
-std::string rogue::interfaces::ZmqClient::getDisp(std::string path) {
+std::string rogue::interfaces::ZmqClient::getDisp(const std::string& path) {
     return sendString(path, "getDisp", "");
 }
 
-void rogue::interfaces::ZmqClient::setDisp(std::string path, std::string value) {
+void rogue::interfaces::ZmqClient::setDisp(const std::string& path, const std::string& value) {
     sendString(path, "setDisp", value);
 }
 
-std::string rogue::interfaces::ZmqClient::exec(std::string path, std::string arg) {
+std::string rogue::interfaces::ZmqClient::exec(const std::string& path, const std::string& arg) {
     return sendString(path, "__call__", arg);
 }
 
-std::string rogue::interfaces::ZmqClient::valueDisp(std::string path) {
+std::string rogue::interfaces::ZmqClient::valueDisp(const std::string& path) {
     return sendString(path, "valueDisp", "");
 }
 
@@ -282,7 +282,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
 void rogue::interfaces::ZmqClient::doUpdate(bp::object data) {}
 
-rogue::interfaces::ZmqClientWrap::ZmqClientWrap(std::string addr, uint16_t port, bool doString)
+rogue::interfaces::ZmqClientWrap::ZmqClientWrap(const std::string& addr, uint16_t port, bool doString)
     : rogue::interfaces::ZmqClient(addr, port, doString) {}
 
 void rogue::interfaces::ZmqClientWrap::doUpdate(bp::object data) {

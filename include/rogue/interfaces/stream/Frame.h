@@ -28,6 +28,8 @@
 #include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
+    #include <numpy/ndarrayobject.h>
+
     #include <boost/python.hpp>
 #endif
 
@@ -335,6 +337,22 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     void readPy(boost::python::object p, uint32_t offset);
 
+    //! Python Frame data read function
+    /** Read data from Frame into a python bytearray which is allocated and returned
+     *
+     * Exposed as getBa() to Python
+     * @param offset First location of Frame data to copy to byte array
+     * @param count Number of bytes to read
+     */
+    boost::python::object getBytearrayPy(uint32_t offset, uint32_t count);
+
+    //! Python Frame data read function
+    /** Read data from Frame into a python bytearray which is allocated and returned as a memoryview
+     *
+     * Exposed as getMemoryview() to Python
+     */
+    boost::python::object getMemoryviewPy();
+
     //! Python Frame data write function
     /** Write data into from Frame from passed Python byte array.
      *
@@ -351,10 +369,10 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      *  @return The read data as a 1-D numpy byte array
      *
      *  @param[in] offset The byte offset into the frame to write to
-     *  @param[in]   size The number of bytes to write
+     *  @param[in]  count The number of bytes to write
      *
      */
-    boost::python::object getNumpy(uint32_t offset, uint32_t size);
+    boost::python::object getNumpy(uint32_t offset, uint32_t count, boost::python::object dtype);
 
     //! Python Frame data write using a numpy array as the source
     /*

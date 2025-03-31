@@ -18,8 +18,12 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 
 .. code::
 
-   ROGUE_VERSION = "6.4.0"
-   ROGUE_MD5SUM  = "acbd2b178af84776efbd78cdf3f5db7d"
+   #
+   # This file is the rogue recipe and tested on Petalinux 2024.2
+   #
+
+   ROGUE_VERSION = "6.5.0"
+   ROGUE_MD5SUM  = "bfa8b7ef6ee883c5a9381b377b67c7a3"
 
    SUMMARY = "Recipe to build Rogue"
    HOMEPAGE ="https://github.com/slaclab/rogue"
@@ -67,17 +71,19 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
    FILES:${PN}-dev += "/usr/include/rogue/*"
    FILES:${PN} += "/usr/lib/*"
 
-   do_configure:prepend() {
+   do_configure() {
+      setup_target_config
       cmake_do_configure
+      cmake --build ${B}
       bbplain $(cp -vH ${WORKDIR}/build/setup.py ${S}/.)
       bbplain $(sed -i "s/..\/python/python/" ${S}/setup.py)
+      setuptools3_do_configure
    }
 
-   do_install:prepend() {
+   do_install() {
+      setup_target_config
       cmake_do_install
-   }
-
-   do_install:append() {
+      setuptools3_do_install
       # Ensure the target directory exists
       install -d ${D}${PYTHON_SITEPACKAGES_DIR}
       # Install the rogue.so file into the Python site-packages directory

@@ -48,7 +48,7 @@ def addLibraryPath(path):
     else:
         base = os.path.dirname(sys.argv[0])
 
-    # If script was not started with ./	    # If script was not started with ./
+    # If script was not started with ./       # If script was not started with ./
     if base == '':
         base = '.'
 

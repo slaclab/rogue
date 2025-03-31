@@ -34,7 +34,7 @@
 namespace bp = boost::python;
 #endif
 
-rogue::interfaces::ZmqServerPtr rogue::interfaces::ZmqServer::create(std::string addr, uint16_t port) {
+rogue::interfaces::ZmqServerPtr rogue::interfaces::ZmqServer::create(const std::string& addr, uint16_t port) {
     rogue::interfaces::ZmqServerPtr ret = std::make_shared<rogue::interfaces::ZmqServer>(addr, port);
     return (ret);
 }
@@ -55,7 +55,7 @@ void rogue::interfaces::ZmqServer::setup_python() {
 #endif
 }
 
-rogue::interfaces::ZmqServer::ZmqServer(std::string addr, uint16_t port) {
+rogue::interfaces::ZmqServer::ZmqServer(const std::string& addr, uint16_t port) {
     log_ = rogue::Logging::create("ZmqServer");
 
     this->addr_     = addr;
@@ -208,7 +208,7 @@ uint16_t rogue::interfaces::ZmqServer::port() {
     return this->basePort_;
 }
 
-std::string rogue::interfaces::ZmqServer::doString(std::string data) {
+std::string rogue::interfaces::ZmqServer::doString(const std::string& data) {
     return "";
 }
 
@@ -254,7 +254,7 @@ bp::object rogue::interfaces::ZmqServerWrap::defDoRequest(bp::object data) {
     return (rogue::interfaces::ZmqServer::doRequest(data));
 }
 
-std::string rogue::interfaces::ZmqServerWrap::doString(std::string data) {
+std::string rogue::interfaces::ZmqServerWrap::doString(const std::string& data) {
     {
         rogue::ScopedGil gil;
         if (bp::override f = this->get_override("_doString")) {
@@ -268,7 +268,7 @@ std::string rogue::interfaces::ZmqServerWrap::doString(std::string data) {
     return (rogue::interfaces::ZmqServer::doString(data));
 }
 
-std::string rogue::interfaces::ZmqServerWrap::defDoString(std::string data) {
+std::string rogue::interfaces::ZmqServerWrap::defDoString(const std::string& data) {
     return (rogue::interfaces::ZmqServer::doString(data));
 }
 
