@@ -14,10 +14,10 @@ This section describes how to obtain and install Rogue.
 
    anaconda
    anaconda_build
+   miniforge
    docker
    build
    application
    firewall
    windows
    petalinux
-
