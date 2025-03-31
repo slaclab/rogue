@@ -28,16 +28,14 @@ class UdpRssiPack(pr.Device):
             enSsi   = True,
             server  = False,
             pollInterval = 1,
-            #########################################################
-            # RSSI Local configuration before starting the connection
-            #########################################################
-            locMaxBuffers = 32,  # MAX_NUM_OUTS_SEG_G in FW
-            locCumAckTout = 5,   # ACK_TOUT_G in FW, 5mS
-            locRetranTout = 20,  # RETRANS_TOUT_G in FW, 2hmS
-            locNullTout   = 1000,# NULL_TOUT_G in FW, 1S
-            locMaxRetran  = 15,  # MAX_RETRANS_CNT_G in FW
-            locMaxCumAck  = 2,   # MAX_CUM_ACK_CNT_G in FW
-            #########################################################
+            defaults = {
+                'locMaxBuffers': 32, # MAX_NUM_OUTS_SEG_G in FW
+                'locCumAckTout': 5,  # ACK_TOUT_G in FW, 5mS
+                'locRetranTout': 20, # RETRANS_TOUT_G in FW, 2hmS
+                'locNullTout': 1000, # NULL_TOUT_G in FW, 1S
+                'locMaxRetran': 15,  # MAX_RETRANS_CNT_G in FW
+                'locMaxCumAck': 2,   # MAX_CUM_ACK_CNT_G in FW
+            },
             **kwargs):
         super(self.__class__, self).__init__(**kwargs)
 
@@ -68,12 +66,12 @@ class UdpRssiPack(pr.Device):
         self._rssi.application() == self._pack.transport()
 
         # RSSI Local configuration before starting the connection
-        self._rssi.setLocMaxBuffers(locMaxBuffers)
-        self._rssi.setLocCumAckTout(locCumAckTout)
-        self._rssi.setLocRetranTout(locRetranTout)
-        self._rssi.setLocNullTout(locNullTout)
-        self._rssi.setLocMaxRetran(locMaxRetran)
-        self._rssi.setLocMaxCumAck(locMaxCumAck)
+        self._rssi.setLocMaxBuffers(defaults['locMaxBuffers'])
+        self._rssi.setLocCumAckTout(defaults['locCumAckTout'])
+        self._rssi.setLocRetranTout(defaults['locRetranTout'])
+        self._rssi.setLocNullTout(defaults['locNullTout'])
+        self._rssi.setLocMaxRetran(defaults['locMaxRetran'])
+        self._rssi.setLocMaxCumAck(defaults['locMaxCumAck'])
 
         # Start the RSSI connection
         self._rssi._start()
