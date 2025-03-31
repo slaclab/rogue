@@ -41,7 +41,7 @@ class UdpRssiPack(pr.Device):
             **kwargs):
         super(self.__class__, self).__init__(**kwargs)
 
-        # Check a copy of the host/port values
+        # Local copy host/port arg values
         self._host = host
         self._port = port
 
@@ -78,6 +78,7 @@ class UdpRssiPack(pr.Device):
         # Start the RSSI connection
         self._rssi._start()
 
+        # Check if waiting on connection and runing as a client
         if wait and not server:
             curr = int(time.time())
             last = curr
