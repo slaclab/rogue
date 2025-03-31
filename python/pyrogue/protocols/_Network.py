@@ -21,26 +21,61 @@ import time
 
 class UdpRssiPack(pr.Device):
 
-    def __init__(self,*, port, host='127.0.0.1', jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, server=False, **kwargs):
+    def __init__(self,*, port, host='127.0.0.1',
+            jumbo   = False,
+            wait    = True,
+            packVer = 1,
+            enSsi   = True,
+            server  = False,
+            pollInterval = 1,
+            #########################################################
+            # RSSI Local configuration before starting the connection
+            #########################################################
+            locMaxBuffers = 32,  # MAX_NUM_OUTS_SEG_G in FW
+            locCumAckTout = 5,   # ACK_TOUT_G in FW, 5mS
+            locRetranTout = 20,  # RETRANS_TOUT_G in FW, 2hmS
+            locNullTout   = 1000,# NULL_TOUT_G in FW, 1S
+            locMaxRetran  = 15,  # MAX_RETRANS_CNT_G in FW
+            locMaxCumAck  = 2,   # MAX_CUM_ACK_CNT_G in FW
+            #########################################################
+            **kwargs):
         super(self.__class__, self).__init__(**kwargs)
+
+        # Check a copy of the host/port values
         self._host = host
         self._port = port
 
+        # Check if running as server
         if server:
             self._udp  = rogue.protocols.udp.Server(port,jumbo)
             self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload()-8)
+
+        # Else running as client
         else:
             self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
             self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload()-8)
 
+        # Check if Packeterizer Version 2: https://confluence.slac.stanford.edu/x/3nh4DQ
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True,enSsi) # ibCRC = False, obCRC = True
+
+        # Else using Packeterizer Version 1: https://confluence.slac.stanford.edu/x/1oyfD
         else:
             self._pack = rogue.protocols.packetizer.Core(enSsi)
 
+        # Connect the streams together
         self._udp == self._rssi.transport()
         self._rssi.application() == self._pack.transport()
 
+        # RSSI Local configuration before starting the connection
+        self._rssi.setLocMaxBuffers(locMaxBuffers)
+        self._rssi.setLocCumAckTout(locCumAckTout)
+        self._rssi.setLocRetranTout(locRetranTout)
+        self._rssi.setLocNullTout(locNullTout)
+        self._rssi.setLocMaxRetran(locMaxRetran)
+        self._rssi.setLocMaxCumAck(locMaxCumAck)
+
+        # Start the RSSI connection
         self._rssi._start()
 
         if wait and not server:
