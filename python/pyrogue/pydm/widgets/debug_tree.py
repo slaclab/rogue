@@ -16,15 +16,14 @@ import pyrogue
 import pyrogue.pydm.widgets
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
-from pyrogue import RemoteVariable, BaseVariable
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
 
 from qtpy.QtCore import Property, Slot, QEvent, Qt, QPoint
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView, QMenu
-from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel, QAction
-from qtpy.QtGui import QFontMetrics, QClipboard, QGuiApplication
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView
+from qtpy.QtWidgets import QTreeWidgetItem, QTreeWidget, QLabel
+from qtpy.QtGui import QFontMetrics, QGuiApplication
 
 class Col:
     """
@@ -331,7 +330,6 @@ class DebugTree(PyDMFrame):
             )
 
     def _hideColumn(self, checked, point: QPoint):
-        col = self._tree.columnAt(point.x())
         self._tree.setColumnHidden(self._tree.columnAt(point.x()), True)
 
     def _toggleColumn(self, checked, col: int):
