@@ -504,8 +504,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     setBits(verifyMask_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
                 }
 
-                // update verify allow
-                if ((*vit)->mode_ == "RO" || (*vit)->mode_ == "WO" || ! (*vit)->verifyEn_) {
+                // update verify block
+                if ((*vit)->mode_ == "RO" || (*vit)->mode_ == "WO" || !(*vit)->verifyEn_) {
                     setBits(verifyBlock_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
                 }
 
@@ -549,8 +549,8 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     setBits(verifyMask_, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
                 }
 
-                // update verify allow
-                if ((*vit)->mode_ == "RO" || (*vit)->mode_ == "WO" || ! (*vit)->verifyEn_) {
+                // update verify block
+                if ((*vit)->mode_ == "RO" || (*vit)->mode_ == "WO" || !(*vit)->verifyEn_) {
                     setBits(verifyBlock_, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
                 }
 
