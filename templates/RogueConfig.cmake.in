@@ -47,7 +47,7 @@ if ( NOT NO_PYTHON )
    set(Boost_USE_MULTITHREADED ON)
    set(Boost_NO_BOOST_CMAKE ON)
 
-   # Hint for boost on anaconda
+   # Hint for boost on miniforge
    if (DEFINED ENV{CONDA_PREFIX})
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
    endif()

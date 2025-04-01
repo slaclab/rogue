@@ -1,16 +1,16 @@
 .. _installing_firewall:
 
 ####################################
-Rogue and Anaconda behind a firewall
+Rogue and Miniforge behind a firewall
 ####################################
 
-To install rogue and anaconda behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:
+To install rogue and miniforge behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:
 
 .. code::
 
    $ mitmproxy --list-host=gateway.machine.com --list-port=8080
 
-You will execute a number of steps to enable proxy for wget, git and anaconda
+You will execute a number of steps to enable proxy for wget, git and miniforge
 
 .. code::
 
