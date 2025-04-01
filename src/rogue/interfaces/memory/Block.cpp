@@ -108,6 +108,9 @@ rim::Block::Block(uint64_t offset, uint32_t size) {
 
     verifyMask_ = reinterpret_cast<uint8_t*>(malloc(size_));
     memset(verifyMask_, 0, size_);
+
+    verifyBlock_ = reinterpret_cast<uint8_t*>(malloc(size_));
+    memset(verifyBlock_, 0, size_);
 }
 
 // Destroy the Hub
@@ -118,6 +121,7 @@ rim::Block::~Block() {
     free(blockData_);
     free(verifyData_);
     free(verifyMask_);
+    free(verifyBlock_);
 }
 
 // Return the path of the block
@@ -500,6 +504,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     setBits(verifyMask_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
                 }
 
+                // update verify allow
+                if ((*vit)->mode_ == "RO" || (*vit)->mode_ == "WO" || ! (*vit)->verifyEn_) {
+                    setBits(verifyBlock_, (*vit)->bitOffset_[x], (*vit)->bitSize_[x]);
+                }
+
                 bLog_->debug(
                     "Adding variable %s to block %s at offset 0x%.8x, bitIdx=%i, bitOffset %i, bitSize %i, mode %s, "
                     "verifyEn "
@@ -540,6 +549,11 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                     setBits(verifyMask_, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
                 }
 
+                // update verify allow
+                if ((*vit)->mode_ == "RO" || (*vit)->mode_ == "WO" || ! (*vit)->verifyEn_) {
+                    setBits(verifyBlock_, x * (*vit)->valueStride_ + (*vit)->bitOffset_[0], (*vit)->valueBits_);
+                }
+
                 bLog_->debug(
                     "Adding variable %s to block %s at offset 0x%.8x, index=%i, valueOffset=%i, valueBits %i, mode %s, "
                     "verifyEn %d",
@@ -562,6 +576,9 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                                               "Variable bit mask overlap detected for block %s with address 0x%.8x",
                                               path_.c_str(),
                                               address()));
+
+        // Update very mask using verify block
+        varifyMask_[x] &= (verifyBlock_[x] ^ 0xFF);
     }
 
     // Execute custom init
