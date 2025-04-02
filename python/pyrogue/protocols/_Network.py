@@ -38,6 +38,7 @@ class UdpRssiPack(pr.Device):
         self._port = port
         self._wait = wait
         self._server = server
+        self._jumbo = jumbo
 
         # Check if running as server
         if server:
@@ -303,7 +304,7 @@ class UdpRssiPack(pr.Device):
                 if last != curr:
                     last = curr
 
-                    if jumbo:
+                    if self._jumbo:
                         cnt += 1
 
                     if cnt < 10:
