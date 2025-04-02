@@ -1,4 +1,4 @@
-FROM continuumio/anaconda3
+FROM continuumio/miniforge3
 
 RUN apt-get update && \
     apt-get install -y \

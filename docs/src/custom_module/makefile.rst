@@ -7,7 +7,7 @@ Building The Custom Module
 The following is an example custom CMakeLists.txt which will setup the environment
 for building a custom Rogue module using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
-location if not using an Anaconda environment, Docker or System install.
+location if not using an Miniforge environment, Docker or System install.
 
 Replace MyModule with your module name globally in this file. 
 
