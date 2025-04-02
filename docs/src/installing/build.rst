@@ -4,7 +4,7 @@
 Building Rogue From Source
 ==========================
 
-The following instructions demonstrate how to build rogue outside of the anaconda environment. These
+The following instructions demonstrate how to build rogue outside of the miniforge environment. These
 instructions are only relevant for the Linux operating systems. See
 :ref:`installing_docker` for Windows and MacOS.
 
