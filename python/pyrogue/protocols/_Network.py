@@ -23,24 +23,48 @@ class UdpRssiPack(pr.Device):
 
     def __init__(self,*, port, host='127.0.0.1', jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, server=False, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
+
+        # Local copy host/port arg values
         self._host = host
         self._port = port
 
+        # Check if running as server
         if server:
             self._udp  = rogue.protocols.udp.Server(port,jumbo)
             self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload()-8)
+
+        # Else running as client
         else:
             self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
             self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload()-8)
 
+        # Check if Packeterizer Version 2: https://confluence.slac.stanford.edu/x/3nh4DQ
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True,enSsi) # ibCRC = False, obCRC = True
+
+        # Else using Packeterizer Version 1: https://confluence.slac.stanford.edu/x/1oyfD
         else:
             self._pack = rogue.protocols.packetizer.Core(enSsi)
 
+        # Connect the streams together
         self._udp == self._rssi.transport()
         self._rssi.application() == self._pack.transport()
 
+        # Set any user override of defaults
+        defaults = kwargs.get('defaults', {})
+        param_setters = {
+            'locMaxBuffers' : self._rssi.setLocMaxBuffers,
+            'locCumAckTout' : self._rssi.setLocCumAckTout,
+            'locRetranTout' : self._rssi.setLocRetranTout,
+            'locNullTout'   : self._rssi.setLocNullTout,
+            'locMaxRetran'  : self._rssi.setLocMaxRetran,
+            'locMaxCumAck'  : self._rssi.setLocMaxCumAck,
+        }
+        for key, setter in param_setters.items():
+            if key in defaults:
+                setter(defaults[key])
+
+        # Start the RSSI connection
         self._rssi._start()
 
         if wait and not server:
