@@ -21,27 +21,23 @@ import time
 
 class UdpRssiPack(pr.Device):
 
-    def __init__(self,*, port, host='127.0.0.1',
-            jumbo   = False,
-            wait    = True,
-            packVer = 1,
-            enSsi   = True,
-            server  = False,
-            pollInterval = 1,
-            defaults = {
-                'locMaxBuffers': 32, # MAX_NUM_OUTS_SEG_G in FW
-                'locCumAckTout': 5,  # ACK_TOUT_G in FW, 5mS
-                'locRetranTout': 20, # RETRANS_TOUT_G in FW, 2hmS
-                'locNullTout': 1000, # NULL_TOUT_G in FW, 1S
-                'locMaxRetran': 15,  # MAX_RETRANS_CNT_G in FW
-                'locMaxCumAck': 2,   # MAX_CUM_ACK_CNT_G in FW
-            },
-            **kwargs):
-        super(self.__class__, self).__init__(**kwargs)
+    def __init__(self,*,
+                 port,
+                 host='127.0.0.1',
+                 jumbo   = False,
+                 wait    = True,
+                 packVer = 1,
+                 enSsi   = True,
+                 server  = False,
+                 pollInterval = 1,
+                 **kwargs):
+        super(self.__class__, self).__init__(defaults=defaults, **kwargs)
 
         # Local copy host/port arg values
         self._host = host
         self._port = port
+        self._wait = wait
+        self._server = server
 
         # Check if running as server
         if server:
@@ -65,40 +61,6 @@ class UdpRssiPack(pr.Device):
         self._udp == self._rssi.transport()
         self._rssi.application() == self._pack.transport()
 
-        # RSSI Local configuration before starting the connection
-        self._rssi.setLocMaxBuffers(defaults['locMaxBuffers'])
-        self._rssi.setLocCumAckTout(defaults['locCumAckTout'])
-        self._rssi.setLocRetranTout(defaults['locRetranTout'])
-        self._rssi.setLocNullTout(defaults['locNullTout'])
-        self._rssi.setLocMaxRetran(defaults['locMaxRetran'])
-        self._rssi.setLocMaxCumAck(defaults['locMaxCumAck'])
-
-        # Start the RSSI connection
-        self._rssi._start()
-
-        # Check if waiting on connection and runing as a client
-        if wait and not server:
-            curr = int(time.time())
-            last = curr
-            cnt = 0
-
-            while not self._rssi.getOpen():
-                time.sleep(.0001)
-                curr = int(time.time())
-                if last != curr:
-                    last = curr
-
-                    if jumbo:
-                        cnt += 1
-
-                    if cnt < 10:
-                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
-
-                    else:
-                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
-
-
-        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
 
         # Add variables
         self.add(pr.LocalVariable(
@@ -322,6 +284,39 @@ class UdpRssiPack(pr.Device):
 
     def countReset(self):
         self._rssi.resetCounters()
+
+    def _start(self):
+        super()._start()        
+
+        # Start the RSSI connection
+        self._rssi._start()
+
+        # Check if waiting on connection and runing as a client
+        if self._wait and not self._server:
+            curr = int(time.time())
+            last = curr
+            cnt = 0
+
+            while not self._rssi.getOpen():
+                time.sleep(.0001)
+                curr = int(time.time())
+                if last != curr:
+                    last = curr
+
+                    if jumbo:
+                        cnt += 1
+
+                    if cnt < 10:
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
+
+                    else:
+                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
+
+
+        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+
+
+        
 
     def _stop(self):
         self._rssi._stop()
