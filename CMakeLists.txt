@@ -9,7 +9,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-# See notes for compiling on macros under anaconda:
+# See notes for compiling on macros under miniforge:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
 # Add support for building in conda environment
@@ -66,7 +66,7 @@ if ( NOT NO_PYTHON )
    set(Boost_USE_MULTITHREADED ON)
    set(Boost_NO_BOOST_CMAKE ON)
 
-   # Hint for boost on anaconda
+   # Hint for boost on miniforge
    if (DEFINED ENV{CONDA_PREFIX})
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
    endif()
@@ -385,7 +385,7 @@ if (NOT NO_PYTHON)
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use pip with python3 for system or anaconda
+   # Use pip with python3 for system or miniforge
    elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
       install(CODE "execute_process(COMMAND pip3 install ${PROJECT_BINARY_DIR}/)")
    endif()
