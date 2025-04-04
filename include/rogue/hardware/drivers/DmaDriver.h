@@ -352,7 +352,7 @@ static inline ssize_t dmaRead(int32_t fd, void* buf, size_t maxSize, uint32_t* f
  */
 static inline ssize_t dmaReadIndex(int32_t fd, uint32_t* index, uint32_t* flags, uint32_t* error, uint32_t* dest) {
     struct DmaReadData r;
-    size_t ret;
+    ssize_t ret;
 
     memset(&r, 0, sizeof(struct DmaReadData));
 
@@ -392,8 +392,8 @@ static inline ssize_t dmaReadBulkIndex(int32_t fd,
                                        uint32_t* error,
                                        uint32_t* dest) {
     struct DmaReadData r[count];
-    size_t res;
-    size_t x;
+    ssize_t res;
+    ssize_t x;
 
     memset(r, 0, count * sizeof(struct DmaReadData));
 
@@ -451,7 +451,7 @@ static inline ssize_t dmaRetIndexes(int32_t fd, uint32_t count, uint32_t* indexe
  *
  * Returns: The current write buffer index.
  */
-static inline uint32_t dmaGetIndex(int32_t fd) {
+static inline int32_t dmaGetIndex(int32_t fd) {
     return (ioctl(fd, DMA_Get_Index, 0));
 }
 
@@ -676,7 +676,7 @@ static inline void** dmaMapDma(int32_t fd, uint32_t* count, uint32_t* size) {
     if (count != NULL) *count = bCount;
     if (size != NULL) *size = bSize;
 
-    if ((ret = reinterpret_cast<void**>(malloc(sizeof(void*) * bCount))) == 0) return (NULL);
+    if ((ret = reinterpret_cast<void**>(calloc(sizeof(void*), bCount))) == 0) return (NULL);
 
     // Attempt to map
     gCount = 0;
@@ -905,7 +905,7 @@ static inline void* dmaMapRegister(int32_t fd, off_t offset, uint32_t size) {
     bCount = ioctl(fd, DMA_Get_Buff_Count, 0);
 
     // Calculate internal offset
-    intOffset = (bSize * bCount) + offset;
+    intOffset = ((off_t)bSize * bCount) + offset;
 
     // Attempt to map the memory region into user space
     return mmap(0, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, intOffset);
