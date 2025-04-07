@@ -27,6 +27,9 @@ class UdpRssiPack(pr.Device):
         # Local copy host/port arg values
         self._host = host
         self._port = port
+        self._wait = wait
+        self._jumbo = jumbo
+        self._server = server
 
         # Check if running as server
         if server:
@@ -291,7 +294,7 @@ class UdpRssiPack(pr.Device):
         # Start the RSSI connection
         self._rssi._start()
 
-        if wait and not server:
+        if self._wait and not self._server:
             curr = int(time.time())
             last = curr
             cnt = 0
@@ -302,14 +305,14 @@ class UdpRssiPack(pr.Device):
                 if last != curr:
                     last = curr
 
-                    if jumbo:
+                    if self._jumbo:
                         cnt += 1
 
                     if cnt < 10:
-                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (self._host,self._port))
 
                     else:
-                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
+                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (self._host,self._port))
 
 
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
