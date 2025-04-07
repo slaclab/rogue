@@ -18,7 +18,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+from pydm.widgets import PyDMLabel, PyDMPushButton, PyDMEnumComboBox
 
 from qtpy.QtCore import Property, Slot, QEvent, Qt, QPoint
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView
