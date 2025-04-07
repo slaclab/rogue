@@ -64,32 +64,6 @@ class UdpRssiPack(pr.Device):
             if key in defaults:
                 setter(defaults[key])
 
-        # Start the RSSI connection
-        self._rssi._start()
-
-        if wait and not server:
-            curr = int(time.time())
-            last = curr
-            cnt = 0
-
-            while not self._rssi.getOpen():
-                time.sleep(.0001)
-                curr = int(time.time())
-                if last != curr:
-                    last = curr
-
-                    if jumbo:
-                        cnt += 1
-
-                    if cnt < 10:
-                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
-
-                    else:
-                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
-
-
-        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
-
         # Add variables
         self.add(pr.LocalVariable(
             name        = 'rssiOpen',
@@ -312,6 +286,35 @@ class UdpRssiPack(pr.Device):
 
     def countReset(self):
         self._rssi.resetCounters()
+
+    def _start(self):
+        # Start the RSSI connection
+        self._rssi._start()
+
+        if wait and not server:
+            curr = int(time.time())
+            last = curr
+            cnt = 0
+
+            while not self._rssi.getOpen():
+                time.sleep(.0001)
+                curr = int(time.time())
+                if last != curr:
+                    last = curr
+
+                    if jumbo:
+                        cnt += 1
+
+                    if cnt < 10:
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
+
+                    else:
+                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
+
+
+        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+
+        super()._start()
 
     def _stop(self):
         self._rssi._stop()
