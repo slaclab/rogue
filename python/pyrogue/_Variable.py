@@ -1555,6 +1555,8 @@ class LinkVariable(BaseVariable):
                  dependencies=None,
                  linkedSet=None,
                  linkedGet=None,
+                 minimum=None,
+                 maximum=None,
                  **kwargs): # Args passed to BaseVariable
 
         # Set and get functions

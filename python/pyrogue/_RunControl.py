@@ -149,4 +149,3 @@ class RunControl(pr.Device):
 
                 with self.runCount.lock:
                     self.runCount.set(self.runCount.value() + 1)
-
