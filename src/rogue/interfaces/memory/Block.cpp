@@ -578,7 +578,7 @@ void rim::Block::addVariables(std::vector<rim::VariablePtr> variables) {
                                               address()));
 
         // Update very mask using verify block
-        varifyMask_[x] &= (verifyBlock_[x] ^ 0xFF);
+        verifyMask_[x] &= (verifyBlock_[x] ^ 0xFF);
     }
 
     // Execute custom init
