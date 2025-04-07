@@ -826,7 +826,12 @@ class BaseVariable(pr.Node):
 
         # Standard set
         elif self._mode in modes:
-            self.setDisp(d,writeEach)
+            # Array variables can be set with a dict of index/value pairs
+            if isinstance(d, dict):
+                for k,v in d.items():
+                    self.setDisp(v, index=k, write=writeEach)
+            else:
+                self.setDisp(d,writeEach)
         else:
             self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
