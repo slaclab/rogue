@@ -314,7 +314,7 @@ class LocalBlock(object):
         -------
 
         """
-        if self._enable and self._variable._updateNotify
+        if self._enable and self._variable._updateNotify:
             self._variable._queueUpdate()
 
     def _iadd(self, other):
