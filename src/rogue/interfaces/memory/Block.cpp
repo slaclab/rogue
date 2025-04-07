@@ -928,7 +928,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
                                               var->name_.c_str()));
 
         int type = PyArray_TYPE(arr);
-        switch(type) {
+        switch (type) {
             case NPY_UINT64: {
                 uint64_t* src = reinterpret_cast<uint64_t*>(PyArray_DATA(arr));
                 npy_intp stride = strides[0] / sizeof(uint64_t);
@@ -983,7 +983,7 @@ void rim::Block::setUIntPy(bp::object& value, rim::Variable* var, int32_t index)
         // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         int type_num = PyArray_DescrFromScalar(value.ptr())->type_num;
-        switch(type_num) {
+        switch (type_num) {
             case NPY_UINT64: {
                 uint64_t val;
                 PyArray_ScalarAsCtype(value.ptr(), &val);
@@ -1031,15 +1031,20 @@ bp::object rim::Block::getUIntPy(rim::Variable* var, int32_t index) {
         npy_intp dims[1] = {var->numValues_};
         int npType;
         // Choose numpy type based on the variable's valueBits.
-        if (var->valueBits_ <= 8) npType = NPY_UINT8;
-        else if (var->valueBits_ <= 16) npType = NPY_UINT16;
-        else if (var->valueBits_ <= 32) npType = NPY_UINT32;
-        else npType = NPY_UINT64;
-        
+        if (var->valueBits_ <= 8) {
+            npType = NPY_UINT8;
+        } else if (var->valueBits_ <= 16) {
+            npType = NPY_UINT16;
+        } else if (var->valueBits_ <= 32) {
+            npType = NPY_UINT32;
+        } else {
+            npType = NPY_UINT64;
+        }
+
         PyObject* obj = PyArray_SimpleNew(1, dims, npType);
         PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
         uint32_t x;
-        switch(npType) {
+        switch (npType) {
             case NPY_UINT8: {
                 uint8_t* dst = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
                 for (x = 0; x < var->numValues_; x++) {
@@ -1146,7 +1151,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
                                               var->name_.c_str()));
 
         int type = PyArray_TYPE(arr);
-        switch(type) {
+        switch (type) {
             case NPY_INT64: {
                 int64_t* src = reinterpret_cast<int64_t*>(PyArray_DATA(arr));
                 npy_intp stride = strides[0] / sizeof(int64_t);
@@ -1202,7 +1207,7 @@ void rim::Block::setIntPy(bp::object& value, rim::Variable* var, int32_t index) 
     // Passed scalar numpy value
     } else if (PyArray_CheckScalar(value.ptr())) {
         int type_num = PyArray_DescrFromScalar(value.ptr())->type_num;
-        switch(type_num) {
+        switch (type_num) {
             case NPY_INT64: {
                 int64_t val;
                 PyArray_ScalarAsCtype(value.ptr(), &val);
@@ -1250,14 +1255,19 @@ bp::object rim::Block::getIntPy(rim::Variable* var, int32_t index) {
         // Create a numpy array to receive it and locate the destination data buffer
         npy_intp dims[1] = {var->numValues_};
         int npType;
-        if (var->valueBits_ <= 8) npType = NPY_INT8;
-        else if (var->valueBits_ <= 16) npType = NPY_INT16;
-        else if (var->valueBits_ <= 32) npType = NPY_INT32;
-        else npType = NPY_INT64;
+        if (var->valueBits_ <= 8) {
+            npType = NPY_INT8;
+        } else if (var->valueBits_ <= 16) {
+            npType = NPY_INT16;
+        } else if (var->valueBits_ <= 32) {
+            npType = NPY_INT32;
+        } else {
+            npType = NPY_INT64;
+        }
         PyObject* obj = PyArray_SimpleNew(1, dims, npType);
         PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
         uint32_t x;
-        switch(npType) {
+        switch (npType) {
             case NPY_INT8: {
                 int8_t* dst = reinterpret_cast<int8_t*>(PyArray_DATA(arr));
                 for (x = 0; x < var->numValues_; x++) {
