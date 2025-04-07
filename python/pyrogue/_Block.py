@@ -240,7 +240,7 @@ class LocalBlock(object):
                 changed = np.array_equal(self._value, value)
             else:
 
-                if (self._minimum is not None and value < self._minimum) or
+                if (self._minimum is not None and value < self._minimum) or \
                    (self._maximum is not None and value > self._maximum):
 
                     raise VariableError('Value range error for {self._path}. Value={value}, Min={self._mininum}, Max={self._maximum}')
