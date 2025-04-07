@@ -4,7 +4,7 @@
 Setting Up Ubuntu On Windows
 ============================
 
-The following instructions setup an *Ubuntu On Windows* environment required for running Rogue in Anaconda in Windows. These
+The following instructions setup an *Ubuntu On Windows* environment required for running Rogue in Miniforge in Windows. These
 instructions are valid for Windows 10 and above.
 
 Install XMING
@@ -31,5 +31,5 @@ the display environment.
 
    $ echo "export DISPLAY=:0" >> ~/.bashrc
 
-You are now able install and run anaconda as described in :ref:`installing_anaconda`.
+You are now able install and run miniforge as described in :ref:`installing_miniforge`.
 
