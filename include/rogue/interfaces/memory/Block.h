@@ -112,6 +112,9 @@ class Block : public Master {
     // Verify Mask
     uint8_t* verifyMask_;
 
+    // Verify Block
+    uint8_t* verifyBlock_;
+
     // Block size
     uint32_t size_;
 
