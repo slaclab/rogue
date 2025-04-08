@@ -9,11 +9,11 @@ for building a custom Rogue module using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
 location if not using an Miniforge environment, Docker or System install.
 
-Replace MyModule with your module name globally in this file. 
+Replace MyModule with your module name globally in this file.
 
 This file assumes that the source file MyModule.cpp exists in the **src**
-subdirectory relative to this file's location.  This file can be used to 
-compile the :ref:`custom_sourcefile` described in this section.  This 
+subdirectory relative to this file's location.  This file can be used to
+compile the :ref:`custom_sourcefile` described in this section.  This
 CMakeLists can be used to compile the custom module with the following commands:
 
 .. code::
@@ -38,7 +38,7 @@ environment variable.
    endif()
 
    # Check cmake version
-   cmake_minimum_required(VERSION 3.5)
+   cmake_minimum_required(VERSION 3.15)
    include(InstallRequiredSystemLibraries)
 
    # Project name, Replace with your name
@@ -47,6 +47,12 @@ environment variable.
    # C/C++
    enable_language(CXX)
    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated")
+   add_definitions(-D__STDC_FORMAT_MACROS)
+
+   SET(CMAKE_CXX_STANDARD 14)
+   SET(CMAKE_SKIP_BUILD_RPATH TRUE)
+   SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+   SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 
    #####################################
    # Find Rogue & Support Libraries
