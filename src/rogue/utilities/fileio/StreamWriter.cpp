@@ -127,7 +127,7 @@ void ruf::StreamWriter::open(std::string file) {
     if (sizeLimit_ > 0) name.append(".1");
 
     if ((fd_ = ::open(name.c_str(),
-                      O_RDWR | O_CREAT | O_APPEND,
+                      O_RDWR | O_CREAT,
                       S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0)
         throw(rogue::GeneralError::create("StreamWriter::open", "Failed to open data file: %s", name.c_str()));
 
