@@ -172,6 +172,9 @@ class PrbsTx(pyrogue.Device):
     def sendCount(self,en):
         self._prbs.sendCount(en)
 
+    def _stop(self):
+        self._prbs.disable()
+
 
 class PrbsPair(pyrogue.Device):
     def __init__(self, width=None, taps=None, sendCount=False, txStream=None, rxStream=None, **kwargs):
