@@ -650,7 +650,7 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
     std::lock_guard<std::mutex> lock(mtx_);
 
     // Set stale flag
-    stale_ = true;
+    if (var->mode_ != "RO") stale_ = true;
 
     // Change byte order, need to make a copy
     if (var->byteReverse_) {
@@ -677,19 +677,23 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
         else
             copyBits(blockData_, var->bitOffset_[0] + (index * var->valueStride_), buff, 0, var->valueBits_);
 
-        if (var->stale_) {
-            if (var->lowTranByte_[index] < var->staleLowByte_) var->staleLowByte_ = var->lowTranByte_[index];
+        if (var->mode_ != "RO") {
+           if (var->stale_) {
+               if (var->lowTranByte_[index] < var->staleLowByte_) var->staleLowByte_ = var->lowTranByte_[index];
 
-            if (var->highTranByte_[index] > var->staleHighByte_) var->staleHighByte_ = var->highTranByte_[index];
-        } else {
-            var->staleLowByte_  = var->lowTranByte_[index];
-            var->staleHighByte_ = var->highTranByte_[index];
+               if (var->highTranByte_[index] > var->staleHighByte_) var->staleHighByte_ = var->highTranByte_[index];
+           } else {
+               var->staleLowByte_  = var->lowTranByte_[index];
+               var->staleHighByte_ = var->highTranByte_[index];
+           }
         }
 
         // Standard variable
     } else {
-        var->staleLowByte_  = var->lowTranByte_[0];
-        var->staleHighByte_ = var->highTranByte_[0];
+        if (var->mode_ != "RO") {
+           var->staleLowByte_  = var->lowTranByte_[0];
+           var->staleHighByte_ = var->highTranByte_[0];
+        }
 
         // Fast copy
         if (var->fastByte_ != NULL) {
@@ -706,7 +710,7 @@ void rim::Block::setBytes(const uint8_t* data, rim::Variable* var, uint32_t inde
             }
         }
     }
-    var->stale_ = true;
+    if ( var->mode_ != "RO" ) var->stale_ = true;
     if (var->byteReverse_) free(buff);
 }
 
