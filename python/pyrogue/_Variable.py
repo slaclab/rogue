@@ -1419,7 +1419,7 @@ class LocalVariable(BaseVariable):
             self._block.set(self, value, index)
 
             if write:
-                self._block_checkTransaction()
+                self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1450,7 +1450,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value, index)
-            self._block_checkTransaction()
+            self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1482,7 +1482,7 @@ class LocalVariable(BaseVariable):
         """
         try:
             if read and check:
-                self._block_checkTransaction()
+                self._block._checkTransaction()
 
             return self._block.get(self,index)
 
