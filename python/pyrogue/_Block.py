@@ -243,7 +243,7 @@ class LocalBlock(object):
                 if (self._minimum is not None and value < self._minimum) or \
                    (self._maximum is not None and value > self._maximum):
 
-                    raise pr.VariableError('Value range error for {self._path}. Value={value}, Min={self._mininum}, Max={self._maximum}')
+                    raise pr.VariableError(f'Value range error for {self._path}. Value={value}, Min={self._minimum}, Max={self._maximum}')
 
                 changed = self._value != value
 
