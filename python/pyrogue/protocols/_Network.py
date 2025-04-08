@@ -315,6 +315,8 @@ class UdpRssiPack(pr.Device):
                         self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (self._host,self._port))
 
 
+        # Sleep is bad, nee to figure this out
+        time.sleep(0.25)
         self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
 
         super()._start()
