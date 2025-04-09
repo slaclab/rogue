@@ -81,7 +81,7 @@ class SimpleDev(pr.Device):
 
 class MemDev(pr.Device):
 
-    def __init__(self,modeConfig='RW',**kwargs):
+    def __init__(self,**kwargs):
 
         super().__init__(**kwargs)
 
@@ -95,7 +95,7 @@ class MemDev(pr.Device):
                     bitSize      = 8,
                     bitOffset    = 8*j,
                     mode         = modeConfig,
-                    value        = None if modeConfig=='RW' else value,
+                    value        = value
                 ))
 
         for i in range(256):
@@ -107,7 +107,7 @@ class MemDev(pr.Device):
                 bitSize      = 9,
                 bitOffset    = 9*i,
                 mode         = modeConfig,
-                value        = None if modeConfig=='RW' else i,
+                value        = i
             ))
 
 
@@ -137,12 +137,10 @@ class DummyTree(pr.Root):
         self.addInterface(mc)
 
         # Add Device
-        modeConfig = ['RW','RW','RO','RO']
         for i in range(4):
             self.add(MemDev(
                 name       = f'MemDev[{i}]',
                 offset     = i*0x10000,
-                modeConfig = modeConfig[i],
                 memBase    = mc,
             ))
 
