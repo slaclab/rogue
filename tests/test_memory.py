@@ -94,7 +94,7 @@ class MemDev(pr.Device):
                     offset       = 0x000+4*i,
                     bitSize      = 8,
                     bitOffset    = 8*j,
-                    mode         = modeConfig,
+                    mode         = "RW",
                     value        = value
                 ))
 
@@ -106,7 +106,7 @@ class MemDev(pr.Device):
                 offset       = 0x100,
                 bitSize      = 9,
                 bitOffset    = 9*i,
-                mode         = modeConfig,
+                mode         = "RW",
                 value        = i
             ))
 
