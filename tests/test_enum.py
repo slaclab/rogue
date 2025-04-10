@@ -39,7 +39,7 @@ class EnumDev(pr.Device):
             },
         ))
 
-        self.add(pr.RemoteVariable(
+        self.add(pr.LocalVariable(
             name         = 'Status',
             description  = 'ENUM Test Field',
             offset       = 0x4,
