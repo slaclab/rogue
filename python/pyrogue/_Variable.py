@@ -1379,7 +1379,12 @@ class LocalVariable(BaseVariable):
                               pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
                               guiGroup=guiGroup, **kwargs)
 
-        self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
+        self._block = pr.LocalBlock(variable=self,
+                                    localSet=localSet,
+                                    localGet=localGet,
+                                    minimum=minimum,
+                                    maximum=maximum,
+                                    value=self._default)
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
@@ -1414,9 +1419,7 @@ class LocalVariable(BaseVariable):
             self._block.set(self, value, index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
-                self._parent.verifyBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(recurse=False, variable=self)
+                self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1447,8 +1450,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value, index)
-
-            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
+            self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1479,10 +1481,8 @@ class LocalVariable(BaseVariable):
 
         """
         try:
-            if read:
-                self._parent.readBlocks(recurse=False, variable=self, index=index)
-                if check:
-                    self._parent.checkBlocks(recurse=False, variable=self)
+            if read and check:
+                self._block._checkTransaction()
 
             return self._block.get(self,index)
 
@@ -1555,11 +1555,16 @@ class LinkVariable(BaseVariable):
                  dependencies=None,
                  linkedSet=None,
                  linkedGet=None,
+                 minimum=None,
+                 maximum=None,
                  **kwargs): # Args passed to BaseVariable
 
         # Set and get functions
         self._linkedGet = linkedGet
         self._linkedSet = linkedSet
+
+        if minimum is not None or maximum is not None:
+            raise VariableError("Invalid use of min or max values with LinkVariable")
 
         if variable is not None:
             # If directly linked to a variable, use it's value and set by defualt

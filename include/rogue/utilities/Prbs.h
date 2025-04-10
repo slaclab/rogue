@@ -95,6 +95,9 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
     //! Receive enable
     bool rxEnable_;
 
+    //! Tx Rate Period in microseconds
+    uint32_t txPeriod_;
+
     // Stats
     uint32_t lastRxCount_;
     uint32_t lastRxBytes_;
@@ -183,6 +186,12 @@ class Prbs : public rogue::interfaces::stream::Slave, public rogue::interfaces::
 
     //! Get tx rate
     double getTxRate();
+
+    //! Set tx rate period in micorseconds
+    void setTxPeriod(uint32_t);
+
+    //! Get tx rate limit
+    uint32_t getTxPeriod();
 
     //! Get tx bw
     double getTxBw();
