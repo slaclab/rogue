@@ -134,17 +134,18 @@ class MemoryError(Exception):
 
 class LocalBlock(object):
     """ """
-    def __init__(self, *, variable, localSet, localGet, value):
+    def __init__(self, *, variable, localSet, localGet, minimum, maximum, value):
         self._path      = variable.path
         self._mode      = variable.mode
         self._device    = variable.parent
         self._localSet  = localSet
         self._localGet  = localGet
+        self._minimum   = minimum
+        self._maximum   = maximum
         self._variable  = variable
         self._variables = [variable] # Used by poller
         self._value     = value
         self._lock      = threading.RLock()
-        self._doUpdate  = False
         self._enable    = True
 
         # Setup logging
@@ -238,6 +239,12 @@ class LocalBlock(object):
             elif isinstance(value, np.ndarray):
                 changed = np.array_equal(self._value, value)
             else:
+
+                if (self._minimum is not None and value < self._minimum) or \
+                   (self._maximum is not None and value > self._maximum):
+
+                    raise pr.VariableError(f'Value range error for {self._path}. Value={value}, Min={self._minimum}, Max={self._maximum}')
+
                 changed = self._value != value
 
             if index >= 0:
@@ -293,9 +300,7 @@ class LocalBlock(object):
         -------
 
         """
-        if self._enable:
-            with self._lock:
-                self._doUpdate = self._variable._updateNotify
+        pass
 
     def _checkTransaction(self):
         """
@@ -309,14 +314,8 @@ class LocalBlock(object):
         -------
 
         """
-        if self._enable:
-            with self._lock:
-                doUpdate = self._doUpdate
-                self._doUpdate = False
-
-            # Update variables outside of lock
-            if doUpdate:
-                self._variable._queueUpdate()
+        if self._enable and self._variable._updateNotify:
+            self._variable._queueUpdate()
 
     def _iadd(self, other):
         """

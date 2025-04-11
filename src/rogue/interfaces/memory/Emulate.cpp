@@ -54,7 +54,7 @@ rim::Emulate::Emulate(uint32_t min, uint32_t max) : Slave(min, max) {
 
 //! Destroy a block
 rim::Emulate::~Emulate() {
-    MAP_TYPE::iterator it = memMap_.begin();
+    EMULATE_MAP_TYPE::iterator it = memMap_.begin();
     while (it != memMap_.end()) {
         free(it->second);
         ++it;

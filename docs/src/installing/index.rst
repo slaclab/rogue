@@ -4,7 +4,7 @@
 Installing & Compiling Rogue
 ============================
 
-The recommended method for installing rogue is :ref:`installing_anaconda`.
+The recommended method for installing rogue is :ref:`installing_miniforge`.
 
 This section describes how to obtain and install Rogue.
 
@@ -12,12 +12,11 @@ This section describes how to obtain and install Rogue.
    :maxdepth: 1
    :caption: Install Options:
 
-   anaconda
-   anaconda_build
+   miniforge
+   miniforge_build
    docker
    build
    application
    firewall
    windows
    petalinux
-
