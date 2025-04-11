@@ -6,21 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Ubuntu On Windows &mdash; Rogue v6.5.0 documentation</title>
+  <title>Setting Up Ubuntu On Windows &mdash; Rogue v6.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../_static/documentation_options.js?v=16afd591"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Setting Up Rogue In Petalinux" href="petalinux.html" />
-    <link rel="prev" title="Rogue and Anaconda behind a firewall" href="firewall.html" /> 
+    <link rel="prev" title="Rogue and Miniforge behind a firewall" href="firewall.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,12 +45,12 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miniforge_build.html">Building Rogue Inside Miniforge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Miniforge behind a firewall</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Ubuntu On Windows</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#install-xming">Install XMING</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#install-ubuntu-on-windows">Install Ubuntu On Windows</a></li>
@@ -97,7 +97,7 @@
              
   <section id="setting-up-ubuntu-on-windows">
 <span id="installing-windows"></span><h1>Setting Up Ubuntu On Windows<a class="headerlink" href="#setting-up-ubuntu-on-windows" title="Link to this heading"></a></h1>
-<p>The following instructions setup an <em>Ubuntu On Windows</em> environment required for running Rogue in Anaconda in Windows. These
+<p>The following instructions setup an <em>Ubuntu On Windows</em> environment required for running Rogue in Miniforge in Windows. These
 instructions are valid for Windows 10 and above.</p>
 <section id="install-xming">
 <h2>Install XMING<a class="headerlink" href="#install-xming" title="Link to this heading"></a></h2>
@@ -116,7 +116,7 @@ the display environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ echo &quot;export DISPLAY=:0&quot; &gt;&gt; ~/.bashrc
 </pre></div>
 </div>
-<p>You are now able install and run anaconda as described in <a class="reference internal" href="anaconda.html#installing-anaconda"><span class="std std-ref">Installing Rogue With Anaconda</span></a>.</p>
+<p>You are now able install and run miniforge as described in <a class="reference internal" href="miniforge.html#installing-miniforge"><span class="std std-ref">Installing Rogue With Miniforge</span></a>.</p>
 </section>
 </section>
 
@@ -124,7 +124,7 @@ the display environment.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="firewall.html" class="btn btn-neutral float-left" title="Rogue and Anaconda behind a firewall" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="firewall.html" class="btn btn-neutral float-left" title="Rogue and Miniforge behind a firewall" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="petalinux.html" class="btn btn-neutral float-right" title="Setting Up Rogue In Petalinux" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

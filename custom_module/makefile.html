@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building The Custom Module &mdash; Rogue v6.5.0 documentation</title>
+  <title>Building The Custom Module &mdash; Rogue v6.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../_static/documentation_options.js?v=16afd591"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -92,7 +92,7 @@
 <p>The following is an example custom CMakeLists.txt which will setup the environment
 for building a custom Rogue module using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
-location if not using an Anaconda environment, Docker or System install.</p>
+location if not using an Miniforge environment, Docker or System install.</p>
 <p>Replace MyModule with your module name globally in this file.</p>
 <p>This file assumes that the source file MyModule.cpp exists in the <strong>src</strong>
 subdirectory relative to this file’s location.  This file can be used to
@@ -116,7 +116,7 @@ environment variable.</p>
 <span class="nb">endif</span><span class="p">()</span>
 
 <span class="c"># Check cmake version</span>
-<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.5</span><span class="p">)</span>
+<span class="nb">cmake_minimum_required</span><span class="p">(</span><span class="s">VERSION</span><span class="w"> </span><span class="s">3.15</span><span class="p">)</span>
 <span class="nb">include</span><span class="p">(</span><span class="s">InstallRequiredSystemLibraries</span><span class="p">)</span>
 
 <span class="c"># Project name, Replace with your name</span>
@@ -125,6 +125,12 @@ environment variable.</p>
 <span class="c"># C/C++</span>
 <span class="nb">enable_language</span><span class="p">(</span><span class="s">CXX</span><span class="p">)</span>
 <span class="nb">set</span><span class="p">(</span><span class="s">CMAKE_CXX_FLAGS</span><span class="w"> </span><span class="s2">&quot;${CMAKE_CXX_FLAGS} -std=c++0x -Wno-deprecated&quot;</span><span class="p">)</span>
+<span class="nb">add_definitions</span><span class="p">(</span><span class="s">-D__STDC_FORMAT_MACROS</span><span class="p">)</span>
+
+<span class="nb">SET</span><span class="p">(</span><span class="s">CMAKE_CXX_STANDARD</span><span class="w"> </span><span class="s">14</span><span class="p">)</span>
+<span class="nb">SET</span><span class="p">(</span><span class="s">CMAKE_SKIP_BUILD_RPATH</span><span class="w"> </span><span class="s">TRUE</span><span class="p">)</span>
+<span class="nb">SET</span><span class="p">(</span><span class="s">CMAKE_BUILD_WITH_INSTALL_RPATH</span><span class="w"> </span><span class="s">FALSE</span><span class="p">)</span>
+<span class="nb">SET</span><span class="p">(</span><span class="s">CMAKE_INSTALL_RPATH_USE_LINK_PATH</span><span class="w"> </span><span class="s">FALSE</span><span class="p">)</span>
 
 <span class="c">#####################################</span>
 <span class="c"># Find Rogue &amp; Support Libraries</span>

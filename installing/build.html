@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building Rogue From Source &mdash; Rogue v6.5.0 documentation</title>
+  <title>Building Rogue From Source &mdash; Rogue v6.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../_static/documentation_options.js?v=16afd591"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -45,8 +45,8 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l2"><a class="reference internal" href="anaconda_build.html">Building Rogue Inside Anaconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miniforge_build.html">Building Rogue Inside Miniforge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue From Source</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installing-packages-required-for-rogue">Installing Packages Required For Rogue</a><ul>
@@ -67,7 +67,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Miniforge behind a firewall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="petalinux.html">Setting Up Rogue In Petalinux</a></li>
 </ul>
@@ -110,31 +110,46 @@
              
   <section id="building-rogue-from-source">
 <span id="installing-full-build"></span><h1>Building Rogue From Source<a class="headerlink" href="#building-rogue-from-source" title="Link to this heading"></a></h1>
-<p>The following instructions demonstrate how to build rogue outside of the anaconda environment. These
+<p>The following instructions demonstrate how to build rogue outside of the miniforge environment. These
 instructions are only relevant for the Linux operating systems. See
 <a class="reference internal" href="docker.html#installing-docker"><span class="std std-ref">Installing Rogue Docker</span></a> for Windows and MacOS.</p>
 <section id="installing-packages-required-for-rogue">
 <h2>Installing Packages Required For Rogue<a class="headerlink" href="#installing-packages-required-for-rogue" title="Link to this heading"></a></h2>
 <p>The following packages are required to build the rogue library:</p>
 <ul class="simple">
-<li><p>cmake   &gt;= 3.5</p></li>
+<li><p>cmake   &gt;= 3.15</p></li>
 <li><p>Boost   &gt;= 1.58</p></li>
-<li><p>python3 &gt;= 3.6</p></li>
+<li><p>python3 &gt;= 3.7</p></li>
 <li><p>bz2</p></li>
 </ul>
 <section id="package-manager-install">
 <h3>Package Manager Install<a class="headerlink" href="#package-manager-install" title="Link to this heading"></a></h3>
-<section id="ubuntu-18-04-or-later">
-<h4>Ubuntu 18.04 (or later)<a class="headerlink" href="#ubuntu-18-04-or-later" title="Link to this heading"></a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ apt-get install cmake
-$ apt-get install python3
-$ apt-get install libboost-all-dev
-$ apt-get install libbz2-dev
-$ apt-get install python3-pip
-$ apt-get install git
-$ apt-get install libzmq3-dev
-$ apt-get install python3-pyqt5
-$ apt-get install python3-pyqt5.qtsvg
+<section id="debian-based-systems-ubuntu-22-04-or-later">
+<h4>Debian-based systems (Ubuntu 22.04 or later)<a class="headerlink" href="#debian-based-systems-ubuntu-22-04-or-later" title="Link to this heading"></a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install cmake
+$ sudo apt install python3
+$ sudo apt install libboost-all-dev
+$ sudo apt install libbz2-dev
+$ sudo apt install python3-pip
+$ sudo apt install git
+$ sudo apt install libzmq3-dev
+$ sudo apt install python3-pyqt5
+$ sudo apt install python3-pyqt5.qtsvg
+</pre></div>
+</div>
+</section>
+<section id="rhel-based-systems-e-g-rocky-9">
+<h4>RHEL-based systems (E.g. Rocky 9)<a class="headerlink" href="#rhel-based-systems-e-g-rocky-9" title="Link to this heading"></a></h4>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install -y cmake
+$ sudo dnf install -y python3
+$ sudo dnf install -y boost-devel
+$ sudo dnf install -y bzip2-devel
+$ sudo dnf install -y python3-pip
+$ sudo dnf install -y git
+$ sudo dnf install -y zeromq-devel
+$ sudo dnf install -y python3-qt5
+$ sudo dnf install -y python3-pyqt5-sip
+$ sudo dnf install -y qt5-qtsvg-devel
 </pre></div>
 </div>
 </section>
@@ -181,9 +196,9 @@ $ pip3 install -r pip_requirements.txt
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=local
-$ make
+$ make -j$(nproc)
 $ make install
-$ source ../setup_rogue.csh (or .sh)
+$ source ../setup_rogue.sh (or .csh)
 </pre></div>
 </div>
 </section>
@@ -196,9 +211,9 @@ $ pip3 install -r pip_requirements.txt
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
-$ make
+$ make -j$(nproc)
 $ make install
-$ source /path/to/custom/dir/setup_rogue.csh (or .sh)
+$ source /path/to/custom/dir/setup_rogue.sh (or .csh)
 </pre></div>
 </div>
 </section>
@@ -211,7 +226,7 @@ $ pip3 install -r pip_requirements.txt
 $ mkdir build
 $ cd build
 $ cmake .. -DROGUE_INSTALL=system
-$ make
+$ make -j$(nproc)
 $ make install
 </pre></div>
 </div>

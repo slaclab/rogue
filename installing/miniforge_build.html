@@ -6,21 +6,21 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building Rogue Inside Anaconda &mdash; Rogue v6.5.0 documentation</title>
+  <title>Building Rogue Inside Miniforge &mdash; Rogue v6.6.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=84d00b7a"></script>
+      <script src="../_static/documentation_options.js?v=16afd591"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Installing Rogue Docker" href="docker.html" />
-    <link rel="prev" title="Installing Rogue With Anaconda" href="anaconda.html" /> 
+    <link rel="prev" title="Installing Rogue With Miniforge" href="miniforge.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,20 +45,20 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="anaconda.html">Installing Rogue With Anaconda</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue Inside Anaconda</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#getting-anaconda">Getting Anaconda</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#downloading-rogue-creating-anaconda-environment">Downloading Rogue &amp; Creating Anaconda Environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#building-rogue-in-anaconda">Building Rogue In Anaconda</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#using-rogue-in-anaconda">Using Rogue In Anaconda</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#updating-rogue-in-anaconda">Updating Rogue In Anaconda</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deleting-anaconda-environment">Deleting Anaconda Environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue Inside Miniforge</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-miniforge">Getting Miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#downloading-rogue-creating-miniforge-environment">Downloading Rogue &amp; Creating Miniforge Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-rogue-in-miniforge">Building Rogue In Miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-rogue-in-miniforge">Using Rogue In Miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-rogue-in-miniforge">Updating Rogue In Miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleting-miniforge-environment">Deleting Miniforge Environment</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="docker.html">Installing Rogue Docker</a></li>
 <li class="toctree-l2"><a class="reference internal" href="build.html">Building Rogue From Source</a></li>
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
-<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Anaconda behind a firewall</a></li>
+<li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Miniforge behind a firewall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
 <li class="toctree-l2"><a class="reference internal" href="petalinux.html">Setting Up Rogue In Petalinux</a></li>
 </ul>
@@ -89,9 +89,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Installing &amp; Compiling Rogue</a></li>
-      <li class="breadcrumb-item active">Building Rogue Inside Anaconda</li>
+      <li class="breadcrumb-item active">Building Rogue Inside Miniforge</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/installing/anaconda_build.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/installing/miniforge_build.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -99,23 +99,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="building-rogue-inside-anaconda">
-<span id="installing-anaconda-build"></span><h1>Building Rogue Inside Anaconda<a class="headerlink" href="#building-rogue-inside-anaconda" title="Link to this heading"></a></h1>
-<p>This section provides instructions for downloading and building rogue inside an anaconda environment. These
+  <section id="building-rogue-inside-miniforge">
+<span id="installing-miniforge-build"></span><h1>Building Rogue Inside Miniforge<a class="headerlink" href="#building-rogue-inside-miniforge" title="Link to this heading"></a></h1>
+<p>This section provides instructions for downloading and building rogue inside an miniforge environment. These
 instructions are relevant for Linux</p>
-<section id="getting-anaconda">
-<h2>Getting Anaconda<a class="headerlink" href="#getting-anaconda" title="Link to this heading"></a></h2>
-<p>Download and install anaconda (or miniconda) if you don’t already have it installed on your machine. Choose an install location with a lot of available diskspace (&gt; 5GB). Anaconda appears to only work reliably in the bash shell.</p>
-<p>Go to <a class="reference external" href="https://www.anaconda.com/download">https://www.anaconda.com/download</a> to get the latest version of anaconda. Example steps for installing anaconda are included below:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://repo.anaconda.com/archive/Anaconda3-{version}-Linux-x86_64.sh
-$ bash Anaconda3-{version}-Linux-x86_64.sh
+<section id="getting-miniforge">
+<h2>Getting Miniforge<a class="headerlink" href="#getting-miniforge" title="Link to this heading"></a></h2>
+<p>Download and install miniforge if you don’t already have it installed on your machine. Choose an install location with a lot of available diskspace (&gt; 5GB). Miniforge appears to only work reliably in the bash shell.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
+$ bash Miniforge3-Linux-x86_64.sh
 </pre></div>
 </div>
-<p>Use the following command to add anaconda to your environment. This can be added to your .bash_profile.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source /path/to/my/anaconda3/etc/profile.d/conda.sh
+<p>Use the following command to add miniforge to your environment. This can be added to your .bash_profile.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source /path/to/my/miniforge3/etc/profile.d/conda.sh
 </pre></div>
 </div>
-<p>Set your local anaconda to use the update solver:</p>
+<p>Set your local miniforge to use the update solver:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate
 $ conda config --set channel_priority strict
 $ conda install -n base conda-libmamba-solver
@@ -123,23 +122,23 @@ $ conda config --set solver libmamba
 </pre></div>
 </div>
 </section>
-<section id="downloading-rogue-creating-anaconda-environment">
-<h2>Downloading Rogue &amp; Creating Anaconda Environment<a class="headerlink" href="#downloading-rogue-creating-anaconda-environment" title="Link to this heading"></a></h2>
-<p>The next step is to download rogue and create a rogue compatible anaconda environment.</p>
+<section id="downloading-rogue-creating-miniforge-environment">
+<h2>Downloading Rogue &amp; Creating Miniforge Environment<a class="headerlink" href="#downloading-rogue-creating-miniforge-environment" title="Link to this heading"></a></h2>
+<p>The next step is to download rogue and create a rogue compatible miniforge environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/slaclab/rogue.git
 $ cd rogue
 $ conda activate
 $ conda env create -n rogue_build -f conda.yml
 </pre></div>
 </div>
-<p>You now have an anaconda environment named rogue_build which contains all of the packages required to build and run rogue.</p>
+<p>You now have an miniforge environment named rogue_build which contains all of the packages required to build and run rogue.</p>
 <p>To activate this environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_build
 </pre></div>
 </div>
 </section>
-<section id="building-rogue-in-anaconda">
-<h2>Building Rogue In Anaconda<a class="headerlink" href="#building-rogue-in-anaconda" title="Link to this heading"></a></h2>
+<section id="building-rogue-in-miniforge">
+<h2>Building Rogue In Miniforge<a class="headerlink" href="#building-rogue-in-miniforge" title="Link to this heading"></a></h2>
 <p>Once the rogue environment is activated, you can build and install rogue</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mkdir build
 $ cd build
@@ -149,11 +148,11 @@ $ make install
 </pre></div>
 </div>
 <p>The Rogue build system will automatically detect that it is in a conda environment and it will be installed
-within the anaconda rogue environment.</p>
+within the miniforge rogue environment.</p>
 </section>
-<section id="using-rogue-in-anaconda">
-<h2>Using Rogue In Anaconda<a class="headerlink" href="#using-rogue-in-anaconda" title="Link to this heading"></a></h2>
-<p>No additional setup scripts need to be run rogue in an anaconda environment. To activate and de-activate the rogue environment you can use the following commands:</p>
+<section id="using-rogue-in-miniforge">
+<h2>Using Rogue In Miniforge<a class="headerlink" href="#using-rogue-in-miniforge" title="Link to this heading"></a></h2>
+<p>No additional setup scripts need to be run rogue in an miniforge environment. To activate and de-activate the rogue environment you can use the following commands:</p>
 <p>To activate:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_build
 </pre></div>
@@ -163,8 +162,8 @@ within the anaconda rogue environment.</p>
 </pre></div>
 </div>
 </section>
-<section id="updating-rogue-in-anaconda">
-<h2>Updating Rogue In Anaconda<a class="headerlink" href="#updating-rogue-in-anaconda" title="Link to this heading"></a></h2>
+<section id="updating-rogue-in-miniforge">
+<h2>Updating Rogue In Miniforge<a class="headerlink" href="#updating-rogue-in-miniforge" title="Link to this heading"></a></h2>
 <p>If you want to update and re-install rogue, run the following commands.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ cd rogue
 $ rm -rf build
@@ -177,9 +176,9 @@ $ make install
 </pre></div>
 </div>
 </section>
-<section id="deleting-anaconda-environment">
-<h2>Deleting Anaconda Environment<a class="headerlink" href="#deleting-anaconda-environment" title="Link to this heading"></a></h2>
-<p>Run the following commands to delete the anaconda environment.</p>
+<section id="deleting-miniforge-environment">
+<h2>Deleting Miniforge Environment<a class="headerlink" href="#deleting-miniforge-environment" title="Link to this heading"></a></h2>
+<p>Run the following commands to delete the miniforge environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda env remove -n rogue_build
 </pre></div>
 </div>
@@ -190,7 +189,7 @@ $ make install
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="anaconda.html" class="btn btn-neutral float-left" title="Installing Rogue With Anaconda" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="miniforge.html" class="btn btn-neutral float-left" title="Installing Rogue With Miniforge" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="docker.html" class="btn btn-neutral float-right" title="Installing Rogue Docker" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
