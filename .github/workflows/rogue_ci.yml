@@ -21,7 +21,7 @@ on: [push]
 jobs:
   full_build_test:
     name: Full Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -92,7 +92,7 @@ jobs:
 
   small_build_test:
     name: Small Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -114,7 +114,7 @@ jobs:
 
   gen_release:
     name: Generate Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [full_build_test, small_build_test]
     if: startsWith(github.ref, 'refs/tags/')
     steps:
