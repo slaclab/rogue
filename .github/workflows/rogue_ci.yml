@@ -21,7 +21,7 @@ on: [push]
 jobs:
   full_build_test:
     name: Full Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -31,16 +31,7 @@ jobs:
 
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.8
-
-      - name: Setup Environment
-        run: |
-          EPICS_BASE=${HOME}/packages/epics/base-7.0.3
-          EPICS_PCAS_ROOT=${HOME}/packages/pcas/pcas-4.13.2
-          LD_LIBRARY_PATH=/usr/lib:${EPICS_BASE}/lib/linux-x86_64:${EPICS_PCAS_ROOT}/lib/linux-x86_64
-          echo "EPICS_BASE=$EPICS_BASE" >> $GITHUB_ENV
-          echo "EPICS_PCAS_ROOT=$EPICS_PCAS_ROOT" >> $GITHUB_ENV
-          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> $GITHUB_ENV
+          python-version: '3.10'
 
       - name: Install dependencies
         run: |
@@ -51,30 +42,12 @@ jobs:
           pip install -r pip_requirements.txt
           pip install codecov coverage pytest-cov flake8
 
-      - name: Install EPICS Base
-        run: |
-          mkdir -p ${EPICS_BASE}
-          cd ${EPICS_BASE}
-          pwd
-          wget -O base-7.0.3.tar.gz  https://github.com/epics-base/epics-base/archive/R7.0.3.tar.gz
-          tar xzf base-7.0.3.tar.gz --strip 1
-          make clean && make && make install
-
-      - name: Install EPICS PCAS
-        run: |
-          mkdir -p ${EPICS_PCAS_ROOT}
-          cd ${EPICS_PCAS_ROOT}
-          wget -O pcas-4.13.2.tar.gz https://github.com/epics-modules/pcas/archive/v4.13.2.tar.gz
-          tar xzf pcas-4.13.2.tar.gz --strip 1
-          echo "EPICS_BASE=$EPICS_BASE" >> configure/RELEASE.local
-          make clean && make && make install
-
       # Rogue
       - name: Build Rogue
         run: |
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
-          cmake .. -DROGUE_INSTALL=local
+          cmake .. -DROGUE_INSTALL=local -DNO_EPICS=1
           make -j4 install
 
       # Run Tests
@@ -92,7 +65,7 @@ jobs:
 
   small_build_test:
     name: Small Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -114,7 +87,7 @@ jobs:
 
   gen_release:
     name: Generate Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: [full_build_test, small_build_test]
     if: startsWith(github.ref, 'refs/tags/')
     steps:

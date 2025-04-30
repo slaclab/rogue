@@ -386,7 +386,7 @@ class Device(pr.Node,rim.Hub):
         if txnType == rim.Write or txnType == rim.Post:
             if isinstance(data, bytearray):
                 ldata = data
-            elif isinstance(data, collections.Iterable):
+            elif isinstance(data, collections.abc.Iterable):
                 ldata = b''.join(base.toBytes(word) for word in data)
             else:
                 ldata = base.toBytes(data)

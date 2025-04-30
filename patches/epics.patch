@@ -1,0 +1,124 @@
+diff -ruN orig/epics-base-R3.15.5/src/ca/legacy/pcas/generic/caServerI.h epics-base-R3.15.5/src/ca/legacy/pcas/generic/caServerI.h
+--- orig/epics-base-R3.15.5/src/ca/legacy/pcas/generic/caServerI.h	2016-12-13 05:25:23
++++ epics-base-R3.15.5/src/ca/legacy/pcas/generic/caServerI.h	2025-04-30 01:08:02
+@@ -88,8 +88,8 @@
+ private:
+     clientBufMemoryManager clientBufMemMgr;
+     tsFreeList < casMonitor, 1024 > casMonitorFreeList;
+-    tsDLList < casStrmClient > clientList;
+-    tsDLList < casIntfOS > intfList;
++    ::tsDLList < casStrmClient > clientList;
++    ::tsDLList < casIntfOS > intfList;
+     mutable epicsMutex mutex;
+     mutable epicsMutex diagnosticCountersMutex;
+     caServer & adapter;
+diff -ruN orig/epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.cc epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.cc
+--- orig/epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.cc	2016-12-13 05:25:23
++++ epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.cc	2025-04-30 01:08:02
+@@ -288,7 +288,7 @@
+ }
+ 
+ caStatus casPVI::installMonitor ( 
+-    casMonitor & mon, tsDLList < casMonitor > & monitorList )
++    casMonitor & mon, ::tsDLList < casMonitor > & monitorList )
+ {
+     epicsGuard < epicsMutex > guard ( this->mutex );
+     assert ( this->nMonAttached < UINT_MAX );
+@@ -304,7 +304,7 @@
+ }
+ 
+ casMonitor * casPVI::removeMonitor ( 
+-    tsDLList < casMonitor > & list, ca_uint32_t clientIdIn )
++    ::tsDLList < casMonitor > & list, ca_uint32_t clientIdIn )
+ {
+     epicsGuard < epicsMutex > guard ( this->mutex );
+     casMonitor * pMon = 0;
+@@ -361,8 +361,8 @@
+ }
+  
+ void casPVI::removeChannel ( 
+-    chanIntfForPV & chan, tsDLList < casMonitor > & src, 
+-    tsDLList < casMonitor > & dest )
++    chanIntfForPV & chan, ::tsDLList < casMonitor > & src, 
++    ::tsDLList < casMonitor > & dest )
+ {
+     epicsGuard < epicsMutex > guard ( this->mutex );
+     src.removeAll ( dest );
+@@ -376,7 +376,7 @@
+     }
+ }
+ 
+-void casPVI::clearOutstandingReads ( tsDLList < casAsyncIOI > & ioList )
++void casPVI::clearOutstandingReads ( ::tsDLList < casAsyncIOI > & ioList )
+ {
+     epicsGuard < epicsMutex > guard ( this->mutex );
+ 
+@@ -396,7 +396,7 @@
+ 	}
+ }
+ 
+-void casPVI::destroyAllIO ( tsDLList < casAsyncIOI > & ioList )
++void casPVI::destroyAllIO ( ::tsDLList < casAsyncIOI > & ioList )
+ {
+     epicsGuard < epicsMutex > guard ( this->mutex );
+ 	while ( casAsyncIOI * pIO = ioList.get() ) {
+@@ -408,7 +408,7 @@
+ }
+ 
+ void casPVI::installIO ( 
+-    tsDLList < casAsyncIOI > & ioList, casAsyncIOI & io )
++    ::tsDLList < casAsyncIOI > & ioList, casAsyncIOI & io )
+ {
+     epicsGuard < epicsMutex > guard ( this->mutex );
+     ioList.add ( io );
+@@ -417,7 +417,7 @@
+ }
+ 
+ void casPVI::uninstallIO ( 
+-    tsDLList < casAsyncIOI > & ioList, casAsyncIOI & io )
++    ::tsDLList < casAsyncIOI > & ioList, casAsyncIOI & io )
+ {
+     {
+         epicsGuard < epicsMutex > guard ( this->mutex );
+diff -ruN orig/epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.h epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.h
+--- orig/epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.h	2016-12-13 05:25:23
++++ epics-base-R3.15.5/src/ca/legacy/pcas/generic/casPVI.h	2025-04-30 01:08:02
+@@ -49,21 +49,21 @@
+     caStatus attachToServer ( caServerI & cas );
+     aitIndex nativeCount ();
+     bool ioIsPending () const;
+-	void clearOutstandingReads ( tsDLList < class casAsyncIOI > &);
++	void clearOutstandingReads ( ::tsDLList < class casAsyncIOI > &);
+     void destroyAllIO ( 
+-        tsDLList < casAsyncIOI > & );
++        ::tsDLList < casAsyncIOI > & );
+     void installIO (
+-        tsDLList < casAsyncIOI > &, casAsyncIOI & );
++        ::tsDLList < casAsyncIOI > &, casAsyncIOI & );
+     void uninstallIO ( 
+-        tsDLList < casAsyncIOI > &, casAsyncIOI & );
++        ::tsDLList < casAsyncIOI > &, casAsyncIOI & );
+     void installChannel ( chanIntfForPV & chan );
+     void removeChannel ( 
+-        chanIntfForPV & chan, tsDLList < casMonitor > & src,
+-        tsDLList < casMonitor > & dest );
++        chanIntfForPV & chan, ::tsDLList < casMonitor > & src,
++        ::tsDLList < casMonitor > & dest );
+     caStatus installMonitor ( 
+-        casMonitor & mon, tsDLList < casMonitor > & monitorList );
++        casMonitor & mon, ::tsDLList < casMonitor > & monitorList );
+     casMonitor * removeMonitor ( 
+-        tsDLList < casMonitor > & list, ca_uint32_t clientIdIn );
++        ::tsDLList < casMonitor > & list, ca_uint32_t clientIdIn );
+     void deleteSignal ();
+     void postEvent ( const casEventMask & select, const gdd & event );
+     caServer * getExtServer () const;
+@@ -84,7 +84,7 @@
+ 
+ private:
+     mutable epicsMutex mutex;
+-    tsDLList < chanIntfForPV > chanList;
++    ::tsDLList < chanIntfForPV > chanList;
+     gddEnumStringTable enumStrTbl;
+     caServerI * pCAS;
+     casPV * pPV;

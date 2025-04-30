@@ -31,7 +31,7 @@ import test_large
 #logger = logging.getLogger('pyrogue')
 #logger.setLevel(logging.DEBUG)
 
-import pyrogue.protocols.epics
+#import pyrogue.protocols.epics
 
 
 class DummyTree(pyrogue.Root):
@@ -147,16 +147,16 @@ class DummyTree(pyrogue.Root):
 
         #pyrogue.streamConnect(self.prbsTx,self.rudpClient.application(0))
 
-        self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
+        #self.epics=pyrogue.protocols.epics.EpicsCaServer(base="test", root=self)
         #self.epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self)
 
     def start(self):
         pyrogue.Root.start(self)
-        self.epics.start()
+        #self.epics.start()
         #self.epics4.start()
 
     def stop(self):
-        self.epics.stop()
+        #self.epics.stop()
         #self.epics4.stop()
         pyrogue.Root.stop(self)
 

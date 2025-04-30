@@ -247,7 +247,7 @@ class Node(object):
         """Add node as sub-node"""
 
         # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, collections.Iterable) and all(isinstance(n, Node) for n in node):
+        if isinstance(node, collections.abc.Iterable) and all(isinstance(n, Node) for n in node):
             for n in node:
                 self.add(n)
             return
