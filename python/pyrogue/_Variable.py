@@ -20,7 +20,7 @@ import re
 import time
 import numpy
 from collections import OrderedDict as odict
-from collections import Iterable
+from collections.abc import Iterable
 
 class VariableError(Exception):
     """ Exception for variable access errors."""
