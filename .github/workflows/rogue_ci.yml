@@ -48,7 +48,7 @@ jobs:
             echo "Error: Trailing whitespace found in the repository!"
             exit 1
           fi
-          
+
           # Check for tab characters instead of spaces
           if grep -rnI $'\t' --include=\*.{cpp,h,py} .; then
             echo "Error: Tab characters found in the repository! Please use spaces for indentation."
@@ -166,12 +166,13 @@ jobs:
 
 # ----------------------------------------------------------------------------
 
-  docker_build_lib:
+  docker_build_rogue:
     needs: [full_build_test, small_build_test]
-    uses: slaclab/ruckus/.github/workflows/docker_build_lib.yml@main
+    uses: slaclab/ruckus/.github/workflows/docker_build_rogue.yml@main
     with:
-      version: '1.0.0'
+      gh_username: slacrherbst
+      docker_name: rogue
     secrets:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 # ----------------------------------------------------------------------------
