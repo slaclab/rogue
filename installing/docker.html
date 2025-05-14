@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue Docker &mdash; Rogue v6.6.0 documentation</title>
+  <title>Installing Rogue Docker &mdash; Rogue v6.6.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=16afd591"></script>
+      <script src="../_static/documentation_options.js?v=b2d75188"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -101,33 +101,29 @@
   <section id="installing-rogue-docker">
 <span id="installing-docker"></span><h1>Installing Rogue Docker<a class="headerlink" href="#installing-rogue-docker" title="Link to this heading"></a></h1>
 <p>Docker images with rogue are automatically generated and uploaded to Docker hub, in the following repositories:</p>
-<p>Docker images with tagged (stable) version of rogue:
-<a class="reference external" href="https://hub.docker.com/r/tidair/rogue/">https://hub.docker.com/r/tidair/rogue/</a></p>
-<p>Docker images with development versions of rogue:
-<a class="reference external" href="https://hub.docker.com/r/tidair/rogue-dev/">https://hub.docker.com/r/tidair/rogue-dev/</a></p>
+<p>Docker images are created for tagged version of rogue:
+<a class="reference external" href="https://ghcr.io/slaclab/rogue">https://ghcr.io/slaclab/rogue</a></p>
 <p>The images can be used to run rogue applications as one would normally do using a local installation of rogue.</p>
 <section id="how-to-get-the-container">
 <h2>How To Get The Container<a class="headerlink" href="#how-to-get-the-container" title="Link to this heading"></a></h2>
-<p>To get the most recent version of the docker image, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker pull tidair/rogue
+<p>To get the most recent released docker container of rogue, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker pull ghcr.io/slaclab/rogue:latest
 </pre></div>
 </div>
-<p>to get the latest version available, or:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker pull tidair/rogue:$TAG
+<p>Or you can target a specific tagged version.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker pull ghcr.io/slaclab/rogue:$TAG
 </pre></div>
 </div>
-<p>to get a specific tagged version.</p>
 <p><strong>Notes:</strong></p>
 <ul class="simple">
 <li><p>The docker images are tagged using the same rogue tag.</p></li>
-<li><p>You can also pull development version using <cite>tidair/rogue-dev</cite> instead.</p></li>
 </ul>
 </section>
 <section id="how-to-run-the-container">
 <h2>How To Run The Container<a class="headerlink" href="#how-to-run-the-container" title="Link to this heading"></a></h2>
 <p>To run a rogue application inside a container, you must first have a copy of the application in in your host OS. Also, your host must have a direct connection to your target FPGA.</p>
 <p>Then you can run the container, for example, like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run -ti -v &lt;APP_DIR&gt;:/python tidair/rogue /python/&lt;APP_NAME&gt;
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ docker run -ti -v &lt;APP_DIR&gt;:/python ghcr.io/slaclab/rogue /python/&lt;APP_NAME&gt;
 </pre></div>
 </div>
 <p>where:</p>
@@ -138,7 +134,7 @@
 <p>If your application uses a graphical interface, then you need to pass additional arguments in order to properly forward X:</p>
 <p>As an example use can test the docker install and X11 with the following command:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ setfacl -m user:0:r ${HOME}/.Xauthority
-$ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority tidair/rogue python3 -m pyrogue.examples --gui
+$ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority ghcr.io/slaclab/rogue python3 -m pyrogue.examples --gui
 </pre></div>
 </div>
 </section>
@@ -151,7 +147,7 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
    -v &quot;/etc/group:/etc/group:ro&quot; \
    -v &quot;/etc/passwd:/etc/passwd:ro&quot; \
    -v &lt;APP_DIR&gt;:/python \
-   tidair/rogue /python/&lt;APP_NAME&gt;
+   ghcr.io/slaclab/rogue /python/&lt;APP_NAME&gt;
 </pre></div>
 </div>
 </section>
@@ -161,19 +157,19 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
 <p>Now run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ IP=$(ifconfig en0 | grep inet | awk &#39;$1==&quot;inet&quot; {print $2}&#39;)
 $ xhost + $IP
-$ docker run -ti -e DISPLAY=$IP:0 -v &lt;APP_DIR&gt;:/python tidair/rogue /python/&lt;APP_NAME&gt;
+$ docker run -ti -e DISPLAY=$IP:0 -v &lt;APP_DIR&gt;:/python ghcr.io/slaclab/rogue /python/&lt;APP_NAME&gt;
 </pre></div>
 </div>
 <p><strong>Notes:</strong></p>
 <ul class="simple">
 <li><p>The <cite>-v</cite> option maps a folder in your host OS inside the docker container. In this example we are mapping our local folder containing the rogue application to <cite>/python/</cite> inside the container. Then, when the container runs, we are able to access the rogue application which is now located at <cite>/python/</cite>. You can, of course, map more than one folder inside the container, as well as using different locations inside the container.</p></li>
-<li><p>You can also run a specific tagged version of rogue changing <cite>tidair/rogue</cite> for <cite>tidair/rogue:&lt;TAG&gt;</cite> in the docker run command. Moreover, you can run development version using <cite>tidair/rogue-dev</cite> (latest version) or <cite>tidair/rogue-dev:&lt;TAG&gt;</cite> (a specific version).</p></li>
+<li><p>You can also run a specific tagged version of rogue changing <cite>ghcr.io/slaclab/rogue</cite> for <cite>ghcr.io/slaclab/rogue:&lt;TAG&gt;</cite> in the docker run command.</p></li>
 </ul>
 </section>
 <section id="how-to-build-a-custom-docker-image-with-rogue">
 <h2>How To Build A Custom Docker Image With Rogue<a class="headerlink" href="#how-to-build-a-custom-docker-image-with-rogue" title="Link to this heading"></a></h2>
 <p>You can create custom docker image, using the Docker image containing rogue as a starting point. Just start your <cite>Dockerfile</cite> with this line:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">tidair</span><span class="o">/</span><span class="n">rogue</span><span class="p">:</span><span class="o">&lt;</span><span class="n">TAG</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FROM</span> <span class="n">ghcr</span><span class="o">.</span><span class="n">io</span><span class="o">/</span><span class="n">slaclab</span><span class="o">/</span><span class="n">rogue</span><span class="p">:</span><span class="o">&lt;</span><span class="n">TAG</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 </section>
