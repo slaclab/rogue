@@ -398,6 +398,10 @@ class Root(pr.Device):
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
 
+        # Detect large timeout
+        if self._timeout > 10.0:
+            self._log.warning(f"Large timeout value of {self._timeout} seconds detected. This may cause unexpected system behavior.")
+
         # Start update thread
         self._running = True
         self._updateThread = threading.Thread(target=self._updateWorker)
