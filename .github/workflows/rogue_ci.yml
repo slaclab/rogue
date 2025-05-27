@@ -168,7 +168,7 @@ jobs:
 
   docker_build_rogue:
     needs: [full_build_test, small_build_test]
-    uses: slaclab/ruckus/.github/workflows/docker_build.yml@gh_docker
+    uses: slaclab/ruckus/.github/workflows/docker_build.yml@main
     with:
       gh_username: slacrherbst
       docker_name: rogue
