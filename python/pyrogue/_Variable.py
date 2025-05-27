@@ -412,7 +412,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def setPollInterval(self, interval):
-        self._log.info(f'{self.path}.setPollInterval({interval}]')
+        self._log.debug(f'{self.path}.setPollInterval({interval}]')
         self._pollInterval = interval
         self._updatePollInterval()
 
