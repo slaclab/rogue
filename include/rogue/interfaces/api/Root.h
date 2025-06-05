@@ -36,7 +36,7 @@ class Root : Node {
   Root(boost::python::object obj);
 
   //! Default constuctor
-  ~Root() = default; 
+  ~Root() { stop(); } 
 
    template <typename T> 
    T getNode(std::string name) const {
@@ -51,10 +51,16 @@ class Root : Node {
   //! Setup the tree and start the polling thread.
   void start();
 
+  //! Stop the polling thread.
+  void stop();
+
   std::map<std::string, node_types> getNodes() { return _nodes; }
 
  private:
-   std::map<std::string, node_types> _nodes; 
+  void buildVariable(const std::string name, const boost::python::object& obj); 
+  
+  //! Map of all nodes in the tree 
+  std::map<std::string, node_types> _nodes; 
 
 };
 }

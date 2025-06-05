@@ -18,6 +18,9 @@ class Node {
     //! Destructor
     ~Node() = default;
 
+    //!
+    std::string getName() { return _name; }
+
  protected: 
     //! Boost python object representing this node
     boost::python::object _obj;
