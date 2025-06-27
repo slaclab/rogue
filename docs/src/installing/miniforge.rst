@@ -12,11 +12,29 @@ Getting Miniforge
 ================
 
 Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Miniforge appears to only work reliably in the bash shell.
+Note: You can alternatively install miniforge with the Homebrew package manager. 
+
+*Linux*
 
 .. code::
 
    $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
    $ bash Miniforge3-Linux-x86_64.sh
+
+*Mac* Arm/Apple Silicon hardware
+
+.. code::
+
+   $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh
+   $ bash Miniforge3-MacOSX-arm64.sh
+
+*Mac* x86 hardware
+
+.. code::
+
+   $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
+   $ bash Miniforge3-MacOSX-x86_64.sh
+
 
 Use the following command to add miniforge to your environment. This can be added to your .bash_profile.
 

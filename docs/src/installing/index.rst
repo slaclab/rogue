@@ -4,9 +4,16 @@
 Installing & Compiling Rogue
 ============================
 
-The recommended method for installing rogue is :ref:`installing_miniforge`.
+The recommended method for installing rogue is :ref:`installing_miniforge`. 
+If you chose to build rogue from source instead of using miniforge, the following list 
+is the recommendation for each operating system.
 
-This section describes how to obtain and install Rogue.
+* Linux - :ref:`installing_full_build`
+* Windows - :ref:`installing_docker`
+* Mac :ref:`installing_docker`
+
+This section describes how to obtain and install Rogue. 
+After installation is completed, consider following one of our :ref:`tutorials` to learn the basics. 
 
 .. toctree::
    :maxdepth: 1
