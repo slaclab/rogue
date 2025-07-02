@@ -26,6 +26,7 @@
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <memory>
 
 namespace rogue {
    namespace interfaces {

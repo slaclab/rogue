@@ -11,6 +11,7 @@ build:
 requirements:
    build:
      - python
+     - setuptools
      - gcc_linux-64   [linux]
      - gxx_linux-64   [linux]
      - clang_osx-64   [osx]

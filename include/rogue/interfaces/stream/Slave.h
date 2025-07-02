@@ -25,6 +25,7 @@
 #include <thread>
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/Logging.h>
+#include <memory>
 
 #ifndef NO_PYTHON
 #include <boost/python.hpp>
