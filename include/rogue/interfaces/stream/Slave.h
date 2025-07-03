@@ -26,6 +26,7 @@
 #include <rogue/interfaces/stream/Pool.h>
 #include <rogue/Logging.h>
 #include <rogue/EnableSharedFromThis.h>
+#include <memory>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS

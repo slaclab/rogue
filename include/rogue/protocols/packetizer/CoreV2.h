@@ -21,6 +21,7 @@
 #define __ROGUE_PROTOCOLS_PACKETIZER_CORE_V2_H__
 #include <thread>
 #include <stdint.h>
+#include <memory>
 
 namespace rogue {
    namespace protocols {

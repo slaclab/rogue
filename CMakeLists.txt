@@ -162,11 +162,10 @@ if (NOT ZeroMQ_FOUND)
 
 endif()
 
-
 #####################################
 # EPICS V3
 #####################################
-if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
+if((NOT NO_PYTHON) AND (DO_EPICS) AND DEFINED ENV{EPICS_BASE})
    set(DO_EPICS_V3 1)
    set(EPICS_BASE_DIR $ENV{EPICS_BASE})
    if(DEFINED ENV{EPICS_HOST_ARCH})
@@ -217,7 +216,6 @@ if((NOT NO_PYTHON) AND (NOT NO_EPICS) AND DEFINED ENV{EPICS_BASE})
 else()
    set(DO_EPICS_V3 0)
 endif()
-
 
 ##########################################################
 # Generate version with GIT If Not Passed As -DVERSION

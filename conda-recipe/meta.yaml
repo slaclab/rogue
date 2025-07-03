@@ -10,7 +10,8 @@ build:
 
 requirements:
    build:
-     - python<3.8
+     - python >=3.6,<3.10
+     - setuptools
      - boost
      - {{ compiler('c') }}
      - {{ compiler('cxx') }}
@@ -20,24 +21,21 @@ requirements:
      - bzip2
      - zeromq
      - epics-base
-     - pcas
      - numpy
    host:
-     - python<3.8
+     - python >=3.6,<3.10
      - boost
      - bzip2
      - zeromq
      - epics-base
-     - pcas
      - numpy
    run:
-     - python<3.8
+     - python >=3.6,<3.10
      - {{ pin_compatible('boost', min_pin='x.x', max_pin='x.x')}}
      - boost
      - bzip2
      - zeromq
      - epics-base
-     - pcas
      - numpy
      - ipython
      - p4p

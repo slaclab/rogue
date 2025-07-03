@@ -27,6 +27,7 @@
 #include <thread>
 #include <mutex>
 #include <rogue/EnableSharedFromThis.h>
+#include <memory>
 
 #ifndef NO_PYTHON
 #define BOOST_BIND_GLOBAL_PLACEHOLDERS
