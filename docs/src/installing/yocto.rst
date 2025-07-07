@@ -10,17 +10,17 @@ Only perform this step if you do not already have an application layer created
 
 .. code::
 
-   bitbake-layers create-layer sources/meta-myapplications
-   bitbake-layers add-layer    sources/meta-myapplications
+   bitbake-layers create-layer sources/meta-user
+   bitbake-layers add-layer    sources/meta-user
 
 
 Step 2 - Add your prebuilt application receipe
 
 .. code::
 
-   mkdir -p sources/meta-myapplications/recipes-apps
-   mkdir -p sources/meta-myapplications/recipes-apps/rogue
-   touch    sources/meta-myapplications/recipes-apps/rogue/rogue.bb
+   mkdir -p sources/meta-user/recipes-apps
+   mkdir -p sources/meta-user/recipes-apps/rogue
+   touch    sources/meta-user/recipes-apps/rogue/rogue.bb
 
 
 
@@ -28,7 +28,7 @@ This will create a directory in project-spec/meta-user/recipes-apps/rogue
 
 The sub-directory 'files' can be ignored or removed.
 
-You will want to replace the file `sources/meta-myapplications/recipes-apps/rogue/rogue.bb` with the following content:
+You will want to replace the file `sources/meta-user/recipes-apps/rogue/rogue.bb` with the following content:
 
 .. code::
 
@@ -105,7 +105,7 @@ You will want to replace the file `sources/meta-myapplications/recipes-apps/rogu
    }
 
 
-Update the ROGUE_VERSION line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
+Update the `ROGUE_VERSION` line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
 
 .. code::
 
@@ -113,6 +113,8 @@ Update the ROGUE_VERSION line for an updated version when appropriate. You will 
    > md5sum vx.x.x.tar.gz
 
 RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text.
+
+Step 3 - Add your application to the image installation list
 
 To enable compilation and installation of the rogue package in your Yocto project execute the following command:
 
