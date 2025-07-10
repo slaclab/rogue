@@ -46,6 +46,7 @@ You will want to replace the file `sources/meta-user/recipes-apps/rogue/rogue.bb
 
    SRC_URI = "https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz"
    SRC_URI[md5sum] = "${ROGUE_MD5SUM}"
+   INSANE_SKIP += "src-uri-bad"
 
    S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
    PROVIDES = "rogue"
