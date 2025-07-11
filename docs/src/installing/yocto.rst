@@ -1,29 +1,43 @@
-.. _installing_petalinux:
+.. _installing_yocto:
 
 =============================
-Setting Up Rogue In Petalinux
+Setting Up Rogue In Yocto
 =============================
 
-First you need to create a blank application in your petalinux project:
+Step 1 - Create a new application layer
+
+Only perform this step if you do not already have an application layer created
 
 .. code::
 
-   > petalinux-create -t apps --name rogue --template install
+   bitbake-layers create-layer sources/meta-user
+   bitbake-layers add-layer    sources/meta-user
+
+
+Step 2 - Add your prebuilt application receipe
+
+.. code::
+
+   mkdir -p sources/meta-user/recipes-apps
+   mkdir -p sources/meta-user/recipes-apps/rogue
+   touch    sources/meta-user/recipes-apps/rogue/rogue.bb
+
+
 
 This will create a directory in project-spec/meta-user/recipes-apps/rogue
 
 The sub-directory 'files' can be ignored or removed.
 
-You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogue.bb with the following content:
+You will want to replace the file `sources/meta-user/recipes-apps/rogue/rogue.bb` with the following content:
 
 .. code::
 
    #
-   # This file is the rogue recipe and tested on Petalinux 2024.2
+   # rogue recipe for Yocto
    #
 
-   ROGUE_VERSION = "6.5.0"
-   ROGUE_MD5SUM  = "bfa8b7ef6ee883c5a9381b377b67c7a3"
+   ROGUE_VERSION = "6.6.1"
+   ROGUE_MD5SUM  = "0c0a5d4c32ab2cf5bca46edb92d9e13e"
 
    SUMMARY = "Recipe to build Rogue"
    HOMEPAGE ="https://github.com/slaclab/rogue"
@@ -32,6 +46,7 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
 
    SRC_URI = "https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz"
    SRC_URI[md5sum] = "${ROGUE_MD5SUM}"
+   INSANE_SKIP += "src-uri-bad"
 
    S = "${WORKDIR}/rogue-${ROGUE_VERSION}"
    PROVIDES = "rogue"
@@ -90,34 +105,20 @@ You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogu
       install -m 0755 ${S}/python/rogue.so ${D}${PYTHON_SITEPACKAGES_DIR}
    }
 
-Update the ROGUE_VERSION line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
+
+Update the `ROGUE_VERSION` line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:
 
 .. code::
 
    > wget https://github.com/slaclab/rogue/archive/vx.x.x.tar.gz
    > md5sum vx.x.x.tar.gz
 
-RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text. 
+RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text.
 
-To enable compilation and installation of the rogue package in your petalinux project execute the following command:
+Step 3 - Add your application to the image installation list
 
-.. code::
-
-   > petalinux-config -c rootfs
-
-and enable the rogue package under 'user packages'. Save and exit the menu configuration.
-
-In order to install the rogue headers you will need to enable the rogue-dev package by editing project-spec/configs/rootfs_config and adding CONFIG_rogue-dev:
+To enable compilation and installation of the rogue package in your Yocto project execute the following command:
 
 .. code::
 
-   echo CONFIG_rogue=y >> project-spec/configs/rootfs_config
-   echo CONFIG_rogue-dev=y >> project-spec/configs/rootfs_config
-
-You can then build the rogue package with the following command:
-
-.. code::
-
-   > petalinux-build -c rogue
-
-You can then build the petalinux project as normal.
+   echo "IMAGE_INSTALL:append = \" rogue rogue-dev\""  >> sources/meta-user/conf/layer.conf
