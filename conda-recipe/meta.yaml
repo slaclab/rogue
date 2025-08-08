@@ -16,26 +16,26 @@ requirements:
      - cmake
      - make
    host:
-     - python>=3.7
+     - python=3.10
      - boost
      - bzip2
      - zeromq
      - numpy
    run:
-     - python
+     - python=3.10
      - boost
      - bzip2
      - zeromq
      - numpy
      - ipython
-     - p4p
+     - p4p=4.2.0
      - pyyaml
      - jsonpickle
      - pyzmq
      - parse
      - click
      - sqlalchemy
-     - pydm>=1.18.0
+     - pydm>=1.27.2
      - pyserial
      - matplotlib
 
