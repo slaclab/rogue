@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Petalinux &mdash; Rogue v6.6.1 documentation</title>
+  <title>Setting Up Rogue In Yocto &mdash; Rogue v6.6.2 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=b2d75188"></script>
+      <script src="../_static/documentation_options.js?v=852fdbe2"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -52,7 +52,7 @@
 <li class="toctree-l2"><a class="reference internal" href="application.html">Compiling A Rogue Application</a></li>
 <li class="toctree-l2"><a class="reference internal" href="firewall.html">Rogue and Miniforge behind a firewall</a></li>
 <li class="toctree-l2"><a class="reference internal" href="windows.html">Setting Up Ubuntu On Windows</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Rogue In Petalinux</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Setting Up Rogue In Yocto</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
@@ -81,9 +81,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="index.html">Installing &amp; Compiling Rogue</a></li>
-      <li class="breadcrumb-item active">Setting Up Rogue In Petalinux</li>
+      <li class="breadcrumb-item active">Setting Up Rogue In Yocto</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/installing/petalinux.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/installing/yocto.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -91,21 +91,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="setting-up-rogue-in-petalinux">
-<span id="installing-petalinux"></span><h1>Setting Up Rogue In Petalinux<a class="headerlink" href="#setting-up-rogue-in-petalinux" title="Link to this heading"></a></h1>
-<p>First you need to create a blank application in your petalinux project:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">create</span> <span class="o">-</span><span class="n">t</span> <span class="n">apps</span> <span class="o">--</span><span class="n">name</span> <span class="n">rogue</span> <span class="o">--</span><span class="n">template</span> <span class="n">install</span>
+  <section id="setting-up-rogue-in-yocto">
+<span id="installing-yocto"></span><h1>Setting Up Rogue In Yocto<a class="headerlink" href="#setting-up-rogue-in-yocto" title="Link to this heading"></a></h1>
+<p>Step 1 - Create a new application layer</p>
+<p>Only perform this step if you do not already have an application layer created</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bitbake</span><span class="o">-</span><span class="n">layers</span> <span class="n">create</span><span class="o">-</span><span class="n">layer</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span>
+<span class="n">bitbake</span><span class="o">-</span><span class="n">layers</span> <span class="n">add</span><span class="o">-</span><span class="n">layer</span>    <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span>
+</pre></div>
+</div>
+<p>Step 2 - Add your prebuilt application receipe</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">recipes</span><span class="o">-</span><span class="n">apps</span>
+<span class="n">mkdir</span> <span class="o">-</span><span class="n">p</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">recipes</span><span class="o">-</span><span class="n">apps</span><span class="o">/</span><span class="n">rogue</span>
+<span class="n">touch</span>    <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">recipes</span><span class="o">-</span><span class="n">apps</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="n">rogue</span><span class="o">.</span><span class="n">bb</span>
 </pre></div>
 </div>
 <p>This will create a directory in project-spec/meta-user/recipes-apps/rogue</p>
 <p>The sub-directory ‘files’ can be ignored or removed.</p>
-<p>You will want to replace the file project-spec/meta-user/recipes-apps/rogue/rogue.bb with the following content:</p>
+<p>You will want to replace the file <cite>sources/meta-user/recipes-apps/rogue/rogue.bb</cite> with the following content:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#
-# This file is the rogue recipe and tested on Petalinux 2024.2
+# rogue recipe for Yocto
 #
 
-ROGUE_VERSION = &quot;6.5.0&quot;
-ROGUE_MD5SUM  = &quot;bfa8b7ef6ee883c5a9381b377b67c7a3&quot;
+ROGUE_VERSION = &quot;6.6.1&quot;
+ROGUE_MD5SUM  = &quot;0c0a5d4c32ab2cf5bca46edb92d9e13e&quot;
 
 SUMMARY = &quot;Recipe to build Rogue&quot;
 HOMEPAGE =&quot;https://github.com/slaclab/rogue&quot;
@@ -114,6 +122,7 @@ LIC_FILES_CHKSUM = &quot;file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf850
 
 SRC_URI = &quot;https://github.com/slaclab/rogue/archive/v${ROGUE_VERSION}.tar.gz&quot;
 SRC_URI[md5sum] = &quot;${ROGUE_MD5SUM}&quot;
+INSANE_SKIP += &quot;src-uri-bad&quot;
 
 S = &quot;${WORKDIR}/rogue-${ROGUE_VERSION}&quot;
 PROVIDES = &quot;rogue&quot;
@@ -173,27 +182,17 @@ do_install() {
 }
 </pre></div>
 </div>
-<p>Update the ROGUE_VERSION line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:</p>
+<p>Update the <cite>ROGUE_VERSION</cite> line for an updated version when appropriate. You will need to first download the tar.gz file and compute the MD5SUM using the following commands if you update the ROGUE_VERSION line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">slaclab</span><span class="o">/</span><span class="n">rogue</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">vx</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 <span class="o">&gt;</span> <span class="n">md5sum</span> <span class="n">vx</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="o">.</span><span class="n">tar</span><span class="o">.</span><span class="n">gz</span>
 </pre></div>
 </div>
 <p>RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text.</p>
-<p>To enable compilation and installation of the rogue package in your petalinux project execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">config</span> <span class="o">-</span><span class="n">c</span> <span class="n">rootfs</span>
+<p>Step 3 - Add your application to the image installation list</p>
+<p>To enable compilation and installation of the rogue package in your Yocto project execute the following command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;IMAGE_INSTALL:append = </span><span class="se">\&quot;</span><span class="s2"> rogue rogue-dev</span><span class="se">\&quot;</span><span class="s2">&quot;</span>  <span class="o">&gt;&gt;</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">layer</span><span class="o">.</span><span class="n">conf</span>
 </pre></div>
 </div>
-<p>and enable the rogue package under ‘user packages’. Save and exit the menu configuration.</p>
-<p>In order to install the rogue headers you will need to enable the rogue-dev package by editing project-spec/configs/rootfs_config and adding CONFIG_rogue-dev:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="n">CONFIG_rogue</span><span class="o">=</span><span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="n">project</span><span class="o">-</span><span class="n">spec</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">rootfs_config</span>
-<span class="n">echo</span> <span class="n">CONFIG_rogue</span><span class="o">-</span><span class="n">dev</span><span class="o">=</span><span class="n">y</span> <span class="o">&gt;&gt;</span> <span class="n">project</span><span class="o">-</span><span class="n">spec</span><span class="o">/</span><span class="n">configs</span><span class="o">/</span><span class="n">rootfs_config</span>
-</pre></div>
-</div>
-<p>You can then build the rogue package with the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&gt;</span> <span class="n">petalinux</span><span class="o">-</span><span class="n">build</span> <span class="o">-</span><span class="n">c</span> <span class="n">rogue</span>
-</pre></div>
-</div>
-<p>You can then build the petalinux project as normal.</p>
 </section>
 
 
