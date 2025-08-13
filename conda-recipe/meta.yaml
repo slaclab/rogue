@@ -16,11 +16,11 @@ requirements:
      - cmake
      - make
    host:
-     - python>=3.7
      - boost
      - bzip2
      - zeromq
-     - numpy
+     - python {{ python }} # declare python variants in conda_build_config.yaml
+     - numpy {{ numpy }}   # declare numpy  variants in conda_build_config.yaml
    run:
      - python
      - boost
@@ -28,14 +28,13 @@ requirements:
      - zeromq
      - numpy
      - ipython
-     - p4p
      - pyyaml
      - jsonpickle
      - pyzmq
      - parse
      - click
      - sqlalchemy
-     - pydm>=1.18.0
+     - pydm
      - pyserial
      - matplotlib
 
@@ -44,4 +43,3 @@ about:
    license: SLAC Open License
    license_file: LICENSE.txt
    summary: SLAC Python Based Hardware Abstraction And Data Acquisition System
-
