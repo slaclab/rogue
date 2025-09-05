@@ -201,6 +201,7 @@ class BaseVariable(pr.Node):
         self._highWarning   = highWarning
         self._highAlarm     = highAlarm
         self._default       = value
+        self._defaultType   = type(value)
         self._typeStr       = typeStr
         self._block         = None
         self._pollInterval  = pollInterval
@@ -1363,6 +1364,7 @@ class LocalVariable(BaseVariable):
                  pollInterval=0,
                  updateNotify=True,
                  typeStr='Unknown',
+                 staticType=True,
                  bulkOpEn=True,
                  guiGroup=None,
                  **kwargs):
@@ -1385,6 +1387,7 @@ class LocalVariable(BaseVariable):
                                     minimum=minimum,
                                     maximum=maximum,
                                     value=self._default)
+        self._staticType = staticType
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
@@ -1414,6 +1417,13 @@ class LocalVariable(BaseVariable):
         self._log.debug("{}.set({})".format(self, value))
 
         try:
+
+            # Type check first so we bail early
+            if self._staticType and not isinstance(value, self._defaultType):
+                raise TypeError(
+                    f"Error - {self.path}: Expecting {self._defaultType} "
+                    f"but got {type(value)}"
+                )
 
             # Set value to block
             self._block.set(self, value, index)
