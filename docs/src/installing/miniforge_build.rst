@@ -62,7 +62,7 @@ Once the rogue environment is activated, you can build and install rogue
    $ mkdir build
    $ cd build
    $ cmake ..
-   $ make
+   $ make -j$(nproc)
    $ make install
 
 The Rogue build system will automatically detect that it is in a conda environment and it will be installed
