@@ -121,4 +121,4 @@ To enable compilation and installation of the rogue package in your Yocto projec
 
 .. code::
 
-   echo "IMAGE_INSTALL:append = \" rogue rogue-dev\""  >> sources/meta-user/conf/layer.conf
+   echo "IMAGE_INSTALL:append = \" rogue\""  >> sources/meta-user/conf/layer.conf
