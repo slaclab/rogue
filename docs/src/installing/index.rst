@@ -30,4 +30,4 @@ A Linux(Ubuntu) VM or docker image will be required to build rogue.
    application
    firewall
    windows
-   petalinux
+   yocto

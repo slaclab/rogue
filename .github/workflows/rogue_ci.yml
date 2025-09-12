@@ -12,7 +12,6 @@
 # The following environment variables are required for this process:
 # secrets.GH_TOKEN
 # secrets.CONDA_UPLOAD_TOKEN_TAG
-# secrets.DOCKERHUB_TOKEN
 
 name: Rogue Integration
 on: [push]
@@ -168,7 +167,7 @@ jobs:
 
   docker_build_rogue:
     needs: [full_build_test, small_build_test]
-    uses: slaclab/ruckus/.github/workflows/docker_build.yml@gh_docker
+    uses: slaclab/ruckus/.github/workflows/docker_build.yml@main
     with:
       gh_username: slacrherbst
       docker_name: rogue
