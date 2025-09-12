@@ -6,13 +6,16 @@ Installing Rogue With Miniforge
 
 The following instructions describe how to install a pre-built Rogue package inside an miniforge environment. These instructions are relevant for Linux, Ubuntu on Windows and MacOS.
 
-See the section :ref:`installing_windows` for additional steps required for Windows.
+Windows installations will require you to install Ubuntu. Reference the section :ref:`installing_windows` for required steps. 
+Mac is not currently supported for rogue, and a VM or docker image is needed. Proceed to :ref:`installing_docker`. 
+
+Instructions for s3df setup are also available on `Confluence <https://confluence.slac.stanford.edu/spaces/ppareg/pages/591664140/Configure+miniforge+conda+and+Rogue+on+S3DF>`. 
 
 Getting Miniforge
 ================
 
-Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Miniforge appears to only work reliably in the bash shell.
-Note: You can alternatively install miniforge with the Homebrew package manager. 
+Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). 
+Miniforge appears to only work reliably in the bash shell.
 
 *Linux*
 
@@ -20,21 +23,6 @@ Note: You can alternatively install miniforge with the Homebrew package manager.
 
    $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh
    $ bash Miniforge3-Linux-x86_64.sh
-
-*Mac* Arm/Apple Silicon hardware
-
-.. code::
-
-   $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-arm64.sh
-   $ bash Miniforge3-MacOSX-arm64.sh
-
-*Mac* x86 hardware
-
-.. code::
-
-   $ wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-MacOSX-x86_64.sh
-   $ bash Miniforge3-MacOSX-x86_64.sh
-
 
 Use the following command to add miniforge to your environment. This can be added to your .bash_profile.
 
