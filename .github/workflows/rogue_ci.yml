@@ -79,7 +79,7 @@ jobs:
       - name: Rogue Tests
         run: |
           source setup_rogue.sh
-          python -m pytest --cov
+          python -m pytest --cov -v -n auto tests/
 
       # Compile API Test
       - name: Compile API Test
