@@ -126,13 +126,6 @@ class NodeError(Exception):
 class Node(object):
     """
     Class which serves as a managed object within the pyrogue package.
-    Each node has the following public fields:
-        name: Global name of object
-        description: Description of the object.
-        groups: Group or groups this node belongs to.
-           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
-        classtype: text string matching name of node sub-class
-        path: Full path to the node (ie. node1.node2.node3)
 
     Each node is associated with a parent and has a link to the top node of a tree.
     A node has a list of sub-nodes as well as each sub-node being attached as an
@@ -141,52 +134,35 @@ class Node(object):
     Parameters
     ----------
     name :
-        global name of object
+        Global name of Node
 
     description :
-        Description of object
+        Description of Node
 
-    path :
-        full path to the node (ie. node1.node2.node3)
+    expand : bool
+        Expand
 
-    expand :
+    hidden : bool
+        Whether or not the node is hidden
 
-    guiGroup :
+    path : str
+        Full path to the node (ie. node1.node2.node3)
+
+    groups : str
+        Group or groups this node belongs to.
+        Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+
+    guiGroup : str
         arbitrary groups for gui and graphical aesthetic purposes
-    Returns
+
+    Attributes
     -------
 
     """
     _nodeCount = 0
 
     def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
-        """
-        Init the node with passed attributes
 
-        Parameters
-        ----------
-        name : str
-            name of variable
-
-        description : str
-            description of variable
-
-        expand : bool
-
-
-        hidden : bool
-            Default value = False, variable is not part of hidden group
-
-        groups :
-
-
-        guiGroup :
-
-
-        Returns
-        -------
-
-        """
         pr.Node._nodeCount += 1
 
         # Public attributes

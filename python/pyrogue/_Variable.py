@@ -166,37 +166,53 @@ class BaseVariable(pr.Node):
     ----------
     name : str
         The name of the variable
-    description : str 
+    description : str
         A brief description of the variable
+    mode : str
+        The operational mode. Options are RW
+    value : int
+        The value of the variable as an integer, or None. 
+    disp : str
+        enum
+    enum : str
+        enum
+    units : str
+        Unit type for this variable
+    hidden : bool
+        Whether the variable is visible to external classes
+    groups : str
+        Groups
+    minimum : int
+        The minimum
+    maximum : int
+        The maximum
+    lowWarning : int
+        The lower threshold to trigger a warning
+    lowAlarm : int
+        The alarm to trigger when the lower threshold is reached
+    highWarning : int
+        The higher threshold to trigger a warning
+    highAlarm : int
+        The alarm to trigger when the higher threshold is reached
+    pollInterval : int
+        The frequency at which polling should happen
+    updateNotify : bool
+        Whether the listeners should be notified on update
+    typeStr : str
+        A string definition of the variable data type
+    bulkOpEn : bool
+        Whether this is a bulk operation
+    offset : float
+        The offset
+    guiGroup : str
+        The GUI group
+        
+
 
     Attributes
     ----------
-    _thread: obj
+    _thread : obj
         thread
-
-    Args:
-        name (str): The name of the variable
-        description (str): A brief description of the variable
-        mode (str): The operational mode. Options are RW
-        value (int): The value of the variable as an integer, or None. 
-        disp (str): enum
-        enum (str): enum
-        units (str): Unit type for this variable
-        hidden (bool): Whether the variable is visible to external classes
-        groups (str): Groups
-        minimum (int): The minimum
-        maximum (int): The maximum
-        lowWarning (int): The lower threshold to trigger a warning
-        lowAlarm (int): The alarm to trigger when the lower threshold is reached
-        highWarning (int): The higher threshold to trigger a warning
-        highAlarm (int): The alarm to trigger when the higher threshold is reached
-        pollInterval (int): The frequency at which polling should happen
-        updateNotify (bool): Whether the listeners should be notified on update
-        typeStr (str): A string definition of the variable data type
-        bulkOpEn (bool): Whether this is a bulk operation
-        offset (float): The offset
-        guiGroup (str): The GUI group
-
     """
 
     PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
