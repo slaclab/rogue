@@ -159,100 +159,65 @@ class BaseVariable(pr.Node):
     Fill in the parameters.
 
     The parent variable class to be used for all child variables. 
-
     Initializes BaseVariable class with the provided parameters.
 
-    Parameters
-    ----------
-    name : str
-        The name of the variable
-    description : str
-        A brief description of the variable
-    mode : str
-        The operational mode. Options are RW
-    value : int
-        The value of the variable as an integer, or None. 
-    disp : str
-        enum
-    enum : str
-        enum
-    units : str
-        Unit type for this variable
-    hidden : bool
-        Whether the variable is visible to external classes
-    groups : str
-        Groups
-    minimum : int
-        The minimum
-    maximum : int
-        The maximum
-    lowWarning : int
-        The lower threshold to trigger a warning
-    lowAlarm : int
-        The alarm to trigger when the lower threshold is reached
-    highWarning : int
-        The higher threshold to trigger a warning
-    highAlarm : int
-        The alarm to trigger when the higher threshold is reached
-    pollInterval : int
-        The frequency at which polling should happen
-    updateNotify : bool
-        Whether the listeners should be notified on update
-    typeStr : str
-        A string definition of the variable data type
-    bulkOpEn : bool
-        Whether this is a bulk operation
-    offset : float
-        The offset
-    guiGroup : str
-        The GUI group
-        
+    Args:
+        name (str): The name of the variable.
+        description (str): A brief description of the variable.
+        mode (str): The operational mode. Options are RW.
+        value (int): The value of the variable as an integer, or None. 
 
+        disp (str): enum.
+        enum (str): enum.
+        units (str): Unit type for this variable.
 
-    Attributes
-    ----------
-    _thread : obj
-        thread
-    _bulkOpEn : bool
-        Set in init funtion
-    _updateNotify : bool
-        Set in init function. Whether the listeners should be notified on update
-    _mode : str
-        Set in init function. The operational mode. Options are RW
-    _units : str
-        The units
-    _minimum : int
-        Set in init funtion
-    _maximum : int
-        Set in init funtion
-    _lowWarning : int
-        Set in init funtion
-    _lowAlarm : int
-        Set in init funtion
-    _highWarning : int
-        Set in init funtion
-    _highAlarm : int
-        Set in init funtion
-    _default : str
-        The default value of the variable to prevent errors
-    _typeStr : str
-        The typestring
-    _block : str
-        The block
-    _pollInterval : int
-        Polling interval
-    _nativeType : str
-        Native type
-    _ndType : str
-        ndtype
-    _extraAttr : list
-        Any extra attributes passed in as kwargs
-    _listeners : list
-        List of listeners
-    __functions : list
-        List of functions
-    __dependencies : list
-        List of dependencies
+        hidden (bool): Whether the variable is visible to external classes.
+        groups (str): Groups.
+
+        minimum (int): The minimum.
+        maximum (int): The maximum.
+
+        lowWarning (int): The lower threshold to trigger a warning.
+        lowAlarm (int): The alarm to trigger when the lower threshold is reached.
+        highWarning (int): The higher threshold to trigger a warning.
+        highAlarm (int): The alarm to trigger when the higher threshold is reached.
+
+        pollInterval (int): The frequency at which polling should happen.
+        updateNotify (bool): Whether the listeners should be notified on update.
+        typeStr (str): A string definition of the variable data type.
+        bulkOpEn (bool): Whether this is a bulk operation.
+        offset (float): The offset.
+        guiGroup (str): The GUI group.
+
+    Attributes:
+        _thread (object): thread.
+
+        _bulkOpEn (bool): Set in init funtion.
+        _updateNotify (bool): Set in init function. Whether the listeners should be notified on update.
+
+        _mode (str): Set in init function. The operational mode. Options are RW.
+        _units (str): The units.
+
+        _minimum (int): Set in init funtion.
+        _maximum (int): Set in init funtion.
+
+        _lowWarning (int): Set in init funtion.
+        _lowAlarm (int): Set in init funtion.
+        _highWarning (int): Set in init funtion.
+        _highAlarm (int): Set in init funtion.
+
+        _default (str): The default value of the variable to prevent errors.
+        _typeStr (str): The typestring.
+
+        _block (str): The block.
+        _pollInterval (int): Polling interval.
+        _nativeType (str): Native type.
+        _ndType (str): ndtype.
+        _extraAttr (list): Any extra attributes passed in as kwargs.
+        _listeners (list): List of listeners.
+
+        __functions (list): List of functions.
+        __dependencies (list): List of dependencies.
     """
 
     PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',

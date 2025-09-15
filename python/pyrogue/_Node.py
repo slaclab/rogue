@@ -131,57 +131,31 @@ class Node(object):
     A node has a list of sub-nodes as well as each sub-node being attached as an
     attribute. This allows tree browsing using: node1.node2.node3
 
-    Parameters
-    ----------
-    name : str
-        Global name of Node
+    Args:
+        name (str): Global name of Node
+        description (str): Description of Node
 
-    description : str
-        Description of Node
+        expand (bool): Expand node
+        hidden (bool): Whether or not the node is hidden
 
-    expand : bool
-        Expand
+        groups (str): Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+        guiGroup (str): arbitrary groups for gui and graphical aesthetic purposes
 
-    hidden : bool
-        Whether or not the node is hidden
+    Attributes:
+        _name (str): name
+        _description (str): description
+        _path (str): name
 
-    groups : str
-        Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+        _expand (bool): expand
+        _guiGroup (str): guiGroup
 
-    guiGroup : str
-        arbitrary groups for gui and graphical aesthetic purposes
+        _parent (Node): Parent node object, or None
+        _root (Node): Root node, or None
 
-    Attributes
-    -------
-    _name : str
-        name
+        _nodes (odict): Ordered dictionary of affiliated nodes
+        _anodes (odict): Ordered dictionary of anodes
 
-    _description : str
-        description
-
-    _path : str
-        name
-
-    _expand : bool
-        expand
-
-    _guiGroup : str
-        guiGroup
-
-    _parent : Node
-        Parent node object, or None
-
-    _root : Object
-        Root node, or None
-
-    _nodes : odict
-        Ordered dictionary of affiliated nodes
-
-    _anodes : odict
-        Ordered dictionary of anodes
-        
-    _log : Object
-        Logging object
+        _log (object): Logging object
     """
     _nodeCount = 0
 
