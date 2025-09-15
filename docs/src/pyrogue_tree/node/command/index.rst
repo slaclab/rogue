@@ -13,7 +13,7 @@ This is the breakdown of the BaseCommand class, which is the parent class of all
 Inherits from BaseVariable class 
 
 .. autoclass:: pyrogue.BaseCommand
-    :members:
+   :members:
    :member-order: bysource
 
 Python Command Example

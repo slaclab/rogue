@@ -7,7 +7,7 @@ Variable
 The BaseVariable class is the parent class for all sub Variable Types ...
 
 .. autoclass:: pyrogue.BaseVariable
-    :members:
+   :members:
    :member-order: bysource
 
 
