@@ -31,6 +31,8 @@ class BaseCommand(pr.BaseVariable):
     Initializes BaseCommand class, with the provided parameters.
     Inherits from BaseVariable class.
 
+    Commands are tasks applied to devices.
+
     Parameters
     ----------
     name : str
@@ -60,12 +62,23 @@ class BaseCommand(pr.BaseVariable):
 
     Attributes
     ----------
-    _thread: obj
-        thread
+    _functionWrap : obj
+        A wrapper for the functino variable. Includes 'root', 'dev', 'cmd', 'arg'.
 
-    _lock: obj
-        lock
-    
+    _thread : obj
+        The thread
+
+    _lock : obj
+        The lock for the thread
+
+    _retDisp : obj
+        Ret Disp
+
+    _retTypeStr : str
+        Ret type string
+
+    _arg : bool
+        Args flag
     """
 
     def __init__(self, *,

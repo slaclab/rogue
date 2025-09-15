@@ -161,7 +161,43 @@ class DeviceError(Exception):
 
 
 class Device(pr.Node,rim.Hub):
-    """Device class holder. TODO: Update comments"""
+    """Device class holder.
+
+    Initializes BaseCommand class, with the provided parameters.
+    Inherits from BaseVariable class.
+
+    Parameters
+    ----------
+    name : str
+        The name of the variable
+    description : str
+        A brief description of the variable
+    offset : float
+        The device offset value
+    hidden : bool
+        If the device is hidden or not
+    groups : str 
+        Groups
+    expand : bool
+        Expand
+    enabled : bool
+        Whether the device is enabled or not
+    defaults : str
+        The default type
+    enableDeps : bool
+        Enable Deps
+    hubMax : int
+        Hub Max
+    hubMin : int
+        Hub Min
+    guiGroup : str
+        The GUI group
+
+    Attributes
+    ----------
+    _blocks : list
+        List of blocks
+    """
 
     def __init__(self, *,
                  name=None,

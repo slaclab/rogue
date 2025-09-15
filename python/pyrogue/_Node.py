@@ -145,9 +145,6 @@ class Node(object):
     hidden : bool
         Whether or not the node is hidden
 
-    path : str
-        Full path to the node (ie. node1.node2.node3)
-
     groups : str
         Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
 
@@ -156,7 +153,35 @@ class Node(object):
 
     Attributes
     -------
+    _name : str
+        name
 
+    _description : str
+        description
+
+    _path : str
+        name
+
+    _expand : bool
+        expand
+
+    _guiGroup : str
+        guiGroup
+
+    _parent : Node
+        Parent node object, or None
+
+    _root : Object
+        Root node, or None
+
+    _nodes : odict
+        Ordered dictionary of affiliated nodes
+
+    _anodes : odict
+        Ordered dictionary of anodes
+        
+    _log : Object
+        Logging object
     """
     _nodeCount = 0
 
