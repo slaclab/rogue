@@ -4,6 +4,7 @@ click
 coverage
 codecov
 pytest>=3.6
+pytest-xdist
 pytest-cov
 sphinx
 sphinx_rtd_theme
