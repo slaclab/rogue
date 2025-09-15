@@ -8,7 +8,7 @@ This section provides instructions for downloading and building rogue inside an 
 instructions are relevant for Linux
 
 Getting Miniforge
-================
+==================
 
 Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Miniforge appears to only work reliably in the bash shell.
 
@@ -33,7 +33,7 @@ Set your local miniforge to use the update solver:
     $ conda config --set solver libmamba
 
 Downloading Rogue & Creating Miniforge Environment
-=================================================
+===================================================
 
 The next step is to download rogue and create a rogue compatible miniforge environment.
 
@@ -53,7 +53,7 @@ To activate this environment:
    $ conda activate rogue_build
 
 Building Rogue In Miniforge
-==========================
+============================
 
 Once the rogue environment is activated, you can build and install rogue
 
@@ -69,7 +69,7 @@ The Rogue build system will automatically detect that it is in a conda environme
 within the miniforge rogue environment.
 
 Using Rogue In Miniforge
-=======================
+=========================
 
 No additional setup scripts need to be run rogue in an miniforge environment. To activate and de-activate the rogue environment you can use the following commands:
 
@@ -86,7 +86,7 @@ To deactivate:
    $ conda deactivate
 
 Updating Rogue In Miniforge
-==========================
+============================
 
 If you want to update and re-install rogue, run the following commands.
 
@@ -102,7 +102,7 @@ If you want to update and re-install rogue, run the following commands.
    $ make install
 
 Deleting Miniforge Environment
-=============================
+===============================
 
 Run the following commands to delete the miniforge environment.
 

@@ -10,7 +10,7 @@ This is where I should put starter information and include various notes from th
 
 
 Goals of Rogue
-_________
+==============
 
 Provide a system to facilitate hardware development and intermediate daq systems
 for interfacing to hardware
@@ -39,8 +39,9 @@ interfaces
    * EuDaq
 
 
+
 Structure of Rogue
-_________
+==================
 
 
 * Mixed C++/Python codebase using boost::python library
