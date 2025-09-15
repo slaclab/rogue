@@ -201,7 +201,6 @@ class BaseVariable(pr.Node):
         self._highWarning   = highWarning
         self._highAlarm     = highAlarm
         self._default       = value
-        self._defaultType   = type(value)
         self._typeStr       = typeStr
         self._block         = None
         self._pollInterval  = pollInterval
@@ -1419,9 +1418,9 @@ class LocalVariable(BaseVariable):
         try:
 
             # Type check first so we bail early
-            if self._staticType and not isinstance(value, self._defaultType):
+            if self._staticType and not isinstance(value, self._nativeType):
                 raise TypeError(
-                    f"Error - {self.path}: Expecting {self._defaultType} "
+                    f"Error - {self.path}: Expecting {self._nativeType} "
                     f"but got {type(value)}"
                 )
 
