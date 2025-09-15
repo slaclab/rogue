@@ -4,7 +4,7 @@
 Installing Rogue Docker
 =======================
 
-Docker images with rogue are automatically generated and uploaded to Docker hub, in the following repositories:
+Docker images with rogue are automatically generated and uploaded to GitHub Container Registry (GHCR), in the following repositories:
 
 Docker images are created for tagged version of rogue:
 https://ghcr.io/slaclab/rogue
