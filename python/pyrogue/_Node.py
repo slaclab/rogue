@@ -133,10 +133,10 @@ class Node(object):
 
     Parameters
     ----------
-    name :
+    name : str
         Global name of Node
 
-    description :
+    description : str
         Description of Node
 
     expand : bool
@@ -149,8 +149,7 @@ class Node(object):
         Full path to the node (ie. node1.node2.node3)
 
     groups : str
-        Group or groups this node belongs to.
-        Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+        Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
 
     guiGroup : str
         arbitrary groups for gui and graphical aesthetic purposes

@@ -213,6 +213,46 @@ class BaseVariable(pr.Node):
     ----------
     _thread : obj
         thread
+    _bulkOpEn : bool
+        Set in init funtion
+    _updateNotify : bool
+        Set in init function. Whether the listeners should be notified on update
+    _mode : str
+        Set in init function. The operational mode. Options are RW
+    _units : str
+        The units
+    _minimum : int
+        Set in init funtion
+    _maximum : int
+        Set in init funtion
+    _lowWarning : int
+        Set in init funtion
+    _lowAlarm : int
+        Set in init funtion
+    _highWarning : int
+        Set in init funtion
+    _highAlarm : int
+        Set in init funtion
+    _default : str
+        The default value of the variable to prevent errors
+    _typeStr : str
+        The typestring
+    _block : str
+        The block
+    _pollInterval : int
+        Polling interval
+    _nativeType : str
+        Native type
+    _ndType : str
+        ndtype
+    _extraAttr : list
+        Any extra attributes passed in as kwargs
+    _listeners : list
+        List of listeners
+    __functions : list
+        List of functions
+    __dependencies : list
+        List of dependencies
     """
 
     PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
