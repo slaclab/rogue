@@ -29,16 +29,16 @@ class BaseCommand(pr.BaseVariable):
     """ 
 
     Initializes BaseCommand class, with the provided parameters.
-    Inherits from BaseVariable class. 
+    Inherits from BaseVariable class.
 
     Parameters
     ----------
     name : str
         The name of the variable
-    description : str 
+    description : str
         A brief description of the variable
     value : int
-        The value of the variable as an integer, or None. 
+        The value of the variable as an integer, or None.
     retValue : str
         enum
     enum : str
@@ -53,10 +53,10 @@ class BaseCommand(pr.BaseVariable):
         The maximum
     function : str
         Function
-    background : str 
+    background : str
         Background
     guiGroup : str
-        The GUI group        
+        The GUI group
 
     Attributes
     ----------
@@ -175,7 +175,6 @@ class BaseCommand(pr.BaseVariable):
     @pr.expose
     def call(self,arg=None):
         """
-
 
         Parameters
         ----------
