@@ -80,7 +80,13 @@ jobs:
       - name: Rogue Tests
         run: |
           source setup_rogue.sh
-          python -m pytest --cov -v -n auto tests/
+          #######################################################
+          # Note: Unable to run the pytest in parallel due to the
+          #       resource sharing impacting tests/test_rate.py
+          #######################################################
+          # python -m pytest --cov -v -n auto tests/
+          #######################################################
+          python -m pytest --cov
 
       # Compile API Test
       - name: Compile API Test
