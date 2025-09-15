@@ -10,11 +10,3 @@ If interested in the source code of this tutorial, at can be found on `github <h
 This tutorial will cover installation and setup, building the source code, running the GUI and interactive shell, building, and releasing your own libraries and tags. 
 
 .. Rogue Tutorials
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Resources:
-
-   basics/index
-   starting/index
-   complex/index

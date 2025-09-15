@@ -42,6 +42,25 @@ class BaseCommand(pr.BaseVariable):
                  background=False,
                  guiGroup=None,
                  **kwargs):
+        """
+        Initializes BaseCommand class, with the provided parameters.
+        Inherits from BaseVariable class. 
+
+        Args:
+            name (str): The name of the variable
+            description (str): A brief description of the variable
+            value (int): The value of the variable as an integer, or None. 
+            retValue (str): enum
+            enum (str): enum
+            hidden (bool): Whether the variable is visible to external classes
+            groups (str): Groups
+            minimum (int): The minimum
+            maximum (int): The maximum
+            function (str): Function
+            background (str): Background
+            guiGroup (str): The GUI group
+        """
+
 
         pr.BaseVariable.__init__(
             self,

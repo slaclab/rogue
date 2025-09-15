@@ -1,11 +1,11 @@
 .. _variable_definition:
 
-=====
+=========
 Variables
-=====
+=========
 
-The Model class define a data type for use with a Block.
+This is the breakdown of the BaseVariable class, which is the parent class of all variables. 
 
-.. autoclass:: pyrogue.Model
-   :members:
+.. autoclass:: pyrogue.BaseVariable
+    :members:
    :member-order: bysource

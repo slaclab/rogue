@@ -4,21 +4,11 @@
 Variable
 ========
 
-The Variable class ...
+The BaseVariable class is the parent class for all sub Variable Types ...
 
-In this example ... 
-
-
-These are the variables 
-
-+---------------------------------------------+-----------------------+-------------------+------------------------------------------------+
-| Variable                                    | Hardware Type         | Python Type       | Notes                                          |
-+=============================================+=======================+===================+================+===============================+
-| :ref:`interfaces_memory_model_uint`         | unsigned integer      | int               | unconstrained                                  |
-+---------------------------------------------+-----------------------+-------------------+------------------------------------------------+
-| :ref:`interfaces_memory_model_uintbe`       | unsigned integer      | int               | Same as UInt but big endian                    |
-+---------------------------------------------+-----------------------+-------------------+------------------------------------------------+
-
+.. autoclass:: pyrogue.BaseVariable
+    :members:
+   :member-order: bysource
 
 
 Python Variable Example
