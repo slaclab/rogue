@@ -29,7 +29,6 @@ RUN mkdir build
 WORKDIR build
 RUN cmake .. -DROGUE_INSTALL=system
 RUN make -j4 install
-RUN echo /usr/local/lib >> /etc/ld.so.conf.d/rogue_epics.conf
 RUN ldconfig
 ENV PYQTDESIGNERPATH /usr/local/lib/python3.10/dist-packages/pyrogue/pydm
 ENV PYDM_DATA_PLUGINS_PATH /usr/local/lib/python3.10/dist-packages/pyrogue/pydm/data_plugins
