@@ -450,7 +450,7 @@ boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
                 "Offset %" PRIu32 " is past end of frame (size %" PRIuPTR ")",
                 offset, static_cast<uintptr_t>(size_bytes)));
         }
-        count = static_cast<uint32_t>(size_bytes - offset); // count in BYTES by API contract
+        count = static_cast<uint32_t>(size_bytes - offset);  // count in BYTES by API contract
     }
 
     // bounds check in BYTES
