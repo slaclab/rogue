@@ -4,7 +4,6 @@ python:
   - 3.10
   - 3.11
   - 3.12
-  - 3.13
 
 ###############################################################################################
 # Notes for checking if conda solution exist before doing the actual conda build
@@ -13,7 +12,6 @@ python:
 # conda render conda-recipe --variants "{python: 3.10, python_abi: '3.10 *_cp310'}"
 # conda render conda-recipe --variants "{python: 3.11, python_abi: '3.11 *_cp311'}"
 # conda render conda-recipe --variants "{python: 3.12, python_abi: '3.12 *_cp312'}"
-# conda render conda-recipe --variants "{python: 3.13, python_abi: '3.13 *_cp313'}"
 ###############################################################################################
 
 # Lock to CPython ABI, not PyPy
@@ -22,14 +20,12 @@ python_abi:
   - 3.10 *_cp310
   - 3.11 *_cp311
   - 3.12 *_cp312
-  - 3.13 *_cp313
 
 python_impl:
   - cpython   # py39
   - cpython   # py310
   - cpython   # py311
   - cpython   # py312
-  - cpython   # py313
 
 zip_keys:
   - [python, python_abi, python_impl]
