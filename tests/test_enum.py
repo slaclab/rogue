@@ -14,6 +14,8 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 
+import time
+
 #rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
 #logger = logging.getLogger('pyrogue')
@@ -86,13 +88,18 @@ class DummyTree(pr.Root):
             memBase    = mc,
         ))
 
+    def start(self, **kwargs):
+        super().start(**kwargs)
+
+        # Allow time for TCP connection to establish
+        time.sleep(1.0)
+
 def test_enum():
 
     with DummyTree() as root:
 
         for i in range(3):
             root.Dev.Config.setDisp(f'Config{i}')
-            root.Dev.Config.write() # Work around for a race condition between setDisp() and get() with Emulate()?????
             config =  root.Dev.Config.get()
             if ( config != (2-i) ):
                 raise AssertionError( f'root.Dev.config.get()={config}' )
