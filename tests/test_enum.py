@@ -92,6 +92,7 @@ def test_enum():
 
         for i in range(3):
             root.Dev.Config.setDisp(f'Config{i}')
+            root.Dev.Config.write() # Work around for a race condition between setDisp() and get() with Emulate()?????
             config =  root.Dev.Config.get()
             if ( config != (2-i) ):
                 raise AssertionError( f'root.Dev.config.get()={config}' )
