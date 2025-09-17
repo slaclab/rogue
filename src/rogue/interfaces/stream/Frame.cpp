@@ -438,68 +438,49 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 
 #include <numpy/arrayobject.h>  // make sure this is included
 
-boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, bp::object dtype) {
+boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
     // bytes available in frame payload
-    npy_intp size_bytes = getPayload();
+    const npy_intp size_bytes = getPayload();
 
+    // default: all remaining bytes
     if (count == 0) {
-        count = size_bytes - offset; // count in BYTES by API contract
+        if (offset > size_bytes) {
+            throw(rogue::GeneralError::create(
+                "Frame::getNumpy",
+                "Offset %" PRIu32 " is past end of frame (size %" PRIuPTR ")",
+                offset, static_cast<uintptr_t>(size_bytes)));
+        }
+        count = static_cast<uint32_t>(size_bytes - offset); // count in BYTES by API contract
     }
 
     // bounds check in BYTES
-    if ((offset + count) > size_bytes) {
-        throw(rogue::GeneralError::create("Frame::getNumpy",
-                                          "Attempt to read %" PRIu32 " bytes from frame at offset %" PRIu32
-                                          " with size %" PRIu32,
-                                          count, offset, static_cast<uint32_t>(size_bytes)));
+    if ((static_cast<npy_intp>(offset) + static_cast<npy_intp>(count)) > size_bytes) {
+        throw(rogue::GeneralError::create(
+            "Frame::getNumpy",
+            "Attempt to read %" PRIu32 " bytes from frame at offset %" PRIu32
+            " with size %" PRIuPTR,
+            count, offset, static_cast<uintptr_t>(size_bytes)));
     }
 
-    // Convert "anything dtype-like" to a NumPy descriptor
-    PyObject* dtype_pyobj = dtype.ptr();
-    PyArray_Descr* descr = PyArray_DescrFromAny(dtype_pyobj, /*newdescr*/nullptr, /*minkind*/0);
-    if (!descr) {
-        // NumPy has already set a Python exception; raise your own error as well
-        throw(rogue::GeneralError::create("Frame::getNumpy",
-               "Invalid dtype argument. Must be something convertible to a NumPy dtype."));
-    }
-
-    // element size (in bytes); descr is a NEW reference
-    const npy_intp itemsize = (npy_intp)descr->elsize;
-    if (itemsize <= 0) {
-        Py_DECREF(descr);
-        throw(rogue::GeneralError::create("Frame::getNumpy",
-               "Resolved dtype has invalid itemsize."));
-    }
-
-    // Ensure byte-count aligns with dtype element size
-    if ((count % itemsize) != 0) {
-        Py_DECREF(descr);
-        throw(rogue::GeneralError::create("Frame::getNumpy",
-               "Byte count %" PRIu32 " is not a multiple of dtype itemsize %" PRIuPTR, count, (uintptr_t)itemsize));
-    }
-
-    const npy_intp nelems = count / itemsize;
-
-    // Create the array with the exact descriptor (this STEALS a reference to descr)
-    npy_intp dims[1] = { nelems };
-    PyObject* obj = PyArray_SimpleNewFromDescr(1, dims, descr);
+    // allocate a 1-D np.uint8 array with 'count' elements (bytes)
+    npy_intp dims[1] = { static_cast<npy_intp>(count) };
+    PyObject* obj = PyArray_SimpleNew(/*nd*/1, dims, NPY_UINT8);
     if (!obj) {
-        // descr already DECREF?d by SimpleNewFromDescr on success; on failure it has not been stolen
-        Py_DECREF(descr);
         throw(rogue::GeneralError::create("Frame::getNumpy",
-               "Failed to allocate NumPy array."));
+               "Failed to allocate NumPy uint8 array."));
     }
 
+    // fill it from the frame
     auto* arr = reinterpret_cast<PyArrayObject*>(obj);
     auto* dst = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
-    // Read 'count' BYTES from the frame into the array buffer
     ris::FrameIterator beg = this->begin() + offset;
     ris::fromFrame(beg, count, dst);
 
-    // Wrap and return
-    return bp::object(bp::handle<>(obj));
+    // return as boost::python object (steals ownership of obj)
+    return boost::python::object(boost::python::handle<>(obj));
 }
+
 
 
 //! Write the all the data associated with the input numpy array
@@ -589,9 +570,10 @@ void ris::Frame::setup_python() {
         .def("getNumpy",
              &ris::Frame::getNumpy,
              (bp::arg("offset") = 0,
-              bp::arg("count")  = 0,
-              bp::arg("dtype")  = bp::object(bp::handle<>(bp::borrowed(dtype_uint8)))))
-        .def("putNumpy", &ris::Frame::putNumpy, (bp::arg("offset") = 0))
+              bp::arg("count")  = 0))
+        .def("putNumpy",
+             &ris::Frame::putNumpy,
+             (bp::arg("offset") = 0))
         .def("_debug", &ris::Frame::debug);
 #endif
 }
