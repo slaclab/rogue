@@ -4,9 +4,18 @@
 Root
 ====
 
-The Root class ...
+The Root class is the fundamental building block of the :ref:`pyrogue_tree`.
+The tree hierarchy starts with a root node.
 
-In this example ... 
+
+Root Class Documentation
+========================
+
+.. autoclass:: pyrogue.Root
+   :members:
+   :member-order: bysource
+
+In this example ...
 
 Python Root Example
 ===================
