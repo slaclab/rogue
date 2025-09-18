@@ -6,7 +6,7 @@ Basics
 
 This should be a paragraph/abstract that defines what rogue is at a quick glance.
 This section goes into depth about what rogue is, and situations in which you might use it.
-This is where I should put starter information and include various notes from the powerpoint slide. 
+This is where I should put starter information and include various notes from the powerpoint slide.
 
 
 Goals of Rogue
@@ -14,13 +14,9 @@ Goals of Rogue
 
 Provide a system to facilitate hardware development and intermediate daq systems
 for interfacing to hardware
-* Support a number of hardware & software interface technologies
 
-   * Including ones that don’t yet exist
-
-* Easy to understand mechanisms for connecting independent management and
-data processing modules together using a set of well defined, easy to understand
-interfaces
+* Support a number of hardware & software interface technologies, including ones that don’t yet exist
+* Easy to understand mechanisms for connecting independent management and data processing modules together using a set of well defined, easy to understand interfaces
 * Allow data paths to exist in independent high performance threads
    
    * While also allowing data access to python for visualization
@@ -61,13 +57,13 @@ Structure of Rogue
 
       * Rogue::interfaces::memory
 
-* Higher level (Python) :ref:`_interfaces` for organizing systems 
+* Higher level (Python) :ref:`interfaces` for organizing systems
 
-   * :ref:`pyrogue_tree` structure for hierarchical organization. 
+   * :ref:`pyrogue_tree` structure for hierarchical organization.
    * Devices contain Variables, Commands, and other Devices
 
-      * These are all a part of the :ref:`_pyrogue_tree_node`(Node) base class
+      * These are all a part of the :ref:`pyrogue_tree_node`(Node) base class
 
-   * Variables describe registers - Address, data type, etc: :ref:`_pyrogue_tree_node_variable`
-   * Commands describe common sequences of operations on a Device :ref:`_pyrogue_tree_node_command`
+   * Variables describe registers - Address, data type, etc: :ref:`pyrogue_tree_node_variable`
+   * Commands describe common sequences of operations on a Device :ref:`pyrogue_tree_node_command`
 

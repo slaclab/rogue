@@ -4,7 +4,20 @@
 Variable
 ========
 
-The BaseVariable class is the parent class for all sub Variable Types ...
+The BaseVariable class is the parent class for all child Variable Types. Click the following
+links for more information on the subtypes.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Types of Variables in the PyRogue Tree:
+
+   link_variable/index
+   local_variable/index
+   remote_variable/index
+
+
+BaseVariable Class Documentation
+================================
 
 .. autoclass:: pyrogue.BaseVariable
    :members:
@@ -42,11 +55,3 @@ Below is an example of creating a Variable device in C++.
    };
 
 A few notes on the above examples ...
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Types Of Variables In The PyRogue Tree:
-
-   link_variable/index
-   local_variable/index
-   remote_variable/index

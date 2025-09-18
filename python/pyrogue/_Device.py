@@ -176,7 +176,7 @@ class Device(pr.Node,rim.Hub):
         The device offset value
     hidden : bool
         If the device is hidden or not
-    groups : str 
+    groups : str
         Groups
     expand : bool
         Expand

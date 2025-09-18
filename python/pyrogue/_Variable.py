@@ -158,14 +158,14 @@ class BaseVariable(pr.Node):
 
     Fill in the parameters.
 
-    The parent variable class to be used for all child variables. 
+    The parent variable class to be used for all child variables.
     Initializes BaseVariable class with the provided parameters.
 
     Args:
         name (str): The name of the variable.
         description (str): A brief description of the variable.
         mode (str): The operational mode. Options are RW.
-        value (int): The value of the variable as an integer, or None. 
+        value (int): The value of the variable as an integer, or None.
 
         disp (str): enum.
         enum (str): enum.

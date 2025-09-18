@@ -5,8 +5,18 @@ LocalVariable
 =============
 
 The LocalVariable class ...
+See the :ref:`pyrogue_tree_node_variable` documentation page for more information.
 
 In this example ... 
+
+
+LocalVariable Class Documentation
+=================================
+
+.. autoclass:: pyrogue.LocalVariable
+   :members:
+   :member-order: bysource
+
 
 Python LocalVariable Example
 ============================

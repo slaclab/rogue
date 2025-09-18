@@ -6,7 +6,7 @@ Tutorials
 
 To learn the basics of Rogue, reference the :ref:`basics` documentation. 
 
-There are also :ref:`_starting_tutorials` tutorials to help you get started, and :ref:`_complex_tutorials` tutorials for more advanced use cases. 
+There are also :ref:`starting_tutorials` tutorials to help you get started, and :ref:`complex_tutorials` tutorials for more advanced use cases. 
 
 .. Rogue Tutorials
 

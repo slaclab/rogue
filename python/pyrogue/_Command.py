@@ -26,7 +26,7 @@ class CommandError(Exception):
 
 
 class BaseCommand(pr.BaseVariable):
-    """ 
+    """
 
     Initializes BaseCommand class, with the provided parameters.
     Inherits from BaseVariable class.
@@ -47,7 +47,7 @@ class BaseCommand(pr.BaseVariable):
         enum
     hidden : bool
         Whether the variable is visible to external classes
-    groups : str 
+    groups : str
         Groups
     minimum : int
         The minimum
