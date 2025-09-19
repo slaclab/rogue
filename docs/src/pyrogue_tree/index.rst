@@ -21,12 +21,3 @@ A common hierarchy will be a Root Node connected to any number of Device Nodes, 
    device/index
    command/index
    variable/index
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Classes Utilizing Node:
-
-   root/index
-   device/index
-   command/index
-   variable/index

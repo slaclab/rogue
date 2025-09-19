@@ -989,7 +989,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
     Lists and integers are supported for offset, bitOffset and bitSize, but lists must be equivalent lengths.
 
     Args:
-        base (UInt) : Pointer to a Model class used to convert between the variable raw value and register bits
+        base (pr.UInt|pr.Int|pr.UIntReversed|pr.UintBE|pr.IntBE|pr.UFixed|pr.Fixed|pr.Bool|pr.String|pr.Float|pr.FloatBE|pr.Double|pr.DoubleBE) : Pointer
+            to a Model class used to convert between the variable raw value and register bits
         offset (int|list): Defines the offset in bytes of the variable relative to the device
         bitOffset (int|list): Defines the offset in bits of the LSB relative to the offset in bytes
         bitSize (int|list): Number of bits occupied by the variable.
@@ -1609,7 +1610,18 @@ class LocalVariable(BaseVariable):
         return self
 
 class LinkVariable(BaseVariable):
-    """ """
+    """A virtual variable which does not hold any local value.
+    Passes values through with possible local modification using linkedSet and linkedGet functions.
+    Dependent on other variable objects.
+
+    Args:
+        dependecies (list): List of variables that this variable is dependent on.
+        linkedSet (func): Optional reference to function that is used for set calls. Must match following template of Device.linkedSet():
+            linkedSet(device containing variable, variable, read arg passed to get())
+        linkedGet (func): Optional reference to function that is used for get calls. Must match following template of Device.linkedGet():
+            linkedGet(device containing variable, variable, raw value passed to set(), write arg passed to set())
+        * : all other args passed to pr.BaseVariable
+    """
 
     def __init__(self, *,
                  name,

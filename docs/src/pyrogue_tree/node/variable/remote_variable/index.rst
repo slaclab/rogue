@@ -8,6 +8,15 @@ The RemoteVariable class ...
 
 In this example ... 
 
+RemoteVariable Class Documentation
+=================================+
+
+.. autoclass:: pyrogue.RemoteVariable
+   :members:
+   :member-order: bysource
+
+
+
 Python RemoteVariable Example
 =============================
 
@@ -17,7 +26,7 @@ Below is an example of creating a RemoteVariable which ...
 
     import pyrogue
 
-    # Create a subclass of a RemoteVariable 
+    # Create a subclass of a RemoteVariable
     class MyRemoteVariable(...):
 
 C++ RemoteVariable Example

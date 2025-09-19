@@ -11,9 +11,9 @@ The Node class is the base class of all devices-this includes variables, command
    :caption: Types of Nodes in the PyRogue Tree:
 
    root/index
-   device/index
-   command/index
-   variable/index
+   node/device/index
+   node/command/index
+   node/variable/index
 
 
 Node Class Description
