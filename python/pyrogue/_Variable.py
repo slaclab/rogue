@@ -496,18 +496,15 @@ class BaseVariable(pr.Node):
 
     def addListener(self, listener):
         """
-        Add a listener Variable or function to call when variable changes.
+        Add a listener Variable or function to call when variable changes as a callback.
         This is useful when chaining variables together. (ADC conversions, etc)
         The variable and value class are passed as an arg: func(path,varValue)
 
-        Parameters
-        ----------
-        listener :
+        Args:
+            listener (BaseVariable|function): Listener to add to class attribute _listeners or _functions.
 
-
-        Returns
-        -------
-
+        Returns:
+            None.
         """
         if isinstance(listener, BaseVariable):
             if listener not in self._listeners:
@@ -598,7 +595,7 @@ class BaseVariable(pr.Node):
         index : int
              (Default value = -1)
         read : bool
-             (Default value = True)
+             (Default value = True) A True value will read the hardware before returning the value. False returns the shadow value.
         check : bool
              (Default value = True)
 
@@ -653,21 +650,20 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def value(self, index=-1):
-        """ """
+        """ Equivalent function to get(read=False)
+        """
         return self.get(read=False, index=index)
 
     @pr.expose
     def genDisp(self, value, *, useDisp=None):
-        """
+        """ Converts the passed raw value into the display representation
 
+        Args:
+            value : Value to access the display representation.
+            useDisp:  Optional display format override. Default behavior is to use display in class parameters.
 
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
+        Returns:
+            Formatted value for display representation.
 
         """
         try:
@@ -701,53 +697,40 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def getDisp(self, read=True, index=-1):
-        """
+        """ Returns the display value with an optional read. Equivalent to genDisp(get(read+False)).
 
+        Args:
+            read (bool) : (Default value = True)
+            index (int) : (Default value = -1)
 
-        Parameters
-        ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
-
+        Returns:
+            Formatted value for display representation.
         """
         return self.genDisp(self.get(read=read,index=index))
 
     @pr.expose
     def valueDisp(self, index=-1): #, read=True, index=-1):
-        """
+        """ Return the display value without a read. Equivalent to genDisp(get(read=False))
 
+        Args:
+            read (bool) : (Default value = True)
+            index (int) : (Default value = -1)
 
-        Parameters
-        ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
-
+        Returns:
+            Formatted value for display representation.
         """
         return self.getDisp(read=False, index=index)
 
     @pr.expose
     def parseDisp(self, sValue):
-        """
+        """ Converts a string representation or enum value into a raw value.
+        parseDisp will detect when it is being passed a raw value.
 
+        Args:
+            sValue : the value to be converted to a raw value.
 
-        Parameters
-        ----------
-        sValue :
-
-
-        Returns
-        -------
-
+        Returns:
+            Raw value version of sValue.
         """
         try:
             if not isinstance(sValue,str):
@@ -768,21 +751,16 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def setDisp(self, sValue, write=True, index=-1):
-        """
+        """ Update the variable with the display value with optional write.
+        Equivalent to set(parseDisp(sValue), write)
 
+        Args:
+            sValue :
+            write (bool) : (Default value = True)
+            index (int) : (Default value = -1)
 
-        Parameters
-        ----------
-        sValue :
-
-        write : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
-
+        Returns:
+            None
         """
         self.set(self.parseDisp(sValue), write=write, index=index)
 
@@ -1000,7 +978,24 @@ class BaseVariable(pr.Node):
 
 
 class RemoteVariable(BaseVariable,rim.Variable):
-    """ """
+    """ Used to manage a remote value typically located on the managed hardware.
+    Associated with an address, offset, and size.
+
+    A RegisterBlock serves as the gateway between the variable and a memory interface device.
+    RemoteVariables are associated into common RegisterBlocks by detecting overlaps in accessed space.
+
+    The typical use for offset, bitOffset and bitSize involves passing a single integer value to each to indicate the byte and bit offsets as well as the size.
+    In some cases the variable value will be mapped to bits scattered around memory space.
+    Lists and integers are supported for offset, bitOffset and bitSize, but lists must be equivalent lengths.
+
+    Args:
+        base (UInt) : Pointer to a Model class used to convert between the variable raw value and register bits
+        offset (int|list): Defines the offset in bytes of the variable relative to the device
+        bitOffset (int|list): Defines the offset in bits of the LSB relative to the offset in bytes
+        bitSize (int|list): Number of bits occupied by the variable.
+        verify (bool): Flag indicating if a verify should occur for a RW variable following a write.
+        value : Optional default value. BaseVariable is used to determine type.
+    """
 
     PROPS = BaseVariable.PROPS + [
         'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
@@ -1219,23 +1214,16 @@ class RemoteVariable(BaseVariable,rim.Variable):
         A verify will not be performed if verify=False
         An error will result in a logged exception.
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
+                * :
+            index (int) : (Default value = -1)
+            write (bool) : (Default value = True) True value will immediately generate a blocking transaction to hardware.
+                False will update a shadow value in anticipation of a future write during internal bulk operations.
+            verify (bool) : (Default value = True) True value caauses a verify to be performed accoring to self.verifyEn.
+            check (bool) : (Default value = True)
 
-            * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
-
-        Returns
-        -------
+        Returns:
 
         """
         try:
@@ -1261,15 +1249,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
+        Generates an immediate non-blocking write.
 
-        Parameters
-        ----------
-        value :
-
-            * :
-
-        index : int
-             (Default value = -1)
+        Args:
+            value :
+                * :
+            index (int) : (Default value = -1)
 
         Returns
         -------
@@ -1397,7 +1382,27 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
 
 class LocalVariable(BaseVariable):
-    """ """
+    """ Used to manage a local value such as a fileame, software mode, etc.
+    Each LocalVariable is backed by a LocalBlock that holds the shadow value.
+
+    Value param must be passed when creating a Local Variable. Used to set default value and determine native type.
+    
+    LocalVariables can contain complex data types such as lists and dictionaries
+    typeStr and nativeType will return the container type
+    setDisp, getDisp, valueDisp will not work properly
+    localSet and localGet parameters are optional overrides to set and get called within the context
+    of a lock associated with the variable. These are executed by the LocalBlock.
+
+    C++ functions exposed through python are supported, but no args are passed.
+
+    Args:
+        localSet: Optional reference to function used for set calls if specialized behavior needed.
+            Called when the variable's set method is called, after the internal shadow value is updated.
+            Template is localSet(device, variable, value, changed (bool))
+        localGet: Optional reference to function used for get calls if specialized behavior needed.
+            Expected to return a new value, which will be stored in the shadow value.
+            Template is localGet(device, variable)
+    """
 
     def __init__(self, *,
                  name,

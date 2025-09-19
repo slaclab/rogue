@@ -13,8 +13,8 @@ Elements within the tree are exposed to outside systems via the various :ref:`ma
 A common hierarchy will be a Root Node connected to any number of Device Nodes, which each can have their own Device Nodes, Command Nodes, and Variable Nodes.
 
 .. toctree::
-   :maxdepth: 1
-   :caption: Classes Utilizing Node:
+   :maxdepth: 2
+   :caption: Node Class Structure:
 
    node/index
    root/index
@@ -22,3 +22,11 @@ A common hierarchy will be a Root Node connected to any number of Device Nodes, 
    command/index
    variable/index
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Classes Utilizing Node:
+
+   root/index
+   device/index
+   command/index
+   variable/index

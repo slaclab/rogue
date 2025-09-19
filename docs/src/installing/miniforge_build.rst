@@ -86,7 +86,7 @@ To deactivate:
    $ conda deactivate
 
 Updating Rogue In Miniforge
-============================
+===========================
 
 If you want to update and re-install rogue, run the following commands.
 
@@ -101,8 +101,21 @@ If you want to update and re-install rogue, run the following commands.
    $ make
    $ make install
 
+Building and Viewing the Docs
+=============================
+
+Note: if edits are made to the source files, the full build process needs to be run for changes to reflect in documentation.
+
+.. code::
+   # build the docs
+   $ cd ../docs/
+   $ make html
+
+   # view output on web browser
+   $ google-chrome build/html/index.html
+
 Deleting Miniforge Environment
-===============================
+==============================
 
 Run the following commands to delete the miniforge environment.
 
