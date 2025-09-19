@@ -48,14 +48,10 @@ def VariableWait(varList, testFunction, timeout=0):
                           lambda varValues: varValues[0].updated and \
                                             varValues[1].updated)
 
-    Parameters
-    ----------
-    varList :
-
-    testFunction :
-
-    timeout : int
-         (Default value = 0)
+    Args:
+        varList :
+        testFunction :
+        timeout (int) : (Default value = 0)
 
     Returns
     -------
@@ -72,12 +68,9 @@ def VariableWait(varList, testFunction, timeout=0):
         def varUpdate(self,path,varValue):
             """
 
-            Parameters
-            ----------
-            path :
-
-            varValue :
-
+            Args:
+                path :
+                varValue :
 
             Returns
             -------
@@ -448,9 +441,8 @@ class BaseVariable(pr.Node):
         """
 
 
-        Parameters
-        ----------
-        dep :
+        Args:
+            dep :
 
 
         Returns
@@ -501,10 +493,8 @@ class BaseVariable(pr.Node):
         The variable and value class are passed as an arg: func(path,varValue)
 
         Args:
-            listener (BaseVariable|function): Listener to add to class attribute _listeners or _functions.
+            listener (BaseVariable|func): Listener to add to class attribute _listeners or _functions.
 
-        Returns:
-            None.
         """
         if isinstance(listener, BaseVariable):
             if listener not in self._listeners:
@@ -518,15 +508,10 @@ class BaseVariable(pr.Node):
 
     def delListener(self, listener):
         """
-        Remove a listener Variable or function
+        Remove a listener Variable or function from list of listener functions.
 
-        Parameters
-        ----------
-        listener :
-
-
-        Returns
-        -------
+        Args:
+            listener (BaseVariable|func): Listener to remove.
 
         """
         if listener in self.__functions:
@@ -538,20 +523,13 @@ class BaseVariable(pr.Node):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
 
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
             * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            index (int) :   (Default value = -1)
+            write (bool) : (Default value = True)
+            verify (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -566,14 +544,10 @@ class BaseVariable(pr.Node):
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
 
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
             * :
-
-        index : int
-             (Default value = -1)
+            index (int) :   (Default value = -1)
 
         Returns
         -------
@@ -588,16 +562,11 @@ class BaseVariable(pr.Node):
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
 
-        Parameters
-        ----------
-        * :
-
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True) A True value will read the hardware before returning the value. False returns the shadow value.
-        check : bool
-             (Default value = True)
+        Args:
+            * :
+            index (int) :   (Default value = -1)
+            read (bool) : (Default value = True) A True value will read the hardware before returning the value. False returns the shadow value.
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -610,14 +579,11 @@ class BaseVariable(pr.Node):
         """
         Force a write of the variable.
 
-        Parameters
-        ----------
-        * :
+        Args:
+            * :
 
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            verify (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -632,12 +598,9 @@ class BaseVariable(pr.Node):
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
 
-        Parameters
-        ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        Args:
+            read (bool) : (Default value = True)
+            index (int) : (Default value = -1)
 
         Returns
         -------
@@ -805,21 +768,13 @@ class BaseVariable(pr.Node):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
-
-
-        Parameters
-        ----------
-        d :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-        keys :
+        Args:
+            d :
+            writeEach :
+            modes :
+            incGroups :
+            excGroups :
+            keys :
 
 
         Returns
@@ -874,13 +829,12 @@ class BaseVariable(pr.Node):
         """
 
 
-        Parameters
-        ----------
-        modes :
+        Args:
+            modes :
 
-        incGroups :
+            incGroups :
 
-        excGroups :
+            excGroups :
 
 
         Returns
@@ -913,9 +867,8 @@ class BaseVariable(pr.Node):
         """
 
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
         Returns
@@ -949,9 +902,8 @@ class BaseVariable(pr.Node):
     def _genDocs(self,file):
         """
 
-        Parameters
-        ----------
-        file :
+        Args:
+            file :
 
 
         Returns
@@ -1278,12 +1230,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
 
 
-        Parameters
-        ----------
+        Args:
             * :
 
-        index : int
-             (Default value = -1)
+        index (int) :(Default value = -1)
         read : bool
              (Default value = True)
         check : bool
@@ -1319,14 +1269,11 @@ class RemoteVariable(BaseVariable,rim.Variable):
         A verify will not be performed if verify=False
         An error will result in a logged exception
 
-        Parameters
-        ----------
+        Args:
              * :
 
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            verify (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -1347,9 +1294,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """
 
 
-        Parameters
-        ----------
-        sValue :
+        Args:
+            sValue :
 
 
         Returns
@@ -1364,9 +1310,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def _genDocs(self,file):
         """
 
-        Parameters
-        ----------
-        file :
+        Args:
+            file :
 
 
         Returns
@@ -1455,20 +1400,13 @@ class LocalVariable(BaseVariable):
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
 
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
             * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            index (int) :   (Default value = -1)
+            write (bool) : (Default value = True)
+            verify (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -1496,14 +1434,12 @@ class LocalVariable(BaseVariable):
         This method does not call through parent.writeBlocks(), but rather
         calls on self._block directly.
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
-        * :
+            * :
 
-        index : int
-             (Default value = -1)
+            index (int) :   (Default value = -1)
 
         Returns
         -------
@@ -1525,16 +1461,12 @@ class LocalVariable(BaseVariable):
         """
 
 
-        Parameters
-        ----------
-            * :
+        Args:
+                * :
 
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            index (int) :   (Default value = -1)
+            read (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -1685,20 +1617,13 @@ class LinkVariable(BaseVariable):
         """
 
 
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
             * :
-
-        write : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            write (bool) : (Default value = True)
+            index (int) :   (Default value = -1)
+            verify (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns
         -------
@@ -1716,14 +1641,10 @@ class LinkVariable(BaseVariable):
         """
 
 
-        Parameters
-        ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-        check : bool
-             (Default value = True)
+        Args:
+            read (bool) : (Default value = True)
+            index (int) :   (Default value = -1)
+            check (bool) : (Default value = True)
 
         Returns
         -------

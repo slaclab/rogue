@@ -5,16 +5,16 @@ RemoteVariable
 ==============
 
 The RemoteVariable class ...
+See the :ref:`pyrogue_tree_node_variable` documentation page for more information.
 
 In this example ... 
 
 RemoteVariable Class Documentation
-=================================+
+==================================
 
 .. autoclass:: pyrogue.RemoteVariable
    :members:
    :member-order: bysource
-
 
 
 Python RemoteVariable Example

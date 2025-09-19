@@ -14,10 +14,10 @@ A common hierarchy will be a Root Node connected to any number of Device Nodes, 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Node Class Structure:
+   :caption: Node Class Types
 
    node/index
-   root/index
-   device/index
-   command/index
-   variable/index
+   node/root/index
+   node/device/index
+   node/command/index
+   node/variable/index

@@ -5,6 +5,7 @@ LinkVariable
 ============
 
 The LinkVariable class ...
+See the :ref:`pyrogue_tree_node_variable` documentation page for more information.
 
 In this example ... 
 

@@ -12,8 +12,6 @@ branch of Rogue. New documentation is being added incrementally over time.
 
 Find other helpful links(slack channel, Jira, etc) `on confluence <https://confluence.slac.stanford.edu/spaces/ppareg/pages/610487593/Rogue+Documentation+Notification+Links>`_
 
-* 
-
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
