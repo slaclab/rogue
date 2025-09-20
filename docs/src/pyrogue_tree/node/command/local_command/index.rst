@@ -17,7 +17,7 @@ Below is an example of creating a LocalCommand which ...
 
     import pyrogue
 
-    # Create a subclass of a LocalCommand 
+    # Create a subclass of a LocalCommand
     class MyLocalCommand(...):
 
 C++ LocalCommand Example
@@ -30,7 +30,7 @@ Below is an example of creating a LocalCommand device in C++.
    #include <rogue/interfaces/memory/Constants.h>
    #include <boost/thread.hpp>
 
-   // Create a subclass of a LocalCommand 
+   // Create a subclass of a LocalCommand
    class MyLocalCommand : public rogue:: ... {
       public:
 

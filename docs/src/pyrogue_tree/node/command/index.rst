@@ -21,6 +21,27 @@ Python Command Example
 
 Below is an example of creating a Command which ...
 
+
+.. code-block:: python
+
+   import pyrogue
+      # Create a subclass of a command 
+      self.add(pyrogue.RemoteCommand(
+         name = 'CountReset',
+         offset = 0x00,
+         bitSize = 1,
+         bitOffset = 0,
+         function = pr.BaseCommand.toggle,
+      ))
+
+      self.add(pyrouge.RemoteCommand(
+         name = "ResetRx",
+         offset = 0x04,
+         bitSize = 1,
+         bitOffset = 0,
+         function = pr.BaseCommand.toggle,
+      ))
+
 .. code-block:: python
 
     import pyrogue

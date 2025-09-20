@@ -28,57 +28,34 @@ class CommandError(Exception):
 class BaseCommand(pr.BaseVariable):
     """
 
-    Initializes BaseCommand class, with the provided parameters.
-    Inherits from BaseVariable class.
+    Abstract base class for all other Command Classses.
+    All Commands are sub-classes of BaseVariable and support all Variable attributes.
 
-    Commands are tasks applied to devices.
+    Commands are tasks applied to devices. Includes a number of commonly used commands
+    and sequence generators.
 
-    Parameters
-    ----------
-    name : str
-        The name of the variable
-    description : str
-        A brief description of the variable
-    value : int
-        The value of the variable as an integer, or None.
-    retValue : str
-        enum
-    enum : str
-        enum
-    hidden : bool
-        Whether the variable is visible to external classes
-    groups : str
-        Groups
-    minimum : int
-        The minimum
-    maximum : int
-        The maximum
-    function : str
-        Function
-    background : str
-        Background
-    guiGroup : str
-        The GUI group
+    Args:
+        name (str) : The name of the variable
+        description (str) : A brief description of the variable
+        value (int) : An optional value to determine the arg type
+        retValue (str) : 
+        enum (dict) : A dictionary of key,value pairs for args which have a set of selections
+        hidden (bool) : Whether the variable is visible to external classes
+        groups (str) : Groups
+        minimum (int) : Optional minimum value for a arg with a set range
+        maximum (int) : Optional maximum value for a arg with a set range
+        function (function) : Function which is called when the command is executed. Must follow template - 
+            function(device containing the variable, command generating the call, arg passed by command executrion).
+        background (str) : Background
+        guiGroup (str) : The GUI group
 
-    Attributes
-    ----------
-    _functionWrap : obj
-        A wrapper for the functino variable. Includes 'root', 'dev', 'cmd', 'arg'.
-
-    _thread : obj
-        The thread
-
-    _lock : obj
-        The lock for the thread
-
-    _retDisp : obj
-        Ret Disp
-
-    _retTypeStr : str
-        Ret type string
-
-    _arg : bool
-        Args flag
+    Attributes:
+        _functionWrap (object) : A wrapper for the functino variable. Includes 'root', 'dev', 'cmd', 'arg'.
+        _thread (object) : The thread
+        _lock (object) : The lock for the thread
+        _retDisp (object) : Ret Disp
+        _retTypeStr (str) :Ret type string
+        _arg (bool) : Args flag
     """
 
     def __init__(self, *,
@@ -152,9 +129,8 @@ class BaseCommand(pr.BaseVariable):
         """
         Execute command: TODO: Update comments
 
-        Parameters
-        ----------
-        arg :
+        Args:
+            arg :
 
 
         Returns
@@ -189,10 +165,8 @@ class BaseCommand(pr.BaseVariable):
     def call(self,arg=None):
         """
 
-        Parameters
-        ----------
-        arg : str
-             (Default value = None)
+        Args:
+            arg (str) :     (Default value = None)
 
         Returns
         -------
@@ -203,12 +177,8 @@ class BaseCommand(pr.BaseVariable):
     @pr.expose
     def callDisp(self,arg=None):
         """
-
-
-        Parameters
-        ----------
-        arg : str
-             (Default value = None)
+        Args:
+            arg (str) :     (Default value = None)
 
         Returns
         -------
@@ -224,13 +194,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def read(cmd):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
-
+        Args:
+            cmd :
         Returns
         -------
 
@@ -240,14 +205,9 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def setArg(cmd, arg):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
-        arg :
-
+        Args:
+            cmd :
+            arg :
 
         Returns
         -------
@@ -258,14 +218,9 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def setAndVerifyArg(cmd, arg):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
-        arg :
-
+        Args:
+            cmd :
+            arg :
 
         Returns
         -------
@@ -279,12 +234,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def createToggle(sets):
         """
-
-
-        Parameters
-        ----------
-        sets :
-
+        Args:
+            sets :
 
         Returns
         -------
@@ -294,8 +245,7 @@ class BaseCommand(pr.BaseVariable):
             """
 
 
-            Parameters
-            ----------
+            Args:
             cmd :
 
 
@@ -310,11 +260,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def toggle(cmd):
         """
-
-
-        Parameters
-        ----------
-        cmd :
+        Args:
+            cmd :
 
 
         Returns
@@ -327,11 +274,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def createTouch(value):
         """
-
-
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
         Returns
@@ -342,9 +286,8 @@ class BaseCommand(pr.BaseVariable):
             """
 
 
-            Parameters
-            ----------
-            cmd :
+            Args:
+                cmd :
 
 
             Returns
@@ -357,14 +300,9 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def touch(cmd, arg):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
-        arg :
-
+        Args:
+            cmd :
+            arg :
 
         Returns
         -------
@@ -378,11 +316,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def touchZero(cmd):
         """
-
-
-        Parameters
-        ----------
-        cmd :
+        Args:
+            cmd :
 
 
         Returns
@@ -394,11 +329,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def touchOne(cmd):
         """
-
-
-        Parameters
-        ----------
-        cmd :
+        Args:
+            cmd :
 
 
         Returns
@@ -410,11 +342,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def createPostedTouch(value):
         """
-
-
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
         Returns
@@ -425,9 +354,8 @@ class BaseCommand(pr.BaseVariable):
             """
 
 
-            Parameters
-            ----------
-            cmd :
+            Args:
+                cmd :
 
 
             Returns
@@ -440,14 +368,9 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def postedTouch(cmd, arg):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
-        arg :
-
+        Args:
+            cmd :
+            arg :
 
         Returns
         -------
@@ -458,12 +381,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def postedTouchOne(cmd):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
+        Args:
+            cmd :
 
         Returns
         -------
@@ -474,12 +393,8 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def postedTouchZero(cmd):
         """
-
-
-        Parameters
-        ----------
-        cmd :
-
+        Args:
+            cmd :
 
         Returns
         -------
@@ -489,12 +404,8 @@ class BaseCommand(pr.BaseVariable):
 
     def replaceFunction(self, function):
         """
-
-
-        Parameters
-        ----------
-        function :
-
+        Args:
+            function :
 
         Returns
         -------
@@ -505,22 +416,13 @@ class BaseCommand(pr.BaseVariable):
 
     def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
-
-
-        Parameters
-        ----------
-        d :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-        keys :
-
+        Args:
+            d :
+            writeEach :
+            modes :
+            incGroups :
+            excGroups :
+            keys :
 
         Returns
         -------
@@ -530,16 +432,10 @@ class BaseCommand(pr.BaseVariable):
 
     def _getDict(self,modes,incGroups,excGroups,properties):
         """
-
-
-        Parameters
-        ----------
-        modes :
-
-        incGroups :
-
-        excGroups :
-
+        Args:
+            modes :
+            incGroups :
+            excGroups :
 
         Returns
         -------
@@ -549,14 +445,9 @@ class BaseCommand(pr.BaseVariable):
 
     def get(self,read=True, index=-1):
         """
-
-
-        Parameters
-        ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        Args:
+            read (bool) : (Default value = True)
+            index (int) : (Default value = -1)
 
         Returns
         -------
@@ -566,12 +457,8 @@ class BaseCommand(pr.BaseVariable):
 
     def _genDocs(self,file):
         """
-
-
-        Parameters
-        ----------
-        file :
-
+        Args:
+            file :
 
         Returns
         -------
@@ -597,7 +484,13 @@ LocalCommand = BaseCommand
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    """ """
+    """ A Command which has a 1:1 associated with a hardware element.
+    Subclass of RemoteVariable. Passed attributes are the same as BaseCommand and RemoteVariable.
+    
+    Used to generate a set of writes to the associated hardware element.
+    Add additional functions to Command objects.
+    
+    """
 
     def __init__(self, *,
                  name,
@@ -650,18 +543,11 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     def set(self, value, *,  index=-1, write=True):
         """
-
-
-        Parameters
-        ----------
-        value :
-
-        * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
+        Args:
+            value :
+            * :
+            index (int) : (Default value = -1)
+            write (bool) : (Default value = True)
 
         Returns
         -------
@@ -681,16 +567,11 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     def get(self, *, index=-1, read=True):
         """
+        Args:
+            * :
 
-
-        Parameters
-        ----------
-        * :
-
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True)
+            index (int) : (Default value = -1)
+            read (bool) : (Default value = True)
 
         Returns
         -------
@@ -708,12 +589,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     def _genDocs(self,file):
         """
-
-
-        Parameters
-        ----------
-        file :
-
+        Args:
+            file :
 
         Returns
         -------
