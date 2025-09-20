@@ -38,13 +38,13 @@ class BaseCommand(pr.BaseVariable):
         name (str) : The name of the variable
         description (str) : A brief description of the variable
         value (int) : An optional value to determine the arg type
-        retValue (str) : 
+        retValue (str) :
         enum (dict) : A dictionary of key,value pairs for args which have a set of selections
         hidden (bool) : Whether the variable is visible to external classes
         groups (str) : Groups
         minimum (int) : Optional minimum value for a arg with a set range
         maximum (int) : Optional maximum value for a arg with a set range
-        function (function) : Function which is called when the command is executed. Must follow template - 
+        function (function) : Function which is called when the command is executed. Must follow template -
             function(device containing the variable, command generating the call, arg passed by command executrion).
         background (str) : Background
         guiGroup (str) : The GUI group
@@ -486,10 +486,10 @@ LocalCommand = BaseCommand
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
     """ A Command which has a 1:1 associated with a hardware element.
     Subclass of RemoteVariable. Passed attributes are the same as BaseCommand and RemoteVariable.
-    
+
     Used to generate a set of writes to the associated hardware element.
     Add additional functions to Command objects.
-    
+
     """
 
     def __init__(self, *,

@@ -238,7 +238,7 @@ class BaseVariable(pr.Node):
             __functions (list): List of functions.
             __dependencies (list): List of dependencies.
         """
-        
+
         # Public Attributes
         self._bulkOpEn      = bulkOpEn
         self._updateNotify  = updateNotify
@@ -1329,7 +1329,7 @@ class LocalVariable(BaseVariable):
     Each LocalVariable is backed by a LocalBlock that holds the shadow value.
 
     Value param must be passed when creating a Local Variable. Used to set default value and determine native type.
-    
+
     LocalVariables can contain complex data types such as lists and dictionaries
     typeStr and nativeType will return the container type
     setDisp, getDisp, valueDisp will not work properly
