@@ -22,7 +22,7 @@ BaseVariable Class Documentation
 .. autoclass:: pyrogue.BaseVariable
    :members:
    :member-order: bysource
-
+   :inherited-members:
 
 Python Variable Example
 =======================

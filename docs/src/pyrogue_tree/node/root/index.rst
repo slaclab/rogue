@@ -14,6 +14,7 @@ Root Class Documentation
 .. autoclass:: pyrogue.Root
    :members:
    :member-order: bysource
+   :inherited-members:
 
 In this example ...
 

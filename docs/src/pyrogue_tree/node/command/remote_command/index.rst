@@ -11,6 +11,7 @@ In this example ...
 .. autoclass:: pyrogue.RemoteCommand
    :members:
    :member-order: bysource
+   :inherited-members:
 
 
 Python RemoteCommand Example

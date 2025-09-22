@@ -9,11 +9,12 @@ The Device class ...
 In this example ... 
 
 Device Class Documentation
-================================
+==========================
 
 .. autoclass:: pyrogue.Device
    :members:
    :member-order: bysource
+   :inherited-members:
 
 
 Python Device Example

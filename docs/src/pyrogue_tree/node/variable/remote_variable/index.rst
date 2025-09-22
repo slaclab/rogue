@@ -15,6 +15,7 @@ RemoteVariable Class Documentation
 .. autoclass:: pyrogue.RemoteVariable
    :members:
    :member-order: bysource
+   :inherited-members:
 
 
 Python RemoteVariable Example

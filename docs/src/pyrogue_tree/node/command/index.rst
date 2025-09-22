@@ -15,6 +15,8 @@ Inherits from BaseVariable class
 .. autoclass:: pyrogue.BaseCommand
    :members:
    :member-order: bysource
+   :inherited-members:
+
 
 Python Command Example
 ======================

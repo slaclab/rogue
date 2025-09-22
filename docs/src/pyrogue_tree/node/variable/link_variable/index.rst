@@ -15,6 +15,7 @@ LinkVariable Class Documentation
 .. autoclass:: pyrogue.LinkVariable
    :members:
    :member-order: bysource
+   :inherited-members:
 
 
 Python LinkVariable Example

@@ -8,6 +8,15 @@ The LocalCommand class ...
 
 In this example ... 
 
+LocalCommand Class Definition
+=============================
+
+.. autoclass:: pyrogue.LocalCommand
+   :members:
+   :member-order: bysource
+   :inherited-members:
+
+
 Python LocalCommand Example
 ===========================
 
