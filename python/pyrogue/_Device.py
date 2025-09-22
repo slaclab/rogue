@@ -163,13 +163,12 @@ class Device(pr.Node,rim.Hub):
     A Device can have it’s own direct link to a memory Slave which is not related to parent.
 
     Args:
-        name (str) : The name of the variable
-        description (str) : A brief description of the variable
+        memBase : Object which provides a path to a memory Slave device. Can either be an instance of a memory Slave
+             or an instance of a memory Hub from which it will inherit a base address and Slave instance link.
         offset (float) : The device offset value
         hidden (bool) : If the device is hidden or not
-        groups (str) : Groups
-        expand (bool) : Expand
-        enabled (bool) : Whether the device is enabled or not
+        enabled (bool) : This variable is an on/off switch for the device, its local variables as well as all sub-devices.
+            Sub-devices which are disabled due to a parent device being disabled will show as ‘ParentFalse’ to differentiate from a local value of ‘False’
         defaults (str) : The default type
         enableDeps (bool) : Enable Deps
         hubMax (int) : Hub Max
@@ -178,6 +177,13 @@ class Device(pr.Node,rim.Hub):
 
     Attributes:
         _blocks (list) : List of blocks
+        _custBlocks (list) : custBlocks
+        _memBase : Reference to memBase parameter.
+        _memLock : Lock
+        _defaults : Defaults
+        _ifAndProto (list) : ifandproto
+
+        forceCheckEach (bool) : force check
     """
 
     def __init__(self, *,
@@ -251,10 +257,8 @@ class Device(pr.Node,rim.Hub):
     def addCustomBlock(self, block):
         """
 
-
         Args:
             block :
-
 
         Returns:
 
@@ -265,10 +269,8 @@ class Device(pr.Node,rim.Hub):
     def add(self,node):
         """
 
-
         Args:
             node :
-
 
         Returns:
 
@@ -445,8 +447,8 @@ class Device(pr.Node,rim.Hub):
         Hide a list of Variables (or Variable names)
 
         Args:
-            hidden :
-            variables (str) :      (Default value = None)
+            hidden (bool) : True/False value to set each variable to.
+            variables (list) : (Default value = None) List of variable objects or names to apply the arg to.
 
         Returns:
 
@@ -466,18 +468,17 @@ class Device(pr.Node,rim.Hub):
             value.initialize()
 
     def hardReset(self):
-        """ """
+        """ Called on each Device when a system wide hardReset is generated. """
         for key,value in self.devices.items():
             value.hardReset()
 
     def countReset(self):
-        """ """
+        """ Called on each Device when a system wide countReset is generated. """
         for key,value in self.devices.items():
             value.countReset()
 
     def enableChanged(self,value):
         """
-
 
         Args:
             value :
@@ -496,14 +497,12 @@ class Device(pr.Node,rim.Hub):
 
         Args:
             * :
-
-            force (bool) :      (Default value = False)
-            recurse (bool) :      (Default value = True)
-            variable (str) :      (Default value = None)
+            force (bool) : (Default value = False) This flag indicates if the transaction will force writes for blocks which are not stale.
+            recurse (bool) : Default True. This flag indicates if the writeBlocks operation should be forwarded to the sub-devices.
+            variable : (Default value = None) This is a flag which will reference a variable for single variable transactions.
             checkEach (bool) :      (Default value = False)
             index (int) :      (Default value = -1)
             **kwargs :
-
 
         Returns:
 
@@ -524,15 +523,14 @@ class Device(pr.Node,rim.Hub):
 
     def verifyBlocks(self, *, recurse=True, variable=None, checkEach=False, **kwargs):
         """
-        Perform background verify
+        Perform background verify. Issues a verify transaction to the blocks within a Device.
 
         Args:
             * :
-            recurse (bool) :      (Default value = True)
-            variable (str) :      (Default value = None)
-            checkEach (bool) :      (Default value = False)
+            recurse (bool) : Default True. This flag indicates if the verifyBlocks operation should be forwarded to the sub-devices.
+            variable (str) : Default None. This is a flag which will reference a variable for single variable transactions.
+            checkEach (bool) : Default False.
             **kwargs :
-
 
         Returns:
 
@@ -553,16 +551,15 @@ class Device(pr.Node,rim.Hub):
 
     def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
         """
-        Perform background reads
+        Perform background reads. Issues a read transaction to the blocks within a Device
 
         Args:
               * :
-            recurse (bool) :      (Default value = True)
-            variable (str) :      (Default value = None)
+            recurse (bool) : Default True. This flag indicates if the readBlocks operation should be forwarded to the sub-devices.
+            variable (str) : Default None. This is a flag which will reference a variable for single variable transactions.
             checkEach (bool) :      (Default value = False)
             index (int) :      (Default value = -1)
             **kwargs :
-
 
         Returns:
 

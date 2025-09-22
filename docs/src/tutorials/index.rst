@@ -4,7 +4,7 @@
 Tutorials
 ==========
 
-To learn the basics of Rogue, reference the :ref:`basics` documentation. 
+To learn the basics of Rogue, reference the :ref:`introduction` documentation. 
 
 There are also :ref:`starting_tutorials` tutorials to help you get started, and :ref:`complex_tutorials` tutorials for more advanced use cases. 
 
@@ -14,6 +14,5 @@ There are also :ref:`starting_tutorials` tutorials to help you get started, and 
    :maxdepth: 1
    :caption: Resources:
 
-   basics/index
    starting/index
    complex/index

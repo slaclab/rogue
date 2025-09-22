@@ -1,8 +1,8 @@
-.. _basics:
+.. _introduction:
 
-==========
-Basics
-==========
+============
+Introduction
+============
 
 This should be a paragraph/abstract that defines what rogue is at a quick glance.
 This section goes into depth about what rogue is, and situations in which you might use it.
@@ -12,8 +12,7 @@ This is where I should put starter information and include various notes from th
 Goals of Rogue
 ==============
 
-Provide a system to facilitate hardware development and intermediate daq systems
-for interfacing to hardware
+Provide a system to facilitate hardware development and intermediate daq systems for interfacing to hardware
 
 * Support a number of hardware & software interface technologies, including ones that don’t yet exist
 * Easy to understand mechanisms for connecting independent management and data processing modules together using a set of well defined, easy to understand interfaces
@@ -49,20 +48,20 @@ Structure of Rogue
 
 * Low level (C++) base structures
 
-   * Stream interface for bulk data movement and asynchronous messages
+   * :ref:`Stream Interface <interfaces_stream>` for bulk data movement and asynchronous messages.
 
       * Rogue::interfaces::stream
 
-   * Memory interface for register access
+   * :ref:`Memory Interface <interfaces_memory>` for register access.
 
       * Rogue::interfaces::memory
 
-* Higher level (Python) :ref:`interfaces` for organizing systems
+* Higher level (Python) :ref:`interfaces` for organizing systems.
 
-   * :ref:`pyrogue_tree` structure for hierarchical organization.
+   * :ref:`Tree-based <pyrogue_tree>` class structure for hierarchical organization.
    * Devices contain Variables, Commands, and other Devices
 
-      * These are all a part of the :ref:`pyrogue_tree_node`(Node) base class
+      * These are all a part of the :ref:`Node <pyrogue_tree_node>` base class
 
    * Variables describe registers - Address, data type, etc: :ref:`pyrogue_tree_node_variable`
    * Commands describe common sequences of operations on a Device :ref:`pyrogue_tree_node_command`
