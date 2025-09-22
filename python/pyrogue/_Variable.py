@@ -475,8 +475,12 @@ class BaseVariable(pr.Node):
         -------
 
         """
-        if listener in self.__functions:
-            self.__functions.remove(listener)
+        if isinstance(listener, BaseVariable):
+            if listener in self._listeners:
+                self._listeners.remove(listener)
+        else:
+            if listener in self.__functions:
+                self.__functions.remove(listener)
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
