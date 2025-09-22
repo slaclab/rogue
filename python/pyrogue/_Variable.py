@@ -935,7 +935,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     Lists and integers are supported for offset, bitOffset and bitSize, but lists must be equivalent lengths.
 
     Args:
-        base (UInt|Int|UIntReversed|UintBE|IntBE|UFixed|Fixed|Bool|String|Float|FloatBE|Double|DoubleBE) : Pointer
+        base (UInt|Int|UIntReversed|UIntBE|IntBE|UFixed|Fixed|Bool|String|Float|FloatBE|Double|DoubleBE) : Pointer
             to a Model class used to convert between the variable raw value and register bits
         offset (int|list): Defines the offset in bytes of the variable relative to the device
         bitOffset (int|list): Defines the offset in bits of the LSB relative to the offset in bytes
