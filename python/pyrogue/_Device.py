@@ -49,12 +49,9 @@ class EnableVariable(pr.BaseVariable):
         """
 
 
-        Parameters
-        ----------
-        read : bool
-             (Default value = False)
-        index : int
-             (Default value = -1)
+        Args:
+            read (bool) :      (Default value = False)
+            index (int) :      (Default value = -1)
 
         Returns
              ret :
@@ -84,17 +81,13 @@ class EnableVariable(pr.BaseVariable):
         """
 
 
-        Parameters
-        ----------
-        value :
-             (Default value = enabled)
-        write : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        Args:
+            value :
+                (Default value = enabled)
+            write (bool) :      (Default value = True)
+            index (int) :      (Default value = -1)
 
-        Returns
-        -------
+        Returns:
 
         """
         if value != 'parent' and value != 'deps':
@@ -138,15 +131,13 @@ class EnableVariable(pr.BaseVariable):
         """
 
 
-        Parameters
-        ----------
-        parent :
+        Args:
+            parent :
 
-        root :
+            root :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         pr.Node._rootAttached(self,parent,root)
@@ -163,40 +154,30 @@ class DeviceError(Exception):
 class Device(pr.Node,rim.Hub):
     """Device class holder.
 
-    Initializes BaseCommand class, with the provided parameters.
-    Inherits from BaseVariable class.
+    Container for Variable and Commands, as well as other devices.
+    Serves as a memory master as well as act as a hub to other memory masters.
+    Variables (and their connected Blocks) associated with hardware will have an offset relative to
+    the Device base address and will use the Devices linked memory::Slave when performing register accesses.
+    Added Devices which are not already associated with a memory Slave interface will inherit the
+    base Devices base address and Slave interface.
+    A Device can have it’s own direct link to a memory Slave which is not related to parent.
 
-    Parameters
-    ----------
-    name : str
-        The name of the variable
-    description : str
-        A brief description of the variable
-    offset : float
-        The device offset value
-    hidden : bool
-        If the device is hidden or not
-    groups : str
-        Groups
-    expand : bool
-        Expand
-    enabled : bool
-        Whether the device is enabled or not
-    defaults : str
-        The default type
-    enableDeps : bool
-        Enable Deps
-    hubMax : int
-        Hub Max
-    hubMin : int
-        Hub Min
-    guiGroup : str
-        The GUI group
+    Args:
+        name (str) : The name of the variable
+        description (str) : A brief description of the variable
+        offset (float) : The device offset value
+        hidden (bool) : If the device is hidden or not
+        groups (str) : Groups
+        expand (bool) : Expand
+        enabled (bool) : Whether the device is enabled or not
+        defaults (str) : The default type
+        enableDeps (bool) : Enable Deps
+        hubMax (int) : Hub Max
+        hubMin (int) : Hub Min
+        guiGroup (str) : The GUI group
 
-    Attributes
-    ----------
-    _blocks : list
-        List of blocks
+    Attributes:
+        _blocks (list) : List of blocks
     """
 
     def __init__(self, *,
@@ -271,13 +252,11 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        block :
+        Args:
+            block :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         self._custBlocks.append(block)
@@ -287,13 +266,11 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        node :
+        Args:
+            node :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         # Call node add
@@ -311,13 +288,11 @@ class Device(pr.Node,rim.Hub):
         Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
         Also accepts iterables for adding multiple at once
 
-        Parameters
-        ----------
-        *interfaces :
+        Args:
+            *interfaces :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         for interface in interfaces:
@@ -331,13 +306,11 @@ class Device(pr.Node,rim.Hub):
         Add a protocol entity.
         Also accepts iterables for adding multiple at once
 
-        Parameters
-        ----------
-        *protocols :
+        Args:
+            *protocols :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         self.addInterface(protocols)
@@ -346,13 +319,11 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        *interfaces :
+        Args:
+            *interfaces :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         self._ifAndProto.extend(interfaces)
@@ -383,19 +354,16 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        number :
+        Args:
+            number :
 
-        stride :
+            stride :
 
-        pack : bool
-             (Default value = False)
-        **kwargs :
+            pack (bool) :      (Default value = False)
+            **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if pack:
@@ -466,15 +434,12 @@ class Device(pr.Node,rim.Hub):
         The variables param is an Iterable of strings
         If variables=None, set interval for all variables that currently have nonzero pollInterval
 
-        Parameters
-        ----------
-        interval :
+        Args:
+            interval :
 
-        variables : str
-             (Default value = None)
+            variables (str) :      (Default value = None)
 
-        Returns
-        -------
+        Returns:
 
         """
         if variables is None:
@@ -487,15 +452,12 @@ class Device(pr.Node,rim.Hub):
         """
         Hide a list of Variables (or Variable names)
 
-        Parameters
-        ----------
-        hidden :
+        Args:
+            hidden :
 
-        variables : str
-             (Default value = None)
+            variables (str) :      (Default value = None)
 
-        Returns
-        -------
+        Returns:
 
         """
         if variables is None:
@@ -526,13 +488,11 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         pass
@@ -544,25 +504,18 @@ class Device(pr.Node,rim.Hub):
         """
         Write all of the blocks held by this Device to memory
 
-        Parameters
-        ----------
-        * :
+        Args:
+            * :
 
-        force : bool
-             (Default value = False)
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-        index : int
-             (Default value = -1)
-        **kwargs :
+            force (bool) :      (Default value = False)
+            recurse (bool) :      (Default value = True)
+            variable (str) :      (Default value = None)
+            checkEach (bool) :      (Default value = False)
+            index (int) :      (Default value = -1)
+            **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         checkEach = checkEach or self.forceCheckEach
@@ -583,21 +536,16 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background verify
 
-        Parameters
-        ----------
-              * :
+        Args:
+            * :
 
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
+        recurse (bool) :      (Default value = True)
+        variable (str) :      (Default value = None)
+        checkEach (bool) :      (Default value = False)
         **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         checkEach = checkEach or self.forceCheckEach
@@ -618,23 +566,16 @@ class Device(pr.Node,rim.Hub):
         """
         Perform background reads
 
-        Parameters
-        ----------
+        Args:
               * :
-
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-        index : int
-             (Default value = -1)
-        **kwargs :
+            recurse (bool) :      (Default value = True)
+            variable (str) :      (Default value = None)
+            checkEach (bool) :      (Default value = False)
+            index (int) :      (Default value = -1)
+            **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         checkEach = checkEach or self.forceCheckEach
@@ -655,19 +596,14 @@ class Device(pr.Node,rim.Hub):
         """
         Check errors in all blocks and generate variable update notifications
 
-        Parameters
-        ----------
+        Args:
               * :
-
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        **kwargs :
+            recurse (bool) :      (Default value = True)
+            variable (str) :      (Default value = None)
+            **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if variable is not None:
@@ -685,19 +621,13 @@ class Device(pr.Node,rim.Hub):
         """
         Perform a write, verify and check. Useful for committing any stale variables
 
-        Parameters
-        ----------
-        force : bool
-             (Default value = False)
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
+        Args:
+            force (bool) :      (Default value = False)
+            recurse (bool) :      (Default value = True)
+            variable (str) :      (Default value = None)
+            checkEach (bool) :      (Default value = False)
 
-        Returns
-        -------
+        Returns:
 
         """
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
@@ -708,17 +638,12 @@ class Device(pr.Node,rim.Hub):
         """
         Perform a read and check.
 
-        Parameters
-        ----------
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
+        Args:
+            recurse (bool) :      (Default value = True)
+            variable (str) :      (Default value = None)
+            checkEach (bool) :      (Default value = False)
 
-        Returns
-        -------
+        Returns:
 
         """
         self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
@@ -829,15 +754,13 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        parent :
+        Args:
+            parent :
 
-        root :
+            root :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         pr.Node._rootAttached(self, parent, root)
@@ -859,13 +782,11 @@ class Device(pr.Node,rim.Hub):
         """
         Set timeout value on all devices & blocks
 
-        Parameters
-        ----------
-        timeout :
+        Args:
+            timeout :
 
 
-        Returns
-        -------
+        Returns:
 
         """
 
@@ -882,13 +803,11 @@ class Device(pr.Node,rim.Hub):
         """
         A Decorator to add inline constructor functions as commands
 
-        Parameters
-        ----------
-        **kwargs :
+        Args:
+            **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         def _decorator(func):
@@ -916,13 +835,11 @@ class Device(pr.Node,rim.Hub):
         """
         Decorator to add inline constructor functions as LinkVariable.linkedGet functions
 
-        Parameters
-        ----------
-        **kwargs :
+        Args:
+            **kwargs :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         def _decorator(func):
@@ -950,17 +867,15 @@ class Device(pr.Node,rim.Hub):
         """
 
 
-        Parameters
-        ----------
-        path :
+        Args:
+            path :
 
-        incGroups :
+            incGroups :
 
-        excGroups :
+            excGroups :
 
 
-        Returns
-        -------
+        Returns:
 
         """
 
