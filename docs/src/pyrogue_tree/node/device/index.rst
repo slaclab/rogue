@@ -8,6 +8,14 @@ The Device class ...
 
 In this example ... 
 
+Device Class Documentation
+================================
+
+.. autoclass:: pyrogue.Device
+   :members:
+   :member-order: bysource
+
+
 Python Device Example
 =====================
 

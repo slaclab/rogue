@@ -381,15 +381,11 @@ class Device(pr.Node,rim.Hub):
                 """
 
 
-                Parameters
-                ----------
-                dev :
-
-                var :
-
-                val :
-
-                write :
+                Args:
+                    dev :
+                    var :
+                    val :
+                    write :
 
 
                 Returns
@@ -405,18 +401,15 @@ class Device(pr.Node,rim.Hub):
             def linkedGet(dev, var, read):
                 """
 
+                Args:
+                    dev :
 
-                Parameters
-                ----------
-                dev :
+                    var :
 
-                var :
-
-                read :
+                    read :
 
 
-                Returns
-                -------
+                Returns:
 
                 """
                 values = [v.getDisp(read=read) for v in varList]
@@ -436,7 +429,6 @@ class Device(pr.Node,rim.Hub):
 
         Args:
             interval :
-
             variables (str) :      (Default value = None)
 
         Returns:
@@ -454,7 +446,6 @@ class Device(pr.Node,rim.Hub):
 
         Args:
             hidden :
-
             variables (str) :      (Default value = None)
 
         Returns:
@@ -490,7 +481,6 @@ class Device(pr.Node,rim.Hub):
 
         Args:
             value :
-
 
         Returns:
 
@@ -538,11 +528,10 @@ class Device(pr.Node,rim.Hub):
 
         Args:
             * :
-
-        recurse (bool) :      (Default value = True)
-        variable (str) :      (Default value = None)
-        checkEach (bool) :      (Default value = False)
-        **kwargs :
+            recurse (bool) :      (Default value = True)
+            variable (str) :      (Default value = None)
+            checkEach (bool) :      (Default value = False)
+            **kwargs :
 
 
         Returns:
