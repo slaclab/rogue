@@ -23,7 +23,7 @@ import ast
 import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable
-from typing import Union, Type, List, Dict, Any
+from typing import Union, Type, List, Dict, Callable, Any
 
 
 class VariableError(Exception):
@@ -1345,8 +1345,8 @@ class LocalVariable(BaseVariable):
                  lowAlarm: Union[int, None] = None,
                  highWarning: Union[int, None] = None,
                  highAlarm: Union[int, None] = None,
-                 localSet: Union[function, None] = None,
-                 localGet: Union[function, None]= None,
+                 localSet: Union[Callable, None] = None,
+                 localGet: Union[Callable, None]= None,
                  pollInterval: int = 0,
                  updateNotify: bool = True,
                  typeStr: str ='Unknown',
