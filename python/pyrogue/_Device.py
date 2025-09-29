@@ -81,8 +81,7 @@ class EnableVariable(pr.BaseVariable):
 
 
         Args:
-            value :
-                (Default value = enabled)
+            value : (Default value = enabled)
             write (bool) :      (Default value = True)
             index (int) :      (Default value = -1)
 

@@ -23,8 +23,7 @@ def wordCount(bits, wordSize):
         bits :
         wordSize :
 
-    Returns
-    -------
+    Returns:
 
     """
     ret = bits // wordSize
@@ -38,8 +37,7 @@ def byteCount(bits):
     Args:
         bits :
 
-    Returns
-    -------
+    Returns:
 
     """
     return wordCount(bits, 8)
@@ -55,8 +53,7 @@ def reverseBits(value, bitSize):
         bitSize :
 
 
-    Returns
-    -------
+    Returns:
 
     """
     result = 0
@@ -77,8 +74,7 @@ def twosComplement(value, bitSize):
         bitSize :
 
 
-    Returns
-    -------
+    Returns:
 
     """
     if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
@@ -108,8 +104,8 @@ class Model(object, metaclass=ModelMeta):
     using the Rogue Variables and Blocks
 
     Args:
-        bitSize (int) : Number of bits being represented
-        binPoint (int) : Huh?
+        bitSize: Number of bits being represented
+        binPoint:
 
     Returns:
 
@@ -136,7 +132,7 @@ class Model(object, metaclass=ModelMeta):
     bitReverse  = False
     modelId     = rim.PyFunc
 
-    def __init__(self, bitSize, binPoint=0):
+    def __init__(self, bitSize: int, binPoint: int = 0):
         self.binPoint = binPoint
         self.bitSize  = bitSize
         self.name     = self.__class__.__name__
@@ -152,8 +148,8 @@ class Model(object, metaclass=ModelMeta):
         Convert the python value to byte array.
 
         Args:
-        value : obj
-            Python value to convert
+            value : obj
+                Python value to convert
 
         Returns
         -------

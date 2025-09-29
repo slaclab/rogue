@@ -186,3 +186,6 @@ intersphinx_mapping = {'python': ('https://docs.python.org/', None)}
 breathe_projects = { 'rogue' : '../build/doxyxml' }
 breathe_default_project = 'rogue'
 
+# -- Options for Autodoc --------------------------------------------------
+# Sets typehints in both signature and description.
+autodoc_typehints = 'both'

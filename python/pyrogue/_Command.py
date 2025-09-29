@@ -17,6 +17,9 @@ import pyrogue as pr
 import inspect
 import threading
 
+from _collections_abc import Callable
+from typing import Union, Type, List, Dict, Any, Optional
+
 
 class CommandError(Exception):
     """
@@ -58,20 +61,21 @@ class BaseCommand(pr.BaseVariable):
         _arg (bool) : Args flag
     """
 
-    def __init__(self, *,
-                 name=None,
-                 description="",
-                 value=0,
-                 retValue=None,
-                 enum=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 function=None,
-                 background=False,
-                 guiGroup=None,
-                 **kwargs):
+    def __init__(
+                self, *,
+                name: Optional[str] = None,
+                description: str = "",
+                value: int = 0,
+                retValue: Union[None, List, Any] = None,
+                enum: Optional[Dict] = None,
+                hidden: bool = False,
+                groups: Union[List[str], str, None] = None,
+                minimum: Optional[int] = None,
+                maximum: Optional[int] = None,
+                function: Optional[Callable] = None,
+                background: bool = False,
+                guiGroup: Optional[str] = None,
+                **kwargs):
 
         pr.BaseVariable.__init__(
             self,
@@ -133,8 +137,7 @@ class BaseCommand(pr.BaseVariable):
             arg :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if (self.parent.enable.value() is not True):
@@ -168,8 +171,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             arg (str) :     (Default value = None)
 
-        Returns
-        -------
+        Returns:
 
         """
         return self.__call__(arg)
@@ -180,8 +182,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             arg (str) :     (Default value = None)
 
-        Returns
-        -------
+        Returns:
 
         """
         return self.genDisp(self.__call__(arg),useDisp=self._retDisp)
@@ -196,8 +197,7 @@ class BaseCommand(pr.BaseVariable):
         """
         Args:
             cmd :
-        Returns
-        -------
+        Returns:
 
         """
         cmd.get(read=True)
@@ -209,8 +209,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
             arg :
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.set(arg)
@@ -222,8 +221,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
             arg :
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.set(arg)
@@ -237,8 +235,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             sets :
 
-        Returns
-        -------
+        Returns:
 
         """
         def toggle(cmd):
@@ -249,8 +246,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
 
 
-            Returns
-            -------
+            Returns:
 
             """
             for s in sets:
@@ -264,8 +260,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.set(1)
@@ -278,8 +273,7 @@ class BaseCommand(pr.BaseVariable):
             value :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         def touch(cmd):
@@ -290,8 +284,7 @@ class BaseCommand(pr.BaseVariable):
                 cmd :
 
 
-            Returns
-            -------
+            Returns:
 
             """
             cmd.set(value)
@@ -304,8 +297,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
             arg :
 
-        Returns
-        -------
+        Returns:
 
         """
         if arg is not None:
@@ -320,8 +312,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.set(0)
@@ -333,8 +324,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.set(1)
@@ -346,8 +336,7 @@ class BaseCommand(pr.BaseVariable):
             value :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         def postedTouch(cmd):
@@ -358,8 +347,7 @@ class BaseCommand(pr.BaseVariable):
                 cmd :
 
 
-            Returns
-            -------
+            Returns:
 
             """
             cmd.post(value)
@@ -372,8 +360,7 @@ class BaseCommand(pr.BaseVariable):
             cmd :
             arg :
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.post(arg)
@@ -384,8 +371,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             cmd :
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.post(1)
@@ -396,8 +382,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             cmd :
 
-        Returns
-        -------
+        Returns:
 
         """
         cmd.post(0)
@@ -407,8 +392,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             function :
 
-        Returns
-        -------
+        Returns:
 
         """
         self._function = function
@@ -424,8 +408,7 @@ class BaseCommand(pr.BaseVariable):
             excGroups :
             keys :
 
-        Returns
-        -------
+        Returns:
 
         """
         pass
@@ -437,8 +420,7 @@ class BaseCommand(pr.BaseVariable):
             incGroups :
             excGroups :
 
-        Returns
-        -------
+        Returns:
 
         """
         return None
@@ -449,8 +431,7 @@ class BaseCommand(pr.BaseVariable):
             read (bool) : (Default value = True)
             index (int) : (Default value = -1)
 
-        Returns
-        -------
+        Returns:
 
         """
         return self._default
@@ -460,8 +441,7 @@ class BaseCommand(pr.BaseVariable):
         Args:
             file :
 
-        Returns
-        -------
+        Returns:
 
         """
         print(f".. topic:: {self.path}",file=file)
@@ -492,24 +472,25 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
     """
 
-    def __init__(self, *,
-                 name,
-                 description='',
-                 value=None,
-                 retValue=None,
-                 enum=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 function=None,
-                 base=pr.UInt,
-                 offset=None,
-                 bitSize=32,
-                 bitOffset=0,
-                 overlapEn=False,
-                 guiGroup=None,
-                 **kwargs):
+    def __init__(
+                self, *,
+                name: str,
+                description: str = "",
+                value: Optional[Any] = None,
+                retValue: Union[None, List, Any] = None,
+                enum: Optional[Dict] = None,
+                hidden: bool = False,
+                groups: Union[List[str], str, None] = None,
+                minimum: Optional[int] = None,
+                maximum: Optional[int] = None,
+                function: Optional[Callable] = None,
+                base: Type[pr.Model] = pr.UInt,
+                offset: Union[int, List, None] = None,
+                bitSize: int = 32,
+                bitOffset: int = 0,
+                overlapEn: bool = False,
+                guiGroup: Optional[str] = None,
+                **kwargs):
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
@@ -549,8 +530,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             index (int) : (Default value = -1)
             write (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         self._log.debug("{}.set({})".format(self, value))
@@ -573,8 +553,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             index (int) : (Default value = -1)
             read (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         try:
@@ -592,8 +571,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         Args:
             file :
 
-        Returns
-        -------
+        Returns:
 
         """
         BaseCommand._genDocs(self,file)

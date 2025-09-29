@@ -22,8 +22,8 @@ import numpy as np
 import ast
 import sys
 from collections import OrderedDict as odict
-from collections.abc import Iterable
-from typing import Union, Type, List, Dict, Callable, Any
+from collections.abc import Iterable, Callable
+from typing import Union, Type, List, Dict, Any, Optional
 
 
 class VariableError(Exception):
@@ -157,28 +157,27 @@ class BaseVariable(pr.Node):
 
         disp: A display string indicating how the variable value should be displayed and parsed. If enum is provided, display parameter is ignored.
         enum: A dictionary of variables which have a set of selections. If enum is provided, display parameter is ignored.
-        units (str): Optional string field indicting the unit type for this variable for display.
+        units: Optional string field indicting the unit type for this variable for display.
 
-        hidden (bool): Whether the variable is visible to external classes.
-        groups (list): Groups.
+        hidden: Whether the variable is visible to external classes. Adds variable to hidden group.
+        groups: Groups.
 
-        minimum (int): Optional minimum value for a variable with a set range.
-        maximum (int): Optional maximum value for a variable with a set range.
+        minimum: Optional minimum value for a variable with a set range.
+        maximum: Optional maximum value for a variable with a set range.
+        lowWarning: The lower threshold to trigger a warning.
+        lowAlarm: The alarm to trigger when the lower threshold is reached.
+        highWarning: The higher threshold to trigger a warning.
+        highAlarm: The alarm to trigger when the higher threshold is reached.
 
-        lowWarning (int): The lower threshold to trigger a warning.
-        lowAlarm (int): The alarm to trigger when the lower threshold is reached.
-        highWarning (int): The higher threshold to trigger a warning.
-        highAlarm (int): The alarm to trigger when the higher threshold is reached.
-
-        pollInterval (int): The period at which this variable should be polled. A 0 value disables polling.
-        updateNotify (bool): Whether the listeners should be notified on update.
-        typeStr (str): A string definition of the variable data type.
-        bulkOpEn (bool): Whether this is a bulk operation.
-        offset (float): The offset.
-        guiGroup (str): The GUI group. Allows you to create tree level in gui that does not exist within the tree.
+        pollInterval: The period at which this variable should be polled. A 0 value disables polling.
+        updateNotify: Whether the listeners should be notified on update.
+        typeStr: A string definition of the variable data type.
+        bulkOpEn: Whether this is a bulk operation.
+        offsetz; The offset.
+        guiGroup: The GUI group. Allows you to create tree level in gui that does not exist within the tree.
                     Performance fix for sections with a lot of individual values. Used for a big list of variable, can
-                     create a gui group to show each index in a sub tree. Can be used to add readability to GUI that
-                     does not match tree structure.
+                    create a gui group to show each index in a sub tree. Can be used to add readability to GUI that
+                    does not match tree structure.
 
     Attributes:
         _thread (object): thread.
@@ -209,6 +208,7 @@ class BaseVariable(pr.Node):
 
         __functions (list): List of functions.
         __dependencies (list): List of dependencies.
+
     """
 
     PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
@@ -221,24 +221,24 @@ class BaseVariable(pr.Node):
                  name: str,
                  description: str = '',
                  mode: str = 'RW',
-                 value: Union[Any, None] = None,
+                 value: Optional[Any] = None,
                  disp: Union[Dict, str, None] ='{}',
-                 enum: Union[Dict, None] = None,
-                 units: Union[str, None] = None,
+                 enum: Optional[Dict] = None,
+                 units: Optional[str] = None,
                  hidden: bool = False,
-                 groups: Union[List[str], None] = None,
-                 minimum: Union[int, None] = None,
-                 maximum: Union[int, None] = None,
-                 lowWarning: Union[int, None] = None,
-                 lowAlarm: Union[int, None] = None,
-                 highWarning: Union[int, None] = None,
-                 highAlarm: Union[int, None] = None,
+                 groups: Union[List[str], str, None] = None,
+                 minimum: Optional[int] = None,
+                 maximum: Optional[int] = None,
+                 lowWarning: Optional[int] = None,
+                 lowAlarm: Optional[int] = None,
+                 highWarning: Optional[int] = None,
+                 highAlarm: Optional[int] = None,
                  pollInterval: int = 0,
                  updateNotify: bool = True,
                  typeStr: str ='Unknown',
                  bulkOpEn: bool = True,
                  offset: int = 0,
-                 guiGroup: Union[str, None] = None,
+                 guiGroup: Optional[str] = None,
                  **kwargs):
 
         # Public Attributes
@@ -484,14 +484,14 @@ class BaseVariable(pr.Node):
         """ """
         return self.__dependencies
 
-    def addListener(self, listener):
+    def addListener(self, listener: Union[pr.BaseVariable, Callable]):
         """
         Add a listener Variable or function to call when variable changes as a callback.
         This is useful when chaining variables together. (ADC conversions, etc)
         The variable and value class are passed as an arg: func(path,varValue)
 
         Args:
-            listener (BaseVariable|func): Listener to add to class attribute _listeners or _functions.
+            listener: Listener to add to class attribute _listeners or _functions.
 
         """
         if isinstance(listener, BaseVariable):
@@ -597,9 +597,8 @@ class BaseVariable(pr.Node):
             index (int) : (Default value = -1)
 
         Returns:
-        type
-            Hardware read is blocking. An error will result in a logged exception.
-            Listeners will be informed of the update.
+            type : Hardware read is blocking. An error will result in a logged exception.
+                Listeners will be informed of the update.
 
         """
         return VariableValue(self,read=read,index=index)
@@ -861,7 +860,7 @@ class BaseVariable(pr.Node):
 
 
         Returns:
-        type
+            type
 
 
         """
@@ -944,18 +943,18 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  name: str,
                  description: str = '',
                  mode: str = 'RW',
-                 value: Union[Any, None] = None,
-                 disp: Union[str, None] = None, # key should match remote variable type
-                 enum: Union[Dict, None] = None, # if enum is provided, disp parameter is ignored
-                 units: Union[str, None] = None,
+                 value: Optional[Any] = None,
+                 disp: Optional[str] = None, # key should match remote variable type
+                 enum: Optional[Dict] = None, # if enum is provided, disp parameter is ignored
+                 units: Optional[str] = None,
                  hidden: bool = False, # JUST a helper that adds it to the hidden group
-                 groups: Union[List[str], None] = None, #contains nodisplay
-                 minimum: Union[int, None] = None,
-                 maximum: Union[int, None] = None,
-                 lowWarning: Union[int, None] = None,
-                 lowAlarm: Union[int, None] = None,
-                 highWarning: Union[int, None] = None,
-                 highAlarm: Union[int, None] = None,
+                 groups: Union[List[str], str, None] = None, #contains nodisplay
+                 minimum: Optional[int] = None,
+                 maximum: Optional[int] = None,
+                 lowWarning: Optional[int] = None,
+                 lowAlarm: Optional[int] = None,
+                 highWarning: Optional[int] = None,
+                 highAlarm: Optional[int] = None,
                  base: Type[pr.Model] = pr.UInt,
                  offset: Union[int, List] = 0,
                  numValues: int = 0,
@@ -969,7 +968,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  bulkOpEn: bool = True,
                  verify: bool = True,
                  retryCount: int = 0,
-                 guiGroup: Union[str, None] = None, 
+                 guiGroup: Optional[str] = None, 
                  **kwargs):
 
         if disp is None:
@@ -1216,18 +1215,15 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         Args:
             * :
-
-        index (int) :(Default value = -1)
-        read : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+            index (int) :(Default value = -1)
+            read (bool) : (Default value = True)
+            check (bool) : (Default value = True)
 
         Returns:
-        type
-            Hardware read is blocking if check=True, otherwise non-blocking.
-            An error will result in a logged exception.
-            Listeners will be informed of the update.
+            type
+                Hardware read is blocking if check=True, otherwise non-blocking.
+                An error will result in a logged exception.
+                Listeners will be informed of the update.
 
         """
         try:
@@ -1333,25 +1329,25 @@ class LocalVariable(BaseVariable):
                  name: str,
                  description: str = '',
                  mode: str = 'RW',
-                 value: Union[Any, None] = None,
+                 value: Optional[Any] = None,
                  disp: str ='{}',
-                 enum: Union[Dict, None] = None,
-                 units: Union[str, None] = None,
+                 enum: Optional[Dict] = None,
+                 units: Optional[str] = None,
                  hidden: bool = False,
-                 groups: Union[List[str], None] = None,
-                 minimum: Union[int, None] = None,
-                 maximum: Union[int, None] = None,
-                 lowWarning: Union[int, None] = None,
-                 lowAlarm: Union[int, None] = None,
-                 highWarning: Union[int, None] = None,
-                 highAlarm: Union[int, None] = None,
-                 localSet: Union[Callable, None] = None,
-                 localGet: Union[Callable, None]= None,
+                 groups: Union[List[str], str, None] = None,
+                 minimum: Optional[int] = None,
+                 maximum: Optional[int] = None,
+                 lowWarning: Optional[int] = None,
+                 lowAlarm: Optional[int] = None,
+                 highWarning: Optional[int] = None,
+                 highAlarm: Optional[int] = None,
+                 localSet: Optional[Callable] = None,
+                 localGet: Optional[Callable]= None,
                  pollInterval: int = 0,
                  updateNotify: bool = True,
                  typeStr: str ='Unknown',
                  bulkOpEn: bool = True,
-                 guiGroup: Union[str, None] = None,
+                 guiGroup: Optional[str] = None,
                  **kwargs):
 
         if value is None and localGet is None:
@@ -1446,9 +1442,9 @@ class LocalVariable(BaseVariable):
             check (bool) : (Default value = True)
 
         Returns:
-        type
-            Hardware read is blocking. An error will result in a logged exception.
-            Listeners will be informed of the update.
+            type
+                Hardware read is blocking. An error will result in a logged exception.
+                Listeners will be informed of the update.
 
         """
         try:
