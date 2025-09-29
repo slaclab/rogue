@@ -138,7 +138,7 @@ class Node(object):
         expand (bool): Expand node
         hidden (bool): Whether or not the node is hidden
 
-        groups (str): Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+        groups (list): Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
         guiGroup (str): arbitrary groups for gui and graphical aesthetic purposes
 
     Attributes:
@@ -159,7 +159,7 @@ class Node(object):
     """
     _nodeCount = 0
 
-    def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
+    def __init__(self, *, name : str, description : str = "", expand : bool = True, hidden : bool = False, groups : list = None, guiGroup : str = None):
 
         pr.Node._nodeCount += 1
 

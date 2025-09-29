@@ -8,6 +8,9 @@ The RemoteCommand class ...
 
 In this example ... 
 
+RemoteCommand Class Definition
+==============================
+
 .. autoclass:: pyrogue.RemoteCommand
    :members:
    :member-order: bysource

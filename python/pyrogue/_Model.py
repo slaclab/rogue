@@ -19,14 +19,9 @@ import struct
 
 def wordCount(bits, wordSize):
     """
-
-
-    Parameters
-    ----------
-    bits :
-
-    wordSize :
-
+    Args:
+        bits :
+        wordSize :
 
     Returns
     -------
@@ -40,12 +35,8 @@ def wordCount(bits, wordSize):
 
 def byteCount(bits):
     """
-
-
-    Parameters
-    ----------
-    bits :
-
+    Args:
+        bits :
 
     Returns
     -------
@@ -58,11 +49,10 @@ def reverseBits(value, bitSize):
     """
 
 
-    Parameters
-    ----------
-    value :
+    Args:
+        value :
 
-    bitSize :
+        bitSize :
 
 
     Returns
@@ -81,11 +71,10 @@ def twosComplement(value, bitSize):
     """
     compute the 2's complement of int value
 
-    Parameters
-    ----------
-    value :
+    Args:
+        value :
 
-    bitSize :
+        bitSize :
 
 
     Returns
@@ -118,50 +107,24 @@ class Model(object, metaclass=ModelMeta):
     Class which describes how a data type is represented and accessed
     using the Rogue Variables and Blocks
 
-    Parameters
-    ----------
-    bitSize : int
-        Number of bits being represented
-    binPoint : int
-        Huh?
+    Args:
+        bitSize (int) : Number of bits being represented
+        binPoint (int) : Huh?
 
-    Returns
-    -------
+    Returns:
 
-    Attributes
-    ----------
-    name: str
-        String representation of the Model type
-
-    fstring: str
-        Not sure what this is, Where is it used?
-
-    encoding: str
-        Encoding type for converting between string and byte arrays. i.e. UTF-8
-
-    pytype: int
-        Python type class.
-
-    defaultdisp: str
-        Default display formatting string. May be overriden by the Variable disp parameter.
-
-    signed: bool
-        Flag indicating if value is signed. Default=False
-
-    endianness: str
-        Endianness indicator. 'little' or 'big'. Default='little'
-
-    bitReverse: bool
-        Bit reversal flag.
-
-    modelId: int
-        Block processing ID. See :ref:`interfaces_memory_constants_ptype`
-
-    isBigEndian: bool
-        True if endianness = 'big'
-
-    ndType: np.dtype
-        numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
+    Attributes:
+        name (str) : String representation of the Model type
+        fstring (str) : Not sure what this is, Where is it used?
+        encoding (str) : Encoding type for converting between string and byte arrays. i.e. UTF-8
+        pytype (int) : Python type class.
+        defaultdisp (str) : Default display formatting string. May be overriden by the Variable disp parameter.
+        signed (bool) : Flag indicating if value is signed. Default=False
+        endianness (str) : Endianness indicator. 'little' or 'big'. Default='little'
+        bitReverse (bool) : Bit reversal flag.
+        modelId (int) : Block processing ID. See :ref:`interfaces_memory_constants_ptype`
+        isBigEndian (bool) : True if endianness = 'big'
+        ndType (np.dtype) : numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
     """
 
     fstring     = None
@@ -188,8 +151,7 @@ class Model(object, metaclass=ModelMeta):
         """
         Convert the python value to byte array.
 
-        Parameters
-        ----------
+        Args:
         value : obj
             Python value to convert
 
@@ -205,10 +167,9 @@ class Model(object, metaclass=ModelMeta):
         """
         Convert the python value to byte array.
 
-        Parameters
-        ----------
-        ba : bytearray
-            Byte array to extract value from
+        Args:
+            ba : bytearray
+                Byte array to extract value from
 
         Returns
         -------
@@ -221,10 +182,8 @@ class Model(object, metaclass=ModelMeta):
         """
         Convert the string to a python value.
 
-        Parameters
-        ----------
-        string : str
-            String representation of the value
+        Args:
+            string (str) : String representation of the value
 
         Returns
         -------
@@ -259,9 +218,8 @@ class UInt(Model):
         """
 
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
         Returns
@@ -275,9 +233,8 @@ class UInt(Model):
         """
 
 
-        Parameters
-        ----------
-        ba :
+        Args:
+            ba :
 
 
         Returns
@@ -290,9 +247,8 @@ class UInt(Model):
         """
 
 
-        Parameters
-        ----------
-        string :
+        Args:
+            string :
 
 
         Returns
@@ -324,9 +280,8 @@ class UIntReversed(UInt):
         """
 
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
         Returns
@@ -340,9 +295,8 @@ class UIntReversed(UInt):
         """
 
 
-        Parameters
-        ----------
-        ba :
+        Args:
+            ba :
 
 
         Returns
@@ -370,9 +324,8 @@ class Int(UInt):
         """
 
 
-        Parameters
-        ----------
-        value :
+        Args:
+            value :
 
 
         Returns
@@ -392,9 +345,8 @@ class Int(UInt):
         """
 
 
-        Parameters
-        ----------
-        ba :
+        Args:
+            ba :
 
 
         Returns
@@ -416,9 +368,8 @@ class Int(UInt):
         """
 
 
-        Parameters
-        ----------
-        string :
+        Args:
+            string :
 
 
         Returns
@@ -466,12 +417,8 @@ class Bool(Model):
 
     def toBytes(self, value):
         """
-
-
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
 
         Returns
         -------
@@ -481,11 +428,8 @@ class Bool(Model):
 
     def fromBytes(self, ba):
         """
-
-
-        Parameters
-        ----------
-        ba :
+        Args:
+            ba :
 
 
         Returns
@@ -496,11 +440,8 @@ class Bool(Model):
 
     def fromString(self, string):
         """
-
-
-        Parameters
-        ----------
-        string :
+        Args:
+            string :
 
 
         Returns
@@ -533,12 +474,8 @@ class String(Model):
 
     def toBytes(self, value):
         """
-
-
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
 
         Returns
         -------
@@ -550,12 +487,8 @@ class String(Model):
 
     def fromBytes(self, ba):
         """
-
-
-        Parameters
-        ----------
-        ba :
-
+        Args:
+            ba :
 
         Returns
         -------
@@ -566,12 +499,8 @@ class String(Model):
 
     def fromString(self, string):
         """
-
-
-        Parameters
-        ----------
-        string :
-
+        Args:
+            string :
 
         Returns
         -------
@@ -596,12 +525,8 @@ class Float(Model):
 
     def toBytes(self, value):
         """
-
-
-        Parameters
-        ----------
-        value :
-
+        Args:
+            value :
 
         Returns
         -------
@@ -611,11 +536,8 @@ class Float(Model):
 
     def fromBytes(self, ba):
         """
-
-
-        Parameters
-        ----------
-        ba :
+        Args:
+            ba :
 
 
         Returns
@@ -626,12 +548,8 @@ class Float(Model):
 
     def fromString(self, string):
         """
-
-
-        Parameters
-        ----------
-        string :
-
+        Args:
+            string :
 
         Returns
         -------
@@ -684,16 +602,12 @@ class DoubleBE(Double):
 
 
 class Fixed(Model):
-    """
-    Model class for fixed point signed integers
+    """Model class for fixed point signed integers
 
-    Parameters
-    ----------
-    bitSize : int
-        Specifies the total number of bits, including the binary point bit width.
+    Args:
+        bitSize (int) : Specifies the total number of bits, including the binary point bit width.
+        binPoint (int) : Specifies the bit location of the binary point, where bit zero is the least significant bit.
 
-    binPoint : int
-        Specifies the bit location of the binary point, where bit zero is the least significant bit.
     """
 
     pytype  = float
@@ -709,13 +623,9 @@ class UFixed(Model):
     """
     Model class for fixed point unsigned integers
 
-    Parameters
-    ----------
-    bitSize : int
-        Specifies the total number of bits, including the binary point bit width.
-
-    binPoint : int
-        Specifies the bit location of the binary point, where bit zero is the least significant bit.
+    Args:
+        bitSize (int) : Specifies the total number of bits, including the binary point bit width.
+        binPoint (int) : Specifies the bit location of the binary point, where bit zero is the least significant bit.
     """
 
     pytype  = float

@@ -48,7 +48,6 @@ class EnableVariable(pr.BaseVariable):
     def get(self, read=False, index=-1):
         """
 
-
         Args:
             read (bool) :      (Default value = False)
             index (int) :      (Default value = -1)

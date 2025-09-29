@@ -23,6 +23,7 @@ import ast
 import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable
+from typing import Union, Type, List, Dict
 
 
 class VariableError(Exception):
@@ -143,24 +144,23 @@ class VariableListData(object):
         return f'{self.__class__}({self.__dict__})'
 
 
-
 class BaseVariable(pr.Node):
     """The parent BaseVariable class to be used for all child variables.
 
     Initializes the BaseVariable class with the provided arguments.
 
     Args:
-        name (str): The name of the variable.
-        description (str): A brief description of the variable.
-        mode (str): The operational mode. Options are RW, RO, and WO.
-        value (str): The optional default value of the variable, or None.
+        name: The name of the variable.
+        description: A brief description of the variable.
+        mode: The operational mode. Options are RW, RO, and WO.
+        value: The optional default value of the variable, or None.
 
-        disp (str): A display string indicating how the variable value should be displayed and parsed.
-        enum (dict): A dictionary of key value pairs for variables which have a set of selections.
+        disp: A display string indicating how the variable value should be displayed and parsed. If enum is provided, display parameter is ignored.
+        enum: A dictionary of variables which have a set of selections. If enum is provided, display parameter is ignored.
         units (str): Optional string field indicting the unit type for this variable for display.
 
         hidden (bool): Whether the variable is visible to external classes.
-        groups (str): Groups.
+        groups (list): Groups.
 
         minimum (int): Optional minimum value for a variable with a set range.
         maximum (int): Optional maximum value for a variable with a set range.
@@ -175,7 +175,10 @@ class BaseVariable(pr.Node):
         typeStr (str): A string definition of the variable data type.
         bulkOpEn (bool): Whether this is a bulk operation.
         offset (float): The offset.
-        guiGroup (str): The GUI group.
+        guiGroup (str): The GUI group. Allows you to create tree level in gui that does not exist within the tree.
+                    Performance fix for sections with a lot of individual values. Used for a big list of variable, can
+                     create a gui group to show each index in a sub tree. Can be used to add readability to GUI that
+                     does not match tree structure.
 
     Attributes:
         _thread (object): thread.
@@ -215,27 +218,27 @@ class BaseVariable(pr.Node):
              'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
     def __init__(self, *,
-                 name,
-                 description='',
-                 mode='RW',
-                 value=None,
-                 disp='{}',
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 lowWarning=None,
-                 lowAlarm=None,
-                 highWarning=None,
-                 highAlarm=None,
-                 pollInterval=0,
-                 updateNotify=True,
-                 typeStr='Unknown',
-                 bulkOpEn=True,
-                 offset=0,
-                 guiGroup=None,
+                 name: str,
+                 description: str = '',
+                 mode: str = 'RW',
+                 value: Union[str, None] = None,
+                 disp: Union[Dict, str, None] ='{}',
+                 enum: Union[Dict, None] = None,
+                 units: Union[str, None] = None,
+                 hidden: bool = False,
+                 groups: Union[List[str], None] = None,
+                 minimum: Union[int, None] = None,
+                 maximum: Union[int, None] = None,
+                 lowWarning: Union[int, None] = None,
+                 lowAlarm: Union[int, None] = None,
+                 highWarning: Union[int, None] = None,
+                 highAlarm: Union[int, None] = None,
+                 pollInterval: int = 0,
+                 updateNotify: bool = True,
+                 typeStr: str ='Unknown',
+                 bulkOpEn: bool = True,
+                 offset: int = 0,
+                 guiGroup: Union[str, None] = None,
                  **kwargs):
 
         # Public Attributes
@@ -441,8 +444,7 @@ class BaseVariable(pr.Node):
         Args:
             dep :
 
-        Returns
-        -------
+        Returns:
 
         """
         if dep not in self.__dependencies:
@@ -527,8 +529,7 @@ class BaseVariable(pr.Node):
             verify (bool) : (Default value = True)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         pass
@@ -545,8 +546,7 @@ class BaseVariable(pr.Node):
             * :
             index (int) :   (Default value = -1)
 
-        Returns
-        -------
+        Returns:
 
         """
         pass
@@ -564,8 +564,7 @@ class BaseVariable(pr.Node):
             read (bool) : (Default value = True) A True value will read the hardware before returning the value. False returns the shadow value.
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         return None
@@ -581,8 +580,7 @@ class BaseVariable(pr.Node):
             verify (bool) : (Default value = True)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         pass
@@ -598,8 +596,7 @@ class BaseVariable(pr.Node):
             read (bool) : (Default value = True)
             index (int) : (Default value = -1)
 
-        Returns
-        -------
+        Returns:
         type
             Hardware read is blocking. An error will result in a logged exception.
             Listeners will be informed of the update.
@@ -771,8 +768,7 @@ class BaseVariable(pr.Node):
             keys :
 
 
-        Returns
-        -------
+        Returns:
 
         """
 
@@ -831,8 +827,7 @@ class BaseVariable(pr.Node):
             excGroups :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if self._mode in modes:
@@ -865,8 +860,7 @@ class BaseVariable(pr.Node):
             value :
 
 
-        Returns
-        -------
+        Returns:
         type
 
 
@@ -895,13 +889,10 @@ class BaseVariable(pr.Node):
 
     def _genDocs(self,file):
         """
-
         Args:
             file :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         print(f".. topic:: {self.path}",file=file)
@@ -950,35 +941,35 @@ class RemoteVariable(BaseVariable,rim.Variable):
         'varBytes', 'bulkEn']
 
     def __init__(self, *,
-                 name,
-                 description='',
-                 mode='RW',
-                 value=None,
-                 disp=None,
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 lowWarning=None,
-                 lowAlarm=None,
-                 highWarning=None,
-                 highAlarm=None,
-                 base=pr.UInt,
-                 offset,
-                 numValues=0,
-                 valueBits=0,
-                 valueStride=0,
-                 bitSize=32,
-                 bitOffset=0,
-                 pollInterval=0,
-                 updateNotify=True,
-                 overlapEn=False,
-                 bulkOpEn=True,
-                 verify=True,
-                 retryCount=0,
-                 guiGroup=None,
+                 name: str,
+                 description: str = '',
+                 mode: str = 'RW',
+                 value: Union[str, None] = None,
+                 disp: Union[str, None] = None, # key should match remote variable type
+                 enum: Union[Dict, None] = None, # if enum is provided, disp parameter is ignored
+                 units: Union[str, None] = None,
+                 hidden: bool = False, # JUST a helper that adds it to the hidden group
+                 groups: Union[List[str], None] = None, #contains nodisplay
+                 minimum: Union[int, None] = None,
+                 maximum: Union[int, None] = None,
+                 lowWarning: Union[int, None] = None,
+                 lowAlarm: Union[int, None] = None,
+                 highWarning: Union[int, None] = None,
+                 highAlarm: Union[int, None] = None,
+                 base: Type[pr.Model] = pr.UInt,
+                 offset: Union[int, List] = 0,
+                 numValues: int = 0,
+                 valueBits: int = 0,
+                 valueStride: int = 0,
+                 bitSize: Union[int, List] = 32,
+                 bitOffset: Union[int, List] = 0,
+                 pollInterval: int = 0,
+                 updateNotify: bool = True,
+                 overlapEn: bool = False,
+                 bulkOpEn: bool = True,
+                 verify: bool = True,
+                 retryCount: int = 0,
+                 guiGroup: Union[str, None] = None, 
                  **kwargs):
 
         if disp is None:
@@ -1203,8 +1194,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 * :
             index (int) : (Default value = -1)
 
-        Returns
-        -------
+        Returns:
 
         """
         try:
@@ -1233,8 +1223,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         check : bool
              (Default value = True)
 
-        Returns
-        -------
+        Returns:
         type
             Hardware read is blocking if check=True, otherwise non-blocking.
             An error will result in a logged exception.
@@ -1269,8 +1258,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             verify (bool) : (Default value = True)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         try:
@@ -1292,8 +1280,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             sValue :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if self.disp == 'enum':
@@ -1307,9 +1294,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Args:
             file :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         BaseVariable._genDocs(self,file)
@@ -1345,28 +1330,28 @@ class LocalVariable(BaseVariable):
     """
 
     def __init__(self, *,
-                 name,
-                 value=None,
-                 description='',
-                 mode='RW',
-                 disp='{}',
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 lowWarning=None,
-                 lowAlarm=None,
-                 highWarning=None,
-                 highAlarm=None,
-                 localSet=None,
-                 localGet=None,
-                 pollInterval=0,
-                 updateNotify=True,
-                 typeStr='Unknown',
-                 bulkOpEn=True,
-                 guiGroup=None,
+                 name: str,
+                 description: str = '',
+                 mode: str = 'RW',
+                 value: Union[str, None] = None,
+                 disp: str ='{}',
+                 enum: Union[Dict, None] = None,
+                 units: Union[str, None] = None,
+                 hidden: bool = False,
+                 groups: Union[List[str], None] = None,
+                 minimum: Union[int, None] = None,
+                 maximum: Union[int, None] = None,
+                 lowWarning: Union[int, None] = None,
+                 lowAlarm: Union[int, None] = None,
+                 highWarning: Union[int, None] = None,
+                 highAlarm: Union[int, None] = None,
+                 localSet: Union[function, None] = None,
+                 localGet: Union[function, None]= None,
+                 pollInterval: int = 0,
+                 updateNotify: bool = True,
+                 typeStr: str ='Unknown',
+                 bulkOpEn: bool = True,
+                 guiGroup: Union[str, None] = None,
                  **kwargs):
 
         if value is None and localGet is None:
@@ -1402,8 +1387,7 @@ class LocalVariable(BaseVariable):
             verify (bool) : (Default value = True)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         self._log.debug("{}.set({})".format(self, value))
@@ -1435,8 +1419,7 @@ class LocalVariable(BaseVariable):
 
             index (int) :   (Default value = -1)
 
-        Returns
-        -------
+        Returns:
 
         """
         self._log.debug("{}.post({})".format(self, value))
@@ -1462,8 +1445,7 @@ class LocalVariable(BaseVariable):
             read (bool) : (Default value = True)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
         type
             Hardware read is blocking. An error will result in a logged exception.
             Listeners will be informed of the update.
@@ -1619,8 +1601,7 @@ class LinkVariable(BaseVariable):
             verify (bool) : (Default value = True)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         try:
@@ -1640,8 +1621,7 @@ class LinkVariable(BaseVariable):
             index (int) :   (Default value = -1)
             check (bool) : (Default value = True)
 
-        Returns
-        -------
+        Returns:
 
         """
         try:
