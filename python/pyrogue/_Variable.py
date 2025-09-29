@@ -23,7 +23,7 @@ import ast
 import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable
-from typing import Union, Type, List, Dict
+from typing import Union, Type, List, Dict, Any
 
 
 class VariableError(Exception):
@@ -221,7 +221,7 @@ class BaseVariable(pr.Node):
                  name: str,
                  description: str = '',
                  mode: str = 'RW',
-                 value: Union[str, None] = None,
+                 value: Union[Any, None] = None,
                  disp: Union[Dict, str, None] ='{}',
                  enum: Union[Dict, None] = None,
                  units: Union[str, None] = None,
@@ -944,7 +944,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  name: str,
                  description: str = '',
                  mode: str = 'RW',
-                 value: Union[str, None] = None,
+                 value: Union[Any, None] = None,
                  disp: Union[str, None] = None, # key should match remote variable type
                  enum: Union[Dict, None] = None, # if enum is provided, disp parameter is ignored
                  units: Union[str, None] = None,
@@ -1333,7 +1333,7 @@ class LocalVariable(BaseVariable):
                  name: str,
                  description: str = '',
                  mode: str = 'RW',
-                 value: Union[str, None] = None,
+                 value: Union[Any, None] = None,
                  disp: str ='{}',
                  enum: Union[Dict, None] = None,
                  units: Union[str, None] = None,

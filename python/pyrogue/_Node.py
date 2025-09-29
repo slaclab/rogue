@@ -19,18 +19,18 @@ import re
 import inspect
 import pyrogue as pr
 import collections
+from typing import Union, List, Dict
 
 
 def logException(log,e):
     """
     logs instances of memory error, else, will log the exception.
 
-    Parameters
-    ----------
-    log :
-        calls command to log instance of memory error or exception
-    e :
-        stores values of memory errors or exceptions
+    Args:
+        log :
+            calls command to log instance of memory error or exception
+        e :
+            stores values of memory errors or exceptions
 
     Returns
     -------
@@ -46,14 +46,13 @@ def logInit(cls=None,name=None,path=None):
     """
     logs base classes in order of highest ranking class. Checks values of  cls, name, and path, if their value is not  =None, will do something
 
-    Parameters
-    ----------
-    cls :
-         (Default value = None)
-    name :
-         (Default value = None)
-    path :
-         (Default value = None)
+    Args:
+        cls :
+            (Default value = None)
+        name :
+            (Default value = None)
+        path :
+            (Default value = None)
 
     Returns
     -------
@@ -98,10 +97,8 @@ def expose(item):
     """
     Allows user to interface with function under item parameter
 
-    Parameters
-    ----------
-    item :
-
+    Args:
+        item :
 
     Returns
     -------
@@ -132,14 +129,12 @@ class Node(object):
     attribute. This allows tree browsing using: node1.node2.node3
 
     Args:
-        name (str): Global name of Node
-        description (str): Description of Node
-
-        expand (bool): Expand node
-        hidden (bool): Whether or not the node is hidden
-
-        groups (list): Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
-        guiGroup (str): arbitrary groups for gui and graphical aesthetic purposes
+        name: Global name of Node
+        description: Description of Node
+        expand: Expand node
+        hidden: Whether or not the node is hidden
+        groups: Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+        guiGroup: arbitrary groups for gui and graphical aesthetic purposes
 
     Attributes:
         _name (str): name
@@ -159,7 +154,14 @@ class Node(object):
     """
     _nodeCount = 0
 
-    def __init__(self, *, name : str, description : str = "", expand : bool = True, hidden : bool = False, groups : list = None, guiGroup : str = None):
+    def __init__(
+            self, *,
+            name: str,
+            description: str = "",
+            expand: bool = True,
+            hidden: bool = False,
+            groups: Union[List[str], None] = None,
+            guiGroup: Union[str, None] = None):
 
         pr.Node._nodeCount += 1
 
@@ -1024,11 +1026,10 @@ def _iterateDict(d, keys):
     """
 
 
-    Parameters
-    ----------
-    d :
+    Args:
+        d :
 
-    keys :
+        keys :
 
 
     Returns
