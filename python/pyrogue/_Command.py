@@ -65,7 +65,7 @@ class BaseCommand(pr.BaseVariable):
                 self, *,
                 name: Optional[str] = None,
                 description: str = "",
-                value: int = 0,
+                value: Any = 0,
                 retValue: Union[None, List, Any] = None,
                 enum: Optional[Dict] = None,
                 hidden: bool = False,

@@ -18,6 +18,9 @@ import functools as ft
 import pyrogue as pr
 import threading
 
+from _collections_abc import Iterable
+from typing import Union, Optional, List, Dict, Any
+
 
 class EnableVariable(pr.BaseVariable):
     """ """
@@ -45,16 +48,15 @@ class EnableVariable(pr.BaseVariable):
         self._lock   = threading.Lock()
 
     @pr.expose
-    def get(self, read=False, index=-1):
+    def get(self, read: bool=False, index: int=-1):
         """
 
         Args:
-            read (bool) :      (Default value = False)
-            index (int) :      (Default value = -1)
+            read:
+            index:
 
-        Returns
+        Returns:
              ret :
-        -------
 
         """
         ret = self._value
@@ -76,14 +78,13 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value, write=True, index=-1):
+    def set(self, value: Any, write: bool=True, index: int=-1):
         """
-
 
         Args:
             value : (Default value = enabled)
-            write (bool) :      (Default value = True)
-            index (int) :      (Default value = -1)
+            write (bool) :
+            index (int) :
 
         Returns:
 
@@ -128,12 +129,9 @@ class EnableVariable(pr.BaseVariable):
     def _rootAttached(self,parent,root):
         """
 
-
         Args:
             parent :
-
             root :
-
 
         Returns:
 
@@ -163,15 +161,15 @@ class Device(pr.Node,rim.Hub):
     Args:
         memBase : Object which provides a path to a memory Slave device. Can either be an instance of a memory Slave
              or an instance of a memory Hub from which it will inherit a base address and Slave instance link.
-        offset (float) : The device offset value
-        hidden (bool) : If the device is hidden or not
-        enabled (bool) : This variable is an on/off switch for the device, its local variables as well as all sub-devices.
+        offset : The device offset value
+        hidden : If the device is hidden or not
+        enabled : This variable is an on/off switch for the device, its local variables as well as all sub-devices.
             Sub-devices which are disabled due to a parent device being disabled will show as ‘ParentFalse’ to differentiate from a local value of ‘False’
-        defaults (str) : The default type
-        enableDeps (bool) : Enable Deps
-        hubMax (int) : Hub Max
-        hubMin (int) : Hub Min
-        guiGroup (str) : The GUI group
+        defaults : The default type
+        enableDeps : Enable Deps
+        hubMax : Hub Max
+        hubMin : Hub Min
+        guiGroup : The GUI group
 
     Attributes:
         _blocks (list) : List of blocks
@@ -185,19 +183,19 @@ class Device(pr.Node,rim.Hub):
     """
 
     def __init__(self, *,
-                 name=None,
-                 description='',
-                 memBase=None,
-                 offset=0,
-                 hidden=False,
-                 groups=None,
-                 expand=False,
-                 enabled=True,
-                 defaults=None,
-                 enableDeps=None,
-                 hubMin=0,
-                 hubMax=0,
-                 guiGroup=None):
+                 name: Optional[str] = None,
+                 description: str = "",
+                 memBase: Optional[Union[rim.Hub, rim.Slave]] = None,
+                 offset: int = 0,
+                 hidden: bool = False,
+                 groups: Union[List[str], str, None] = None,
+                 expand: bool = False,
+                 enabled: bool = True,
+                 defaults: Optional[Dict] = None,
+                 enableDeps: Optional[List] = None,
+                 hubMin: int = 0,
+                 hubMax: int = 0,
+                 guiGroup: Optional[str] = None):
 
         """Initialize device class"""
         if name is None:
@@ -291,7 +289,6 @@ class Device(pr.Node,rim.Hub):
         Args:
             *interfaces :
 
-
         Returns:
 
         """
@@ -302,13 +299,10 @@ class Device(pr.Node,rim.Hub):
                 self._ifAndProto.append(interface)
 
     def addProtocol(self, *protocols):
-        """
-        Add a protocol entity.
-        Also accepts iterables for adding multiple at once
+        """ Add a protocol entity. Also accepts iterables for adding multiple at once.
 
         Args:
             *protocols :
-
 
         Returns:
 
@@ -318,10 +312,8 @@ class Device(pr.Node,rim.Hub):
     def manage(self, *interfaces):
         """
 
-
         Args:
             *interfaces :
-
 
         Returns:
 
@@ -337,7 +329,7 @@ class Device(pr.Node,rim.Hub):
             d._start()
 
     def _stop(self):
-        """Called recursively from Root.stop when exiting"""
+        """ Called recursively from Root.stop when exiting """
         for intf in self._ifAndProto:
             if hasattr(intf,"_stop"):
                 intf._stop()
@@ -350,18 +342,14 @@ class Device(pr.Node,rim.Hub):
         return self.root is not None and self.root.running
 
 
-    def addRemoteVariables(self, number, stride, pack=False, **kwargs):
+    def addRemoteVariables(self, number: int, stride: int, pack: bool=False, **kwargs):
         """
-
 
         Args:
             number :
-
             stride :
-
-            pack (bool) :      (Default value = False)
+            pack:
             **kwargs :
-
 
         Returns:
 
@@ -380,16 +368,13 @@ class Device(pr.Node,rim.Hub):
             def linkedSet(dev, var, val, write):
                 """
 
-
                 Args:
                     dev :
                     var :
                     val :
                     write :
 
-
-                Returns
-                -------
+                Returns:
 
                 """
                 if val == '':
@@ -403,9 +388,7 @@ class Device(pr.Node,rim.Hub):
 
                 Args:
                     dev :
-
                     var :
-
                     read :
 
 
@@ -421,15 +404,13 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
-    def setPollInterval(self, interval, variables=None):
-        """
-        Set the poll interval for a group of variables.
-        The variables param is an Iterable of strings
+    def setPollInterval(self, interval: int, variables: Optional[Iterable[str]]=None):
+        """ Set the poll interval for a group of variables.
         If variables=None, set interval for all variables that currently have nonzero pollInterval
 
         Args:
             interval :
-            variables (str) :      (Default value = None)
+            variables:
 
         Returns:
 
@@ -440,13 +421,12 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             self.node(x).setPollInterval(interval)
 
-    def hideVariables(self, hidden, variables=None):
-        """
-        Hide a list of Variables (or Variable names)
+    def hideVariables(self, hidden:bool, variables:Optional[List[Union[str, pr.BaseVariable]]]=None):
+        """ Hide a list of Variables (or Variable names)
 
         Args:
-            hidden (bool) : True/False value to set each variable to.
-            variables (list) : (Default value = None) List of variable objects or names to apply the arg to.
+            hidden: True/False value to set each variable to.
+            variables: List of variable objects or names to apply the arg to.
 
         Returns:
 
@@ -489,17 +469,15 @@ class Device(pr.Node,rim.Hub):
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
-    def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
-        """
-        Write all of the blocks held by this Device to memory
+    def writeBlocks(self, *, force: bool=False, recurse: bool=True, variable: Any=None, checkEach: bool=False, index: int=-1, **kwargs):
+        """ Write all of the blocks held by this Device to memory
 
         Args:
-            * :
-            force (bool) : (Default value = False) This flag indicates if the transaction will force writes for blocks which are not stale.
-            recurse (bool) : Default True. This flag indicates if the writeBlocks operation should be forwarded to the sub-devices.
-            variable : (Default value = None) This is a flag which will reference a variable for single variable transactions.
-            checkEach (bool) :      (Default value = False)
-            index (int) :      (Default value = -1)
+            force : This flag indicates if the transaction will force writes for blocks which are not stale.
+            recurse : This flag indicates if the writeBlocks operation should be forwarded to the sub-devices.
+            variable : This is a flag which will reference a variable for single variable transactions.
+            checkEach :
+            index :
             **kwargs :
 
         Returns:
@@ -519,15 +497,13 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.writeBlocks(force=force, recurse=True, checkEach=checkEach, **kwargs)
 
-    def verifyBlocks(self, *, recurse=True, variable=None, checkEach=False, **kwargs):
-        """
-        Perform background verify. Issues a verify transaction to the blocks within a Device.
+    def verifyBlocks(self, *, recurse: bool=True, variable: Any=None, checkEach: bool=False, **kwargs):
+        """ Perform background verify. Issues a verify transaction to the blocks within a Device.
 
         Args:
-            * :
-            recurse (bool) : Default True. This flag indicates if the verifyBlocks operation should be forwarded to the sub-devices.
-            variable (str) : Default None. This is a flag which will reference a variable for single variable transactions.
-            checkEach (bool) : Default False.
+            recurse : This flag indicates if the verifyBlocks operation should be forwarded to the sub-devices.
+            variable : This is a flag which will reference a variable for single variable transactions.
+            checkEach:
             **kwargs :
 
         Returns:
@@ -547,16 +523,14 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.verifyBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
-        """
-        Perform background reads. Issues a read transaction to the blocks within a Device
+    def readBlocks(self, *, recurse: bool=True, variable: Any=None, checkEach: bool=False, index: int=-1, **kwargs):
+        """ Perform background reads. Issues a read transaction to the blocks within a Device
 
         Args:
-              * :
-            recurse (bool) : Default True. This flag indicates if the readBlocks operation should be forwarded to the sub-devices.
-            variable (str) : Default None. This is a flag which will reference a variable for single variable transactions.
-            checkEach (bool) :      (Default value = False)
-            index (int) :      (Default value = -1)
+            recurse : This flag indicates if the readBlocks operation should be forwarded to the sub-devices.
+            variable : This is a flag which will reference a variable for single variable transactions.
+            checkEach :
+            index :
             **kwargs :
 
         Returns:
@@ -576,16 +550,13 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def checkBlocks(self, *, recurse=True, variable=None, **kwargs):
-        """
-        Check errors in all blocks and generate variable update notifications
+    def checkBlocks(self, *, recurse: bool=True, variable: Any=None, **kwargs):
+        """ Check errors in all blocks and generate variable update notifications
 
         Args:
-              * :
-            recurse (bool) :      (Default value = True)
-            variable (str) :      (Default value = None)
+            recurse :
+            variable :
             **kwargs :
-
 
         Returns:
 
@@ -601,15 +572,14 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.checkBlocks(recurse=True, **kwargs)
 
-    def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        """
-        Perform a write, verify and check. Useful for committing any stale variables
+    def writeAndVerifyBlocks(self, force: bool=False, recurse: bool=True, variable: Any=None, checkEach: bool=False):
+        """ Perform a write, verify and check. Useful for committing any stale variables
 
         Args:
-            force (bool) :      (Default value = False)
-            recurse (bool) :      (Default value = True)
-            variable (str) :      (Default value = None)
-            checkEach (bool) :      (Default value = False)
+            force:
+            recurse:
+            variable:
+            checkEach:
 
         Returns:
 
@@ -618,14 +588,13 @@ class Device(pr.Node,rim.Hub):
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
-    def readAndCheckBlocks(self, recurse=True, variable=None, checkEach=False):
-        """
-        Perform a read and check.
+    def readAndCheckBlocks(self, recurse: bool=True, variable: Any=None, checkEach: bool=False):
+        """ Perform a read and check.
 
         Args:
-            recurse (bool) :      (Default value = True)
-            variable (str) :      (Default value = None)
-            checkEach (bool) :      (Default value = False)
+            recurse:
+            variable:
+            checkEach:
 
         Returns:
 
@@ -737,12 +706,9 @@ class Device(pr.Node,rim.Hub):
     def _rootAttached(self, parent, root):
         """
 
-
         Args:
             parent :
-
             root :
-
 
         Returns:
 
@@ -763,12 +729,10 @@ class Device(pr.Node,rim.Hub):
                     var._default = defValue
 
     def _setTimeout(self,timeout):
-        """
-        Set timeout value on all devices & blocks
+        """ Set timeout value on all devices & blocks
 
         Args:
             timeout :
-
 
         Returns:
 
@@ -784,12 +748,10 @@ class Device(pr.Node,rim.Hub):
                 value._setTimeout(timeout)
 
     def command(self, **kwargs):
-        """
-        A Decorator to add inline constructor functions as commands
+        """ A Decorator to add inline constructor functions as commands
 
         Args:
             **kwargs :
-
 
         Returns:
 
@@ -797,14 +759,10 @@ class Device(pr.Node,rim.Hub):
         def _decorator(func):
             """
 
+            Args:
+                func :
 
-            Parameters
-            ----------
-            func :
-
-
-            Returns
-            -------
+            Returns:
 
             """
             if 'name' not in kwargs:
@@ -816,12 +774,10 @@ class Device(pr.Node,rim.Hub):
         return _decorator
 
     def linkVariableGet(self, **kwargs):
-        """
-        Decorator to add inline constructor functions as LinkVariable.linkedGet functions
+        """ Decorator to add inline constructor functions as LinkVariable.linkedGet functions
 
         Args:
             **kwargs :
-
 
         Returns:
 
@@ -829,14 +785,10 @@ class Device(pr.Node,rim.Hub):
         def _decorator(func):
             """
 
+            Args:
+                func :
 
-            Parameters
-            ----------
-            func :
-
-
-            Returns
-            -------
+            Returns:
 
             """
             if 'name' not in kwargs:
@@ -850,14 +802,10 @@ class Device(pr.Node,rim.Hub):
     def genDocuments(self,path,incGroups, excGroups):
         """
 
-
         Args:
             path :
-
             incGroups :
-
             excGroups :
-
 
         Returns:
 

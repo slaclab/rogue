@@ -19,7 +19,7 @@ import re
 import inspect
 import pyrogue as pr
 import collections
-from typing import Union, List, Dict
+from typing import Union, List, Dict, Type
 from _collections_abc import Iterable, Callable
 
 
@@ -154,7 +154,7 @@ class Node(object):
             expand: bool = True,
             hidden: bool = False,
             groups: Union[List[str], str, None] = None,
-            guiGroup: Union[str, None] = None):
+            guiGroup: Optional[str] = None):
 
         pr.Node._nodeCount += 1
 
@@ -448,7 +448,7 @@ class Node(object):
             sub = sub[k]
 
 
-    def addNode(self, nodeClass, **kwargs):
+    def addNode(self, nodeClass: Type[pr.Node], **kwargs):
         """
 
         Args:
@@ -460,7 +460,7 @@ class Node(object):
         """
         self.add(nodeClass(**kwargs))
 
-    def addNodes(self, nodeClass, number, stride, **kwargs):
+    def addNodes(self, nodeClass: Type[pr.Node], number: int, stride: int, **kwargs):
         """
 
         Args:
