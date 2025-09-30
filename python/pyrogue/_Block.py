@@ -17,8 +17,8 @@ import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 
-from collections.abc import Iterable, Callable
-from typing import Union, Type, List, Dict, Any, Optional
+from collections.abc import Callable
+from typing import Union, Any, Optional
 
 def startTransaction(block: pr.LocalBlock, *, type, forceWr: bool=False, checkEach: bool=False, variable: Optional[Any]=None, index: int=-1, **kwargs):
     """
@@ -139,10 +139,10 @@ class LocalBlock(object):
     """
     def __init__(self, *,
                  variable: pr.LocalVariable,
-                 localSet: Callable,
-                 localGet: Callable,
-                 minimum: int,
-                 maximum: int,
+                 localSet: Optional[Callable],
+                 localGet: Optional[Callable],
+                 minimum: Optional[int],
+                 maximum: Optional[int],
                  value: Any):
         self._path      = variable.path
         self._mode      = variable.mode

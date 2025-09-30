@@ -17,6 +17,9 @@ import rogue.interfaces.memory as rim
 import numpy as np
 import struct
 
+from _collections_abc import Iterable
+from typing import Union, Optional, Literal, List, Dict, Any
+
 def wordCount(bits, wordSize):
     """
     Args:
@@ -46,12 +49,9 @@ def byteCount(bits):
 def reverseBits(value, bitSize):
     """
 
-
     Args:
         value :
-
         bitSize :
-
 
     Returns:
 
@@ -65,14 +65,11 @@ def reverseBits(value, bitSize):
 
 
 def twosComplement(value, bitSize):
-    """
-    compute the 2's complement of int value
+    """Compute the 2's complement of int value
 
     Args:
         value :
-
         bitSize :
-
 
     Returns:
 
@@ -123,13 +120,13 @@ class Model(object, metaclass=ModelMeta):
         ndType (np.dtype) : numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
     """
 
-    fstring     = None
-    encoding    = None
+    fstring: Optional[str]= None
+    encoding: Optional[str]= None
     pytype      = None
     defaultdisp = '{}'
-    signed      = False
-    endianness  = 'little'
-    bitReverse  = False
+    signed: bool = False
+    endianness: Literal['little', 'big'] = 'little'
+    bitReverse: bool = False
     modelId     = rim.PyFunc
 
     def __init__(self, bitSize: int, binPoint: int = 0):
@@ -139,60 +136,49 @@ class Model(object, metaclass=ModelMeta):
         self.ndType   = None
 
     @property
-    def isBigEndian(self):
+    def isBigEndian(self) -> bool:
         """ """
         return self.endianness == 'big'
 
-    def toBytes(self, value):
-        """
-        Convert the python value to byte array.
+    def toBytes(self, value) -> Optional[bytearray]:
+        """Convert the python value to byte array.
 
         Args:
-            value : obj
-                Python value to convert
+            value : Python value to convert
 
-        Returns
-        -------
-
+        Returns:
 
         """
         return None
 
-    # Called by raw read/write and when bitsize > 64
-    def fromBytes(self, ba):
-        """
-        Convert the python value to byte array.
+    def fromBytes(self, ba) -> Optional[float]:
+        """Convert the python value to byte array.
+        Called by raw read/write and when bitsize > 64.
 
         Args:
-            ba : bytearray
-                Byte array to extract value from
+            ba : Byte array to extract value from
 
-        Returns
-        -------
-
+        Returns:
 
         """
         return None
 
-    def fromString(self, string):
-        """
-        Convert the string to a python value.
+    def fromString(self, string: str) -> Optional[Union[str, float]]:
+        """Convert the string to a python value.
 
         Args:
-            string (str) : String representation of the value
+            string : String representation of the value
 
-        Returns
-        -------
-
+        Returns:
 
         """
         return None
 
-    def minValue(self):
+    def minValue(self) -> Optional[Union[float, int]]:
         """Return the minimum value for the Model type"""
         return None
 
-    def maxValue(self):
+    def maxValue(self)-> Optional[Union[float, int]]:
         """Return the maximum value for the Model type"""
         return None
 
@@ -209,46 +195,35 @@ class UInt(Model):
         self.name = f'{self.__class__.__name__}{self.bitSize}'
         self.ndType = np.dtype(np.uint32) if bitSize <= 32 else np.dtype(np.uint64)
 
-    # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
-        """
-
+        """Called by raw read/write and when bitsize > 64
 
         Args:
             value :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
-    # Called by raw read/write and when bitsize > 64
-    def fromBytes(self, ba):
-        """
-
+    def fromBytes(self, ba) -> Optional[int]:
+        """Called by raw read/write and when bitsize > 64
 
         Args:
             ba :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
-    def fromString(self, string):
+    def fromString(self, string) -> Union[str, int]:
         """
-
 
         Args:
             string :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         return int(string, 0)
@@ -275,13 +250,10 @@ class UIntReversed(UInt):
     def toBytes(self, value):
         """
 
-
         Args:
             value :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         valueReverse = reverseBits(value, self.bitSize)
@@ -290,13 +262,10 @@ class UIntReversed(UInt):
     def fromBytes(self, ba):
         """
 
-
         Args:
             ba :
 
-
-        Returns
-        -------
+        Returns:
 
         """
         valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
@@ -315,17 +284,15 @@ class Int(UInt):
         super().__init__(bitSize)
         self.ndType = np.dtype(np.int32) if bitSize <= 32 else np.dtype(np.int64)
 
-    # Called by raw read/write and when bitsize > 64
     def toBytes(self, value):
-        """
+        """Called by raw read/write and when bitsize > 64
 
 
         Args:
             value :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
@@ -336,17 +303,15 @@ class Int(UInt):
 
         return ba
 
-    # Called by raw read/write and when bitsize > 64
     def fromBytes(self,ba):
-        """
+        """Called by raw read/write and when bitsize > 64
 
 
         Args:
             ba :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         if (self.bitSize < (byteCount(self.bitSize)*8)):
@@ -368,8 +333,7 @@ class Int(UInt):
             string :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         i = int(string, 0)
@@ -416,8 +380,7 @@ class Bool(Model):
         Args:
             value :
 
-        Returns
-        -------
+        Returns:
 
         """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
@@ -428,8 +391,7 @@ class Bool(Model):
             ba :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         return bool(int.from_bytes(ba, self.endianness, signed=self.signed))
@@ -440,8 +402,7 @@ class Bool(Model):
             string :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         return str.lower(string) == "true"
@@ -473,8 +434,7 @@ class String(Model):
         Args:
             value :
 
-        Returns
-        -------
+        Returns:
 
         """
         ba = bytearray(value, self.encoding)
@@ -486,8 +446,7 @@ class String(Model):
         Args:
             ba :
 
-        Returns
-        -------
+        Returns:
 
         """
         s = ba.rstrip(bytearray(1))
@@ -498,8 +457,7 @@ class String(Model):
         Args:
             string :
 
-        Returns
-        -------
+        Returns:
 
         """
         return string
@@ -524,8 +482,7 @@ class Float(Model):
         Args:
             value :
 
-        Returns
-        -------
+        Returns:
 
         """
         return bytearray(struct.pack(self.fstring, value))
@@ -536,8 +493,7 @@ class Float(Model):
             ba :
 
 
-        Returns
-        -------
+        Returns:
 
         """
         return struct.unpack(self.fstring, ba)[0]
@@ -547,13 +503,12 @@ class Float(Model):
         Args:
             string :
 
-        Returns
-        -------
+        Returns:
 
         """
         return float(string)
 
-    def minValue(self):
+    def minValue(self) -> Float:
         """ """
         return -3.4e38
 

@@ -23,7 +23,7 @@ import ast
 import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable, Callable
-from typing import Union, Type, List, Dict, Any, Optional
+from typing import Union, Type, List, Dict, Any, Optional, Literal, Tuple
 
 
 class VariableError(Exception):
@@ -185,7 +185,7 @@ class BaseVariable(pr.Node):
         _bulkOpEn (bool): Set in init funtion.
         _updateNotify (bool): Set in init function. Whether the listeners should be notified on update.
 
-        _mode (str): Set in init function. The operational mode. Options are RW.
+        _mode (str): Set in init function. The operational mode. Options are RW, RO, WO.
         _units (str): The units.
 
         _minimum (int): Set in init funtion.
@@ -220,7 +220,7 @@ class BaseVariable(pr.Node):
     def __init__(self, *,
                  name: str,
                  description: str = '',
-                 mode: str = 'RW',
+                 mode: Literal['RW', 'RO', 'WO'] = 'RW',
                  value: Optional[Any] = None,
                  disp: Union[Dict, str, None] ='{}',
                  enum: Optional[Dict] = None,
@@ -814,17 +814,17 @@ class BaseVariable(pr.Node):
         else:
             self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
-    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
+    def _getDict(self,
+                 modes: List[str]=['RW', 'RO', 'WO'],
+                 incGroups: Optional[List[str]]=None,
+                 excGroups: Optional[List[str]]=None,
+                 properties: bool=False):
         """
-
 
         Args:
             modes :
-
             incGroups :
-
             excGroups :
-
 
         Returns:
 
@@ -851,17 +851,11 @@ class BaseVariable(pr.Node):
 
         return val
 
-    def _alarmState(self,value):
+    def _alarmState(self, value: Union[List, dict, int]) -> Tuple[str, str]:
         """
-
 
         Args:
             value :
-
-
-        Returns:
-            type
-
 
         """
 
@@ -890,8 +884,6 @@ class BaseVariable(pr.Node):
         """
         Args:
             file :
-
-        Returns:
 
         """
         print(f".. topic:: {self.path}",file=file)
@@ -942,7 +934,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def __init__(self, *,
                  name: str,
                  description: str = '',
-                 mode: str = 'RW',
+                 mode: Literal['RW', 'RO', 'WO'] = 'RW',
                  value: Optional[Any] = None,
                  disp: Optional[str] = None, # key should match remote variable type
                  enum: Optional[Dict] = None, # if enum is provided, disp parameter is ignored
@@ -1143,7 +1135,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value, *, index=-1, write=True, verify=True, check=True):
+    def set(self, value:Any, *, index: int=-1, write: bool=True, verify: bool=True, check: bool=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
@@ -1152,13 +1144,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
         An error will result in a logged exception.
 
         Args:
-            value :
-                * :
-            index (int) : (Default value = -1)
-            write (bool) : (Default value = True) True value will immediately generate a blocking transaction to hardware.
+            value:
+            index:
+            write: True value will immediately generate a blocking transaction to hardware.
                 False will update a shadow value in anticipation of a future write during internal bulk operations.
-            verify (bool) : (Default value = True) True value caauses a verify to be performed accoring to self.verifyEn.
-            check (bool) : (Default value = True)
+            verify: True value causes a verify to be performed accoring to self.verifyEn.
+            check:
 
         Returns:
 
@@ -1271,10 +1262,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
     def _parseDispValue(self, sValue):
         """
 
-
         Args:
             sValue :
-
 
         Returns:
 
@@ -1328,7 +1317,7 @@ class LocalVariable(BaseVariable):
     def __init__(self, *,
                  name: str,
                  description: str = '',
-                 mode: str = 'RW',
+                 mode: Literal['RW', 'RO', 'WO'] = 'RW',
                  value: Optional[Any] = None,
                  disp: Union[str, Dict] ='{}',
                  enum: Optional[Dict] = None,
@@ -1370,18 +1359,17 @@ class LocalVariable(BaseVariable):
                                     value=self._default)
 
     @pr.expose
-    def set(self, value, *, index=-1, write=True, verify=True, check=True):
+    def set(self, value: Any, *, index: int=-1, write: bool=True, verify: bool=True, check: bool=True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
 
         Args:
             value :
-            * :
-            index (int) :   (Default value = -1)
-            write (bool) : (Default value = True)
-            verify (bool) : (Default value = True)
-            check (bool) : (Default value = True)
+            index:
+            write:
+            verify:
+            check:
 
         Returns:
 
@@ -1402,7 +1390,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def post(self,value, *, index=-1):
+    def post(self,value:Any, *, index: int=-1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -1410,10 +1398,7 @@ class LocalVariable(BaseVariable):
 
         Args:
             value :
-
-            * :
-
-            index (int) :   (Default value = -1)
+            index:
 
         Returns:
 
@@ -1430,16 +1415,13 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, *, index=-1, read=True, check=True):
+    def get(self, *, index:int=-1, read:bool=True, check:bool=True):
         """
 
-
         Args:
-                * :
-
-            index (int) :   (Default value = -1)
-            read (bool) : (Default value = True)
-            check (bool) : (Default value = True)
+            index:
+            read:
+            check:
 
         Returns:
             type
@@ -1519,22 +1501,22 @@ class LinkVariable(BaseVariable):
     Dependent on other variable objects.
 
     Args:
-        dependecies (list): List of variables that this variable is dependent on.
-        linkedSet (func): Optional reference to function that is used for set calls. Must match following template of Device.linkedSet():
+        dependecies: List of variables that this variable is dependent on.
+        linkedSet: Optional reference to function that is used for set calls. Must match following template of Device.linkedSet():
             linkedSet(device containing variable, variable, read arg passed to get())
-        linkedGet (func): Optional reference to function that is used for get calls. Must match following template of Device.linkedGet():
+        linkedGet: Optional reference to function that is used for get calls. Must match following template of Device.linkedGet():
             linkedGet(device containing variable, variable, raw value passed to set(), write arg passed to set())
         * : all other args passed to pr.BaseVariable
     """
 
     def __init__(self, *,
-                 name,
-                 variable=None,
-                 dependencies=None,
-                 linkedSet=None,
-                 linkedGet=None,
-                 minimum=None,
-                 maximum=None,
+                 name: str,
+                 variable: Optional[Type[pr.BaseVariable]]=None,
+                 dependencies: Optional[List[Type[pr.BaseVariable]]]=None,
+                 linkedSet: Optional[Callable]=None,
+                 linkedGet: Optional[Callable]=None,
+                 minimum: Optional[int]=None,
+                 maximum: Optional[int]=None,
                  **kwargs): # Args passed to BaseVariable
 
         # Set and get functions
@@ -1585,19 +1567,15 @@ class LinkVariable(BaseVariable):
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value, *, write=True, index=-1, verify=True, check=True):
+    def set(self, value:Any, *, write: bool=True, index: int=-1, verify: bool=True, check: bool=True):
         """
-
 
         Args:
             value :
-            * :
-            write (bool) : (Default value = True)
-            index (int) :   (Default value = -1)
-            verify (bool) : (Default value = True)
-            check (bool) : (Default value = True)
-
-        Returns:
+            write:
+            index:
+            verify:
+            check:
 
         """
         try:
@@ -1608,14 +1586,13 @@ class LinkVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, read=True, index=-1, check=True):
+    def get(self, read: bool=True, index: int=-1, check: bool=True):
         """
 
-
         Args:
-            read (bool) : (Default value = True)
-            index (int) :   (Default value = -1)
-            check (bool) : (Default value = True)
+            read:
+            index:
+            check:
 
         Returns:
 
@@ -1644,7 +1621,7 @@ class LinkVariable(BaseVariable):
 
     @property
     def depBlocks(self):
-        """ Return a list of Blocks that this LinkVariable depends on """
+        """Return a list of Blocks that this LinkVariable depends on """
         return self.__depBlocks
 
     @pr.expose
