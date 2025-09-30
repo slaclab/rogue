@@ -960,7 +960,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  bulkOpEn: bool = True,
                  verify: bool = True,
                  retryCount: int = 0,
-                 guiGroup: Optional[str] = None, 
+                 guiGroup: Optional[str] = None,
                  **kwargs):
 
         if disp is None:

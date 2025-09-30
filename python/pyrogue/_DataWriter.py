@@ -24,7 +24,7 @@ class DataWriter(pr.Device):
 
         Args:
             hidden:
-            bufferSize: 
+            bufferSize:
             maxFileSize:
             **kwargs :
 

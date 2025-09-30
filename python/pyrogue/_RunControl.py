@@ -26,7 +26,7 @@ class RunControl(pr.Device):
         attr1 : pr.Device
     """
 
-    def __init__(self, *, 
+    def __init__(self, *,
                  hidden: bool=True,
                  rates: Optional[Dict]=None,
                  states: Optional[Dict]=None,
