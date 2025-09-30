@@ -73,10 +73,6 @@ def VariableWait(varList, testFunction, timeout=0):
                 path :
                 varValue :
 
-            Returns
-            -------
-            ret
-
             """
             with self.cv:
                 if path in self.vlist:
@@ -444,8 +440,6 @@ class BaseVariable(pr.Node):
         Args:
             dep :
 
-        Returns:
-
         """
         if dep not in self.__dependencies:
             self.__dependencies.append(dep)
@@ -504,7 +498,7 @@ class BaseVariable(pr.Node):
     def _addListenerCpp(self, func):
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
-    def delListener(self, listener):
+    def delListener(self, listener: Union[Type[pr.BaseVariable], Callable]):
         """
         Remove a listener Variable or function from list of listener functions.
 
@@ -516,18 +510,17 @@ class BaseVariable(pr.Node):
             self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value, *, index=-1, write=True, verify=True, check=True):
+    def set(self, value, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
 
         Args:
-            value :
-            * :
-            index (int) :   (Default value = -1)
-            write (bool) : (Default value = True)
-            verify (bool) : (Default value = True)
-            check (bool) : (Default value = True)
+            value:
+            index:
+            write:
+            verify:
+            check:
 
         Returns:
 
@@ -535,7 +528,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def post(self, value, *, index=-1):
+    def post(self, value, *, index: int = -1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -543,7 +536,6 @@ class BaseVariable(pr.Node):
 
         Args:
             value :
-            * :
             index (int) :   (Default value = -1)
 
         Returns:
@@ -552,17 +544,16 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def get(self, *, index=-1, read=True, check=True):
+    def get(self, *, index: int = -1, read: bool = True, check: bool = True):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
 
         Args:
-            * :
-            index (int) :   (Default value = -1)
-            read (bool) : (Default value = True) A True value will read the hardware before returning the value. False returns the shadow value.
-            check (bool) : (Default value = True)
+            index:
+            read: A True value will read the hardware before returning the value. False returns the shadow value.
+            check :
 
         Returns:
 
@@ -570,15 +561,13 @@ class BaseVariable(pr.Node):
         return None
 
     @pr.expose
-    def write(self, *, verify=True, check=True):
+    def write(self, *, verify: bool = True, check: bool = True):
         """
         Force a write of the variable.
 
         Args:
-            * :
-
-            verify (bool) : (Default value = True)
-            check (bool) : (Default value = True)
+            verify:
+            check:
 
         Returns:
 
@@ -586,15 +575,15 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def getVariableValue(self,read=True,index=-1):
+    def getVariableValue(self,read: bool = True,index: int = -1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
         Listeners will be informed of the update.
 
         Args:
-            read (bool) : (Default value = True)
-            index (int) : (Default value = -1)
+            read:
+            index:
 
         Returns:
             type : Hardware read is blocking. An error will result in a logged exception.
@@ -604,7 +593,7 @@ class BaseVariable(pr.Node):
         return VariableValue(self,read=read,index=index)
 
     @pr.expose
-    def value(self, index=-1):
+    def value(self, index: int = -1):
         """ Equivalent function to get(read=False)
         """
         return self.get(read=False, index=index)
@@ -705,7 +694,7 @@ class BaseVariable(pr.Node):
             raise VariableError(msg)
 
     @pr.expose
-    def setDisp(self, sValue, write=True, index=-1):
+    def setDisp(self, sValue, write: bool = True, index: int = -1):
         """ Update the variable with the display value with optional write.
         Equivalent to set(parseDisp(sValue), write)
 
@@ -816,9 +805,9 @@ class BaseVariable(pr.Node):
 
     def _getDict(self,
                  modes: List[str]=['RW', 'RO', 'WO'],
-                 incGroups: Optional[List[str]]=None,
-                 excGroups: Optional[List[str]]=None,
-                 properties: bool=False):
+                 incGroups: Optional[List[str]] = None,
+                 excGroups: Optional[List[str]] = None,
+                 properties: bool = False):
         """
 
         Args:
@@ -1231,7 +1220,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def write(self, *, verify=True, check=True):
+    def write(self, *, verify: bool = True, check: bool = True):
         """
         Force a write of the variable.
         Hardware write is blocking if check=True.
@@ -1240,10 +1229,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
         An error will result in a logged exception
 
         Args:
-             * :
-
-            verify (bool) : (Default value = True)
-            check (bool) : (Default value = True)
+            verify:
+            check:
 
         Returns:
 
@@ -1390,7 +1377,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def post(self,value:Any, *, index: int=-1):
+    def post(self,value: Any, *, index: int = -1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -1415,7 +1402,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, *, index:int=-1, read:bool=True, check:bool=True):
+    def get(self, *, index: int = -1, read: bool = True, check: bool = True):
         """
 
         Args:
@@ -1511,12 +1498,12 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name: str,
-                 variable: Optional[Type[pr.BaseVariable]]=None,
-                 dependencies: Optional[List[Type[pr.BaseVariable]]]=None,
-                 linkedSet: Optional[Callable]=None,
-                 linkedGet: Optional[Callable]=None,
-                 minimum: Optional[int]=None,
-                 maximum: Optional[int]=None,
+                 variable: Optional[Type[pr.BaseVariable]] = None,
+                 dependencies: Optional[List[Type[pr.BaseVariable]]] = None,
+                 linkedSet: Optional[Callable] = None,
+                 linkedGet: Optional[Callable] = None,
+                 minimum: Optional[int] = None,
+                 maximum: Optional[int] = None,
                  **kwargs): # Args passed to BaseVariable
 
         # Set and get functions
@@ -1586,7 +1573,7 @@ class LinkVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, read: bool=True, index: int=-1, check: bool=True):
+    def get(self, read: bool = True, index: int = -1, check: bool = True):
         """
 
         Args:

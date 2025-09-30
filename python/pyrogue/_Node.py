@@ -18,9 +18,8 @@ import logging
 import re
 import inspect
 import pyrogue as pr
-import collections
 from typing import Union, List, Type, Optional
-from _collections_abc import Iterable, Callable
+from _collections_abc import Iterable
 
 
 def logException(log,e):
@@ -40,7 +39,7 @@ def logException(log,e):
         log.exception(e)
 
 
-def logInit(cls=None,name=None,path=None):
+def logInit(cls = None,name = None,path = None):
     """
     logs base classes in order of highest ranking class. Checks values of  cls, name, and path, if their value is not  =None, will do something
 
@@ -518,13 +517,12 @@ class Node(object):
         """ """
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def variablesByGroup(self,incGroups=None,excGroups=None):
+    def variablesByGroup(self,incGroups: Optional[List[str]] = None, excGroups: Optional[List[str]] = None):
         """
 
-
         Args:
-            incGroups :  (Default value = None)
-            excGroups :  (Default value = None)
+            incGroups :
+            excGroups :
 
         Returns:
             type
@@ -549,7 +547,7 @@ class Node(object):
         """ """
         return self.getNodes(typ=pr.BaseCommand)
 
-    def commandsByGroup(self,incGroups=None,excGroups=None):
+    def commandsByGroup(self,incGroups: Optional[List[str]] = None, excGroups: Optional[List[str]] = None):
         """
 
         Args:
@@ -568,7 +566,7 @@ class Node(object):
         """ """
         return self.getNodes(pr.Device)
 
-    def devicesByGroup(self,incGroups=None,excGroups=None):
+    def devicesByGroup(self,incGroups: Optional[List[str]] = None, excGroups: Optional[List[str]] = None):
         """
 
         Args:
@@ -631,7 +629,7 @@ class Node(object):
         """ """
         return self.isinstance(pr.BaseCommand)
 
-    def find(self, *, recurse=True, typ=None, **kwargs):
+    def find(self, *, recurse = True, typ = None, **kwargs):
         """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
@@ -672,7 +670,7 @@ class Node(object):
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
 
-    def callRecursive(self, func, nodeTypes=None, **kwargs):
+    def callRecursive(self, func, nodeTypes = None, **kwargs):
         """
 
         Args:
@@ -695,7 +693,7 @@ class Node(object):
                 node.callRecursive(func, nodeTypes, **kwargs)
 
     # this might be useful
-    def makeRecursive(self, func, nodeTypes=None):
+    def makeRecursive(self, func, nodeTypes = None):
         """
 
         Args:
