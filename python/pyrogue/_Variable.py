@@ -1367,7 +1367,6 @@ class LocalVariable(BaseVariable):
                  pollInterval=0,
                  updateNotify=True,
                  typeStr='Unknown',
-                 staticType=True,
                  bulkOpEn=True,
                  guiGroup=None,
                  **kwargs):
@@ -1390,7 +1389,6 @@ class LocalVariable(BaseVariable):
                                     minimum=minimum,
                                     maximum=maximum,
                                     value=self._default)
-        self._staticType = staticType
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
@@ -1422,7 +1420,7 @@ class LocalVariable(BaseVariable):
         try:
 
             # Type check first so we bail early
-            if self._staticType and not isinstance(value, self._nativeType):
+            if not isinstance(value, self._nativeType):
                 raise TypeError(
                     f"Error - {self.path}: Expecting {self._nativeType} "
                     f"but got {type(value)}"
