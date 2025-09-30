@@ -30,6 +30,8 @@ import traceback
 import datetime
 from contextlib import contextmanager
 
+from typing import Union, List, Optional
+
 SystemLogInit = '[]'
 
 class UpdateTracker(object):
@@ -42,16 +44,14 @@ class UpdateTracker(object):
         self._last = time.time()
         self._q = q
 
-    def increment(self, period):
+    def increment(self, period: int):
         """
 
-        Parameters
-        ----------
-        period : int
-            default value period = 0
+        Args:
+            period : default value period = 0
 
-        Returns
-        -------
+        Returns:
+
         """
 
         if self._count == 0 or self._period < period:
@@ -75,14 +75,10 @@ class UpdateTracker(object):
     def update(self,var):
         """
 
+        Args:
+            var :
 
-        Parameters
-        ----------
-        var :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         self._list[var.path] = var
@@ -94,17 +90,13 @@ class RootLogHandler(logging.Handler):
         logging.Handler.__init__(self)
         self._root = root
 
-    def emit(self,record):
+    def emit(self, record: logging.LogRecord):
         """
 
+        Args:
+            record :
 
-        Parameters
-        ----------
-        record :
-
-
-        Returns
-        -------
+        Returns:
 
         """
 
@@ -157,25 +149,22 @@ class Root(pr.Device):
     configuration and status values. This allows configuration and status
     to be stored in data files.
 
-    Attributes
-    ----------
-    rogue.interfaces.stream.Master :
-
+    Attributes:
+        rogue.interfaces.stream.Master :
 
     pr.Device :
 
-    Returns
-    -------
+    Returns:
 
     """
 
     def __enter__(self):
-        """Root enter."""
+        """Root enter. """
         self.start()
         return self
 
     def __exit__(self, exc_type, exc_value, traceback):
-        """Root exit."""
+        """Root exit. """
         self.stop()
 
     def __init__(self, *,
@@ -453,15 +442,14 @@ class Root(pr.Device):
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
 
-        Parameters
-        ----------
-        func :
-        done :
-        incGroups :
-        excGroups :
+        Args:
+            func :
+            done :
+            incGroups :
+            excGroups :
 
-        Returns
-        -------
+        Returns:
+
         """
 
         with self._varListenLock:
@@ -471,17 +459,13 @@ class Root(pr.Device):
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager
-    def updateGroup(self, period=0):
+    def updateGroup(self, period: int=0):
         """
 
+        Args:
+            period :
 
-        Parameters
-        ----------
-        period :
-             (Default value = 0)
-
-        Returns
-        -------
+        Returns:
 
         """
         tid = threading.get_ident()
@@ -519,11 +503,11 @@ class Root(pr.Device):
 
     @pr.expose
     def waitOnUpdate(self):
-        """Wait until all update queue items have been processed."""
+        """Wait until all update queue items have been processed. """
         self._updateQueue.join()
 
     def hardReset(self):
-        """Generate a hard reset on all devices"""
+        """Generate a hard reset on all devices. """
         super().hardReset()
         self._clearLog()
 
@@ -534,14 +518,10 @@ class Root(pr.Device):
     def getNode(self,path):
         """
 
+        Args:
+            path :
 
-        Parameters
-        ----------
-        path :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         obj = self
@@ -563,19 +543,11 @@ class Root(pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(self,fname):
+    def saveAddressMap(self,fname:str):
         """
 
-
-        Parameters
-        ----------
-        fname :
-
-        headerEn :
-             (Default value = False)
-
-        Returns
-        -------
+        Args:
+            fname : Filename/path to save the address map to.
 
         """
 
@@ -649,21 +621,13 @@ class Root(pr.Device):
                 f.write(line + '\n')
 
     @pr.expose
-    def saveVariableList(self,fname,polledOnly=False,incGroups=None):
+    def saveVariableList(self,fname: str, polledOnly: bool=False, incGroups: Optional[List]=None):
         """
 
-
-        Parameters
-        ----------
-        fname :
-
-        polledOnly : bool
-             (Default value = False)
-        incGroups :
-             (Default value = None)
-
-        Returns
-        -------
+        Args:
+            fname :
+            polledOnly:
+            incGroups :
 
         """
         with open(fname,'w') as f:
@@ -736,28 +700,18 @@ class Root(pr.Device):
 
     @pr.expose
     def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
-        """
-        Save YAML configuration/status to a file. Called from command
+        """Save YAML configuration/status to a file. Called from command
 
-        Parameters
-        ----------
-        name :
+        Args:
+            name :
+            readFirst :
+            modes :
+            incGroups :
+            excGroups :
+            autoPrefix :
+            autoCompress :
 
-        readFirst :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-        autoPrefix :
-
-        autoCompress :
-
-
-        Returns
-        -------
+        Returns:
 
         """
 
@@ -781,25 +735,17 @@ class Root(pr.Device):
         return True
 
 
-    def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
-        """
-        Load YAML configuration from a file. Called from command
+    def loadYaml(self, name: Union[str, List[str]], writeEach, modes, incGroups, excGroups):
+        """Load YAML configuration from a file. Called from command
 
-        Parameters
-        ----------
-        name :
+        Args:
+            name :
+            writeEach :
+            modes :
+            incGroups :
+            excGroups :
 
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
+        Returns:
 
         """
 
@@ -891,8 +837,7 @@ class Root(pr.Device):
         are completed. Bulk writes provide better performance when updating a large
         quantity of variables.
 
-        Parameters
-        ----------
+        Args:
         yml :
 
         writeEach :
@@ -923,8 +868,7 @@ class Root(pr.Device):
         """
         Dump remote variable values to a file.
 
-        Parameters
-        ----------
+        Args:
         name :
 
         modes :
@@ -955,22 +899,14 @@ class Root(pr.Device):
     def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
         """
 
+        Args:
+            d :
+            writeEach :
+            modes :
+            incGroups :
+            excGroups :
 
-        Parameters
-        ----------
-        d :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         for key, value in d.items():
@@ -993,14 +929,8 @@ class Root(pr.Device):
     def _queueUpdates(self,var):
         """
 
-
-        Parameters
-        ----------
-        var :
-
-
-        Returns
-        -------
+        Args:
+            var :
 
         """
         tid = threading.get_ident()
@@ -1012,16 +942,15 @@ class Root(pr.Device):
                 self._updateTrack[tid] = UpdateTracker(self._updateQueue)
                 self._updateTrack[tid].update(var)
 
-    # Recursively add listeners to update list
     def _recurseAddListeners(self, nvars, var):
+        """Recursively add listeners to update list"""
         for vl in var._listeners:
             nvars[vl.path] = vl
 
             self._recurseAddListeners(nvars, vl)
 
-    # Worker thread
     def _updateWorker(self):
-        """ """
+        """Worker thread"""
         self._log.info("Starting update thread")
 
         while True:

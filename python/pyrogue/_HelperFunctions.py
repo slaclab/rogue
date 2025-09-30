@@ -25,21 +25,17 @@ import rogue.interfaces.stream
 import rogue.interfaces.memory
 
 from collections import OrderedDict as odict
+from typing import Optional, List, Union, Type
 
 
-def addLibraryPath(path):
-    """
-    Append the past string or list of strings to the python library path.
+def addLibraryPath(path: Union[List[str], str]):
+    """Append the past string or list of strings to the python library path.
+
     Passed strings can either be relative: ../path/to/library
     or absolute: /path/to/library
 
-    Parameters
-    ----------
-    path :
-
-
-    Returns
-    -------
+    Args:
+        path :
 
     """
     if len(sys.argv) == 0:
@@ -95,14 +91,8 @@ def waitCntrlC():
         def receiveSignal(self,*args):
             """
 
-
-            Parameters
-            ----------
-            *args :
-
-
-            Returns
-            -------
+            Args:
+                *args :
 
             """
             print("Got SIGTERM, exiting")
@@ -120,7 +110,7 @@ def waitCntrlC():
         return
 
 
-def streamConnect(source, dest):
+def streamConnect(source: Union[Type[pr.Device], rogue.interfaces.stream.Master], dest: Union[Type[pr.Device], rogue.interfaces.stream.Slave]):
     """
     Attach the passed dest object to the source a stream.
     Connect source and destination stream devices.
@@ -129,15 +119,11 @@ def streamConnect(source, dest):
     Similarly dest is either a stream slave sub class or implements
     the _getStreamSlave call to return a contained slave.
 
-    Parameters
-    ----------
-    source :
+    Args:
+        source :
+        dest :
 
-    dest :
-
-
-    Returns
-    -------
+    Returns:
 
     """
 
@@ -155,56 +141,34 @@ def streamConnect(source, dest):
 
     master._addSlave(slave)
 
-def streamConnectBiDir(deviceA, deviceB):
-    """
-    Attach the passed dest object to the source a stream.
-    Connect source and destination stream devices.
-    source is either a stream master sub class or implements
-    the _getStreamMaster call to return a contained master.
-    Similarly dest is either a stream slave sub class or implements
-    the _getStreamSlave call to return a contained slave.
-
-    Parameters
-    ----------
-    deviceA :
-
-    deviceB :
-
-
-    Returns
-    -------
-
-    """
-
+def streamConnectBiDir(deviceA: Type[pr.Device], deviceB: Type[pr.Device]):
     """
     Connect deviceA and deviceB as end points to a
     bi-directional stream. This method calls the
     streamConnect method to perform the actual connection.
     See streamConnect description for object requirements.
+
+    Args:
+        deviceA :
+        deviceB :
+
     """
 
     streamConnect(deviceA,deviceB)
     streamConnect(deviceB,deviceA)
 
 
-def busConnect(source,dest):
-    """
-    Connect the source object to the dest object for
-    memory accesses.
-    source is either a memory master sub class or implements
+def busConnect(source: Union[Type[pr.Node], rogue.interfaces.memory.Master], dest: Union[Type[pr.Node], rogue.interfaces.memory.Slave]):
+    """Connect the source object to the dest object for memory accesses.
+
+    Source is either a memory master sub class or implements
     the _getMemoryMaster call to return a contained master.
     Similarly dest is either a memory slave sub class or implements
     the _getMemorySlave call to return a contained slave.
 
-    Parameters
-    ----------
-    source :
-
-    dest :
-
-
-    Returns
-    -------
+    Args:
+        source :
+        dest :
 
     """
 
@@ -223,20 +187,15 @@ def busConnect(source,dest):
     master._setSlave(slave)
 
 
-def yamlToData(stream='',fName=None):
-    """
-    Load yaml to data structure.
+def yamlToData(stream: str='', fName: Optional[str]=None):
+    """Load yaml to data structure.
     A yaml string or file path may be passed.
 
-    Parameters
-    ----------
-    stream :
-         (Default value = '')
-    fName :
-         (Default value = None)
+    Args:
+        stream :
+        fName :
 
-    Returns
-    -------
+    Returns:
 
     """
 
@@ -249,16 +208,11 @@ def yamlToData(stream='',fName=None):
     def include_mapping(loader, node):
         """
 
+        Args:
+            loader :
+            node :
 
-        Parameters
-        ----------
-        loader :
-
-        node :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         rel = loader.construct_scalar(node)
@@ -281,16 +235,11 @@ def yamlToData(stream='',fName=None):
     def construct_mapping(loader, node):
         """
 
+        Args:
+            loader :
+            node :
 
-        Parameters
-        ----------
-        loader :
-
-        node :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         loader.flatten_mapping(node)
@@ -322,16 +271,12 @@ def yamlToData(stream='',fName=None):
 
 
 def dataToYaml(data):
-    """
-    Convert data structure to yaml
+    """Convert data structure to yaml
 
-    Parameters
-    ----------
-    data :
+    Args:
+        data :
 
-
-    Returns
-    -------
+    Returns:
 
     """
 
@@ -343,15 +288,11 @@ def dataToYaml(data):
         """
 
 
-        Parameters
-        ----------
-        dumper :
+        Args:
+            dumper :
+            data :
 
-        data :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         if isinstance(data.value, bool):
@@ -373,16 +314,11 @@ def dataToYaml(data):
     def _dict_representer(dumper, data):
         """
 
+        Args:
+            dumper :
+            data :
 
-        Parameters
-        ----------
-        dumper :
-
-        data :
-
-
-        Returns
-        -------
+        Returns:
 
         """
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
@@ -396,18 +332,12 @@ def dataToYaml(data):
 def keyValueUpdate(old, key, value):
     """
 
+    Args:
+        old :
+        key :
+        value :
 
-    Parameters
-    ----------
-    old :
-
-    key :
-
-    value :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     d = old
@@ -422,16 +352,11 @@ def keyValueUpdate(old, key, value):
 def dictUpdate(old, new):
     """
 
+    Args:
+        old :
+        new :
 
-    Parameters
-    ----------
-    old :
-
-    new :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     for k,v in new.items():
@@ -446,16 +371,11 @@ def dictUpdate(old, new):
 def yamlUpdate(old, new):
     """
 
+    Args:
+        old :
+        new :
 
-    Parameters
-    ----------
-    old :
-
-    new :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     dictUpdate(old, pr.yamlToData(new))
@@ -464,34 +384,24 @@ def yamlUpdate(old, new):
 def recreate_OrderedDict(name, values):
     """
 
+    Args:
+        name :
+        values :
 
-    Parameters
-    ----------
-    name :
-
-    values :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     return odict(values['items'])
 
-# Creation function wrapper for methods with variable args
 def functionWrapper(function, callArgs):
-    """
+    """Creation function wrapper for methods with variable args
+
+    Args:
+        function :
+        callArgs :
 
 
-    Parameters
-    ----------
-    function :
-
-    callArgs :
-
-
-    Returns
-    -------
+    Returns:
 
     """
 
@@ -519,18 +429,12 @@ def functionWrapper(function, callArgs):
 def genDocTableHeader(fields, indent, width):
     """
 
+    Args:
+        fields :
+        indent :
+        width :
 
-    Parameters
-    ----------
-    fields :
-
-    indent :
-
-    width :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     r = ' ' * indent + '+'
@@ -554,18 +458,12 @@ def genDocTableHeader(fields, indent, width):
 def genDocTableRow(fields, indent, width):
     """
 
+    Args:
+        fields :
+        indent :
+        width :
 
-    Parameters
-    ----------
-    fields :
-
-    indent :
-
-    width :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     r = ' ' * indent + '|'
@@ -584,16 +482,11 @@ def genDocTableRow(fields, indent, width):
 def genDocDesc(desc, indent):
     """
 
+    Args:
+        desc :
+        indent :
 
-    Parameters
-    ----------
-    desc :
-
-    indent :
-
-
-    Returns
-    -------
+    Returns:
 
     """
     r = ''

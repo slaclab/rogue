@@ -17,55 +17,40 @@ import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 
+from collections.abc import Iterable, Callable
+from typing import Union, Type, List, Dict, Any, Optional
 
-
-def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
+def startTransaction(block: pr.LocalBlock, *, type, forceWr: bool=False, checkEach: bool=False, variable: Optional[Any]=None, index: int=-1, **kwargs):
     """
     Helper function for calling the startTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
         writeBlocks, readBlocks and checkBlocks functions.
 
-    Parameters2
-    ----------
-    block :
-
-    * :
-
-    type :
-
-    forceWr :
-         (Default value = False)
-    checkEach :
-         (Default value = False)
-    variable :
-         (Default value = None)
-    index :
-         (Default value = -1)
-    **kwargs :
-
-
-    Returns
-    -------
+    Args:
+        block :
+        type :
+        forceWr :
+        checkEach :
+        variable :
+        index :
+        **kwargs :
 
     """
     block._startTransaction(type, forceWr, checkEach, variable, index)
 
 
 def checkTransaction(block, **kwargs):
-    """
-    Helper function for calling the checkTransaction function in a block. This helper
+    """ Helper function for calling the checkTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
         writeBlocks, readBlocks and checkBlocks functions.
 
-    Parameters
-    ----------
-    block :
+    Args:
+        block :
 
     **kwargs :
 
 
-    Returns
-    -------
+    Returns:
 
     """
     block._checkTransaction()
@@ -117,9 +102,7 @@ def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
 
 
 class MemoryError(Exception):
-    """
-    Exception for memory access errors.
-    """
+    """Exception for memory access errors."""
 
     def __init__(self, *, name, address, msg=None, size=0):
 
@@ -133,8 +116,34 @@ class MemoryError(Exception):
 
 
 class LocalBlock(object):
-    """ """
-    def __init__(self, *, variable, localSet, localGet, minimum, maximum, value):
+    """LocalBlock Class definition.
+
+    Args:
+        variable:
+        localSet:
+        localGet:
+        minimum:
+        maximum:
+        value:
+
+    Attributes:
+        _path (str): Variables path
+        _mode (str): Variables mode
+        _device (pr.Device): Variables parent device
+        _lock (thread): threading.RLock()
+        _enable (bool): If the block is enabled.
+        _variables (list): List of variables, Used by poller
+        _log (Logger): Logger
+        _localSetWrap (Callable):  functionWrapper for localSet with callArgs=['dev', 'var', 'value', 'changed'])
+        _localGetWrap (Callable): functionWrapper for localGet with callArgs=['dev', 'var']
+    """
+    def __init__(self, *,
+                 variable: pr.LocalVariable,
+                 localSet: Callable,
+                 localGet: Callable,
+                 minimum: int,
+                 maximum: int,
+                 value: Any):
         self._path      = variable.path
         self._mode      = variable.mode
         self._device    = variable.parent
@@ -177,17 +186,11 @@ class LocalBlock(object):
         """ """
         pass
 
-    def setEnable(self,value):
+    def setEnable(self,value:bool):
         """
 
-
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
+        Args:
+            value :
 
         """
         with self._lock:
@@ -196,14 +199,8 @@ class LocalBlock(object):
     def _setTimeout(self,value):
         """
 
-
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
+        Args:
+            value :
 
         """
         pass
@@ -213,21 +210,13 @@ class LocalBlock(object):
         """ """
         return self._variables
 
-    def set(self, var, value, index=-1):
+    def set(self, var: Any, value: Union[int, list, dict], index: int=-1):
         """
 
-
-        Parameters
-        ----------
-        var :
-
-        value :
-
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
+        Args:
+            var :
+            value :
+            index :
 
         """
         with self._lock:
@@ -256,19 +245,14 @@ class LocalBlock(object):
             if self._enable and self._localSet is not None:
                 self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
 
-    def get(self, var, index=-1):
+    def get(self, var: Any, index: int=-1):
         """
 
+        Args:
+            var :
+            index :
 
-        Parameters
-        ----------
-        var :
-
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
+        Returns:
 
         """
         if self._enable and self._localGet is not None:
@@ -280,54 +264,28 @@ class LocalBlock(object):
             return self._value
 
     def _startTransaction(self, type, forceWr, checkEach, variable, index):
-        """
-        Start a transaction.
+        """Start a transaction.
 
-        Parameters
-        ----------
-        type :
-
-        forceWr :
-
-        checkEach :
-
-        variable :
-
-        index :
-
-
-        Returns
-        -------
+        Args:
+            type :
+            forceWr :
+            checkEach :
+            variable :
+            index :
 
         """
         pass
 
     def _checkTransaction(self):
-        """
-        Check status of block.
-        If update=True notify variables if read
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-
-        """
+        """Check status of block. If update=True notify variables if read. """
         if self._enable and self._variable._updateNotify:
             self._variable._queueUpdate()
 
     def _iadd(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -338,14 +296,8 @@ class LocalBlock(object):
     def _isub(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -356,14 +308,8 @@ class LocalBlock(object):
     def _imul(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -374,14 +320,8 @@ class LocalBlock(object):
     def _imatmul(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -391,14 +331,8 @@ class LocalBlock(object):
     def _itruediv(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -409,14 +343,8 @@ class LocalBlock(object):
     def _ifloordiv(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -427,14 +355,8 @@ class LocalBlock(object):
     def _imod(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -445,14 +367,8 @@ class LocalBlock(object):
     def _ipow(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -463,14 +379,8 @@ class LocalBlock(object):
     def _ilshift(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -481,14 +391,8 @@ class LocalBlock(object):
     def _irshift(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -499,14 +403,8 @@ class LocalBlock(object):
     def _iand(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -517,14 +415,8 @@ class LocalBlock(object):
     def _ixor(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:
@@ -535,14 +427,8 @@ class LocalBlock(object):
     def _ior(self, other):
         """
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
+        Args:
+            other :
 
         """
         with self._lock:

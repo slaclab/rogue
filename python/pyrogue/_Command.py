@@ -29,28 +29,26 @@ class CommandError(Exception):
 
 
 class BaseCommand(pr.BaseVariable):
-    """
-
-    Abstract base class for all other Command Classses.
+    """Abstract base class for all other Command Classses.
     All Commands are sub-classes of BaseVariable and support all Variable attributes.
 
     Commands are tasks applied to devices. Includes a number of commonly used commands
     and sequence generators.
 
     Args:
-        name (str) : The name of the variable
-        description (str) : A brief description of the variable
-        value (int) : An optional value to determine the arg type
-        retValue (str) :
-        enum (dict) : A dictionary of key,value pairs for args which have a set of selections
-        hidden (bool) : Whether the variable is visible to external classes
-        groups (str) : Groups
-        minimum (int) : Optional minimum value for a arg with a set range
-        maximum (int) : Optional maximum value for a arg with a set range
-        function (function) : Function which is called when the command is executed. Must follow template -
+        name: The name of the variable
+        description: A brief description of the variable
+        value: An optional value to determine the arg type
+        retValue:
+        enum: A dictionary of key,value pairs for args which have a set of selections
+        hidden: Whether the variable is visible to external classes
+        groups: Groups
+        minimum: Optional minimum value for a arg with a set range
+        maximum: Optional maximum value for a arg with a set range
+        function: Function which is called when the command is executed. Must follow template -
             function(device containing the variable, command generating the call, arg passed by command executrion).
-        background (str) : Background
-        guiGroup (str) : The GUI group
+        background: Background
+        guiGroup: The GUI group
 
     Attributes:
         _functionWrap (object) : A wrapper for the functino variable. Includes 'root', 'dev', 'cmd', 'arg'.
@@ -130,12 +128,10 @@ class BaseCommand(pr.BaseVariable):
         return self._doFunc(arg)
 
     def _doFunc(self,arg):
-        """
-        Execute command: TODO: Update comments
+        """Execute command: TODO: Update comments
 
         Args:
             arg :
-
 
         Returns:
 
@@ -241,10 +237,8 @@ class BaseCommand(pr.BaseVariable):
         def toggle(cmd):
             """
 
-
             Args:
-            cmd :
-
+                cmd :
 
             Returns:
 
@@ -256,11 +250,9 @@ class BaseCommand(pr.BaseVariable):
     @staticmethod
     def toggle(cmd):
         """
+
         Args:
             cmd :
-
-
-        Returns:
 
         """
         cmd.set(1)
@@ -425,11 +417,11 @@ class BaseCommand(pr.BaseVariable):
         """
         return None
 
-    def get(self,read=True, index=-1):
+    def get(self,read: bool=True, index: int=-1):
         """
         Args:
-            read (bool) : (Default value = True)
-            index (int) : (Default value = -1)
+            read:
+            index:
 
         Returns:
 

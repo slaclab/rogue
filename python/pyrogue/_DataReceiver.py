@@ -77,14 +77,10 @@ class DataReceiver(pr.Device,ris.Slave):
     def _acceptFrame(self, frame):
         """
 
+        Args:
+            frame :
 
-        Parameters
-        ----------
-        frame :
-
-
-        Returns
-        -------
+        Returns: None
 
         """
         # Do nothing if not yet started or enabled
@@ -117,13 +113,9 @@ class DataReceiver(pr.Device,ris.Slave):
         This may include separating data, header and other payload sub-fields
         This all occurs with the frame lock held
 
-        Parameters
-        ----------
-        frame :
+        Args:
+            frame :
 
-
-        Returns
-        -------
 
         """
 

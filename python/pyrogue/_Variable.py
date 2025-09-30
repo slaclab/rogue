@@ -1330,7 +1330,7 @@ class LocalVariable(BaseVariable):
                  description: str = '',
                  mode: str = 'RW',
                  value: Optional[Any] = None,
-                 disp: str ='{}',
+                 disp: Union[str, Dict] ='{}',
                  enum: Optional[Dict] = None,
                  units: Optional[str] = None,
                  hidden: bool = False,

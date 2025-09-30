@@ -24,7 +24,7 @@ from typing import Union, Optional, List, Dict, Any
 
 class EnableVariable(pr.BaseVariable):
     """ """
-    def __init__(self, *, enabled, deps=None):
+    def __init__(self, *, enabled: bool, deps: Optional[List]=None):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',
@@ -82,9 +82,9 @@ class EnableVariable(pr.BaseVariable):
         """
 
         Args:
-            value : (Default value = enabled)
-            write (bool) :
-            index (int) :
+            value :
+            write :
+            index :
 
         Returns:
 

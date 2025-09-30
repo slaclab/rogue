@@ -19,7 +19,7 @@ import re
 import inspect
 import pyrogue as pr
 import collections
-from typing import Union, List, Dict, Type
+from typing import Union, List, Type, Optional
 from _collections_abc import Iterable, Callable
 
 
@@ -220,7 +220,7 @@ class Node(object):
         else:
             return group in self._groups
 
-    def filterByGroup(self, incGroups, excGroups):
+    def filterByGroup(self, incGroups: Optional[List], excGroups: Optional[List]):
         """Filter by the passed list of inclusion and exclusion groups
 
         Args:
@@ -728,7 +728,7 @@ class Node(object):
         """
         return isinstance(self,typ)
 
-    def _rootAttached(self,parent,root):
+    def _rootAttached(self, parent: Type[pr.Node],root: pr.Root):
         """Called once the root node is attached.
 
         Args:

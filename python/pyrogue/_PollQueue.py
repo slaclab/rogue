@@ -20,6 +20,8 @@ import heapq
 import rogue.interfaces.memory
 import pyrogue as pr
 
+from typing import Optional
+
 
 class PollQueueEntry(object):
     """ """
@@ -58,19 +60,12 @@ class PollQueue(object):
         self._pollThread.start()
         self._log.info("PollQueue Started")
 
-    def _addEntry(self, block, interval):
+    def _addEntry(self, block, interval:int):
         """
 
-
-        Parameters
-        ----------
-        block :
-
-        interval :
-
-
-        Returns
-        -------
+        Args:
+            block :
+            interval :
 
         """
         with self._condLock:
@@ -100,14 +95,10 @@ class PollQueue(object):
     def updatePollInterval(self, var):
         """
 
+        Args:
+            var :
 
-        Parameters
-        ----------
-        var :
-
-
-        Returns
-        -------
+        Returns: None
 
         """
         with self._condLock:
@@ -205,19 +196,15 @@ class PollQueue(object):
                             pr.logException(self._log,e)
 
 
-    def _expiredEntries(self, time=None):
-        """
-        An iterator of all entries that expire by a given time.
-        Use datetime.now() if no time provided. Each entry is popped from the queue before being
+    def _expiredEntries(self, time: Optional[datetime.datetime]=None):
+        """An iterator of all entries that expire by a given time.
+
+        Uses datetime.now() if no time provided. Each entry is popped from the queue before being
         yielded by the iterator
 
-        Parameters
-        ----------
-        time :
-             (Default value = None)
-
-        Returns
-        -------
+        Args:
+            time :
+                (Default value = None)
 
         """
         with self._condLock:
@@ -251,14 +238,8 @@ class PollQueue(object):
     def pause(self, value):
         """
 
-
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
+        Args:
+            value :
 
         """
         if value is True:

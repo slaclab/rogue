@@ -16,37 +16,31 @@ import pyrogue as pr
 import threading
 import time
 
+from collections.abc import Iterable, Callable
+from typing import Union, Type, List, Dict, Any, Optional
 
 class RunControl(pr.Device):
-    """
-    Special base class to control runs.
+    """Special base class to control runs.
 
-    Attributes
-    ----------
-    attr1 :
-        pr.Device
+    Attributes:
+        attr1 : pr.Device
     """
 
-    def __init__(self, *, hidden=True, rates=None, states=None, cmd=None, **kwargs):
+    def __init__(self, *, 
+                 hidden: bool=True,
+                 rates: Optional[Dict]=None,
+                 states: Optional[Dict]=None,
+                 cmd: Optional[Callable]=None,
+                 **kwargs):
         """
-        Initialize device class - test
 
-        Parameters
-        ----------
-        param1 : *
+        Args:
+            hidden:
+            rates:
+            states:
+            cmd:
+            **kwargs:
 
-        param2 : hidden=True
-
-        param3 : rates=None
-
-        param4 : states=None
-
-        param5 : cmd=None
-
-        param6 : **kwargs
-
-        returns: none
-        ----------
         """
 
         if rates is None:
@@ -95,14 +89,9 @@ class RunControl(pr.Device):
         Enum of run states can also be overridden.
         Underlying run control must update runCount variable.
 
-        Parameters
-        ----------
-        param1: self
-        param2: value
-        param3: changed
-
-        returns:
-        -------
+        Args:
+            value:
+            changed:
 
         """
         if changed:
@@ -116,27 +105,16 @@ class RunControl(pr.Device):
                 self._thread = None
 
     def _setRunRate(self,value):
-        """
-        Set run rate. Re-implement in sub-class if necessary.
+        """Set run rate. Re-implement in sub-class if necessary.
 
-        Parameters
-        ----------
-        param1: self
-        param2: value
-
-        returns:
-        -------
+        Args:
+            value:
 
         """
         pass
 
     def _run(self):
-        """
-        Parameters
-        ----------
-        param1: self
-        ----------
-        """
+        """ """
         #print("Thread start")
         self.runCount.set(0)
 

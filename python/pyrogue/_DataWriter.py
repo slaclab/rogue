@@ -19,19 +19,14 @@ import pyrogue as pr
 class DataWriter(pr.Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, *, hidden=True, bufferSize=0, maxFileSize=0, **kwargs):
-        """
-        Initialize device class
-        Parameters
-        ----------
-        * :
+    def __init__(self, *, hidden: bool=True, bufferSize: int=0, maxFileSize: int=0, **kwargs):
+        """Initialize DataWriter class
 
-        hidden=True :
-
-        **kwargs :
-
-        Returns
-        -------
+        Args:
+            hidden:
+            bufferSize: 
+            maxFileSize:
+            **kwargs :
 
         """
 
@@ -125,58 +120,38 @@ class DataWriter(pr.Device):
         pass
 
     def _setBufferSize(self,value):
-        """
-        Set buffer size. Override in sub-class
+        """Set buffer size. Override in sub-class
 
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
+        Args:
+            value : Value
 
         """
         pass
 
     def _setMaxFileSize(self,value):
-        """
-        Set max file size. Override in sub-class
+        """Set max file size. Override in sub-class
 
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
+        Args:
+            value : Value
 
         """
         pass
 
     def _getCurrentSize(self):
-        """get current file size. Override in sub-class"""
+        """Get current file size. Override in sub-class"""
         return 0
 
     def _getTotalSize(self):
-        """get total file size. Override in sub-class"""
+        """Get total file size. Override in sub-class"""
         return 0
 
     def _getFrameCount(self):
-        """get current file frame count. Override in sub-class"""
+        """Get current file frame count. Override in sub-class"""
         return 0
 
     def _genFileName(self):
-        """
-        Auto create data file name based upon date and time.
+        """Auto create data file name based upon date and time.
         Preserve file's location in path.
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-
         """
         idx = self.DataFile.value().rfind('/')
 
