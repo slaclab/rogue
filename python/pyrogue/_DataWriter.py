@@ -19,7 +19,7 @@ import pyrogue as pr
 class DataWriter(pr.Device):
     """Special base class to control data files. TODO: Update comments"""
 
-    def __init__(self, *, hidden: bool=True, bufferSize: int=0, maxFileSize: int=0, **kwargs):
+    def __init__(self, *, hidden: bool = True, bufferSize: int = 0, maxFileSize: int = 0, **kwargs):
         """Initialize DataWriter class
 
         Args:

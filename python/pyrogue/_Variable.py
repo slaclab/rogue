@@ -218,7 +218,7 @@ class BaseVariable(pr.Node):
                  description: str = '',
                  mode: Literal['RW', 'RO', 'WO'] = 'RW',
                  value: Optional[Any] = None,
-                 disp: Union[Dict, str, None] ='{}',
+                 disp: Union[Dict, str, None] = '{}',
                  enum: Optional[Dict] = None,
                  units: Optional[str] = None,
                  hidden: bool = False,
@@ -231,7 +231,7 @@ class BaseVariable(pr.Node):
                  highAlarm: Optional[int] = None,
                  pollInterval: int = 0,
                  updateNotify: bool = True,
-                 typeStr: str ='Unknown',
+                 typeStr: str = 'Unknown',
                  bulkOpEn: bool = True,
                  offset: int = 0,
                  guiGroup: Optional[str] = None,
@@ -804,7 +804,7 @@ class BaseVariable(pr.Node):
             self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
     def _getDict(self,
-                 modes: List[str]=['RW', 'RO', 'WO'],
+                 modes: List[str] = ['RW', 'RO', 'WO'],
                  incGroups: Optional[List[str]] = None,
                  excGroups: Optional[List[str]] = None,
                  properties: bool = False):
@@ -1124,7 +1124,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value:Any, *, index: int=-1, write: bool=True, verify: bool=True, check: bool=True):
+    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
@@ -1306,7 +1306,7 @@ class LocalVariable(BaseVariable):
                  description: str = '',
                  mode: Literal['RW', 'RO', 'WO'] = 'RW',
                  value: Optional[Any] = None,
-                 disp: Union[str, Dict] ='{}',
+                 disp: Union[str, Dict] = '{}',
                  enum: Optional[Dict] = None,
                  units: Optional[str] = None,
                  hidden: bool = False,
@@ -1318,10 +1318,10 @@ class LocalVariable(BaseVariable):
                  highWarning: Optional[int] = None,
                  highAlarm: Optional[int] = None,
                  localSet: Optional[Callable] = None,
-                 localGet: Optional[Callable]= None,
+                 localGet: Optional[Callable] = None,
                  pollInterval: int = 0,
                  updateNotify: bool = True,
-                 typeStr: str ='Unknown',
+                 typeStr: str = 'Unknown',
                  bulkOpEn: bool = True,
                  guiGroup: Optional[str] = None,
                  **kwargs):

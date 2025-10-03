@@ -124,10 +124,10 @@ class BaseCommand(pr.BaseVariable):
         """ """
         return self._retTypeStr
 
-    def __call__(self,arg=None):
+    def __call__(self, arg = None):
         return self._doFunc(arg)
 
-    def _doFunc(self,arg):
+    def _doFunc(self, arg):
         """Execute command: TODO: Update comments
 
         Args:
@@ -161,7 +161,7 @@ class BaseCommand(pr.BaseVariable):
             raise e
 
     @pr.expose
-    def call(self,arg=None):
+    def call(self, arg = None):
         """
 
         Args:
@@ -173,7 +173,7 @@ class BaseCommand(pr.BaseVariable):
         return self.__call__(arg)
 
     @pr.expose
-    def callDisp(self,arg=None):
+    def callDisp(self,arg = None):
         """
         Args:
             arg (str) :     (Default value = None)
@@ -417,7 +417,7 @@ class BaseCommand(pr.BaseVariable):
         """
         return None
 
-    def get(self,read: bool=True, index: int=-1):
+    def get(self,read: bool = True, index: int = -1):
         """
         Args:
             read:
