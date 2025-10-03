@@ -31,7 +31,7 @@ class VariableError(Exception):
     pass
 
 
-def VariableWait(varList, testFunction, timeout=0):
+def VariableWait(varList: List[Any], testFunction: Callable, timeout: int = 0):
     """
     Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
@@ -117,7 +117,7 @@ def VariableWait(varList, testFunction, timeout=0):
 
 class VariableValue(object):
     """ """
-    def __init__(self, var, read=False, index=-1):
+    def __init__(self, var: Any, read: bool = False, index: int = -1):
         self.value     = var.get(read=read,index=index)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
@@ -640,7 +640,7 @@ class BaseVariable(pr.Node):
             raise e
 
     @pr.expose
-    def getDisp(self, read=True, index=-1):
+    def getDisp(self, read: bool = True, index: int = -1):
         """ Returns the display value with an optional read. Equivalent to genDisp(get(read+False)).
 
         Args:
@@ -653,7 +653,7 @@ class BaseVariable(pr.Node):
         return self.genDisp(self.get(read=read,index=index))
 
     @pr.expose
-    def valueDisp(self, index=-1): #, read=True, index=-1):
+    def valueDisp(self, index: int = -1): #, read=True, index=-1):
         """ Return the display value without a read. Equivalent to genDisp(get(read=False))
 
         Args:
@@ -1161,7 +1161,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def post(self, value, *, index=-1):
+    def post(self, value, *, index: int = -1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -1189,7 +1189,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def get(self, *, index=-1, read=True, check=True):
+    def get(self, *, index: int = -1, read: bool = True, check: bool = True):
         """
 
 
@@ -1346,7 +1346,7 @@ class LocalVariable(BaseVariable):
                                     value=self._default)
 
     @pr.expose
-    def set(self, value: Any, *, index: int=-1, write: bool=True, verify: bool=True, check: bool=True):
+    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -1554,7 +1554,7 @@ class LinkVariable(BaseVariable):
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value:Any, *, write: bool=True, index: int=-1, verify: bool=True, check: bool=True):
+    def set(self, value: Any, *, write: bool = True, index: int = -1, verify: bool = True, check: bool = True):
         """
 
         Args:

@@ -24,7 +24,7 @@ from typing import Union, Optional, List, Dict, Any
 
 class EnableVariable(pr.BaseVariable):
     """ """
-    def __init__(self, *, enabled: bool, deps: Optional[List]=None):
+    def __init__(self, *, enabled: bool, deps: Optional[List] = None):
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',
@@ -48,7 +48,7 @@ class EnableVariable(pr.BaseVariable):
         self._lock   = threading.Lock()
 
     @pr.expose
-    def get(self, read: bool=False, index: int=-1):
+    def get(self, read: bool = False, index: int = -1):
         """
 
         Args:
@@ -78,7 +78,7 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value: Any, write: bool=True, index: int=-1):
+    def set(self, value: Any, write: bool = True, index: int = -1):
         """
 
         Args:
@@ -342,7 +342,7 @@ class Device(pr.Node,rim.Hub):
         return self.root is not None and self.root.running
 
 
-    def addRemoteVariables(self, number: int, stride: int, pack: bool=False, **kwargs):
+    def addRemoteVariables(self, number: int, stride: int, pack: bool = False, **kwargs):
         """
 
         Args:
@@ -404,7 +404,7 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
-    def setPollInterval(self, interval: int, variables: Optional[Iterable[str]]=None):
+    def setPollInterval(self, interval: int, variables: Optional[Iterable[str]] = None):
         """ Set the poll interval for a group of variables.
         If variables=None, set interval for all variables that currently have nonzero pollInterval
 
@@ -421,7 +421,7 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             self.node(x).setPollInterval(interval)
 
-    def hideVariables(self, hidden:bool, variables:Optional[List[Union[str, pr.BaseVariable]]]=None):
+    def hideVariables(self, hidden: bool, variables: Optional[List[Union[str, pr.BaseVariable]]] = None):
         """ Hide a list of Variables (or Variable names)
 
         Args:
@@ -469,7 +469,7 @@ class Device(pr.Node,rim.Hub):
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
-    def writeBlocks(self, *, force: bool=False, recurse: bool=True, variable: Any=None, checkEach: bool=False, index: int=-1, **kwargs):
+    def writeBlocks(self, *, force: bool = False, recurse: bool = True, variable: Any = None, checkEach: bool = False, index: int = -1, **kwargs):
         """ Write all of the blocks held by this Device to memory
 
         Args:
@@ -497,7 +497,7 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.writeBlocks(force=force, recurse=True, checkEach=checkEach, **kwargs)
 
-    def verifyBlocks(self, *, recurse: bool=True, variable: Any=None, checkEach: bool=False, **kwargs):
+    def verifyBlocks(self, *, recurse: bool = True, variable: Any = None, checkEach: bool = False, **kwargs):
         """ Perform background verify. Issues a verify transaction to the blocks within a Device.
 
         Args:
@@ -523,7 +523,7 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.verifyBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def readBlocks(self, *, recurse: bool=True, variable: Any=None, checkEach: bool=False, index: int=-1, **kwargs):
+    def readBlocks(self, *, recurse: bool = True, variable: Any = None, checkEach: bool = False, index: int = -1, **kwargs):
         """ Perform background reads. Issues a read transaction to the blocks within a Device
 
         Args:
@@ -550,7 +550,7 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def checkBlocks(self, *, recurse: bool=True, variable: Any=None, **kwargs):
+    def checkBlocks(self, *, recurse: bool = True, variable: Any = None, **kwargs):
         """ Check errors in all blocks and generate variable update notifications
 
         Args:
@@ -572,7 +572,7 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.checkBlocks(recurse=True, **kwargs)
 
-    def writeAndVerifyBlocks(self, force: bool=False, recurse: bool=True, variable: Any=None, checkEach: bool=False):
+    def writeAndVerifyBlocks(self, force: bool = False, recurse: bool = True, variable: Any = None, checkEach: bool = False):
         """ Perform a write, verify and check. Useful for committing any stale variables
 
         Args:
@@ -588,7 +588,7 @@ class Device(pr.Node,rim.Hub):
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
-    def readAndCheckBlocks(self, recurse: bool=True, variable: Any=None, checkEach: bool=False):
+    def readAndCheckBlocks(self, recurse: bool = True, variable: Any = None, checkEach: bool = False):
         """ Perform a read and check.
 
         Args:

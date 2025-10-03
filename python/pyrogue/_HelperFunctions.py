@@ -187,7 +187,7 @@ def busConnect(source: Union[Type[pr.Node], rogue.interfaces.memory.Master], des
     master._setSlave(slave)
 
 
-def yamlToData(stream: str='', fName: Optional[str]=None):
+def yamlToData(stream: str = '', fName: Optional[str] = None):
     """Load yaml to data structure.
     A yaml string or file path may be passed.
 

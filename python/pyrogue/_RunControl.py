@@ -16,8 +16,8 @@ import pyrogue as pr
 import threading
 import time
 
-from collections.abc import Iterable, Callable
-from typing import Union, Type, List, Dict, Any, Optional
+from collections.abc import Callable
+from typing import Dict, Optional
 
 class RunControl(pr.Device):
     """Special base class to control runs.
@@ -27,10 +27,10 @@ class RunControl(pr.Device):
     """
 
     def __init__(self, *,
-                 hidden: bool=True,
-                 rates: Optional[Dict]=None,
-                 states: Optional[Dict]=None,
-                 cmd: Optional[Callable]=None,
+                 hidden: bool = True,
+                 rates: Optional[Dict] = None,
+                 states: Optional[Dict] = None,
+                 cmd: Optional[Callable] = None,
                  **kwargs):
         """
 

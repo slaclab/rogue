@@ -196,7 +196,7 @@ class PollQueue(object):
                             pr.logException(self._log,e)
 
 
-    def _expiredEntries(self, time: Optional[datetime.datetime]=None):
+    def _expiredEntries(self, time: Optional[datetime.datetime] = None):
         """An iterator of all entries that expire by a given time.
 
         Uses datetime.now() if no time provided. Each entry is popped from the queue before being

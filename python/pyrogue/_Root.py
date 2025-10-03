@@ -168,14 +168,14 @@ class Root(pr.Device):
         self.stop()
 
     def __init__(self, *,
-                 name=None,
-                 description='',
-                 expand=True,
-                 timeout=1.0,
-                 initRead=False,
-                 initWrite=False,
-                 pollEn=True,
-                 maxLog=1000):
+                 name: Optional[str] = None,
+                 description: str = '',
+                 expand: bool = True,
+                 timeout: float = 1.0,
+                 initRead: bool = False,
+                 initWrite: bool = False,
+                 pollEn: bool = True,
+                 maxLog: int = 1000):
 
         """Init the node with passed attributes"""
         rogue.interfaces.stream.Master.__init__(self)
@@ -437,7 +437,7 @@ class Root(pr.Device):
         """
         return self._running
 
-    def addVarListener(self,func,*,done=None,incGroups=None,excGroups=None):
+    def addVarListener(self,func,*,done = None,incGroups = None,excGroups = None):
         """
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
@@ -459,7 +459,7 @@ class Root(pr.Device):
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager
-    def updateGroup(self, period: int=0):
+    def updateGroup(self, period: int = 0):
         """
 
         Args:
@@ -621,7 +621,7 @@ class Root(pr.Device):
                 f.write(line + '\n')
 
     @pr.expose
-    def saveVariableList(self,fname: str, polledOnly: bool=False, incGroups: Optional[List]=None):
+    def saveVariableList(self,fname: str, polledOnly: bool = False, incGroups: Optional[List] = None):
         """
 
         Args:
@@ -820,11 +820,11 @@ class Root(pr.Device):
 
         return True
 
-    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
+    def treeDict(self, modes = ['RW', 'RO', 'WO'], incGroups = None, excGroups = None):
         d = self._getDict(modes, incGroups, excGroups, properties=True)
         return {self.name: d}
 
-    def treeYaml(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
+    def treeYaml(self, modes = ['RW', 'RO', 'WO'], incGroups = None, excGroups = None, properties = None):
         return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
     def setYaml(self,yml,writeEach,modes,incGroups,excGroups):

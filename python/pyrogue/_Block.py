@@ -20,7 +20,7 @@ import rogue.interfaces.memory as rim
 from collections.abc import Callable
 from typing import Union, Any, Optional
 
-def startTransaction(block: pr.LocalBlock, *, type, forceWr: bool=False, checkEach: bool=False, variable: Optional[Any]=None, index: int=-1, **kwargs):
+def startTransaction(block: pr.LocalBlock, *, type, forceWr: bool = False, checkEach: bool = False, variable: Optional[Any] = None, index: int = -1, **kwargs):
     """
     Helper function for calling the startTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
@@ -55,21 +55,21 @@ def checkTransaction(block, **kwargs):
     """
     block._checkTransaction()
 
-def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+def writeBlocks(blocks, force = False, checkEach = False, index = -1, **kwargs):
     """ Helper function for writing and verifying a list of blocks.
         Allows a custom list of blocks to be efficiently written,
         similar to Device.writeBlocks(). """
     for b in blocks:
         startTransaction(b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs)
 
-def verifyBlocks(blocks, checkEach=False, **kwargs):
+def verifyBlocks(blocks, checkEach = False, **kwargs):
     """ Helper function for verifying a list of blocks.
         Allows a custom list of blocks to be efficiently verified without blocking
         between each read, similar to Device.verifyBlocks(). """
     for b in blocks:
         startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
 
-def readBlocks(blocks, checkEach=False, **kwargs):
+def readBlocks(blocks, checkEach = False, **kwargs):
     """ Helper function for reading a list of blocks.
         Allows a custom list of blocks to be efficiently read without blocking
         between each read, similar to Device.readBlocks(). """
@@ -83,7 +83,7 @@ def checkBlocks(blocks, **kwargs):
     for b in blocks:
         checkTransaction(b)
 
-def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+def writeAndVerifyBlocks(blocks, force = False, checkEach = False, index = -1, **kwargs):
     """ Helper function for writing and verifying a list of blocks.
         Allows a custom list of blocks to be efficiently written and verified
         similar to Device.writeAndVerifyBlocks(). """
@@ -91,7 +91,7 @@ def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwarg
     verifyBlocks(blocks, checkEach=checkEach, **kwargs)
     checkBlocks(blocks)
 
-def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
+def readAndCheckBlocks(blocks, checkEach = False, **kwargs):
     """ Helper function for reading a list of blocks.
         Allows a custom list of blocks to be efficiently written and verified
        without blocking between each read, similar to Device.readAndCheckBlocks(). """
@@ -210,7 +210,7 @@ class LocalBlock(object):
         """ """
         return self._variables
 
-    def set(self, var: Any, value: Union[int, list, dict], index: int=-1):
+    def set(self, var: Any, value: Union[int, list, dict], index: int = -1):
         """
 
         Args:
@@ -245,7 +245,7 @@ class LocalBlock(object):
             if self._enable and self._localSet is not None:
                 self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
 
-    def get(self, var: Any, index: int=-1):
+    def get(self, var: Any, index: int = -1):
         """
 
         Args:

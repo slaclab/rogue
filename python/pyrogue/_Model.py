@@ -17,8 +17,7 @@ import rogue.interfaces.memory as rim
 import numpy as np
 import struct
 
-from _collections_abc import Iterable
-from typing import Union, Optional, Literal, List, Dict, Any
+from typing import Union, Optional, Literal
 
 def wordCount(bits, wordSize):
     """
@@ -508,7 +507,7 @@ class Float(Model):
         """
         return float(string)
 
-    def minValue(self) -> Float:
+    def minValue(self) -> float:
         """ """
         return -3.4e38
 
