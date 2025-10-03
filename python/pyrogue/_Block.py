@@ -20,7 +20,7 @@ import rogue.interfaces.memory as rim
 from collections.abc import Callable
 from typing import Union, Any, Optional
 
-def startTransaction(block: pr.LocalBlock, *, type, forceWr: bool = False, checkEach: bool = False, variable: Optional[Any] = None, index: int = -1, **kwargs):
+def startTransaction(block: 'pr.LocalBlock', *, type, forceWr: bool = False, checkEach: bool = False, variable: Optional[Any] = None, index: int = -1, **kwargs):
     """
     Helper function for calling the startTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
@@ -138,7 +138,7 @@ class LocalBlock(object):
         _localGetWrap (Callable): functionWrapper for localGet with callArgs=['dev', 'var']
     """
     def __init__(self, *,
-                 variable: pr.LocalVariable,
+                 variable: 'pr.LocalVariable',
                  localSet: Optional[Callable],
                  localGet: Optional[Callable],
                  minimum: Optional[int],

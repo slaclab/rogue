@@ -478,7 +478,7 @@ class BaseVariable(pr.Node):
         """ """
         return self.__dependencies
 
-    def addListener(self, listener: Union[pr.BaseVariable, Callable]):
+    def addListener(self, listener: Union['pr.BaseVariable', Callable]):
         """
         Add a listener Variable or function to call when variable changes as a callback.
         This is useful when chaining variables together. (ADC conversions, etc)
@@ -498,7 +498,7 @@ class BaseVariable(pr.Node):
     def _addListenerCpp(self, func):
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
-    def delListener(self, listener: Union[Type[pr.BaseVariable], Callable]):
+    def delListener(self, listener: Union[Type['pr.BaseVariable'], Callable]):
         """
         Remove a listener Variable or function from list of listener functions.
 
@@ -1498,8 +1498,8 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name: str,
-                 variable: Optional[Type[pr.BaseVariable]] = None,
-                 dependencies: Optional[List[Type[pr.BaseVariable]]] = None,
+                 variable: Optional[Type['pr.BaseVariable']] = None,
+                 dependencies: Optional[List[Type['pr.BaseVariable']]] = None,
                  linkedSet: Optional[Callable] = None,
                  linkedGet: Optional[Callable] = None,
                  minimum: Optional[int] = None,
