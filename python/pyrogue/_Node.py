@@ -726,7 +726,7 @@ class Node(object):
         """
         return isinstance(self,typ)
 
-    def _rootAttached(self, parent: Type['Node'],root: pr.Root):
+    def _rootAttached(self, parent: Type['Node'],root: 'pr.Root'):
         """Called once the root node is attached.
 
         Args:
