@@ -28,4 +28,5 @@ prototyped in Python and then re-implemented in C++ for performance.
    memory/index
    simulation/index
    sql.rst
+   cpp_api.rst
 

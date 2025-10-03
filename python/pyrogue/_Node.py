@@ -348,7 +348,7 @@ class Node(object):
     def __contains__(self, item):
         return item in self.nodes.values()
 
-    def add(self,node : Union[Iterable[pr.Node], pr.Node]):
+    def add(self,node : Union[Iterable['Node'], 'Node']):
         """Add a either a collection of nodes, or a singular node as sub-node to self.
 
         Args:
@@ -447,7 +447,7 @@ class Node(object):
             sub = sub[k]
 
 
-    def addNode(self, nodeClass: Type[pr.Node], **kwargs):
+    def addNode(self, nodeClass: Type['Node'], **kwargs):
         """
 
         Args:
@@ -459,7 +459,7 @@ class Node(object):
         """
         self.add(nodeClass(**kwargs))
 
-    def addNodes(self, nodeClass: Type[pr.Node], number: int, stride: int, **kwargs):
+    def addNodes(self, nodeClass: Type['Node'], number: int, stride: int, **kwargs):
         """
 
         Args:
@@ -726,7 +726,7 @@ class Node(object):
         """
         return isinstance(self,typ)
 
-    def _rootAttached(self, parent: Type[pr.Node],root: pr.Root):
+    def _rootAttached(self, parent: Type['Node'],root: pr.Root):
         """Called once the root node is attached.
 
         Args:

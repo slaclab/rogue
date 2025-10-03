@@ -1,4 +1,4 @@
-.. _utilities_prbs_writing:
+.. _utilities_prbs_reading:
 
 =====================
 Receiving PRBS Frames
