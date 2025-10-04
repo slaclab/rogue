@@ -6,7 +6,9 @@ LocalCommand
 
 The LocalCommand class ...
 
-In this example ... 
+A LocalCommand is a command which does not have a 1:1 associated with a hardware element
+* Used to execute a sequence instructions within software
+* Can include sequences of variable writes or other command executions
 
 LocalCommand Class Definition
 =============================
@@ -15,6 +17,8 @@ LocalCommand Class Definition
    :members:
    :member-order: bysource
    :inherited-members:
+
+In this example ... 
 
 
 Python LocalCommand Example

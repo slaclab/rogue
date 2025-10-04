@@ -343,15 +343,19 @@ class Device(pr.Node,rim.Hub):
 
 
     def addRemoteVariables(self, number: int, stride: int, pack: bool = False, **kwargs):
-        """
+        """Creates an array of RemoteVariables containing {number} elements with memory
+        address offset stride of {stride} bytes
+
+        Optionally, the pack value allows the creation of a LinkVariable that is linked to the created
+        RemoteVariables. The RemoteVariable array data is represented as a string containing the
+        {display} values of each variable.
 
         Args:
-            number :
-            stride :
-            pack:
+            number : The number of elements in the RemoteVariable array.
+            stride : The memory address offset in bytes.
+            pack: A true value causes an additional LinkVariable to be created, which is then linked to the array of
+                RemoteVariables. The RemoteVariables will then be hidden.
             **kwargs :
-
-        Returns:
 
         """
         if pack:
