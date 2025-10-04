@@ -10,15 +10,15 @@ A Command :ref:`Node <pyrogue_tree_node>` is the management interface for execut
 
 * Types of Commands
 
-   * BaseCommand - abstract base class for the other Command classes
-   * LocalCommand - command without 1-1 to hardware element
-   * RemoteCommand - command with 1-1 to hardware element
+   * :py:class:`BaseCommand <pyrogue.BaseCommand>` - abstract base class for the other Command classes
+   * :py:class:`LocalCommand <pyrogue.LocalCommand>` - command without 1-1 to hardware element
+   * :py:class:`RemoteCommand <pyrogue.RemoteCommand>` - command with 1-1 to hardware element
 
-      * RemoteCommand is also a sub-class of Remote Variable
+      * RemoteCommand is also a sub-class of :ref:`RemoteVariable <pyrogue_tree_node_variable_remote_variable>`
 
 * All commands are sub-classes of :ref:`BaseVariable <pyrogue_tree_node_variable>` and support all variable attributes
 
-* A command has a :py:method:`method <pyrogue.BaseCommand.function>` which is called when the command is executed
+* A command has a :py:meth:`function <pyrogue.BaseCommand.function>` which is called when the command is executed
 
    * Has a set of supported args which are optional and detected by the variable
    * Names must match the template to be matched
@@ -37,13 +37,13 @@ links for more information on the subtypes.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Types of Commands in the PyRogue Tree:
+   :caption: Command Subtypes:
 
    local_command/index
    remote_command/index
 
 BaseCommand Class Documentation
-===============================
+-------------------------------
 
 This is the breakdown of the BaseCommand class, which is the parent class of all Commands.
 Inherits from BaseVariable class
@@ -86,11 +86,3 @@ Below is an example of creating a Command device in C++.
    };
 
 A few notes on the above examples ...
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Types Of Commands In The PyRogue Tree:
-
-   local_command/index
-   remote_command/index
-

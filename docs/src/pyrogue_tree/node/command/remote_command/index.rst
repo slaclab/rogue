@@ -20,17 +20,6 @@ These functions can generally be grouped into two categories:
 See the class documentation for :py:class:`Base Command <pyrogue.BaseCommand>` or :py:class:`Remote Command <pyrogue.RemoteCommand>`
 for more information on these functions.
 
-
-RemoteCommand Class Definition
-==============================
-
-.. autoclass:: pyrogue.RemoteCommand
-   :members:
-   :member-order: bysource
-   :inherited-members:
-
-In this example ... 
-
 Python RemoteCommand Examples
 =============================
 
@@ -79,6 +68,16 @@ Below is an example of creating a RemoteCommand which ...
 
     # Create a subclass of a RemoteCommand
     class MyRemoteCommand(...):
+
+
+RemoteCommand Class Definition
+==============================
+
+.. autoclass:: pyrogue.RemoteCommand
+   :members:
+   :member-order: bysource
+   :inherited-members:
+
 
 C++ RemoteCommand Example
 =========================

@@ -5,13 +5,14 @@ Device
 ======
 
 A Device node is a container for Variable and Commands as well as other devices
+
 * A Device class is a sub-class of rogue::interfaces::memory::Hub
 
    * This allows it to serve as a memory master as well as act as a hub to other memory masters
    * Variables (and their connected Blocks) associated with hardware will have an offset relative to the
-       Device base address and will use the Device's linked memory::Slave when performing register accesses
+    Device base address and will use the Device's linked memory::Slave when performing register accesses
    * Added Devices which are not already associated with a memory Slave interface will inherit the base
-       Device's base address and Slave interface
+    Device's base address and Slave interface
    * A Device can have it's own direct link to a memory Slave which is not related to parent.
 
 Key Attributes
@@ -34,6 +35,7 @@ Device Read/Write Operations
 ----------------------------
 
 When system wide config, write and read operations are generated the blocks in each Device are manipulated by the top level Root node
+
 * In a bulk config the shadow values in each variable are written by issuing the :py:meth:`setDisp() <pyrogue.Variable.setDisp>`
  call of each variable with the value contained in the configuration file
 
@@ -46,7 +48,7 @@ When system wide config, write and read operations are generated the blocks in e
    * A read() transaction in each block is then generated and added to the queue
    * The system then waits for the read transaction in each block to complete and then checks the result.
 
-Similarly individual variable writes (from epcis, a GUI or a script) will result in transactions occurring on each Block
+Similarly individual variable writes (from EPICS, a GUI or a script) will result in transactions occurring on each Block
 
 * A variable set(write=True) issues the following sequence:
 
@@ -93,8 +95,6 @@ Custom Read/Write Operations
       # Do something before transation
       super(checkBlocks, self)(recurse=recurse, variable=variable)
       # Do something after transation
-
-In this example ... 
 
 Device Class Documentation
 ==========================
