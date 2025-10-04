@@ -7,13 +7,17 @@ RemoteCommand
 The RemoteCommand class ...
 
 A RemoteCommand is a command which has a 1:1 associated with a hardware element
+
 * Subclass of RemoteVariable
 * Used to generate a set of writes to the associated hardware element
 
 A number of commonly used commands and sequence generators are provided to support RemoteCommand operations.
-These functions can generally be grouped into two categories: True functions, which will perform simple operations,
-or a function creator, which returns another function when called.
-See the class documentation for :py:pyrogue:`Base Command <pyrogue.BaseCommand>` or :py:pyrogue:`Remote Command <pyrogue.RemoteCommand>`
+These functions can generally be grouped into two categories:
+
+* True functions, which will perform simple operations.
+* Function creators, which return another function when called.
+
+See the class documentation for :py:class:`Base Command <pyrogue.BaseCommand>` or :py:class:`Remote Command <pyrogue.RemoteCommand>`
 for more information on these functions.
 
 
@@ -33,14 +37,14 @@ Python RemoteCommand Examples
 Basic Usage
 -----------
 .. code-block:: python
-
    import pyrogue
-      command = RemoteCommand(
-         name='demo', description=’’, value=None, 
-         disp=’{}’, enum=None, minimum=None,
-         maximum=None, base=pyrogue.UInt, 
-         offset=None, bitSize=32, 
-         bitOffset=0, function=None)
+
+   command = RemoteCommand(
+      name='demo', description='', value=None, 
+      disp='{}', enum=None, minimum=None,
+      maximum=None, base=pyrogue.UInt, 
+      offset=None, bitSize=32, 
+      bitOffset=0, function=None)
 
 Important things to note:
 

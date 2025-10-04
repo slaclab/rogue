@@ -18,13 +18,13 @@ A Command :ref:`Node <pyrogue_tree_node>` is the management interface for execut
 
 * All commands are sub-classes of :ref:`BaseVariable <pyrogue_tree_node_variable>` and support all variable attributes
 
-* A command has a :py:pyrogue:`function <pyrogue.BaseCommand.function>` which is called when the command is executed
+* A command has a :py:method:`method <pyrogue.BaseCommand.function>` which is called when the command is executed
 
    * Has a set of supported args which are optional and detected by the variable
    * Names must match the template to be matched
    * C++ functions exposed through python are supported but no args are passed
 
-* Commands can either be executed directly or with the :py:pyrogue:`call <pyrogue.BaseCommand.call>` method:
+* Commands can either be executed directly or with the :py:meth:`call <pyrogue.BaseCommand.call>` method:
 
    * command(arg)
    * command.call(arg)
