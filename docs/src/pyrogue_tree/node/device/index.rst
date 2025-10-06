@@ -106,6 +106,7 @@ Raw Read/Write Device Calls
 * In the following, _rawWrite and _rawRead are blocking calls
 
 :code:`def _rawWrite(self, offset, data, base=pyrogue.UInt, stride=4, wordBitSize=32):`
+
 * offset : Offset in bytes from Device base address
 * data: data to write in the form of a single value or a list of values
 * base: base class indicating the type of value(s) being written
@@ -113,6 +114,7 @@ Raw Read/Write Device Calls
 * wordBitSize: the size of each value in bits
 
 :code:`def _rawRead(self, offset, numWords=1, base=pyrogue.UInt, stride=4, wordBitSize=32, data=None):`
+
 * offset : Offset in bytes from Device base address
 * numWords: Number of values to read (if data=None)
 * base: base class indicating the type of value(s) being read
@@ -134,18 +136,15 @@ Device Command Decorators
    * This may be expanded to include RemoteCommands as well
    * Can be detected as RemoteCommands when offset is passed in the decorator
 
-Decorator Example
-^^^^^^^^^^^^^^^^^
+Class Method Decorator Example
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: python
 
    @pyrogue.command(order=1, name='readConfig', value='', description='Read config')
    def _readConfig(self,arg):
 
-* Class method decorators:
-
-   * The previous code is from the Root class which issues a readConfig from a file.
-
+* The previous code is from the Root class which issues a readConfig from a file.
 * This decorator will create a LocalCommand named :code:`readConfig` and pass the :code:`_readConfig` method as the function
 * If name was not provided the LocalCommand would use the method name
 * Any decorator args are passed through to the LocalCommand creation
@@ -168,6 +167,7 @@ Init Decorator Example
 The following code is from the Lmk04828 class.
 
 .. code-block:: python
+
    def __init__(...):
       ...
       @self.command(description="Load the CodeLoader .MAC file",value='',)
@@ -186,13 +186,15 @@ The following code is from the Lmk04828 class.
 Custom Device Classes
 =====================
 
-The following example references a class defined in :ref:`pyrogue/utilities/prbs.py <https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/prbs.py>`.
+The following example references a class defined in `pyrogue/utilities/prbs.py <https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/prbs.py>`.
+
 * This is a Device class which interfaces to an underlying c++ class which receives and checks prbs data
 
    * Note the creation of LocalVariables which call the underlying c++ class method directly
    * Note the countReset() method
 
 .. code-block:: python
+
    class PrbsRx(pyrogue.Device):
     """PRBS RX Wrapper"""
 
@@ -257,7 +259,7 @@ The following example references a class defined in :ref:`pyrogue/utilities/prbs
     def setTaps(self,taps):
         self._prbs.setTaps(taps)
 
-Another custom device class from the same link, PrbsTx, is as follows:
+Another custom device class from the same, PrbsTx, is as follows:
 
 * Note the genFrame LocalCommand which generates a call to the underlying c++ class
 
@@ -266,6 +268,7 @@ Another custom device class from the same link, PrbsTx, is as follows:
 * Note the txEnable variable which uses the changed arg to determine whether to start or stop a backup thread in the C++ class using enable and disable
 
 .. code-block:: python
+
    class PrbsTx(pyrogue.Device):
       """PRBS TX Wrapper"""
 

@@ -129,6 +129,12 @@ html_static_path = ['_static']
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Roguedoc'
 
+# -- Options for Sphinx Rendering -----------------------------------------
+# Sets typehints in both signature and description.
+autodoc_typehints = 'both'
+# Change class attribute rendering style
+napoleon_use_ivar = True
+
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -186,7 +192,3 @@ intersphinx_mapping = {'python': ('https://docs.python.org/', None)}
 # Breath configuration
 breathe_projects = { 'rogue' : '../build/doxyxml' }
 breathe_default_project = 'rogue'
-
-# -- Options for Autodoc --------------------------------------------------
-# Sets typehints in both signature and description.
-autodoc_typehints = 'both'
