@@ -1,3 +1,5 @@
+# These commands are used for CI, documentation, and local development only
+# These are not included in the deployment package
 PyYAML
 parse
 click
@@ -8,6 +10,7 @@ pytest-cov
 sphinx
 sphinx_rtd_theme
 sphinxcontrib-napoleon
+sphinx-copybutton
 breathe
 pyzmq
 p4p
