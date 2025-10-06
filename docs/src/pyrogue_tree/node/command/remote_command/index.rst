@@ -26,6 +26,7 @@ Python RemoteCommand Examples
 Basic Usage
 -----------
 .. code-block:: python
+
    import pyrogue
 
    command = RemoteCommand(

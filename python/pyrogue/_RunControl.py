@@ -17,31 +17,26 @@ import threading
 import time
 
 from collections.abc import Callable
-from typing import Dict, Optional
+from typing import Dict, Optional, Union, Type
 
 class RunControl(pr.Device):
     """Special base class to control runs.
 
-    Attributes:
-        attr1 : pr.Device
+    Args:
+        hidden: Whether the device is visible to external classes.
+        rates: A dictionary of rates and associated keys. The keys are application specific and
+            represent the run rate in hz in the default class.
+        states: A dictionary of states and associated keys. The keys are application specific
+        cmd: Is the command to execute at each iteration when using the default software driven run() method.
+        **kwargs:
     """
 
     def __init__(self, *,
                  hidden: bool = True,
-                 rates: Optional[Dict] = None,
-                 states: Optional[Dict] = None,
-                 cmd: Optional[Callable] = None,
+                 rates: Optional[Dict] = {1:'1 Hz', 10:'10 Hz'},
+                 states: Optional[Dict] = {0:'Stopped', 1:'Running'},
+                 cmd: Optional[Union[Callable, Type['pr.Command'] ]] = None,
                  **kwargs):
-        """
-
-        Args:
-            hidden:
-            rates:
-            states:
-            cmd:
-            **kwargs:
-
-        """
 
         if rates is None:
             rates={1:'1 Hz', 10:'10 Hz'}
@@ -84,10 +79,10 @@ class RunControl(pr.Device):
             description='Run Counter updated by run thread.'))
 
     def _setRunState(self,value,changed):
-        """
-        Set run state. Re-implement in sub-class.
-        Enum of run states can also be overridden.
+        """Set run state. Creates a run thread when started, or kills/deletes a run thread when stopped.
+        Re-implement in sub-class. Enum of run states can also be overridden.
         Underlying run control must update runCount variable.
+        A custom run control class may issue writes to hardware to set the run state.
 
         Args:
             value:
@@ -105,7 +100,9 @@ class RunControl(pr.Device):
                 self._thread = None
 
     def _setRunRate(self,value):
-        """Set run rate. Re-implement in sub-class if necessary.
+        """Set run rate. Called when runRate variable is set.
+        Re-implement in sub-class if necessary.
+        A custom run control class may issue a write to hardware to adjust the run rate.
 
         Args:
             value:
@@ -114,7 +111,9 @@ class RunControl(pr.Device):
         pass
 
     def _run(self):
-        """ """
+        """Background method used by the run thread when using the default runState method.
+        A custom run control class may modify this method or not use it if setRunState does not start a thread.
+        """
         #print("Thread start")
         self.runCount.set(0)
 

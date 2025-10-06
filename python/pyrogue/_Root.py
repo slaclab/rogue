@@ -149,10 +149,14 @@ class Root(pr.Device):
     configuration and status values. This allows configuration and status
     to be stored in data files.
 
+    Args:
+        initRead: Issue a read request to get hardware state
+        initWrite: Issue a write of any default values in the tree
+        pollEn: Set to True to enable system level variable polling
+        maxLog: Maximum log length
+
     Attributes:
         rogue.interfaces.stream.Master :
-
-    pr.Device :
 
     Returns:
 
@@ -260,7 +264,7 @@ class Root(pr.Device):
                                                                     autoPrefix='state',
                                                                     autoCompress=True),
                                  hidden=True,
-                                 description='Save state to file. Data is saved in YAML format. Passed arg is full path to file to sore data to.'))
+                                 description='Save state to file. Data is saved in YAML format. Passed arg is full path to file to store data to.'))
 
         self.add(pr.LocalCommand(name='SaveConfig', value='',
                                  function=lambda arg: self.saveYaml(name=arg,
@@ -271,7 +275,7 @@ class Root(pr.Device):
                                                                     autoPrefix='config',
                                                                     autoCompress=False),
                                  hidden=True,
-                                 description='Save configuration to file. Data is saved in YAML format. Passed arg is full path to file to sore data to.'))
+                                 description='Save configuration to file. Data is saved in YAML format. Passed arg is full path to file to store data to.'))
 
         self.add(pr.LocalCommand(name='LoadConfig', value='',
                                  function=lambda arg: self.loadYaml(name=arg,
@@ -294,7 +298,7 @@ class Root(pr.Device):
                                                                               modes=['RW','WO'],
                                                                               readFirst=True),
                                  hidden=True,
-                                 description='Save a dump of the remote variable state'))
+                                 description='Save a dump of the remote configuration state'))
 
 
         self.add(pr.LocalCommand(name='Initialize', function=self.initialize, hidden=True,
@@ -419,7 +423,10 @@ class Root(pr.Device):
 
 
     def stop(self):
-        """Stop the polling thread. Must be called for clean exit."""
+        """Stop the polling thread. Must be called for clean exit.
+        
+        May be overridden in sub-class to stop other support services (epics, mysql, etc)
+        """
 
         self._running = False
         self._updateQueue.put(None)
@@ -827,30 +834,18 @@ class Root(pr.Device):
     def treeYaml(self, modes = ['RW', 'RO', 'WO'], incGroups = None, excGroups = None, properties = None):
         return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
-    def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
-        """
-        Set variable values from a yaml file
-        modes is a list of variable modes to act on.
-        writeEach is set to true if accessing a single variable at a time.
-        Writes will be performed as each variable is updated. If set to
-        false a bulk write will be performed after all of the variable updates
-        are completed. Bulk writes provide better performance when updating a large
-        quantity of variables.
+    def setYaml(self, yml, writeEach: bool, modes: List[str], incGroups: Optional[List[str]], excGroups: Optional[List[str]]):
+        """Parse the passed yaml string and set values.
 
         Args:
-        yml :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
+            yml: Yaml file providing the variable values.
+            modes: is a list of variable modes to act on.
+            writeEach: True if accessing a single variable at a time. Writes will be performed as each variable is updated.
+                If False, a bulk write will be performed after all of the variable updates are completed.
+                Bulk writes provide better performance when updating a large quantity of variables.
+            modes: A list of variable modes which should be included in the yaml set operations
+            incGroups: Groups to include in the data.
+            excGroups: Groups to exclude from the data.
 
         """
         d = pr.yamlToData(yml)

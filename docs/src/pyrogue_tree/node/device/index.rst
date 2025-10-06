@@ -20,8 +20,8 @@ Key Attributes
    * offset, address, memBase, enabled
    * enabled acts as an on/off switch for invidual devices within the tree.
 
-Key Functions
--------------
+Key Methods
+-----------
 * Sub-Devices, Variables and Commands are added using the :py:meth:`add() <pyrogue.Device.add>` method
 * A special device-specific :py:meth:`addRemoteVariables <pyrogue.Device.addRemoteVariables>` method allows the creation of RemoteVariable arrays
 * Hide or Unhide all variables with :py:meth:`hideVariables() <pyrogue.Device.hideVariables>`
@@ -359,6 +359,20 @@ Another custom device class from the same, PrbsTx, is as follows:
 
     def _stop(self):
         self._prbs.disable()
+
+Special Device Subclasses
+=========================
+
+There are a few special device classes that you can utilize for your development.
+Click the following links for more information on the subclasses.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Special Device Subtypes:
+
+   special_devices/memory_device
+   special_devices/run_control
+   special_devices/data_writer
 
 Device Class Documentation
 ==========================

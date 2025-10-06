@@ -750,11 +750,16 @@ class Node(object):
             value._finishInit()
 
     @expose
-    def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=True):
-        """
-        Get current values as yaml data.
-        modes is a list of variable modes to include.
-        If readFirst=True a full read from hardware is performed.
+    def getYaml(self, readFirst: bool = False, modes: List[str] = ['RW','RO','WO'], incGroups: Optional[List[str]] = None, excGroups: Optional[List[str]] = ['Hidden'], recurse: bool = True):
+        """Get current values as yaml data. The yaml string contains a dictionary representation of the tree.
+
+        Args:
+            readFirst: True/False flag indication if hardware should be read before generating yaml
+            modes: A list of variable modes which should be included in the yaml dump.
+                Configuration saves will use ['RW']. Status saves will use ['RO'] or ['RW','RO'].
+            incGroups: Groups to include in the data.
+            excGroups: Groups to exclude from the data.
+            recurse: If True a full read from hardware is performed.
         """
         if readFirst:
             self.root._read()
