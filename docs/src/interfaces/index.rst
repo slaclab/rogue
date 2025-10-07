@@ -27,6 +27,7 @@ prototyped in Python and then re-implemented in C++ for performance.
    stream/index
    memory/index
    simulation/index
+   pyrogue/index
    sql.rst
    cpp_api.rst
 

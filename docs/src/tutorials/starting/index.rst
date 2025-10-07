@@ -11,4 +11,9 @@ This tutorial will cover installation and setup, building the source code, runni
 
 * :ref:`Pyrogue Tree Setup Tutorial <tutorials_p_t_device>`
 
-.. Rogue Tutorials
+.. toctree::
+   :maxdepth: 1
+   :caption: Pages:
+
+   pyrogue_tree_example/p_t_device
+   pyrogue_tree_example/p_t_root
