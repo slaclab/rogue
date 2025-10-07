@@ -18,3 +18,4 @@ Protocols
    epicsV4/index
    srp/index
    uart
+   pyrogue/index
