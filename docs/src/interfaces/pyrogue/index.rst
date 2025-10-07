@@ -11,7 +11,6 @@ Rogue provides a few built in python interfaces.
    :caption: Interfaces:
 
    memory_stream_variable
-   osmemmaster
-   osmemslave
+   os_command_memory_slave
    zmq_server
 

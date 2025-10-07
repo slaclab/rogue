@@ -374,6 +374,10 @@ Click the following links for more information on the subclasses.
    special_devices/memory_device
    special_devices/run_control
    special_devices/data_writer
+   special_devices/data_receiver
+   special_devices/prbsrx
+   special_devices/stream_writer
+   special_devices/process
 
 
 Device Class Documentation

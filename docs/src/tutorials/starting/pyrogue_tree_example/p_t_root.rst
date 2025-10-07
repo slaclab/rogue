@@ -30,7 +30,7 @@ Define the init function
 #. Add a :ref:`Process Controller <pyrogue_tree_node_device_process>`
 #. Create :ref:`Link <pyrogue_tree_node_variable_link_variable>` and :ref:`Local <pyrogue_tree_node_variable_local_variable>` variables
 #. Connect it to the :ref:`EPICS Protocol <pyrogue_protocol_epicspvserver>` class
-#. Create and connect memory commands :ref:`master <interfaces_python_osmemmaster>` and :ref:`slave <interfaces_python_osmemslave>`
+#. Create and connect memory commands using the built in :ref:`slave <_interfaces_python_os_command_memory_slave>` and custom :ref:`master <interfaces_python_osmemmaster>`
 
 .. code-block:: python
 

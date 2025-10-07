@@ -17,3 +17,4 @@ This tutorial will cover installation and setup, building the source code, runni
 
    pyrogue_tree_example/p_t_device
    pyrogue_tree_example/p_t_root
+   pyrogue_tree_example/osmemmaster

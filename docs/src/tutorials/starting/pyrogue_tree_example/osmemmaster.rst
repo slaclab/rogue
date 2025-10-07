@@ -3,7 +3,4 @@
 Python OsMemMaster Class Documentation
 ======================================
 
-.. autoclass:: pyrogue.OsMemMaster
-   :members:
-   :member-order: bysource
-   :inherited-members:
+TODO: Bring the class example here
