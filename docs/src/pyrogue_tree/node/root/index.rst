@@ -105,7 +105,7 @@ Python list slicing indexes are used, as well as additional wildcards.
 Included Command Objects
 ------------------------
 
-The following :py:class:`pyrogue.Command.LocalCommand` objects are all created when the Root node is created.
+The following :py:class:`pyrogue.LocalCommand` objects are all created when the Root node is created.
 
 * **WriteAll**: Write every variable value to hardware (hidden from the GUI).
 * **ReadAll**: Read every variable value from hardware.
@@ -125,7 +125,7 @@ The following :py:class:`pyrogue.Command.LocalCommand` objects are all created w
 
 Included Variable Objects
 -------------------------
-The following :py:class:`pyrogue.Variable.LocalVariable` objects are all created when the Root node is created.
+The following :py:class:`pyrogue.LocalVariable` objects are all created when the Root node is created.
 
 * **RogueVersion**: Rogue version string.
 * **RogueDirectory**: Rogue Library Directory.

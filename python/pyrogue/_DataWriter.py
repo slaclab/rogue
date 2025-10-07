@@ -23,10 +23,9 @@ class DataWriter(pr.Device):
         """Initialize DataWriter class
 
         Args:
-            hidden:
-            bufferSize:
-            maxFileSize:
-            **kwargs :
+            hidden: Whether the variable is visible to external classes.
+            bufferSize: Buffer size which sets the amount of data which should be cached before a write.
+            maxFileSize: Maximum file size.
 
         """
 
@@ -120,11 +119,12 @@ class DataWriter(pr.Device):
         pass
 
     def _setBufferSize(self,value):
-        """Set buffer size. Override in sub-class
+        """Set buffer size- the amount of data that should be cached before a fole write is called.
+        Used to avoid small writers. 
+        Override in sub-class.
 
         Args:
-            value : Value
-
+            value : buffer size
         """
         pass
 
@@ -132,8 +132,7 @@ class DataWriter(pr.Device):
         """Set max file size. Override in sub-class
 
         Args:
-            value : Value
-
+            value : file size
         """
         pass
 

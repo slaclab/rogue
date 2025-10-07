@@ -26,7 +26,6 @@ Key Methods
 * A special device-specific :py:meth:`addRemoteVariables <pyrogue.Device.addRemoteVariables>` method allows the creation of RemoteVariable arrays
 * Hide or Unhide all variables with :py:meth:`hideVariables() <pyrogue.Device.hideVariables>`
 * Optional override behavior for when a system-wide hardreset is generated - :py:meth:`hardReset() <pyrogue.Device.hardReset>`
-* Optional override for soft resets - :py:meth:`softReset() <pyrogue.Device.softReset>`
 * Optional override for countReset - :py:meth:`countReset() <pyrogue.Device.countReset>`
 
 Device Read/Write Operations
@@ -103,8 +102,8 @@ Raw Read/Write Device Calls
 
    * Operations are usually triggered by a LocalCommand or LocalVariable within the device
 
-* In the following, _rawWrite and _rawRead are blocking calls
 
+In the following, _rawWrite and _rawRead are blocking calls
 :code:`def _rawWrite(self, offset, data, base=pyrogue.UInt, stride=4, wordBitSize=32):`
 
 * offset : Offset in bytes from Device base address
@@ -182,6 +181,7 @@ The following code is from the Lmk04828 class.
 * Because the command has the argument arg, the LocalCommand will be configured to accept arguments. If it was not there arguments would be disabled.
 
    * :code:`value=''` sets the arg type as string
+
 
 Custom Device Classes
 =====================
@@ -360,6 +360,7 @@ Another custom device class from the same, PrbsTx, is as follows:
     def _stop(self):
         self._prbs.disable()
 
+
 Special Device Subclasses
 =========================
 
@@ -373,6 +374,7 @@ Click the following links for more information on the subclasses.
    special_devices/memory_device
    special_devices/run_control
    special_devices/data_writer
+
 
 Device Class Documentation
 ==========================

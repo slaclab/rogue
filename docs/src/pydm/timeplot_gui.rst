@@ -1,8 +1,8 @@
-.. _timeplot_gui
+.. _timeplot_gui:
 
-===========================
+====================================
 Starting The Rogue PyDM Timeplot GUI
-===========================
+====================================
 
 The Rogue PyDM Timeplot GUI can be started from the command line
 

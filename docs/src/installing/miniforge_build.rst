@@ -1,8 +1,8 @@
 .. _installing_miniforge_build:
 
-==============================
+===============================
 Building Rogue Inside Miniforge
-==============================
+===============================
 
 This section provides instructions for downloading and building rogue inside an miniforge environment. These
 instructions are relevant for Linux
@@ -33,7 +33,7 @@ Set your local miniforge to use the update solver:
     $ conda config --set solver libmamba
 
 Downloading Rogue & Creating Miniforge Environment
-===================================================
+==================================================
 
 The next step is to download rogue and create a rogue compatible miniforge environment.
 

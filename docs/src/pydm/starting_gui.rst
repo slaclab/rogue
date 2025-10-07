@@ -1,4 +1,4 @@
-.. _starting_gui
+.. _starting_gui:
 
 ===========================
 Starting The Rogue PyDM GUI

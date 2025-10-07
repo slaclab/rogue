@@ -89,7 +89,7 @@ The following command is used to install Rogue inside and existing miniforge env
 
 
 Updating Rogue In Miniforge
-==========================
+===========================
 
 If you want to update Rogue, run the following command after activating the Rogue environment
 
