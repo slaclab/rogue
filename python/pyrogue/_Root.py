@@ -424,7 +424,7 @@ class Root(pr.Device):
 
     def stop(self):
         """Stop the polling thread. Must be called for clean exit.
-        
+
         May be overridden in sub-class to stop other support services (epics, mysql, etc)
         """
 
