@@ -4,6 +4,9 @@
 Device 
 ======
 
+Device Definition
+=================
+
 A Device node is a container for Variable and Commands as well as other devices
 
 * A Device class is a sub-class of rogue::interfaces::memory::Hub
