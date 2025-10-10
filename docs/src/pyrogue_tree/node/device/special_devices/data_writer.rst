@@ -1,5 +1,6 @@
 .. _pyrogue_tree_node_device_datawriter:
 
+=======================
 DataWriter Device Class
 =======================
 

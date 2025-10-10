@@ -1,5 +1,6 @@
 .. _pyrogue_protocol_epicspvholder:
 
+========================
 Epics PV Holder Protocol
 ========================
 

@@ -1,5 +1,9 @@
 .. _interfaces_python_zmqserver:
 
+================
+Python ZMQServer
+================
+
 Python ZMQServer Class Documentation
 ====================================
 

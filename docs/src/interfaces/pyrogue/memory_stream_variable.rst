@@ -1,5 +1,9 @@
 .. _interfaces_python_memory_variable:
 
+======================
+Python Stream Variable
+======================
+
 Python Stream Variable Class Documentation
 ==========================================
 

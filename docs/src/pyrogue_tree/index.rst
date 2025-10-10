@@ -1,8 +1,8 @@
 .. _pyrogue_tree:
 
-================
+============
 PyRogue Tree
-================
+============
 
 The PyRogue Tree implements a tree structure for the hierarchical organization of devices.
 All devices, variables, and commands subclass from :ref:`pyrogue_tree_node`.

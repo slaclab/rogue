@@ -1,5 +1,9 @@
 .. _interfaces_python_os_command_memory_slave:
 
+====================
+OsCommandMemorySlave
+====================
+
 Python OsCommandMemorySlave Class Documentation
 ===============================================
 

@@ -1,5 +1,6 @@
 .. _pyrogue_protocol_epicspvserver:
 
+========================
 Epics PV Server Protocol
 ========================
 
