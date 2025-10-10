@@ -40,6 +40,7 @@ MemoryDevice Type Definition
 ============================
 
 .. code-block:: python
+
    # MemoryDevice type
    MemoryDevice = namedtuple('MemoryDevice', ['name', 'offset', 'size', 'wordBitSize', 'stride', 'base'],
                           defaults=['DevName', 0x00000, 16, 8, 16, 'pr.Int'])
