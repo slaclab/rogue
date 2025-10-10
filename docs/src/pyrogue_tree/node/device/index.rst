@@ -182,6 +182,23 @@ The following code is from the Lmk04828 class.
 
    * :code:`value=''` sets the arg type as string
 
+Special Device Subclasses
+=========================
+
+There are a few special device classes that you can utilize for your development.
+Click the following links for more information on the subclasses.
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Special Device Subtypes:
+
+   special_devices/memory_device
+   special_devices/run_control
+   special_devices/data_writer
+   special_devices/data_receiver
+   special_devices/prbsrx
+   special_devices/stream_writer
+   special_devices/process
 
 Custom Device Classes
 =====================
@@ -359,26 +376,6 @@ Another custom device class from the same, PrbsTx, is as follows:
 
     def _stop(self):
         self._prbs.disable()
-
-
-Special Device Subclasses
-=========================
-
-There are a few special device classes that you can utilize for your development.
-Click the following links for more information on the subclasses.
-
-.. toctree::
-   :maxdepth: 1
-   :caption: Special Device Subtypes:
-
-   special_devices/memory_device
-   special_devices/run_control
-   special_devices/data_writer
-   special_devices/data_receiver
-   special_devices/prbsrx
-   special_devices/stream_writer
-   special_devices/process
-
 
 Device Class Documentation
 ==========================

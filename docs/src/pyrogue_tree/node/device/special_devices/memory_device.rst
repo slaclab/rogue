@@ -3,7 +3,7 @@
 MemoryDevice Device Class
 =========================
 
-A special sub-class of Device, MemoryDevice, provides an alternative to creating a custom Device which uses _rawRead and _rawWrite calls.
+A special sub-class(named tuple) of Device, MemoryDevice, provides an alternative to creating a custom Device which uses _rawRead and _rawWrite calls.
 
 * MemoryDevice allows values contained within a yaml configuration file to be written directly to memory, bypassing the normal Variables
 
@@ -35,10 +35,10 @@ A special sub-class of Device, MemoryDevice, provides an alternative to creating
    * 256 = 0x12, 260 = 0x13, 264 = 0x14, 268 = 0x15
    * 512 = 0x22, 516 = 0x23, 520 = 0x24, 524 = 0x25
 
-MemoryDevice Class Documentation
-================================
+MemoryDevice Type Definition
+============================
 
-.. autoclass:: pyrogue.MemoryDevice
-   :members:
-   :member-order: bysource
-   :inherited-members:
+.. code-block:: python
+   # MemoryDevice type
+   MemoryDevice = namedtuple('MemoryDevice', ['name', 'offset', 'size', 'wordBitSize', 'stride', 'base'],
+                          defaults=['DevName', 0x00000, 16, 8, 16, 'pr.Int'])

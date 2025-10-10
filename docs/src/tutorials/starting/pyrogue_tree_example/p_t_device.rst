@@ -1,5 +1,9 @@
 .. _tutorials_p_t_device:
 
+================================
+Creating a Custom Pyrogue Device
+================================
+
 .. code-block:: python
 
     class AxiVersion(pr.Device):

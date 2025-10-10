@@ -8,7 +8,7 @@ StreamWriter is a subclass of :ref:`Data Writer <pyrogue_tree_node_device_datawr
 StreamWriter Class Documentation
 ================================
 
-.. autoclass:: pyrogue.StreamWriter
+.. autoclass:: pyrogue.utilities.fileio.StreamWriter
    :members:
    :member-order: bysource
    :inherited-members:

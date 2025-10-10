@@ -9,7 +9,7 @@ If interested in the source code of this tutorial, at can be found on `github <h
 
 This tutorial will cover installation and setup, building the source code, running the GUI and interactive shell, building, and releasing your own libraries and tags. 
 
-* :ref:`Pyrogue Tree Setup Tutorial <tutorials_p_t_device>`
+* :ref:`Pyrogue Tree Setup Tutorial <tutorials_p_t_root>`
 
 .. toctree::
    :maxdepth: 1
