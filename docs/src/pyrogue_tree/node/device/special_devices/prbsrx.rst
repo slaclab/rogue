@@ -8,7 +8,7 @@ PrbsRx is a subclass of :ref:`Device <pyrogue_tree_node_device>`
 PrbsRx Class Documentation
 ==========================
 
-.. autoclass:: pyrogue.utilities.PrbsRx
+.. autoclass:: pyrogue.utilities.prbs.PrbsRx
    :members:
    :member-order: bysource
    :inherited-members:

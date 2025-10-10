@@ -3,7 +3,7 @@
 Python ZMQServer Class Documentation
 ====================================
 
-.. autoclass:: pyrogue.ZmqServer
+.. autoclass:: pyrogue.interfaces.ZmqServer
    :members:
    :member-order: bysource
    :inherited-members:

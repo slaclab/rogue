@@ -8,7 +8,7 @@ EPICS PV Holder is a class for a protocol.
 EPICS PvHolder Class Documentation
 ==================================
 
-.. autoclass:: pyrogue.EpicsPvHolder
+.. autoclass:: pyrogue.protocols.epicsV4.EpicsPvHolder
    :members:
    :member-order: bysource
    :inherited-members:
