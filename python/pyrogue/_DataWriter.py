@@ -120,7 +120,7 @@ class DataWriter(pr.Device):
 
     def _setBufferSize(self,value):
         """Set buffer size- the amount of data that should be cached before a fole write is called.
-        Used to avoid small writers. 
+        Used to avoid small writers.
         Override in sub-class.
 
         Args:

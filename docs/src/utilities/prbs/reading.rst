@@ -4,7 +4,7 @@
 Receiving PRBS Frames
 =====================
 
-The PRBS object can either be used in its raw form or with either the PrbsTx or PrbsRx
+The PRBS object can either be used in its raw form or with either the `PrbsRx <pyrogue_tree_node_device_prbsrx>` or `PrbsTx <pyrogue_tree_node_device_prbstx>`
 Rogue Device wrappers. Using the Rogue Device wrapper allows the PRBS transmitter and receiver to
 be controlled and monitor in the Rogue PyDM GUI.
 
