@@ -15,6 +15,7 @@
  * ----------------------------------------------------------------------------
  **/
 
+#define PY_ARRAY_UNIQUE_SYMBOL Py_Array_Rogue
 #include "rogue/Directives.h"
 
 #include <boost/python.hpp>
@@ -22,9 +23,13 @@
 
 #include "rogue/Version.h"
 #include "rogue/module.h"
+#include "rogue/Numpy.h"
 
 BOOST_PYTHON_MODULE(rogue) {
     // PyEval_InitThreads();
+
+    // Init numpy arrays
+    _import_array();
 
     rogue::setup_module();
 

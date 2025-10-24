@@ -31,7 +31,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-    #include <numpy/ndarrayobject.h>
+    #include "rogue/Numpy.h"
 
     #include <boost/python.hpp>
 namespace bp = boost::python;
@@ -533,8 +533,6 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
 
 void ris::Frame::setup_python() {
 #ifndef NO_PYTHON
-
-    _import_array();
 
     // Create a NumPy dtype object from the NPY_UINT8 constant
     PyObject* dtype_uint8 = reinterpret_cast<PyObject*>(PyArray_DescrFromType(NPY_UINT8));
