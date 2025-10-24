@@ -31,7 +31,9 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-    #include "rogue/Numpy.h"
+    #define NO_IMPORT_ARRAY
+    #define PY_ARRAY_UNIQUE_SYMBOL Py_Array_Rogue
+    #include <numpy/ndarraytypes.h>
 
     #include <boost/python.hpp>
 namespace bp = boost::python;
