@@ -23,7 +23,6 @@
 
 #include "rogue/Version.h"
 #include "rogue/module.h"
-#include "rogue/Numpy.h"
 
 BOOST_PYTHON_MODULE(rogue) {
     // PyEval_InitThreads();
