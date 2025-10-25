@@ -43,8 +43,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-    #define NO_IMPORT_ARRAY
-    #define PY_ARRAY_UNIQUE_SYMBOL Py_Array_Rogue
+    #define PY_ARRAY_UNIQUE_SYMBOL Py_Array_Rogue_Block
     #include <numpy/arrayobject.h>
     #include <numpy/ndarraytypes.h>
 
@@ -61,6 +60,8 @@ rim::BlockPtr rim::Block::create(uint64_t offset, uint32_t size) {
 #ifndef NO_PYTHON
 // Setup class for use in python
 void rim::Block::setup_python() {
+
+   _import_array();
 
     bp::class_<rim::Block, rim::BlockPtr, bp::bases<rim::Master>, boost::noncopyable>("Block",
                                                                                       bp::init<uint64_t, uint32_t>())
