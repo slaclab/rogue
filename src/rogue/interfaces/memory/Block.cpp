@@ -60,7 +60,6 @@ rim::BlockPtr rim::Block::create(uint64_t offset, uint32_t size) {
 #ifndef NO_PYTHON
 // Setup class for use in python
 void rim::Block::setup_python() {
-
    _import_array();
 
     bp::class_<rim::Block, rim::BlockPtr, bp::bases<rim::Master>, boost::noncopyable>("Block",
