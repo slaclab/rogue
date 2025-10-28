@@ -5,20 +5,13 @@ python:
   - 3.11
   - 3.12
 
-# Use NumPy minors that exist for each Python
-numpy:
-  - 1.26    # py39
-  - 1.26    # py310
-  - 1.26    # py311
-  - 1.26    # py312
-
 ###############################################################################################
 # Notes for checking if conda solution exist before doing the actual conda build
 ###############################################################################################
-# conda render conda-recipe --variants "{python: 3.9,  numpy: 1.26, python_abi: '3.9  *_cp39' }"
-# conda render conda-recipe --variants "{python: 3.10, numpy: 1.26, python_abi: '3.10 *_cp310'}"
-# conda render conda-recipe --variants "{python: 3.11, numpy: 1.26, python_abi: '3.11 *_cp311'}"
-# conda render conda-recipe --variants "{python: 3.12, numpy: 1.26, python_abi: '3.12 *_cp312'}"
+# conda render conda-recipe --variants "{python: 3.9,  python_abi: '3.9  *_cp39' }"
+# conda render conda-recipe --variants "{python: 3.10, python_abi: '3.10 *_cp310'}"
+# conda render conda-recipe --variants "{python: 3.11, python_abi: '3.11 *_cp311'}"
+# conda render conda-recipe --variants "{python: 3.12, python_abi: '3.12 *_cp312'}"
 ###############################################################################################
 
 # Lock to CPython ABI, not PyPy
@@ -35,7 +28,7 @@ python_impl:
   - cpython   # py312
 
 zip_keys:
-  - [python, numpy, python_abi, python_impl]
+  - [python, python_abi, python_impl]
 
 pin_run_as_build:
   python: {min_pin: x.x, max_pin: x.x}
