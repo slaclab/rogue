@@ -19,6 +19,8 @@
 
 #define PY_ARRAY_UNIQUE_SYMBOL Py_Array_Rogue
 #include <numpy/arrayobject.h>
+#include <numpy/ndarrayobject.h>
+#include <numpy/ndarraytypes.h>
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
