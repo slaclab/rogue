@@ -4,3 +4,4 @@
 #define NPY_API_SYMBOL_ATTRIBUTE
 #define PY_ARRAY_UNIQUE_SYMBOL Py_Array_Rogue
 #include <numpy/arrayobject.h>
+#include <numpy/ndarraytypes.h>

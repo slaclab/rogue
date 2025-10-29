@@ -21,7 +21,6 @@
 
 #define NO_IMPORT_ARRAY
 #include "rogue/numpy.h"
-#include <numpy/ndarraytypes.h>
 #include <boost/python.hpp>
 
 namespace bp = boost::python;

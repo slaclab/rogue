@@ -18,7 +18,6 @@
 #include "rogue/Directives.h"
 
 #include "rogue/numpy.h"
-#include <numpy/ndarraytypes.h>
 
 #include <boost/python.hpp>
 #include <boost/python/numpy.hpp>
