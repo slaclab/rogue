@@ -14,7 +14,19 @@
  * contained in the LICENSE.txt file.
  * ----------------------------------------------------------------------------
  **/
+
 #include "rogue/Directives.h"
+
+#ifndef NO_PYTHON
+
+#define NO_IMPORT_ARRAY
+#include "rogue/numpy.h"
+#include <numpy/ndarraytypes.h>
+#include <boost/python.hpp>
+
+namespace bp = boost::python;
+
+#endif
 
 #include "rogue/interfaces/stream/Frame.h"
 
@@ -29,13 +41,6 @@
 #include "rogue/interfaces/stream/FrameLock.h"
 
 namespace ris = rogue::interfaces::stream;
-
-#ifndef NO_PYTHON
-    #include <numpy/ndarrayobject.h>
-
-    #include <boost/python.hpp>
-namespace bp = boost::python;
-#endif
 
 //! Create an empty frame
 ris::FramePtr ris::Frame::create() {
@@ -538,8 +543,6 @@ void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
 
 void ris::Frame::setup_python() {
 #ifndef NO_PYTHON
-
-    _import_array();
 
     // Create a NumPy dtype object from the NPY_UINT8 constant
     PyObject* dtype_uint8 = reinterpret_cast<PyObject*>(PyArray_DescrFromType(NPY_UINT8));
