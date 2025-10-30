@@ -27,7 +27,6 @@ void varDone() {
 
 int main(int argc, char** argv) {
     try {
-
         rogue::interfaces::api::Bsp bsp("pyrogue.examples", "ExampleRoot");
         bsp.addVarListener(&varListener, &varDone);
 
