@@ -12,6 +12,9 @@
 #include <cstdio>
 #include <string>
 
+#include "rogue/Directives.h"
+#include "rogue/numpy.h"
+
 #include "rogue/interfaces/api/Bsp.h"
 
 void varListener(std::string path, std::string value) {
@@ -24,6 +27,7 @@ void varDone() {
 
 int main(int argc, char** argv) {
     try {
+
         rogue::interfaces::api::Bsp bsp("pyrogue.examples", "ExampleRoot");
         bsp.addVarListener(&varListener, &varDone);
 
