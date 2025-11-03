@@ -244,7 +244,7 @@ class Root(pr.Device):
         self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='Time', value=time.time(), mode='RO', hidden=True,
                                   description='Current Time In Seconds Since EPOCH UTC', groups=['NoSql']))
 
         self.add(pr.LinkVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
