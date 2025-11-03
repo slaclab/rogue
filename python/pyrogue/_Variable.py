@@ -1421,10 +1421,11 @@ class LocalVariable(BaseVariable):
 
             # Type check first so we bail early
             if not isinstance(value, self._nativeType):
-                raise TypeError(
-                    f"Error - {self.path}: Expecting {self._nativeType} "
-                    f"but got {type(value)}"
-                )
+                self._log.warning( f'{self.path}: Expecting {self._nativeType}: Currently a warning but in the future this will be an error' )
+#                raise TypeError(
+#                    f"Error - {self.path}: Expecting {self._nativeType} "
+#                    f"but got {type(value)}"
+#                )
 
             # Set value to block
             self._block.set(self, value, index)
