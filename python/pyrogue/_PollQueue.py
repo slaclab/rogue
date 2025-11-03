@@ -1,9 +1,9 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Description:
 #       PyRogue base module - PollQueue Class
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -11,39 +11,40 @@
 # No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+import datetime
+import heapq
+import itertools
 import sys
 import threading
-import datetime
-import itertools
-import heapq
-import rogue.interfaces.memory
-import pyrogue as pr
-
 from typing import Optional
+
+import pyrogue as pr
+import rogue.interfaces.memory
 
 
 class PollQueueEntry(object):
     """ """
+
     def __init__(self, readTime, count, interval, block):
         self.readTime = readTime
-        self.count    = count
+        self.count = count
         self.interval = interval
-        self.block    = block
+        self.block = block
 
-    def __lt__(self,other):
+    def __lt__(self, other):
         return self.readTime < other.readTime
 
-    def __gt__(self,other):
+    def __gt__(self, other):
         return self.readTime > other.readTime
 
 
 class PollQueue(object):
     """ """
 
-    def __init__(self,*, root):
-        self._pq = [] # The heap queue
-        self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
+    def __init__(self, *, root):
+        self._pq = []  # The heap queue
+        self._entries = {}  # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
         self._condLock = threading.Condition(threading.RLock())
         self._run = True
@@ -60,7 +61,7 @@ class PollQueue(object):
         self._pollThread.start()
         self._log.info("PollQueue Started")
 
-    def _addEntry(self, block, interval:int):
+    def _addEntry(self, block, interval: int):
         """
 
         Args:
@@ -102,13 +103,16 @@ class PollQueue(object):
 
         """
         with self._condLock:
-            self._log.debug(f'updatePollInterval {var} - {var._pollInterval}')
+            self._log.debug(f"updatePollInterval {var} - {var._pollInterval}")
             # Special case: Variable has no block and just depends on other variables
             # Then do update on each dependency instead
-            if not hasattr(var, '_block') or var._block is None:
+            if not hasattr(var, "_block") or var._block is None:
                 if len(var.dependencies) > 0:
                     for dep in var.dependencies:
-                        if var._pollInterval != 0 and (dep.pollInterval == 0 or var._pollInterval < dep.pollInterval):
+                        if var._pollInterval != 0 and (
+                            dep.pollInterval == 0
+                            or var._pollInterval < dep.pollInterval
+                        ):
                             dep.setPollInterval(var._pollInterval)
 
                 return
@@ -136,7 +140,6 @@ class PollQueue(object):
     def _poll(self):
         """Run by the poll thread"""
         while True:
-
             if self.empty() or self.paused():
                 # Sleep until woken
                 with self._condLock:
@@ -154,10 +157,10 @@ class PollQueue(object):
                 readTime = self.peek().readTime
                 waitTime = (readTime - now).total_seconds()
                 with self._condLock:
-                    self._log.debug(f'Poll thread sleeping for {waitTime}')
+                    self._log.debug(f"Poll thread sleeping for {waitTime}")
                     self._condLock.wait(waitTime)
 
-            self._log.debug(f'Global reference count: {sys.getrefcount(None)}')
+            self._log.debug(f"Global reference count: {sys.getrefcount(None)}")
 
             with self._condLock:
                 # Stop the thread if someone set run to False
@@ -171,17 +174,18 @@ class PollQueue(object):
 
                 # Start update capture
                 with self._root.updateGroup():
-
                     # Pop all timed out entries from the queue
                     now = datetime.datetime.now()
                     blockEntries = []
                     for entry in self._expiredEntries(now):
-                        self._log.debug(f'Polling Block {entry.block.path}')
+                        self._log.debug(f"Polling Block {entry.block.path}")
                         blockEntries.append(entry)
                         try:
-                            pr.startTransaction(entry.block, type=rogue.interfaces.memory.Read)
+                            pr.startTransaction(
+                                entry.block, type=rogue.interfaces.memory.Read
+                            )
                         except Exception as e:
-                            pr.logException(self._log,e)
+                            pr.logException(self._log, e)
 
                         # Update the entry with new read time
                         entry.readTime = now + entry.interval
@@ -193,8 +197,7 @@ class PollQueue(object):
                         try:
                             pr.checkTransaction(entry.block)
                         except Exception as e:
-                            pr.logException(self._log,e)
-
+                            pr.logException(self._log, e)
 
     def _expiredEntries(self, time: Optional[datetime.datetime] = None):
         """An iterator of all entries that expire by a given time.
@@ -215,7 +218,6 @@ class PollQueue(object):
                 if entry.block is not None:
                     yield entry
 
-
     def peek(self):
         """ """
         with self._condLock:
@@ -227,7 +229,7 @@ class PollQueue(object):
     def empty(self):
         """ """
         with self._condLock:
-            return len(self._pq)==0
+            return len(self._pq) == 0
 
     def _stop(self):
         """ """
@@ -249,7 +251,6 @@ class PollQueue(object):
             with self._condLock:
                 self._pause = False
                 self._condLock.notify()
-
 
     def paused(self):
         """ """

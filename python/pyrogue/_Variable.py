@@ -1,9 +1,9 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Description:
 #       PyRogue base module - Variable Class
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -11,23 +11,26 @@
 # No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+import ast
+import re
+import shlex
+import sys
+import threading
+import time
+from collections import OrderedDict as odict
+from collections.abc import Callable, Iterable
+from typing import Any, Dict, List, Literal, Optional, Tuple, Type, Union
+
+import numpy as np
+
 import pyrogue as pr
 import rogue.interfaces.memory as rim
-import threading
-import re
-import time
-import shlex
-import numpy as np
-import ast
-import sys
-from collections import OrderedDict as odict
-from collections.abc import Iterable, Callable
-from typing import Union, Type, List, Dict, Any, Optional, Literal, Tuple
 
 
 class VariableError(Exception):
     """ """
+
     pass
 
 
@@ -62,11 +65,11 @@ def VariableWait(varList: List[Any], testFunction: Callable, timeout: int = 0):
     # Container class
     class varStates(object):
         def __init__(self):
-            self.vlist  = odict()
-            self.cv     = threading.Condition()
+            self.vlist = odict()
+            self.cv = threading.Condition()
 
         # Method to handle variable updates callback
-        def varUpdate(self,path,varValue):
+        def varUpdate(self, path, varValue):
             """
 
             Args:
@@ -81,7 +84,7 @@ def VariableWait(varList: List[Any], testFunction: Callable, timeout: int = 0):
                     self.cv.notify()
 
     # Convert single variable to a list
-    if not isinstance(varList,list):
+    if not isinstance(varList, list):
         varList = [varList]
 
     # Setup tracking
@@ -95,16 +98,15 @@ def VariableWait(varList: List[Any], testFunction: Callable, timeout: int = 0):
             states.vlist[v.path].updated = False
 
     # Go into wait loop
-    ret    = False
-    start  = time.time()
+    ret = False
+    start = time.time()
 
     with states.cv:
-
         # Check current state
         ret = testFunction(list(states.vlist.values()))
 
         # Run until timeout or all conditions have been met
-        while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
+        while (not ret) and ((timeout == 0) or ((time.time() - start) < timeout)):
             states.cv.wait(0.5)
             ret = testFunction(list(states.vlist.values()))
 
@@ -117,27 +119,29 @@ def VariableWait(varList: List[Any], testFunction: Callable, timeout: int = 0):
 
 class VariableValue(object):
     """ """
+
     def __init__(self, var: Any, read: bool = False, index: int = -1):
-        self.value     = var.get(read=read,index=index)
+        self.value = var.get(read=read, index=index)
         self.valueDisp = var.genDisp(self.value)
-        self.disp      = var.disp
-        self.enum      = var.enum
+        self.disp = var.disp
+        self.enum = var.enum
 
         self.status, self.severity = var._alarmState(self.value)
 
     def __repr__(self):
-        return f'{str(self.__class__)}({self.__dict__})'
+        return f"{str(self.__class__)}({self.__dict__})"
 
 
 class VariableListData(object):
     """ """
+
     def __init__(self, numValues, valueBits, valueStride):
-        self.numValues   = numValues
-        self.valueBits   = valueBits
+        self.numValues = numValues
+        self.valueBits = valueBits
         self.valueStride = valueStride
 
     def __repr__(self):
-        return f'{self.__class__}({self.__dict__})'
+        return f"{self.__class__}({self.__dict__})"
 
 
 class BaseVariable(pr.Node):
@@ -207,56 +211,76 @@ class BaseVariable(pr.Node):
 
     """
 
-    PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
-             'disp', 'precision', 'units', 'minimum', 'maximum',
-             'nativeType', 'ndType', 'updateNotify',
-             'hasAlarm', 'lowWarning', 'highWarning', 'lowAlarm',
-             'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
+    PROPS = [
+        "name",
+        "path",
+        "mode",
+        "typeStr",
+        "enum",
+        "disp",
+        "precision",
+        "units",
+        "minimum",
+        "maximum",
+        "nativeType",
+        "ndType",
+        "updateNotify",
+        "hasAlarm",
+        "lowWarning",
+        "highWarning",
+        "lowAlarm",
+        "highAlarm",
+        "alarmStatus",
+        "alarmSeverity",
+        "pollInterval",
+    ]
 
-    def __init__(self, *,
-                 name: str,
-                 description: str = '',
-                 mode: Literal['RW', 'RO', 'WO'] = 'RW',
-                 value: Optional[Any] = None,
-                 disp: Union[Dict, str, None] = '{}',
-                 enum: Optional[Dict] = None,
-                 units: Optional[str] = None,
-                 hidden: bool = False,
-                 groups: Union[List[str], str, None] = None,
-                 minimum: Optional[int] = None,
-                 maximum: Optional[int] = None,
-                 lowWarning: Optional[int] = None,
-                 lowAlarm: Optional[int] = None,
-                 highWarning: Optional[int] = None,
-                 highAlarm: Optional[int] = None,
-                 pollInterval: int = 0,
-                 updateNotify: bool = True,
-                 typeStr: str = 'Unknown',
-                 bulkOpEn: bool = True,
-                 offset: int = 0,
-                 guiGroup: Optional[str] = None,
-                 **kwargs):
-
+    def __init__(
+        self,
+        *,
+        name: str,
+        description: str = "",
+        mode: Literal["RW", "RO", "WO"] = "RW",
+        value: Optional[Any] = None,
+        disp: Union[Dict, str, None] = "{}",
+        enum: Optional[Dict] = None,
+        units: Optional[str] = None,
+        hidden: bool = False,
+        groups: Union[List[str], str, None] = None,
+        minimum: Optional[int] = None,
+        maximum: Optional[int] = None,
+        lowWarning: Optional[int] = None,
+        lowAlarm: Optional[int] = None,
+        highWarning: Optional[int] = None,
+        highAlarm: Optional[int] = None,
+        pollInterval: int = 0,
+        updateNotify: bool = True,
+        typeStr: str = "Unknown",
+        bulkOpEn: bool = True,
+        offset: int = 0,
+        guiGroup: Optional[str] = None,
+        **kwargs,
+    ):
         # Public Attributes
-        self._bulkOpEn      = bulkOpEn
-        self._updateNotify  = updateNotify
-        self._mode          = mode
-        self._units         = units
-        self._minimum       = minimum
-        self._maximum       = maximum
-        self._lowWarning    = lowWarning
-        self._lowAlarm      = lowAlarm
-        self._highWarning   = highWarning
-        self._highAlarm     = highAlarm
-        self._default       = value
-        self._typeStr       = typeStr
-        self._block         = None
-        self._pollInterval  = pollInterval
-        self._nativeType    = None
-        self._ndType        = None
-        self._extraAttr     = kwargs
-        self._listeners     = []
-        self.__functions    = []
+        self._bulkOpEn = bulkOpEn
+        self._updateNotify = updateNotify
+        self._mode = mode
+        self._units = units
+        self._minimum = minimum
+        self._maximum = maximum
+        self._lowWarning = lowWarning
+        self._lowAlarm = lowAlarm
+        self._highWarning = highWarning
+        self._highAlarm = highAlarm
+        self._default = value
+        self._typeStr = typeStr
+        self._block = None
+        self._pollInterval = pollInterval
+        self._nativeType = None
+        self._ndType = None
+        self._extraAttr = kwargs
+        self._listeners = []
+        self.__functions = []
         self.__dependencies = []
 
         # Build enum if specified
@@ -266,41 +290,53 @@ class BaseVariable(pr.Node):
         if isinstance(disp, dict):
             self._enum = disp
         elif isinstance(disp, list):
-            self._enum = {k:str(k) for k in disp}
+            self._enum = {k: str(k) for k in disp}
         elif isinstance(value, bool) and enum is None:
-            self._enum = {False: 'False', True: 'True'}
+            self._enum = {False: "False", True: "True"}
 
         if self._enum is not None:
-            self._disp = 'enum'
+            self._disp = "enum"
 
         # Create inverted enum
         self._revEnum = None
         if self._enum is not None:
-            self._revEnum = {v:k for k,v in self._enum.items()}
+            self._revEnum = {v: k for k, v in self._enum.items()}
 
         # Auto determine types
         if value is not None:
             self._nativeType = type(value)
 
-            if self._enum is not None and (self._nativeType is np.ndarray or self._nativeType is list or self._nativeType is dict):
-                raise VariableError(f"Invalid use of enum with value of type {self._nativeType}")
+            if self._enum is not None and (
+                self._nativeType is np.ndarray
+                or self._nativeType is list
+                or self._nativeType is dict
+            ):
+                raise VariableError(
+                    f"Invalid use of enum with value of type {self._nativeType}"
+                )
 
             if self._nativeType is np.ndarray:
                 self._ndType = value.dtype
-                self._typeStr = f'{value.dtype}{value.shape}'
+                self._typeStr = f"{value.dtype}{value.shape}"
 
-            elif self._typeStr == 'Unknown':
+            elif self._typeStr == "Unknown":
                 self._typeStr = value.__class__.__name__
 
         # Check modes
-        if (self._mode != 'RW') and (self._mode != 'RO') and \
-           (self._mode != 'WO'):
-            raise VariableError(f'Invalid variable mode {self._mode}. Supported: RW, RO, WO')
-
+        if (self._mode != "RW") and (self._mode != "RO") and (self._mode != "WO"):
+            raise VariableError(
+                f"Invalid variable mode {self._mode}. Supported: RW, RO, WO"
+            )
 
         # Call super constructor
-        pr.Node.__init__(self, name=name, description=description, hidden=hidden, groups=groups, guiGroup=guiGroup)
-
+        pr.Node.__init__(
+            self,
+            name=name,
+            description=description,
+            hidden=hidden,
+            groups=groups,
+            guiGroup=guiGroup,
+        )
 
     @pr.expose
     @property
@@ -323,10 +359,10 @@ class BaseVariable(pr.Node):
     @property
     def typeStr(self):
         """ """
-        if self._typeStr == 'Unknown':
+        if self._typeStr == "Unknown":
             v = self.value()
             if self.nativeType is np.ndarray:
-                self._typeStr = f'{v.dtype}{v.shape}'
+                self._typeStr = f"{v.dtype}{v.shape}"
             else:
                 self._typeStr = v.__class__.__name__
         return self._typeStr
@@ -342,7 +378,7 @@ class BaseVariable(pr.Node):
     def precision(self):
         """ """
         if self.nativeType is float or self.nativeType is np.ndarray:
-            res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
+            res = re.search(r":([0-9])\.([0-9]*)f", self._disp)
             try:
                 return int(res[2])
             except Exception:
@@ -374,12 +410,16 @@ class BaseVariable(pr.Node):
         """ """
         return self._maximum
 
-
     @pr.expose
     @property
     def hasAlarm(self):
         """ """
-        return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
+        return (
+            self._lowWarning is not None
+            or self._lowAlarm is not None
+            or self._highWarning is not None
+            or self._highAlarm is not None
+        )
 
     @pr.expose
     @property
@@ -409,21 +449,21 @@ class BaseVariable(pr.Node):
     @property
     def alarmStatus(self):
         """ """
-        stat,sevr = self._alarmState(self.value())
+        stat, sevr = self._alarmState(self.value())
         return stat
 
     @pr.expose
     @property
     def alarmSeverity(self):
         """ """
-        stat,sevr = self._alarmState(self.value())
+        stat, sevr = self._alarmState(self.value())
         return sevr
 
     def properties(self):
         d = odict()
-        d['value'] = self.value()
-        d['valueDisp'] = self.valueDisp()
-        d['class'] = self.__class__.__name__
+        d["value"] = self.value()
+        d["valueDisp"] = self.valueDisp()
+        d["class"] = self.__class__.__name__
 
         for p in self.PROPS:
             d[p] = getattr(self, p)
@@ -453,10 +493,9 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def setPollInterval(self, interval):
-        self._log.debug(f'{self.path}.setPollInterval({interval}]')
+        self._log.debug(f"{self.path}.setPollInterval({interval}]")
         self._pollInterval = interval
         self._updatePollInterval()
-
 
     @pr.expose
     @property
@@ -478,7 +517,7 @@ class BaseVariable(pr.Node):
         """ """
         return self.__dependencies
 
-    def addListener(self, listener: Union['pr.BaseVariable', Callable]):
+    def addListener(self, listener: Union["pr.BaseVariable", Callable]):
         """
         Add a listener Variable or function to call when variable changes as a callback.
         This is useful when chaining variables together. (ADC conversions, etc)
@@ -498,7 +537,7 @@ class BaseVariable(pr.Node):
     def _addListenerCpp(self, func):
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
-    def delListener(self, listener: Union[Type['pr.BaseVariable'], Callable]):
+    def delListener(self, listener: Union[Type["pr.BaseVariable"], Callable]):
         """
         Remove a listener Variable or function from list of listener functions.
 
@@ -510,7 +549,15 @@ class BaseVariable(pr.Node):
             self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True):
+    def set(
+        self,
+        value,
+        *,
+        index: int = -1,
+        write: bool = True,
+        verify: bool = True,
+        check: bool = True,
+    ):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -575,7 +622,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def getVariableValue(self,read: bool = True,index: int = -1):
+    def getVariableValue(self, read: bool = True, index: int = -1):
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -590,17 +637,16 @@ class BaseVariable(pr.Node):
                 Listeners will be informed of the update.
 
         """
-        return VariableValue(self,read=read,index=index)
+        return VariableValue(self, read=read, index=index)
 
     @pr.expose
     def value(self, index: int = -1):
-        """ Equivalent function to get(read=False)
-        """
+        """Equivalent function to get(read=False)"""
         return self.get(read=False, index=index)
 
     @pr.expose
     def genDisp(self, value, *, useDisp=None):
-        """ Converts the passed raw value into the display representation
+        """Converts the passed raw value into the display representation
 
         Args:
             value : Value to access the display representation.
@@ -611,37 +657,44 @@ class BaseVariable(pr.Node):
 
         """
         try:
-
             if useDisp is None:
-                useDisp=self.disp
+                useDisp = self.disp
 
-            if useDisp == '':
-                return ''
+            if useDisp == "":
+                return ""
 
-            elif isinstance(value,np.ndarray):
-                return np.array2string(value,
-                                       separator=', ',
-                                       formatter={'all':useDisp.format},
-                                       threshold=sys.maxsize,
-                                       max_line_width=1000)
+            elif isinstance(value, np.ndarray):
+                return np.array2string(
+                    value,
+                    separator=", ",
+                    formatter={"all": useDisp.format},
+                    threshold=sys.maxsize,
+                    max_line_width=1000,
+                )
 
-            elif useDisp == 'enum':
+            elif useDisp == "enum":
                 if value in self.enum:
                     return self.enum[value]
                 else:
-                    self._log.warning("Invalid enum value {} in variable '{}'".format(value,self.path))
-                    return f'INVALID: {value}'
+                    self._log.warning(
+                        "Invalid enum value {} in variable '{}'".format(
+                            value, self.path
+                        )
+                    )
+                    return f"INVALID: {value}"
             else:
                 return useDisp.format(value)
 
         except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error(f"Error generating disp for value {value} with type {type(value)} in variable {self.path}")
+            pr.logException(self._log, e)
+            self._log.error(
+                f"Error generating disp for value {value} with type {type(value)} in variable {self.path}"
+            )
             raise e
 
     @pr.expose
     def getDisp(self, read: bool = True, index: int = -1):
-        """ Returns the display value with an optional read. Equivalent to genDisp(get(read+False)).
+        """Returns the display value with an optional read. Equivalent to genDisp(get(read+False)).
 
         Args:
             read (bool) : (Default value = True)
@@ -650,11 +703,11 @@ class BaseVariable(pr.Node):
         Returns:
             Formatted value for display representation.
         """
-        return self.genDisp(self.get(read=read,index=index))
+        return self.genDisp(self.get(read=read, index=index))
 
     @pr.expose
-    def valueDisp(self, index: int = -1): #, read=True, index=-1):
-        """ Return the display value without a read. Equivalent to genDisp(get(read=False))
+    def valueDisp(self, index: int = -1):  # , read=True, index=-1):
+        """Return the display value without a read. Equivalent to genDisp(get(read=False))
 
         Args:
             read (bool) : (Default value = True)
@@ -667,7 +720,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def parseDisp(self, sValue):
-        """ Converts a string representation or enum value into a raw value.
+        """Converts a string representation or enum value into a raw value.
         parseDisp will detect when it is being passed a raw value.
 
         Args:
@@ -677,11 +730,11 @@ class BaseVariable(pr.Node):
             Raw value version of sValue.
         """
         try:
-            if not isinstance(sValue,str):
+            if not isinstance(sValue, str):
                 return sValue
             elif self.nativeType is np.ndarray:
-                return np.array(ast.literal_eval(sValue),self._ndType)
-            elif self.disp == 'enum':
+                return np.array(ast.literal_eval(sValue), self._ndType)
+            elif self.disp == "enum":
                 return self.revEnum[sValue]
             elif self.nativeType is str:
                 return sValue
@@ -689,13 +742,15 @@ class BaseVariable(pr.Node):
                 return ast.literal_eval(sValue)
 
         except Exception as e:
-            msg = "Invalid value {} for variable {} with type {}: {}".format(sValue,self.name,self.nativeType,e)
+            msg = "Invalid value {} for variable {} with type {}: {}".format(
+                sValue, self.name, self.nativeType, e
+            )
             self._log.error(msg)
             raise VariableError(msg)
 
     @pr.expose
     def setDisp(self, sValue, write: bool = True, index: int = -1):
-        """ Update the variable with the display value with optional write.
+        """Update the variable with the display value with optional write.
         Equivalent to set(parseDisp(sValue), write)
 
         Args:
@@ -745,7 +800,7 @@ class BaseVariable(pr.Node):
             if self._nativeType is np.ndarray:
                 self._ndType = v.dtype
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
+    def _setDict(self, d, writeEach, modes, incGroups, excGroups, keys):
         """
         Args:
             d :
@@ -763,51 +818,60 @@ class BaseVariable(pr.Node):
         # If keys is not none, it should only contain one entry
         # and the variable should be a list variable
         if keys is not None:
-
-            if len(keys) != 1 or (self.nativeType is not list and self.nativeType is not np.ndarray):
+            if len(keys) != 1 or (
+                self.nativeType is not list and self.nativeType is not np.ndarray
+            ):
                 self._log.error(f"Entry {self.name} with key {keys} not found")
 
             elif self._mode in modes:
-                if keys[0] == '*' or keys[0] == ':':
+                if keys[0] == "*" or keys[0] == ":":
                     for i in range(self._numValues()):
                         self.setDisp(d, write=writeEach, index=i)
                 else:
-                    idxSlice = eval(f'[i for i in range(self._numValues())][{keys[0]}]')
+                    idxSlice = eval(f"[i for i in range(self._numValues())][{keys[0]}]")
 
                     # Single entry item
-                    if ':' not in keys[0]:
+                    if ":" not in keys[0]:
                         self.setDisp(d, write=writeEach, index=idxSlice[0])
 
                     # Multi entry item
                     else:
-                        if isinstance(d,str):
-                            s = shlex.shlex(" " + d.lstrip('[').rstrip(']') + " ",posix=True)
-                            s.whitespace_split=True
-                            s.whitespace=','
+                        if isinstance(d, str):
+                            s = shlex.shlex(
+                                " " + d.lstrip("[").rstrip("]") + " ", posix=True
+                            )
+                            s.whitespace_split = True
+                            s.whitespace = ","
                         else:
                             s = d
 
-                        for val,i in zip(s,idxSlice):
+                        for val, i in zip(s, idxSlice):
                             self.setDisp(val.strip(), write=writeEach, index=i)
             else:
-                self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
+                self._log.warning(
+                    f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}."
+                )
 
         # Standard set
         elif self._mode in modes:
             # Array variables can be set with a dict of index/value pairs
             if isinstance(d, dict):
-                for k,v in d.items():
+                for k, v in d.items():
                     self.setDisp(v, index=k, write=writeEach)
             else:
-                self.setDisp(d,writeEach)
+                self.setDisp(d, writeEach)
         else:
-            self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
+            self._log.warning(
+                f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}."
+            )
 
-    def _getDict(self,
-                 modes: List[str] = ['RW', 'RO', 'WO'],
-                 incGroups: Optional[List[str]] = None,
-                 excGroups: Optional[List[str]] = None,
-                 properties: bool = False):
+    def _getDict(
+        self,
+        modes: List[str] = ["RW", "RO", "WO"],
+        incGroups: Optional[List[str]] = None,
+        excGroups: Optional[List[str]] = None,
+        properties: bool = False,
+    ):
         """
 
         Args:
@@ -826,7 +890,6 @@ class BaseVariable(pr.Node):
         else:
             return None
 
-
     def _queueUpdate(self):
         """ """
         self._root._queueUpdates(self)
@@ -836,7 +899,7 @@ class BaseVariable(pr.Node):
         val = VariableValue(self)
 
         for func in self.__functions:
-            func(self.path,val)
+            func(self.path, val)
 
         return val
 
@@ -848,54 +911,67 @@ class BaseVariable(pr.Node):
 
         """
 
-        if isinstance(value,list) or isinstance(value,dict):
-            return 'None','None'
-
-        if (self.hasAlarm is False):
+        if isinstance(value, list) or isinstance(value, dict):
             return "None", "None"
 
-        elif (self._lowAlarm  is not None and value < self._lowAlarm):
-            return 'AlarmLoLo', 'AlarmMajor'
+        if self.hasAlarm is False:
+            return "None", "None"
 
-        elif (self._highAlarm  is not None and value > self._highAlarm):
-            return 'AlarmHiHi', 'AlarmMajor'
+        elif self._lowAlarm is not None and value < self._lowAlarm:
+            return "AlarmLoLo", "AlarmMajor"
 
-        elif (self._lowWarning  is not None and value < self._lowWarning):
-            return 'AlarmLow', 'AlarmMinor'
+        elif self._highAlarm is not None and value > self._highAlarm:
+            return "AlarmHiHi", "AlarmMajor"
 
-        elif (self._highWarning is not None and value > self._highWarning):
-            return 'AlarmHigh', 'AlarmMinor'
+        elif self._lowWarning is not None and value < self._lowWarning:
+            return "AlarmLow", "AlarmMinor"
+
+        elif self._highWarning is not None and value > self._highWarning:
+            return "AlarmHigh", "AlarmMinor"
 
         else:
-            return 'Good','Good'
+            return "Good", "Good"
 
-    def _genDocs(self,file):
+    def _genDocs(self, file):
         """
         Args:
             file :
 
         """
-        print(f".. topic:: {self.path}",file=file)
+        print(f".. topic:: {self.path}", file=file)
 
-        print('',file=file)
-        print(pr.genDocDesc(self.description,4),file=file)
-        print('',file=file)
+        print("", file=file)
+        print(pr.genDocDesc(self.description, 4), file=file)
+        print("", file=file)
 
-        print(pr.genDocTableHeader(['Field','Value'],4,100),file=file)
+        print(pr.genDocTableHeader(["Field", "Value"], 4, 100), file=file)
 
-        for a in ['name', 'path', 'enum',
-                 'typeStr', 'disp', 'precision', 'mode', 'units', 'minimum',
-                 'maximum', 'lowWarning', 'lowAlarm', 'highWarning',
-                 'highAlarm', 'alarmStatus', 'alarmSeverity']:
+        for a in [
+            "name",
+            "path",
+            "enum",
+            "typeStr",
+            "disp",
+            "precision",
+            "mode",
+            "units",
+            "minimum",
+            "maximum",
+            "lowWarning",
+            "lowAlarm",
+            "highWarning",
+            "highAlarm",
+            "alarmStatus",
+            "alarmSeverity",
+        ]:
+            astr = str(getattr(self, a))
 
-            astr = str(getattr(self,a))
-
-            if astr != 'None':
-                print(pr.genDocTableRow([a,astr],4,100),file=file)
+            if astr != "None":
+                print(pr.genDocTableRow([a, astr], 4, 100), file=file)
 
 
-class RemoteVariable(BaseVariable,rim.Variable):
-    """ Used to manage a remote value typically located on the managed hardware.
+class RemoteVariable(BaseVariable, rim.Variable):
+    """Used to manage a remote value typically located on the managed hardware.
     Associated with an address, offset, and size.
 
     A RegisterBlock serves as the gateway between the variable and a memory interface device.
@@ -916,65 +992,85 @@ class RemoteVariable(BaseVariable,rim.Variable):
     """
 
     PROPS = BaseVariable.PROPS + [
-        'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
-        'verifyEn', 'numValues', 'valueBits', 'valueStride', 'retryCount',
-        'varBytes', 'bulkEn']
+        "address",
+        "overlapEn",
+        "offset",
+        "bitOffset",
+        "bitSize",
+        "verifyEn",
+        "numValues",
+        "valueBits",
+        "valueStride",
+        "retryCount",
+        "varBytes",
+        "bulkEn",
+    ]
 
-    def __init__(self, *,
-                 name: str,
-                 description: str = '',
-                 mode: Literal['RW', 'RO', 'WO'] = 'RW',
-                 value: Optional[Any] = None,
-                 disp: Optional[str] = None, # key should match remote variable type
-                 enum: Optional[Dict] = None, # if enum is provided, disp parameter is ignored
-                 units: Optional[str] = None,
-                 hidden: bool = False, # JUST a helper that adds it to the hidden group
-                 groups: Union[List[str], str, None] = None, #contains nodisplay
-                 minimum: Optional[int] = None,
-                 maximum: Optional[int] = None,
-                 lowWarning: Optional[int] = None,
-                 lowAlarm: Optional[int] = None,
-                 highWarning: Optional[int] = None,
-                 highAlarm: Optional[int] = None,
-                 base: Type[pr.Model] = pr.UInt,
-                 offset: Union[int, List] = 0,
-                 numValues: int = 0,
-                 valueBits: int = 0,
-                 valueStride: int = 0,
-                 bitSize: Union[int, List] = 32,
-                 bitOffset: Union[int, List] = 0,
-                 pollInterval: int = 0,
-                 updateNotify: bool = True,
-                 overlapEn: bool = False,
-                 bulkOpEn: bool = True,
-                 verify: bool = True,
-                 retryCount: int = 0,
-                 guiGroup: Optional[str] = None,
-                 **kwargs):
-
+    def __init__(
+        self,
+        *,
+        name: str,
+        description: str = "",
+        mode: Literal["RW", "RO", "WO"] = "RW",
+        value: Optional[Any] = None,
+        disp: Optional[str] = None,  # key should match remote variable type
+        enum: Optional[Dict] = None,  # if enum is provided, disp parameter is ignored
+        units: Optional[str] = None,
+        hidden: bool = False,  # JUST a helper that adds it to the hidden group
+        groups: Union[List[str], str, None] = None,  # contains nodisplay
+        minimum: Optional[int] = None,
+        maximum: Optional[int] = None,
+        lowWarning: Optional[int] = None,
+        lowAlarm: Optional[int] = None,
+        highWarning: Optional[int] = None,
+        highAlarm: Optional[int] = None,
+        base: Type[pr.Model] = pr.UInt,
+        offset: Union[int, List] = 0,
+        numValues: int = 0,
+        valueBits: int = 0,
+        valueStride: int = 0,
+        bitSize: Union[int, List] = 32,
+        bitOffset: Union[int, List] = 0,
+        pollInterval: int = 0,
+        updateNotify: bool = True,
+        overlapEn: bool = False,
+        bulkOpEn: bool = True,
+        verify: bool = True,
+        retryCount: int = 0,
+        guiGroup: Optional[str] = None,
+        **kwargs,
+    ):
         if disp is None:
             disp = base.defaultdisp
 
         self._block = None
 
         # Convert the address parameters into lists
-        addrParams = [offset, bitOffset, bitSize] # Make a copy
-        addrParams = [list(x) if isinstance(x, Iterable) else [x] for x in addrParams] # convert to lists
+        addrParams = [offset, bitOffset, bitSize]  # Make a copy
+        addrParams = [
+            list(x) if isinstance(x, Iterable) else [x] for x in addrParams
+        ]  # convert to lists
         length = max((len(x) for x in addrParams))
-        addrParams = [x*length if len(x)==1 else x for x in addrParams] # Make single element lists as long as max
-        offset, bitOffset, bitSize = addrParams # Assign back
+        addrParams = [
+            x * length if len(x) == 1 else x for x in addrParams
+        ]  # Make single element lists as long as max
+        offset, bitOffset, bitSize = addrParams  # Assign back
 
         # Verify the the list lengths match
         if len(offset) != len(bitOffset) != len(bitSize):
-            raise VariableError('Lengths of offset: {}, bitOffset: {}, bitSize {} must match'.format(offset, bitOffset, bitSize))
+            raise VariableError(
+                "Lengths of offset: {}, bitOffset: {}, bitSize {} must match".format(
+                    offset, bitOffset, bitSize
+                )
+            )
 
         # Check for invalid values
         if 0 in bitSize:
-            raise VariableError('BitSize of 0 is invalid')
+            raise VariableError("BitSize of 0 is invalid")
 
         # Normalize bitOffsets relative to the smallest offset
         baseAddr = min(offset)
-        bitOffset = [x+((y-baseAddr)*8) for x,y in zip(bitOffset, offset)]
+        bitOffset = [x + ((y - baseAddr) * 8) for x, y in zip(bitOffset, offset)]
         offset = baseAddr
 
         if isinstance(base, pr.Model):
@@ -985,44 +1081,69 @@ class RemoteVariable(BaseVariable,rim.Variable):
             self._base = base(sum(bitSize))
 
         # Apply default min and max
-        if minimum is None or (self._base.minValue() is not None and minimum < self._base.minValue()):
+        if minimum is None or (
+            self._base.minValue() is not None and minimum < self._base.minValue()
+        ):
             minimum = self._base.minValue()
 
-        if maximum is None or (self._base.maxValue() is not None and maximum > self._base.maxValue()):
+        if maximum is None or (
+            self._base.maxValue() is not None and maximum > self._base.maxValue()
+        ):
             maximum = self._base.maxValue()
 
-        BaseVariable.__init__(self, name=name, description=description,
-                              mode=mode, value=value, disp=disp,
-                              enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum, bulkOpEn=bulkOpEn,
-                              lowWarning=lowWarning, lowAlarm=lowAlarm,
-                              highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify,
-                              guiGroup=guiGroup, **kwargs)
+        BaseVariable.__init__(
+            self,
+            name=name,
+            description=description,
+            mode=mode,
+            value=value,
+            disp=disp,
+            enum=enum,
+            units=units,
+            hidden=hidden,
+            groups=groups,
+            minimum=minimum,
+            maximum=maximum,
+            bulkOpEn=bulkOpEn,
+            lowWarning=lowWarning,
+            lowAlarm=lowAlarm,
+            highWarning=highWarning,
+            highAlarm=highAlarm,
+            pollInterval=pollInterval,
+            updateNotify=updateNotify,
+            guiGroup=guiGroup,
+            **kwargs,
+        )
 
         # If numValues > 0 the bit size array must only have one entry
         # Auto calculate the total number of bits
         if numValues != 0:
             self._nativeType = np.ndarray
             self._ndType = self._base.ndType
-            self._typeStr = f'{self.ndType}({numValues},)'
+            self._typeStr = f"{self.ndType}({numValues},)"
 
             if len(bitSize) != 1:
-                raise VariableError('BitSize array must have a length of one when numValues > 0')
+                raise VariableError(
+                    "BitSize array must have a length of one when numValues > 0"
+                )
 
             if valueBits > valueStride:
-                raise VariableError(f'ValueBits {valueBits} is greater than valueStrude {valueStride}')
+                raise VariableError(
+                    f"ValueBits {valueBits} is greater than valueStrude {valueStride}"
+                )
 
             # Override the bitSize
             bitSize[0] = numValues * valueBits
 
             if self._ndType is None:
-                raise VariableError(f'Invalid base type {self._base} with numValues = {numValues}')
+                raise VariableError(
+                    f"Invalid base type {self._base} with numValues = {numValues}"
+                )
 
         else:
             self._typeStr = self._base.name
 
-        listData = VariableListData(numValues,valueBits,valueStride)
+        listData = VariableListData(numValues, valueBits, valueStride)
 
         # Setup C++ Base class
         rim.Variable.__init__(
@@ -1040,13 +1161,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
             self._updateNotify,
             self._base,
             listData,
-            retryCount)
-
+            retryCount,
+        )
 
     ##############################
     # Properties held by C++ class
     ##############################
-
 
     @pr.expose
     @property
@@ -1105,11 +1225,9 @@ class RemoteVariable(BaseVariable,rim.Variable):
         """ """
         return self._verifyEn()
 
-
     ########################
     # Local Properties
     ########################
-
 
     @pr.expose
     @property
@@ -1124,7 +1242,15 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True):
+    def set(
+        self,
+        value: Any,
+        *,
+        index: int = -1,
+        write: bool = True,
+        verify: bool = True,
+        check: bool = True,
+    ):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
@@ -1144,20 +1270,25 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         """
         try:
-
             # Set value to block
-            self._set(value,index)
+            self._set(value, index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
+                self._parent.writeBlocks(
+                    force=True, recurse=False, variable=self, index=index
+                )
                 if verify:
                     self._parent.verifyBlocks(recurse=False, variable=self)
                 if check:
                     self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+            pr.logException(self._log, e)
+            self._log.error(
+                "Error setting value '{}' to variable '{}' with type {}. Exception={}".format(
+                    value, self.path, self.typeStr, e
+                )
+            )
             raise e
 
     @pr.expose
@@ -1177,15 +1308,25 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         """
         try:
-
             # Set value to block
-            self._set(value,index)
+            self._set(value, index)
 
-            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
+            pr.startTransaction(
+                self._block,
+                type=rim.Post,
+                forceWr=False,
+                checkEach=True,
+                variable=self,
+                index=index,
+            )
 
         except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            pr.logException(self._log, e)
+            self._log.error(
+                "Error posting value '{}' to variable '{}' with type {}".format(
+                    value, self.path, self.typeStr
+                )
+            )
             raise e
 
     @pr.expose
@@ -1215,7 +1356,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             return self._get(index)
 
         except Exception as e:
-            pr.logException(self._log,e)
+            pr.logException(self._log, e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
             raise e
 
@@ -1243,7 +1384,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                 self._parent.checkBlocks(recurse=False, variable=self)
 
         except Exception as e:
-            pr.logException(self._log,e)
+            pr.logException(self._log, e)
             raise e
 
     def _parseDispValue(self, sValue):
@@ -1255,12 +1396,12 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Returns:
 
         """
-        if self.disp == 'enum':
+        if self.disp == "enum":
             return self.revEnum[sValue]
         else:
             return self._base.fromString(sValue)
 
-    def _genDocs(self,file):
+    def _genDocs(self, file):
         """
 
         Args:
@@ -1269,17 +1410,24 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Returns:
 
         """
-        BaseVariable._genDocs(self,file)
+        BaseVariable._genDocs(self, file)
 
-        for a in ['offset', 'numValues', 'bitSize', 'bitOffset', 'verifyEn', 'varBytes']:
-            astr = str(getattr(self,a))
+        for a in [
+            "offset",
+            "numValues",
+            "bitSize",
+            "bitOffset",
+            "verifyEn",
+            "varBytes",
+        ]:
+            astr = str(getattr(self, a))
 
-            if astr != 'None':
-                print(pr.genDocTableRow([a,astr],4,100),file=file)
+            if astr != "None":
+                print(pr.genDocTableRow([a, astr], 4, 100), file=file)
 
 
 class LocalVariable(BaseVariable):
-    """ Used to manage a local value such as a fileame, software mode, etc.
+    """Used to manage a local value such as a fileame, software mode, etc.
     Each LocalVariable is backed by a LocalBlock that holds the shadow value.
 
     Value param must be passed when creating a Local Variable. Used to set default value and determine native type.
@@ -1301,52 +1449,82 @@ class LocalVariable(BaseVariable):
             Template is localGet(device, variable)
     """
 
-    def __init__(self, *,
-                 name: str,
-                 description: str = '',
-                 mode: Literal['RW', 'RO', 'WO'] = 'RW',
-                 value: Optional[Any] = None,
-                 disp: Union[str, Dict] = '{}',
-                 enum: Optional[Dict] = None,
-                 units: Optional[str] = None,
-                 hidden: bool = False,
-                 groups: Union[List[str], str, None] = None,
-                 minimum: Optional[int] = None,
-                 maximum: Optional[int] = None,
-                 lowWarning: Optional[int] = None,
-                 lowAlarm: Optional[int] = None,
-                 highWarning: Optional[int] = None,
-                 highAlarm: Optional[int] = None,
-                 localSet: Optional[Callable] = None,
-                 localGet: Optional[Callable] = None,
-                 pollInterval: int = 0,
-                 updateNotify: bool = True,
-                 typeStr: str = 'Unknown',
-                 bulkOpEn: bool = True,
-                 guiGroup: Optional[str] = None,
-                 **kwargs):
-
+    def __init__(
+        self,
+        *,
+        name: str,
+        description: str = "",
+        mode: Literal["RW", "RO", "WO"] = "RW",
+        value: Optional[Any] = None,
+        disp: Union[str, Dict] = "{}",
+        enum: Optional[Dict] = None,
+        units: Optional[str] = None,
+        hidden: bool = False,
+        groups: Union[List[str], str, None] = None,
+        minimum: Optional[int] = None,
+        maximum: Optional[int] = None,
+        lowWarning: Optional[int] = None,
+        lowAlarm: Optional[int] = None,
+        highWarning: Optional[int] = None,
+        highAlarm: Optional[int] = None,
+        localSet: Optional[Callable] = None,
+        localGet: Optional[Callable] = None,
+        pollInterval: int = 0,
+        updateNotify: bool = True,
+        typeStr: str = "Unknown",
+        bulkOpEn: bool = True,
+        guiGroup: Optional[str] = None,
+        **kwargs,
+    ):
         if value is None and localGet is None:
-            raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
+            raise VariableError(
+                f"LocalVariable {self.path} without localGet() must specify value= argument in constructor"
+            )
 
-        BaseVariable.__init__(self, name=name, description=description,
-                              mode=mode, value=value, disp=disp,
-                              enum=enum, units=units, hidden=hidden, groups=groups,
-                              minimum=minimum, maximum=maximum, typeStr=typeStr,
-                              lowWarning=lowWarning, lowAlarm=lowAlarm,
-                              highWarning=highWarning, highAlarm=highAlarm,
-                              pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
-                              guiGroup=guiGroup, **kwargs)
+        BaseVariable.__init__(
+            self,
+            name=name,
+            description=description,
+            mode=mode,
+            value=value,
+            disp=disp,
+            enum=enum,
+            units=units,
+            hidden=hidden,
+            groups=groups,
+            minimum=minimum,
+            maximum=maximum,
+            typeStr=typeStr,
+            lowWarning=lowWarning,
+            lowAlarm=lowAlarm,
+            highWarning=highWarning,
+            highAlarm=highAlarm,
+            pollInterval=pollInterval,
+            updateNotify=updateNotify,
+            bulkOpEn=bulkOpEn,
+            guiGroup=guiGroup,
+            **kwargs,
+        )
 
-        self._block = pr.LocalBlock(variable=self,
-                                    localSet=localSet,
-                                    localGet=localGet,
-                                    minimum=minimum,
-                                    maximum=maximum,
-                                    value=self._default)
+        self._block = pr.LocalBlock(
+            variable=self,
+            localSet=localSet,
+            localGet=localGet,
+            minimum=minimum,
+            maximum=maximum,
+            value=self._default,
+        )
 
     @pr.expose
-    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True):
+    def set(
+        self,
+        value: Any,
+        *,
+        index: int = -1,
+        write: bool = True,
+        verify: bool = True,
+        check: bool = True,
+    ):
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -1364,7 +1542,6 @@ class LocalVariable(BaseVariable):
         self._log.debug("{}.set({})".format(self, value))
 
         try:
-
             # Set value to block
             self._block.set(self, value, index)
 
@@ -1372,12 +1549,16 @@ class LocalVariable(BaseVariable):
                 self._block._checkTransaction()
 
         except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error setting value '{}' to variable '{}' with type {}. Exception={}".format(value,self.path,self.typeStr,e))
+            pr.logException(self._log, e)
+            self._log.error(
+                "Error setting value '{}' to variable '{}' with type {}. Exception={}".format(
+                    value, self.path, self.typeStr, e
+                )
+            )
             raise e
 
     @pr.expose
-    def post(self,value: Any, *, index: int = -1):
+    def post(self, value: Any, *, index: int = -1):
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -1397,8 +1578,12 @@ class LocalVariable(BaseVariable):
             self._block._checkTransaction()
 
         except Exception as e:
-            pr.logException(self._log,e)
-            self._log.error("Error posting value '{}' to variable '{}' with type {}".format(value,self.path,self.typeStr))
+            pr.logException(self._log, e)
+            self._log.error(
+                "Error posting value '{}' to variable '{}' with type {}".format(
+                    value, self.path, self.typeStr
+                )
+            )
             raise e
 
     @pr.expose
@@ -1420,10 +1605,10 @@ class LocalVariable(BaseVariable):
             if read and check:
                 self._block._checkTransaction()
 
-            return self._block.get(self,index)
+            return self._block.get(self, index)
 
         except Exception as e:
-            pr.logException(self._log,e)
+            pr.logException(self._log, e)
             self._log.error("Error reading value from variable '{}'".format(self.path))
             raise e
 
@@ -1482,6 +1667,7 @@ class LocalVariable(BaseVariable):
         self._block._ior(other)
         return self
 
+
 class LinkVariable(BaseVariable):
     """A virtual variable which does not hold any local value.
     Passes values through with possible local modification using linkedSet and linkedGet functions.
@@ -1496,16 +1682,18 @@ class LinkVariable(BaseVariable):
         * : all other args passed to pr.BaseVariable
     """
 
-    def __init__(self, *,
-                 name: str,
-                 variable: Optional[Type['pr.BaseVariable']] = None,
-                 dependencies: Optional[List[Type['pr.BaseVariable']]] = None,
-                 linkedSet: Optional[Callable] = None,
-                 linkedGet: Optional[Callable] = None,
-                 minimum: Optional[int] = None,
-                 maximum: Optional[int] = None,
-                 **kwargs): # Args passed to BaseVariable
-
+    def __init__(
+        self,
+        *,
+        name: str,
+        variable: Optional[Type["pr.BaseVariable"]] = None,
+        dependencies: Optional[List[Type["pr.BaseVariable"]]] = None,
+        linkedSet: Optional[Callable] = None,
+        linkedGet: Optional[Callable] = None,
+        minimum: Optional[int] = None,
+        maximum: Optional[int] = None,
+        **kwargs,
+    ):  # Args passed to BaseVariable
         # Set and get functions
         self._linkedGet = linkedGet
         self._linkedSet = linkedSet
@@ -1520,20 +1708,25 @@ class LinkVariable(BaseVariable):
             self._linkedSet = linkedSet if linkedSet else variable.set
 
             # Search the kwargs for overridden properties, otherwise the properties from the linked variable will be used
-            args = ['disp', 'enum', 'units', 'minimum', 'maximum']
+            args = ["disp", "enum", "units", "minimum", "maximum"]
             for arg in args:
                 if arg not in kwargs:
                     kwargs[arg] = getattr(variable, arg)
 
         # Why not inhertit mode from link variable?
         if not self._linkedSet:
-            kwargs['mode'] = 'RO'
+            kwargs["mode"] = "RO"
         if not self._linkedGet:
-            kwargs['mode'] = 'WO'
+            kwargs["mode"] = "WO"
 
         # Wrap linked get and set functions
-        self._linkedGetWrap = pr.functionWrapper(function=self._linkedGet, callArgs=['dev', 'var', 'read', 'index', 'check'])
-        self._linkedSetWrap = pr.functionWrapper(function=self._linkedSet, callArgs=['dev', 'var', 'value', 'write', 'index', 'verify', 'check'])
+        self._linkedGetWrap = pr.functionWrapper(
+            function=self._linkedGet, callArgs=["dev", "var", "read", "index", "check"]
+        )
+        self._linkedSetWrap = pr.functionWrapper(
+            function=self._linkedSet,
+            callArgs=["dev", "var", "value", "write", "index", "verify", "check"],
+        )
 
         # Call super constructor
         BaseVariable.__init__(self, name=name, **kwargs)
@@ -1554,7 +1747,15 @@ class LinkVariable(BaseVariable):
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value: Any, *, write: bool = True, index: int = -1, verify: bool = True, check: bool = True):
+    def set(
+        self,
+        value: Any,
+        *,
+        write: bool = True,
+        index: int = -1,
+        verify: bool = True,
+        check: bool = True,
+    ):
         """
 
         Args:
@@ -1566,9 +1767,18 @@ class LinkVariable(BaseVariable):
 
         """
         try:
-            self._linkedSetWrap(function=self._linkedSet, dev=self.parent, var=self, value=value, write=write, index=index, verify=verify, check=check)
+            self._linkedSetWrap(
+                function=self._linkedSet,
+                dev=self.parent,
+                var=self,
+                value=value,
+                write=write,
+                index=index,
+                verify=verify,
+                check=check,
+            )
         except Exception as e:
-            pr.logException(self._log,e)
+            pr.logException(self._log, e)
             self._log.error("Error setting link variable '{}'".format(self.path))
             raise e
 
@@ -1585,19 +1795,25 @@ class LinkVariable(BaseVariable):
 
         """
         try:
-            return self._linkedGetWrap(function=self._linkedGet, dev=self.parent, var=self, read=read, index=index, check=check)
+            return self._linkedGetWrap(
+                function=self._linkedGet,
+                dev=self.parent,
+                var=self,
+                read=read,
+                index=index,
+                check=check,
+            )
         except Exception as e:
-            pr.logException(self._log,e)
+            pr.logException(self._log, e)
             self._log.error("Error getting link variable '{}'".format(self.path))
             raise e
-
 
     def __getBlocks(self):
         b = []
         for d in self.dependencies:
             if isinstance(d, LinkVariable):
                 b.extend(d.__getBlocks())
-            elif hasattr(d, '_block') and d._block is not None:
+            elif hasattr(d, "_block") and d._block is not None:
                 b.append(d._block)
 
         return b
@@ -1608,14 +1824,15 @@ class LinkVariable(BaseVariable):
 
     @property
     def depBlocks(self):
-        """Return a list of Blocks that this LinkVariable depends on """
+        """Return a list of Blocks that this LinkVariable depends on"""
         return self.__depBlocks
 
     @pr.expose
     @property
     def pollInterval(self):
-
-        depIntervals = [dep.pollInterval for dep in self.dependencies if dep.pollInterval > 0]
+        depIntervals = [
+            dep.pollInterval for dep in self.dependencies if dep.pollInterval > 0
+        ]
         if len(depIntervals) == 0:
             return 0
         else:

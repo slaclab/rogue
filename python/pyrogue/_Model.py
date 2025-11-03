@@ -1,9 +1,9 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Description:
 #       PyRogue base module - Model Class
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -11,13 +11,15 @@
 # No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
+
+import struct
+from typing import Literal, Optional, Union
+
+import numpy as np
 
 import rogue.interfaces.memory as rim
-import numpy as np
-import struct
 
-from typing import Union, Optional, Literal
 
 def wordCount(bits, wordSize):
     """
@@ -29,7 +31,7 @@ def wordCount(bits, wordSize):
 
     """
     ret = bits // wordSize
-    if (bits % wordSize != 0 or bits == 0):
+    if bits % wordSize != 0 or bits == 0:
         ret += 1
     return ret
 
@@ -73,13 +75,14 @@ def twosComplement(value, bitSize):
     Returns:
 
     """
-    if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
-        value = value - (1 << bitSize)      # compute negative value
-    return value                            # return positive value as is
+    if (value & (1 << (bitSize - 1))) != 0:  # if sign bit is set e.g., 8bit: 128-255
+        value = value - (1 << bitSize)  # compute negative value
+    return value  # return positive value as is
 
 
 class ModelMeta(type):
     """ """
+
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
@@ -88,7 +91,7 @@ class ModelMeta(type):
         key = cls.__name__ + str(args) + str(kwargs)
 
         if key not in cls.subclasses:
-            #print(f'Key: {key}')
+            # print(f'Key: {key}')
             inst = super().__call__(*args, **kwargs)
             cls.subclasses[key] = inst
         return cls.subclasses[key]
@@ -119,25 +122,25 @@ class Model(object, metaclass=ModelMeta):
         ndType (np.dtype) : numpy type value (bool, int32, int64, uint32, uin64, float32, float64)
     """
 
-    fstring: Optional[str]= None
-    encoding: Optional[str]= None
-    pytype      = None
-    defaultdisp = '{}'
+    fstring: Optional[str] = None
+    encoding: Optional[str] = None
+    pytype = None
+    defaultdisp = "{}"
     signed: bool = False
-    endianness: Literal['little', 'big'] = 'little'
+    endianness: Literal["little", "big"] = "little"
     bitReverse: bool = False
-    modelId     = rim.PyFunc
+    modelId = rim.PyFunc
 
     def __init__(self, bitSize: int, binPoint: int = 0):
         self.binPoint = binPoint
-        self.bitSize  = bitSize
-        self.name     = self.__class__.__name__
-        self.ndType   = None
+        self.bitSize = bitSize
+        self.name = self.__class__.__name__
+        self.ndType = None
 
     @property
     def isBigEndian(self) -> bool:
         """ """
-        return self.endianness == 'big'
+        return self.endianness == "big"
 
     def toBytes(self, value) -> Optional[bytearray]:
         """Convert the python value to byte array.
@@ -177,7 +180,7 @@ class Model(object, metaclass=ModelMeta):
         """Return the minimum value for the Model type"""
         return None
 
-    def maxValue(self)-> Optional[Union[float, int]]:
+    def maxValue(self) -> Optional[Union[float, int]]:
         """Return the maximum value for the Model type"""
         return None
 
@@ -185,13 +188,13 @@ class Model(object, metaclass=ModelMeta):
 class UInt(Model):
     """Model class for unsigned integers"""
 
-    pytype      = int
-    defaultdisp = '{:#x}'
-    modelId     = rim.UInt
+    pytype = int
+    defaultdisp = "{:#x}"
+    modelId = rim.UInt
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-        self.name = f'{self.__class__.__name__}{self.bitSize}'
+        self.name = f"{self.__class__.__name__}{self.bitSize}"
         self.ndType = np.dtype(np.uint32) if bitSize <= 32 else np.dtype(np.uint64)
 
     def toBytes(self, value):
@@ -203,7 +206,9 @@ class UInt(Model):
         Returns:
 
         """
-        return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
+        return value.to_bytes(
+            byteCount(self.bitSize), self.endianness, signed=self.signed
+        )
 
     def fromBytes(self, ba) -> Optional[int]:
         """Called by raw read/write and when bitsize > 64
@@ -233,13 +238,13 @@ class UInt(Model):
 
     def maxValue(self):
         """ """
-        return (2**self.bitSize)-1
+        return (2**self.bitSize) - 1
 
 
 class UIntReversed(UInt):
     """Model class for unsigned integers, stored in reverse bit order"""
 
-    modelId    = rim.PyFunc # Not yet supported
+    modelId = rim.PyFunc  # Not yet supported
     bitReverse = True
 
     def __init__(self, bitSize):
@@ -256,7 +261,9 @@ class UIntReversed(UInt):
 
         """
         valueReverse = reverseBits(value, self.bitSize)
-        return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
+        return valueReverse.to_bytes(
+            byteCount(self.bitSize), self.endianness, signed=self.signed
+        )
 
     def fromBytes(self, ba):
         """
@@ -275,9 +282,9 @@ class Int(UInt):
     """Model class for integers"""
 
     # Override these and inherit everything else from UInt
-    defaultdisp = '{:d}'
-    signed      = True
-    modelId     = rim.Int
+    defaultdisp = "{:d}"
+    signed = True
+    modelId = rim.Int
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
@@ -295,14 +302,16 @@ class Int(UInt):
 
         """
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
-            newValue = value & (2**(self.bitSize)-1) # Strip upper bits
-            ba = newValue.to_bytes(byteCount(self.bitSize), self.endianness, signed=False)
+            newValue = value & (2 ** (self.bitSize) - 1)  # Strip upper bits
+            ba = newValue.to_bytes(
+                byteCount(self.bitSize), self.endianness, signed=False
+            )
         else:
             ba = value.to_bytes(byteCount(self.bitSize), self.endianness, signed=True)
 
         return ba
 
-    def fromBytes(self,ba):
+    def fromBytes(self, ba):
         """Called by raw read/write and when bitsize > 64
 
 
@@ -313,10 +322,10 @@ class Int(UInt):
         Returns:
 
         """
-        if (self.bitSize < (byteCount(self.bitSize)*8)):
+        if self.bitSize < (byteCount(self.bitSize) * 8):
             value = int.from_bytes(ba, self.endianness, signed=False)
 
-            if value >= 2**(self.bitSize-1):
+            if value >= 2 ** (self.bitSize - 1):
                 value -= 2**self.bitSize
 
         else:
@@ -337,40 +346,42 @@ class Int(UInt):
         """
         i = int(string, 0)
         # perform twos complement if necessary
-        if i>0 and ((i >> self.bitSize) & 0x1 == 1):
+        if i > 0 and ((i >> self.bitSize) & 0x1 == 1):
             i = i - (1 << self.bitSize)
         return i
 
     def minValue(self):
         """ """
-        return -1 * (2**(self.bitSize-1))
+        return -1 * (2 ** (self.bitSize - 1))
 
     def maxValue(self):
         """ """
-        return (2**(self.bitSize-1))-1
+        return (2 ** (self.bitSize - 1)) - 1
 
 
 class UIntBE(UInt):
     """Model class for big endian unsigned integers"""
 
-    endianness = 'big'
+    endianness = "big"
 
 
 class IntBE(Int):
     """Model class for big endian integers"""
 
-    endianness = 'big'
+    endianness = "big"
 
 
 class Bool(Model):
     """Model class for booleans"""
 
-    pytype      = bool
-    defaultdisp = {False: 'False', True: 'True'}
-    modelId     = rim.Bool
+    pytype = bool
+    defaultdisp = {False: "False", True: "True"}
+    modelId = rim.Bool
 
     def __init__(self, bitSize):
-        assert bitSize == 1, f"The bitSize param of Model {self.__class__.__name__} must be 1"
+        assert bitSize == 1, (
+            f"The bitSize param of Model {self.__class__.__name__} must be 1"
+        )
         super().__init__(bitSize)
         self.ndType = np.dtype(bool)
 
@@ -382,7 +393,9 @@ class Bool(Model):
         Returns:
 
         """
-        return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
+        return value.to_bytes(
+            byteCount(self.bitSize), self.endianness, signed=self.signed
+        )
 
     def fromBytes(self, ba):
         """
@@ -418,15 +431,14 @@ class Bool(Model):
 class String(Model):
     """Model class for strings"""
 
-    encoding    = 'utf-8'
-    defaultdisp = '{}'
-    pytype      = str
-    modelId     = rim.String
+    encoding = "utf-8"
+    defaultdisp = "{}"
+    pytype = str
+    modelId = rim.String
 
     def __init__(self, bitSize):
         super().__init__(bitSize)
-        self.name = f'{self.__class__.__name__}({self.bitSize//8})'
-
+        self.name = f"{self.__class__.__name__}({self.bitSize // 8})"
 
     def toBytes(self, value):
         """
@@ -465,15 +477,17 @@ class String(Model):
 class Float(Model):
     """Model class for 32-bit floats"""
 
-    defaultdisp = '{:f}'
-    pytype      = float
-    fstring     = 'f'
-    modelId     = rim.Float
+    defaultdisp = "{:f}"
+    pytype = float
+    fstring = "f"
+    modelId = rim.Float
 
     def __init__(self, bitSize):
-        assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
+        assert bitSize == 32, (
+            f"The bitSize param of Model {self.__class__.__name__} must be 32"
+        )
         super().__init__(bitSize)
-        self.name = f'{self.__class__.__name__}{self.bitSize}'
+        self.name = f"{self.__class__.__name__}{self.bitSize}"
         self.ndType = np.dtype(np.float32)
 
     def toBytes(self, value):
@@ -519,13 +533,15 @@ class Float(Model):
 class Double(Float):
     """Model class for 64-bit floats"""
 
-    fstring = 'd'
+    fstring = "d"
     modelId = rim.Double
 
     def __init__(self, bitSize):
-        assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
-        Model.__init__(self,bitSize)
-        self.name = f'{self.__class__.__name__}{self.bitSize}'
+        assert bitSize == 64, (
+            f"The bitSize param of Model {self.__class__.__name__} must be 64"
+        )
+        Model.__init__(self, bitSize)
+        self.name = f"{self.__class__.__name__}{self.bitSize}"
         self.ndType = np.dtype(np.float64)
 
     def minValue(self):
@@ -540,15 +556,15 @@ class Double(Float):
 class FloatBE(Float):
     """Model class for 32-bit floats stored as big endian"""
 
-    endianness = 'big'
-    fstring = '!f'
+    endianness = "big"
+    fstring = "!f"
 
 
 class DoubleBE(Double):
     """Model class for 64-bit floats stored as big endian"""
 
-    endianness = 'big'
-    fstring = '!d'
+    endianness = "big"
+    fstring = "!d"
 
 
 class Fixed(Model):
@@ -560,14 +576,15 @@ class Fixed(Model):
 
     """
 
-    pytype  = float
-    signed  = True
+    pytype = float
+    signed = True
     modelId = rim.Fixed
 
     def __init__(self, bitSize, binPoint):
-        super().__init__(bitSize,binPoint)
-        self.name = f'Fixed_{self.bitSize}_{self.binPoint}'
+        super().__init__(bitSize, binPoint)
+        self.name = f"Fixed_{self.bitSize}_{self.binPoint}"
         self.ndType = np.dtype(np.float64)
+
 
 class UFixed(Model):
     """
@@ -578,11 +595,11 @@ class UFixed(Model):
         binPoint (int) : Specifies the bit location of the binary point, where bit zero is the least significant bit.
     """
 
-    pytype  = float
-    signed  = False
+    pytype = float
+    signed = False
     modelId = rim.Fixed
 
     def __init__(self, bitSize, binPoint):
-        super().__init__(bitSize,binPoint)
-        self.name = f'UFixed_{self.bitSize}_{self.binPoint}'
+        super().__init__(bitSize, binPoint)
+        self.name = f"UFixed_{self.bitSize}_{self.binPoint}"
         self.ndType = np.dtype(np.float64)

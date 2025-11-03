@@ -1,9 +1,9 @@
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #  Description:
 #       PyRogue base module - Block Class
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -11,16 +11,27 @@
 # No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 import threading
+from collections.abc import Callable
+from typing import Any, Optional, Union
+
 import numpy as np
+
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 
-from collections.abc import Callable
-from typing import Union, Any, Optional
 
-def startTransaction(block: 'pr.LocalBlock', *, type, forceWr: bool = False, checkEach: bool = False, variable: Optional[Any] = None, index: int = -1, **kwargs):
+def startTransaction(
+    block: "pr.LocalBlock",
+    *,
+    type,
+    forceWr: bool = False,
+    checkEach: bool = False,
+    variable: Any | None = None,
+    index: int = -1,
+    **kwargs,
+):
     """
     Helper function for calling the startTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
@@ -40,7 +51,7 @@ def startTransaction(block: 'pr.LocalBlock', *, type, forceWr: bool = False, che
 
 
 def checkTransaction(block, **kwargs):
-    """ Helper function for calling the checkTransaction function in a block. This helper
+    """Helper function for calling the checkTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
         writeBlocks, readBlocks and checkBlocks functions.
 
@@ -55,58 +66,63 @@ def checkTransaction(block, **kwargs):
     """
     block._checkTransaction()
 
-def writeBlocks(blocks, force = False, checkEach = False, index = -1, **kwargs):
-    """ Helper function for writing and verifying a list of blocks.
-        Allows a custom list of blocks to be efficiently written,
-        similar to Device.writeBlocks(). """
-    for b in blocks:
-        startTransaction(b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs)
 
-def verifyBlocks(blocks, checkEach = False, **kwargs):
-    """ Helper function for verifying a list of blocks.
-        Allows a custom list of blocks to be efficiently verified without blocking
-        between each read, similar to Device.verifyBlocks(). """
+def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+    """Helper function for writing and verifying a list of blocks.
+    Allows a custom list of blocks to be efficiently written,
+    similar to Device.writeBlocks()."""
+    for b in blocks:
+        startTransaction(
+            b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs
+        )
+
+
+def verifyBlocks(blocks, checkEach=False, **kwargs):
+    """Helper function for verifying a list of blocks.
+    Allows a custom list of blocks to be efficiently verified without blocking
+    between each read, similar to Device.verifyBlocks()."""
     for b in blocks:
         startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
 
-def readBlocks(blocks, checkEach = False, **kwargs):
-    """ Helper function for reading a list of blocks.
-        Allows a custom list of blocks to be efficiently read without blocking
-        between each read, similar to Device.readBlocks(). """
+
+def readBlocks(blocks, checkEach=False, **kwargs):
+    """Helper function for reading a list of blocks.
+    Allows a custom list of blocks to be efficiently read without blocking
+    between each read, similar to Device.readBlocks()."""
     for b in blocks:
         startTransaction(b, type=rim.Read, checkEach=checkEach, **kwargs)
 
+
 def checkBlocks(blocks, **kwargs):
-    """ Helper function for waiting on block transactions for a list of blocks
-        Allows a custom list of blocks to be efficiently operated on without blocking
-        between each transaction, similar to  Device.checkBlocks(). """
+    """Helper function for waiting on block transactions for a list of blocks
+    Allows a custom list of blocks to be efficiently operated on without blocking
+    between each transaction, similar to  Device.checkBlocks()."""
     for b in blocks:
         checkTransaction(b)
 
-def writeAndVerifyBlocks(blocks, force = False, checkEach = False, index = -1, **kwargs):
-    """ Helper function for writing and verifying a list of blocks.
-        Allows a custom list of blocks to be efficiently written and verified
-        similar to Device.writeAndVerifyBlocks(). """
+
+def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+    """Helper function for writing and verifying a list of blocks.
+    Allows a custom list of blocks to be efficiently written and verified
+    similar to Device.writeAndVerifyBlocks()."""
     writeBlocks(blocks, force=force, checkEach=checkEach, index=index, **kwargs)
     verifyBlocks(blocks, checkEach=checkEach, **kwargs)
     checkBlocks(blocks)
 
-def readAndCheckBlocks(blocks, checkEach = False, **kwargs):
-    """ Helper function for reading a list of blocks.
-        Allows a custom list of blocks to be efficiently written and verified
-       without blocking between each read, similar to Device.readAndCheckBlocks(). """
+
+def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
+    """Helper function for reading a list of blocks.
+     Allows a custom list of blocks to be efficiently written and verified
+    without blocking between each read, similar to Device.readAndCheckBlocks()."""
     readBlocks(blocks, checkEach, **kwargs)
     checkBlocks(blocks)
-
-
 
 
 class MemoryError(Exception):
     """Exception for memory access errors."""
 
     def __init__(self, *, name, address, msg=None, size=0):
-
-        self._value = f'Memory Error for {name} at address {address:#08x}'
+        self._value = f"Memory Error for {name} at address {address:#08x}"
 
         if msg is not None:
             self._value += " " + msg
@@ -137,32 +153,40 @@ class LocalBlock(object):
         _localSetWrap (Callable):  functionWrapper for localSet with callArgs=['dev', 'var', 'value', 'changed'])
         _localGetWrap (Callable): functionWrapper for localGet with callArgs=['dev', 'var']
     """
-    def __init__(self, *,
-                 variable: 'pr.LocalVariable',
-                 localSet: Optional[Callable],
-                 localGet: Optional[Callable],
-                 minimum: Optional[int],
-                 maximum: Optional[int],
-                 value: Any):
-        self._path      = variable.path
-        self._mode      = variable.mode
-        self._device    = variable.parent
-        self._localSet  = localSet
-        self._localGet  = localGet
-        self._minimum   = minimum
-        self._maximum   = maximum
-        self._variable  = variable
-        self._variables = [variable] # Used by poller
-        self._value     = value
-        self._lock      = threading.RLock()
-        self._enable    = True
+
+    def __init__(
+        self,
+        *,
+        variable: "pr.LocalVariable",
+        localSet: Optional[Callable],
+        localGet: Optional[Callable],
+        minimum: Optional[int],
+        maximum: Optional[int],
+        value: Any,
+    ):
+        self._path = variable.path
+        self._mode = variable.mode
+        self._device = variable.parent
+        self._localSet = localSet
+        self._localGet = localGet
+        self._minimum = minimum
+        self._maximum = maximum
+        self._variable = variable
+        self._variables = [variable]  # Used by poller
+        self._value = value
+        self._lock = threading.RLock()
+        self._enable = True
 
         # Setup logging
-        self._log = pr.logInit(cls=self,name=self._path)
+        self._log = pr.logInit(cls=self, name=self._path)
 
         # Wrap local functions
-        self._localSetWrap = pr.functionWrapper(function=self._localSet, callArgs=['dev', 'var', 'value', 'changed'])
-        self._localGetWrap = pr.functionWrapper(function=self._localGet, callArgs=['dev', 'var'])
+        self._localSetWrap = pr.functionWrapper(
+            function=self._localSet, callArgs=["dev", "var", "value", "changed"]
+        )
+        self._localGetWrap = pr.functionWrapper(
+            function=self._localGet, callArgs=["dev", "var"]
+        )
 
     def __repr__(self):
         return repr(self._path)
@@ -186,7 +210,7 @@ class LocalBlock(object):
         """ """
         pass
 
-    def setEnable(self,value:bool):
+    def setEnable(self, value: bool):
         """
 
         Args:
@@ -196,7 +220,7 @@ class LocalBlock(object):
         with self._lock:
             self._enable = value
 
-    def _setTimeout(self,value):
+    def _setTimeout(self, value):
         """
 
         Args:
@@ -220,7 +244,6 @@ class LocalBlock(object):
 
         """
         with self._lock:
-
             if index < 0 and (isinstance(value, list) or isinstance(value, dict)):
                 changed = True
             elif index >= 0:
@@ -228,11 +251,12 @@ class LocalBlock(object):
             elif isinstance(value, np.ndarray):
                 changed = np.array_equal(self._value, value)
             else:
-
-                if (self._minimum is not None and value < self._minimum) or \
-                   (self._maximum is not None and value > self._maximum):
-
-                    raise pr.VariableError(f'Value range error for {self._path}. Value={value}, Min={self._minimum}, Max={self._maximum}')
+                if (self._minimum is not None and value < self._minimum) or (
+                    self._maximum is not None and value > self._maximum
+                ):
+                    raise pr.VariableError(
+                        f"Value range error for {self._path}. Value={value}, Min={self._minimum}, Max={self._maximum}"
+                    )
 
                 changed = self._value != value
 
@@ -243,7 +267,13 @@ class LocalBlock(object):
 
             # If a setFunction exists, call it (Used by local variables)
             if self._enable and self._localSet is not None:
-                self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
+                self._localSetWrap(
+                    function=self._localSet,
+                    dev=self._device,
+                    var=self._variable,
+                    value=self._value,
+                    changed=changed,
+                )
 
     def get(self, var: Any, index: int = -1):
         """
@@ -257,7 +287,9 @@ class LocalBlock(object):
         """
         if self._enable and self._localGet is not None:
             with self._lock:
-                self._value = self._localGetWrap(function=self._localGet, dev=self._device, var=self._variable)
+                self._value = self._localGetWrap(
+                    function=self._localGet, dev=self._device, var=self._variable
+                )
         if index >= 0:
             return self._value[index]
         else:
@@ -277,7 +309,7 @@ class LocalBlock(object):
         pass
 
     def _checkTransaction(self):
-        """Check status of block. If update=True notify variables if read. """
+        """Check status of block. If update=True notify variables if read."""
         if self._enable and self._variable._updateNotify:
             self._variable._queueUpdate()
 
