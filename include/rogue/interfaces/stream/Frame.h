@@ -28,8 +28,6 @@
 #include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
-    #include <numpy/ndarrayobject.h>
-
     #include <boost/python.hpp>
 #endif
 

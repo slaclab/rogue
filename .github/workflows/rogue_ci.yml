@@ -12,7 +12,6 @@
 # The following environment variables are required for this process:
 # secrets.GH_TOKEN
 # secrets.CONDA_UPLOAD_TOKEN_TAG
-# secrets.DOCKERHUB_TOKEN
 
 name: Rogue Integration
 on: [push]
