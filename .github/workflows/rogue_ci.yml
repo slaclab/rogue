@@ -55,18 +55,10 @@ jobs:
             exit 1
           fi
 
-      # Python Linter
-      - name: Python Linter
+      # Run Linters
+      - name: Python and C++ Linters
         run: |
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/
-
-      # C++ Linter
-      - name: C++ Linter
-        run: |
-          find . -name '*.h' -o -name '*.cpp' | xargs cpplint
+          ./scripts/run_linters.sh
 
       # Rogue
       - name: Build Rogue
