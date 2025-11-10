@@ -190,19 +190,19 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
         if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
             seconds += static_cast<double>(timeout_) / 1000.0;
             if (waitRetry_) {
-                log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
+                log_->error("Timeout waiting for response after %d Seconds, server may be busy! Waiting...", static_cast<int>(seconds));
                 zmq_msg_close(&msg);
             } else {
                 throw rogue::GeneralError::create("ZmqClient::sendString",
-                                                  "Timeout waiting for response after %f Seconds.",
-                                                  seconds);
+                                                  "Timeout waiting for response after %d Seconds.",
+                                                  static_cast<int>(seconds));
             }
         } else {
             break;
         }
     }
 
-    if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
+    if (seconds != 0) log_->error("Finally got response from server after %d seconds!", static_cast<int>(seconds));
 
     data = std::string((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
     zmq_msg_close(&msg);
@@ -252,14 +252,14 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
                 seconds += static_cast<double>(timeout_) / 1000.0;
                 if (waitRetry_) {
-                    log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",
-                                seconds);
+                    log_->error("Timeout waiting for response after %d Seconds, server may be busy! Waiting...",
+                                static_cast<int>(seconds));
                     zmq_msg_close(&rxMsg);
                 } else {
                     throw rogue::GeneralError::create(
                         "ZmqClient::send",
-                        "Timeout waiting for response after %f Seconds, server may be busy!",
-                        seconds);
+                        "Timeout waiting for response after %d Seconds, server may be busy!",
+                        static_cast<int>(seconds));
                 }
             } else {
                 break;
@@ -267,7 +267,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
         }
     }
 
-    if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
+    if (seconds != 0) log_->error("Finally got response from server after %d seconds!", static_cast<int>(seconds));
 
     PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
