@@ -440,48 +440,53 @@ void ris::Frame::writePy(boost::python::object p, uint32_t offset) {
 }
 
 //! Read the specified number of bytes at the specified offset of frame data into a numpy array
-boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count, bp::object dtype) {
-    // Retrieve the size, in bytes of the data
-    npy_intp size = getPayload();
 
+#include <numpy/arrayobject.h>  // make sure this is included
+
+boost::python::object ris::Frame::getNumpy(uint32_t offset, uint32_t count) {
+    // bytes available in frame payload
+    const npy_intp size_bytes = getPayload();
+
+    // default: all remaining bytes
     if (count == 0) {
-        count = size - offset;
+        if (offset > size_bytes) {
+            throw(rogue::GeneralError::create(
+                "Frame::getNumpy",
+                "Offset %" PRIu32 " is past end of frame (size %" PRIuPTR ")",
+                offset, static_cast<uintptr_t>(size_bytes)));
+        }
+        count = static_cast<uint32_t>(size_bytes - offset);  // count in BYTES by API contract
     }
 
-    // Check this does not request data past the EOF
-    if ((offset + count) > size) {
+    // bounds check in BYTES
+    if ((static_cast<npy_intp>(offset) + static_cast<npy_intp>(count)) > size_bytes) {
+        throw(rogue::GeneralError::create(
+            "Frame::getNumpy",
+            "Attempt to read %" PRIu32 " bytes from frame at offset %" PRIu32
+            " with size %" PRIuPTR,
+            count, offset, static_cast<uintptr_t>(size_bytes)));
+    }
+
+    // allocate a 1-D np.uint8 array with 'count' elements (bytes)
+    npy_intp dims[1] = { static_cast<npy_intp>(count) };
+    PyObject* obj = PyArray_SimpleNew(/*nd*/1, dims, NPY_UINT8);
+    if (!obj) {
         throw(rogue::GeneralError::create("Frame::getNumpy",
-                                          "Attempt to read %" PRIu32 " bytes from frame at offset %" PRIu32
-                                          " with size %" PRIu32,
-                                          count,
-                                          offset,
-                                          size));
+               "Failed to allocate NumPy uint8 array."));
     }
 
-    // Convert Python dtype object to NumPy type
-    int numpy_type;
-    PyObject* dtype_pyobj = dtype.ptr();  // Get the raw PyObject from the Boost.Python object
-    if (PyArray_DescrCheck(dtype_pyobj)) {
-        numpy_type = (reinterpret_cast<PyArray_Descr*>(dtype_pyobj))->type_num;
-    } else {
-        throw(rogue::GeneralError::create("Frame::getNumpy", "Invalid dtype argument. Must be a NumPy dtype object."));
-    }
+    // fill it from the frame
+    auto* arr = reinterpret_cast<PyArrayObject*>(obj);
+    auto* dst = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
 
-    // Create a numpy array to receive it and locate the destination data buffer
-    npy_intp dims[1]   = {count};
-    PyObject* obj      = PyArray_SimpleNew(1, dims, numpy_type);
-    PyArrayObject* arr = reinterpret_cast<PyArrayObject*>(obj);
-    uint8_t* dst       = reinterpret_cast<uint8_t*>(PyArray_DATA(arr));
-
-    // Read the data
     ris::FrameIterator beg = this->begin() + offset;
     ris::fromFrame(beg, count, dst);
 
-    // Transform to and return a boost python object
-    boost::python::handle<> handle(obj);
-    boost::python::object p(handle);
-    return p;
+    // return as boost::python object (steals ownership of obj)
+    return boost::python::object(boost::python::handle<>(obj));
 }
+
+
 
 //! Write the all the data associated with the input numpy array
 void ris::Frame::putNumpy(boost::python::object p, uint32_t offset) {
@@ -568,9 +573,10 @@ void ris::Frame::setup_python() {
         .def("getNumpy",
              &ris::Frame::getNumpy,
              (bp::arg("offset") = 0,
-              bp::arg("count")  = 0,
-              bp::arg("dtype")  = bp::object(bp::handle<>(bp::borrowed(dtype_uint8)))))
-        .def("putNumpy", &ris::Frame::putNumpy, (bp::arg("offset") = 0))
+              bp::arg("count")  = 0))
+        .def("putNumpy",
+             &ris::Frame::putNumpy,
+             (bp::arg("offset") = 0))
         .def("_debug", &ris::Frame::debug);
 #endif
 }
