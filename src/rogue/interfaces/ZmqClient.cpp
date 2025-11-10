@@ -188,7 +188,7 @@ std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, co
     while (1) {
         zmq_msg_init(&msg);
         if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
-            seconds += static_cast<float>(timeout_) / 1000.0;
+            seconds += static_cast<double>(timeout_) / 1000.0;
             if (waitRetry_) {
                 log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
                 zmq_msg_close(&msg);
@@ -250,7 +250,7 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
         while (1) {
             zmq_msg_init(&rxMsg);
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
-                seconds += static_cast<float>(timeout_) / 1000.0;
+                seconds += static_cast<double>(timeout_) / 1000.0;
                 if (waitRetry_) {
                     log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",
                                 seconds);
