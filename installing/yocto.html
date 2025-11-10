@@ -6,14 +6,14 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Setting Up Rogue In Yocto &mdash; Rogue v6.6.2 documentation</title>
+  <title>Setting Up Rogue In Yocto &mdash; Rogue v6.7.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=852fdbe2"></script>
+      <script src="../_static/documentation_options.js?v=677a9fc8"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
@@ -190,7 +190,7 @@ do_install() {
 <p>RDEPENDS is the  Runtime Dependencies. If your rogue application requires additional python libraries you can add them to the RDEPENDS += line in the above text.</p>
 <p>Step 3 - Add your application to the image installation list</p>
 <p>To enable compilation and installation of the rogue package in your Yocto project execute the following command:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;IMAGE_INSTALL:append = </span><span class="se">\&quot;</span><span class="s2"> rogue rogue-dev</span><span class="se">\&quot;</span><span class="s2">&quot;</span>  <span class="o">&gt;&gt;</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">layer</span><span class="o">.</span><span class="n">conf</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">echo</span> <span class="s2">&quot;IMAGE_INSTALL:append = </span><span class="se">\&quot;</span><span class="s2"> rogue</span><span class="se">\&quot;</span><span class="s2">&quot;</span>  <span class="o">&gt;&gt;</span> <span class="n">sources</span><span class="o">/</span><span class="n">meta</span><span class="o">-</span><span class="n">user</span><span class="o">/</span><span class="n">conf</span><span class="o">/</span><span class="n">layer</span><span class="o">.</span><span class="n">conf</span>
 </pre></div>
 </div>
 </section>
