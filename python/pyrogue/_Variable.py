@@ -45,9 +45,9 @@ class VariableWaitClass(object):
         else:
             self._vlist = varList
 
-        self.init()
+        self.arm()
 
-    def init(self):
+    def arm(self):
         with self._cv:
             for v in self._vlist:
                 v.addListener(self._varUpdate)
