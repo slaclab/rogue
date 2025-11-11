@@ -126,9 +126,9 @@ class VariableWaitClass(object):
 
     def _check(self):
         if self._testFunc is not None:
-            return(self._testFunc(list(self._values.values())))
+            return (self._testFunc(list(self._values.values())))
         else:
-            return(all(self._updated.values()))
+            return (all(self._updated.values()))
 
 
 def VariableWait(varList, testFunction=None, timeout=0):
