@@ -31,7 +31,50 @@ class VariableError(Exception):
 
 
 class VariableWaitClass(object):
+    """
+    Wait for a number of variable conditions to be true.
+    Pass a variable or list of variables, and a test function.
+    The test function is passed a list containing the current
+    variableValue state indexed by position as passed in the wait list.
+    Each variableValue entry has an additional field updated which indicates
+    if the variable has refreshed while waiting. This can be used to trigger
+    on any update to the variable, regardless of value.
 
+    i.e. w = VariableWaitClass([root.device.var1,root.device.var2],
+                                lambda varValues: varValues[0].value >= 10 and \
+                                            varValues[1].value >= 20)
+
+         w.wait()
+
+    i.e. w = VariableWaitClass([root.device.var1,root.device.var2],
+                                lambda varValues: varValues[0].updated and \
+                                            varValues[1].updated)
+
+         w.wait()
+
+    If no function is provided, the class will return when all variables are updated,
+    regardless of value.
+
+    The routine wait class can be used multiple times with subsequent calls using arm() to trigger:
+
+        w.wait()
+        w.arm()
+        w.wait()
+
+    getValues() can be called to get the final version of the tiles after the test passed.
+
+    Parameters
+    ----------
+    varList :
+        List of variables to monitor.
+
+    testFunction :
+        Function which will test the state of the values, or None to trigger on update
+
+    timeout : int
+         (Default value = 0)
+
+    """
     def __init__(self, varList, testFunction=None, timeout=0):
         self._values   = odict()
         self._updated  = odict()
@@ -106,20 +149,23 @@ def VariableWait(varList, testFunction=None, timeout=0):
                           lambda varValues: varValues[0].updated and \
                                             varValues[1].updated)
 
-    If no function is provided, the class will return when both variables are updated,
+    If no function is provided, the class will return when all variables are updated,
     regardless of value.
 
     Parameters
     ----------
     varList :
+        List of variables to monitor.
 
     testFunction :
+        Function which will test the state of the values, or None to trigger on update
 
     timeout : int
          (Default value = 0)
 
     Returns
     -------
+        True if conditions were met, false if there was a timeout
 
     """
     wc = VariableWaitClass(varList, testFunction, timeout)
