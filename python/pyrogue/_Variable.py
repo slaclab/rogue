@@ -30,7 +30,65 @@ class VariableError(Exception):
     pass
 
 
-def VariableWait(varList, testFunction, timeout=0):
+class VariableWaitClass(object):
+
+    def __init__(self, varList, testFunction=None, timeout=0):
+        self._values   = odict()
+        self._updated  = odict()
+        self._cv       = threading.Condition()
+        self._testFunc = testFunction
+        self._timeout  = timeout
+
+        # Convert single variable to a list
+        if not isinstance(varList,list):
+            self._vlist = [varList]
+        else:
+            self._vlist = varList
+
+        self.init()
+
+    def init(self):
+        with self._cv:
+            for v in self._vlist:
+                v.addListener(self._varUpdate)
+                self._values[v.path]  = v.getVariableValue(read=False)
+                self._updated[v.path] = False
+
+    def wait(self):
+        start  = time.time()
+
+        with self._cv:
+            ret = self._check()
+
+            # Run until timeout or all conditions have been met
+            while (not ret) and ((self._timeout == 0) or ((time.time()-start) < self._timeout)):
+                self._cv.wait(0.5)
+                ret = self._check()
+
+            # Cleanup
+            for v in self._vlist:
+                v.delListener(self._varUpdate)
+
+        return ret
+
+    def get_values(self):
+        return {k: self._values[k] for k in self._vlist}
+
+    def _varUpdate(self, path, varValue):
+        with self._cv:
+            if path in self._values:
+                self._values[path] = varValue
+                self._updated[path] = True
+                self.cv.notify()
+
+    def _check(self):
+        if self._testFunc is not None:
+            return(self._testFunc(list(self._vlist.values())))
+        else:
+            return(all(self._updated.values()))
+
+
+def VariableWait(varList, testFunction=None, timeout=0):
     """
     Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
@@ -48,6 +106,9 @@ def VariableWait(varList, testFunction, timeout=0):
                           lambda varValues: varValues[0].updated and \
                                             varValues[1].updated)
 
+    If no function is provided, the class will return when both variables are updated,
+    regardless of value.
+
     Parameters
     ----------
     varList :
@@ -61,68 +122,8 @@ def VariableWait(varList, testFunction, timeout=0):
     -------
 
     """
-
-    # Container class
-    class varStates(object):
-        def __init__(self):
-            self.vlist  = odict()
-            self.cv     = threading.Condition()
-
-        # Method to handle variable updates callback
-        def varUpdate(self,path,varValue):
-            """
-
-            Parameters
-            ----------
-            path :
-
-            varValue :
-
-
-            Returns
-            -------
-            ret
-
-            """
-            with self.cv:
-                if path in self.vlist:
-                    self.vlist[path] = varValue
-                    self.vlist[path].updated = True
-                    self.cv.notify()
-
-    # Convert single variable to a list
-    if not isinstance(varList,list):
-        varList = [varList]
-
-    # Setup tracking
-    states = varStates()
-
-    # Add variable to list and register handler
-    with states.cv:
-        for v in varList:
-            v.addListener(states.varUpdate)
-            states.vlist[v.path] = v.getVariableValue(read=False)
-            states.vlist[v.path].updated = False
-
-    # Go into wait loop
-    ret    = False
-    start  = time.time()
-
-    with states.cv:
-
-        # Check current state
-        ret = testFunction(list(states.vlist.values()))
-
-        # Run until timeout or all conditions have been met
-        while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
-            states.cv.wait(0.5)
-            ret = testFunction(list(states.vlist.values()))
-
-        # Cleanup
-        for v in varList:
-            v.delListener(states.varUpdate)
-
-    return ret
+    wc = VariableWaitClass(varList, testFunction, timeout)
+    return wc.wait()
 
 
 class VariableValue(object):
