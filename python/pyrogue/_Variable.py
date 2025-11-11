@@ -79,11 +79,11 @@ class VariableWaitClass(object):
             if path in self._values:
                 self._values[path] = varValue
                 self._updated[path] = True
-                self.cv.notify()
+                self._cv.notify()
 
     def _check(self):
         if self._testFunc is not None:
-            return(self._testFunc(list(self._vlist.values())))
+            return(self._testFunc(list(self._values.values())))
         else:
             return(all(self._updated.values()))
 
