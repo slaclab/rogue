@@ -1,11 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Python Package
  * ----------------------------------------------------------------------------
- * File       : package.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-08-08
- * Last update: 2016-08-08
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Python package setup
@@ -22,13 +17,23 @@
 
 #include "rogue/Directives.h"
 
+#include "rogue/numpy.h"
+
 #include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
+#include <cstdio>
 
 #include "rogue/Version.h"
 #include "rogue/module.h"
 
+void * rogue_import_array(void) {
+    import_array();
+    return NULL;
+}
+
+
 BOOST_PYTHON_MODULE(rogue) {
-    // PyEval_InitThreads();
+    rogue_import_array();
 
     rogue::setup_module();
 

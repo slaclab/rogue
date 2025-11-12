@@ -16,6 +16,9 @@ import rogue.interfaces.memory
 import time
 import hwcounter
 
+#import cProfile, pstats, io
+#from pstats import SortKey
+
 #rogue.Logging.setLevel(rogue.Logging.Debug)
 #import logging
 #logger = logging.getLogger('pyrogue')
@@ -29,7 +32,7 @@ MaxCycles = { 'remoteSetRate'   : 8.0e9,
               'linkedSetRate'   : 9.0e9,
               'linkedGetRate'   : 8.0e9 }
 
-class TestDev(pr.Device):
+class LocalDev(pr.Device):
 
     def __init__(self,**kwargs):
 
@@ -97,13 +100,16 @@ class DummyTree(pr.Root):
         #sim = pr.interfaces.simulation.MemEmulate()
         self.addInterface(sim)
 
-        self.add(TestDev(
+        self.add(LocalDev(
             offset     = 0,
             memBase    = sim,
         ))
 
 
 def test_rate():
+
+    #pr = cProfile.Profile()
+    #pr.enable()
 
     with DummyTree() as root:
         count = 100000
@@ -114,7 +120,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestRemote.set(i)
+                root.LocalDev.TestRemote.set(i)
         resultCycles['remoteSetRate'] = float(hwcounter.count_end() - scount)
         resultRate['remoteSetRate'] = int(1/((time.time()-stime) / count))
 
@@ -122,7 +128,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestRemoteNoVerify.set(i)
+                root.LocalDev.TestRemoteNoVerify.set(i)
         resultCycles['remoteSetNvRate'] = float(hwcounter.count_end() - scount)
         resultRate['remoteSetNvRate'] = int(1/((time.time()-stime) / count))
 
@@ -130,7 +136,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestRemote.get()
+                root.LocalDev.TestRemote.get()
         resultCycles['remoteGetRate'] = float(hwcounter.count_end() - scount)
         resultRate['remoteGetRate'] = int(1/((time.time()-stime) / count))
 
@@ -138,7 +144,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestLocal.set(i)
+                root.LocalDev.TestLocal.set(i)
         resultCycles['localSetRate'] = float(hwcounter.count_end() - scount)
         resultRate['localSetRate'] = int(1/((time.time()-stime) / count))
 
@@ -146,7 +152,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestLocal.get()
+                root.LocalDev.TestLocal.get()
         resultCycles['localGetRate'] = float(hwcounter.count_end() - scount)
         resultRate['localGetRate'] = int(1/((time.time()-stime) / count))
 
@@ -154,7 +160,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestLink.set(i)
+                root.LocalDev.TestLink.set(i)
         resultCycles['linkedSetRate'] = float(hwcounter.count_end() - scount)
         resultRate['linkedSetRate'] = int(1/((time.time()-stime) / count))
 
@@ -162,7 +168,7 @@ def test_rate():
         scount = hwcounter.count()
         with root.updateGroup():
             for i in range(count):
-                root.TestDev.TestLink.get(i)
+                root.LocalDev.TestLink.get(i)
         resultCycles['linkedGetRate'] = float(hwcounter.count_end() - scount)
         resultRate['linkedGetRate'] = int(1/((time.time()-stime) / count))
 
@@ -177,6 +183,15 @@ def test_rate():
 
         if passed is False:
             raise AssertionError('Rate check failed')
+
+
+    #pr.disable()
+
+    #s = io.StringIO()
+    #sortby = SortKey.CUMULATIVE
+    #ps = pstats.Stats(pr, stream=s).sort_stats(sortby)
+    #ps.print_stats()
+    #print(s.getvalue())
 
 if __name__ == "__main__":
     test_rate()

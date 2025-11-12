@@ -4,37 +4,32 @@
 Installing Rogue Docker
 =======================
 
-Docker images with rogue are automatically generated and uploaded to Docker hub, in the following repositories:
+Docker images with rogue are automatically generated and uploaded to GitHub Container Registry (GHCR), in the following repositories:
 
-Docker images with tagged (stable) version of rogue:
-https://hub.docker.com/r/tidair/rogue/
-
-Docker images with development versions of rogue:
-https://hub.docker.com/r/tidair/rogue-dev/
+Docker images are created for tagged version of rogue:
+https://ghcr.io/slaclab/rogue
 
 The images can be used to run rogue applications as one would normally do using a local installation of rogue.
 
 How To Get The Container
 ========================
 
-To get the most recent version of the docker image, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:
+To get the most recent released docker container of rogue, first you will need to install docker in you host OS and be logged in. Then you can get a copy by running:
 
 .. code::
 
-   $ docker pull tidair/rogue
+   $ docker pull ghcr.io/slaclab/rogue:latest
 
-to get the latest version available, or:
+Or you can target a specific tagged version.
 
 .. code::
 
-   $ docker pull tidair/rogue:$TAG
+   $ docker pull ghcr.io/slaclab/rogue:$TAG
 
-to get a specific tagged version.
 
 **Notes:**
 
 * The docker images are tagged using the same rogue tag.
-* You can also pull development version using `tidair/rogue-dev` instead.
 
 How To Run The Container
 ========================
@@ -45,7 +40,7 @@ Then you can run the container, for example, like this:
 
 .. code::
 
-   $ docker run -ti -v <APP_DIR>:/python tidair/rogue /python/<APP_NAME>
+   $ docker run -ti -v <APP_DIR>:/python ghcr.io/slaclab/rogue /python/<APP_NAME>
 
 where:
 
@@ -59,7 +54,7 @@ As an example use can test the docker install and X11 with the following command
 .. code::
 
    $ setfacl -m user:0:r ${HOME}/.Xauthority
-   $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority tidair/rogue python3 -m pyrogue.examples --gui
+   $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority ghcr.io/slaclab/rogue python3 -m pyrogue.examples --gui
 
 GUI On A Linux OS
 =================
@@ -73,7 +68,7 @@ GUI On A Linux OS
       -v "/etc/group:/etc/group:ro" \
       -v "/etc/passwd:/etc/passwd:ro" \
       -v <APP_DIR>:/python \
-      tidair/rogue /python/<APP_NAME>
+      ghcr.io/slaclab/rogue /python/<APP_NAME>
 
 GUI On A MAX OS
 ===============
@@ -86,12 +81,12 @@ Now run:
 
    $ IP=$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')
    $ xhost + $IP
-   $ docker run -ti -e DISPLAY=$IP:0 -v <APP_DIR>:/python tidair/rogue /python/<APP_NAME>
+   $ docker run -ti -e DISPLAY=$IP:0 -v <APP_DIR>:/python ghcr.io/slaclab/rogue /python/<APP_NAME>
 
 **Notes:**
 
 * The `-v` option maps a folder in your host OS inside the docker container. In this example we are mapping our local folder containing the rogue application to `/python/` inside the container. Then, when the container runs, we are able to access the rogue application which is now located at `/python/`. You can, of course, map more than one folder inside the container, as well as using different locations inside the container.
-* You can also run a specific tagged version of rogue changing `tidair/rogue` for `tidair/rogue:<TAG>` in the docker run command. Moreover, you can run development version using `tidair/rogue-dev` (latest version) or `tidair/rogue-dev:<TAG>` (a specific version).
+* You can also run a specific tagged version of rogue changing `ghcr.io/slaclab/rogue` for `ghcr.io/slaclab/rogue:<TAG>` in the docker run command.
 
 How To Build A Custom Docker Image With Rogue
 =============================================
@@ -100,5 +95,5 @@ You can create custom docker image, using the Docker image containing rogue as a
 
 .. code::
 
-   FROM tidair/rogue:<TAG>
+   FROM ghcr.io/slaclab/rogue:<TAG>
 

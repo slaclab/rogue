@@ -1,15 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream Buffer Container
  * ----------------------------------------------------------------------------
- * File       : Buffer.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-16
- * Last update: 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -25,6 +19,7 @@
 
 #include <inttypes.h>
 
+#include <cstdio>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -48,7 +43,7 @@ ris::BufferPtr ris::Buffer::create(ris::PoolPtr source, void* data, uint32_t met
  */
 ris::Buffer::Buffer(ris::PoolPtr source, void* data, uint32_t meta, uint32_t size, uint32_t alloc) {
     source_    = source;
-    data_      = (uint8_t*)data;
+    data_      = reinterpret_cast<uint8_t*>(data);
     meta_      = meta;
     rawSize_   = size;
     allocSize_ = alloc;
@@ -83,14 +78,14 @@ void ris::Buffer::setMeta(uint32_t meta) {
 //! Adjust header by passed value
 void ris::Buffer::adjustHeader(int32_t value) {
     // Decreasing header size
-    if (value < 0 && (uint32_t)abs(value) > headRoom_)
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > headRoom_)
         throw(rogue::GeneralError::create("Buffer::adjustHeader",
                                           "Attempt to reduce header with size %" PRIu32 " by %" PRIi32,
                                           headRoom_,
                                           value));
 
     // Increasing header size
-    if (value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)))
+    if (value > 0 && static_cast<uint32_t>(value) > (rawSize_ - (headRoom_ + tailRoom_)))
         throw(rogue::GeneralError::create("Buffer::adjustHeader",
                                           "Attempt to increase header by %" PRIi32 " in buffer with size %" PRIu32,
                                           value,
@@ -117,14 +112,14 @@ void ris::Buffer::zeroHeader() {
 //! Adjust tail by passed value
 void ris::Buffer::adjustTail(int32_t value) {
     // Decreasing tail size
-    if (value < 0 && (uint32_t)abs(value) > tailRoom_)
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > tailRoom_)
         throw(rogue::GeneralError::create("Buffer::adjustTail",
                                           "Attempt to reduce tail with size %" PRIu32 " by %" PRIi32,
                                           tailRoom_,
                                           value));
 
     // Increasing tail size
-    if (value > 0 && (uint32_t)value > (rawSize_ - (headRoom_ + tailRoom_)))
+    if (value > 0 && static_cast<uint32_t>(value) > (rawSize_ - (headRoom_ + tailRoom_)))
         throw(rogue::GeneralError::create("Buffer::adjustTail",
                                           "Attempt to increase header by %" PRIi32 " in buffer with size %" PRIu32,
                                           value,
@@ -232,7 +227,7 @@ void ris::Buffer::minPayload(uint32_t size) {
 
 //! Adjust payload size
 void ris::Buffer::adjustPayload(int32_t value) {
-    if (value < 0 && (uint32_t)abs(value) > getPayload())
+    if (value < 0 && static_cast<uint32_t>(abs(value)) > getPayload())
         throw(rogue::GeneralError::create("Buffer::adjustPayload",
                                           "Attempt to decrease payload by %" PRIi32 " in buffer with size %" PRIu32,
                                           value,

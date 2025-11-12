@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Data Receiver Device
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Data Receiver Device
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -35,27 +38,31 @@ class DataReceiver(pr.Device,ris.Slave):
 
         self.add(pr.LocalVariable(name='FrameCount',
                                   value=0,
+                                  mode = 'RO',
                                   pollInterval=1,
                                   description='Frame Rx Counter'))
 
         self.add(pr.LocalVariable(name='ErrorCount',
                                   value=0,
+                                  mode = 'RO',
                                   pollInterval=1,
                                   description='Frame Error Counter'))
 
         self.add(pr.LocalVariable(name='ByteCount',
                                   value=0,
+                                  mode = 'RO',
                                   pollInterval=1,
                                   description='Byte Rx Counter'))
 
         self.add(pr.LocalVariable(name='Updated',
                                   value=False,
-                                  description='Data has been updated flag'))
+                                  mode = 'RW',
+                                  description='Data has been updated flag. Set in the TRUE in DataReceiver and reset to zero by application'))
 
         self.add(pr.LocalVariable(name='Data',
                                   typeStr=typeStr,
                                   disp='',
-                                  groups=['NoState','NoStream'],
+                                  groups=['NoState','NoStream', 'NoConfig'],
                                   value=value,
                                   hidden=hideData,
                                   description='Data Frame Container'))
@@ -81,7 +88,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
         """
         # Do nothing if not yet started or enabled
-        if self.running is False or self.RxEnable.value() is False:
+        if self.running is False or not self.RxEnable.value():
             return
 
         # Lock frame

@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Hub Hub
  * ----------------------------------------------------------------------------
- * File       : Hub.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-20
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * A memory interface hub. Accepts requests from multiple masters and forwards
@@ -26,6 +22,8 @@
 
 #include <stdint.h>
 
+#include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"
@@ -33,7 +31,7 @@
 #include "rogue/interfaces/memory/Slave.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {

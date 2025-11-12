@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : AXI Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : AxiMemMap.h
- * Created    : 2017-03-21
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      AXI Memory Mapped Access
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -22,6 +22,7 @@
 
 #include <memory>
 #include <mutex>
+#include <string>
 #include <thread>
 
 #include "rogue/Logging.h"
@@ -69,7 +70,7 @@ class AxiMemMap : public rogue::interfaces::memory::Slave {
     static void setup_python();
 
     // Class Creator
-    AxiMemMap(std::string path);
+    explicit AxiMemMap(std::string path);
 
     // Destructor
     ~AxiMemMap();

@@ -1,11 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Hub
  * ----------------------------------------------------------------------------
- * File       : Hub.cpp
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-20
- * Last update: 2016-09-20
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * A memory interface hub. Accepts requests from multiple masters and forwards
@@ -29,6 +24,7 @@
 
 #include <cmath>
 #include <memory>
+#include <string>
 
 #include "rogue/GilRelease.h"
 #include "rogue/ScopedGil.h"
@@ -37,7 +33,7 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -125,7 +121,7 @@ void rim::Hub::doTransaction(rim::TransactionPtr tran) {
 
         for (unsigned int i = 0; i < numberOfTransactions; ++i) {
             rim::TransactionPtr subTran = tran->createSubTransaction();
-            subTran->iter_              = (uint8_t*)(tran->begin() + i * maxAccess);
+            subTran->iter_              = reinterpret_cast<uint8_t*>(tran->begin() + i * maxAccess);
             if (tran->size() >= ((i + 1) * maxAccess)) {
                 subTran->size_ = maxAccess;
             } else {
@@ -185,7 +181,9 @@ void rim::HubWrap::doTransaction(rim::TransactionPtr transaction) {
             try {
                 pb(transaction);
                 return;
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     rim::Hub::doTransaction(transaction);

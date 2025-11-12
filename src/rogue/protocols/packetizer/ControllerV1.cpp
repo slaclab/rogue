@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Controller Version 1
  * ----------------------------------------------------------------------------
- * File       : ControllerV1.cpp
- * Created    : 2018-02-02
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller V1
@@ -20,11 +17,11 @@
 #include "rogue/protocols/packetizer/ControllerV1.h"
 
 #include <inttypes.h>
-#include <math.h>
-#include <stdlib.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cmath>
+#include <cstdlib>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -90,12 +87,12 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
         return;
     }
 
-    tmpIdx = uint32_t(data[0]) >> 4;
-    tmpIdx |= uint32_t(data[1]) << 4;
+    tmpIdx = static_cast<uint32_t>(data[0]) >> 4;
+    tmpIdx |= static_cast<uint32_t>(data[1]) << 4;
 
-    tmpCount = uint32_t(data[2]);
-    tmpCount |= uint32_t(data[3]) << 8;
-    tmpCount |= uint32_t(data[4]) << 16;
+    tmpCount = static_cast<uint32_t>(data[2]);
+    tmpCount |= static_cast<uint32_t>(data[3]) << 8;
+    tmpCount |= static_cast<uint32_t>(data[4]) << 16;
 
     tmpDest  = data[5];
     tmpId    = data[6];
@@ -168,13 +165,16 @@ void rpp::ControllerV1::transportRx(ris::FramePtr frame) {
     if (tmpEof) {
         tranFrame_[0]->setLastUser(tmpLuser);
         tranCount_[0] = 0;
-        if (app_[tranDest_]) { app_[tranDest_]->pushFrame(tranFrame_[0]); }
+        if (app_[tranDest_]) {
+            app_[tranDest_]->pushFrame(tranFrame_[0]);
+        }
         tranFrame_[0].reset();
 
         // Detect SSI error
         if (enSsi_ & (tmpLuser & 0x1)) tranFrame_[tmpDest]->setError(0x80);
-    } else
+    } else {
         tranCount_[0]++;
+    }
 }
 
 //! Frame received at application interface

@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Process Device Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Process Device Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -87,12 +90,12 @@ class Process(pr.Device):
 
     def _incrementSteps(self, incr):
         with self.Step.lock:
-            self.Step.set(self.Step.value() + incr,write=False)
-        self.Progress.set(self.Step.value()/self.TotalSteps.value(),write=False)
+            self.Step.set(self.Step.value() + incr)
+        self.Progress.set(self.Step.value()/self.TotalSteps.value())
 
     def _setSteps(self, value):
-        self.Step.set(value,write=False)
-        self.Progress.set(self.Step.value()/self.TotalSteps.value(),write=False)
+        self.Step.set(value)
+        self.Progress.set(self.Step.value()/self.TotalSteps.value())
 
     def _startProcess(self):
         """ """
@@ -133,7 +136,8 @@ class Process(pr.Device):
         self.Running.set(True)
 
         try:
-            self._process()
+            with self.root.updateGroup(period=1.0):
+                self._process()
         except Exception as e:
             pr.logException(self._log,e)
             self.Message.setDisp("Stopped after error!")

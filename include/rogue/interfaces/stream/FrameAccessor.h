@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream frame accessor
  * ----------------------------------------------------------------------------
- * File       : FrameAccessor.h
- * Created    : 2018-03-06
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame iterator
@@ -46,7 +43,7 @@ class FrameAccessor {
   public:
     //! Creator
     FrameAccessor(rogue::interfaces::stream::FrameIterator& iter, uint32_t size) {
-        data_ = (T*)iter.ptr();
+        data_ = reinterpret_cast<T*>(iter.ptr());
         size_ = size;
 
         if (size * sizeof(T) > iter.remBuffer())

@@ -12,7 +12,6 @@
 # The following environment variables are required for this process:
 # secrets.GH_TOKEN
 # secrets.CONDA_UPLOAD_TOKEN_TAG
-# secrets.DOCKERHUB_TOKEN
 
 name: Rogue Integration
 on: [push]
@@ -20,7 +19,7 @@ on: [push]
 jobs:
   full_build_test:
     name: Full Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -30,23 +29,35 @@ jobs:
 
       - uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.12
           cache: 'pip'
           cache-dependency-path: 'pip_requirements.txt'
 
+      # Install dependencies
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev
+          sudo apt-get install doxygen doxygen-doc libzmq3-dev libboost-all-dev bzip2 libbz2-dev
           pip install -r pip_requirements.txt
 
-      # Flake 8 check
-      - name: Flake8 Tests
+      - name: Check for trailing whitespace and tabs
         run: |
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/
+          # Check for trailing whitespace
+          if grep -rnI '[[:blank:]]$' --include=\*.{cpp,h,py} .; then
+            echo "Error: Trailing whitespace found in the repository!"
+            exit 1
+          fi
+
+          # Check for tab characters instead of spaces
+          if grep -rnI $'\t' --include=\*.{cpp,h,py} .; then
+            echo "Error: Tab characters found in the repository! Please use spaces for indentation."
+            exit 1
+          fi
+
+      # Run Linters
+      - name: Python and C++ Linters
+        run: |
+          ./scripts/run_linters.sh
 
       # Rogue
       - name: Build Rogue
@@ -54,7 +65,7 @@ jobs:
           python -c "import numpy; print(numpy.get_include())"
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local
-          make -j4 install
+          make -j$(nproc) install
 
       # Run Tests
       - name: Rogue Tests
@@ -99,9 +110,11 @@ jobs:
           github_token: ${{ secrets.GH_TOKEN }}
           publish_dir: docs/build/html
 
+# ----------------------------------------------------------------------------
+
   small_build_test:
     name: Small Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -112,136 +125,45 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libzmq3-dev
+          sudo apt-get install libzmq3-dev libboost-all-dev bzip2 libbz2-dev
 
       # Rogue
       - name: Build Rogue
         run: |
           mkdir build; cd build
           cmake .. -DROGUE_INSTALL=local -DNO_PYTHON=1 -DSTATIC_LIB=1
-          make -j4 install
+          make -j$(nproc) install
 
+
+# ----------------------------------------------------------------------------
 
   gen_release:
-    name: Generate Release
-    runs-on: ubuntu-20.04
     needs: [full_build_test, small_build_test]
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
+    uses: slaclab/ruckus/.github/workflows/gen_release.yml@main
+    with:
+      version: '1.0.0'
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+# ----------------------------------------------------------------------------
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-
-      - name: Get Image Information
-        id: get_image_info
-        run: |
-          echo tag=`git describe --tags` >> ${GITHUB_OUTPUT}
-
-      - name: Get Ruckus
-        run: |
-          git clone https://github.com/slaclab/ruckus.git
-          python -m pip install --upgrade pip
-          pip install -r ruckus/scripts/pip_requirements.txt
-
-      - name: Gen Release
-        env:
-          TRAVIS_REPO_SLUG: ${{ github.repository }}
-          TRAVIS_TAG: ${{ steps.get_image_info.outputs.tag }}
-          GH_REPO_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: |
-          python ruckus/scripts/releaseGen.py
-
-  conda_build:
-    name: Anaconda Build
+  conda_build_lib:
     needs: [full_build_test, small_build_test]
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-20.04
-    steps:
+    uses: slaclab/ruckus/.github/workflows/conda_build_lib.yml@main
+    with:
+      version: '1.0.0'
+    secrets:
+      CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
 
-      # This step checks out a copy of your repository.
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+# ----------------------------------------------------------------------------
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: 3.8
-
-      - name: Setup anaconda
-        run: |
-          cd ${HOME}
-          wget -O miniconda.sh https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-          bash miniconda.sh -b -p ${HOME}/miniconda
-          export PATH="${HOME}/miniconda/bin:$PATH"
-          source ${HOME}/miniconda/etc/profile.d/conda.sh
-          conda config --set always_yes yes
-          conda config --set channel_priority strict
-          conda install -n base conda-libmamba-solver
-          conda config --set solver libmamba
-          conda install conda-build anaconda-client conda-verify
-          conda update -q conda conda-build
-          conda update --all
-
-      - name: Get Image Information
-        id: get_image_info
-        env:
-          CONDA_UPLOAD_TOKEN_TAG: ${{ secrets.CONDA_UPLOAD_TOKEN_TAG }}
-        run: |
-          echo token=${CONDA_UPLOAD_TOKEN_TAG} >> ${GITHUB_OUTPUT}
-
-      - name: Build
-        run: |
-          export PATH="${HOME}/miniconda/bin:$PATH"
-          source ${HOME}/miniconda/etc/profile.d/conda.sh
-          conda build conda-recipe --output-folder bld-dir -c conda-forge
-
-      - name: Upload
-        run: |
-          export PATH="${HOME}/miniconda/bin:$PATH"
-          source ${HOME}/miniconda/etc/profile.d/conda.sh
-          anaconda -t ${{ steps.get_image_info.outputs.token }} upload --force bld-dir/*/*.tar.bz2
-
-  docker_build:
-    name: Docker Build
-    runs-on: ubuntu-20.04
+  docker_build_rogue:
     needs: [full_build_test, small_build_test]
-    if: startsWith(github.ref, 'refs/tags/')
-    steps:
+    uses: slaclab/ruckus/.github/workflows/docker_build.yml@main
+    with:
+      gh_username: slacrherbst
+      docker_name: rogue
+    secrets:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
-      # This step checks out a copy of your repository.
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Get Image Information
-        id: get_image_info
-        run: |
-          echo tag=`git describe --tags` >> ${GITHUB_OUTPUT}
-          echo branch=`echo ${GITHUB_REF} | awk 'BEGIN { FS = "/" } ; { print $3 }'` >> ${GITHUB_OUTPUT}
-
-      # Setup docker build environment
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      # Login to Dockerhub
-      - name: Login to Dockerhub
-        uses: docker/login-action@v1
-        with:
-          username: tidair
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      # Build and push the docker image
-      - name: Build and push image to Dockerhub
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./docker/rogue/Dockerfile
-          push: true
-          tags: tidair/rogue:${{ steps.get_image_info.outputs.tag }}, tidair/rogue:latest
-          build-args: branch=${{ steps.get_image_info.outputs.branch }}
-
+# ----------------------------------------------------------------------------

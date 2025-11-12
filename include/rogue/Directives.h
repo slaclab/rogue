@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Common Directives
  * ----------------------------------------------------------------------------
- * File       : Directives.h
- * Created    : 2023-02-13
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Common Directives For Rogue
@@ -27,7 +24,7 @@
 #define CRCPP_USE_CPP11
 
 #ifndef __STDC_FORMAT_MACROS
-#define __STDC_FORMAT_MACROS
+    #define __STDC_FORMAT_MACROS
 #endif
 
 #endif

@@ -184,7 +184,7 @@ class HubTestDev(pr.Device):
 
 
 # Device which emulates the SPI interface under tests.
-class TestEmulate(rogue.interfaces.memory.Slave):
+class LocalEmulate(rogue.interfaces.memory.Slave):
 
     def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF):
         rogue.interfaces.memory.Slave.__init__(self,4,4)
@@ -258,7 +258,7 @@ class DummyTree(pr.Root):
             pollEn=False)
 
         # Use a memory space emulator
-        sim = TestEmulate()
+        sim = LocalEmulate()
         self.addInterface(sim)
 
         self.add(HubTestDev(

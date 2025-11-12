@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream Network Client
  * ----------------------------------------------------------------------------
- * File       : TcpClient.h
- * Created    : 2019-01-30
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream Network Client
@@ -24,6 +21,7 @@
 #include <zmq.h>
 
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -36,7 +34,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

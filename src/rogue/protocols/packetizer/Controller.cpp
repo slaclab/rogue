@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Controller
  * ----------------------------------------------------------------------------
- * File       : Controller.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Controller
@@ -21,8 +17,8 @@
 #include "rogue/protocols/packetizer/Controller.h"
 
 #include <inttypes.h>
-#include <math.h>
 
+#include <cmath>
 #include <memory>
 
 #include "rogue/GeneralError.h"

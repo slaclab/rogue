@@ -1,4 +1,6 @@
 #-----------------------------------------------------------------------------
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -12,6 +14,7 @@ from pyrogue.interfaces._ZmqServer import *
 from pyrogue.interfaces._Virtual   import *
 from pyrogue.interfaces._SimpleClient import *
 from pyrogue.interfaces._SqlLogging   import *
+from pyrogue.interfaces._OsCommandMemorySlave import *
 
 import time
 import json

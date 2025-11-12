@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Virtual Classes
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Virtual Classes
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -252,7 +255,16 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         try:
             self._root = self._remoteAttr('__ROOT__',None)
         except Exception:
-            print("\n\nFailed to connected to {}:{}!!!! Please Close PyDM Window!!!!\n\n".format(addr,port))
+            error_message = (
+                f"\n\nFailed to connect to {addr}:{port}!\n\n"
+                "Possible causes for the issue:\n"
+                "- ZeroMQ Server not included in the root class\n"
+                "- Root process not running\n"
+                "- Mismatch between Client address and Server address\n"
+                "- Mismatch between Client port and Server port\n"
+                "- Server ports being blocked\n"
+            )
+            print(error_message)
             return
 
         print("Connected to {} at {}:{}".format(self._root.name,addr,port))

@@ -9,7 +9,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-# See notes for compiling on macros under anaconda:
+# See notes for compiling on macros under miniforge:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
 # Add support for building in conda environment
@@ -19,7 +19,7 @@ if (DEFINED ENV{CONDA_PREFIX})
 endif()
 
 # Check cmake version
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 include(InstallRequiredSystemLibraries)
 
 # Set default release type
@@ -37,6 +37,7 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
+SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
@@ -45,8 +46,10 @@ SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
 # Boost + Python
 #####################################
 if ( NOT NO_PYTHON )
-   find_package(PythonInterp 3 QUIET REQUIRED)
-   find_package(PythonLibs 3 QUIET REQUIRED)
+
+   # Find newest python interpreter first
+   set(Python3_FIND_STRATEGY "LOCATION")
+   find_package(Python3 QUIET REQUIRED COMPONENTS Interpreter Development)
 
    # Find Numpy
    execute_process(
@@ -64,41 +67,37 @@ if ( NOT NO_PYTHON )
    set(Boost_USE_MULTITHREADED ON)
    set(Boost_NO_BOOST_CMAKE ON)
 
-   # Hint for boost on anaconda
+   # Hint for boost on miniforge
    if (DEFINED ENV{CONDA_PREFIX})
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
-
-   # SLAC AFS custom path
-   elseif (DEFINED ENV{BOOST_PATH})
-      set(BOOST_ROOT $ENV{BOOST_PATH})
    endif()
 
    # libboost_python3.7 style libraries
-   message("Looking for libboost_python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+   message("Looking for libboost_python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} Mode 1")
+   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
 
    # libboost_python3 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python${PYTHON_VERSION_MAJOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${PYTHON_VERSION_MAJOR})
+      message("Looking for libboost_python${Python3_VERSION_MAJOR} Mode 2")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${Python3_VERSION_MAJOR})
    endif()
 
    # libboost_python style libraries
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python")
+      message("Looking for libboost_python Mode 3")
       FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python)
    endif()
 
    # libboost_python-py37 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      message("Looking for libboost_python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} Mode 4")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
    endif()
 
    # libboost_python3-py37 style libraries
    if (NOT Boost_FOUND)
-      message("Looking for libboost_python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+      message("Looking for libboost_python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR} Mode 5")
+      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
    endif()
 
    # Nothing worked
@@ -233,11 +232,10 @@ configure_file (
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${PROJECT_BINARY_DIR})
 include_directories(system ${Boost_INCLUDE_DIRS})
-include_directories(system ${PYTHON_INCLUDE_DIRS})
+include_directories(system ${Python3_INCLUDE_DIRS})
 include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
-include_directories(system ${EPICS_INCLUDES})
 
 if (APPLE)
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
@@ -260,14 +258,13 @@ set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVE
 
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${EPICS_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
 if (APPLE)
    set_target_properties(rogue-core-shared PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 else()
-   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${PYTHON_LIBRARIES})
+   TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Python3_LIBRARIES})
    TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC rt)
 endif()
 
@@ -279,9 +276,8 @@ if(STATIC_LIB)
     # Link rogue core to boost, python and bzip
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Boost_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${EPICS_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${PYTHON_LIBRARIES})
+    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Python3_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
 endif()
 
@@ -338,6 +334,8 @@ configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.csh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.csh @ONLY)
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.sh.in
                ${PROJECT_BINARY_DIR}/setup_rogue.sh @ONLY)
+configure_file(${PROJECT_SOURCE_DIR}/templates/setup_rogue.fish.in
+               ${PROJECT_BINARY_DIR}/setup_rogue.fish @ONLY)
 
 # Create the python install script
 configure_file(${PROJECT_SOURCE_DIR}/templates/setup.py.in
@@ -359,7 +357,7 @@ install(FILES ${PROJECT_BINARY_DIR}/RogueConfig.cmake DESTINATION ${CMAKE_INSTAL
 
 # Copy setup files for local or custom
 if ((${ROGUE_INSTALL} STREQUAL "custom") OR (${ROGUE_INSTALL} STREQUAL "local"))
-   install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh DESTINATION ${ROGUE_DIR})
+   install(FILES ${PROJECT_BINARY_DIR}/setup_rogue.sh ${PROJECT_BINARY_DIR}/setup_rogue.csh ${PROJECT_BINARY_DIR}/setup_rogue.fish DESTINATION ${ROGUE_DIR})
 endif()
 
 # Install header files for non local installs
@@ -385,7 +383,7 @@ if (NOT NO_PYTHON)
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use pip with python3 for system or anaconda
+   # Use pip with python3 for system or miniforge
    elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
       install(CODE "execute_process(COMMAND pip3 install ${PROJECT_BINARY_DIR}/)")
    endif()
@@ -417,7 +415,7 @@ else()
    message("-- Found boost: ${Boost_INCLUDE_DIRS}")
    message("-- Found boost: ${Boost_LIBRARIES}")
    message("")
-   message("-- Found python: ${PYTHON_LIBRARIES}")
+   message("-- Found python: ${Python3_LIBRARIES}")
    message("-- Found numpy: ${Python3_NumPy_INCLUDE_DIRS}")
 endif()
 

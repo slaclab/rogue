@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 #-----------------------------------------------------------------------------
-# Title      : Example Root
+# Company    : SLAC National Accelerator Laboratory
 #-----------------------------------------------------------------------------
-# This file is part of the rogue_example software. It is subject to
+#  Description:
+#       Example Root
+#-----------------------------------------------------------------------------
+# This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
 #    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-# No part of the rogue_example software, including this file, may be
+# No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
@@ -48,8 +51,8 @@ class ExampleRoot(pyrogue.Root):
 
         # Add Device
         self.add(pyrogue.examples.AxiVersion(memBase=sim,
-                                        guiGroup='TestGroup',
-                                        offset=0x0))
+                                             guiGroup='TestGroup',
+                                             offset=0x0))
         self.add(pyrogue.examples.LargeDevice(guiGroup='TestGroup'))
 
         # Create configuration stream
@@ -60,7 +63,7 @@ class ExampleRoot(pyrogue.Root):
         self.add(self._prbsTx)
 
         # Add Data Writer, configuration goes to channel 1
-        self._fw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream})
+        self._fw = pyrogue.utilities.fileio.StreamWriter(configStream={1: stream},rawMode=True)
         self.add(self._fw)
         self._prbsTx >> self._fw.getChannel(0)
 
@@ -122,6 +125,12 @@ class ExampleRoot(pyrogue.Root):
         if epics4En:
             self._epics4=pyrogue.protocols.epicsV4.EpicsPvServer(base="test", root=self,incGroups=None,excGroups=None)
             self.addProtocol(self._epics4)
+
+        # Remote memory command slave example
+        osSlave = pyrogue.examples.OsMemSlave()
+        osSlave.setName("OsSlave")
+        self.addInterface(osSlave)
+        self.add(pyrogue.examples.OsMemMaster(memBase=osSlave))
 
     def _mySin(self):
         val = math.sin(2*math.pi*self._scnt / 100)

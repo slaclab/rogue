@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Rogue Version
  * ----------------------------------------------------------------------------
- * File       : Version.h
- * Created    : 2017-05-17
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Version helpers for Rogue
@@ -30,7 +27,7 @@ namespace rogue {
 //! Version
 class Version {
     static void init();
-    static void extract(std::string compare, uint32_t* major, uint32_t* minor, uint32_t* maint);
+    static void extract(const std::string& compare, uint32_t* major, uint32_t* minor, uint32_t* maint);
 
     static const char _version[];
 
@@ -44,19 +41,19 @@ class Version {
 
     static std::string current();
 
-    static bool greaterThanEqual(std::string compare);
+    static bool greaterThanEqual(const std::string& compare);
 
-    static bool greaterThan(std::string compare);
+    static bool greaterThan(const std::string& compare);
 
-    static bool lessThanEqual(std::string compare);
+    static bool lessThanEqual(const std::string& compare);
 
-    static bool lessThan(std::string compare);
+    static bool lessThan(const std::string& compare);
 
-    static void minVersion(std::string compare);
+    static void minVersion(const std::string& compare);
 
-    static void maxVersion(std::string compare);
+    static void maxVersion(const std::string& compare);
 
-    static void exactVersion(std::string compare);
+    static void exactVersion(const std::string& compare);
 
     static void setup_python();
 

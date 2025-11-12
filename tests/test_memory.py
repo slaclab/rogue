@@ -81,7 +81,7 @@ class SimpleDev(pr.Device):
 
 class MemDev(pr.Device):
 
-    def __init__(self,modeConfig='RW',**kwargs):
+    def __init__(self,**kwargs):
 
         super().__init__(**kwargs)
 
@@ -94,8 +94,8 @@ class MemDev(pr.Device):
                     offset       = 0x000+4*i,
                     bitSize      = 8,
                     bitOffset    = 8*j,
-                    mode         = modeConfig,
-                    value        = None if modeConfig=='RW' else value,
+                    mode         = "RW",
+                    value        = value
                 ))
 
         for i in range(256):
@@ -106,8 +106,8 @@ class MemDev(pr.Device):
                 offset       = 0x100,
                 bitSize      = 9,
                 bitOffset    = 9*i,
-                mode         = modeConfig,
-                value        = None if modeConfig=='RW' else i,
+                mode         = "RW",
+                value        = i
             ))
 
 
@@ -126,23 +126,21 @@ class DummyTree(pr.Root):
         self.addInterface(sim)
 
         # Create a memory gateway
-        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9080)
+        ms = rogue.interfaces.memory.TcpServer("127.0.0.1",9060)
         self.addInterface(ms)
 
         # Connect the memory gateways together
         sim << ms
 
         # Create a memory gateway
-        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9080)
+        mc = rogue.interfaces.memory.TcpClient("127.0.0.1",9060)
         self.addInterface(mc)
 
         # Add Device
-        modeConfig = ['RW','RW','RO','RO']
         for i in range(4):
             self.add(MemDev(
                 name       = f'MemDev[{i}]',
                 offset     = i*0x10000,
-                modeConfig = modeConfig[i],
                 memBase    = mc,
             ))
 

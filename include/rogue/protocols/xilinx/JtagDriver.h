@@ -1,31 +1,32 @@
-//-----------------------------------------------------------------------------
-// Title      : JTAG Support
-//-----------------------------------------------------------------------------
-// Company    : SLAC National Accelerator Laboratory
-//-----------------------------------------------------------------------------
-// Description: JtagDriver.h
-//-----------------------------------------------------------------------------
-// This file is part of 'SLAC Firmware Standard Library'.
-// It is subject to the license terms in the LICENSE.txt file found in the
-// top-level directory of this distribution and at:
-//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-// No part of 'SLAC Firmware Standard Library', including this file,
-// may be copied, modified, propagated, or distributed except according to
-// the terms contained in the LICENSE.txt file.
-//-----------------------------------------------------------------------------
+/**
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      JTAG Support
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+ **/
 
 #ifndef __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 #define __ROGUE_PROTOCOLS_XILINX_JTAG_DRIVER_H__
 
 #include "rogue/Directives.h"
 
-#include <errno.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <string.h>
 #include <unistd.h>
 
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 #include <exception>
 #include <memory>
 #include <stdexcept>
@@ -131,7 +132,7 @@ class JtagDriver {
     static Xid getXid(Header x);
     static uint32_t getCmd(Header x);
     static unsigned getErr(Header x);
-    static unsigned long getLen(Header x);
+    static uint64_t getLen(Header x);
 
     // returns error message or NULL (unknown error)
     static const char* getMsg(unsigned error);
@@ -168,7 +169,7 @@ class JtagDriver {
     //! Setup class in python
     static void setup_python();
 
-    JtagDriver(uint16_t port);
+    explicit JtagDriver(uint16_t port);
 
     // initialization after full construction
     virtual void init();
@@ -191,7 +192,7 @@ class JtagDriver {
     //                    if 0 then no the target does not have memory and if
     //                    there is reliable transport there is no limit to vector
     //                    length.
-    virtual unsigned long query();
+    virtual uint64_t query();
 
     // Max. vector size (in bytes) this driver supports - may be different
     // from what the target supports and the minimum will be used...
@@ -199,7 +200,7 @@ class JtagDriver {
     // must handle typically contains two vectors and a header, so
     // the driver must consider this when computing the max. supported
     // vector size)
-    virtual unsigned long getMaxVectorSize() {
+    virtual uint64_t getMaxVectorSize() {
         return 0;
     }
 
@@ -207,7 +208,7 @@ class JtagDriver {
 
     // send tms and tdi vectors of length numBits (each) and receive tdo
     // little-endian (first send/received at lowest offset)
-    virtual void sendVectors(unsigned long numBits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo);
+    virtual void sendVectors(uint64_t numBits, uint8_t* tms, uint8_t* tdi, uint8_t* tdo);
 
     virtual void dumpInfo(FILE* f = stdout);
 

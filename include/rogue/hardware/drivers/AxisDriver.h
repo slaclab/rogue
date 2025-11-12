@@ -20,8 +20,8 @@
  * ----------------------------------------------------------------------------
  **/
 
-#ifndef __ASIS_DRIVER_H__
-#define __ASIS_DRIVER_H__
+#ifndef __AXIS_DRIVER_H__
+#define __AXIS_DRIVER_H__
 #include "DmaDriver.h"
 
 // Command definitions
@@ -44,9 +44,9 @@ static inline uint32_t axisSetFlags(uint32_t fuser, uint32_t luser, uint32_t con
    uint32_t flags;
 
    // Set flags based on input parameters, ensuring each is in its correct position
-   flags  = fuser & 0xFF;            // First user-defined flag
-   flags |= (luser << 8) & 0xFF00;   // Last user-defined flag
-   flags |= (cont  << 16) & 0x10000; // Continuation flag
+   flags  = fuser & 0xFF;             // First user-defined flag
+   flags |= (luser << 8) & 0xFF00;    // Last user-defined flag
+   flags |= (cont  << 16) & 0x10000;  // Continuation flag
 
    return flags;
 }
@@ -102,5 +102,5 @@ static inline void axisWriteReqMissed(int32_t fd) {
    ioctl(fd, AXIS_Write_ReqMissed, 0);
 }
 
-#endif // !DMA_IN_KERNEL
-#endif // __ASIS_DRIVER_H__
+#endif  // !DMA_IN_KERNEL
+#endif  // __AXIS_DRIVER_H__

@@ -1,5 +1,7 @@
-
 # Rogue
+
+[DOE Code](https://www.osti.gov/doecode/biblio/8153)
+
 SLAC Python Based Hardware Abstraction &amp; Data Acquisition System
 
 *Current documentation can be found at:*
@@ -22,9 +24,9 @@ Instructions for getting and installing Rogue can be found here:
 
 https://slaclab.github.io/rogue/installing/index.html
 
-# Anaconda Quick-start
+# Miniforge Quick-start
 
-The following is how you install the latest released version of Rogue with anaconda. See above linked instructions for more details.
+The following is how you install the latest released version of Rogue with miniforge. See above linked instructions for more details.
 
 ```
 

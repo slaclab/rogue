@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Run Control Device Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Run Control Device Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -137,10 +140,12 @@ class RunControl(pr.Device):
         #print("Thread start")
         self.runCount.set(0)
 
-        while (self.runState.valueDisp() == 'Running'):
-            time.sleep(1.0 / float(self.runRate.value()))
-            if self._cmd is not None:
-                self._cmd()
+        with self.root.updateGroup(period=1.0):
 
-            with self.runCount.lock:
-                self.runCount.set(self.runCount.value() + 1,write=False)
+            while (self.runState.valueDisp() == 'Running'):
+                time.sleep(1.0 / float(self.runRate.value()))
+                if self._cmd is not None:
+                    self._cmd()
+
+                with self.runCount.lock:
+                    self.runCount.set(self.runCount.value() + 1)

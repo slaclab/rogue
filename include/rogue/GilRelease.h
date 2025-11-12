@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Release GIL within scope.
  * ----------------------------------------------------------------------------
- * File       : GilRelease.h
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Release GIL for the scope of this class.
@@ -23,7 +20,7 @@
 
 #include <stdint.h>
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {

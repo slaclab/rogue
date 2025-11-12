@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Slave
  * ----------------------------------------------------------------------------
- * File       : Slave.h
- * Created    : 2016-09-20
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Memory slave interface.
@@ -25,6 +22,7 @@
 
 #include <map>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "rogue/EnableSharedFromThis.h"
@@ -32,7 +30,7 @@
 #include "rogue/interfaces/memory/Transaction.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {

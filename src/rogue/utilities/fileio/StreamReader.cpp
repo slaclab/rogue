@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file reader utility.
  * ----------------------------------------------------------------------------
- * File          : StreamReader.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to read data files.
  *-----------------------------------------------------------------------------
@@ -29,6 +24,7 @@
 #include <unistd.h>
 
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"
@@ -42,7 +38,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -84,9 +80,9 @@ void ruf::StreamReader::open(std::string file) {
     intClose();
 
     // Determine if we read a group of files
-    if (file.substr(file.find_last_of(".")) == ".1") {
+    if (file.substr(file.find_last_of('.')) == ".1") {
         fdIdx_    = 1;
-        baseName_ = file.substr(0, file.find_last_of("."));
+        baseName_ = file.substr(0, file.find_last_of('.'));
     } else {
         fdIdx_    = 0;
         baseName_ = file;
@@ -113,9 +109,9 @@ bool ruf::StreamReader::nextFile() {
     if (fd_ >= 0) {
         ::close(fd_);
         fd_ = -1;
-    } else
+    } else {
         return (false);
-
+    }
     if (fdIdx_ == 0) return (false);
 
     fdIdx_++;

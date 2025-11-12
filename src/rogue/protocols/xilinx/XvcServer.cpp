@@ -1,29 +1,30 @@
-//-----------------------------------------------------------------------------
-// Title      : JTAG Support
-//-----------------------------------------------------------------------------
-// Company    : SLAC National Accelerator Laboratory
-//-----------------------------------------------------------------------------
-// Description:
-//-----------------------------------------------------------------------------
-// This file is part of 'SLAC Firmware Standard Library'.
-// It is subject to the license terms in the LICENSE.txt file found in the
-// top-level directory of this distribution and at:
-//    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
-// No part of 'SLAC Firmware Standard Library', including this file,
-// may be copied, modified, propagated, or distributed except according to
-// the terms contained in the LICENSE.txt file.
-//-----------------------------------------------------------------------------
+/**
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *
+ * ----------------------------------------------------------------------------
+ * This file is part of the rogue software platform. It is subject to
+ * the license terms in the LICENSE.txt file found in the top-level directory
+ * of this distribution and at:
+ *    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.
+ * No part of the rogue software platform, including this file, may be
+ * copied, modified, propagated, or distributed except according to the terms
+ * contained in the LICENSE.txt file.
+ * ----------------------------------------------------------------------------
+ **/
 
 #include "rogue/protocols/xilinx/XvcServer.h"
 
 #include <arpa/inet.h>
 #include <dlfcn.h>
-#include <math.h>
 #include <netinet/in.h>
 #include <pthread.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 
+#include <cmath>
 #include <string>
 
 #include "rogue/protocols/xilinx/XvcConnection.h"
@@ -74,7 +75,9 @@ void rpx::XvcServer::run(bool& threadEn, rogue::LoggingPtr log) {
             try {
                 XvcConnection conn(sd_, drv_, maxMsgSize_);
                 conn.run();
-            } catch (rogue::GeneralError& e) { log->debug("Sub-connection failed"); }
+            } catch (rogue::GeneralError& e) {
+                log->debug("Sub-connection failed");
+            }
         }
     }
 }

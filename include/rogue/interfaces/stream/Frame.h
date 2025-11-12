@@ -1,14 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream frame container
  * ----------------------------------------------------------------------------
- * File       : Frame.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream frame container
- * Some concepts borrowed from CPSW by Till Straumann
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -33,7 +28,7 @@
 #include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {
@@ -340,6 +335,22 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
      */
     void readPy(boost::python::object p, uint32_t offset);
 
+    //! Python Frame data read function
+    /** Read data from Frame into a python bytearray which is allocated and returned
+     *
+     * Exposed as getBa() to Python
+     * @param offset First location of Frame data to copy to byte array
+     * @param count Number of bytes to read
+     */
+    boost::python::object getBytearrayPy(uint32_t offset, uint32_t count);
+
+    //! Python Frame data read function
+    /** Read data from Frame into a python bytearray which is allocated and returned as a memoryview
+     *
+     * Exposed as getMemoryview() to Python
+     */
+    boost::python::object getMemoryviewPy();
+
     //! Python Frame data write function
     /** Write data into from Frame from passed Python byte array.
      *
@@ -353,13 +364,13 @@ class Frame : public rogue::EnableSharedFromThis<rogue::interfaces::stream::Fram
     /*  Read a specified number of bytes of data at a specified offset
      *  into a numpy object which is returned
      *
-     *  @return The read data as a 1-D numpy byte array
+     *  @return The read data as a 1-D numpy uint8 array
      *
      *  @param[in] offset The byte offset into the frame to write to
-     *  @param[in]   size The number of bytes to write
+     *  @param[in]  count The number of bytes to write
      *
      */
-    boost::python::object getNumpy(uint32_t offset, uint32_t size);
+    boost::python::object getNumpy(uint32_t offset, uint32_t count);
 
     //! Python Frame data write using a numpy array as the source
     /*

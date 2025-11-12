@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : General Error
  * ----------------------------------------------------------------------------
- * File       : GeneralError.cpp
- * Created    : 2017-12-05
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * General exception for Rogue
@@ -23,8 +20,11 @@
 
 #include <stdarg.h>
 
+#include <cstdio>
+#include <string>
+
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 
 PyObject* rogue::generalErrorObj = 0;
@@ -55,7 +55,7 @@ void rogue::GeneralError::setup_python() {
 
     bp::class_<rogue::GeneralError>("GeneralError", bp::init<std::string, std::string>());
 
-    PyObject* typeObj                = PyErr_NewException((char*)"rogue.GeneralError", PyExc_Exception, 0);
+    PyObject* typeObj                = PyErr_NewException(const_cast<char*>("rogue.GeneralError"), PyExc_Exception, 0);
     bp::scope().attr("GeneralError") = bp::handle<>(bp::borrowed(typeObj));
 
     rogue::generalErrorObj = typeObj;

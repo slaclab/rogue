@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Register Protocol (SRP) SrpV0
  * ----------------------------------------------------------------------------
- * File          : SrpV0.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/17/2016
- * Last update   : 09/17/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    SRP protocol bridge, Version 0
  *-----------------------------------------------------------------------------
@@ -25,8 +20,8 @@
 
 #include <inttypes.h>
 #include <stdint.h>
-#include <string.h>
 
+#include <cstring>
 #include <memory>
 #include <thread>
 
@@ -47,7 +42,7 @@ namespace rim = rogue::interfaces::memory;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

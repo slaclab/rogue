@@ -1,9 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file reader utility.
  * ----------------------------------------------------------------------------
- * File          : LegacyStreamReader.cpp
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to read data files generated using LegacyFileWriter
  *-----------------------------------------------------------------------------
@@ -23,11 +21,12 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <stdio.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <iostream>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"
@@ -41,7 +40,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -83,9 +82,9 @@ void ruf::LegacyStreamReader::open(std::string file) {
     intClose();
 
     // Determine if we read a group of files
-    if (file.substr(file.find_last_of(".")) == ".1") {
+    if (file.substr(file.find_last_of('.')) == ".1") {
         fdIdx_    = 1;
-        baseName_ = file.substr(0, file.find_last_of("."));
+        baseName_ = file.substr(0, file.find_last_of('.'));
     } else {
         fdIdx_    = 0;
         baseName_ = file;
@@ -112,9 +111,9 @@ bool ruf::LegacyStreamReader::nextFile() {
     if (fd_ >= 0) {
         ::close(fd_);
         fd_ = -1;
-    } else
+    } else {
         return (false);
-
+    }
     if (fdIdx_ == 0) return (false);
 
     fdIdx_++;
@@ -178,7 +177,9 @@ void ruf::LegacyStreamReader::runThread() {
             size = header & 0x0FFFFFFF;
             chan = header >> 28;
 
-            if (chan == 0) { size = size * 4; }
+            if (chan == 0) {
+                size = size * 4;
+            }
 
             // cout << "Frame with size" << size << "and channel" << chan;
             log.info("Got frame with header %" PRIx32 ", size %" PRIu32 " and channel %" PRIu8, header, size, chan);

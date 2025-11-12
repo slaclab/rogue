@@ -1,13 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Inverter Version 1
  * ----------------------------------------------------------------------------
- * File          : InverterV1.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 10/26/2018
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
- *    AXI Inverter V1
+ *   SLAC AXI Inverter V1
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory

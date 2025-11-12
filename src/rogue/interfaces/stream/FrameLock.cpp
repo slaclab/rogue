@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Frame Lock
  * ----------------------------------------------------------------------------
- * File       : FrameLock.cpp
- * Created    : 2018-03-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Frame lock
@@ -29,7 +26,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

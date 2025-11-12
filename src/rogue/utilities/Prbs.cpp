@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : PRBS Receive And Transmit Class
  * ----------------------------------------------------------------------------
- * File          : Prbs.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/17/2016
- * Last update   : 09/17/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class used to generate and receive PRBS test data.
  *-----------------------------------------------------------------------------
@@ -25,10 +20,11 @@
 
 #include <inttypes.h>
 #include <stdarg.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
 
 #include "rogue/GeneralError.h"
@@ -45,7 +41,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ru  = rogue::utilities;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -72,6 +68,7 @@ ru::Prbs::Prbs() {
     genPl_      = true;
     rxLog_      = rogue::Logging::create("prbs.rx");
     txLog_      = rogue::Logging::create("prbs.tx");
+    txPeriod_   = 0;
 
     // Init width = 32
     width_     = 32;
@@ -81,7 +78,7 @@ ru::Prbs::Prbs() {
 
     // Init 4 taps
     tapCnt_  = 4;
-    taps_    = (uint8_t*)malloc(sizeof(uint8_t) * tapCnt_);
+    taps_    = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt_));
     taps_[0] = 1;
     taps_[1] = 2;
     taps_[2] = 6;
@@ -121,11 +118,11 @@ double ru::Prbs::updateTime(struct timeval* last) {
     timersub(&now, last, &per);
 
     if (timercmp(&per, &cmp, >)) {
-        ret = (float)per.tv_sec + (float(per.tv_usec) / 1e6);
+        ret = static_cast<float>(per.tv_sec) + static_cast<float>(per.tv_usec) / 1e6;
         gettimeofday(last, NULL);
-    } else
+    } else {
         ret = 0.0;
-
+    }
     return ret;
 }
 
@@ -149,7 +146,7 @@ void ru::Prbs::setTaps(uint32_t tapCnt, uint8_t* taps) {
 
     free(taps_);
     tapCnt_ = tapCnt;
-    taps_   = (uint8_t*)malloc(sizeof(uint8_t) * tapCnt);
+    taps_   = reinterpret_cast<uint8_t*>(malloc(sizeof(uint8_t) * tapCnt));
 
     for (i = 0; i < tapCnt_; i++) taps_[i] = taps[i];
 }
@@ -163,7 +160,7 @@ void ru::Prbs::setTapsPy(boost::python::object p) {
     if (PyObject_GetBuffer(p.ptr(), &pyBuf, PyBUF_SIMPLE) < 0)
         throw(rogue::GeneralError("Prbs::setTapsPy", "Python Buffer Error"));
 
-    setTaps(pyBuf.len, (uint8_t*)pyBuf.buf);
+    setTaps(pyBuf.len, reinterpret_cast<uint8_t*>(pyBuf.buf));
     PyBuffer_Release(&pyBuf);
 }
 
@@ -202,7 +199,10 @@ void ru::Prbs::flfsr(uint8_t* data) {
 void ru::Prbs::runThread() {
     txLog_->logThreadId();
 
-    while (threadEn_) { genFrame(txSize_); }
+    while (threadEn_) {
+        genFrame(txSize_);
+        if ( txPeriod_ > 0 ) usleep(txPeriod_);
+    }
 }
 
 //! Auto run data generation
@@ -284,6 +284,16 @@ double ru::Prbs::getRxBw() {
 //! Get tx rate
 double ru::Prbs::getTxRate() {
     return txRate_;
+}
+
+//! Get tx rate limit
+uint32_t ru::Prbs::getTxPeriod() {
+    return txPeriod_;
+}
+
+//! Set tx rate limit
+void ru::Prbs::setTxPeriod(uint32_t value) {
+    txPeriod_ = value;
 }
 
 //! Get tx bw
@@ -369,9 +379,9 @@ void ru::Prbs::genFrame(uint32_t size) {
 
         // Generate payload
         while (frIter != frEnd) {
-            if (sendCount_)
+            if (sendCount_) {
                 ris::toFrame(frIter, byteWidth_, wCount);
-            else {
+            } else {
                 flfsr(data);
                 ris::toFrame(frIter, byteWidth_, data);
             }
@@ -387,8 +397,8 @@ void ru::Prbs::genFrame(uint32_t size) {
     txBytes_ += size;
 
     if ((per = updateTime(&lastTxTime_)) > 0.0) {
-        txRate_      = (float)(txCount_ - lastTxCount_) / per;
-        txBw_        = (float)(txBytes_ - lastTxBytes_) / per;
+        txRate_      = static_cast<float>(txCount_ - lastTxCount_) / per;
+        txBw_        = static_cast<float>(txBytes_ - lastTxBytes_) / per;
         lastTxCount_ = txCount_;
         lastTxBytes_ = txBytes_;
     }
@@ -412,7 +422,7 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
 
     rogue::GilRelease noGil;
 
-    while (not rxEnable_) usleep(10000);
+    while (!rxEnable_) usleep(10000);
 
     ris::FrameLockPtr fLock = frame->lock();
     std::lock_guard<std::mutex> lock(pMtx_);
@@ -471,19 +481,22 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
             flfsr(expData);
 
             if (!std::equal(frIter, frIter + byteWidth_, expData)) {
-                sprintf(debugA,
-                        "Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32,
-                        pos,
-                        rxCount_,
-                        (size / byteWidth_) - 1);
+                snprintf(debugA,
+                         sizeof(debugA),
+                         "Bad value at index %" PRIu32 ". count=%" PRIu32 ", size=%" PRIu32,
+                         pos,
+                         rxCount_,
+                         (size / byteWidth_) - 1);
+
                 for (x = 0; x < byteWidth_; x++) {
-                    sprintf(debugB,
-                            "\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8,
-                            pos,
-                            x,
-                            *(frIter + x),
-                            *(expData + x));
-                    strcat(debugA, debugB);
+                    snprintf(debugB,
+                             sizeof(debugB),
+                             "\n   %" PRIu32 ":%" PRIu32 " Got=0x%" PRIx8 " Exp=0x%" PRIx8,
+                             pos,
+                             x,
+                             *(frIter + x),
+                             *(expData + x));
+                    snprintf(debugA + strlen(debugA), sizeof(debugA) - strlen(debugA), "%s", debugB);
                 }
                 rxLog_->warning(debugA);
                 rxErrCount_++;
@@ -498,8 +511,8 @@ void ru::Prbs::acceptFrame(ris::FramePtr frame) {
     rxBytes_ += size;
 
     if ((per = updateTime(&lastRxTime_)) > 0.0) {
-        rxRate_      = (float)(rxCount_ - lastRxCount_) / per;
-        rxBw_        = (float)(rxBytes_ - lastRxBytes_) / per;
+        rxRate_      = static_cast<float>(rxCount_ - lastRxCount_) / per;
+        rxBw_        = static_cast<float>(rxBytes_ - lastRxBytes_) / per;
         lastRxCount_ = rxCount_;
         lastRxBytes_ = rxBytes_;
     }
@@ -524,6 +537,8 @@ void ru::Prbs::setup_python() {
         .def("getTxErrors", &ru::Prbs::getTxErrors)
         .def("getTxCount", &ru::Prbs::getTxCount)
         .def("getTxBytes", &ru::Prbs::getTxBytes)
+        .def("getTxPeriod", &ru::Prbs::getTxPeriod)
+        .def("setTxPeriod", &ru::Prbs::setTxPeriod)
         .def("getTxRate", &ru::Prbs::getTxRate)
         .def("getTxBw", &ru::Prbs::getTxBw)
         .def("checkPayload", &ru::Prbs::checkPayload)

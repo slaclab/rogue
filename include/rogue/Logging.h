@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Logging interface
  * ----------------------------------------------------------------------------
- * File       : Logging.h
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Logging interface for pyrogue
@@ -71,13 +68,13 @@ class Logging {
     static const uint32_t Info     = 20;
     static const uint32_t Debug    = 10;
 
-    static std::shared_ptr<rogue::Logging> create(std::string name, bool quiet = false);
+    static std::shared_ptr<rogue::Logging> create(const std::string& name, bool quiet = false);
 
-    Logging(std::string name, bool quiet = false);
+    explicit Logging(const std::string& name, bool quiet = false);
     ~Logging();
 
     static void setLevel(uint32_t level);
-    static void setFilter(std::string filter, uint32_t level);
+    static void setFilter(const std::string& filter, uint32_t level);
 
     void log(uint32_t level, const char* fmt, ...);
     void critical(const char* fmt, ...);

@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility.
  * ----------------------------------------------------------------------------
- * File          : StreamWriter.h
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
@@ -40,12 +35,13 @@
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
-#include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
 
 #include <cstring>
+#include <map>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"
@@ -58,7 +54,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -75,6 +71,8 @@ void ruf::StreamWriter::setup_python() {
         .def("open", &ruf::StreamWriter::open)
         .def("close", &ruf::StreamWriter::close)
         .def("isOpen", &ruf::StreamWriter::isOpen)
+        .def("setRaw", &ruf::StreamWriter::setRaw)
+        .def("getRaw", &ruf::StreamWriter::getRaw)
         .def("setBufferSize", &ruf::StreamWriter::setBufferSize)
         .def("setMaxSize", &ruf::StreamWriter::setMaxSize)
         .def("setDropErrors", &ruf::StreamWriter::setDropErrors)
@@ -99,6 +97,7 @@ ruf::StreamWriter::StreamWriter() {
     currBuffer_ = 0;
     dropErrors_ = false;
     isOpen_     = false;
+    raw_        = false;
 
     log_ = rogue::Logging::create("fileio.StreamWriter");
 }
@@ -128,7 +127,7 @@ void ruf::StreamWriter::open(std::string file) {
     if (sizeLimit_ > 0) name.append(".1");
 
     if ((fd_ = ::open(name.c_str(),
-                      O_RDWR | O_CREAT | O_APPEND,
+                      O_RDWR | O_CREAT,
                       S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0)
         throw(rogue::GeneralError::create("StreamWriter::open", "Failed to open data file: %s", name.c_str()));
 
@@ -160,6 +159,16 @@ bool ruf::StreamWriter::isOpen() {
     return (isOpen_);
 }
 
+//! Set raw mode
+void ruf::StreamWriter::setRaw(bool raw) {
+   raw_ = raw;
+}
+
+//! Get raw mode flag
+bool ruf::StreamWriter::getRaw() {
+   return raw_;
+}
+
 //! Set buffering size, 0 to disable
 void ruf::StreamWriter::setBufferSize(uint32_t size) {
     rogue::GilRelease noGil;
@@ -177,7 +186,7 @@ void ruf::StreamWriter::setBufferSize(uint32_t size) {
         // Buffer is enabled
         if (size != 0) {
             // Create new buffer
-            if ((buffer_ = (uint8_t*)malloc(size)) == NULL)
+            if ((buffer_ = reinterpret_cast<uint8_t*>(malloc(size))) == NULL)
                 throw(rogue::GeneralError::create("StreamWriter::setBufferSize",
                                                   "Failed to allocate buffer with size = %" PRIu32,
                                                   size));
@@ -269,20 +278,28 @@ void ruf::StreamWriter::writeFile(uint8_t channel, std::shared_ptr<rogue::interf
     std::unique_lock<std::mutex> lock(mtx_);
 
     if (fd_ >= 0) {
-        // Written size has extra 4 bytes
-        size = frame->getPayload() + 4;
+        // Raw mode
+        if ( raw_ ) {
+           size = frame->getPayload();
+           checkSize(size);
 
+        // Written size has extra 4 bytes in non raw mode
         // Check file size, including size header
-        checkSize(size + 4);
+        } else {
+           size = frame->getPayload() + 4;
+           checkSize(size + 4);
+        }
 
-        // First write size
-        intWrite(&size, 4);
+        if (!raw_) {
+           // First write size
+           intWrite(&size, 4);
 
-        // Create EVIO header
-        value = frame->getFlags();
-        value |= (frame->getError() << 16);
-        value |= (channel << 24);
-        intWrite(&value, 4);
+           // Create EVIO header
+           value = frame->getFlags();
+           value |= (frame->getError() << 16);
+           value |= (channel << 24);
+           intWrite(&value, 4);
+        }
 
         // Write buffers
         for (it = frame->beginBuffer(); it != frame->endBuffer(); ++it) intWrite((*it)->begin(), (*it)->getPayload());
@@ -303,7 +320,7 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
     // Attempted write is larger than buffer, raw write
     // This is called if buffer is disabled
     if (size > buffSize_) {
-        if (write(fd_, data, size) != (int32_t)size) {
+        if (write(fd_, data, size) != static_cast<int32_t>(size)) {
             ::close(fd_);
             fd_ = -1;
             log_->error("Write failed, closing file!");
@@ -311,10 +328,8 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
         }
         currSize_ += size;
         totSize_ += size;
-    }
-
-    // Append to buffer if non zero
-    else if (buffSize_ > 0 && size > 0) {
+        // Append to buffer if non zero
+    } else if (buffSize_ > 0 && size > 0) {
         std::memcpy(buffer_ + currBuffer_, data, size);
         currBuffer_ += size;
     }
@@ -354,7 +369,7 @@ void ruf::StreamWriter::checkSize(uint32_t size) {
 //! Flush file
 void ruf::StreamWriter::flush() {
     if (currBuffer_ > 0) {
-        if (write(fd_, buffer_, currBuffer_) != (int32_t)currBuffer_) {
+        if (write(fd_, buffer_, currBuffer_) != static_cast<int32_t>(currBuffer_)) {
             ::close(fd_);
             fd_ = -1;
             log_->error("Write failed, closing file!");

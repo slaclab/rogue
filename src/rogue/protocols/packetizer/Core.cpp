@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Packetizer Core Class
  * ----------------------------------------------------------------------------
- * File       : Core.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Packetizer Core
@@ -34,7 +30,7 @@ namespace rpp = rogue::protocols::packetizer;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -50,9 +46,7 @@ void rpp::Core::setup_python() {
     bp::class_<rpp::Core, rpp::CorePtr, boost::noncopyable>("Core", bp::init<bool>())
         .def("transport", &rpp::Core::transport)
         .def("application", &rpp::Core::application)
-        .def("getDropCount", &rpp::Core::getDropCount)
-
-        ;
+        .def("getDropCount", &rpp::Core::getDropCount);
 #endif
 }
 

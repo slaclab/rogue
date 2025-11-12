@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Logging interface
  * ----------------------------------------------------------------------------
- * File       : Logging.cpp
- * Created    : 2017-02-28
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Logging interface for pyrogue
@@ -23,21 +20,23 @@
 
 #include <inttypes.h>
 #include <stdarg.h>
-#include <string.h>
-#include <sys/syscall.h>
 #include <sys/time.h>
 #include <unistd.h>
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
+#include <string>
+#include <vector>
 
 #if defined(__linux__)
-#include <sys/syscall.h>
+    #include <sys/syscall.h>
 #elif defined(__APPLE__) && defined(__MACH__)
-#include <pthread.h>
+    #include <pthread.h>
 #endif
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -58,12 +57,12 @@ std::mutex rogue::Logging::levelMtx_;
 std::vector<rogue::LogFilter*> rogue::Logging::filters_;
 
 // Crate logger
-rogue::LoggingPtr rogue::Logging::create(std::string name, bool quiet) {
+rogue::LoggingPtr rogue::Logging::create(const std::string& name, bool quiet) {
     rogue::LoggingPtr log = std::make_shared<rogue::Logging>(name, quiet);
     return log;
 }
 
-rogue::Logging::Logging(std::string name, bool quiet) {
+rogue::Logging::Logging(const std::string& name, bool quiet) {
     std::vector<rogue::LogFilter*>::iterator it;
 
     name_ = "pyrogue." + name;
@@ -90,7 +89,7 @@ void rogue::Logging::setLevel(uint32_t level) {
     levelMtx_.unlock();
 }
 
-void rogue::Logging::setFilter(std::string name, uint32_t level) {
+void rogue::Logging::setFilter(const std::string& name, uint32_t level) {
     levelMtx_.lock();
 
     rogue::LogFilter* flt = new rogue::LogFilter(name, level);
@@ -105,9 +104,13 @@ void rogue::Logging::intLog(uint32_t level, const char* fmt, va_list args) {
 
     struct timeval tme;
     char buffer[1000];
-    vsnprintf(buffer, 1000, fmt, args);
+    vsnprintf(buffer, sizeof(buffer), fmt, args);
     gettimeofday(&tme, NULL);
-    printf("%l" PRIi32 ".%06l" PRIi32 ":%s: %s\n", tme.tv_sec, tme.tv_usec, name_.c_str(), buffer);
+    printf("%" PRIi64 ".%06" PRIi64 ":%s: %s\n",
+           static_cast<int64_t>(tme.tv_sec),
+           static_cast<int64_t>(tme.tv_usec),
+           name_.c_str(),
+           buffer);
 }
 
 void rogue::Logging::log(uint32_t level, const char* fmt, ...) {
@@ -160,7 +163,7 @@ void rogue::Logging::logThreadId() {
 #elif defined(__APPLE__) && defined(__MACH__)
     uint64_t tid64;
     pthread_threadid_np(NULL, &tid64);
-    tid = (uint32_t)tid64;
+    tid = static_cast<uint32_t>(tid64);
 #else
     tid = 0;
 #endif

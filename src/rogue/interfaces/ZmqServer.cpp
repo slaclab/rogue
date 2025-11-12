@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
- * File       : ZmqServer.cpp
- * Created    : 2019-05-02
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -30,11 +30,11 @@
 #include "rogue/ScopedGil.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
-rogue::interfaces::ZmqServerPtr rogue::interfaces::ZmqServer::create(std::string addr, uint16_t port) {
+rogue::interfaces::ZmqServerPtr rogue::interfaces::ZmqServer::create(const std::string& addr, uint16_t port) {
     rogue::interfaces::ZmqServerPtr ret = std::make_shared<rogue::interfaces::ZmqServer>(addr, port);
     return (ret);
 }
@@ -55,7 +55,7 @@ void rogue::interfaces::ZmqServer::setup_python() {
 #endif
 }
 
-rogue::interfaces::ZmqServer::ZmqServer(std::string addr, uint16_t port) {
+rogue::interfaces::ZmqServer::ZmqServer(const std::string& addr, uint16_t port) {
     log_ = rogue::Logging::create("ZmqServer");
 
     this->addr_     = addr;
@@ -82,8 +82,9 @@ void rogue::interfaces::ZmqServer::start() {
             res = this->tryConnect();
             if (res) break;
         }
-    } else
+    } else {
         res = this->tryConnect();
+    }
 
     if (!res) {
         if (port == 0)
@@ -162,7 +163,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp = "tcp://";
     temp.append(this->addr_);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(this->basePort_)));
+    temp.append(std::to_string(static_cast<int64_t>(this->basePort_)));
 
     if (zmq_bind(this->zmqPub_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
@@ -176,7 +177,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp = "tcp://";
     temp.append(this->addr_);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(this->basePort_ + 1)));
+    temp.append(std::to_string(static_cast<int64_t>(this->basePort_ + 1)));
 
     if (zmq_bind(this->zmqRep_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
@@ -190,7 +191,7 @@ bool rogue::interfaces::ZmqServer::tryConnect() {
     temp = "tcp://";
     temp.append(this->addr_);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(this->basePort_ + 2)));
+    temp.append(std::to_string(static_cast<int64_t>(this->basePort_ + 2)));
 
     if (zmq_bind(this->zmqStr_, temp.c_str()) < 0) {
         zmq_close(this->zmqPub_);
@@ -207,7 +208,7 @@ uint16_t rogue::interfaces::ZmqServer::port() {
     return this->basePort_;
 }
 
-std::string rogue::interfaces::ZmqServer::doString(std::string data) {
+std::string rogue::interfaces::ZmqServer::doString(const std::string& data) {
     return "";
 }
 
@@ -242,7 +243,9 @@ bp::object rogue::interfaces::ZmqServerWrap::doRequest(bp::object data) {
     if (bp::override f = this->get_override("_doRequest")) {
         try {
             return (f(data));
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
     return (rogue::interfaces::ZmqServer::doRequest(data));
 }
@@ -251,19 +254,21 @@ bp::object rogue::interfaces::ZmqServerWrap::defDoRequest(bp::object data) {
     return (rogue::interfaces::ZmqServer::doRequest(data));
 }
 
-std::string rogue::interfaces::ZmqServerWrap::doString(std::string data) {
+std::string rogue::interfaces::ZmqServerWrap::doString(const std::string& data) {
     {
         rogue::ScopedGil gil;
         if (bp::override f = this->get_override("_doString")) {
             try {
                 return (f(data));
-            } catch (...) { PyErr_Print(); }
+            } catch (...) {
+                PyErr_Print();
+            }
         }
     }
     return (rogue::interfaces::ZmqServer::doString(data));
 }
 
-std::string rogue::interfaces::ZmqServerWrap::defDoString(std::string data) {
+std::string rogue::interfaces::ZmqServerWrap::defDoString(const std::string& data) {
     return (rogue::interfaces::ZmqServer::doString(data));
 }
 

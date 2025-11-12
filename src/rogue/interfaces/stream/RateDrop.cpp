@@ -1,11 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : SLAC Stream Interface Rate Drop
  * ----------------------------------------------------------------------------
- * File          : RateDrop.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 08/25/2020
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Drops frames at a specified rate.
  *-----------------------------------------------------------------------------
@@ -25,6 +21,7 @@
 #include <stdint.h>
 #include <sys/time.h>
 
+#include <cstdio>
 #include <memory>
 
 #include "rogue/Logging.h"
@@ -35,7 +32,7 @@
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -61,12 +58,12 @@ ris::RateDrop::RateDrop(bool period, double value) : ris::Master(), ris::Slave()
 
     if ((!period) || value == 0) {
         periodFlag_ = false;
-        dropCount_  = (uint32_t)value;
-        dropTarget_ = (uint32_t)value;
+        dropCount_  = static_cast<uint32_t>(value);
+        dropTarget_ = static_cast<uint32_t>(value);
     } else {
         periodFlag_ = true;
 
-        per = (uint32_t)(value * 1e6);
+        per = static_cast<uint32_t>(value * 1e6);
 
         div_t divResult     = div(per, 1000000);
         timePeriod_.tv_sec  = divResult.quot;
@@ -90,10 +87,9 @@ void ris::RateDrop::acceptFrame(ris::FramePtr frame) {
             sendFrame(frame);
             dropCount_ = 0;
         }
-    }
 
-    // Dropping based upon time
-    else {
+        // Dropping based upon time
+    } else {
         gettimeofday(&currTime, NULL);
 
         if (timercmp(&currTime, &(nextPeriod_), >)) {

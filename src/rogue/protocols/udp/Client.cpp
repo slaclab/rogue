@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : UDP Client Class
  * ----------------------------------------------------------------------------
- * File       : Client.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * UDP Client
@@ -23,11 +19,12 @@
 #include "rogue/protocols/udp/Client.h"
 
 #include <inttypes.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 
+#include <cstdlib>
+#include <cstring>
 #include <memory>
+#include <string>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -41,7 +38,7 @@ namespace rpu = rogue::protocols::udp;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -173,12 +170,10 @@ void rpu::Client::acceptFrame(ris::FramePtr frame) {
                                   timeout_.tv_sec,
                                   timeout_.tv_usec);
                 res = 0;
-            } else if ((res = sendmsg(fd_, &msg, 0)) < 0)
+            } else if ((res = sendmsg(fd_, &msg, 0)) < 0) {
                 udpLog_->warning("UDP Write Call Failed");
-        }
-
-        // Continue while write result was zero
-        while (res == 0);
+            }
+        } while (res == 0);  // Continue while write result was zero
     }
 }
 
@@ -207,9 +202,9 @@ void rpu::Client::runThread(std::weak_ptr<int> lockPtr) {
 
         if (res > 0) {
             // Message was too big
-            if (res > avail)
-                udpLog_->warning("Receive data was too large. Dropping.");
-            else {
+            if (res > avail) {
+                udpLog_->warning("Receive data was too large. Rx=%i, avail=%i Dropping.", res, avail);
+            } else {
                 buff->setPayload(res);
                 sendFrame(frame);
             }

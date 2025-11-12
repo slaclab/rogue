@@ -60,71 +60,71 @@
 
 #include <climits>  // Includes CHAR_BIT
 #ifdef CRCPP_USE_CPP11
-#include <cstddef>  // Includes ::std::size_t
-#include <cstdint>  // Includes ::std::uint8_t, ::std::uint16_t, ::std::uint32_t, ::std::uint64_t
+    #include <cstddef>  // Includes ::std::size_t
+    #include <cstdint>  // Includes ::std::uint8_t, ::std::uint16_t, ::std::uint32_t, ::std::uint64_t
 #else
-#include <stddef.h>  // Includes size_t
-#include <stdint.h>  // Includes uint8_t, uint16_t, uint32_t, uint64_t
+    #include <stddef.h>  // Includes size_t
+    #include <stdint.h>  // Includes uint8_t, uint16_t, uint32_t, uint64_t
 #endif
 #include <limits>   // Includes ::std::numeric_limits
 #include <utility>  // Includes ::std::move
 
 #ifndef crcpp_uint8
-#ifdef CRCPP_USE_CPP11
-/// @brief Unsigned 8-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint8 ::std::uint8_t
-#else
-/// @brief Unsigned 8-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint8 uint8_t
-#endif
+    #ifdef CRCPP_USE_CPP11
+        /// @brief Unsigned 8-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint8 ::std::uint8_t
+    #else
+        /// @brief Unsigned 8-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint8 uint8_t
+    #endif
 #endif
 
 #ifndef crcpp_uint16
-#ifdef CRCPP_USE_CPP11
-/// @brief Unsigned 16-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint16 ::std::uint16_t
-#else
-/// @brief Unsigned 16-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint16 uint16_t
-#endif
+    #ifdef CRCPP_USE_CPP11
+        /// @brief Unsigned 16-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint16 ::std::uint16_t
+    #else
+        /// @brief Unsigned 16-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint16 uint16_t
+    #endif
 #endif
 
 #ifndef crcpp_uint32
-#ifdef CRCPP_USE_CPP11
-/// @brief Unsigned 32-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint32 ::std::uint32_t
-#else
-/// @brief Unsigned 32-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint32 uint32_t
-#endif
+    #ifdef CRCPP_USE_CPP11
+        /// @brief Unsigned 32-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint32 ::std::uint32_t
+    #else
+        /// @brief Unsigned 32-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint32 uint32_t
+    #endif
 #endif
 
 #ifndef crcpp_uint64
-#ifdef CRCPP_USE_CPP11
-/// @brief Unsigned 64-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint64 ::std::uint64_t
-#else
-/// @brief Unsigned 64-bit integer definition, used primarily for parameter definitions.
-#define crcpp_uint64 uint64_t
-#endif
+    #ifdef CRCPP_USE_CPP11
+        /// @brief Unsigned 64-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint64 ::std::uint64_t
+    #else
+        /// @brief Unsigned 64-bit integer definition, used primarily for parameter definitions.
+        #define crcpp_uint64 uint64_t
+    #endif
 #endif
 
 #ifndef crcpp_size
-#ifdef CRCPP_USE_CPP11
-/// @brief Unsigned size definition, used for specifying data sizes.
-#define crcpp_size ::std::size_t
-#else
-/// @brief Unsigned size definition, used for specifying data sizes.
-#define crcpp_size size_t
-#endif
+    #ifdef CRCPP_USE_CPP11
+        /// @brief Unsigned size definition, used for specifying data sizes.
+        #define crcpp_size ::std::size_t
+    #else
+        /// @brief Unsigned size definition, used for specifying data sizes.
+        #define crcpp_size size_t
+    #endif
 #endif
 
 #ifdef CRCPP_USE_CPP11
-/// @brief Compile-time expression definition.
-#define crcpp_constexpr constexpr
+    /// @brief Compile-time expression definition.
+    #define crcpp_constexpr constexpr
 #else
-/// @brief Compile-time expression definition.
-#define crcpp_constexpr const
+    /// @brief Compile-time expression definition.
+    #define crcpp_constexpr const
 #endif
 
 #ifdef CRCPP_USE_NAMESPACE
@@ -165,10 +165,10 @@ class CRC {
     template <typename CRCType, crcpp_uint16 CRCWidth>
     struct Table {
         // Constructors are intentionally NOT marked explicit.
-        Table(const Parameters<CRCType, CRCWidth>& parameters);
+        Table(const Parameters<CRCType, CRCWidth>& parameters);  // NOLINT
 
 #ifdef CRCPP_USE_CPP11
-        Table(Parameters<CRCType, CRCWidth>&& parameters);
+        Table(Parameters<CRCType, CRCWidth>&& parameters);  // NOLINT
 #endif
 
         const Parameters<CRCType, CRCWidth>& GetParameters() const;
@@ -273,11 +273,11 @@ class CRC {
 #endif
 
 #ifdef CRCPP_USE_CPP11
-    CRC()                 = delete;
-    CRC(const CRC& other) = delete;
+    CRC()                            = delete;
+    CRC(const CRC& other)            = delete;
     CRC& operator=(const CRC& other) = delete;
     CRC(CRC&& other)                 = delete;
-    CRC& operator=(CRC&& other) = delete;
+    CRC& operator=(CRC&& other)      = delete;
 #endif
 
   private:
@@ -553,7 +553,9 @@ inline CRCType CRC::Finalize(CRCType remainder, CRCType finalXOR, bool reflectOu
     static crcpp_constexpr CRCType BIT_MASK =
         (CRCType(1) << (CRCWidth - CRCType(1))) | ((CRCType(1) << (CRCWidth - CRCType(1))) - CRCType(1));
 
-    if (reflectOutput) { remainder = Reflect(remainder, CRCWidth); }
+    if (reflectOutput) {
+        remainder = Reflect(remainder, CRCWidth);
+    }
 
     return (remainder ^ finalXOR) & BIT_MASK;
 }
@@ -583,7 +585,9 @@ inline CRCType CRC::UndoFinalize(CRCType crc, CRCType finalXOR, bool reflectOutp
 
     crc = (crc & BIT_MASK) ^ finalXOR;
 
-    if (reflectOutput) { crc = Reflect(crc, CRCWidth); }
+    if (reflectOutput) {
+        crc = Reflect(crc, CRCWidth);
+    }
 
     return crc;
 }
@@ -722,15 +726,15 @@ inline CRCType CRC::CalculateRemainder(const void* data,
     if (lookupTable.GetParameters().reflectInput) {
         while (size--) {
 #if defined(WIN32) || defined(_WIN32) || defined(WINCE)
-            // Disable warning about data loss when doing (remainder >> CHAR_BIT) when
-            // remainder is one byte long. The algorithm is still correct in this case,
-            // though it's possible that one additional machine instruction will be executed.
-#pragma warning(push)
-#pragma warning(disable : 4333)
+                // Disable warning about data loss when doing (remainder >> CHAR_BIT) when
+                // remainder is one byte long. The algorithm is still correct in this case,
+                // though it's possible that one additional machine instruction will be executed.
+    #pragma warning(push)
+    #pragma warning(disable : 4333)
 #endif
             remainder = (remainder >> CHAR_BIT) ^ lookupTable[static_cast<unsigned char>(remainder ^ *current++)];
 #if defined(WIN32) || defined(_WIN32) || defined(WINCE)
-#pragma warning(pop)
+    #pragma warning(pop)
 #endif
         }
     } else if (CRCWidth >= CHAR_BIT) {
@@ -1658,7 +1662,7 @@ inline const CRC::Parameters<crcpp_uint64, 64>& CRC::CRC_64() {
 #endif  // CRCPP_INCLUDE_ESOTERIC_CRC_DEFINITIONS
 
 #ifdef CRCPP_USE_NAMESPACE
-}
+}  // NOLINT
 #endif
 
 #endif  // CRCPP_CRC_H_

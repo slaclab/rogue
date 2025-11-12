@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
- * File       : ZmqClient.cpp
- * Created    : 2019-05-02
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      Rogue ZMQ Control Interface
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -22,6 +22,7 @@
 #include <inttypes.h>
 #include <zmq.h>
 
+#include <cstdio>
 #include <memory>
 #include <string>
 
@@ -30,11 +31,11 @@
 #include "rogue/ScopedGil.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
-rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(std::string addr, uint16_t port, bool doString) {
+rogue::interfaces::ZmqClientPtr rogue::interfaces::ZmqClient::create(const std::string& addr, uint16_t port, bool doString) {
     rogue::interfaces::ZmqClientPtr ret = std::make_shared<rogue::interfaces::ZmqClient>(addr, port, doString);
     return (ret);
 }
@@ -57,7 +58,7 @@ void rogue::interfaces::ZmqClient::setup_python() {
 #endif
 }
 
-rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool doString) {
+rogue::interfaces::ZmqClient::ZmqClient(const std::string& addr, uint16_t port, bool doString) {
     std::string temp;
     uint32_t val;
     uint32_t reqPort;
@@ -74,7 +75,7 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
         temp = "tcp://";
         temp.append(addr);
         temp.append(":");
-        temp.append(std::to_string(static_cast<long long>(port)));
+        temp.append(std::to_string(static_cast<int64_t>(port)));
 
         if (zmq_setsockopt(this->zmqSub_, ZMQ_SUBSCRIBE, "", 0) != 0)
             throw(rogue::GeneralError("ZmqClient::ZmqClient", "Failed to set socket subscribe"));
@@ -90,14 +91,15 @@ rogue::interfaces::ZmqClient::ZmqClient(std::string addr, uint16_t port, bool do
                                               addr.c_str()));
 
         reqPort = port + 1;
-    } else
+    } else {
         reqPort = port + 2;
+    }
 
     // Setup request port
     temp = "tcp://";
     temp.append(addr);
     temp.append(":");
-    temp.append(std::to_string(static_cast<long long>(reqPort)));
+    temp.append(std::to_string(static_cast<int64_t>(reqPort)));
 
     waitRetry_ = false;  // Don't keep waiting after timeout
     timeout_   = 1000;   // 1 second
@@ -164,7 +166,7 @@ void rogue::interfaces::ZmqClient::setTimeout(uint32_t msecs, bool waitRetry) {
         throw(rogue::GeneralError("ZmqClient::setTimeout", "Failed to set socket timeout"));
 }
 
-std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::string attr, std::string arg) {
+std::string rogue::interfaces::ZmqClient::sendString(const std::string& path, const std::string& attr, const std::string& arg) {
     std::string snd;
     std::string ret;
     zmq_msg_t msg;
@@ -183,40 +185,43 @@ std::string rogue::interfaces::ZmqClient::sendString(std::string path, std::stri
     rogue::GilRelease noGil;
     zmq_send(this->zmqReq_, snd.c_str(), snd.size(), 0);
 
-   while (1) {
-      zmq_msg_init(&msg);
-      if ( zmq_recvmsg(this->zmqReq_,&msg,0) <= 0 ) {
-         seconds += (float)timeout_ / 1000.0;
-         if ( waitRetry_ ) {
-            log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...", seconds);
-            zmq_msg_close(&msg);
-         }
-         else
-            throw rogue::GeneralError::create("ZmqClient::sendString","Timeout waiting for response after %f Seconds.",seconds);
-      }
-      else break;
-   }
+    while (1) {
+        zmq_msg_init(&msg);
+        if (zmq_recvmsg(this->zmqReq_, &msg, 0) <= 0) {
+            seconds += static_cast<double>(timeout_) / 1000.0;
+            if (waitRetry_) {
+                log_->error("Timeout waiting for response after %d Seconds, server may be busy! Waiting...", static_cast<int>(seconds));
+                zmq_msg_close(&msg);
+            } else {
+                throw rogue::GeneralError::create("ZmqClient::sendString",
+                                                  "Timeout waiting for response after %d Seconds.",
+                                                  static_cast<int>(seconds));
+            }
+        } else {
+            break;
+        }
+    }
 
-    if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
+    if (seconds != 0) log_->error("Finally got response from server after %d seconds!", static_cast<int>(seconds));
 
     data = std::string((const char*)zmq_msg_data(&msg), zmq_msg_size(&msg));
     zmq_msg_close(&msg);
     return data;
 }
 
-std::string rogue::interfaces::ZmqClient::getDisp(std::string path) {
+std::string rogue::interfaces::ZmqClient::getDisp(const std::string& path) {
     return sendString(path, "getDisp", "");
 }
 
-void rogue::interfaces::ZmqClient::setDisp(std::string path, std::string value) {
+void rogue::interfaces::ZmqClient::setDisp(const std::string& path, const std::string& value) {
     sendString(path, "setDisp", value);
 }
 
-std::string rogue::interfaces::ZmqClient::exec(std::string path, std::string arg) {
+std::string rogue::interfaces::ZmqClient::exec(const std::string& path, const std::string& arg) {
     return sendString(path, "__call__", arg);
 }
 
-std::string rogue::interfaces::ZmqClient::valueDisp(std::string path) {
+std::string rogue::interfaces::ZmqClient::valueDisp(const std::string& path) {
     return sendString(path, "valueDisp", "");
 }
 
@@ -245,22 +250,24 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
         while (1) {
             zmq_msg_init(&rxMsg);
             if (zmq_recvmsg(this->zmqReq_, &rxMsg, 0) <= 0) {
-                seconds += (float)timeout_ / 1000.0;
+                seconds += static_cast<double>(timeout_) / 1000.0;
                 if (waitRetry_) {
-                    log_->error("Timeout waiting for response after %f Seconds, server may be busy! Waiting...",
-                                seconds);
+                    log_->error("Timeout waiting for response after %d Seconds, server may be busy! Waiting...",
+                                static_cast<int>(seconds));
                     zmq_msg_close(&rxMsg);
-                } else
+                } else {
                     throw rogue::GeneralError::create(
                         "ZmqClient::send",
-                        "Timeout waiting for response after %f Seconds, server may be busy!",
-                        seconds);
-            } else
+                        "Timeout waiting for response after %d Seconds, server may be busy!",
+                        static_cast<int>(seconds));
+                }
+            } else {
                 break;
+            }
         }
     }
 
-    if (seconds != 0) log_->error("Finally got response from server after %f seconds!", seconds);
+    if (seconds != 0) log_->error("Finally got response from server after %d seconds!", static_cast<int>(seconds));
 
     PyObject* val = Py_BuildValue("y#", zmq_msg_data(&rxMsg), zmq_msg_size(&rxMsg));
 
@@ -275,14 +282,16 @@ bp::object rogue::interfaces::ZmqClient::send(bp::object value) {
 
 void rogue::interfaces::ZmqClient::doUpdate(bp::object data) {}
 
-rogue::interfaces::ZmqClientWrap::ZmqClientWrap(std::string addr, uint16_t port, bool doString)
+rogue::interfaces::ZmqClientWrap::ZmqClientWrap(const std::string& addr, uint16_t port, bool doString)
     : rogue::interfaces::ZmqClient(addr, port, doString) {}
 
 void rogue::interfaces::ZmqClientWrap::doUpdate(bp::object data) {
     if (bp::override f = this->get_override("_doUpdate")) {
         try {
             f(data);
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
     rogue::interfaces::ZmqClient::doUpdate(data);
 }

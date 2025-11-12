@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Stream interface master
  * ----------------------------------------------------------------------------
- * File       : Master.h
- * Author     : Ryan Herbst, rherbst@slac.stanford.edu
- * Created    : 2016-09-16
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Stream interface master
@@ -23,8 +19,8 @@
 #include "rogue/Directives.h"
 
 #include <stdint.h>
-#include <stdio.h>
 
+#include <cstdio>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -34,7 +30,7 @@
 #include "rogue/EnableSharedFromThis.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {

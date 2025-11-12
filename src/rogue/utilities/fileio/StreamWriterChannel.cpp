@@ -1,12 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility. Channel interface.
  * ----------------------------------------------------------------------------
- * File          : StreamWriterChannel.cpp
- * Author        : Ryan Herbst <rherbst@slac.stanford.edu>
- * Created       : 09/28/2016
- * Last update   : 09/28/2016
- *-----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to act as a slave interface to the StreamWriterChannel. Each
  *    slave is associated with a tag. The tag is included in the bank header
@@ -40,7 +35,7 @@ namespace ris = rogue::interfaces::stream;
 namespace ruf = rogue::utilities::fileio;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

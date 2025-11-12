@@ -1,6 +1,6 @@
-# -----------------------------------------------------------------------------
-# Title      : PyRogue epics support
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
 # Description:
 # Module containing epics support classes and routines
 # TODO:
@@ -25,8 +25,17 @@ try:
     import p4p.server.thread
     import p4p.nt
 except Exception:
-    warnings.warn("P4P Is not installed")
-
+    warnings.warn(
+        "P4P is not installed.\n\n"
+        "To install with Conda (preferred in Conda environments):\n"
+        "    conda install -c conda-forge p4p\n\n"
+        "To install with pip in a Conda environment:\n"
+        "    python -m pip install p4p\n"
+        "(Using 'python -m pip' ensures pip installs into the currently active Conda env.)\n\n"
+        "To install in a Python 3 virtualenv:\n"
+        "    pip install p4p\n\n"
+        "Note: You may also need to ensure EPICS is set up on your system for P4P to work properly."
+    )
 
 def EpicsConvStatus(varValue):
     if varValue.status == "AlarmLoLo":

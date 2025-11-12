@@ -1,9 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : UDP Core Class
  * ----------------------------------------------------------------------------
- * File       : Core.h
- * Created    : 2018-03-02
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * UDP Core
@@ -31,7 +28,7 @@
 namespace rpu = rogue::protocols::udp;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -57,7 +54,7 @@ bool rpu::Core::setRxBufferCount(uint32_t count) {
     uint32_t per  = (jumbo_) ? (JumboMTU) : (StdMTU);
     uint32_t size = count * per;
 
-    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, (char*)&size, sizeof(size));
+    setsockopt(fd_, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char*>(&size), sizeof(size));
     getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &rwin, &rwin_size);
 
     if (size > rwin) {

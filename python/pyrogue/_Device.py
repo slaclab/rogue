@@ -1,5 +1,8 @@
 #-----------------------------------------------------------------------------
-# Title      : PyRogue base module - Device Class
+# Company    : SLAC National Accelerator Laboratory
+#-----------------------------------------------------------------------------
+#  Description:
+#       PyRogue base module - Device Class
 #-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
@@ -709,9 +712,12 @@ class Device(pr.Node,rim.Hub):
 
             # Align to min access, create list of remote variables
             elif isinstance(n,pr.RemoteVariable) and n.offset is not None:
+                self._log.info(f"Before Shift variable {n.name} offset={n.offset} bitSize={n.bitSize} bytes={n.varBytes}")
                 n._updatePath(n.path)
                 n._shiftOffsetDown(n.offset % blkSize, blkSize)
                 remVars += [n]
+
+                self._log.info(f"Creating variable {n.name} offset={n.offset} bitSize={n.bitSize} bytes={n.varBytes}")
 
         # Sort var list by offset, size
         remVars.sort(key=lambda x: (x.offset, x.varBytes))

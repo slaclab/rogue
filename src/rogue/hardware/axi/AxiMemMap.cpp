@@ -1,9 +1,9 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : AXI Memory Mapped Access
  * ----------------------------------------------------------------------------
- * File       : AxiMemMap.cpp
- * Created    : 2017-03-21
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
+ * Description:
+ *      AXI Memory Mapped Access
  * ----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
  * the license terms in the LICENSE.txt file found in the top-level directory
@@ -20,14 +20,15 @@
 
 #include <fcntl.h>
 #include <inttypes.h>
-#include <stdio.h>
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <cstdio>
 #include <cstring>
 #include <memory>
+#include <string>
 #include <thread>
 
 #include "rogue/GeneralError.h"
@@ -41,7 +42,7 @@ namespace rha = rogue::hardware::axi;
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
@@ -58,13 +59,23 @@ rha::AxiMemMap::AxiMemMap(std::string path) : rim::Slave(4, 0xFFFFFFFF) {
     if (fd_ < 0)
         throw(rogue::GeneralError::create("AxiMemMap::AxiMemMap", "Failed to open device file: %s", path.c_str()));
 
-    // Check driver version
-    if (dmaCheckVersion(fd_) < 0)
+    // Check driver version ( ApiVersion 0x05 (or less) is the 32-bit address version)
+    if (dmaGetApiVersion(fd_) < 0x06) {
         throw(rogue::GeneralError("AxiMemMap::AxiMemMap",
-                                  "Bad kernel driver version detected. Please re-compile kernel driver.\n \
-      Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API. \
-      To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:\n \
-      \t\taes-stream-driver = v5.16.0 (or later)\n\t\trogue = v5.13.0 (or later)"));
+                                  R"(Bad kernel driver version detected. Please re-compile kernel driver.
+          Note that aes-stream-driver (v5.15.2 or earlier) and rogue (v5.11.1 or earlier) are compatible with the 32-bit address API.
+          To use later versions (64-bit address API),, you will need to upgrade both rogue and aes-stream-driver at the same time to:
+          \t\taes-stream-driver = v5.16.0 (or later)
+          \t\trogue = v5.13.0 (or later))"));
+    }
+
+    // Check for mismatch in the rogue/loaded_driver API versions
+    if (dmaCheckVersion(fd_) < 0) {
+        ::close(fd_);
+        throw(rogue::GeneralError(
+            "AxiMemMap::AxiMemMap",
+            "Rogue DmaDriver.h API Version (DMA_VERSION) does not match the aes-stream-driver API version"));
+    }
 
     // Start read thread
     threadEn_ = true;
@@ -105,7 +116,7 @@ void rha::AxiMemMap::runThread() {
     uint8_t* ptr;
 
     dataSize = sizeof(uint32_t);
-    ptr      = (uint8_t*)(&data);
+    ptr      = reinterpret_cast<uint8_t*>(&data);
 
     log_->logThreadId();
 

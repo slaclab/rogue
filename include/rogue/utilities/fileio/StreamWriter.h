@@ -1,7 +1,7 @@
 /**
- *-----------------------------------------------------------------------------
- * Title         : Data file writer utility.
- *-----------------------------------------------------------------------------
+ * ----------------------------------------------------------------------------
+ * Company    : SLAC National Accelerator Laboratory
+ * ----------------------------------------------------------------------------
  * Description :
  *    Class to coordinate data file writing.
  *    This class supports multiple stream slaves, each with the ability to
@@ -17,6 +17,8 @@
  *          31:24  = Channel ID
  *          23:16  = Frame error
  *          15:0   = Frame flags
+ *
+ *    Optionally a flag can be set which writes the raw frame data directly to the file.
  *
  *-----------------------------------------------------------------------------
  * This file is part of the rogue software platform. It is subject to
@@ -38,6 +40,7 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <thread>
 
 #include "rogue/EnableSharedFromThis.h"
@@ -106,6 +109,9 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     //! Flush file
     void flush();
 
+    //! Write raw data
+    bool raw_;
+
     //! condition
     std::condition_variable cond_;
 
@@ -135,6 +141,12 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
 
     //! Get open status
     bool isOpen();
+
+    //! Set raw mode
+    void setRaw(bool raw);
+
+    //! Get raw mode flag
+    bool getRaw();
 
     //! Set buffering size, 0 to disable
     void setBufferSize(uint32_t size);

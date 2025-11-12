@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Variable
  * ----------------------------------------------------------------------------
- * File       : Variable.cpp
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.
@@ -20,14 +18,17 @@
 
 #include "rogue/interfaces/memory/Variable.h"
 
-#include <string.h>
 #include <sys/time.h>
 
 #include <cmath>
+#include <cstdio>
+#include <cstring>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "rogue/GeneralError.h"
 #include "rogue/GilRelease.h"
@@ -38,73 +39,70 @@
 namespace rim = rogue::interfaces::memory;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 
 //! Class factory which returns a pointer to a Variable (VariablePtr)
-rim::VariablePtr rim::Variable::create(
-    std::string name,
-    std::string mode,
-    double minimum,
-    double maximum,
-    uint64_t offset,
-    std::vector<uint32_t> bitOffset,
-    std::vector<uint32_t> bitSize,
-    bool overlapEn,
-    bool verify,
-    bool bulkOpEn,
-    bool updateNotify,
-    uint32_t modelId,
-    bool byteReverse,
-    bool bitReverse,
-    uint32_t binPoint,
-    uint32_t numValues,
-    uint32_t valueBits,
-    uint32_t valueStride,
-    uint32_t retryCount) {
-    rim::VariablePtr v = std::make_shared<rim::Variable>(
-        name,
-        mode,
-        minimum,
-        maximum,
-        offset,
-        bitOffset,
-        bitSize,
-        overlapEn,
-        verify,
-        bulkOpEn,
-        updateNotify,
-        modelId,
-        byteReverse,
-        bitReverse,
-        binPoint,
-        numValues,
-        valueBits,
-        valueStride,
-        retryCount);
+rim::VariablePtr rim::Variable::create(std::string name,
+                                       std::string mode,
+                                       double minimum,
+                                       double maximum,
+                                       uint64_t offset,
+                                       std::vector<uint32_t> bitOffset,
+                                       std::vector<uint32_t> bitSize,
+                                       bool overlapEn,
+                                       bool verify,
+                                       bool bulkOpEn,
+                                       bool updateNotify,
+                                       uint32_t modelId,
+                                       bool byteReverse,
+                                       bool bitReverse,
+                                       uint32_t binPoint,
+                                       uint32_t numValues,
+                                       uint32_t valueBits,
+                                       uint32_t valueStride,
+                                       uint32_t retryCount) {
+    rim::VariablePtr v = std::make_shared<rim::Variable>(name,
+                                                         mode,
+                                                         minimum,
+                                                         maximum,
+                                                         offset,
+                                                         bitOffset,
+                                                         bitSize,
+                                                         overlapEn,
+                                                         verify,
+                                                         bulkOpEn,
+                                                         updateNotify,
+                                                         modelId,
+                                                         byteReverse,
+                                                         bitReverse,
+                                                         binPoint,
+                                                         numValues,
+                                                         valueBits,
+                                                         valueStride,
+                                                         retryCount);
     return (v);
 }
 
 // Setup class for use in python
 void rim::Variable::setup_python() {
 #ifndef NO_PYTHON
-    bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>(
-        "Variable",
-        bp::init<std::string,
-        std::string,
-        bp::object,
-        bp::object,
-        uint64_t,
-        bp::object,
-        bp::object,
-        bool,
-        bool,
-        bool,
-        bool,
-        bp::object,
-        bp::object,
-        uint32_t>())
+    bp::class_<rim::VariableWrap, rim::VariableWrapPtr, boost::noncopyable>("Variable",
+                                                                            bp::init<std::string,
+                                                                                     std::string,
+                                                                                     bp::object,
+                                                                                     bp::object,
+                                                                                     uint64_t,
+                                                                                     bp::object,
+                                                                                     bp::object,
+                                                                                     bool,
+                                                                                     bool,
+                                                                                     bool,
+                                                                                     bool,
+                                                                                     bp::object,
+                                                                                     bp::object,
+                                                                                     uint32_t>())
         .def("_varBytes", &rim::Variable::varBytes)
         .def("_offset", &rim::Variable::offset)
         .def("_shiftOffsetDown", &rim::Variable::shiftOffsetDown)
@@ -170,64 +168,59 @@ rim::Variable::Variable(std::string name,
     valueStride_  = valueStride;
     retryCount_   = retryCount;
 
-    // Compute bit total
-    bitTotal_ = bitSize_[0];
-    for (x = 1; x < bitSize_.size(); x++) bitTotal_ += bitSize_[x];
-
-    // Compute rounded up byte size
-    byteSize_ = (int)std::ceil((float)bitTotal_ / 8.0);
-
-    // Compute total bit range of accessed bits
-    varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) / 8.0);
-
-    // Compute the lowest byte
-    lowTranByte_ = (int)std::floor((float)bitOffset_[0] / 8.0);
-
-    // Compute the highest byte
-    highTranByte_ = varBytes_ - 1;
-
-    // Init stale
-    stale_         = false;
-    staleLowByte_  = lowTranByte_;
-    staleHighByte_ = highTranByte_;
-
-    // Variable can use fast copies
-    fastByte_ = NULL;
-
+    // Not a list variable
     if (numValues_ == 0) {
-        valueBits_        = bitTotal_;
-        valueStride_      = bitTotal_;
-        valueBytes_       = byteSize_;
-        listLowTranByte_  = NULL;
-        listHighTranByte_ = NULL;
-    } else {
-        valueBytes_       = (uint32_t)std::ceil((float)(valueBits_) / 8.0);
-        listLowTranByte_  = (uint32_t*)malloc(numValues_ * sizeof(uint32_t));
-        listHighTranByte_ = (uint32_t*)malloc(numValues_ * sizeof(uint32_t));
+        // Compute bit total
+        bitTotal_ = bitSize_[0];
+        for (x = 1; x < bitSize_.size(); x++) bitTotal_ += bitSize_[x];
 
-        for (x = 0; x < numValues_; x++) {
-            listLowTranByte_[x] = (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueStride_) / 8.0);
-            listHighTranByte_[x] =
-                (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x + 1) * (float)valueStride_) / 8.0) - 1;
-        }
+        // Compute rounded up byte size
+        byteSize_ = static_cast<int>(std::ceil(static_cast<float>(bitTotal_) / 8.0));
+
+        lowTranByte_  = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
+        highTranByte_ = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
+
+        // Init remaining fields
+        valueBytes_  = byteSize_;
+        valueBits_   = bitTotal_;
+        valueStride_ = bitTotal_;
+
+        // List variables
+    } else {
+        // Compute bit total
+        bitTotal_ = bitSize_[0];
+
+        // Compute rounded up byte size
+        byteSize_ = static_cast<int>(std::ceil(static_cast<float>(bitTotal_) / 8.0));
+
+        // Compute total bit range of accessed bits
+        valueBytes_ = static_cast<uint32_t>(std::ceil(static_cast<float>(valueBits_) / 8.0));
+
+        // High and low byte tracking
+        lowTranByte_  = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
+        highTranByte_ = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
     }
 
+    // Byte array for fast copies
+    fastByte_ = NULL;
+
+    // Determine if fast byte copies can be utilized
     // Bit offset vector must have one entry, the offset must be byte aligned and the total number of bits must be byte
     // aligned
     if ((bitOffset_.size() == 1) && (bitOffset_[0] % 8 == 0) && (bitSize_[0] % 8 == 0)) {
         // Standard variable
         if (numValues_ == 0) {
-            fastByte_    = (uint32_t*)malloc(sizeof(uint32_t));
-            fastByte_[0] = bitOffset_[0] / 8;
-        }
+            fastByte_ = reinterpret_cast<uint32_t*>(malloc(sizeof(uint32_t)));
 
-        // List variable
-        else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
-            fastByte_ = (uint32_t*)malloc(numValues_ * sizeof(uint32_t));
-
-            for (x = 0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueStride_ * x)) / 8;
+            // List variable
+        } else if ((valueBits_ % 8) == 0 && (valueStride_ % 8) == 0) {
+            fastByte_ = reinterpret_cast<uint32_t*>(malloc(numValues_ * sizeof(uint32_t)));
         }
     }
+    stale_ = false;
+
+    // Call aligning function to init values
+    shiftOffsetDown(0, 1);
 
     // Custom data is NULL for now
     customData_ = NULL;
@@ -449,8 +442,8 @@ rim::Variable::Variable(std::string name,
 
 // Destroy the variable
 rim::Variable::~Variable() {
-    if (listLowTranByte_ != NULL) free(listLowTranByte_);
-    if (listHighTranByte_ != NULL) free(listHighTranByte_);
+    if (lowTranByte_ != NULL) free(lowTranByte_);
+    if (highTranByte_ != NULL) free(highTranByte_);
     if (fastByte_ != NULL) free(fastByte_);
 }
 
@@ -463,37 +456,56 @@ void rim::Variable::shiftOffsetDown(uint32_t shift, uint32_t minSize) {
         for (x = 0; x < bitOffset_.size(); x++) bitOffset_[x] += shift * 8;
     }
 
-    // Compute total bit range of accessed bits, aligned to min size
-    varBytes_ = (int)std::ceil((float)(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) /
-                               ((float)minSize * 8.0)) *
-                minSize;
+    // Standard variable
+    if (numValues_ == 0) {
+        // Compute total bit range of accessed bytes
+        varBytes_ = static_cast<int>(std::ceil(
+                        static_cast<float>(bitOffset_[bitOffset_.size() - 1] + bitSize_[bitSize_.size() - 1]) /
+                        (static_cast<float>(minSize) * 8.0))) *
+                    minSize;
 
-    // Compute the lowest byte, aligned to min access
-    lowTranByte_ = (int)std::floor((float)bitOffset_[0] / ((float)minSize * 8.0)) * minSize;
-
-    // Compute the highest byte, aligned to min access
-    highTranByte_ = varBytes_ - 1;
-
-    // List variable
-    for (x = 0; x < numValues_; x++) {
-        listLowTranByte_[x] =
-            (uint32_t)std::floor(((float)bitOffset_[0] + (float)x * (float)valueStride_) / ((float)minSize * 8.0)) *
+        // Compute the lowest byte, aligned to min access
+        lowTranByte_[0] =
+            static_cast<int>(std::floor(static_cast<float>(bitOffset_[0]) / (static_cast<float>(minSize) * 8.0))) *
             minSize;
-        listHighTranByte_[x] = (uint32_t)std::ceil(((float)bitOffset_[0] + (float)(x + 1) * (float)valueStride_) /
-                                                   ((float)minSize * 8.0)) *
+
+        // Compute the highest byte, aligned to min access
+        highTranByte_[0] = varBytes_ - 1;
+        staleHighByte_   = highTranByte_[0];
+
+        // List variable
+    } else {
+        for (x = 0; x < numValues_; x++) {
+            lowTranByte_[x] =
+                static_cast<uint32_t>(std::floor(
+                    (static_cast<float>(bitOffset_[0]) + static_cast<float>(x) * static_cast<float>(valueStride_)) /
+                    (static_cast<float>(minSize) * 8.0))) *
+                minSize;
+            highTranByte_[x] = static_cast<uint32_t>(
+                                   std::ceil((static_cast<float>(bitOffset_[0]) +
+                                              static_cast<float>(x) * static_cast<float>(valueStride_) + valueBits_) /
+                                             (static_cast<float>(minSize) * 8.0))) *
                                    minSize -
                                1;
+        }
+
+        // Compute total bit range of accessed bytes
+        varBytes_      = highTranByte_[numValues_ - 1] + 1;
+        staleHighByte_ = highTranByte_[numValues_ - 1];
     }
 
     // Adjust fast copy locations
     if (fastByte_ != NULL) {
-        if (numValues_ == 0) fastByte_[0] = bitOffset_[0] / 8;
+        if (numValues_ == 0) {
+            fastByte_[0] = bitOffset_[0] / 8;
 
-        // List variable
-        else {
+            // List variable
+        } else {
             for (x = 0; x < numValues_; x++) fastByte_[x] = (bitOffset_[0] + (valueStride_ * x)) / 8;
         }
     }
+
+    staleLowByte_ = lowTranByte_[0];
 }
 
 void rim::Variable::updatePath(std::string path) {
@@ -611,7 +623,9 @@ void rim::VariableWrap::queueUpdate() {
         try {
             pb();
             return;
-        } catch (...) { PyErr_Print(); }
+        } catch (...) {
+            PyErr_Print();
+        }
     }
 }
 
@@ -640,21 +654,25 @@ void rim::Variable::rateTest() {
     uint32_t ret;
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) { ret = getUInt(); }
+    for (x = 0; x < count; ++x) {
+        ret = getUInt();
+    }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
-    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+    durr = dtime.tv_sec + static_cast<float>(dtime.tv_usec) / 1.0e6;
     rate = count / durr;
 
     printf("\nVariable c++ get: Read %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);
 
     gettimeofday(&stime, NULL);
-    for (x = 0; x < count; ++x) { setUInt(x); }
+    for (x = 0; x < count; ++x) {
+        setUInt(x);
+    }
     gettimeofday(&etime, NULL);
 
     timersub(&etime, &stime, &dtime);
-    durr = dtime.tv_sec + (float)dtime.tv_usec / 1.0e6;
+    durr = dtime.tv_sec + static_cast<float>(dtime.tv_usec) / 1.0e6;
     rate = count / durr;
 
     printf("\nVariable c++ set: Wrote %" PRIu64 " times in %f seconds. Rate = %f\n", count, durr, rate);
@@ -687,7 +705,7 @@ std::string rim::Variable::getDumpValue(bool read) {
     else
         index = 0;
 
-    while (index < (int32_t)numValues_) {
+    while (index < static_cast<int32_t>(numValues_)) {
         ret << " ";
 
         switch (modelId_) {
@@ -695,7 +713,7 @@ std::string rim::Variable::getDumpValue(bool read) {
                 (block_->*getByteArray_)(byteData, this, index);
                 ret << "0x";
                 for (x = 0; x < valueBytes_; x++)
-                    ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
+                    ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
                 break;
 
             case rim::UInt:
@@ -703,9 +721,10 @@ std::string rim::Variable::getDumpValue(bool read) {
                     (block_->*getByteArray_)(byteData, this, index);
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
-                        ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
-                } else
+                        ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
+                } else {
                     ret << (block_->*getUInt_)(this, index);
+                }
                 break;
 
             case rim::Int:
@@ -713,9 +732,10 @@ std::string rim::Variable::getDumpValue(bool read) {
                     (block_->*getByteArray_)(byteData, this, index);
                     ret << "0x";
                     for (x = 0; x < valueBytes_; x++)
-                        ret << std::setfill('0') << std::setw(2) << std::hex << (uint32_t)byteData[x];
-                } else
+                        ret << std::setfill('0') << std::setw(2) << std::hex << static_cast<uint32_t>(byteData[x]);
+                } else {
                     ret << (block_->*getInt_)(this, index);
+                }
                 break;
 
             case rim::Bool:
@@ -850,9 +870,9 @@ std::string rim::Variable::getString(int32_t index) {
 }
 
 void rim::Variable::getValue(std::string& retString, int32_t index) {
-    if (getString_ == NULL)
+    if (getString_ == NULL) {
         throw(rogue::GeneralError::create("Variable::getValue", "Wrong get type for variable %s", path_.c_str()));
-    else {
+    } else {
         block_->read(this, index);
         block_->getValue(this, retString, index);
     }

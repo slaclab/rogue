@@ -59,7 +59,7 @@ class myDevice(pyrogue.Device):
 
         self.add(pyrogue.LocalVariable(
             name='var_with_properties',
-            value=0.0,
+            value=1.0,
             mode='RW',
             minimum=min_set,
             maximum=max_set))

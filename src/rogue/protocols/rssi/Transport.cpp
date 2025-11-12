@@ -1,10 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : RSSI Transport Port
  * ----------------------------------------------------------------------------
- * File       : Transport.h
- * Created    : 2017-01-07
- * Last update: 2017-01-07
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * RSSI Transport Port
@@ -35,7 +31,7 @@ namespace rpr = rogue::protocols::rssi;
 namespace ris = rogue::interfaces::stream;
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 namespace bp = boost::python;
 #endif
 

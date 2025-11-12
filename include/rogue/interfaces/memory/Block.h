@@ -1,8 +1,6 @@
 /**
- *-----------------------------------------------------------------------------
- * Title      : Memory Block
  * ----------------------------------------------------------------------------
- * File       : Block.h
+ * Company    : SLAC National Accelerator Laboratory
  * ----------------------------------------------------------------------------
  * Description:
  * Interface between RemoteVariables and lower level memory transactions.
@@ -23,13 +21,14 @@
 #include <stdint.h>
 
 #include <memory>
+#include <string>
 #include <thread>
 #include <vector>
 
 #include "rogue/interfaces/memory/Master.h"
 
 #ifndef NO_PYTHON
-#include <boost/python.hpp>
+    #include <boost/python.hpp>
 #endif
 
 namespace rogue {
@@ -49,7 +48,9 @@ template <class T>
 inline boost::python::list std_vector_to_py_list(std::vector<T> vector) {
     typename std::vector<T>::iterator iter;
     boost::python::list list;
-    for (iter = vector.begin(); iter != vector.end(); ++iter) { list.append(*iter); }
+    for (iter = vector.begin(); iter != vector.end(); ++iter) {
+        list.append(*iter);
+    }
     return list;
 }
 
@@ -110,6 +111,9 @@ class Block : public Master {
 
     // Verify Mask
     uint8_t* verifyMask_;
+
+    // Verify Block
+    uint8_t* verifyBlock_;
 
     // Block size
     uint32_t size_;
