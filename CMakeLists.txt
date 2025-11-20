@@ -316,7 +316,7 @@ set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES PUBLIC rogue-core)
+   set(CONF_LIBRARIES rogue-core)
 else()
    if (APPLE)
       set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.${ROGUE_SOVER}.dylib)
