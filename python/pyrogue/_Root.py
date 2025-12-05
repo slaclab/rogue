@@ -293,14 +293,13 @@ class Root(pr.Device):
         self.add(
             pr.LocalVariable(
                 name="Time",
-                value=0.0,
+                value=time.time(),
                 mode="RO",
                 hidden=True,
                 description="Current Time In Seconds Since EPOCH UTC",
                 groups=["NoSql"],
             )
         )
-
         self.add(
             pr.LinkVariable(
                 name="LocalTime",

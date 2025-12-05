@@ -17,14 +17,23 @@
 
 #include "rogue/Directives.h"
 
+#include "rogue/numpy.h"
+
 #include <boost/python.hpp>
+#include <boost/python/numpy.hpp>
 #include <cstdio>
 
 #include "rogue/Version.h"
 #include "rogue/module.h"
 
+void * rogue_import_array(void) {
+    import_array();
+    return NULL;
+}
+
+
 BOOST_PYTHON_MODULE(rogue) {
-    // PyEval_InitThreads();
+    rogue_import_array();
 
     rogue::setup_module();
 

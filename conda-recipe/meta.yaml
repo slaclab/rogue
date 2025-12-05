@@ -20,13 +20,13 @@ requirements:
      - bzip2
      - zeromq
      - python {{ python }} # declare python variants in conda_build_config.yaml
-     - numpy {{ numpy }}   # declare numpy  variants in conda_build_config.yaml
+     - numpy>=2.0
    run:
      - python
      - boost
      - bzip2
      - zeromq
-     - numpy
+     - numpy>=2.0
      - ipython
      - pyyaml
      - jsonpickle
