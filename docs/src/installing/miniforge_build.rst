@@ -46,6 +46,7 @@ The next step is to download rogue and create a rogue compatible miniforge envir
 
 You now have an miniforge environment named rogue_build which contains all of the packages required to build and run rogue.
 
+You can alternatively clone the git repo with `git clone git@github.com:slaclab/rogue.git`.
 To activate this environment:
 
 .. code::

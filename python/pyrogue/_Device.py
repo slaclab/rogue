@@ -15,11 +15,12 @@
 import collections
 import functools as ft
 import threading
-from _collections_abc import Iterable
+from _collections_abc import Iterable, Callable
 from typing import Any, Dict, List, Optional, Union
 
 import pyrogue as pr
 import rogue.interfaces.memory as rim
+import rogue.interfaces.stream.Memory
 
 
 class EnableVariable(pr.BaseVariable):
@@ -55,7 +56,7 @@ class EnableVariable(pr.BaseVariable):
         self._lock = threading.Lock()
 
     @pr.expose
-    def get(self, read: bool = False, index: int = -1):
+    def get(self, read: bool = False, index: int = -1) -> Union[bool, str]:
         """
 
         Args:
@@ -85,7 +86,7 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value: Any, write: bool = True, index: int = -1):
+    def set(self, value: Any, write: bool = True, index: int = -1) -> None:
         """
 
         Args:
@@ -117,7 +118,7 @@ class EnableVariable(pr.BaseVariable):
             # for var in self._listeners:
             #    var._doUpdate()
 
-    def _doUpdate(self):
+    def _doUpdate(self) -> Any:
         """ """
         if len(self._deps) != 0:
             oldEn = self.value() is True
@@ -133,7 +134,7 @@ class EnableVariable(pr.BaseVariable):
 
         return super()._doUpdate()
 
-    def _rootAttached(self, parent, root):
+    def _rootAttached(self, parent, root) -> None:
         """
 
         Args:
@@ -270,13 +271,13 @@ class Device(pr.Node, rim.Hub):
 
     @pr.expose
     @property
-    def address(self):
+    def address(self) -> int:
         """ """
         return self._getAddress()
 
     @pr.expose
     @property
-    def offset(self):
+    def offset(self) -> int:
         """ """
         return self._getOffset()
 
@@ -292,7 +293,7 @@ class Device(pr.Node, rim.Hub):
         self._custBlocks.append(block)
         self._custBlocks.sort(key=lambda x: (x.offset, x.size))
 
-    def add(self, node):
+    def add(self, node: Union[Iterable[pr.Node], pr.Node, pr.Device]) -> None:
         """
 
         Args:
@@ -310,7 +311,14 @@ class Device(pr.Node, rim.Hub):
             if node._memBase is None:
                 node._setSlave(self)
 
-    def addInterface(self, *interfaces):
+    def addInterface(
+        self,
+        *interfaces: Union[
+            Iterable,
+            rogue.interfaces.stream.Master,
+            rogue.interfaces.memory.Master
+        ],
+    ) -> None:
         """
         Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
         Also accepts iterables for adding multiple at once
@@ -327,7 +335,7 @@ class Device(pr.Node, rim.Hub):
             else:
                 self._ifAndProto.append(interface)
 
-    def addProtocol(self, *protocols):
+    def addProtocol(self, *protocols: ) -> None:
         """Add a protocol entity. Also accepts iterables for adding multiple at once.
 
         Args:

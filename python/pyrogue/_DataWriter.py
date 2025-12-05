@@ -174,19 +174,19 @@ class DataWriter(pr.Device):
         """
         pass
 
-    def _getCurrentSize(self):
+    def _getCurrentSize(self) -> int:
         """Get current file size. Override in sub-class"""
         return 0
 
-    def _getTotalSize(self):
+    def _getTotalSize(self) -> int:
         """Get total file size. Override in sub-class"""
         return 0
 
-    def _getFrameCount(self):
+    def _getFrameCount(self) -> int:
         """Get current file frame count. Override in sub-class"""
         return 0
 
-    def _genFileName(self):
+    def _genFileName(self) -> None:
         """Auto create data file name based upon date and time.
         Preserve file's location in path.
         """

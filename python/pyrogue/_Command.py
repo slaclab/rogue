@@ -119,20 +119,20 @@ class BaseCommand(pr.BaseVariable):
 
     @pr.expose
     @property
-    def arg(self):
+    def arg(self) -> bool:
         """ """
         return self._arg
 
     @pr.expose
     @property
-    def retTypeStr(self):
+    def retTypeStr(self) -> Optional[str]:
         """ """
         return self._retTypeStr
 
-    def __call__(self, arg=None):
+    def __call__(self, arg: Optional[Any] = None) -> Optional[Union[Any, Callable]]:
         return self._doFunc(arg)
 
-    def _doFunc(self, arg):
+    def _doFunc(self, arg) -> Optional[Union[str, Callable]]:
         """Execute command: TODO: Update comments
 
         Args:
@@ -183,7 +183,7 @@ class BaseCommand(pr.BaseVariable):
         return self.__call__(arg)
 
     @pr.expose
-    def callDisp(self, arg=None):
+    def callDisp(self, arg=None) -> str:
         """
         Args:
             arg (str) :     (Default value = None)
@@ -199,7 +199,7 @@ class BaseCommand(pr.BaseVariable):
         pass
 
     @staticmethod
-    def read(cmd):
+    def read(cmd) -> None:
         """
         Args:
             cmd :
@@ -209,7 +209,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.get(read=True)
 
     @staticmethod
-    def setArg(cmd, arg):
+    def setArg(cmd, arg) -> None:
         """
         Args:
             cmd :
@@ -221,7 +221,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(arg)
 
     @staticmethod
-    def setAndVerifyArg(cmd, arg):
+    def setAndVerifyArg(cmd, arg) -> None:
         """
         Args:
             cmd :
@@ -238,7 +238,7 @@ class BaseCommand(pr.BaseVariable):
             )
 
     @staticmethod
-    def createToggle(sets):
+    def createToggle(sets) -> Callable:
         """
         Args:
             sets :
@@ -247,7 +247,7 @@ class BaseCommand(pr.BaseVariable):
 
         """
 
-        def toggle(cmd):
+        def toggle(cmd) -> None:
             """
 
             Args:
@@ -262,7 +262,7 @@ class BaseCommand(pr.BaseVariable):
         return toggle
 
     @staticmethod
-    def toggle(cmd):
+    def toggle(cmd) -> None:
         """
 
         Args:
@@ -273,7 +273,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(0)
 
     @staticmethod
-    def createTouch(value):
+    def createTouch(value) -> Callable:
         """
         Args:
             value :
@@ -283,7 +283,7 @@ class BaseCommand(pr.BaseVariable):
 
         """
 
-        def touch(cmd):
+        def touch(cmd) -> None:
             """
 
 
@@ -299,7 +299,7 @@ class BaseCommand(pr.BaseVariable):
         return touch
 
     @staticmethod
-    def touch(cmd, arg):
+    def touch(cmd, arg) -> None:
         """
         Args:
             cmd :
@@ -314,7 +314,7 @@ class BaseCommand(pr.BaseVariable):
             cmd.set(1)
 
     @staticmethod
-    def touchZero(cmd):
+    def touchZero(cmd) -> None:
         """
         Args:
             cmd :
@@ -326,7 +326,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(0)
 
     @staticmethod
-    def touchOne(cmd):
+    def touchOne(cmd) -> None:
         """
         Args:
             cmd :
@@ -338,7 +338,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.set(1)
 
     @staticmethod
-    def createPostedTouch(value):
+    def createPostedTouch(value) -> Callable:
         """
         Args:
             value :
@@ -348,7 +348,7 @@ class BaseCommand(pr.BaseVariable):
 
         """
 
-        def postedTouch(cmd):
+        def postedTouch(cmd) -> None:
             """
 
 
@@ -364,7 +364,7 @@ class BaseCommand(pr.BaseVariable):
         return postedTouch
 
     @staticmethod
-    def postedTouch(cmd, arg):
+    def postedTouch(cmd, arg) -> None:
         """
         Args:
             cmd :
@@ -376,7 +376,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.post(arg)
 
     @staticmethod
-    def postedTouchOne(cmd):
+    def postedTouchOne(cmd) -> None:
         """
         Args:
             cmd :
@@ -387,7 +387,7 @@ class BaseCommand(pr.BaseVariable):
         cmd.post(1)
 
     @staticmethod
-    def postedTouchZero(cmd):
+    def postedTouchZero(cmd) -> None:
         """
         Args:
             cmd :
@@ -397,7 +397,7 @@ class BaseCommand(pr.BaseVariable):
         """
         cmd.post(0)
 
-    def replaceFunction(self, function):
+    def replaceFunction(self, function) -> None:
         """
         Args:
             function :
@@ -425,7 +425,7 @@ class BaseCommand(pr.BaseVariable):
         """
         pass
 
-    def _getDict(self, modes, incGroups, excGroups, properties):
+    def _getDict(self, modes, incGroups, excGroups, properties) -> None:
         """
         Args:
             modes :
@@ -537,7 +537,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             **kwargs,
         )
 
-    def set(self, value, *, index=-1, write=True):
+    def set(self, value, *, index: int = -1, write: bool = True) -> None:
         """
         Args:
             value :
@@ -547,6 +547,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         Returns:
 
+        Raises:
+            Any caught exception.
         """
         self._log.debug("{}.set({})".format(self, value))
         try:
@@ -566,7 +568,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             pr.logException(self._log, e)
             raise e
 
-    def get(self, *, index=-1, read=True):
+    def get(self, *, index: int = -1, read: bool = True):
         """
         Args:
             * :
@@ -576,6 +578,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
 
         Returns:
 
+        Raises:
+            Any caught exception.
         """
         try:
             if read:
@@ -594,7 +598,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             pr.logException(self._log, e)
             raise e
 
-    def _genDocs(self, file):
+    def _genDocs(self, file) -> None:
         """
         Args:
             file :

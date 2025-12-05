@@ -31,7 +31,7 @@ def startTransaction(
     variable: Any | None = None,
     index: int = -1,
     **kwargs,
-):
+) -> None:
     """
     Helper function for calling the startTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
@@ -50,7 +50,7 @@ def startTransaction(
     block._startTransaction(type, forceWr, checkEach, variable, index)
 
 
-def checkTransaction(block, **kwargs):
+def checkTransaction(block, **kwargs) -> None:
     """Helper function for calling the checkTransaction function in a block. This helper
         function ensures future changes to the API do not break custom code in a Device's
         writeBlocks, readBlocks and checkBlocks functions.
@@ -67,7 +67,9 @@ def checkTransaction(block, **kwargs):
     block._checkTransaction()
 
 
-def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+def writeBlocks(
+    blocks, force: bool = False, checkEach: bool = False, index: int = -1, **kwargs
+) -> None:
     """Helper function for writing and verifying a list of blocks.
     Allows a custom list of blocks to be efficiently written,
     similar to Device.writeBlocks()."""
@@ -77,7 +79,7 @@ def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
         )
 
 
-def verifyBlocks(blocks, checkEach=False, **kwargs):
+def verifyBlocks(blocks: list, checkEach: bool = False, **kwargs) -> None:
     """Helper function for verifying a list of blocks.
     Allows a custom list of blocks to be efficiently verified without blocking
     between each read, similar to Device.verifyBlocks()."""
@@ -85,7 +87,7 @@ def verifyBlocks(blocks, checkEach=False, **kwargs):
         startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
 
 
-def readBlocks(blocks, checkEach=False, **kwargs):
+def readBlocks(blocks, checkEach: bool = False, **kwargs) -> None:
     """Helper function for reading a list of blocks.
     Allows a custom list of blocks to be efficiently read without blocking
     between each read, similar to Device.readBlocks()."""
@@ -101,7 +103,9 @@ def checkBlocks(blocks, **kwargs):
         checkTransaction(b)
 
 
-def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
+def writeAndVerifyBlocks(
+    blocks, force: bool = False, checkEach: bool = False, index: int = -1, **kwargs
+) -> None:
     """Helper function for writing and verifying a list of blocks.
     Allows a custom list of blocks to be efficiently written and verified
     similar to Device.writeAndVerifyBlocks()."""
@@ -110,7 +114,7 @@ def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwarg
     checkBlocks(blocks)
 
 
-def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
+def readAndCheckBlocks(blocks, checkEach: bool = False, **kwargs) -> None:
     """Helper function for reading a list of blocks.
      Allows a custom list of blocks to be efficiently written and verified
     without blocking between each read, similar to Device.readAndCheckBlocks()."""
@@ -121,7 +125,9 @@ def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
 class MemoryError(Exception):
     """Exception for memory access errors."""
 
-    def __init__(self, *, name, address, msg=None, size=0):
+    def __init__(
+        self, *, name: str, address: int, msg: Optional[str] = None, size: int = 0
+    ):
         self._value = f"Memory Error for {name} at address {address:#08x}"
 
         if msg is not None:
@@ -192,17 +198,17 @@ class LocalBlock(object):
         return repr(self._path)
 
     @property
-    def path(self):
+    def path(self) -> str:
         """ """
         return self._path
 
     @property
-    def mode(self):
+    def mode(self) -> str:
         """ """
         return self._mode
 
     @property
-    def bulkOpEn(self):
+    def bulkOpEn(self) -> bool:
         """ """
         return True
 
@@ -210,7 +216,7 @@ class LocalBlock(object):
         """ """
         pass
 
-    def setEnable(self, value: bool):
+    def setEnable(self, value: bool) -> None:
         """
 
         Args:
@@ -230,11 +236,11 @@ class LocalBlock(object):
         pass
 
     @property
-    def variables(self):
+    def variables(self) -> list:
         """ """
         return self._variables
 
-    def set(self, var: Any, value: Union[int, list, dict], index: int = -1):
+    def set(self, var: Any, value: Union[int, list, dict], index: int = -1) -> None:
         """
 
         Args:
@@ -275,7 +281,7 @@ class LocalBlock(object):
                     changed=changed,
                 )
 
-    def get(self, var: Any, index: int = -1):
+    def get(self, var: Any, index: int = -1) -> Any:
         """
 
         Args:
@@ -308,12 +314,12 @@ class LocalBlock(object):
         """
         pass
 
-    def _checkTransaction(self):
+    def _checkTransaction(self) -> None:
         """Check status of block. If update=True notify variables if read."""
         if self._enable and self._variable._updateNotify:
             self._variable._queueUpdate()
 
-    def _iadd(self, other):
+    def _iadd(self, other) -> None:
         """
 
         Args:
@@ -325,7 +331,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _isub(self, other):
+    def _isub(self, other) -> None:
         """
 
         Args:
@@ -337,7 +343,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _imul(self, other):
+    def _imul(self, other) -> None:
         """
 
         Args:
@@ -349,7 +355,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _imatmul(self, other):
+    def _imatmul(self, other) -> None:
         """
 
         Args:
@@ -360,7 +366,7 @@ class LocalBlock(object):
             self.set(None, self.get(None) @ other)
             self._variable._queueUpdate()
 
-    def _itruediv(self, other):
+    def _itruediv(self, other) -> None:
         """
 
         Args:
@@ -372,7 +378,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ifloordiv(self, other):
+    def _ifloordiv(self, other) -> None:
         """
 
         Args:
@@ -384,7 +390,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _imod(self, other):
+    def _imod(self, other) -> None:
         """
 
         Args:
@@ -396,7 +402,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ipow(self, other):
+    def _ipow(self, other) -> None:
         """
 
         Args:
@@ -408,7 +414,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ilshift(self, other):
+    def _ilshift(self, other) -> None:
         """
 
         Args:
@@ -420,7 +426,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _irshift(self, other):
+    def _irshift(self, other) -> None:
         """
 
         Args:
@@ -432,7 +438,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _iand(self, other):
+    def _iand(self, other) -> None:
         """
 
         Args:
@@ -444,7 +450,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ixor(self, other):
+    def _ixor(self, other) -> None:
         """
 
         Args:
@@ -456,7 +462,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ior(self, other):
+    def _ior(self, other) -> None:
         """
 
         Args:

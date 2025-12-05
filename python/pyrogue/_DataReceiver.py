@@ -16,6 +16,7 @@ import numpy
 
 import pyrogue as pr
 import rogue.interfaces.stream as ris
+from numpy import ndarray
 
 
 class DataReceiver(pr.Device, ris.Slave):
@@ -23,10 +24,10 @@ class DataReceiver(pr.Device, ris.Slave):
 
     def __init__(
         self,
-        typeStr="UInt8[np]",
-        hideData=True,
-        value=numpy.zeros(shape=1, dtype=numpy.uint8, order="C"),
-        enableOnStart=True,
+        typeStr: str = "UInt8[np]",
+        hideData: bool = True,
+        value: ndarray = numpy.zeros(shape=1, dtype=numpy.uint8, order="C"),
+        enableOnStart: bool = True,
         **kwargs,
     ):
         pr.Device.__init__(self, **kwargs)
@@ -89,14 +90,14 @@ class DataReceiver(pr.Device, ris.Slave):
             )
         )
 
-    def countReset(self):
+    def countReset(self) -> None:
         """ """
         self.FrameCount.set(0)
         self.ErrorCount.set(0)
         self.ByteCount.set(0)
         super().countReset()
 
-    def _acceptFrame(self, frame):
+    def _acceptFrame(self, frame) -> None:
         """
 
         Args:
@@ -129,7 +130,7 @@ class DataReceiver(pr.Device, ris.Slave):
             # User overridable method for data restructuring
             self.process(frame)
 
-    def process(self, frame):
+    def process(self, frame) -> None:
         """
         The user can use this method to process the data, by default a byte numpy array is generated
         This may include separating data, header and other payload sub-fields
@@ -149,22 +150,22 @@ class DataReceiver(pr.Device, ris.Slave):
         self.Data.set(dat, write=True)
         self.Updated.set(True, write=True)
 
-    def _start(self):
+    def _start(self) -> None:
         """ """
         super()._start()
         self.RxEnable.set(value=self._enableOnStart)
 
-    def _stop(self):
+    def _stop(self) -> None:
         """ """
         self.RxEnable.set(value=False)
         super()._stop()
 
     # source >> destination
-    def __rshift__(self, other):
+    def __rshift__(self, other) -> type["pr.Device"]:
         pr.streamConnect(self, other)
         return other
 
     # destination << source
-    def __lshift__(self, other):
+    def __lshift__(self, other) -> type["pr.Device"]:
         pr.streamConnect(other, self)
         return other

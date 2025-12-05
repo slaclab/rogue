@@ -369,7 +369,7 @@ class Node(object):
     def __contains__(self, item):
         return item in self.nodes.values()
 
-    def add(self, node: Union[Iterable["Node"], "Node"]):
+    def add(self, node: Union[Iterable[pr.Node], pr.Node]):
         """Add a either a collection of nodes, or a singular node as sub-node to self.
 
         Args:
