@@ -19,7 +19,7 @@ import sys
 import time
 import zipfile
 from collections import OrderedDict as odict
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Type, Union, Any, Callable, Iterable
 
 import yaml
 
@@ -28,15 +28,14 @@ import rogue.interfaces.memory
 import rogue.interfaces.stream
 
 
-def addLibraryPath(path: Union[List[str], str]):
+def addLibraryPath(path: Union[List[str], str]) -> None:
     """Append the past string or list of strings to the python library path.
 
-    Passed strings can either be relative: ../path/to/library
-    or absolute: /path/to/library
-
     Args:
-        path :
+        path : Absolute '/path/to/library' or relative '../path/to/library' string path
 
+    Raises:
+        Exception if library path does not exist or is unreadable
     """
     if len(sys.argv) == 0:
         base = os.path.dirname(os.path.realpath(__file__))
@@ -114,7 +113,7 @@ def waitCntrlC():
 def streamConnect(
     source: Union[Type[pr.Device], rogue.interfaces.stream.Master],
     dest: Union[Type[pr.Device], rogue.interfaces.stream.Slave],
-):
+) -> None:
     """
     Attach the passed dest object to the source a stream.
     Connect source and destination stream devices.
@@ -126,8 +125,6 @@ def streamConnect(
     Args:
         source :
         dest :
-
-    Returns:
 
     """
 
@@ -146,7 +143,7 @@ def streamConnect(
     master._addSlave(slave)
 
 
-def streamConnectBiDir(deviceA: Type[pr.Device], deviceB: Type[pr.Device]):
+def streamConnectBiDir(deviceA: Type[pr.Device], deviceB: Type[pr.Device]) -> None:
     """
     Connect deviceA and deviceB as end points to a
     bi-directional stream. This method calls the
@@ -166,7 +163,7 @@ def streamConnectBiDir(deviceA: Type[pr.Device], deviceB: Type[pr.Device]):
 def busConnect(
     source: Union[Type[pr.Node], rogue.interfaces.memory.Master],
     dest: Union[Type[pr.Node], rogue.interfaces.memory.Slave],
-):
+) -> None:
     """Connect the source object to the dest object for memory accesses.
 
     Source is either a memory master sub class or implements
@@ -195,7 +192,7 @@ def busConnect(
     master._setSlave(slave)
 
 
-def yamlToData(stream: str = "", fName: Optional[str] = None):
+def yamlToData(stream: str = "", fName: Optional[str] = None) -> Any:
     """Load yaml to data structure.
     A yaml string or file path may be passed.
 
@@ -214,7 +211,7 @@ def yamlToData(stream: str = "", fName: Optional[str] = None):
 
         pass
 
-    def include_mapping(loader, node):
+    def include_mapping(loader, node) -> Any:
         """
 
         Args:
@@ -241,7 +238,7 @@ def yamlToData(stream: str = "", fName: Optional[str] = None):
         # Recursive call, flatten relative jumps
         return yamlToData(fName=os.path.abspath(filename))
 
-    def construct_mapping(loader, node):
+    def construct_mapping(loader, node) -> odict:
         """
 
         Args:
@@ -296,7 +293,7 @@ def dataToYaml(data):
 
         pass
 
-    def _var_representer(dumper, data):
+    def _var_representer(dumper: PyrogueDumper, data: Any) -> yaml.ScalarNode:
         """
 
 
@@ -343,7 +340,7 @@ def dataToYaml(data):
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
 
 
-def keyValueUpdate(old, key, value):
+def keyValueUpdate(old, key: str, value: Any) -> None:
     """
 
     Args:
@@ -363,7 +360,7 @@ def keyValueUpdate(old, key, value):
     d[parts[-1]] = value
 
 
-def dictUpdate(old, new):
+def dictUpdate(old: dict, new: dict) -> None:
     """
 
     Args:
@@ -395,7 +392,7 @@ def yamlUpdate(old, new):
     dictUpdate(old, pr.yamlToData(new))
 
 
-def recreate_OrderedDict(name, values):
+def recreate_OrderedDict(name, values: dict) -> odict:
     """
 
     Args:
@@ -408,13 +405,12 @@ def recreate_OrderedDict(name, values):
     return odict(values["items"])
 
 
-def functionWrapper(function, callArgs):
+def functionWrapper(function: Callable, callArgs: List[str]) -> Callable:
     """Creation function wrapper for methods with variable args
 
     Args:
         function :
         callArgs :
-
 
     Returns:
 

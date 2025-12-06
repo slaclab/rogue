@@ -517,7 +517,7 @@ class BaseVariable(pr.Node):
         """ """
         return self.__dependencies
 
-    def addListener(self, listener: Union["pr.BaseVariable", Callable]):
+    def addListener(self, listener: Union["pr.BaseVariable", Callable]) -> None:
         """
         Add a listener Variable or function to call when variable changes as a callback.
         This is useful when chaining variables together. (ADC conversions, etc)
@@ -534,10 +534,10 @@ class BaseVariable(pr.Node):
             if listener not in self.__functions:
                 self.__functions.append(listener)
 
-    def _addListenerCpp(self, func):
+    def _addListenerCpp(self, func) -> None:
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
-    def delListener(self, listener: Union[Type["pr.BaseVariable"], Callable]):
+    def delListener(self, listener: Union[Type["pr.BaseVariable"], Callable]) -> None:
         """
         Remove a listener Variable or function from list of listener functions.
 
@@ -573,8 +573,6 @@ class BaseVariable(pr.Node):
             verify:
             check:
 
-        Returns:
-
         """
         pass
 
@@ -588,8 +586,6 @@ class BaseVariable(pr.Node):
         Args:
             value :
             index (int) :   (Default value = -1)
-
-        Returns:
 
         """
         pass
@@ -649,7 +645,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value, *, useDisp=None):
+    def genDisp(self, value, *, useDisp=None) -> str:
         """Converts the passed raw value into the display representation
 
         Args:
@@ -780,17 +776,17 @@ class BaseVariable(pr.Node):
         """ """
         return str(self.ndType)
 
-    def _setDefault(self):
+    def _setDefault(self) -> None:
         """ """
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
-    def _updatePollInterval(self):
+    def _updatePollInterval(self) -> None:
         """ """
         if self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
-    def _finishInit(self):
+    def _finishInit(self) -> None:
         """ """
         # Set the default value but dont write
         self._setDefault()
@@ -804,7 +800,7 @@ class BaseVariable(pr.Node):
             if self._nativeType is np.ndarray:
                 self._ndType = v.dtype
 
-    def _setDict(self, d, writeEach, modes, incGroups, excGroups, keys):
+    def _setDict(self, d, writeEach, modes, incGroups, excGroups, keys) -> None:
         """
         Args:
             d :
@@ -813,7 +809,6 @@ class BaseVariable(pr.Node):
             incGroups :
             excGroups :
             keys :
-
 
         Returns:
 

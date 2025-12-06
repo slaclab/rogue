@@ -16,7 +16,8 @@ import collections
 import functools as ft
 import threading
 from _collections_abc import Iterable, Callable
-from typing import Any, Dict, List, Optional, Union
+
+from typing import Any, Dict, List, Optional, Union, Type
 
 import pyrogue as pr
 import rogue.interfaces.memory as rim
@@ -314,9 +315,7 @@ class Device(pr.Node, rim.Hub):
     def addInterface(
         self,
         *interfaces: Union[
-            Iterable,
-            rogue.interfaces.stream.Master,
-            rogue.interfaces.memory.Master
+            Iterable, rogue.interfaces.stream.Master, rogue.interfaces.memory.Master
         ],
     ) -> None:
         """
@@ -335,7 +334,7 @@ class Device(pr.Node, rim.Hub):
             else:
                 self._ifAndProto.append(interface)
 
-    def addProtocol(self, *protocols: ) -> None:
+    def addProtocol(self, *protocols) -> None:
         """Add a protocol entity. Also accepts iterables for adding multiple at once.
 
         Args:
@@ -346,7 +345,7 @@ class Device(pr.Node, rim.Hub):
         """
         self.addInterface(protocols)
 
-    def manage(self, *interfaces):
+    def manage(self, *interfaces) -> None:
         """
 
         Args:
@@ -357,7 +356,7 @@ class Device(pr.Node, rim.Hub):
         """
         self._ifAndProto.extend(interfaces)
 
-    def _start(self):
+    def _start(self) -> None:
         """Called recursively from Root.start when starting"""
         for intf in self._ifAndProto:
             if hasattr(intf, "_start"):
@@ -365,7 +364,7 @@ class Device(pr.Node, rim.Hub):
         for d in self.devices.values():
             d._start()
 
-    def _stop(self):
+    def _stop(self) -> None:
         """Called recursively from Root.stop when exiting"""
         for intf in self._ifAndProto:
             if hasattr(intf, "_stop"):
@@ -374,13 +373,13 @@ class Device(pr.Node, rim.Hub):
             d._stop()
 
     @property
-    def running(self):
+    def running(self) -> bool:
         """Check if Device._start() has been called"""
         return self.root is not None and self.root.running
 
     def addRemoteVariables(
         self, number: int, stride: int, pack: bool = False, **kwargs
-    ):
+    ) -> None:
         """Creates an array of RemoteVariables containing {number} elements with memory
         address offset stride of {stride} bytes
 
@@ -473,8 +472,8 @@ class Device(pr.Node, rim.Hub):
     def hideVariables(
         self,
         hidden: bool,
-        variables: Optional[List[Union[str, pr.BaseVariable]]] = None,
-    ):
+        variables: Optional[Any] = None,
+    ) -> None:
         """Hide a list of Variables (or Variable names)
 
         Args:
@@ -493,17 +492,17 @@ class Device(pr.Node, rim.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v].hidden = hidden
 
-    def initialize(self):
+    def initialize(self) -> None:
         """ """
         for key, value in self.devices.items():
             value.initialize()
 
-    def hardReset(self):
+    def hardReset(self) -> None:
         """Called on each Device when a system wide hardReset is generated."""
         for key, value in self.devices.items():
             value.hardReset()
 
-    def countReset(self):
+    def countReset(self) -> None:
         """Called on each Device when a system wide countReset is generated."""
         for key, value in self.devices.items():
             value.countReset()
@@ -531,7 +530,7 @@ class Device(pr.Node, rim.Hub):
         checkEach: bool = False,
         index: int = -1,
         **kwargs,
-    ):
+    ) -> None:
         """Write all of the blocks held by this Device to memory
 
         Args:
@@ -582,7 +581,7 @@ class Device(pr.Node, rim.Hub):
         variable: Any = None,
         checkEach: bool = False,
         **kwargs,
-    ):
+    ) -> None:
         """Perform background verify. Issues a verify transaction to the blocks within a Device.
 
         Args:
@@ -620,7 +619,7 @@ class Device(pr.Node, rim.Hub):
         checkEach: bool = False,
         index: int = -1,
         **kwargs,
-    ):
+    ) -> None:
         """Perform background reads. Issues a read transaction to the blocks within a Device
 
         Args:
@@ -656,7 +655,9 @@ class Device(pr.Node, rim.Hub):
                 for key, value in self.devices.items():
                     value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def checkBlocks(self, *, recurse: bool = True, variable: Any = None, **kwargs):
+    def checkBlocks(
+        self, *, recurse: bool = True, variable: Any = None, **kwargs
+    ) -> None:
         """Check errors in all blocks and generate variable update notifications
 
         Args:
@@ -684,7 +685,7 @@ class Device(pr.Node, rim.Hub):
         recurse: bool = True,
         variable: Any = None,
         checkEach: bool = False,
-    ):
+    ) -> None:
         """Perform a write, verify and check. Useful for committing any stale variables
 
         Args:
@@ -704,7 +705,7 @@ class Device(pr.Node, rim.Hub):
 
     def readAndCheckBlocks(
         self, recurse: bool = True, variable: Any = None, checkEach: bool = False
-    ):
+    ) -> None:
         """Perform a read and check.
 
         Args:
@@ -718,7 +719,7 @@ class Device(pr.Node, rim.Hub):
         self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
-    def _updateBlockEnable(self):
+    def _updateBlockEnable(self) -> None:
         """ """
         for block in self._blocks:
             block.setEnable(self.enable.value() is True)
@@ -726,8 +727,11 @@ class Device(pr.Node, rim.Hub):
         for key, value in self.devices.items():
             value._updateBlockEnable()
 
-    def _buildBlocks(self):
-        """ """
+    def _buildBlocks(self) -> None:
+        """
+        Raises:
+            pr.MemoryError if block size not in range
+        """
         remVars = []
 
         # Use min block size, larger blocks can be pre-created
@@ -842,7 +846,7 @@ class Device(pr.Node, rim.Hub):
             self._blocks.append(newBlock)
             newBlock.setEnable(self.enable.value() is True)
 
-    def _rootAttached(self, parent, root):
+    def _rootAttached(self, parent: Type["pr.Node"], root: pr.Root) -> None:
         """
 
         Args:
@@ -867,7 +871,7 @@ class Device(pr.Node, rim.Hub):
                 for var in nodes:
                     var._default = defValue
 
-    def _setTimeout(self, timeout):
+    def _setTimeout(self, timeout: int) -> None:
         """Set timeout value on all devices & blocks
 
         Args:
@@ -942,7 +946,9 @@ class Device(pr.Node, rim.Hub):
 
         return _decorator
 
-    def genDocuments(self, path, incGroups, excGroups):
+    def genDocuments(
+        self, path: str, incGroups: List[str], excGroups: List[str]
+    ) -> None:
         """
 
         Args:

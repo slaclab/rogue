@@ -18,14 +18,13 @@ import re
 import sys
 from _collections_abc import Iterable
 from collections import OrderedDict as odict
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Type, Union, Tuple, Callable
 
 import pyrogue as pr
 
 
-def logException(log, e):
-    """
-    logs instances of memory error, else, will log the exception.
+def logException(log: logging.Logger, e: Type[Exception]) -> None:
+    """logs instances of memory error, else, will log the exception.
 
     Args:
         log : calls command to log instance of memory error or exception
@@ -40,7 +39,11 @@ def logException(log, e):
         log.exception(e)
 
 
-def logInit(cls=None, name=None, path=None):
+def logInit(
+    cls: Optional[Type["Node"]] = None,
+    name: Optional[str] = None,
+    path: Optional[str] = None,
+) -> logging.Logger:
     """
     logs base classes in order of highest ranking class. Checks values of  cls, name, and path, if their value is not  =None, will do something
 
@@ -50,7 +53,7 @@ def logInit(cls=None, name=None, path=None):
         path : (Default value = None)
 
     Returns:
-        returns logger
+        logger
     """
 
     # Support base class in order of precedence
@@ -198,31 +201,29 @@ class Node(object):
         return f"{self.__class__} - {self.path}"
 
     @property
-    def nodeCount(self):
+    def nodeCount(self) -> int:
         return pr.Node._nodeCount
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Assigns and returns name attribute to class variable"""
         return self._name
 
     @property
-    def description(self):
+    def description(self) -> str:
         """Assigns and returns description attribute to class variable"""
         return self._description
 
     @property
-    def groups(self):
+    def groups(self) -> List[str]:
         """Assigns and returns groups attribute to class variable"""
         return self._groups
 
-    def inGroup(self, group):
+    def inGroup(self, group: Union[str, List[str]]) -> bool:
         """
 
         Args:
             group :
-
-        Returns:
 
         """
         if isinstance(group, list):
@@ -248,7 +249,7 @@ class Node(object):
             or (not self.inGroup(excGroups))
         )
 
-    def addToGroup(self, group):
+    def addToGroup(self, group: str) -> None:
         """Add this node to the passed group, recursive to children
 
         Args:
@@ -263,7 +264,7 @@ class Node(object):
         for k, v in self._nodes.items():
             v.addToGroup(group)
 
-    def removeFromGroup(self, group):
+    def removeFromGroup(self, group: str) -> None:
         """Remove this node from the passed group, not recursive
 
         Args:
@@ -274,12 +275,12 @@ class Node(object):
             self._groups.remove(group)
 
     @property
-    def hidden(self):
+    def hidden(self) -> bool:
         """Assigns and returns hidden attribute to class variable"""
         return self.inGroup("Hidden")
 
     @hidden.setter
-    def hidden(self, value: bool):
+    def hidden(self, value: bool) -> None:
         """Add or remove node from the Hidden group.
 
         Args:
@@ -306,7 +307,7 @@ class Node(object):
         """ """
         return self._guiGroup
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> odict:
         """
         Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.
@@ -332,7 +333,7 @@ class Node(object):
     def __dir__(self):
         return super().__dir__() + [k for k, v in self._nodes.items()]
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple:
         attr = {}
 
         attr["name"] = self._name
@@ -366,16 +367,17 @@ class Node(object):
 
         return (pr.interfaces.VirtualFactory, (attr,))
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         return item in self.nodes.values()
 
-    def add(self, node: Union[Iterable[pr.Node], pr.Node]):
+    def add(self, node: Union[Iterable[pr.Node], pr.Node]) -> None:
         """Add a either a collection of nodes, or a singular node as sub-node to self.
 
         Args:
             node : Nodes to add as a subnodes
 
-        Returns:
+        Raises:
+            NodeError: Covers various conditions of invalid add operations
 
         """
 
@@ -427,7 +429,7 @@ class Node(object):
         # Add to primary list
         self._nodes[node.name] = node
 
-    def _addArrayNode(self, node):
+    def _addArrayNode(self, node: pr.Node) -> None:
         """
 
         Args:
@@ -496,7 +498,7 @@ class Node(object):
 
             sub = sub[k]
 
-    def addNode(self, nodeClass: Type["Node"], **kwargs):
+    def addNode(self, nodeClass: Type["Node"], **kwargs) -> None:
         """
 
         Args:
@@ -508,7 +510,9 @@ class Node(object):
         """
         self.add(nodeClass(**kwargs))
 
-    def addNodes(self, nodeClass: Type["Node"], number: int, stride: int, **kwargs):
+    def addNodes(
+        self, nodeClass: Type["Node"], number: int, stride: int, **kwargs
+    ) -> None:
         """
 
         Args:
@@ -532,7 +536,7 @@ class Node(object):
             )
 
     @property
-    def nodeList(self):
+    def nodeList(self) -> List[pr.Node]:
         """Get a recursive list of nodes."""
         lst = []
         for key, value in self._nodes.items():
@@ -540,7 +544,13 @@ class Node(object):
             lst.extend(value.nodeList)
         return lst
 
-    def getNodes(self, typ, excTyp=None, incGroups=None, excGroups=None):
+    def getNodes(
+        self,
+        typ: Type["Node"],
+        excTyp: Optional[Type["Node"]] = None,
+        incGroups: Optional[List[str]] = None,
+        excGroups: Optional[List[str]] = None,
+    ) -> odict:
         """
         Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node
@@ -551,7 +561,6 @@ class Node(object):
 
         Args:
             typ :
-
             excTyp :  (Default value = None)
             incGroups :  (Default value = None)
             excGroups :  (Default value = None)
@@ -572,12 +581,12 @@ class Node(object):
         )
 
     @property
-    def nodes(self):
+    def nodes(self) -> odict:
         """Get a ordered dictionary of all nodes."""
         return self._nodes
 
     @property
-    def variables(self):
+    def variables(self) -> odict:
         """ """
         return self.getNodes(typ=pr.BaseVariable, excTyp=pr.BaseCommand)
 
@@ -585,7 +594,7 @@ class Node(object):
         self,
         incGroups: Optional[List[str]] = None,
         excGroups: Optional[List[str]] = None,
-    ):
+    ) -> odict:
         """
 
         Args:
@@ -605,7 +614,7 @@ class Node(object):
         )
 
     @property
-    def variableList(self):
+    def variableList(self) -> List[Union[pr.BaseVariable, pr.BaseCommand]]:
         """Get a recursive list of variables and commands."""
         lst = []
         for key, value in self.nodes.items():
@@ -616,7 +625,7 @@ class Node(object):
         return lst
 
     @property
-    def commands(self):
+    def commands(self) -> odict:
         """ """
         return self.getNodes(typ=pr.BaseCommand)
 
@@ -624,7 +633,7 @@ class Node(object):
         self,
         incGroups: Optional[List[str]] = None,
         excGroups: Optional[List[str]] = None,
-    ):
+    ) -> odict:
         """
 
         Args:
@@ -641,7 +650,7 @@ class Node(object):
         )
 
     @property
-    def devices(self):
+    def devices(self) -> odict:
         """ """
         return self.getNodes(pr.Device)
 
@@ -664,7 +673,7 @@ class Node(object):
         return self.getNodes(pr.Device, incGroups=incGroups, excGroups=excGroups)
 
     @property
-    def deviceList(self):
+    def deviceList(self) -> List[pr.Device]:
         """Get a recursive list of devices"""
         lst = []
         for key, value in self.nodes.items():
@@ -683,7 +692,7 @@ class Node(object):
         """ """
         return self._root
 
-    def node(self, name):
+    def node(self, name: str) -> Optional[pr.Node]:
         """
 
         Args:
@@ -698,23 +707,25 @@ class Node(object):
             return None
 
     @property
-    def isDevice(self):
+    def isDevice(self) -> bool:
         """ """
         return self.isinstance(pr.Device)
 
     @property
-    def isVariable(self):
+    def isVariable(self) -> bool:
         """ """
         return self.isinstance(pr.BaseVariable) and (
             not self.isinstance(pr.BaseCommand)
         )
 
     @property
-    def isCommand(self):
+    def isCommand(self) -> bool:
         """ """
         return self.isinstance(pr.BaseCommand)
 
-    def find(self, *, recurse=True, typ=None, **kwargs):
+    def find(
+        self, *, recurse: bool = True, typ: Optional[Type["Node"]] = None, **kwargs
+    ) -> List[pr.Node]:
         """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
@@ -755,7 +766,9 @@ class Node(object):
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
 
-    def callRecursive(self, func, nodeTypes=None, **kwargs):
+    def callRecursive(
+        self, func: Callable, nodeTypes: Optional[List[Type["Node"]]] = None, **kwargs
+    ) -> None:
         """
 
         Args:
@@ -802,7 +815,7 @@ class Node(object):
 
         return closure
 
-    def isinstance(self, typ):
+    def isinstance(self, typ) -> bool:
         """
 
         Args:
@@ -813,7 +826,7 @@ class Node(object):
         """
         return isinstance(self, typ)
 
-    def _rootAttached(self, parent: Type["Node"], root: "pr.Root"):
+    def _rootAttached(self, parent: Type["Node"], root: "pr.Root") -> None:
         """Called once the root node is attached.
 
         Args:
@@ -832,7 +845,7 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _finishInit(self):
+    def _finishInit(self) -> None:
         for key, value in self._nodes.items():
             value._finishInit()
 
@@ -844,7 +857,7 @@ class Node(object):
         incGroups: Optional[List[str]] = None,
         excGroups: Optional[List[str]] = ["Hidden"],
         recurse: bool = True,
-    ):
+    ) -> str:
         """Get current values as yaml data. The yaml string contains a dictionary representation of the tree.
 
         Args:
@@ -870,12 +883,12 @@ class Node(object):
 
     def printYaml(
         self,
-        readFirst=False,
-        modes=["RW", "RO", "WO"],
-        incGroups=None,
-        excGroups=["Hidden"],
-        recurse=False,
-    ):
+        readFirst: bool = False,
+        modes: List[str] = ["RW", "RO", "WO"],
+        incGroups: Optional[List[str]] = None,
+        excGroups: Optional[List[str]] = ["Hidden"],
+        recurse: bool = False,
+    ) -> None:
         print(
             self.getYaml(
                 readFirst=readFirst,
@@ -888,12 +901,12 @@ class Node(object):
 
     def _getDict(
         self,
-        modes=["RW", "RO", "WO"],
-        incGroups=None,
-        excGroups=None,
-        properties=False,
-        recurse=True,
-    ):
+        modes: List[str] = ["RW", "RO", "WO"],
+        incGroups: Optional[List[str]] = None,
+        excGroups: Optional[List[str]] = None,
+        properties: bool = False,
+        recurse: bool = True,
+    ) -> Optional[odict]:
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -934,7 +947,15 @@ class Node(object):
         else:
             return data
 
-    def _setDict(self, d, writeEach, modes, incGroups, excGroups, keys):
+    def _setDict(
+        self,
+        d: dict,
+        writeEach,
+        modes: List[str],
+        incGroups: Optional[List[str]],
+        excGroups: Optional[List[str]],
+        keys: Optional[List[str]],
+    ) -> None:
         """
 
         Args:
@@ -943,7 +964,8 @@ class Node(object):
             modes :
             incGroups :
             excGroups :
-            keys :
+            keys : If keys is not none, someone tried to access this node with array attributes incorrectly.
+                This should only happen in the variable class.
 
         Returns:
 
@@ -977,7 +999,7 @@ class Node(object):
         """
         pass
 
-    def nodeMatch(self, name):
+    def nodeMatch(self, name: str) -> Tuple[List, Optional[List[str]]]:
         """
 
         Args:
@@ -1022,7 +1044,7 @@ class Node(object):
             return _iterateDict(self._anodes[aname], keys), None
 
 
-def _iterateDict(d, keys):
+def _iterateDict(d: dict, keys: Union[str, List, dict]) -> list:
     """
 
     Args:
@@ -1069,7 +1091,7 @@ def _iterateDict(d, keys):
     return retList
 
 
-def genBaseList(cls):
+def genBaseList(cls) -> List[str]:
     """ """
     ret = [str(cls)]
 

@@ -21,7 +21,7 @@ import numpy as np
 import rogue.interfaces.memory as rim
 
 
-def wordCount(bits, wordSize):
+def wordCount(bits: int, wordSize: int) -> int:
     """
     Args:
         bits :
@@ -36,7 +36,7 @@ def wordCount(bits, wordSize):
     return ret
 
 
-def byteCount(bits):
+def byteCount(bits: int) -> int:
     """
     Args:
         bits :
@@ -47,7 +47,7 @@ def byteCount(bits):
     return wordCount(bits, 8)
 
 
-def reverseBits(value, bitSize):
+def reverseBits(value: int, bitSize: int) -> int:
     """
 
     Args:
@@ -65,7 +65,7 @@ def reverseBits(value, bitSize):
     return result
 
 
-def twosComplement(value, bitSize):
+def twosComplement(value: int, bitSize: int) -> int:
     """Compute the 2's complement of int value
 
     Args:

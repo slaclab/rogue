@@ -171,7 +171,7 @@ class BaseCommand(pr.BaseVariable):
             raise e
 
     @pr.expose
-    def call(self, arg=None):
+    def call(self, arg: Optional[str] = None) -> str:
         """
 
         Args:
@@ -183,7 +183,7 @@ class BaseCommand(pr.BaseVariable):
         return self.__call__(arg)
 
     @pr.expose
-    def callDisp(self, arg=None) -> str:
+    def callDisp(self, arg: Optional[str] = None) -> str:
         """
         Args:
             arg (str) :     (Default value = None)
