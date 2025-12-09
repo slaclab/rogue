@@ -115,7 +115,7 @@ class RootLogHandler(logging.Handler):
             try:
                 se = { 'created'     : record.created,
                        'name'        : record.name,
-                       'message'     : str(record.msg),
+                       'message'     : record.getMessage(),
                        'exception'   : None,
                        'traceBack'   : None,
                        'levelName'   : record.levelname,
@@ -244,7 +244,7 @@ class Root(pr.Device):
         self.add(pr.LocalVariable(name='InitAfterConfig', value=False, mode='RW', hidden=True,
             description='Configuration Flag To Execute Initialize after LoadConfig or setYaml'))
 
-        self.add(pr.LocalVariable(name='Time', value=0.0, mode='RO', hidden=True,
+        self.add(pr.LocalVariable(name='Time', value=time.time(), mode='RO', hidden=True,
                                   description='Current Time In Seconds Since EPOCH UTC', groups=['NoSql']))
 
         self.add(pr.LinkVariable(name='LocalTime', value='', mode='RO', groups=['NoStream','NoSql','NoState'],
@@ -397,6 +397,10 @@ class Root(pr.Device):
         if self._timeout != 1.0:
             for key,value in self._nodes.items():
                 value._setTimeout(self._timeout)
+
+        # Detect large timeout
+        if self._timeout > 10.0:
+            self._log.warning(f"Large timeout value of {self._timeout} seconds detected. This may cause unexpected system behavior.")
 
         # Start update thread
         self._running = True

@@ -12,7 +12,6 @@
 # The following environment variables are required for this process:
 # secrets.GH_TOKEN
 # secrets.CONDA_UPLOAD_TOKEN_TAG
-# secrets.DOCKERHUB_TOKEN
 
 name: Rogue Integration
 on: [push]
@@ -48,25 +47,17 @@ jobs:
             echo "Error: Trailing whitespace found in the repository!"
             exit 1
           fi
-          
+
           # Check for tab characters instead of spaces
           if grep -rnI $'\t' --include=\*.{cpp,h,py} .; then
             echo "Error: Tab characters found in the repository! Please use spaces for indentation."
             exit 1
           fi
 
-      # Python Linter
-      - name: Python Linter
+      # Run Linters
+      - name: Python and C++ Linters
         run: |
-          python -m compileall -f ./python/
-          flake8 --count ./python/
-          python -m compileall -f ./tests
-          flake8 --count ./tests/
-
-      # C++ Linter
-      - name: C++ Linter
-        run: |
-          find . -name '*.h' -o -name '*.cpp' | xargs cpplint
+          ./scripts/run_linters.sh
 
       # Rogue
       - name: Build Rogue
@@ -123,7 +114,7 @@ jobs:
 
   small_build_test:
     name: Small Build Test
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     steps:
 
       # This step checks out a copy of your repository.
@@ -134,7 +125,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install libzmq3-dev
+          sudo apt-get install libzmq3-dev libboost-all-dev bzip2 libbz2-dev
 
       # Rogue
       - name: Build Rogue
@@ -166,12 +157,13 @@ jobs:
 
 # ----------------------------------------------------------------------------
 
-  docker_build_lib:
+  docker_build_rogue:
     needs: [full_build_test, small_build_test]
-    uses: slaclab/ruckus/.github/workflows/docker_build_lib.yml@main
+    uses: slaclab/ruckus/.github/workflows/docker_build.yml@main
     with:
-      version: '1.0.0'
+      gh_username: slacrherbst
+      docker_name: rogue
     secrets:
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
 # ----------------------------------------------------------------------------

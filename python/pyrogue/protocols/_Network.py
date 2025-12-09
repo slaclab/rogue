@@ -23,48 +23,49 @@ class UdpRssiPack(pr.Device):
 
     def __init__(self,*, port, host='127.0.0.1', jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, server=False, **kwargs):
         super(self.__class__, self).__init__(**kwargs)
+
+        # Local copy host/port arg values
         self._host = host
         self._port = port
+        self._wait = wait
+        self._jumbo = jumbo
+        self._server = server
 
+        # Check if running as server
         if server:
             self._udp  = rogue.protocols.udp.Server(port,jumbo)
             self._rssi = rogue.protocols.rssi.Server(self._udp.maxPayload()-8)
+
+        # Else running as client
         else:
             self._udp  = rogue.protocols.udp.Client(host,port,jumbo)
             self._rssi = rogue.protocols.rssi.Client(self._udp.maxPayload()-8)
 
+        # Check if Packeterizer Version 2: https://confluence.slac.stanford.edu/x/3nh4DQ
         if packVer == 2:
             self._pack = rogue.protocols.packetizer.CoreV2(False,True,enSsi) # ibCRC = False, obCRC = True
+
+        # Else using Packeterizer Version 1: https://confluence.slac.stanford.edu/x/1oyfD
         else:
             self._pack = rogue.protocols.packetizer.Core(enSsi)
 
+        # Connect the streams together
         self._udp == self._rssi.transport()
         self._rssi.application() == self._pack.transport()
 
-        self._rssi._start()
-
-        if wait and not server:
-            curr = int(time.time())
-            last = curr
-            cnt = 0
-
-            while not self._rssi.getOpen():
-                time.sleep(.0001)
-                curr = int(time.time())
-                if last != curr:
-                    last = curr
-
-                    if jumbo:
-                        cnt += 1
-
-                    if cnt < 10:
-                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (host,port))
-
-                    else:
-                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (host,port))
-
-
-        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+        # Set any user override of defaults
+        defaults = kwargs.get('defaults', {})
+        param_setters = {
+            'locMaxBuffers' : self._rssi.setLocMaxBuffers,
+            'locCumAckTout' : self._rssi.setLocCumAckTout,
+            'locRetranTout' : self._rssi.setLocRetranTout,
+            'locNullTout'   : self._rssi.setLocNullTout,
+            'locMaxRetran'  : self._rssi.setLocMaxRetran,
+            'locMaxCumAck'  : self._rssi.setLocMaxCumAck,
+        }
+        for key, setter in param_setters.items():
+            if key in defaults:
+                setter(defaults[key])
 
         # Add variables
         self.add(pr.LocalVariable(
@@ -288,6 +289,37 @@ class UdpRssiPack(pr.Device):
 
     def countReset(self):
         self._rssi.resetCounters()
+
+    def _start(self):
+        # Start the RSSI connection
+        self._rssi._start()
+
+        if self._wait and not self._server:
+            curr = int(time.time())
+            last = curr
+            cnt = 0
+
+            while not self._rssi.getOpen():
+                time.sleep(.0001)
+                curr = int(time.time())
+                if last != curr:
+                    last = curr
+
+                    if self._jumbo:
+                        cnt += 1
+
+                    if cnt < 10:
+                        self._log.warning("host=%s, port=%d -> Establishing link ..." % (self._host,self._port))
+
+                    else:
+                        self._log.warning('host=%s, port=%d -> Failing to connect using jumbo frames! Be sure to check interface MTU settings with ifconig -a' % (self._host,self._port))
+
+
+        # Sleep is bad, nee to figure this out
+        time.sleep(0.25)
+        self._udp.setRxBufferCount(self._rssi.curMaxBuffers())
+
+        super()._start()
 
     def _stop(self):
         self._rssi._stop()

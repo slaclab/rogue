@@ -9,7 +9,7 @@ The following describes how to compiled a c++ application against the Rogue libr
 The following is an example custom CMakeLists.txt which will setup the environment
 for compiling application code using existing Rogue libraries. It is assumed
 that the ROGUE_DIR environment variable points to the non-standard Rogue
-location if not using an Anaconda environment, Docker or System install.
+location if not using an Miniforge environment, Docker or System install.
 
 This CMakeLists.txt file assumes a **src** sub-directory exists with a single
 .cpp file for each application being compiled. The following commands will

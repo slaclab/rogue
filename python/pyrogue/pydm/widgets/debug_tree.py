@@ -18,7 +18,7 @@ from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from pyrogue.pydm.widgets import PyRogueLineEdit
 
 from pydm.widgets.frame import PyDMFrame
-from pydm.widgets import PyDMLabel, PyDMSpinbox, PyDMPushButton, PyDMEnumComboBox
+from pydm.widgets import PyDMLabel, PyDMPushButton, PyDMEnumComboBox
 
 from qtpy.QtCore import Property, Slot, QEvent, Qt, QPoint
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QHeaderView
@@ -186,17 +186,6 @@ def makeVariableViewWidget(parent):
         w = PyDMEnumComboBox(parent=None, init_channel=parent._path)
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        w.installEventFilter(parent._top)
-
-    elif parent._var.minimum is not None and parent._var.maximum is not None and parent._var.disp == '{}' and (parent._var.mode != 'RO' or parent._var.isCommand):
-        w = PyDMSpinbox(parent=None, init_channel=parent._path)
-        w.precision             = 0
-        w.showUnits             = False
-        w.precisionFromPV       = False
-        w.alarmSensitiveContent = False
-        w.alarmSensitiveBorder  = True
-        w.showStepExponent      = False
-        w.writeOnPress          = True
         w.installEventFilter(parent._top)
 
     else:

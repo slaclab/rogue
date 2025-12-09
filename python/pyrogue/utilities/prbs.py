@@ -104,6 +104,9 @@ class PrbsTx(pyrogue.Device):
         self.add(pyrogue.LocalVariable(name='txSize', description='PRBS Frame Size', units='Bytes',
                                        localSet=self._txSize, mode='RW', value=1024, typeStr='UInt32'))
 
+        self.add(pyrogue.LocalVariable(name='txPeriod', description='Tx Period In Microseconds', units='uS',
+                                       localSet=lambda value: self._prbs.setTxPeriod(value), localGet=lambda: self._prbs.getTxPeriod(), mode='RW', typeStr='UInt32'))
+
         self.add(pyrogue.LocalVariable(name='txEnable', description='PRBS Run Enable', mode='RW',
                                        value=False, localSet=self._txEnable))
 
@@ -168,6 +171,9 @@ class PrbsTx(pyrogue.Device):
 
     def sendCount(self,en):
         self._prbs.sendCount(en)
+
+    def _stop(self):
+        self._prbs.disable()
 
 
 class PrbsPair(pyrogue.Device):

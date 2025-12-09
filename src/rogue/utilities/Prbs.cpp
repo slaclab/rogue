@@ -68,6 +68,7 @@ ru::Prbs::Prbs() {
     genPl_      = true;
     rxLog_      = rogue::Logging::create("prbs.rx");
     txLog_      = rogue::Logging::create("prbs.tx");
+    txPeriod_   = 0;
 
     // Init width = 32
     width_     = 32;
@@ -200,6 +201,7 @@ void ru::Prbs::runThread() {
 
     while (threadEn_) {
         genFrame(txSize_);
+        if ( txPeriod_ > 0 ) usleep(txPeriod_);
     }
 }
 
@@ -282,6 +284,16 @@ double ru::Prbs::getRxBw() {
 //! Get tx rate
 double ru::Prbs::getTxRate() {
     return txRate_;
+}
+
+//! Get tx rate limit
+uint32_t ru::Prbs::getTxPeriod() {
+    return txPeriod_;
+}
+
+//! Set tx rate limit
+void ru::Prbs::setTxPeriod(uint32_t value) {
+    txPeriod_ = value;
 }
 
 //! Get tx bw
@@ -525,6 +537,8 @@ void ru::Prbs::setup_python() {
         .def("getTxErrors", &ru::Prbs::getTxErrors)
         .def("getTxCount", &ru::Prbs::getTxCount)
         .def("getTxBytes", &ru::Prbs::getTxBytes)
+        .def("getTxPeriod", &ru::Prbs::getTxPeriod)
+        .def("setTxPeriod", &ru::Prbs::setTxPeriod)
         .def("getTxRate", &ru::Prbs::getTxRate)
         .def("getTxBw", &ru::Prbs::getTxBw)
         .def("checkPayload", &ru::Prbs::checkPayload)

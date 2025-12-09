@@ -14,6 +14,8 @@ import pyrogue as pr
 import pyrogue.interfaces.simulation
 import rogue.interfaces.memory
 
+import time
+
 #rogue.Logging.setLevel(rogue.Logging.Warning)
 #import logging
 #logger = logging.getLogger('pyrogue')
@@ -39,7 +41,7 @@ class EnumDev(pr.Device):
             },
         ))
 
-        self.add(pr.RemoteVariable(
+        self.add(pr.LocalVariable(
             name         = 'Status',
             description  = 'ENUM Test Field',
             offset       = 0x4,
@@ -85,6 +87,12 @@ class DummyTree(pr.Root):
             offset     = 0x0,
             memBase    = mc,
         ))
+
+    def start(self, **kwargs):
+        super().start(**kwargs)
+
+        # Allow time for TCP connection to establish
+        time.sleep(1.0)
 
 def test_enum():
 

@@ -9,7 +9,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 # ----------------------------------------------------------------------------
-# See notes for compiling on macros under anaconda:
+# See notes for compiling on macros under miniforge:
 #    https://conda.io/docs/user-guide/tasks/build-packages/compiler-tools.html
 
 # Add support for building in conda environment
@@ -37,6 +37,7 @@ enable_language(CXX)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wno-deprecated")
 add_definitions(-D__STDC_FORMAT_MACROS)
 
+SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_SKIP_BUILD_RPATH TRUE)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
 SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH FALSE)
@@ -66,7 +67,7 @@ if ( NOT NO_PYTHON )
    set(Boost_USE_MULTITHREADED ON)
    set(Boost_NO_BOOST_CMAKE ON)
 
-   # Hint for boost on anaconda
+   # Hint for boost on miniforge
    if (DEFINED ENV{CONDA_PREFIX})
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
    endif()
@@ -225,7 +226,6 @@ include_directories(system ${Python3_INCLUDE_DIRS})
 include_directories(system ${Python3_NumPy_INCLUDE_DIRS})
 include_directories(system ${ZeroMQ_INCLUDE_DIR})
 include_directories(system ${BZIP2_INCLUDE_DIR})
-include_directories(system ${EPICS_INCLUDES})
 
 if (APPLE)
    SET(CMAKE_SHARED_LIBRARY_SUFFIX ".dylib")
@@ -248,7 +248,6 @@ set_target_properties(rogue-core-shared PROPERTIES VERSION ${ROGUE_VERSION} SOVE
 
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${Boost_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${ZeroMQ_LIBRARY})
-TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${EPICS_LIBRARIES})
 TARGET_LINK_LIBRARIES(rogue-core-shared PUBLIC ${BZIP2_LIBRARIES})
 
 # Do not link directly against python in mac os
@@ -267,7 +266,6 @@ if(STATIC_LIB)
     # Link rogue core to boost, python and bzip
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Boost_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${ZeroMQ_LIBRARY})
-    TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${EPICS_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${BZIP2_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC ${Python3_LIBRARIES})
     TARGET_LINK_LIBRARIES(rogue-core-static PUBLIC rt)
@@ -308,7 +306,7 @@ set(CONF_INCLUDE_DIRS ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Setup configuration file
 if ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
-   set(CONF_LIBRARIES PUBLIC rogue-core)
+   set(CONF_LIBRARIES rogue-core)
 else()
    if (APPLE)
       set(CONF_LIBRARIES ${CMAKE_INSTALL_LIBDIR}/librogue-core.${ROGUE_SOVER}.dylib)
@@ -375,7 +373,7 @@ if (NOT NO_PYTHON)
       install(DIRECTORY ${PROJECT_SOURCE_DIR}/python/pyrogue DESTINATION ${ROGUE_DIR}/python FILES_MATCHING PATTERN "*.py")
       install(TARGETS rogue LIBRARY DESTINATION ${ROGUE_DIR}/python)
 
-   # Use pip with python3 for system or anaconda
+   # Use pip with python3 for system or miniforge
    elseif ((${ROGUE_INSTALL} STREQUAL "system") OR (${ROGUE_INSTALL} STREQUAL "conda"))
       install(CODE "execute_process(COMMAND pip3 install ${PROJECT_BINARY_DIR}/)")
    endif()

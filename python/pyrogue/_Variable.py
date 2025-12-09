@@ -30,7 +30,108 @@ class VariableError(Exception):
     pass
 
 
-def VariableWait(varList, testFunction, timeout=0):
+class VariableWaitClass(object):
+    """
+    Wait for a number of variable conditions to be true.
+    Pass a variable or list of variables, and a test function.
+    The test function is passed a list containing the current
+    variableValue state indexed by position as passed in the wait list.
+    Each variableValue entry has an additional field updated which indicates
+    if the variable has refreshed while waiting. This can be used to trigger
+    on any update to the variable, regardless of value.
+
+    i.e. w = VariableWaitClass([root.device.var1,root.device.var2],
+                                lambda varValues: varValues[0].value >= 10 and \
+                                            varValues[1].value >= 20)
+
+         w.wait()
+
+    i.e. w = VariableWaitClass([root.device.var1,root.device.var2],
+                                lambda varValues: varValues[0].updated and \
+                                            varValues[1].updated)
+
+         w.wait()
+
+    If no function is provided, the class will return when all variables are updated,
+    regardless of value.
+
+    The routine wait class can be used multiple times with subsequent calls using arm() to trigger:
+
+        w.wait()
+        w.arm()
+        w.wait()
+
+    getValues() can be called to get the final version of the tiles after the test passed.
+
+    Parameters
+    ----------
+    varList :
+        List of variables to monitor.
+
+    testFunction :
+        Function which will test the state of the values, or None to trigger on update
+
+    timeout : int
+         (Default value = 0)
+
+    """
+    def __init__(self, varList, testFunction=None, timeout=0):
+        self._values   = odict()
+        self._updated  = odict()
+        self._cv       = threading.Condition()
+        self._testFunc = testFunction
+        self._timeout  = timeout
+
+        # Convert single variable to a list
+        if not isinstance(varList,list):
+            self._vlist = [varList]
+        else:
+            self._vlist = varList
+
+        self.arm()
+
+    def arm(self):
+        with self._cv:
+            for v in self._vlist:
+                v.addListener(self._varUpdate)
+                self._values[v.path]  = v.getVariableValue(read=False)
+                self._updated[v.path] = False
+
+    def wait(self):
+        start  = time.time()
+
+        with self._cv:
+            ret = self._check()
+
+            # Run until timeout or all conditions have been met
+            while (not ret) and ((self._timeout == 0) or ((time.time()-start) < self._timeout)):
+                self._cv.wait(0.5)
+                ret = self._check()
+
+            # Cleanup
+            for v in self._vlist:
+                v.delListener(self._varUpdate)
+
+        return ret
+
+    def get_values(self):
+        return {k: self._values[k] for k in self._vlist}
+
+    def _varUpdate(self, path, varValue):
+        with self._cv:
+            if path in self._values:
+                self._values[path] = varValue
+                self._updated[path] = True
+                self._cv.notify()
+
+    def _check(self):
+        if self._testFunc is not None:
+            return (self._testFunc(list(self._values.values())))
+        else:
+            return (all(self._updated.values()))
+
+
+def VariableWait(varList, testFunction=None, timeout=0):
     """
     Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
@@ -48,81 +149,27 @@ def VariableWait(varList, testFunction, timeout=0):
                           lambda varValues: varValues[0].updated and \
                                             varValues[1].updated)
 
+    If no function is provided, the class will return when all variables are updated,
+    regardless of value.
+
     Parameters
     ----------
     varList :
+        List of variables to monitor.
 
     testFunction :
+        Function which will test the state of the values, or None to trigger on update
 
     timeout : int
          (Default value = 0)
 
     Returns
     -------
+        True if conditions were met, false if there was a timeout
 
     """
-
-    # Container class
-    class varStates(object):
-        def __init__(self):
-            self.vlist  = odict()
-            self.cv     = threading.Condition()
-
-        # Method to handle variable updates callback
-        def varUpdate(self,path,varValue):
-            """
-
-            Parameters
-            ----------
-            path :
-
-            varValue :
-
-
-            Returns
-            -------
-            ret
-
-            """
-            with self.cv:
-                if path in self.vlist:
-                    self.vlist[path] = varValue
-                    self.vlist[path].updated = True
-                    self.cv.notify()
-
-    # Convert single variable to a list
-    if not isinstance(varList,list):
-        varList = [varList]
-
-    # Setup tracking
-    states = varStates()
-
-    # Add variable to list and register handler
-    with states.cv:
-        for v in varList:
-            v.addListener(states.varUpdate)
-            states.vlist[v.path] = v.getVariableValue(read=False)
-            states.vlist[v.path].updated = False
-
-    # Go into wait loop
-    ret    = False
-    start  = time.time()
-
-    with states.cv:
-
-        # Check current state
-        ret = testFunction(list(states.vlist.values()))
-
-        # Run until timeout or all conditions have been met
-        while (not ret) and ((timeout == 0) or ((time.time()-start) < timeout)):
-            states.cv.wait(0.5)
-            ret = testFunction(list(states.vlist.values()))
-
-        # Cleanup
-        for v in varList:
-            v.delListener(states.varUpdate)
-
-    return ret
+    wc = VariableWaitClass(varList, testFunction, timeout)
+    return wc.wait()
 
 
 class VariableValue(object):
@@ -412,7 +459,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def setPollInterval(self, interval):
-        print(f'{self.path}.setPollInterval({interval})')
+        self._log.debug(f'{self.path}.setPollInterval({interval}]')
         self._pollInterval = interval
         self._updatePollInterval()
 
@@ -475,8 +522,12 @@ class BaseVariable(pr.Node):
         -------
 
         """
-        if listener in self.__functions:
-            self.__functions.remove(listener)
+        if isinstance(listener, BaseVariable):
+            if listener in self._listeners:
+                self._listeners.remove(listener)
+        else:
+            if listener in self.__functions:
+                self.__functions.remove(listener)
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
@@ -826,7 +877,12 @@ class BaseVariable(pr.Node):
 
         # Standard set
         elif self._mode in modes:
-            self.setDisp(d,writeEach)
+            # Array variables can be set with a dict of index/value pairs
+            if isinstance(d, dict):
+                for k,v in d.items():
+                    self.setDisp(v, index=k, write=writeEach)
+            else:
+                self.setDisp(d,writeEach)
         else:
             self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
@@ -1374,7 +1430,12 @@ class LocalVariable(BaseVariable):
                               pollInterval=pollInterval,updateNotify=updateNotify, bulkOpEn=bulkOpEn,
                               guiGroup=guiGroup, **kwargs)
 
-        self._block = pr.LocalBlock(variable=self,localSet=localSet,localGet=localGet,value=self._default)
+        self._block = pr.LocalBlock(variable=self,
+                                    localSet=localSet,
+                                    localGet=localGet,
+                                    minimum=minimum,
+                                    maximum=maximum,
+                                    value=self._default)
 
     @pr.expose
     def set(self, value, *, index=-1, write=True, verify=True, check=True):
@@ -1409,9 +1470,7 @@ class LocalVariable(BaseVariable):
             self._block.set(self, value, index)
 
             if write:
-                self._parent.writeBlocks(force=True, recurse=False, variable=self, index=index)
-                self._parent.verifyBlocks(recurse=False, variable=self)
-                self._parent.checkBlocks(recurse=False, variable=self)
+                self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1442,8 +1501,7 @@ class LocalVariable(BaseVariable):
 
         try:
             self._block.set(self, value, index)
-
-            pr.startTransaction(self._block, type=rim.Post, forceWr=False, checkEach=True, variable=self, index=index)
+            self._block._checkTransaction()
 
         except Exception as e:
             pr.logException(self._log,e)
@@ -1474,10 +1532,8 @@ class LocalVariable(BaseVariable):
 
         """
         try:
-            if read:
-                self._parent.readBlocks(recurse=False, variable=self, index=index)
-                if check:
-                    self._parent.checkBlocks(recurse=False, variable=self)
+            if read and check:
+                self._block._checkTransaction()
 
             return self._block.get(self,index)
 
@@ -1550,11 +1606,16 @@ class LinkVariable(BaseVariable):
                  dependencies=None,
                  linkedSet=None,
                  linkedGet=None,
+                 minimum=None,
+                 maximum=None,
                  **kwargs): # Args passed to BaseVariable
 
         # Set and get functions
         self._linkedGet = linkedGet
         self._linkedSet = linkedSet
+
+        if minimum is not None or maximum is not None:
+            raise VariableError("Invalid use of min or max values with LinkVariable")
 
         if variable is not None:
             # If directly linked to a variable, use it's value and set by defualt
