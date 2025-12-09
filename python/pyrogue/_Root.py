@@ -115,7 +115,7 @@ class RootLogHandler(logging.Handler):
             try:
                 se = { 'created'     : record.created,
                        'name'        : record.name,
-                       'message'     : str(record.msg),
+                       'message'     : record.getMessage(),
                        'exception'   : None,
                        'traceBack'   : None,
                        'levelName'   : record.levelname,
