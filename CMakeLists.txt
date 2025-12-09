@@ -71,38 +71,28 @@ if ( NOT NO_PYTHON )
       set(BOOST_ROOT $ENV{CONDA_PREFIX})
    endif()
 
-   # libboost_python3.7 style libraries
-   message("Looking for libboost_python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-   FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
+   # Loop through potential Boost Python component names
+   set(BOOST_PYTHON_CANDIDATES
+       "python${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"      # e.g. python38
+       "python${Python3_VERSION_MAJOR}"                              # e.g. python3
+       "python"                                                      # e.g. python
+       "python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"   # e.g. python-py38
+       "python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}"  # e.g. python3-py38
+   )
 
-   # libboost_python3 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python${Python3_VERSION_MAJOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python${Python3_VERSION_MAJOR})
-   endif()
-
-   # libboost_python style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS system thread python)
-   endif()
-
-   # libboost_python-py37 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-   endif()
-
-   # libboost_python3-py37 style libraries
-   if (NOT Boost_FOUND)
-      message("Looking for libboost_python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR}")
-      FIND_PACKAGE(Boost 1.58 QUIET COMPONENTS python3-py${Python3_VERSION_MAJOR}${Python3_VERSION_MINOR})
-   endif()
+   foreach(COMPONENT_NAME ${BOOST_PYTHON_CANDIDATES})
+       if(NOT Boost_FOUND)
+           message(STATUS "Checking for Boost component: ${COMPONENT_NAME}")
+           find_package(Boost QUIET COMPONENTS ${COMPONENT_NAME})
+       else()
+           break()
+       endif()
+   endforeach()
 
    # Nothing worked
    if (NOT Boost_FOUND)
       message("")
-      message(FATAL_ERROR "Failed to find boost libraries!")
+      message(FATAL_ERROR "Failed to find boost libraries! Tried: ${BOOST_PYTHON_CANDIDATES}")
    endif()
 
 else()
