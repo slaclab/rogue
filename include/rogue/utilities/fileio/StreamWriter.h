@@ -36,12 +36,15 @@
 
 #include <stdint.h>
 
+#include <chrono>
 #include <condition_variable>
+#include <deque>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <thread>
+#include <utility>
 
 #include "rogue/EnableSharedFromThis.h"
 #include "rogue/Logging.h"
@@ -100,6 +103,12 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
     //! Total number of frames in file
     uint32_t frameCount_;
 
+    //! Bytes recorded in the last one second window
+    uint64_t bandwidthBytes_;
+
+    //! Time tagged byte counts for bandwidth calculation
+    std::deque<std::pair<std::chrono::steady_clock::time_point, uint32_t>> bandwidthHistory_;
+
     //! Internal method for file writing
     void intWrite(void* data, uint32_t size);
 
@@ -108,6 +117,12 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
 
     //! Flush file
     void flush();
+
+    //! Update bandwidth accounting
+    void recordBandwidth(uint32_t size);
+
+    //! Remove stale bandwidth samples
+    void pruneBandwidth(std::chrono::steady_clock::time_point now);
 
     //! Write raw data
     bool raw_;
@@ -165,6 +180,9 @@ class StreamWriter : public rogue::EnableSharedFromThis<rogue::utilities::fileio
 
     //! Get current file size
     uint64_t getCurrentSize();
+
+    //! Get instantaneous bandwidth in bytes per second
+    double getBandwidth();
 
     //! Get current frame count
     uint32_t getFrameCount();
