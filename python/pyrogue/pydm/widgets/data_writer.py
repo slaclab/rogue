@@ -114,6 +114,11 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
+        w = PyDMLabel(parent=None, init_channel=self._path + '.Bandwidth/disp')
+        w.alarmSensitiveContent = False
+        w.alarmSensitiveBorder  = True
+        fl.addRow('Bandwidth:',w)
+
         w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
