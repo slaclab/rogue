@@ -128,7 +128,7 @@ class DataWriter(PyDMFrame):
         units = QLabel('Bytes/sec')
         units.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         bwLayout.addWidget(units)
-        bwLayout.addStretch(1)
+        bwLayout.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
 
         fl.addRow('Bandwidth:',bwWidget)
 
