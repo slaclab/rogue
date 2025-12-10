@@ -15,10 +15,10 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton, PyDMLabel
-from pyrogue.pydm.widgets import PyRogueLineEdit, PyRogueLabel
+from pyrogue.pydm.widgets import PyRogueLineEdit
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Slot
-from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
+from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton, QWidget, QLabel
 from qtpy.QtWidgets import QFormLayout, QGroupBox, QFileDialog
 import datetime
 
@@ -114,10 +114,23 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyRogueLabel(parent=None, init_channel=self._path + '.Bandwidth')
+        bwWidget = QWidget()
+        bwLayout = QHBoxLayout()
+        bwLayout.setContentsMargins(0,0,0,0)
+        bwLayout.setSpacing(4)
+        bwWidget.setLayout(bwLayout)
+
+        w = PyDMLabel(parent=None, init_channel=self._path + '.Bandwidth/disp')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
-        fl.addRow('Bandwidth:',w)
+        bwLayout.addWidget(w)
+
+        units = QLabel('Bytes/sec')
+        units.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        bwLayout.addWidget(units)
+        bwLayout.addStretch(1)
+
+        fl.addRow('Bandwidth:',bwWidget)
 
         w = PyDMLabel(parent=None, init_channel=self._path + '.TotalSize/disp')
         w.alarmSensitiveContent = False
