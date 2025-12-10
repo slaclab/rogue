@@ -99,6 +99,17 @@ class DataWriter(pr.Device):
             description='Total bytes written.'))
 
         self.add(pr.LocalVariable(
+            name='Bandwidth',
+            mode='RO',
+            value=0.0,
+            typeStr='Float64',
+            pollInterval=1,
+            localGet=self._getBandwidth,
+            units='Bytes/sec',
+            disp='{:,.3f}',
+            description='Instantaneous write bandwidth in bytes per second.'))
+
+        self.add(pr.LocalVariable(
             name='FrameCount',
             mode='RO',
             value=0,
@@ -161,6 +172,10 @@ class DataWriter(pr.Device):
     def _getTotalSize(self):
         """get total file size. Override in sub-class"""
         return 0
+
+    def _getBandwidth(self, dev=None, var=None):
+        """get instantaneous bandwidth. Override in sub-class"""
+        return 0.0
 
     def _getFrameCount(self):
         """get current file frame count. Override in sub-class"""

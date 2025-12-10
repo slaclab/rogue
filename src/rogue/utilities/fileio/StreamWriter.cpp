@@ -32,6 +32,7 @@
 
 #include "rogue/utilities/fileio/StreamWriter.h"
 
+#include <chrono>
 #include <fcntl.h>
 #include <inttypes.h>
 #include <stdint.h>
@@ -79,6 +80,7 @@ void ruf::StreamWriter::setup_python() {
         .def("getChannel", &ruf::StreamWriter::getChannel)
         .def("getTotalSize", &ruf::StreamWriter::getTotalSize)
         .def("getCurrentSize", &ruf::StreamWriter::getCurrentSize)
+        .def("getBandwidth", &ruf::StreamWriter::getBandwidth)
         .def("getFrameCount", &ruf::StreamWriter::getFrameCount)
         .def("waitFrameCount", &ruf::StreamWriter::waitFrameCount);
 #endif
@@ -94,6 +96,7 @@ ruf::StreamWriter::StreamWriter() {
     totSize_    = 0;
     buffer_     = NULL;
     frameCount_ = 0;
+    bandwidthBytes_ = 0;
     currBuffer_ = 0;
     dropErrors_ = false;
     isOpen_     = false;
@@ -134,6 +137,8 @@ void ruf::StreamWriter::open(std::string file) {
     totSize_    = 0;
     currSize_   = 0;
     frameCount_ = 0;
+    bandwidthBytes_ = 0;
+    bandwidthHistory_.clear();
     currBuffer_ = 0;
 
     // Iterate over all channels and reset their frame counts
@@ -150,6 +155,8 @@ void ruf::StreamWriter::close() {
     std::lock_guard<std::mutex> lock(mtx_);
     isOpen_ = false;
     flush();
+    bandwidthBytes_ = 0;
+    bandwidthHistory_.clear();
     if (fd_ >= 0) ::close(fd_);
     fd_ = -1;
 }
@@ -231,6 +238,22 @@ uint64_t ruf::StreamWriter::getCurrentSize() {
     return (currSize_ + currBuffer_);
 }
 
+//! Get instantaneous bandwidth in bytes per second over the last second
+double ruf::StreamWriter::getBandwidth() {
+    rogue::GilRelease noGil;
+    std::lock_guard<std::mutex> lock(mtx_);
+
+    auto now = std::chrono::steady_clock::now();
+    pruneBandwidth(now);
+
+    if (bandwidthHistory_.empty()) return (0.0);
+
+    auto windowStart = bandwidthHistory_.front().first;
+    double seconds   = std::chrono::duration<double>(now - windowStart).count();
+    if (seconds <= 0.0) return (static_cast<double>(bandwidthBytes_));
+    return (static_cast<double>(bandwidthBytes_) / seconds);
+}
+
 //! Get current frame count
 uint32_t ruf::StreamWriter::getFrameCount() {
     return (frameCount_);
@@ -264,6 +287,22 @@ bool ruf::StreamWriter::waitFrameCount(uint32_t count, uint64_t timeout) {
     }
 
     return (frameCount_ >= count);
+}
+
+void ruf::StreamWriter::pruneBandwidth(std::chrono::steady_clock::time_point now) {
+    auto cutoff = now - std::chrono::seconds(1);
+    while (!bandwidthHistory_.empty() && bandwidthHistory_.front().first < cutoff) {
+        bandwidthBytes_ -= bandwidthHistory_.front().second;
+        bandwidthHistory_.pop_front();
+    }
+}
+
+void ruf::StreamWriter::recordBandwidth(uint32_t size) {
+    if (size == 0) return;
+    auto now = std::chrono::steady_clock::now();
+    pruneBandwidth(now);
+    bandwidthHistory_.emplace_back(now, size);
+    bandwidthBytes_ += size;
 }
 
 //! Write data to file. Called from StreamWriterChannel
@@ -333,6 +372,8 @@ void ruf::StreamWriter::intWrite(void* data, uint32_t size) {
         std::memcpy(buffer_ + currBuffer_, data, size);
         currBuffer_ += size;
     }
+
+    recordBandwidth(size);
 }
 
 //! Check file size for next write
