@@ -23,13 +23,13 @@ import time
 
 
 class SystemLog(PyDMFrame):
-    def __init__(self, parent=None, init_channel=None, 
+    def __init__(self, parent=None, init_channel=None,
                  title="System Log (20 most recent entries)"):
         PyDMFrame.__init__(self, parent, init_channel)
 
         self._systemLog = None
         self._node = None
-        self._title = title 
+        self._title = title
 
     def connection_changed(self, connected):
         build = (self._node is None) and (self._connected != connected and connected is True)
