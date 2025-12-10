@@ -105,6 +105,8 @@ class DataWriter(pr.Device):
             typeStr='Float64',
             pollInterval=1,
             localGet=self._getBandwidth,
+            units='Bytes/sec',
+            disp='{:0.3f}',
             description='Instantaneous write bandwidth in bytes per second.'))
 
         self.add(pr.LocalVariable(

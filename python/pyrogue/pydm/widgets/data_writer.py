@@ -15,7 +15,7 @@
 
 from pydm.widgets.frame import PyDMFrame
 from pydm.widgets import PyDMPushButton, PyDMLabel
-from pyrogue.pydm.widgets import PyRogueLineEdit
+from pyrogue.pydm.widgets import PyRogueLineEdit, PyRogueLabel
 from pyrogue.pydm.data_plugins.rogue_plugin import nodeFromAddress
 from qtpy.QtCore import Qt, Slot
 from qtpy.QtWidgets import QVBoxLayout, QHBoxLayout, QPushButton
@@ -114,7 +114,7 @@ class DataWriter(PyDMFrame):
         w.alarmSensitiveBorder  = True
         fl.addRow('Frame Count:',w)
 
-        w = PyDMLabel(parent=None, init_channel=self._path + '.Bandwidth/disp')
+        w = PyRogueLabel(parent=None, init_channel=self._path + '.Bandwidth')
         w.alarmSensitiveContent = False
         w.alarmSensitiveBorder  = True
         fl.addRow('Bandwidth:',w)
