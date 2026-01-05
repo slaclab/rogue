@@ -154,7 +154,7 @@ def VariableWait(varList, testFunction=None, timeout=0):
 
     If no function is provided, the class will return when all variables are updated,
     regardless of value.
-    
+
     Args:
         varList : List of variables to monitor.
         testFunction : Function which will test the state of the values, or None to trigger on update
