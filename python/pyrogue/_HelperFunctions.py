@@ -19,7 +19,7 @@ import sys
 import time
 import zipfile
 from collections import OrderedDict as odict
-from typing import List, Optional, Type, Union, Any, Callable, Iterable
+from typing import List, Optional, Type, Union, Any, Callable
 
 import yaml
 

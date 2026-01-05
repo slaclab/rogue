@@ -15,7 +15,7 @@
 import collections
 import functools as ft
 import threading
-from _collections_abc import Iterable, Callable
+from _collections_abc import Iterable
 
 from typing import Any, Dict, List, Optional, Union, Type
 
