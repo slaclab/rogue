@@ -15,7 +15,7 @@ The following packages are required to build the rogue library:
 
 * cmake   >= 3.15
 * Boost   >= 1.58
-* python3 >= 3.7
+* python3 >= 3.9
 * bz2
 
 Package Manager Install
@@ -44,6 +44,7 @@ RHEL-based systems (E.g. Rocky 9)
    $ sudo dnf install -y cmake
    $ sudo dnf install -y python3
    $ sudo dnf install -y boost-devel
+   $ sudo dnf install -y boost-python3-devel
    $ sudo dnf install -y bzip2-devel
    $ sudo dnf install -y python3-pip
    $ sudo dnf install -y git

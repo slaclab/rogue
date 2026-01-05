@@ -72,6 +72,9 @@ class StreamWriter(pyrogue.DataWriter):
 
         return self._writer.getTotalSize()
 
+    def _getBandwidth(self,dev,var):
+        return self._writer.getBandwidth()
+
     def _getFrameCount(self,dev,var):
         return self._writer.getFrameCount()
 

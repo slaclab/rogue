@@ -36,8 +36,8 @@ You will want to replace the file `sources/meta-user/recipes-apps/rogue/rogue.bb
    # rogue recipe for Yocto
    #
 
-   ROGUE_VERSION = "6.6.1"
-   ROGUE_MD5SUM  = "0c0a5d4c32ab2cf5bca46edb92d9e13e"
+   ROGUE_VERSION = "6.7.0"
+   ROGUE_MD5SUM  = "51e6797e9f3fb61b22ad0804a471b760"
 
    SUMMARY = "Recipe to build Rogue"
    HOMEPAGE ="https://github.com/slaclab/rogue"
