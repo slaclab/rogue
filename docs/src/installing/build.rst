@@ -94,7 +94,7 @@ Local Install
    $ cmake .. -DROGUE_INSTALL=local
    $ make -j$(nproc)
    $ make install
-   $ source ../setup_rogue.sh (or .csh)
+   $ source ../setup_rogue.sh (or .csh, or .fish)
 
 Custom Install
 --------------
@@ -111,7 +111,7 @@ Make sure you have permission to install into the passed install directory, if n
    $ cmake .. -DROGUE_INSTALL=custom -DROGUE_DIR=/path/to/custom/dir
    $ make -j$(nproc)
    $ make install
-   $ source /path/to/custom/dir/setup_rogue.sh (or .csh)
+   $ source /path/to/custom/dir/setup_rogue.sh (or .csh, or .fish)
 
 
 System Install
