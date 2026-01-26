@@ -22,7 +22,7 @@ Package Manager Install
 -----------------------
 
 Debian-based systems (Ubuntu 22.04 or later)
-########################
+############################################
 
 .. code::
 
@@ -37,7 +37,7 @@ Debian-based systems (Ubuntu 22.04 or later)
    $ sudo apt install python3-pyqt5.qtsvg
 
 RHEL-based systems (E.g. Rocky 9)
-########################
+#################################
 
 .. code::
 

@@ -4,14 +4,17 @@
 Node 
 ====
 
-The Node class is the base class of all devices ...
+The Node class is the base class of all devices-this includes variables, commands, and more.
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Types Of Nodes In The PyRogue Tree:
+* :ref:`pyrogue_tree_node_root`
+* :ref:`pyrogue_tree_node_device`
+* :ref:`pyrogue_tree_node_command`
+* :ref:`pyrogue_tree_node_variable`
 
-   root/index
-   device/index
-   command/index
-   variable/index
+Node Class Description
+======================
+.. autoclass:: pyrogue.Node
+   :members:
+   :member-order: bysource
+
 
