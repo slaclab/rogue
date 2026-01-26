@@ -1,9 +1,9 @@
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 #  Description:
 #       PyRogue base module - Command Class
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -11,77 +11,43 @@
 # No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+import rogue.interfaces.memory
+import pyrogue as pr
 import inspect
 import threading
-from _collections_abc import Callable
-from typing import Any, Dict, List, Optional, Type, Union
-
-import pyrogue as pr
-import rogue.interfaces.memory
 
 
 class CommandError(Exception):
     """
     Exception for command errors.
     """
-
     pass
 
 
 class BaseCommand(pr.BaseVariable):
-    """Abstract base class for all other Command Classses.
-    All Commands are sub-classes of BaseVariable and support all Variable attributes.
+    """ """
 
-    Commands are tasks applied to devices. Includes a number of commonly used commands
-    and sequence generators.
+    def __init__(self, *,
+                 name=None,
+                 description="",
+                 value=0,
+                 retValue=None,
+                 enum=None,
+                 hidden=False,
+                 groups=None,
+                 minimum=None,
+                 maximum=None,
+                 function=None,
+                 background=False,
+                 guiGroup=None,
+                 **kwargs):
 
-    Args:
-        name: The name of the variable
-        description: A brief description of the variable
-        value: An optional value to determine the arg type
-        retValue:
-        enum: A dictionary of key,value pairs for args which have a set of selections
-        hidden: Whether the variable is visible to external classes
-        groups: Groups
-        minimum: Optional minimum value for a arg with a set range
-        maximum: Optional maximum value for a arg with a set range
-        function: Function which is called when the command is executed. Must follow template -
-            function(device containing the variable, command generating the call, arg passed by command executrion).
-        background: Background
-        guiGroup: The GUI group
-
-    Attributes:
-        _functionWrap (object) : A wrapper for the functino variable. Includes 'root', 'dev', 'cmd', 'arg'.
-        _thread (object) : The thread
-        _lock (object) : The lock for the thread
-        _retDisp (object) : Ret Disp
-        _retTypeStr (str) :Ret type string
-        _arg (bool) : Args flag
-    """
-
-    def __init__(
-        self,
-        *,
-        name: Optional[str] = None,
-        description: str = "",
-        value: Any = 0,
-        retValue: Union[None, List, Any] = None,
-        enum: Optional[Dict] = None,
-        hidden: bool = False,
-        groups: Union[List[str], str, None] = None,
-        minimum: Optional[int] = None,
-        maximum: Optional[int] = None,
-        function: Optional[Callable] = None,
-        background: bool = False,
-        guiGroup: Optional[str] = None,
-        **kwargs,
-    ):
         pr.BaseVariable.__init__(
             self,
             name=name,
             description=description,
-            mode="WO",
+            mode='WO',
             value=value,
             enum=enum,
             hidden=hidden,
@@ -90,13 +56,10 @@ class BaseCommand(pr.BaseVariable):
             maximum=maximum,
             bulkOpEn=False,
             guiGroup=guiGroup,
-            **kwargs,
-        )
+            **kwargs)
 
         self._function = function
-        self._functionWrap = pr.functionWrapper(
-            function=self._function, callArgs=["root", "dev", "cmd", "arg"]
-        )
+        self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
 
         self._thread = None
         self._lock = threading.Lock()
@@ -105,13 +68,13 @@ class BaseCommand(pr.BaseVariable):
         if retValue is None:
             self._retTypeStr = None
         elif isinstance(retValue, list):
-            self._retTypeStr = f"List[{retValue[0].__class__.__name__}]"
+            self._retTypeStr = f'List[{retValue[0].__class__.__name__}]'
         else:
             self._retTypeStr = retValue.__class__.__name__
 
         # args flag
         try:
-            self._arg = "arg" in inspect.getfullargspec(self._function).args
+            self._arg = 'arg' in inspect.getfullargspec(self._function).args
 
         # C++ functions
         except Exception:
@@ -119,79 +82,87 @@ class BaseCommand(pr.BaseVariable):
 
     @pr.expose
     @property
-    def arg(self) -> bool:
+    def arg(self):
         """ """
         return self._arg
 
     @pr.expose
     @property
-    def retTypeStr(self) -> Optional[str]:
+    def retTypeStr(self):
         """ """
         return self._retTypeStr
 
-    def __call__(self, arg: Optional[Any] = None) -> Optional[Union[Any, Callable]]:
+    def __call__(self,arg=None):
         return self._doFunc(arg)
 
-    def _doFunc(self, arg) -> Optional[Union[str, Callable]]:
-        """Execute command: TODO: Update comments
+    def _doFunc(self,arg):
+        """
+        Execute command: TODO: Update comments
 
-        Args:
-            arg :
+        Parameters
+        ----------
+        arg :
 
-        Returns:
+
+        Returns
+        -------
 
         """
-        if self.parent.enable.value() is not True:
+        if (self.parent.enable.value() is not True):
             return
 
         try:
+
             # Convert arg
             if arg is None:
                 arg = self._default
             else:
                 arg = self.parseDisp(arg)
 
-            ret = self._functionWrap(
-                function=self._function,
-                root=self.root,
-                dev=self.parent,
-                cmd=self,
-                arg=arg,
-            )
+            ret = self._functionWrap(function=self._function, root=self.root, dev=self.parent, cmd=self, arg=arg)
 
             # Set arg to local variable if not a remote variable
-            if self._arg and not isinstance(self, RemoteCommand):
+            if self._arg and not isinstance(self,RemoteCommand):
                 self._default = arg
                 self._queueUpdate()
 
             return ret
 
         except Exception as e:
-            pr.logException(self._log, e)
+            pr.logException(self._log,e)
             raise e
 
     @pr.expose
-    def call(self, arg: Optional[str] = None) -> str:
+    def call(self,arg=None):
         """
 
-        Args:
-            arg (str) :     (Default value = None)
 
-        Returns:
+        Parameters
+        ----------
+        arg : str
+             (Default value = None)
+
+        Returns
+        -------
 
         """
         return self.__call__(arg)
 
     @pr.expose
-    def callDisp(self, arg: Optional[str] = None) -> str:
+    def callDisp(self,arg=None):
         """
-        Args:
-            arg (str) :     (Default value = None)
 
-        Returns:
+
+        Parameters
+        ----------
+        arg : str
+             (Default value = None)
+
+        Returns
+        -------
 
         """
-        return self.genDisp(self.__call__(arg), useDisp=self._retDisp)
+        return self.genDisp(self.__call__(arg),useDisp=self._retDisp)
 
     @staticmethod
     def nothing():
@@ -199,113 +170,152 @@ class BaseCommand(pr.BaseVariable):
         pass
 
     @staticmethod
-    def read(cmd) -> None:
+    def read(cmd):
         """
-        Args:
-            cmd :
-        Returns:
+
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
 
         """
         cmd.get(read=True)
 
     @staticmethod
-    def setArg(cmd, arg) -> None:
+    def setArg(cmd, arg):
         """
-        Args:
-            cmd :
-            arg :
 
-        Returns:
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
 
         """
         cmd.set(arg)
 
     @staticmethod
-    def setAndVerifyArg(cmd, arg) -> None:
+    def setAndVerifyArg(cmd, arg):
         """
-        Args:
-            cmd :
-            arg :
 
-        Returns:
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
 
         """
         cmd.set(arg)
         ret = cmd.get()
         if ret != arg:
-            raise CommandError(
-                f"Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}"
-            )
+            raise CommandError(f'Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}')
 
     @staticmethod
-    def createToggle(sets) -> Callable:
-        """
-        Args:
-            sets :
-
-        Returns:
-
+    def createToggle(sets):
         """
 
-        def toggle(cmd) -> None:
+
+        Parameters
+        ----------
+        sets :
+
+
+        Returns
+        -------
+
+        """
+        def toggle(cmd):
             """
 
-            Args:
-                cmd :
 
-            Returns:
+            Parameters
+            ----------
+            cmd :
+
+
+            Returns
+            -------
 
             """
             for s in sets:
                 cmd.set(s)
-
         return toggle
 
     @staticmethod
-    def toggle(cmd) -> None:
+    def toggle(cmd):
         """
 
-        Args:
-            cmd :
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
 
         """
         cmd.set(1)
         cmd.set(0)
 
     @staticmethod
-    def createTouch(value) -> Callable:
-        """
-        Args:
-            value :
-
-
-        Returns:
-
+    def createTouch(value):
         """
 
-        def touch(cmd) -> None:
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
+        def touch(cmd):
             """
 
 
-            Args:
-                cmd :
+            Parameters
+            ----------
+            cmd :
 
 
-            Returns:
+            Returns
+            -------
 
             """
             cmd.set(value)
-
         return touch
 
     @staticmethod
-    def touch(cmd, arg) -> None:
+    def touch(cmd, arg):
         """
-        Args:
-            cmd :
-            arg :
 
-        Returns:
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
 
         """
         if arg is not None:
@@ -314,161 +324,220 @@ class BaseCommand(pr.BaseVariable):
             cmd.set(1)
 
     @staticmethod
-    def touchZero(cmd) -> None:
+    def touchZero(cmd):
         """
-        Args:
-            cmd :
 
 
-        Returns:
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
 
         """
         cmd.set(0)
 
     @staticmethod
-    def touchOne(cmd) -> None:
+    def touchOne(cmd):
         """
-        Args:
-            cmd :
 
 
-        Returns:
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
 
         """
         cmd.set(1)
 
     @staticmethod
-    def createPostedTouch(value) -> Callable:
-        """
-        Args:
-            value :
-
-
-        Returns:
-
+    def createPostedTouch(value):
         """
 
-        def postedTouch(cmd) -> None:
+
+        Parameters
+        ----------
+        value :
+
+
+        Returns
+        -------
+
+        """
+        def postedTouch(cmd):
             """
 
 
-            Args:
-                cmd :
+            Parameters
+            ----------
+            cmd :
 
 
-            Returns:
+            Returns
+            -------
 
             """
             cmd.post(value)
-
         return postedTouch
 
     @staticmethod
-    def postedTouch(cmd, arg) -> None:
+    def postedTouch(cmd, arg):
         """
-        Args:
-            cmd :
-            arg :
 
-        Returns:
+
+        Parameters
+        ----------
+        cmd :
+
+        arg :
+
+
+        Returns
+        -------
 
         """
         cmd.post(arg)
 
     @staticmethod
-    def postedTouchOne(cmd) -> None:
+    def postedTouchOne(cmd):
         """
-        Args:
-            cmd :
 
-        Returns:
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
 
         """
         cmd.post(1)
 
     @staticmethod
-    def postedTouchZero(cmd) -> None:
+    def postedTouchZero(cmd):
         """
-        Args:
-            cmd :
 
-        Returns:
+
+        Parameters
+        ----------
+        cmd :
+
+
+        Returns
+        -------
 
         """
         cmd.post(0)
 
-    def replaceFunction(self, function) -> None:
+    def replaceFunction(self, function):
         """
-        Args:
-            function :
 
-        Returns:
+
+        Parameters
+        ----------
+        function :
+
+
+        Returns
+        -------
 
         """
         self._function = function
-        self._functionWrap = pr.functionWrapper(
-            function=self._function, callArgs=["root", "dev", "cmd", "arg"]
-        )
+        self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
 
-    def _setDict(self, d, writeEach, modes, incGroups, excGroups, keys):
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
-        Args:
-            d :
-            writeEach :
-            modes :
-            incGroups :
-            excGroups :
-            keys :
 
-        Returns:
+
+        Parameters
+        ----------
+        d :
+
+        writeEach :
+
+        modes :
+
+        incGroups :
+
+        excGroups :
+
+        keys :
+
+
+        Returns
+        -------
 
         """
         pass
 
-    def _getDict(self, modes, incGroups, excGroups, properties) -> None:
+    def _getDict(self,modes,incGroups,excGroups,properties):
         """
-        Args:
-            modes :
-            incGroups :
-            excGroups :
 
-        Returns:
+
+        Parameters
+        ----------
+        modes :
+
+        incGroups :
+
+        excGroups :
+
+
+        Returns
+        -------
 
         """
         return None
 
-    def get(self, read: bool = True, index: int = -1):
+    def get(self,read=True, index=-1):
         """
-        Args:
-            read:
-            index:
 
-        Returns:
+
+        Parameters
+        ----------
+        read : bool
+             (Default value = True)
+        index : int
+             (Default value = -1)
+
+        Returns
+        -------
 
         """
         return self._default
 
-    def _genDocs(self, file):
+    def _genDocs(self,file):
         """
-        Args:
-            file :
 
-        Returns:
+
+        Parameters
+        ----------
+        file :
+
+
+        Returns
+        -------
 
         """
-        print(f".. topic:: {self.path}", file=file)
+        print(f".. topic:: {self.path}",file=file)
 
-        print("", file=file)
-        print(pr.genDocDesc(self.description, 4), file=file)
-        print("", file=file)
+        print('',file=file)
+        print(pr.genDocDesc(self.description,4),file=file)
+        print('',file=file)
 
-        print(pr.genDocTableHeader(["Field", "Value"], 4, 100), file=file)
+        print(pr.genDocTableHeader(['Field','Value'],4,100),file=file)
 
-        for a in ["name", "path", "enum", "typeStr", "disp"]:
-            astr = str(getattr(self, a))
+        for a in ['name', 'path', 'enum', 'typeStr', 'disp']:
+            astr = str(getattr(self,a))
 
-            if astr != "None":
-                print(pr.genDocTableRow([a, astr], 4, 100), file=file)
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
 
 
 # LocalCommand is the same as BaseCommand
@@ -476,35 +545,27 @@ LocalCommand = BaseCommand
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    """A Command which has a 1:1 associated with a hardware element.
-    Subclass of RemoteVariable. Passed attributes are the same as BaseCommand and RemoteVariable.
+    """ """
 
-    Used to generate a set of writes to the associated hardware element.
-    Add additional functions to Command objects.
+    def __init__(self, *,
+                 name,
+                 description='',
+                 value=None,
+                 retValue=None,
+                 enum=None,
+                 hidden=False,
+                 groups=None,
+                 minimum=None,
+                 maximum=None,
+                 function=None,
+                 base=pr.UInt,
+                 offset=None,
+                 bitSize=32,
+                 bitOffset=0,
+                 overlapEn=False,
+                 guiGroup=None,
+                 **kwargs):
 
-    """
-
-    def __init__(
-        self,
-        *,
-        name: str,
-        description: str = "",
-        value: Optional[Any] = None,
-        retValue: Union[None, List, Any] = None,
-        enum: Optional[Dict] = None,
-        hidden: bool = False,
-        groups: Union[List[str], str, None] = None,
-        minimum: Optional[int] = None,
-        maximum: Optional[int] = None,
-        function: Optional[Callable] = None,
-        base: Type[pr.Model] = pr.UInt,
-        offset: Union[int, List, None] = None,
-        bitSize: int = 32,
-        bitOffset: int = 0,
-        overlapEn: bool = False,
-        guiGroup: Optional[str] = None,
-        **kwargs,
-    ):
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
             self,
@@ -512,14 +573,13 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             retValue=retValue,
             function=function,
             guiGroup=guiGroup,
-            **kwargs,
-        )
+            **kwargs)
 
         pr.RemoteVariable.__init__(
             self,
             name=name,
             description=description,
-            mode="WO",
+            mode='WO',
             value=value,
             enum=enum,
             hidden=hidden,
@@ -534,85 +594,87 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             bulkOpEn=False,
             verify=False,
             guiGroup=guiGroup,
-            **kwargs,
-        )
+            **kwargs)
 
-    def set(self, value, *, index: int = -1, write: bool = True) -> None:
+    def set(self, value, *,  index=-1, write=True):
         """
-        Args:
-            value :
-            * :
-            index (int) : (Default value = -1)
-            write (bool) : (Default value = True)
 
-        Returns:
 
-        Raises:
-            Any caught exception.
+        Parameters
+        ----------
+        value :
+
+        * :
+
+        index : int
+             (Default value = -1)
+        write : bool
+             (Default value = True)
+
+        Returns
+        -------
+
         """
         self._log.debug("{}.set({})".format(self, value))
         try:
-            self._set(value, index)
+            self._set(value,index)
 
             if write:
-                pr.startTransaction(
-                    self._block,
-                    type=rogue.interfaces.memory.Write,
-                    forceWr=True,
-                    checkEach=True,
-                    variable=self,
-                    index=index,
-                )
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Write, forceWr=True, checkEach=True, variable=self, index=index)
 
         except Exception as e:
-            pr.logException(self._log, e)
+            pr.logException(self._log,e)
             raise e
 
-    def get(self, *, index: int = -1, read: bool = True):
+
+    def get(self, *, index=-1, read=True):
         """
-        Args:
-            * :
 
-            index (int) : (Default value = -1)
-            read (bool) : (Default value = True)
 
-        Returns:
+        Parameters
+        ----------
+        * :
 
-        Raises:
-            Any caught exception.
+        index : int
+             (Default value = -1)
+        read : bool
+             (Default value = True)
+
+        Returns
+        -------
+
         """
         try:
             if read:
-                pr.startTransaction(
-                    self._block,
-                    type=rogue.interfaces.memory.Read,
-                    forceWr=False,
-                    checkEach=True,
-                    variable=self,
-                    index=index,
-                )
+                pr.startTransaction(self._block, type=rogue.interfaces.memory.Read, forceWr=False, checkEach=True, variable=self, index=index)
 
             return self._get(index)
 
         except Exception as e:
-            pr.logException(self._log, e)
+            pr.logException(self._log,e)
             raise e
 
-    def _genDocs(self, file) -> None:
+    def _genDocs(self,file):
         """
-        Args:
-            file :
 
-        Returns:
+
+        Parameters
+        ----------
+        file :
+
+
+        Returns
+        -------
 
         """
-        BaseCommand._genDocs(self, file)
+        BaseCommand._genDocs(self,file)
 
-        for a in ["offset", "bitSize", "bitOffset", "varBytes"]:
-            astr = str(getattr(self, a))
+        for a in ['offset', 'bitSize', 'bitOffset', 'varBytes']:
+            astr = str(getattr(self,a))
 
-            if astr != "None":
-                print(pr.genDocTableRow([a, astr], 4, 100), file=file)
+            if astr != 'None':
+                print(pr.genDocTableRow([a,astr],4,100),file=file)
+
 
 
 # Alias, this should go away

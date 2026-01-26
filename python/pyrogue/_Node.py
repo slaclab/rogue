@@ -1,9 +1,9 @@
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # Company    : SLAC National Accelerator Laboratory
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 #  Description:
 #       PyRogue base module - Node Classes
-# -----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 # This file is part of the rogue software platform. It is subject to
 # the license terms in the LICENSE.txt file found in the top-level directory
 # of this distribution and at:
@@ -11,88 +11,85 @@
 # No part of the rogue software platform, including this file, may be
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
-# -----------------------------------------------------------------------------
-import inspect
+#-----------------------------------------------------------------------------
+import sys
+from collections import OrderedDict as odict
 import logging
 import re
-import sys
-from _collections_abc import Iterable
-from collections import OrderedDict as odict
-from typing import List, Optional, Type, Union, Tuple, Callable
-
+import inspect
 import pyrogue as pr
+import collections
 
 
-def logException(log: logging.Logger, e: Type[Exception]) -> None:
-    """logs instances of memory error, else, will log the exception.
-
-    Args:
-        log : calls command to log instance of memory error or exception
-        e : stores values of memory errors or exceptions
-
-    Returns:
-        None
+def logException(log,e):
     """
-    if isinstance(e, pr.MemoryError):
+    logs instances of memory error, else, will log the exception.
+
+    Parameters
+    ----------
+    log :
+        calls command to log instance of memory error or exception
+    e :
+        stores values of memory errors or exceptions
+
+    Returns
+    -------
+    none
+    """
+    if isinstance(e,pr.MemoryError):
         log.error(e)
     else:
         log.exception(e)
 
 
-def logInit(
-    cls: Optional[Type["Node"]] = None,
-    name: Optional[str] = None,
-    path: Optional[str] = None,
-) -> logging.Logger:
+def logInit(cls=None,name=None,path=None):
     """
     logs base classes in order of highest ranking class. Checks values of  cls, name, and path, if their value is not  =None, will do something
 
-    Args:
-        cls : (Default value = None)
-        name : (Default value = None)
-        path : (Default value = None)
+    Parameters
+    ----------
+    cls :
+         (Default value = None)
+    name :
+         (Default value = None)
+    path :
+         (Default value = None)
 
-    Returns:
-        logger
+    Returns
+    -------
+    returns logger
     """
 
     # Support base class in order of precedence
-    baseClasses = odict(
-        {
-            pr.BaseCommand: "Command",
-            pr.BaseVariable: "Variable",
-            pr.Root: "Root",
-            pr.Device: "Device",
-        }
-    )
+    baseClasses = odict({pr.BaseCommand : 'Command', pr.BaseVariable : 'Variable',
+                         pr.Root : 'Root', pr.Device : 'Device'})
 
     """Init a logging object. Set global options."""
     logging.basicConfig(
-        # level=logging.NOTSET,
+        #level=logging.NOTSET,
         format="%(levelname)s:%(name)s:%(message)s",
-        stream=sys.stdout,
-    )
+        stream=sys.stdout)
 
     # All logging starts with rogue prefix
-    ln = "pyrogue"
+    ln = 'pyrogue'
 
     # Next add the highest ranking base class
     if cls is not None:
-        for k, v in baseClasses.items():
-            if isinstance(cls, k):
-                ln += f".{v}"
+        for k,v in baseClasses.items():
+            if isinstance(cls,k):
+                ln += f'.{v}'
                 break
 
         # Next subclass name
-        ln += f".{cls.__class__.__name__}"
+        ln += f'.{cls.__class__.__name__}'
 
     # Add full path if passed
     if path is not None:
-        ln += f".{path}"
+        ln += f'.{path}'
 
     # Otherwise just add name if passed
     elif name is not None:
-        ln += f".{name}"
+        ln += f'.{name}'
 
     return logging.getLogger(ln)
 
@@ -101,11 +98,14 @@ def expose(item):
     """
     Allows user to interface with function under item parameter
 
-    Args:
-        item :
+    Parameters
+    ----------
+    item :
 
-    Returns:
-        returns item
+
+    Returns
+    -------
+    returns item
     """
 
     # Property
@@ -120,177 +120,224 @@ def expose(item):
 
 class NodeError(Exception):
     """ """
-
     pass
 
 
 class Node(object):
     """
     Class which serves as a managed object within the pyrogue package.
+    Each node has the following public fields:
+        name: Global name of object
+        description: Description of the object.
+        groups: Group or groups this node belongs to.
+           Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
+        classtype: text string matching name of node sub-class
+        path: Full path to the node (ie. node1.node2.node3)
 
     Each node is associated with a parent and has a link to the top node of a tree.
     A node has a list of sub-nodes as well as each sub-node being attached as an
     attribute. This allows tree browsing using: node1.node2.node3
 
-    Args:
-        name: Global name of Node
-        description: Description of Node
-        expand: Expand node
-        hidden: Whether or not the node is hidden
-        groups: Group or groups this node belongs to. Examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
-        guiGroup: arbitrary groups for gui and graphical aesthetic purposes
+    Parameters
+    ----------
+    name :
+        global name of object
 
-    Attributes:
-        _name (str): name
-        _description (str): description
-        _path (str): name
+    description :
+        Description of object
 
-        _expand (bool): expand
-        _guiGroup (str): guiGroup
+    path :
+        full path to the node (ie. node1.node2.node3)
 
-        _parent (Node): Parent node object, or None
-        _root (Node): Root node, or None
+    expand :
 
-        _nodes (odict): Ordered dictionary of affiliated nodes
-        _anodes (odict): Ordered dictionary of anodes
+    guiGroup :
+        arbitrary groups for gui and graphical aesthetic purposes
+    Returns
+    -------
 
-        _log (object): Logging object
     """
-
     _nodeCount = 0
 
-    def __init__(
-        self,
-        *,
-        name: str,
-        description: str = "",
-        expand: bool = True,
-        hidden: bool = False,
-        groups: Union[List[str], str, None] = None,
-        guiGroup: Optional[str] = None,
-    ):
+    def __init__(self, *, name, description="", expand=True, hidden=False, groups=None, guiGroup=None):
+        """
+        Init the node with passed attributes
+
+        Parameters
+        ----------
+        name : str
+            name of variable
+
+        description : str
+            description of variable
+
+        expand : bool
+
+
+        hidden : bool
+            Default value = False, variable is not part of hidden group
+
+        groups :
+
+
+        guiGroup :
+
+
+        Returns
+        -------
+
+        """
         pr.Node._nodeCount += 1
 
         # Public attributes
-        self._name = name
+        self._name        = name
         self._description = description
-        self._path = name
-        self._expand = expand
-        self._guiGroup = guiGroup
+        self._path        = name
+        self._expand      = expand
+        self._guiGroup    = guiGroup
 
         # Tracking
-        self._parent = None
-        self._root = None
-        self._nodes = odict()
-        self._anodes = odict()
+        self._parent  = None
+        self._root    = None
+        self._nodes   = odict()
+        self._anodes  = odict()
 
         # Setup logging
-        self._log = logInit(cls=self, name=name, path=None)
+        self._log = logInit(cls=self,name=name,path=None)
 
         if groups is None:
             self._groups = []
-        elif isinstance(groups, list):
+        elif isinstance(groups,list):
             self._groups = groups
         else:
             self._groups = [groups]
 
         if hidden is True:
-            self.addToGroup("Hidden")
+            self.addToGroup('Hidden')
 
     def __repr__(self):
-        return f"{self.__class__} - {self.path}"
+        return f'{self.__class__} - {self.path}'
 
     @property
-    def nodeCount(self) -> int:
+    def nodeCount(self):
         return pr.Node._nodeCount
 
     @property
-    def name(self) -> str:
-        """Assigns and returns name attribute to class variable"""
+    def name(self):
+        """
+        assigns and returns name attribute to class variable
+        """
         return self._name
 
     @property
-    def description(self) -> str:
-        """Assigns and returns description attribute to class variable"""
+    def description(self):
+        """
+        assigns and returns description attribute to class variable
+        """
         return self._description
 
     @property
-    def groups(self) -> List[str]:
-        """Assigns and returns groups attribute to class variable"""
+    def groups(self):
+        """
+        assigns and returns groups attribute to class variable
+        """
         return self._groups
 
-    def inGroup(self, group: Union[str, List[str]]) -> bool:
+    def inGroup(self, group):
         """
 
-        Args:
-            group :
 
+        Parameters
+        ----------
+        group :
+
+
+        Returns
+        -------
         """
-        if isinstance(group, list):
+        if isinstance(group,list):
             return len(set(group) & set(self._groups)) > 0
         else:
             return group in self._groups
 
-    def filterByGroup(self, incGroups: Optional[List], excGroups: Optional[List]):
-        """Filter by the passed list of inclusion and exclusion groups
+    def filterByGroup(self, incGroups, excGroups):
+        """
+        Filter by the passed list of inclusion and exclusion groups
 
-        Args:
-            incGroups : list of passed inclusion groups
-            excGroups : list of passed exclusion groups
+        Parameters
+        ----------
+        incGroups :
+            list of passed inclusion groups
+        excGroups :
+            list of passed exclusion groups
 
-        Returns:
+        Returns
+        -------
 
         """
-        return (
-            (incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))
-        ) and (
-            (excGroups is None)
-            or (len(excGroups) == 0)
-            or (not self.inGroup(excGroups))
-        )
+        return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
+               ((excGroups is None) or (len(excGroups) == 0) or (not self.inGroup(excGroups)))
 
-    def addToGroup(self, group: str) -> None:
-        """Add this node to the passed group, recursive to children
+    def addToGroup(self,group):
+        """
+        Add this node to the passed group, recursive to children
 
-        Args:
-            group : variable denoting a node that has not been passed
+        Parameters
+        ----------
+        group :
+            variable denoting a node that has not been passed
 
-        Returns:
+        Returns
+        -------
 
         """
         if group not in self._groups:
             self._groups.append(group)
 
-        for k, v in self._nodes.items():
+        for k,v in self._nodes.items():
             v.addToGroup(group)
 
-    def removeFromGroup(self, group: str) -> None:
-        """Remove this node from the passed group, not recursive
+    def removeFromGroup(self,group):
+        """
+        Remove this node from the passed group, not recursive
 
-        Args:
-            group : variable denoting a node that is in the passed group
+        Parameters
+        ----------
+        group :
+            variable denoting a node that is in the passed group
 
+        Returns
+        -------
+        if in group, remove from group
         """
         if group in self._groups:
             self._groups.remove(group)
 
     @property
-    def hidden(self) -> bool:
-        """Assigns and returns hidden attribute to class variable"""
-        return self.inGroup("Hidden")
+    def hidden(self):
+        """
+        assigns and returns hidden attribute to class variable
+        """
+        return self.inGroup('Hidden')
 
     @hidden.setter
-    def hidden(self, value: bool) -> None:
-        """Add or remove node from the Hidden group.
+    def hidden(self, value):
+        """
+        Add or remove node from the Hidden group
 
-        Args:
-            value : True to add node to Hidden group. False to remove node from Hidden group.
+        Parameters
+        ----------
+        value : bool
+            Boolean value assigned to the Hidden group
 
+        Returns
+        -------
+        if value = true, add to group, else remove from group
         """
         if value is True:
-            self.addToGroup("Hidden")
+            self.addToGroup('Hidden')
         else:
-            self.removeFromGroup("Hidden")
+            self.removeFromGroup('Hidden')
 
     @property
     def path(self):
@@ -307,15 +354,19 @@ class Node(object):
         """ """
         return self._guiGroup
 
-    def __getattr__(self, name: str) -> odict:
+    def __getattr__(self, name):
         """
         Allow child Nodes with the 'name[key]' naming convention to be accessed as if they belong to a
         dictionary of Nodes with that 'name'.
         Raises AttributeError if no such named Nodes are found.
 
-        Args:
-            name : builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
-        Returns:
+        Parameters
+        ----------
+
+        name : str
+            builds an OrderedDict of all child nodes named as 'name[key]' and returns it.
+        Returns
+        -------
 
         """
 
@@ -328,100 +379,82 @@ class Node(object):
             return self._anodes[name]
 
         else:
-            raise AttributeError("{} has no attribute {}".format(self, name))
+            raise AttributeError('{} has no attribute {}'.format(self, name))
+
 
     def __dir__(self):
-        return super().__dir__() + [k for k, v in self._nodes.items()]
+        return super().__dir__() + [k for k,v in self._nodes.items()]
 
-    def __reduce__(self) -> tuple:
+    def __reduce__(self):
         attr = {}
 
-        attr["name"] = self._name
-        attr["class"] = self.__class__.__name__
-        attr["bases"] = pr.genBaseList(self.__class__)
-        attr["description"] = self._description
-        attr["groups"] = self._groups
-        attr["path"] = self._path
-        attr["expand"] = self._expand
-        attr["guiGroup"] = self._guiGroup
-        attr["nodes"] = odict(
-            {k: None for k, v in self._nodes.items() if not v.inGroup("NoServe")}
-        )
-        attr["props"] = []
-        attr["funcs"] = {}
+        attr['name']        = self._name
+        attr['class']       = self.__class__.__name__
+        attr['bases']       = pr.genBaseList(self.__class__)
+        attr['description'] = self._description
+        attr['groups']      = self._groups
+        attr['path']        = self._path
+        attr['expand']      = self._expand
+        attr['guiGroup']    = self._guiGroup
+        attr['nodes']       = odict({k:None for k,v in self._nodes.items() if not v.inGroup('NoServe')})
+        attr['props']       = []
+        attr['funcs']       = {}
 
         # Get properties
-        for k, v in inspect.getmembers(
-            self.__class__, lambda a: isinstance(a, property)
-        ):
-            if hasattr(v.fget, "_rogueExposed"):
-                attr["props"].append(k)
+        for k,v in inspect.getmembers(self.__class__, lambda a: isinstance(a,property)):
+            if hasattr(v.fget,'_rogueExposed'):
+                attr['props'].append(k)
 
         # Get methods
-        for k, v in inspect.getmembers(self.__class__, callable):
-            if hasattr(v, "_rogueExposed"):
-                attr["funcs"][k] = {
-                    "args": [a for a in inspect.getfullargspec(v).args if a != "self"],
-                    "kwargs": inspect.getfullargspec(v).kwonlyargs,
-                }
+        for k,v in inspect.getmembers(self.__class__, callable):
+            if hasattr(v,'_rogueExposed'):
+                attr['funcs'][k] = {'args'   : [a for a in inspect.getfullargspec(v).args if a != 'self'],
+                                    'kwargs' : inspect.getfullargspec(v).kwonlyargs}
 
         return (pr.interfaces.VirtualFactory, (attr,))
 
-    def __contains__(self, item) -> bool:
+    def __contains__(self, item):
         return item in self.nodes.values()
 
-    def add(self, node: Union[Iterable[pr.Node], pr.Node]) -> None:
-        """Add a either a collection of nodes, or a singular node as sub-node to self.
+    def add(self,node):
+        """
+        Add node as sub-node
 
-        Args:
-            node : Nodes to add as a subnodes
+        Parameters
+        ----------
+        node :
 
-        Raises:
-            NodeError: Covers various conditions of invalid add operations
+
+        Returns
+        -------
 
         """
 
         # Special case if list (or iterable of nodes) is passed
-        if isinstance(node, Iterable) and all(isinstance(n, Node) for n in node):
+        if isinstance(node, collections.abc.Iterable) and all(isinstance(n, Node) for n in node):
             for n in node:
                 self.add(n)
             return
 
         # Fail if added to a non device node (may change in future)
-        if not isinstance(self, pr.Device):
-            raise NodeError(
-                "Attempting to add node with name %s to non device node %s."
-                % (node.name, self.name)
-            )
+        if not isinstance(self,pr.Device):
+            raise NodeError('Attempting to add node with name %s to non device node %s.' % (node.name,self.name))
 
         # Fail if root already exists
         if self._root is not None:
-            raise NodeError(
-                "Error adding node with name %s to %s. Tree is already started."
-                % (node.name, self.name)
-            )
+            raise NodeError('Error adding node with name %s to %s. Tree is already started.' % (node.name,self.name))
 
         # Error if added node already has a parent
         if node._parent is not None:
-            raise NodeError(
-                "Error adding node with name %s to %s. Node is already attached."
-                % (node.name, self.name)
-            )
+            raise NodeError('Error adding node with name %s to %s. Node is already attached.' % (node.name,self.name))
 
         # Names of all sub-nodes must be unique
         if node.name in self.__dir__() or node.name in self._anodes:
-            raise NodeError(
-                "Error adding node with name %s to %s. Name collision."
-                % (node.name, self.name)
-            )
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
         # Add some checking for characters which will make lookups problematic
-        if re.match("^[\\w_\\[\\]]+$", node.name) is None:
-            self._log.warning(
-                "Node {} with one or more special characters will cause lookup errors.".format(
-                    node.name
-                )
-            )
+        if re.match('^[\\w_\\[\\]]+$',node.name) is None:
+            self._log.warning('Node {} with one or more special characters will cause lookup errors.'.format(node.name))
 
         # Detect and add array nodes
         self._addArrayNode(node)
@@ -429,39 +462,36 @@ class Node(object):
         # Add to primary list
         self._nodes[node.name] = node
 
-    def _addArrayNode(self, node: pr.Node) -> None:
+    def _addArrayNode(self, node):
         """
 
-        Args:
-            node :
 
-        Returns:
+        Parameters
+        ----------
+        node :
+
+
+        Returns
+        -------
 
         """
 
         # Generic test array method
-        fields = re.split("\\]\\[|\\[|\\]", node.name)
+        fields = re.split('\\]\\[|\\[|\\]',node.name)
         if len(fields) < 3:
             return
 
         # Extract name and keys
         aname = fields[0]
-        keys = fields[1:-1]
+        keys  = fields[1:-1]
 
         if not all([key.isdigit() for key in keys]):
-            self._log.warning(
-                "Array node {} with non numeric key will cause lookup errors.".format(
-                    node.name
-                )
-            )
+            self._log.warning('Array node {} with non numeric key will cause lookup errors.'.format(node.name))
             return
 
         # Detect collisions
         if aname in self.__dir__():
-            raise NodeError(
-                "Error adding node with name %s to %s. Name collision."
-                % (node.name, self.name)
-            )
+            raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
         # Create dictionary containers
         if aname not in self._anodes:
@@ -475,12 +505,9 @@ class Node(object):
             k = int(keys[i])
 
             # Last key, set node, check for overlaps
-            if i == (len(keys) - 1):
+            if i == (len(keys)-1):
                 if k in sub:
-                    raise NodeError(
-                        "Error adding node with name %s to %s. Name collision."
-                        % (node.name, self.name)
-                    )
+                    raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
                 sub[k] = node
                 return
@@ -490,67 +517,63 @@ class Node(object):
                 sub[k] = {}
 
             # check for overlaps
-            elif isinstance(sub[k], Node):
-                raise NodeError(
-                    "Error adding node with name %s to %s. Name collision."
-                    % (node.name, self.name)
-                )
+            elif isinstance(sub[k],Node):
+                raise NodeError('Error adding node with name %s to %s. Name collision.' % (node.name,self.name))
 
             sub = sub[k]
 
-    def addNode(self, nodeClass: Type["Node"], **kwargs) -> None:
+
+    def addNode(self, nodeClass, **kwargs):
         """
 
-        Args:
-            nodeClass :
-            **kwargs :
 
-        Returns:
+        Parameters
+        ----------
+        nodeClass :
+
+        **kwargs :
+
+
+        Returns
+        -------
 
         """
         self.add(nodeClass(**kwargs))
 
-    def addNodes(
-        self, nodeClass: Type["Node"], number: int, stride: int, **kwargs
-    ) -> None:
+    def addNodes(self, nodeClass, number, stride, **kwargs):
         """
 
-        Args:
-            nodeClass :
-            number :
-            stride :
-            **kwargs :
 
-        Returns:
+        Parameters
+        ----------
+        nodeClass :
+
+        number :
+
+        stride :
+
+        **kwargs :
+
+
+        Returns
+        -------
 
         """
-        name = kwargs.pop("name")
-        offset = kwargs.pop("offset")
+        name = kwargs.pop('name')
+        offset = kwargs.pop('offset')
         for i in range(number):
-            self.add(
-                nodeClass(
-                    name="{:s}[{:d}]".format(name, i),
-                    offset=offset + (i * stride),
-                    **kwargs,
-                )
-            )
+            self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     @property
-    def nodeList(self) -> List[pr.Node]:
+    def nodeList(self):
         """Get a recursive list of nodes."""
         lst = []
-        for key, value in self._nodes.items():
+        for key,value in self._nodes.items():
             lst.append(value)
             lst.extend(value.nodeList)
         return lst
 
-    def getNodes(
-        self,
-        typ: Type["Node"],
-        excTyp: Optional[Type["Node"]] = None,
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = None,
-    ) -> odict:
+    def getNodes(self,typ,excTyp=None,incGroups=None,excGroups=None):
         """
         Get a filtered ordered dictionary of nodes.
         pass a class type to receive a certain type of node
@@ -559,65 +582,58 @@ class Node(object):
         incGroups is an optional group or list of groups that this node must be part of
         excGroups is an optional group or list of groups that this node must not be part of
 
-        Args:
-            typ :
-            excTyp :  (Default value = None)
-            incGroups :  (Default value = None)
-            excGroups :  (Default value = None)
+        Parameters
+        ----------
+        typ :
 
-        Returns:
-            ordered dictionary of nodes
+        excTyp :
+             (Default value = None)
+        incGroups :
+             (Default value = None)
+        excGroups :
+             (Default value = None)
+
+        Returns
+        -------
+        ordered dictionary of nodes
         """
-        return odict(
-            [
-                (k, n)
-                for k, n in self.nodes.items()
-                if (
-                    n.isinstance(typ)
-                    and ((excTyp is None) or (not n.isinstance(excTyp)))
-                    and n.filterByGroup(incGroups, excGroups)
-                )
-            ]
-        )
+        return odict([(k,n) for k,n in self.nodes.items()
+                      if (n.isinstance(typ) and ((excTyp is None) or (not n.isinstance(excTyp))) and n.filterByGroup(incGroups,excGroups))])
 
     @property
-    def nodes(self) -> odict:
+    def nodes(self):
         """Get a ordered dictionary of all nodes."""
         return self._nodes
 
     @property
-    def variables(self) -> odict:
+    def variables(self):
         """ """
-        return self.getNodes(typ=pr.BaseVariable, excTyp=pr.BaseCommand)
+        return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def variablesByGroup(
-        self,
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = None,
-    ) -> odict:
+    def variablesByGroup(self,incGroups=None,excGroups=None):
         """
 
-        Args:
-            incGroups :
-            excGroups :
 
-        Returns:
-            type
-                Pass list of include and / or exclude groups
+        Parameters
+        ----------
+        incGroups :
+             (Default value = None)
+        excGroups :
+             (Default value = None)
+
+        Returns
+        -------
+        type
+            Pass list of include and / or exclude groups
 
         """
-        return self.getNodes(
-            typ=pr.BaseVariable,
-            excTyp=pr.BaseCommand,
-            incGroups=incGroups,
-            excGroups=excGroups,
-        )
+        return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
-    def variableList(self) -> List[Union[pr.BaseVariable, pr.BaseCommand]]:
+    def variableList(self):
         """Get a recursive list of variables and commands."""
         lst = []
-        for key, value in self.nodes.items():
+        for key,value in self.nodes.items():
             if value.isinstance(pr.BaseVariable):
                 lst.append(value)
             else:
@@ -625,58 +641,58 @@ class Node(object):
         return lst
 
     @property
-    def commands(self) -> odict:
+    def commands(self):
         """ """
         return self.getNodes(typ=pr.BaseCommand)
 
-    def commandsByGroup(
-        self,
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = None,
-    ) -> odict:
+    def commandsByGroup(self,incGroups=None,excGroups=None):
         """
 
-        Args:
-            incGroups :  (Default value = None)
-            excGroups :  (Default value = None)
 
-        Returns:
-            type
-                Pass list of include and / or exclude groups
+        Parameters
+        ----------
+        incGroups :
+             (Default value = None)
+        excGroups :
+             (Default value = None)
+
+        Returns
+        -------
+        type
+            Pass list of include and / or exclude groups
 
         """
-        return self.getNodes(
-            typ=pr.BaseCommand, incGroups=incGroups, excGroups=excGroups
-        )
+        return self.getNodes(typ=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
-    def devices(self) -> odict:
+    def devices(self):
         """ """
         return self.getNodes(pr.Device)
 
-    def devicesByGroup(
-        self,
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = None,
-    ):
+    def devicesByGroup(self,incGroups=None,excGroups=None):
         """
 
-        Args:
-            incGroups :  (Default value = None)
-            excGroups :  (Default value = None)
 
-        Returns:
-            type
-                Pass list of include and / or exclude groups
+        Parameters
+        ----------
+        incGroups :
+             (Default value = None)
+        excGroups :
+             (Default value = None)
+
+        Returns
+        -------
+        type
+            Pass list of include and / or exclude groups
 
         """
-        return self.getNodes(pr.Device, incGroups=incGroups, excGroups=excGroups)
+        return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
     @property
-    def deviceList(self) -> List[pr.Device]:
+    def deviceList(self):
         """Get a recursive list of devices"""
         lst = []
-        for key, value in self.nodes.items():
+        for key,value in self.nodes.items():
             if value.isinstance(pr.Device):
                 lst.append(value)
                 lst.extend(value.deviceList)
@@ -692,13 +708,17 @@ class Node(object):
         """ """
         return self._root
 
-    def node(self, name: str) -> Optional[pr.Node]:
+    def node(self, name):
         """
 
-        Args:
-            name :
 
-        Returns:
+        Parameters
+        ----------
+        name :
+
+
+        Returns
+        -------
 
         """
         if name in self._nodes:
@@ -707,37 +727,39 @@ class Node(object):
             return None
 
     @property
-    def isDevice(self) -> bool:
+    def isDevice(self):
         """ """
         return self.isinstance(pr.Device)
 
     @property
-    def isVariable(self) -> bool:
+    def isVariable(self):
         """ """
-        return self.isinstance(pr.BaseVariable) and (
-            not self.isinstance(pr.BaseCommand)
-        )
+        return (self.isinstance(pr.BaseVariable) and (not self.isinstance(pr.BaseCommand)))
 
     @property
-    def isCommand(self) -> bool:
+    def isCommand(self):
         """ """
         return self.isinstance(pr.BaseCommand)
 
-    def find(
-        self, *, recurse: bool = True, typ: Optional[Type["Node"]] = None, **kwargs
-    ) -> List[pr.Node]:
+    def find(self, *, recurse=True, typ=None, **kwargs):
         """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
         For string properties, accepts regexes.
 
-        Args:
-            * :
-            recurse :  (Default value = True)
-            typ :  (Default value = None)
-            **kwargs :
+        Parameters
+        ----------
+        * :
 
-        Returns:
+        recurse :
+             (Default value = True)
+        typ :
+             (Default value = None)
+        **kwargs :
+
+
+        Returns
+        -------
 
         """
 
@@ -766,17 +788,21 @@ class Node(object):
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
 
-    def callRecursive(
-        self, func: Callable, nodeTypes: Optional[List[Type["Node"]]] = None, **kwargs
-    ) -> None:
+    def callRecursive(self, func, nodeTypes=None, **kwargs):
         """
 
-        Args:
-            func :
-            nodeTypes :  (Default value = None)
-            **kwargs :
 
-        Returns:
+        Parameters
+        ----------
+        func :
+
+        nodeTypes :
+             (Default value = None)
+        **kwargs :
+
+
+        Returns
+        -------
 
         """
         # Call the function
@@ -794,151 +820,120 @@ class Node(object):
     def makeRecursive(self, func, nodeTypes=None):
         """
 
-        Args:
-            func :
-            nodeTypes :  (Default value = None)
 
-        Returns:
+        Parameters
+        ----------
+        func :
+
+        nodeTypes :
+             (Default value = None)
+
+        Returns
+        -------
 
         """
-
         def closure(**kwargs):
             """
 
-            Args:
-                **kwargs :
 
-            Returns:
+            Parameters
+            ----------
+            **kwargs :
+
+
+            Returns
+            -------
 
             """
             self.callRecursive(func, nodeTypes, **kwargs)
-
         return closure
 
-    def isinstance(self, typ) -> bool:
+    def isinstance(self,typ):
         """
 
-        Args:
-            typ :
 
-        Returns:
+        Parameters
+        ----------
+        typ :
+
+
+        Returns
+        -------
 
         """
-        return isinstance(self, typ)
+        return isinstance(self,typ)
 
-    def _rootAttached(self, parent: Type["Node"], root: "pr.Root") -> None:
-        """Called once the root node is attached.
+    def _rootAttached(self,parent,root):
+        """
+        Called once the root node is attached.
 
-        Args:
-            parent :
-            root :
+        Parameters
+        ----------
+        parent :
 
-        Returns:
+        root :
+
+
+        Returns
+        -------
 
         """
         self._parent = parent
-        self._root = root
-        self._path = parent.path + "." + self.name
-        self._log = logInit(cls=self, name=self._name, path=self._path)
+        self._root   = root
+        self._path   = parent.path + '.' + self.name
+        self._log    = logInit(cls=self,name=self._name,path=self._path)
 
         # Inherit groups from parent
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _finishInit(self) -> None:
-        for key, value in self._nodes.items():
+    def _finishInit(self):
+        for key,value in self._nodes.items():
             value._finishInit()
 
     @expose
-    def getYaml(
-        self,
-        readFirst: bool = False,
-        modes: List[str] = ["RW", "RO", "WO"],
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = ["Hidden"],
-        recurse: bool = True,
-    ) -> str:
-        """Get current values as yaml data. The yaml string contains a dictionary representation of the tree.
+    def getYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=True):
 
-        Args:
-            readFirst: True/False flag indication if hardware should be read before generating yaml
-            modes: A list of variable modes which should be included in the yaml dump.
-                Configuration saves will use ['RW']. Status saves will use ['RO'] or ['RW','RO'].
-            incGroups: Groups to include in the data.
-            excGroups: Groups to exclude from the data.
-            recurse: If True a full read from hardware is performed.
+        """
+        Get current values as yaml data.
+        modes is a list of variable modes to include.
+        If readFirst=True a full read from hardware is performed.
         """
         if readFirst:
             self.root._read()
-        return pr.dataToYaml(
-            {
-                self.name: self._getDict(
-                    modes=modes,
-                    incGroups=incGroups,
-                    excGroups=excGroups,
-                    recurse=recurse,
-                )
-            }
-        )
+        return pr.dataToYaml({self.name:self._getDict(modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse)})
 
-    def printYaml(
-        self,
-        readFirst: bool = False,
-        modes: List[str] = ["RW", "RO", "WO"],
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = ["Hidden"],
-        recurse: bool = False,
-    ) -> None:
-        print(
-            self.getYaml(
-                readFirst=readFirst,
-                modes=modes,
-                incGroups=incGroups,
-                excGroups=excGroups,
-                recurse=recurse,
-            )
-        )
+    def printYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+        print(self.getYaml(readFirst=readFirst, modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse))
 
-    def _getDict(
-        self,
-        modes: List[str] = ["RW", "RO", "WO"],
-        incGroups: Optional[List[str]] = None,
-        excGroups: Optional[List[str]] = None,
-        properties: bool = False,
-        recurse: bool = True,
-    ) -> Optional[odict]:
+    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False, recurse=True):
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
         modes is a list of variable modes to include.
 
-        Args:
-            modes :
-            incGroups :
-            excGroups :
+        Parameters
+        ----------
+        modes :
 
-        Returns:
+        incGroups :
+
+        excGroups :
+
+
+        Returns
+        -------
 
         """
         data = odict()
-        for key, value in self.variablesByGroup(incGroups, excGroups).items():
-            nv = value._getDict(
-                modes=modes,
-                incGroups=incGroups,
-                excGroups=excGroups,
-                properties=properties,
-            )
+        for key,value in self.variablesByGroup(incGroups, excGroups).items():
+            nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
             if nv is not None:
                 data[key] = nv
 
         if recurse:
             for key, value in self.devicesByGroup(incGroups, excGroups).items():
-                nv = value._getDict(
-                    modes=modes,
-                    incGroups=incGroups,
-                    excGroups=excGroups,
-                    properties=properties,
-                )
+                nv = value._getDict(modes=modes,incGroups=incGroups,excGroups=excGroups, properties=properties)
                 if nv is not None:
                     data[key] = nv
 
@@ -947,27 +942,27 @@ class Node(object):
         else:
             return data
 
-    def _setDict(
-        self,
-        d: dict,
-        writeEach,
-        modes: List[str],
-        incGroups: Optional[List[str]],
-        excGroups: Optional[List[str]],
-        keys: Optional[List[str]],
-    ) -> None:
+    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
         """
 
-        Args:
-            d :
-            writeEach :
-            modes :
-            incGroups :
-            excGroups :
-            keys : If keys is not none, someone tried to access this node with array attributes incorrectly.
-                This should only happen in the variable class.
 
-        Returns:
+        Parameters
+        ----------
+        d :
+
+        writeEach :
+
+        modes :
+
+        incGroups :
+
+        excGroups :
+
+        keys :
+
+
+        Returns
+        -------
 
         """
 
@@ -977,87 +972,99 @@ class Node(object):
             self._log.error(f"Entry {self.name} with key {keys} not found")
         else:
             for key, value in d.items():
-                nodes, keys = self.nodeMatch(key)
+                nodes,keys = self.nodeMatch(key)
 
                 if len(nodes) == 0:
                     self._log.error("Entry {} not found".format(key))
                 else:
                     for n in nodes:
-                        if n.filterByGroup(incGroups, excGroups):
-                            n._setDict(
-                                value, writeEach, modes, incGroups, excGroups, keys
-                            )
+                        if n.filterByGroup(incGroups,excGroups):
+                            n._setDict(value,writeEach,modes,incGroups,excGroups,keys)
 
-    def _setTimeout(self, timeout):
+    def _setTimeout(self,timeout):
         """
 
-        Args:
-            timeout :
 
-        Returns:
+        Parameters
+        ----------
+        timeout :
+
+
+        Returns
+        -------
 
         """
         pass
 
-    def nodeMatch(self, name: str) -> Tuple[List, Optional[List[str]]]:
+    def nodeMatch(self,name):
         """
 
-        Args:
-            name :
 
-        Returns:
-            type
-                be a single value or a list accessor:
-                value
-                value[9]
-                value[0:1]
-                value[*]
-                value[:]
-                Variables will only match if their depth matches the passed lookup and wildcard:
-                value[*] will match a variable named value[1] but not a variable named value[2][3]
-                value[*][*] will match a variable named value[2][3].
-                The second return field will contain the array information if the base name
-                matches an item in the non list array.
+        Parameters
+        ----------
+        name :
+
+
+        Returns
+        -------
+        type
+            be a single value or a list accessor:
+            value
+            value[9]
+            value[0:1]
+            value[*]
+            value[:]
+            Variables will only match if their depth matches the passed lookup and wildcard:
+            value[*] will match a variable named value[1] but not a variable named value[2][3]
+            value[*][*] will match a variable named value[2][3].
+            The second return field will contain the array information if the base name
+            matches an item in the non list array.
 
         """
         # Node matches name in node list
         if name in self.nodes:
-            return [self.nodes[name]], None
+            return [self.nodes[name]],None
 
         # Otherwise we may need to slice an array
         else:
+
             # Generic test array method
-            fields = re.split("\\]\\[|\\[|\\]", name)
+            fields = re.split('\\]\\[|\\[|\\]',name)
 
             # Extract name and keys
             aname = fields[0]
-            keys = fields[1:-1]
+            keys  = fields[1:-1]
 
             # Name is in standard list
             if aname in self.nodes:
-                return [self.nodes[aname]], keys
+                return [self.nodes[aname]],keys
 
             # Name not in list
             if aname is None or aname not in self._anodes or len(keys) == 0:
-                return [], None
+                return [],None
 
-            return _iterateDict(self._anodes[aname], keys), None
+            return _iterateDict(self._anodes[aname],keys),None
 
 
-def _iterateDict(d: dict, keys: Union[str, List, dict]) -> list:
+def _iterateDict(d, keys):
     """
 
-    Args:
-        d :
-        keys :
 
-    Returns:
+    Parameters
+    ----------
+    d :
+
+    keys :
+
+
+    Returns
+    -------
 
     """
     retList = []
 
     # Wildcard, full list
-    if keys[0] == "*" or keys[0] == ":":
+    if keys[0] == '*' or keys[0] == ':':
         subList = list(d.values())
 
     # Single item
@@ -1069,29 +1076,31 @@ def _iterateDict(d: dict, keys: Union[str, List, dict]) -> list:
 
     # Slice
     else:
+
         # Form slice-able list
-        tmpList = [None] * (max(d.keys()) + 1)
-        for k, v in d.items():
+        tmpList = [None] * (max(d.keys())+1)
+        for k,v in d.items():
             tmpList[k] = v
 
         try:
-            subList = eval(f"tmpList[{keys[0]}]")
+            subList = eval(f'tmpList[{keys[0]}]')
         except Exception:
             subList = []
 
     for e in subList:
+
         # Add nodes at this level only if key list has been exhausted
-        if len(keys) == 1 and isinstance(e, Node):
+        if len(keys) == 1 and isinstance(e,Node):
             retList.append(e)
 
         # Don't go deeper in tree than the keys provided to avoid over-matching nodes
-        elif len(keys) > 1 and isinstance(e, dict):
-            retList.extend(_iterateDict(e, keys[1:]))
+        elif len(keys) > 1 and isinstance(e,dict):
+            retList.extend(_iterateDict(e,keys[1:]))
 
     return retList
 
 
-def genBaseList(cls) -> List[str]:
+def genBaseList(cls):
     """ """
     ret = [str(cls)]
 
