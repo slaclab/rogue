@@ -21,7 +21,6 @@
 
 #include <boost/python.hpp>
 
-#include "rogue/protocols/srp/Cmd.h"
 #include "rogue/protocols/srp/SrpV0.h"
 #include "rogue/protocols/srp/SrpV3.h"
 
@@ -40,5 +39,4 @@ void rps::setup_module() {
 
     rps::SrpV0::setup_python();
     rps::SrpV3::setup_python();
-    rps::Cmd::setup_python();
 }

@@ -13,6 +13,5 @@ TODO
 
    srpV0
    srpV3
-   cmd
    classes/index
 

@@ -14,5 +14,4 @@ The following are detailed descriptions of the various C++ classes that make up 
 
    srpV0
    srpV3
-   cmd
 
