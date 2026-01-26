@@ -89,4 +89,3 @@ class StreamWriter(pyrogue.DataWriter):
 
     def setDropErrors(self,drop):
         self._writer.setDropErrors(drop)
-
