@@ -1,4 +1,4 @@
-.. _rogue_widgets
+.. _rogue_widgets:
 
 =============
 Rogue Widgets
