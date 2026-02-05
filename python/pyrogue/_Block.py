@@ -12,104 +12,198 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import threading
+from typing import Any, Iterable, Optional
+
 import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory as rim
 
 
 
-def startTransaction(block, *, type, forceWr=False, checkEach=False, variable=None, index=-1, **kwargs):
-    """
+def startTransaction(
+    block: Any,
+    *,
+    type: Any,
+    forceWr: bool = False,
+    checkEach: bool = False,
+    variable: Optional[Any] = None,
+    index: int = -1,
+    **kwargs: Any,
+) -> None:
+    """Start a block transaction with a stable helper API.
+
     Helper function for calling the startTransaction function in a block. This helper
-        function ensures future changes to the API do not break custom code in a Device's
-        writeBlocks, readBlocks and checkBlocks functions.
+    function ensures future changes to the API do not break custom code in a Device's
+    writeBlocks, readBlocks and checkBlocks functions.
 
-    Parameters2
+    Parameters
     ----------
-    block :
-
-    * :
-
-    type :
-
-    forceWr :
-         (Default value = False)
-    checkEach :
-         (Default value = False)
-    variable :
-         (Default value = None)
-    index :
-         (Default value = -1)
-    **kwargs :
-
-
-    Returns
-    -------
-
+    block : object
+        Block instance to operate on.
+    type : object
+        Transaction type (e.g., ``rim.Write``).
+    forceWr : bool, optional (default = False)
+        Force the write even if values are unchanged.
+    checkEach : bool, optional (default = False)
+        Perform per-variable verification checks.
+    variable : object, optional
+        Variable associated with the transaction.
+    index : int, optional (default = -1)
+        Optional index for array variables.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
     """
     block._startTransaction(type, forceWr, checkEach, variable, index)
 
 
-def checkTransaction(block, **kwargs):
-    """
+def checkTransaction(block: Any, **kwargs: Any) -> None:
+    """Check completion of a block transaction.
+
     Helper function for calling the checkTransaction function in a block. This helper
-        function ensures future changes to the API do not break custom code in a Device's
-        writeBlocks, readBlocks and checkBlocks functions.
+    function ensures future changes to the API do not break custom code in a Device's
+    writeBlocks, readBlocks and checkBlocks functions.
 
     Parameters
     ----------
-    block :
-
-    **kwargs :
-
-
-    Returns
-    -------
-
+    block : object
+        Block instance to operate on.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
     """
     block._checkTransaction()
 
-def writeBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
-    """ Helper function for writing and verifying a list of blocks.
-        Allows a custom list of blocks to be efficiently written,
-        similar to Device.writeBlocks(). """
+def writeBlocks(
+    blocks: Iterable[Any],
+    force: bool = False,
+    checkEach: bool = False,
+    index: int = -1,
+    **kwargs: Any,
+) -> None:
+    """Write a list of blocks efficiently.
+
+    Helper function for writing and verifying a list of blocks. Allows a custom list
+    of blocks to be efficiently written, similar to ``Device.writeBlocks()``.
+
+    Parameters
+    ----------
+    blocks : iterable
+        Blocks to write.
+    force : bool, optional (default = False)
+        Force the write even if values are unchanged.
+    checkEach : bool, optional (default = False)
+        Perform per-variable verification checks.
+    index : int, optional (default = -1)
+        Optional index for array variables.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
+    """
     for b in blocks:
         startTransaction(b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs)
 
-def verifyBlocks(blocks, checkEach=False, **kwargs):
-    """ Helper function for verifying a list of blocks.
-        Allows a custom list of blocks to be efficiently verified without blocking
-        between each read, similar to Device.verifyBlocks(). """
+def verifyBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) -> None:
+    """Verify a list of blocks efficiently.
+
+    Helper function for verifying a list of blocks. Allows a custom list of blocks
+    to be efficiently verified without blocking between each read, similar to
+    ``Device.verifyBlocks()``.
+
+    Parameters
+    ----------
+    blocks : iterable
+        Blocks to verify.
+    checkEach : bool, optional (default = False)
+        Perform per-variable verification checks.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
+    """
     for b in blocks:
         startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
 
-def readBlocks(blocks, checkEach=False, **kwargs):
-    """ Helper function for reading a list of blocks.
-        Allows a custom list of blocks to be efficiently read without blocking
-        between each read, similar to Device.readBlocks(). """
+def readBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) -> None:
+    """Read a list of blocks efficiently.
+
+    Helper function for reading a list of blocks. Allows a custom list of blocks
+    to be efficiently read without blocking between each read, similar to
+    ``Device.readBlocks()``.
+
+    Parameters
+    ----------
+    blocks : iterable
+        Blocks to read.
+    checkEach : bool, optional (default = False)
+        Perform per-variable verification checks.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
+    """
     for b in blocks:
         startTransaction(b, type=rim.Read, checkEach=checkEach, **kwargs)
 
-def checkBlocks(blocks, **kwargs):
-    """ Helper function for waiting on block transactions for a list of blocks
-        Allows a custom list of blocks to be efficiently operated on without blocking
-        between each transaction, similar to  Device.checkBlocks(). """
+def checkBlocks(blocks: Iterable[Any], **kwargs: Any) -> None:
+    """Wait on block transactions for a list of blocks.
+
+    Helper function for waiting on block transactions. Allows a custom list of
+    blocks to be efficiently operated on without blocking between each transaction,
+    similar to ``Device.checkBlocks()``.
+
+    Parameters
+    ----------
+    blocks : iterable
+        Blocks to check.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
+    """
     for b in blocks:
         checkTransaction(b)
 
-def writeAndVerifyBlocks(blocks, force=False, checkEach=False, index=-1, **kwargs):
-    """ Helper function for writing and verifying a list of blocks.
-        Allows a custom list of blocks to be efficiently written and verified
-        similar to Device.writeAndVerifyBlocks(). """
+def writeAndVerifyBlocks(
+    blocks: Iterable[Any],
+    force: bool = False,
+    checkEach: bool = False,
+    index: int = -1,
+    **kwargs: Any,
+) -> None:
+    """Write and verify a list of blocks efficiently.
+
+    Helper function for writing and verifying a list of blocks. Allows a custom
+    list of blocks to be efficiently written and verified similar to
+    ``Device.writeAndVerifyBlocks()``.
+
+    Parameters
+    ----------
+    blocks : iterable
+        Blocks to write and verify.
+    force : bool, optional (default = False)
+        Force the write even if values are unchanged.
+    checkEach : bool, optional (default = False)
+        Perform per-variable verification checks.
+    index : int, optional (default = -1)
+        Optional index for array variables.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
+    """
     writeBlocks(blocks, force=force, checkEach=checkEach, index=index, **kwargs)
     verifyBlocks(blocks, checkEach=checkEach, **kwargs)
     checkBlocks(blocks)
 
-def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
-    """ Helper function for reading a list of blocks.
-        Allows a custom list of blocks to be efficiently written and verified
-       without blocking between each read, similar to Device.readAndCheckBlocks(). """
+def readAndCheckBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) -> None:
+    """Read blocks and wait for completion.
+
+    Helper function for reading a list of blocks. Allows a custom list of blocks
+    to be efficiently read without blocking between each read, similar to
+    ``Device.readAndCheckBlocks()``.
+
+    Parameters
+    ----------
+    blocks : iterable
+        Blocks to read.
+    checkEach : bool, optional (default = False)
+        Perform per-variable verification checks.
+    **kwargs : Any
+        Additional arguments passed through to the block transaction.
+    """
     readBlocks(blocks, checkEach, **kwargs)
     checkBlocks(blocks)
 
@@ -117,24 +211,43 @@ def readAndCheckBlocks(blocks, checkEach=False, **kwargs):
 
 
 class MemoryError(Exception):
-    """
-    Exception for memory access errors.
+    """Raised when a memory access fails.
+
+    Parameters
+    ----------
+    name : str
+        Name of the device or memory target.
+    address : int
+        Address where the error occurred.
+    msg : str, optional
+        Additional error message.
+    size : int, optional (default = 0)
+        Size of the attempted access.
     """
 
-    def __init__(self, *, name, address, msg=None, size=0):
+    def __init__(self, *, name: str, address: int, msg: Optional[str] = None, size: int = 0) -> None:
 
         self._value = f'Memory Error for {name} at address {address:#08x}'
 
         if msg is not None:
             self._value += " " + msg
 
-    def __str__(self):
+    def __str__(self) -> str:
         return repr(self._value)
 
 
 class LocalBlock(object):
-    """ """
-    def __init__(self, *, variable, localSet, localGet, minimum, maximum, value):
+    """Block that stores local variable values."""
+    def __init__(
+        self,
+        *,
+        variable: Any,
+        localSet: Optional[Any],
+        localGet: Optional[Any],
+        minimum: Optional[Any],
+        maximum: Optional[Any],
+        value: Any,
+    ) -> None:
         self._path      = variable.path
         self._mode      = variable.mode
         self._device    = variable.parent
@@ -155,80 +268,65 @@ class LocalBlock(object):
         self._localSetWrap = pr.functionWrapper(function=self._localSet, callArgs=['dev', 'var', 'value', 'changed'])
         self._localGetWrap = pr.functionWrapper(function=self._localGet, callArgs=['dev', 'var'])
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self._path)
 
     @property
-    def path(self):
-        """ """
+    def path(self) -> str:
+        """Return the block path."""
         return self._path
 
     @property
-    def mode(self):
-        """ """
+    def mode(self) -> str:
+        """Return the variable access mode."""
         return self._mode
 
     @property
-    def bulkOpEn(self):
-        """ """
+    def bulkOpEn(self) -> bool:
+        """Return True to enable bulk operations."""
         return True
 
-    def forceStale(self):
-        """ """
+    def forceStale(self) -> None:
+        """Mark the block as stale (no-op for local blocks)."""
         pass
 
-    def setEnable(self,value):
-        """
-
+    def setEnable(self, value: bool) -> None:
+        """Enable or disable local access.
 
         Parameters
         ----------
-        value :
-
-
-        Returns
-        -------
-
+        value : bool
+            True to enable local access, False to disable.
         """
         with self._lock:
             self._enable = value
 
-    def _setTimeout(self,value):
-        """
-
+    def _setTimeout(self, value: Any) -> None:
+        """Set the timeout (not used for local blocks).
 
         Parameters
         ----------
-        value :
-
-
-        Returns
-        -------
-
+        value : object
+            Timeout value, currently ignored for local blocks.
         """
         pass
 
     @property
-    def variables(self):
-        """ """
+    def variables(self) -> list:
+        """Return the list of variables in this block."""
         return self._variables
 
-    def set(self, var, value, index=-1):
-        """
-
+    def set(self, var: Any, value: Any, index: int = -1) -> None:
+        """Set the block value, optionally for an index.
 
         Parameters
         ----------
-        var :
-
-        value :
-
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
-
+        var : object
+            Variable associated with this block.
+        value : object
+            Value to write.
+        index : int, optional (default = -1)
+            Index for array variables.
         """
         with self._lock:
 
@@ -261,20 +359,20 @@ class LocalBlock(object):
             if self._enable and self._localSet is not None:
                 self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
 
-    def get(self, var, index=-1):
-        """
-
+    def get(self, var: Any, index: int = -1) -> Any:
+        """Get the block value, optionally for an index.
 
         Parameters
         ----------
-        var :
-
-        index : int
-             (Default value = -1)
+        var : object
+            Variable associated with this block.
+        index : int, optional (default = -1)
+            Index for array variables.
 
         Returns
         -------
-
+        object
+            Current value.
         """
         if self._enable and self._localGet is not None:
             with self._lock:
@@ -284,236 +382,86 @@ class LocalBlock(object):
         else:
             return self._value
 
-    def _startTransaction(self, type, forceWr, checkEach, variable, index):
-        """
-        Start a transaction.
-
-        Parameters
-        ----------
-        type :
-
-        forceWr :
-
-        checkEach :
-
-        variable :
-
-        index :
-
-
-        Returns
-        -------
-
-        """
+    def _startTransaction(self, type: Any, forceWr: bool, checkEach: bool, variable: Any, index: int) -> None:
+        """Start a transaction (local blocks perform no hardware IO)."""
         pass
 
-    def _checkTransaction(self):
-        """
-        Check status of block.
-        If update=True notify variables if read
-
-        Parameters
-        ----------
-
-        Returns
-        -------
-
-        """
+    def _checkTransaction(self) -> None:
+        """Check status of the block and notify listeners."""
         if self._enable and self._variable._updateNotify:
             self._variable._queueUpdate()
 
-    def _iadd(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _iadd(self, other: Any) -> None:
+        """In-place add helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) + other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _isub(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _isub(self, other: Any) -> None:
+        """In-place subtract helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) - other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _imul(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _imul(self, other: Any) -> None:
+        """In-place multiply helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) * other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _imatmul(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _imatmul(self, other: Any) -> None:
+        """In-place matrix multiply helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) @ other)
             self._variable._queueUpdate()
 
-    def _itruediv(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _itruediv(self, other: Any) -> None:
+        """In-place true division helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) / other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ifloordiv(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _ifloordiv(self, other: Any) -> None:
+        """In-place floor division helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) // other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _imod(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _imod(self, other: Any) -> None:
+        """In-place modulo helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) % other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ipow(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _ipow(self, other: Any) -> None:
+        """In-place power helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) ** other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ilshift(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _ilshift(self, other: Any) -> None:
+        """In-place left shift helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) << other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _irshift(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _irshift(self, other: Any) -> None:
+        """In-place right shift helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) >> other)
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _iand(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+    def _iand(self, other: Any) -> None:
+        """In-place bitwise-and helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) & other)
             if self._enable:

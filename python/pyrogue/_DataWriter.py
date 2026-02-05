@@ -12,28 +12,31 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import datetime
+from typing import Any
+
 import pyrogue as pr
 
 
 class DataWriter(pr.Device):
-    """Special base class to control data files. TODO: Update comments"""
+    """Special base class to control data files. TODO: Update comments
 
-    def __init__(self, *, hidden=True, bufferSize=0, maxFileSize=0, **kwargs):
-        """
-        Initialize device class
-        Parameters
-        ----------
-        * :
+    Parameters
+    ----------
+    hidden : bool, optional (default = True)
+        If True, add the device to the ``Hidden`` group.
+    bufferSize : int, optional (default = 0)
+        File buffer size in bytes.
+    maxFileSize : int, optional (default = 0)
+        Maximum file size in bytes before rolling.
+    **kwargs : Any
+        Additional arguments forwarded to ``Device``.
+    """
 
-        hidden=True :
-
-        **kwargs :
-
-        Returns
-        -------
-
-        """
+    def __init__(self, *, hidden: bool = True, bufferSize: int = 0, maxFileSize: int = 0, **kwargs: Any) -> None:
+        """Initialize the data writer device."""
 
         pr.Device.__init__(self,
                            hidden=hidden,

@@ -12,18 +12,22 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import sys
 import threading
 import datetime
 import itertools
 import heapq
-import rogue.interfaces.memory
+from typing import Any
+
 import pyrogue as pr
+import rogue.interfaces.memory
 
 
 class PollQueueEntry(object):
     """ """
-    def __init__(self, readTime, count, interval, block):
+    def __init__(self, readTime: datetime.datetime, count: int, interval: datetime.timedelta, block: Any) -> None:
         self.readTime = readTime
         self.count    = count
         self.interval = interval
@@ -37,9 +41,16 @@ class PollQueueEntry(object):
 
 
 class PollQueue(object):
-    """ """
+    """Poll queue scheduler.
 
-    def __init__(self,*, root):
+    Parameters
+    ----------
+    root : object
+        Root object used for update grouping.
+    """
+
+    def __init__(self,*, root: Any) -> None:
+        """Initialize the poll queue."""
         self._pq = [] # The heap queue
         self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
@@ -97,18 +108,13 @@ class PollQueue(object):
             self.blockCount -= 1
             self._condLock.notify()
 
-    def updatePollInterval(self, var):
-        """
-
+    def updatePollInterval(self, var: Any) -> None:
+        """Update polling interval for a variable.
 
         Parameters
         ----------
-        var :
-
-
-        Returns
-        -------
-
+        var : object
+            Variable whose poll interval changed.
         """
         with self._condLock:
             self._log.debug(f'updatePollInterval {var} - {var._pollInterval}')

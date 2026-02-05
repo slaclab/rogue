@@ -12,6 +12,8 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import sys
 import os
 import glob
@@ -29,20 +31,21 @@ import zipfile
 import traceback
 import datetime
 from contextlib import contextmanager
+from typing import Any, Callable, Optional
 
 SystemLogInit = '[]'
 
 class UpdateTracker(object):
     """
     """
-    def __init__(self,q):
+    def __init__(self, q: Any) -> None:
         self._count = 0
         self._list = {}
         self._period = 0
         self._last = time.time()
         self._q = q
 
-    def increment(self, period):
+    def increment(self, period: float) -> None:
         """
 
         Parameters
@@ -58,7 +61,7 @@ class UpdateTracker(object):
             self._period = period
         self._count +=1
 
-    def decrement(self):
+    def decrement(self) -> None:
         if self._count != 0:
             self._count -= 1
 
@@ -72,7 +75,7 @@ class UpdateTracker(object):
                 self._q.put(self._list)
                 self._list = {}
 
-    def update(self,var):
+    def update(self, var: Any) -> None:
         """
 
 
@@ -90,11 +93,11 @@ class UpdateTracker(object):
 
 class RootLogHandler(logging.Handler):
     """Class to listen to log entries and add them to syslog variable"""
-    def __init__(self,*, root):
+    def __init__(self,*, root: Any) -> None:
         logging.Handler.__init__(self)
         self._root = root
 
-    def emit(self,record):
+    def emit(self, record: logging.LogRecord) -> None:
         """
 
 
@@ -157,38 +160,46 @@ class Root(pr.Device):
     configuration and status values. This allows configuration and status
     to be stored in data files.
 
-    Attributes
+    Parameters
     ----------
-    rogue.interfaces.stream.Master :
-
-
-    pr.Device :
-
-    Returns
-    -------
-
+    name : str, optional
+        Root name.
+    description : str, optional (default = "")
+        Human-readable description.
+    expand : bool, optional (default = True)
+        Default GUI expand state.
+    timeout : float, optional (default = 1.0)
+        Transaction timeout in seconds.
+    initRead : bool, optional (default = False)
+        Perform an initial read on start.
+    initWrite : bool, optional (default = False)
+        Perform an initial write on start.
+    pollEn : bool, optional (default = True)
+        Enable polling on start.
+    maxLog : int, optional (default = 1000)
+        Maximum log entries to retain.
     """
 
-    def __enter__(self):
+    def __enter__(self) -> Root:
         """Root enter."""
         self.start()
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type, exc_value, traceback) -> None:
         """Root exit."""
         self.stop()
 
     def __init__(self, *,
-                 name=None,
-                 description='',
-                 expand=True,
-                 timeout=1.0,
-                 initRead=False,
-                 initWrite=False,
-                 pollEn=True,
-                 maxLog=1000):
+                 name: Optional[str] = None,
+                 description: str = '',
+                 expand: bool = True,
+                 timeout: float = 1.0,
+                 initRead: bool = False,
+                 initWrite: bool = False,
+                 pollEn: bool = True,
+                 maxLog: int = 1000) -> None:
 
-        """Init the node with passed attributes"""
+        """Init the node with passed attributes."""
         rogue.interfaces.stream.Master.__init__(self)
 
         # Store startup parameters
@@ -356,8 +367,8 @@ class Root(pr.Device):
         #                         description='Exit the server application'))
 
 
-    def start(self):
-        """Setup the tree. Start the polling thread."""
+    def start(self) -> None:
+        """Setup the tree and start background threads."""
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
@@ -429,8 +440,8 @@ class Root(pr.Device):
         self.PollEn.set(self._pollEn)
 
 
-    def stop(self):
-        """Stop the polling thread. Must be called for clean exit."""
+    def stop(self) -> None:
+        """Stop background threads. Must be called for clean exit."""
 
         self._running = False
         self._updateQueue.put(None)
@@ -443,22 +454,25 @@ class Root(pr.Device):
 
     @pr.expose
     @property
-    def running(self):
-        """
-        """
+    def running(self) -> bool:
+        """Return True if the root is running."""
         return self._running
 
-    def addVarListener(self,func,*,done=None,incGroups=None,excGroups=None):
+    def addVarListener(self, func: Callable[..., Any], *, done: Optional[Any] = None, incGroups: Optional[Any] = None, excGroups: Optional[Any] = None) -> None:
         """
         Add a variable update listener function.
         The variable and value structure will be passed as args: func(path,varValue)
 
         Parameters
         ----------
-        func :
-        done :
-        incGroups :
-        excGroups :
+        func : callable
+            Listener callback.
+        done : object, optional
+            Completion callback.
+        incGroups : object, optional
+            Groups to include.
+        excGroups : object, optional
+            Groups to exclude.
 
         Returns
         -------
@@ -471,14 +485,14 @@ class Root(pr.Device):
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
     @contextmanager
-    def updateGroup(self, period=0):
+    def updateGroup(self, period: float = 0):
         """
 
 
         Parameters
         ----------
-        period :
-             (Default value = 0)
+        period : float, optional (default = 0)
+            Maximum update period in seconds.
 
         Returns
         -------

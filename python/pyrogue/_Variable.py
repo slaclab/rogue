@@ -12,27 +12,31 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
+import ast
+import re
+import shlex
+import sys
+import threading
+import time
+from typing import Any, Callable, Iterable as TypingIterable, List, Optional
+
+import numpy as np
 import pyrogue as pr
 import rogue.interfaces.memory as rim
-import threading
-import re
-import time
-import shlex
-import numpy as np
-import ast
-import sys
 from collections import OrderedDict as odict
 from collections.abc import Iterable
 
 
 class VariableError(Exception):
-    """ """
+    """Raised when variable configuration or access fails."""
     pass
 
 
 class VariableWaitClass(object):
-    """
-    Wait for a number of variable conditions to be true.
+    """Wait for variable conditions to become true.
+
     Pass a variable or list of variables, and a test function.
     The test function is passed a list containing the current
     variableValue state indexed by position as passed in the wait list.
@@ -65,17 +69,19 @@ class VariableWaitClass(object):
 
     Parameters
     ----------
-    varList :
-        List of variables to monitor.
-
-    testFunction :
-        Function which will test the state of the values, or None to trigger on update
-
-    timeout : int
-         (Default value = 0)
-
+    varList : object or list
+        Variable or list of variables to monitor.
+    testFunction : callable, optional
+        Predicate that evaluates the current variable values.
+    timeout : int or float, optional (default = 0)
+        Time in seconds to wait before timing out. ``0`` disables timeout.
     """
-    def __init__(self, varList, testFunction=None, timeout=0):
+    def __init__(
+        self,
+        varList: Any,
+        testFunction: Optional[Callable[[List[Any]], bool]] = None,
+        timeout: float = 0,
+    ) -> None:
         self._values   = odict()
         self._updated  = odict()
         self._cv       = threading.Condition()
@@ -90,14 +96,16 @@ class VariableWaitClass(object):
 
         self.arm()
 
-    def arm(self):
+    def arm(self) -> None:
+        """Arm the wait by registering variable listeners."""
         with self._cv:
             for v in self._vlist:
                 v.addListener(self._varUpdate)
                 self._values[v.path]  = v.getVariableValue(read=False)
                 self._updated[v.path] = False
 
-    def wait(self):
+    def wait(self) -> bool:
+        """Wait until the condition is met or timeout occurs."""
         start  = time.time()
 
         with self._cv:
@@ -114,24 +122,29 @@ class VariableWaitClass(object):
 
         return ret
 
-    def get_values(self):
+    def get_values(self) -> dict:
+        """Return the latest collected variable values."""
         return {k: self._values[k] for k in self._vlist}
 
-    def _varUpdate(self, path, varValue):
+    def _varUpdate(self, path: str, varValue: Any) -> None:
         with self._cv:
             if path in self._values:
                 self._values[path] = varValue
                 self._updated[path] = True
                 self._cv.notify()
 
-    def _check(self):
+    def _check(self) -> bool:
         if self._testFunc is not None:
             return (self._testFunc(list(self._values.values())))
         else:
             return (all(self._updated.values()))
 
 
-def VariableWait(varList, testFunction=None, timeout=0):
+def VariableWait(
+    varList: Any,
+    testFunction: Optional[Callable[[List[Any]], bool]] = None,
+    timeout: float = 0,
+) -> bool:
     """
     Wait for a number of variable conditions to be true.
     Pass a variable or list of variables, and a test function.
@@ -158,23 +171,23 @@ def VariableWait(varList, testFunction=None, timeout=0):
         List of variables to monitor.
 
     testFunction :
-        Function which will test the state of the values, or None to trigger on update
+        Function which will test the state of the values, or None to trigger on update.
 
     timeout : int
          (Default value = 0)
 
     Returns
     -------
-        True if conditions were met, false if there was a timeout
-
+    bool
+        True if conditions were met, False if there was a timeout.
     """
     wc = VariableWaitClass(varList, testFunction, timeout)
     return wc.wait()
 
 
 class VariableValue(object):
-    """ """
-    def __init__(self, var, read=False, index=-1):
+    """Snapshot of a variable value with display metadata."""
+    def __init__(self, var: Any, read: bool = False, index: int = -1) -> None:
         self.value     = var.get(read=read,index=index)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
@@ -182,28 +195,71 @@ class VariableValue(object):
 
         self.status, self.severity = var._alarmState(self.value)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{str(self.__class__)}({self.__dict__})'
 
 
 class VariableListData(object):
-    """ """
-    def __init__(self, numValues, valueBits, valueStride):
+    """Container describing list-type variable storage."""
+    def __init__(self, numValues: int, valueBits: int, valueStride: int) -> None:
         self.numValues   = numValues
         self.valueBits   = valueBits
         self.valueStride = valueStride
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'{self.__class__}({self.__dict__})'
 
 
 
 class BaseVariable(pr.Node):
-    """
-    Documentation string for __init__ goes here
-    (under the 'class' definition)
+    """Base class for variables in the PyRogue tree.
 
-    Fill in the paremeters.
+    Parameters
+    ----------
+    name : str
+        Variable name.
+    description : str, optional (default = "")
+        Human-readable description.
+    mode : str, optional (default = "RW")
+        Access mode: ``RW``, ``RO``, or ``WO``.
+    value : object, optional
+        Default value for the variable.
+    disp : object, optional (default = "{}")
+        Display formatter or enumeration mapping.
+    enum : dict, optional
+        Explicit enumeration mapping.
+    units : str, optional
+        Engineering units.
+    hidden : bool, optional (default = False)
+        If True, add the variable to the ``Hidden`` group.
+    groups : object, optional
+        Group or list of groups to assign.
+    minimum : object, optional
+        Minimum allowed value.
+    maximum : object, optional
+        Maximum allowed value.
+    lowWarning : object, optional
+        Low warning threshold.
+    lowAlarm : object, optional
+        Low alarm threshold.
+    highWarning : object, optional
+        High warning threshold.
+    highAlarm : object, optional
+        High alarm threshold.
+    pollInterval : object, optional (default = 0)
+        Polling interval in seconds.
+    updateNotify : bool, optional (default = True)
+        Enable update notifications.
+    typeStr : str, optional (default = "Unknown")
+        Type string for display.
+    bulkOpEn : bool, optional (default = True)
+        Enable bulk operations.
+    offset : int, optional (default = 0)
+        Offset used by remote variables.
+    guiGroup : str, optional
+        GUI grouping label.
+    **kwargs : Any
+        Additional attributes.
     """
 
     PROPS = ['name', 'path', 'mode', 'typeStr', 'enum',
@@ -212,29 +268,33 @@ class BaseVariable(pr.Node):
              'hasAlarm', 'lowWarning', 'highWarning', 'lowAlarm',
              'highAlarm', 'alarmStatus', 'alarmSeverity', 'pollInterval']
 
-    def __init__(self, *,
-                 name,
-                 description='',
-                 mode='RW',
-                 value=None,
-                 disp='{}',
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 lowWarning=None,
-                 lowAlarm=None,
-                 highWarning=None,
-                 highAlarm=None,
-                 pollInterval=0,
-                 updateNotify=True,
-                 typeStr='Unknown',
-                 bulkOpEn=True,
-                 offset=0,
-                 guiGroup=None,
-                 **kwargs):
+    def __init__(
+        self,
+        *,
+        name: str,
+        description: str = '',
+        mode: str = 'RW',
+        value: Any = None,
+        disp: Any = '{}',
+        enum: Optional[dict] = None,
+        units: Optional[str] = None,
+        hidden: bool = False,
+        groups: Optional[Any] = None,
+        minimum: Optional[Any] = None,
+        maximum: Optional[Any] = None,
+        lowWarning: Optional[Any] = None,
+        lowAlarm: Optional[Any] = None,
+        highWarning: Optional[Any] = None,
+        highAlarm: Optional[Any] = None,
+        pollInterval: Any = 0,
+        updateNotify: bool = True,
+        typeStr: str = 'Unknown',
+        bulkOpEn: bool = True,
+        offset: int = 0,
+        guiGroup: Optional[str] = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize a base variable."""
 
         # Public Attributes
         self._bulkOpEn      = bulkOpEn
@@ -304,24 +364,24 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def enum(self):
-        """ """
+        """Return the enum mapping, if any."""
         return self._enum
 
     @property
     def enumYaml(self):
-        """ """
+        """Return the enum mapping as YAML."""
         return pr.dataToYaml(self._enum)
 
     @pr.expose
     @property
     def revEnum(self):
-        """ """
+        """Return the reverse enum mapping, if available."""
         return self._revEnum
 
     @pr.expose
     @property
     def typeStr(self):
-        """ """
+        """Return the type string for this variable."""
         if self._typeStr == 'Unknown':
             v = self.value()
             if self.nativeType is np.ndarray:
@@ -333,13 +393,13 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def disp(self):
-        """ """
+        """Return the display formatter."""
         return self._disp
 
     @pr.expose
     @property
     def precision(self):
-        """ """
+        """Return the display precision for float-like values."""
         if self.nativeType is float or self.nativeType is np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
             try:
@@ -352,73 +412,74 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def mode(self):
-        """ """
+        """Return the access mode (``RW``, ``RO``, ``WO``)."""
         return self._mode
 
     @pr.expose
     @property
     def units(self):
-        """ """
+        """Return the engineering units."""
         return self._units
 
     @pr.expose
     @property
     def minimum(self):
-        """ """
+        """Return the minimum allowed value."""
         return self._minimum
 
     @pr.expose
     @property
     def maximum(self):
-        """ """
+        """Return the maximum allowed value."""
         return self._maximum
 
 
     @pr.expose
     @property
     def hasAlarm(self):
-        """ """
+        """Return True if any alarm thresholds are configured."""
         return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
 
     @pr.expose
     @property
     def lowWarning(self):
-        """ """
+        """Return the low warning threshold."""
         return self._lowWarning
 
     @pr.expose
     @property
     def lowAlarm(self):
-        """ """
+        """Return the low alarm threshold."""
         return self._lowAlarm
 
     @pr.expose
     @property
     def highWarning(self):
-        """ """
+        """Return the high warning threshold."""
         return self._highWarning
 
     @pr.expose
     @property
     def highAlarm(self):
-        """ """
+        """Return the high alarm threshold."""
         return self._highAlarm
 
     @pr.expose
     @property
     def alarmStatus(self):
-        """ """
+        """Return the current alarm status."""
         stat,sevr = self._alarmState(self.value())
         return stat
 
     @pr.expose
     @property
     def alarmSeverity(self):
-        """ """
+        """Return the current alarm severity."""
         stat,sevr = self._alarmState(self.value())
         return sevr
 
     def properties(self):
+        """Return a dictionary of properties and current value."""
         d = odict()
         d['value'] = self.value()
         d['valueDisp'] = self.valueDisp()
@@ -429,6 +490,13 @@ class BaseVariable(pr.Node):
         return d
 
     def getExtraAttribute(self, name):
+        """Return an extra attribute by name, if present.
+
+        Parameters
+        ----------
+        name : str
+            Attribute name to look up.
+        """
         if name in self._extraAttr:
             return self._extraAttr[name]
         else:
@@ -454,11 +522,18 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def pollInterval(self):
-        """ """
+        """Return the poll interval."""
         return self._pollInterval
 
     @pr.expose
     def setPollInterval(self, interval):
+        """Set the poll interval.
+
+        Parameters
+        ----------
+        interval : object
+            Poll interval to use.
+        """
         self._log.debug(f'{self.path}.setPollInterval({interval}]')
         self._pollInterval = interval
         self._updatePollInterval()
@@ -467,7 +542,7 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def lock(self):
-        """ """
+        """Return the underlying lock, if available."""
         if self._block is not None:
             return self._block._lock
         else:
@@ -476,12 +551,12 @@ class BaseVariable(pr.Node):
     @pr.expose
     @property
     def updateNotify(self):
-        """ """
+        """Return True if update notifications are enabled."""
         return self._updateNotify
 
     @property
     def dependencies(self):
-        """ """
+        """Return registered dependency variables."""
         return self.__dependencies
 
     def addListener(self, listener):
@@ -492,7 +567,8 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        listener :
+        listener : object
+            Variable or callback function to notify.
 
 
         Returns
@@ -515,7 +591,8 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        listener :
+        listener : object
+            Variable or callback function to remove.
 
 
         Returns
@@ -537,18 +614,17 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        value :
+        value : object
+            Value to set.
 
-            * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        write : bool, optional (default = True)
+            If True, perform a write transaction.
+        verify : bool, optional (default = True)
+            If True, verify after write.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -565,12 +641,10 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        value :
-
-            * :
-
-        index : int
-             (Default value = -1)
+        value : object
+            Value to set.
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -587,14 +661,12 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        * :
-
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        read : bool, optional (default = True)
+            If True, perform a read transaction.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -609,12 +681,10 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        * :
-
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        verify : bool, optional (default = True)
+            If True, verify after write.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -631,10 +701,10 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        read : bool, optional (default = True)
+            If True, perform a read transaction.
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -647,7 +717,13 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     def value(self, index=-1):
-        """ """
+        """Return the current value without reading.
+
+        Parameters
+        ----------
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        """
         return self.get(read=False, index=index)
 
     @pr.expose
@@ -657,7 +733,10 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        value :
+        value : object
+            Value to format for display.
+        useDisp : object, optional
+            Display formatter override.
 
 
         Returns
@@ -700,10 +779,10 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        read : bool, optional (default = True)
+            If True, perform a read transaction.
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -718,10 +797,8 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -736,7 +813,8 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        sValue :
+        sValue : object
+            Display-formatted value to parse.
 
 
         Returns
@@ -767,12 +845,12 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        sValue :
-
-        write : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
+        sValue : object
+            Display-formatted value to set.
+        write : bool, optional (default = True)
+            If True, perform a write transaction.
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -782,17 +860,17 @@ class BaseVariable(pr.Node):
 
     @property
     def nativeType(self):
-        """ """
+        """Return the native Python type."""
         return self._nativeType
 
     @property
     def ndType(self):
-        """ """
+        """Return the numpy dtype for array variables."""
         return self._ndType
 
     @property
     def ndTypeStr(self):
-        """ """
+        """Return the numpy dtype as a string."""
         return str(self.ndType)
 
     def _setDefault(self):
@@ -994,7 +1072,7 @@ class BaseVariable(pr.Node):
 
 
 class RemoteVariable(BaseVariable,rim.Variable):
-    """ """
+    """Remote variable backed by a memory-mapped interface."""
 
     PROPS = BaseVariable.PROPS + [
         'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
@@ -1032,6 +1110,71 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  retryCount=0,
                  guiGroup=None,
                  **kwargs):
+        """Initialize a remote variable.
+
+        Parameters
+        ----------
+        name : str
+            Variable name.
+        description : str, optional (default = "")
+            Human-readable description.
+        mode : str, optional (default = "RW")
+            Access mode: ``RW``, ``RO``, or ``WO``.
+        value : object, optional
+            Default value.
+        disp : object, optional
+            Display formatter or mapping.
+        enum : dict, optional
+            Enumeration mapping.
+        units : str, optional
+            Engineering units.
+        hidden : bool, optional (default = False)
+            If True, add the variable to the ``Hidden`` group.
+        groups : object, optional
+            Group or list of groups to assign.
+        minimum : object, optional
+            Minimum allowed value.
+        maximum : object, optional
+            Maximum allowed value.
+        lowWarning : object, optional
+            Low warning threshold.
+        lowAlarm : object, optional
+            Low alarm threshold.
+        highWarning : object, optional
+            High warning threshold.
+        highAlarm : object, optional
+            High alarm threshold.
+        base : object, optional (default = ``pr.UInt``)
+            Base type or model.
+        offset : object
+            Memory offset or list of offsets.
+        numValues : int, optional (default = 0)
+            Number of values for array variables.
+        valueBits : int, optional (default = 0)
+            Bits per value for array variables.
+        valueStride : int, optional (default = 0)
+            Bit stride between values.
+        bitSize : int, optional (default = 32)
+            Bit size of the variable.
+        bitOffset : int, optional (default = 0)
+            Bit offset of the variable.
+        pollInterval : object, optional (default = 0)
+            Polling interval.
+        updateNotify : bool, optional (default = True)
+            Enable update notifications.
+        overlapEn : bool, optional (default = False)
+            Allow overlapping variables.
+        bulkOpEn : bool, optional (default = True)
+            Enable bulk operations.
+        verify : bool, optional (default = True)
+            Enable verify on write.
+        retryCount : int, optional (default = 0)
+            Retry count for transactions.
+        guiGroup : str, optional
+            GUI grouping label.
+        **kwargs : Any
+            Additional arguments forwarded to ``BaseVariable``.
+        """
 
         if disp is None:
             disp = base.defaultdisp
@@ -1132,6 +1275,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def address(self):
+        """Return the absolute address of the variable."""
         return self._block.address
 
     @property
@@ -1153,37 +1297,37 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def varBytes(self):
-        """ """
+        """Return the byte size of the variable."""
         return self._varBytes()
 
     @pr.expose
     @property
     def offset(self):
-        """ """
+        """Return the memory offset."""
         return self._offset()
 
     @pr.expose
     @property
     def overlapEn(self):
-        """ """
+        """Return True if overlap is enabled."""
         return self._overlapEn()
 
     @pr.expose
     @property
     def bitSize(self):
-        """ """
+        """Return the bit size."""
         return self._bitSize()
 
     @pr.expose
     @property
     def bitOffset(self):
-        """ """
+        """Return the bit offset."""
         return self._bitOffset()
 
     @pr.expose
     @property
     def verifyEn(self):
-        """ """
+        """Return True if verify is enabled."""
         return self._verifyEn()
 
 
@@ -1195,13 +1339,13 @@ class RemoteVariable(BaseVariable,rim.Variable):
     @pr.expose
     @property
     def base(self):
-        """ """
+        """Return the base model or type."""
         return self._base
 
     @pr.expose
     @property
     def bulkEn(self):
-        """ """
+        """Return True if bulk operations are enabled."""
         return self._bulkOpEn
 
     @pr.expose
@@ -1215,18 +1359,16 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         Parameters
         ----------
-        value :
-
-            * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        value : object
+            Value to set.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        write : bool, optional (default = True)
+            If True, perform a write transaction.
+        verify : bool, optional (default = True)
+            If True, verify after write.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -1258,12 +1400,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         Parameters
         ----------
-        value :
-
-            * :
-
-        index : int
-             (Default value = -1)
+        value : object
+            Value to set.
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -1283,27 +1423,20 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     def get(self, *, index=-1, read=True, check=True):
-        """
+        """Return the value, optionally reading from hardware.
 
+        Hardware read is blocking if check=True, otherwise non-blocking.
+        An error will result in a logged exception.
+        Listeners will be informed of the update.
 
         Parameters
         ----------
-            * :
-
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
-
-        Returns
-        -------
-        type
-            Hardware read is blocking if check=True, otherwise non-blocking.
-            An error will result in a logged exception.
-            Listeners will be informed of the update.
-
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        read : bool, optional (default = True)
+            If True, perform a read transaction.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
         """
         try:
             if read:
@@ -1329,12 +1462,10 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
         Parameters
         ----------
-             * :
-
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        verify : bool, optional (default = True)
+            If True, verify after write.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -1391,7 +1522,57 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
 
 class LocalVariable(BaseVariable):
-    """ """
+    """Local variable backed by an in-process value.
+
+    Parameters
+    ----------
+    name : str
+        Variable name.
+    value : object, optional
+        Default value.
+    description : str, optional (default = "")
+        Human-readable description.
+    mode : str, optional (default = "RW")
+        Access mode: ``RW``, ``RO``, or ``WO``.
+    disp : object, optional (default = "{}")
+        Display formatter or mapping.
+    enum : dict, optional
+        Enumeration mapping.
+    units : str, optional
+        Engineering units.
+    hidden : bool, optional (default = False)
+        If True, add the variable to the ``Hidden`` group.
+    groups : object, optional
+        Group or list of groups to assign.
+    minimum : object, optional
+        Minimum allowed value.
+    maximum : object, optional
+        Maximum allowed value.
+    lowWarning : object, optional
+        Low warning threshold.
+    lowAlarm : object, optional
+        Low alarm threshold.
+    highWarning : object, optional
+        High warning threshold.
+    highAlarm : object, optional
+        High alarm threshold.
+    localSet : callable, optional
+        Setter callback.
+    localGet : callable, optional
+        Getter callback.
+    pollInterval : object, optional (default = 0)
+        Polling interval.
+    updateNotify : bool, optional (default = True)
+        Enable update notifications.
+    typeStr : str, optional (default = "Unknown")
+        Type string for display.
+    bulkOpEn : bool, optional (default = True)
+        Enable bulk operations.
+    guiGroup : str, optional
+        GUI grouping label.
+    **kwargs : Any
+        Additional arguments forwarded to ``BaseVariable``.
+    """
 
     def __init__(self, *,
                  name,
@@ -1417,6 +1598,7 @@ class LocalVariable(BaseVariable):
                  bulkOpEn=True,
                  guiGroup=None,
                  **kwargs):
+        """Initialize a local variable."""
 
         if value is None and localGet is None:
             raise VariableError(f'LocalVariable {self.path} without localGet() must specify value= argument in constructor')
@@ -1445,18 +1627,16 @@ class LocalVariable(BaseVariable):
 
         Parameters
         ----------
-        value :
-
-            * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        value : object
+            Value to set.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        write : bool, optional (default = True)
+            If True, perform a write transaction.
+        verify : bool, optional (default = True)
+            If True, verify after write.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -1486,12 +1666,10 @@ class LocalVariable(BaseVariable):
 
         Parameters
         ----------
-        value :
-
-        * :
-
-        index : int
-             (Default value = -1)
+        value : object
+            Value to set.
+        index : int, optional (default = -1)
+            Optional index for array variables.
 
         Returns
         -------
@@ -1515,14 +1693,12 @@ class LocalVariable(BaseVariable):
 
         Parameters
         ----------
-            * :
-
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        read : bool, optional (default = True)
+            If True, perform a read transaction.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -1598,7 +1774,27 @@ class LocalVariable(BaseVariable):
         return self
 
 class LinkVariable(BaseVariable):
-    """ """
+    """Variable linked to another variable or custom functions.
+
+    Parameters
+    ----------
+    name : str
+        Variable name.
+    variable : object, optional
+        Variable to link to.
+    dependencies : iterable, optional
+        Additional dependencies.
+    linkedSet : callable, optional
+        Setter callback.
+    linkedGet : callable, optional
+        Getter callback.
+    minimum : object, optional
+        Minimum allowed value.
+    maximum : object, optional
+        Maximum allowed value.
+    **kwargs : Any
+        Additional arguments forwarded to ``BaseVariable``.
+    """
 
     def __init__(self, *,
                  name,
@@ -1609,6 +1805,7 @@ class LinkVariable(BaseVariable):
                  minimum=None,
                  maximum=None,
                  **kwargs): # Args passed to BaseVariable
+        """Initialize a link variable."""
 
         # Set and get functions
         self._linkedGet = linkedGet
@@ -1664,18 +1861,16 @@ class LinkVariable(BaseVariable):
 
         Parameters
         ----------
-        value :
-
-            * :
-
-        write : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-        verify : bool
-             (Default value = True)
-        check : bool
-             (Default value = True)
+        value : object
+            Value to set.
+        write : bool, optional (default = True)
+            If True, perform a write transaction.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        verify : bool, optional (default = True)
+            If True, verify after write.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -1695,12 +1890,12 @@ class LinkVariable(BaseVariable):
 
         Parameters
         ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-        check : bool
-             (Default value = True)
+        read : bool, optional (default = True)
+            If True, perform a read transaction.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        check : bool, optional (default = True)
+            If True, check transaction completion.
 
         Returns
         -------
@@ -1730,7 +1925,7 @@ class LinkVariable(BaseVariable):
 
     @property
     def depBlocks(self):
-        """ Return a list of Blocks that this LinkVariable depends on """
+        """Return a list of blocks that this LinkVariable depends on."""
         return self.__depBlocks
 
     @pr.expose

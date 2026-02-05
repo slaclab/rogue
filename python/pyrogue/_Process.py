@@ -12,14 +12,31 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import threading
 import time
+from typing import Any, Callable, Optional
+
 import pyrogue as pr
 
 class Process(pr.Device):
-    """Special base class to execute processes."""
+    """Special base class to execute processes.
 
-    def __init__(self, *, argVariable=None, returnVariable=None, function=None, **kwargs):
+    Parameters
+    ----------
+    argVariable : object, optional
+        Variable providing input arguments.
+    returnVariable : object, optional
+        Variable receiving return values.
+    function : callable, optional
+        Function to execute for the process.
+    **kwargs : Any
+        Additional arguments forwarded to ``Device``.
+    """
+
+    def __init__(self, *, argVariable: Optional[Any] = None, returnVariable: Optional[Any] = None, function: Optional[Callable[..., Any]] = None, **kwargs: Any) -> None:
+        """Initialize a process device."""
 
         pr.Device.__init__(self, **kwargs)
 
@@ -117,7 +134,14 @@ class Process(pr.Device):
         self._stopProcess()
         pr.Device._stop(self)
 
-    def __call__(self,arg=None):
+    def __call__(self, arg: Any = None) -> None:
+        """Start the process with an optional argument.
+
+        Parameters
+        ----------
+        arg : object, optional
+            Argument to set on ``argVariable`` before running.
+        """
         with self._lock:
             if self.Running.value() is False:
                 if arg is not None and self._argVar is not None:

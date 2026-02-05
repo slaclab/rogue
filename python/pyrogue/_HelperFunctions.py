@@ -12,6 +12,8 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import sys
 import os
 import signal
@@ -19,6 +21,7 @@ import yaml
 import time
 import zipfile
 import inspect
+from typing import Any
 
 import pyrogue as pr
 import rogue.interfaces.stream
@@ -27,7 +30,7 @@ import rogue.interfaces.memory
 from collections import OrderedDict as odict
 
 
-def addLibraryPath(path):
+def addLibraryPath(path: Any) -> None:
     """
     Append the past string or list of strings to the python library path.
     Passed strings can either be relative: ../path/to/library
@@ -35,7 +38,8 @@ def addLibraryPath(path):
 
     Parameters
     ----------
-    path :
+    path : object
+        Path or list of paths to append.
 
 
     Returns
@@ -82,7 +86,7 @@ def addLibraryPath(path):
         sys.path.insert(0,np)
 
 
-def waitCntrlC():
+def waitCntrlC() -> None:
     """Helper Function To Wait For Cntrl-c"""
 
     class monitorSignal(object):
@@ -120,7 +124,7 @@ def waitCntrlC():
         return
 
 
-def streamConnect(source, dest):
+def streamConnect(source: Any, dest: Any) -> None:
     """
     Attach the passed dest object to the source a stream.
     Connect source and destination stream devices.
@@ -131,9 +135,10 @@ def streamConnect(source, dest):
 
     Parameters
     ----------
-    source :
-
-    dest :
+    source : object
+        Stream master or wrapper.
+    dest : object
+        Stream slave or wrapper.
 
 
     Returns
@@ -155,7 +160,7 @@ def streamConnect(source, dest):
 
     master._addSlave(slave)
 
-def streamConnectBiDir(deviceA, deviceB):
+def streamConnectBiDir(deviceA: Any, deviceB: Any) -> None:
     """
     Attach the passed dest object to the source a stream.
     Connect source and destination stream devices.
