@@ -235,10 +235,10 @@ def yamlToData(stream='',fName=None):
 
     Parameters
     ----------
-    stream :
-         (Default value = '')
-    fName :
-         (Default value = None)
+    stream : str, optional (default = '')
+        YAML content as a string.
+    fName : str, optional
+        YAML file path.
 
     Returns
     -------

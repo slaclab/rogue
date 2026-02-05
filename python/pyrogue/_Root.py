@@ -585,8 +585,8 @@ class Root(pr.Device):
         ----------
         fname :
 
-        headerEn :
-             (Default value = False)
+        headerEn : bool, optional (default = False)
+            Include header row in the output.
 
         Returns
         -------
@@ -671,10 +671,10 @@ class Root(pr.Device):
         ----------
         fname :
 
-        polledOnly : bool
-             (Default value = False)
-        incGroups :
-             (Default value = None)
+        polledOnly : bool, optional (default = False)
+            If True, include only polled variables.
+        incGroups : object, optional
+            Groups to include.
 
         Returns
         -------

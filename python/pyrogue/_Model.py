@@ -13,24 +13,28 @@
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
 
-import rogue.interfaces.memory as rim
-import numpy as np
+from __future__ import annotations
+
 import struct
+from typing import Any
 
-def wordCount(bits, wordSize):
-    """
+import numpy as np
+import rogue.interfaces.memory as rim
 
+def wordCount(bits: int, wordSize: int) -> int:
+    """Return the number of words needed to represent a bit width.
 
     Parameters
     ----------
-    bits :
-
-    wordSize :
-
+    bits : int
+        Number of bits to represent.
+    wordSize : int
+        Word size in bits.
 
     Returns
     -------
-
+    int
+        Number of words required.
     """
     ret = bits // wordSize
     if (bits % wordSize != 0 or bits == 0):
@@ -38,36 +42,36 @@ def wordCount(bits, wordSize):
     return ret
 
 
-def byteCount(bits):
-    """
-
+def byteCount(bits: int) -> int:
+    """Return the number of bytes needed to represent a bit width.
 
     Parameters
     ----------
-    bits :
-
+    bits : int
+        Number of bits to represent.
 
     Returns
     -------
-
+    int
+        Number of bytes required.
     """
     return wordCount(bits, 8)
 
 
-def reverseBits(value, bitSize):
-    """
-
+def reverseBits(value: int, bitSize: int) -> int:
+    """Return the bit-reversed value.
 
     Parameters
     ----------
-    value :
-
-    bitSize :
-
+    value : int
+        Value to reverse.
+    bitSize : int
+        Number of bits to reverse.
 
     Returns
     -------
-
+    int
+        Bit-reversed value.
     """
     result = 0
     for i in range(bitSize):
@@ -77,20 +81,20 @@ def reverseBits(value, bitSize):
     return result
 
 
-def twosComplement(value, bitSize):
-    """
-    compute the 2's complement of int value
+def twosComplement(value: int, bitSize: int) -> int:
+    """Compute the two's complement of an integer value.
 
     Parameters
     ----------
-    value :
-
-    bitSize :
-
+    value : int
+        Input value.
+    bitSize : int
+        Bit width of the value.
 
     Returns
     -------
-
+    int
+        Two's complement value.
     """
     if (value & (1 << (bitSize - 1))) != 0: # if sign bit is set e.g., 8bit: 128-255
         value = value - (1 << bitSize)      # compute negative value
@@ -121,13 +125,9 @@ class Model(object, metaclass=ModelMeta):
     Parameters
     ----------
     bitSize : int
-        Number of bits being represented
-    binPoint : int
-        Huh?
-
-    Returns
-    -------
-
+        Number of bits being represented.
+    binPoint : int, optional (default = 0)
+        Binary point position.
     Attributes
     ----------
     name: str
@@ -173,25 +173,25 @@ class Model(object, metaclass=ModelMeta):
     bitReverse  = False
     modelId     = rim.PyFunc
 
-    def __init__(self, bitSize, binPoint=0):
+    def __init__(self, bitSize: int, binPoint: int = 0) -> None:
         self.binPoint = binPoint
         self.bitSize  = bitSize
         self.name     = self.__class__.__name__
         self.ndType   = None
 
     @property
-    def isBigEndian(self):
-        """ """
+    def isBigEndian(self) -> bool:
+        """Return True if the model is big endian."""
         return self.endianness == 'big'
 
-    def toBytes(self, value):
+    def toBytes(self, value: Any) -> Any:
         """
         Convert the python value to byte array.
 
         Parameters
         ----------
-        value : obj
-            Python value to convert
+        value : object
+            Python value to convert.
 
         Returns
         -------
@@ -201,14 +201,14 @@ class Model(object, metaclass=ModelMeta):
         return None
 
     # Called by raw read/write and when bitsize > 64
-    def fromBytes(self, ba):
+    def fromBytes(self, ba: bytearray) -> Any:
         """
         Convert the python value to byte array.
 
         Parameters
         ----------
         ba : bytearray
-            Byte array to extract value from
+            Byte array to extract value from.
 
         Returns
         -------
@@ -217,14 +217,14 @@ class Model(object, metaclass=ModelMeta):
         """
         return None
 
-    def fromString(self, string):
+    def fromString(self, string: str) -> Any:
         """
         Convert the string to a python value.
 
         Parameters
         ----------
         string : str
-            String representation of the value
+            String representation of the value.
 
         Returns
         -------
@@ -233,29 +233,35 @@ class Model(object, metaclass=ModelMeta):
         """
         return None
 
-    def minValue(self):
+    def minValue(self) -> Any:
         """Return the minimum value for the Model type"""
         return None
 
-    def maxValue(self):
+    def maxValue(self) -> Any:
         """Return the maximum value for the Model type"""
         return None
 
 
 class UInt(Model):
-    """Model class for unsigned integers"""
+    """Model class for unsigned integers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented.
+    """
 
     pytype      = int
     defaultdisp = '{:#x}'
     modelId     = rim.UInt
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
         self.ndType = np.dtype(np.uint32) if bitSize <= 32 else np.dtype(np.uint64)
 
     # Called by raw read/write and when bitsize > 64
-    def toBytes(self, value):
+    def toBytes(self, value: int) -> bytes:
         """
 
 
@@ -271,7 +277,7 @@ class UInt(Model):
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     # Called by raw read/write and when bitsize > 64
-    def fromBytes(self, ba):
+    def fromBytes(self, ba: bytes) -> int:
         """
 
 
@@ -286,7 +292,7 @@ class UInt(Model):
         """
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
-    def fromString(self, string):
+    def fromString(self, string: str) -> int:
         """
 
 
@@ -301,26 +307,26 @@ class UInt(Model):
         """
         return int(string, 0)
 
-    def minValue(self):
+    def minValue(self) -> int:
         """ """
         return 0
 
-    def maxValue(self):
+    def maxValue(self) -> int:
         """ """
         return (2**self.bitSize)-1
 
 
 class UIntReversed(UInt):
-    """Model class for unsigned integers, stored in reverse bit order"""
+    """Model class for unsigned integers, stored in reverse bit order."""
 
     modelId    = rim.PyFunc # Not yet supported
     bitReverse = True
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         super().__init__(bitSize)
         self.ndType = None
 
-    def toBytes(self, value):
+    def toBytes(self, value: int) -> bytes:
         """
 
 
@@ -336,7 +342,7 @@ class UIntReversed(UInt):
         valueReverse = reverseBits(value, self.bitSize)
         return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
-    def fromBytes(self, ba):
+    def fromBytes(self, ba: bytes) -> int:
         """
 
 
@@ -354,19 +360,25 @@ class UIntReversed(UInt):
 
 
 class Int(UInt):
-    """Model class for integers"""
+    """Model class for integers.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented.
+    """
 
     # Override these and inherit everything else from UInt
     defaultdisp = '{:d}'
     signed      = True
     modelId     = rim.Int
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         super().__init__(bitSize)
         self.ndType = np.dtype(np.int32) if bitSize <= 32 else np.dtype(np.int64)
 
     # Called by raw read/write and when bitsize > 64
-    def toBytes(self, value):
+    def toBytes(self, value: int) -> bytes:
         """
 
 
@@ -388,7 +400,7 @@ class Int(UInt):
         return ba
 
     # Called by raw read/write and when bitsize > 64
-    def fromBytes(self,ba):
+    def fromBytes(self, ba: bytes) -> int:
         """
 
 
@@ -412,7 +424,7 @@ class Int(UInt):
 
         return
 
-    def fromString(self, string):
+    def fromString(self, string: str) -> int:
         """
 
 
@@ -431,11 +443,11 @@ class Int(UInt):
             i = i - (1 << self.bitSize)
         return i
 
-    def minValue(self):
+    def minValue(self) -> int:
         """ """
         return -1 * (2**(self.bitSize-1))
 
-    def maxValue(self):
+    def maxValue(self) -> int:
         """ """
         return (2**(self.bitSize-1))-1
 
@@ -453,18 +465,24 @@ class IntBE(Int):
 
 
 class Bool(Model):
-    """Model class for booleans"""
+    """Model class for booleans.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 1.
+    """
 
     pytype      = bool
     defaultdisp = {False: 'False', True: 'True'}
     modelId     = rim.Bool
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         assert bitSize == 1, f"The bitSize param of Model {self.__class__.__name__} must be 1"
         super().__init__(bitSize)
         self.ndType = np.dtype(bool)
 
-    def toBytes(self, value):
+    def toBytes(self, value: bool) -> bytes:
         """
 
 
@@ -479,7 +497,7 @@ class Bool(Model):
         """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
-    def fromBytes(self, ba):
+    def fromBytes(self, ba: bytes) -> bool:
         """
 
 
@@ -494,7 +512,7 @@ class Bool(Model):
         """
         return bool(int.from_bytes(ba, self.endianness, signed=self.signed))
 
-    def fromString(self, string):
+    def fromString(self, string: str) -> bool:
         """
 
 
@@ -509,29 +527,35 @@ class Bool(Model):
         """
         return str.lower(string) == "true"
 
-    def minValue(self):
+    def minValue(self) -> int:
         """ """
         return 0
 
-    def maxValue(self):
+    def maxValue(self) -> int:
         """ """
         return 1
 
 
 class String(Model):
-    """Model class for strings"""
+    """Model class for strings.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented.
+    """
 
     encoding    = 'utf-8'
     defaultdisp = '{}'
     pytype      = str
     modelId     = rim.String
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}({self.bitSize//8})'
 
 
-    def toBytes(self, value):
+    def toBytes(self, value: str) -> bytearray:
         """
 
 
@@ -548,7 +572,7 @@ class String(Model):
         ba.extend(bytearray(1))
         return ba
 
-    def fromBytes(self, ba):
+    def fromBytes(self, ba: bytearray) -> str:
         """
 
 
@@ -564,7 +588,7 @@ class String(Model):
         s = ba.rstrip(bytearray(1))
         return s.decode(self.encoding)
 
-    def fromString(self, string):
+    def fromString(self, string: str) -> str:
         """
 
 
@@ -581,20 +605,26 @@ class String(Model):
 
 
 class Float(Model):
-    """Model class for 32-bit floats"""
+    """Model class for 32-bit floats.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 32.
+    """
 
     defaultdisp = '{:f}'
     pytype      = float
     fstring     = 'f'
     modelId     = rim.Float
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
         self.ndType = np.dtype(np.float32)
 
-    def toBytes(self, value):
+    def toBytes(self, value: float) -> bytearray:
         """
 
 
@@ -609,7 +639,7 @@ class Float(Model):
         """
         return bytearray(struct.pack(self.fstring, value))
 
-    def fromBytes(self, ba):
+    def fromBytes(self, ba: bytes) -> float:
         """
 
 
@@ -624,7 +654,7 @@ class Float(Model):
         """
         return struct.unpack(self.fstring, ba)[0]
 
-    def fromString(self, string):
+    def fromString(self, string: str) -> float:
         """
 
 
@@ -639,32 +669,38 @@ class Float(Model):
         """
         return float(string)
 
-    def minValue(self):
+    def minValue(self) -> float:
         """ """
         return -3.4e38
 
-    def maxValue(self):
+    def maxValue(self) -> float:
         """ """
         return 3.4e38
 
 
 class Double(Float):
-    """Model class for 64-bit floats"""
+    """Model class for 64-bit floats.
+
+    Parameters
+    ----------
+    bitSize : int
+        Number of bits being represented. Must be 64.
+    """
 
     fstring = 'd'
     modelId = rim.Double
 
-    def __init__(self, bitSize):
+    def __init__(self, bitSize: int) -> None:
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
         Model.__init__(self,bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
         self.ndType = np.dtype(np.float64)
 
-    def minValue(self):
+    def minValue(self) -> float:
         """ """
         return -1.80e308
 
-    def maxValue(self):
+    def maxValue(self) -> float:
         """ """
         return 1.80e308
 
@@ -700,7 +736,7 @@ class Fixed(Model):
     signed  = True
     modelId = rim.Fixed
 
-    def __init__(self, bitSize, binPoint):
+    def __init__(self, bitSize: int, binPoint: int) -> None:
         super().__init__(bitSize,binPoint)
         self.name = f'Fixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
@@ -722,7 +758,7 @@ class UFixed(Model):
     signed  = False
     modelId = rim.Fixed
 
-    def __init__(self, bitSize, binPoint):
+    def __init__(self, bitSize: int, binPoint: int) -> None:
         super().__init__(bitSize,binPoint)
         self.name = f'UFixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)

@@ -173,8 +173,8 @@ def VariableWait(
     testFunction :
         Function which will test the state of the values, or None to trigger on update.
 
-    timeout : int
-         (Default value = 0)
+    timeout : int, optional (default = 0)
+        Timeout in seconds.
 
     Returns
     -------

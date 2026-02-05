@@ -219,8 +219,8 @@ class PollQueue(object):
 
         Parameters
         ----------
-        time :
-             (Default value = None)
+        time : datetime.datetime, optional
+            Time cutoff to use; defaults to ``datetime.datetime.now()``.
 
         Returns
         -------
