@@ -233,7 +233,7 @@ std::string rim::Transaction::wait() {
         gettimeofday(&currTime, NULL);
         if (endTime_.tv_sec != 0 && endTime_.tv_usec != 0 && timercmp(&currTime, &(endTime_), >)) {
             done_  = true;
-            error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
+            error_ = "Timeout (" + std::to_string(timeout_.tv_sec + timeout_.tv_usec*1e-9) + "s) waiting for register transaction " + std::to_string(id_) + " message response.";
 
             log_->debug("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
                         type_,
