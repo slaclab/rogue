@@ -24,11 +24,11 @@ import rogue.interfaces.memory as rim
 
 
 def startTransaction(
-    block: Any,
+    block: rim.Block,
     *,
     type: Any,
     forceWr: bool = False,
-    checkEach: bool = False,
+    check: bool = False,
     variable: Optional[Any] = None,
     index: int = -1,
     **kwargs: Any,
@@ -43,12 +43,12 @@ def startTransaction(
     ----------
     block : object
         Block instance to operate on.
-    type : object
-        Transaction type (e.g., ``rim.Write``).
+    type : {rim.Read, rim.Write, rim.Post, rim.Verify}
+        Transaction type 
     forceWr : bool, optional (default = False)
-        Force the write even if values are unchanged.
-    checkEach : bool, optional (default = False)
-        Perform per-variable verification checks.
+        Force the write even if block values are unchanged.
+    check : bool, optional (default = False)
+        Wait for transaction to complete before returning
     variable : object, optional
         Variable associated with the transaction.
     index : int, optional (default = -1)
@@ -56,10 +56,10 @@ def startTransaction(
     **kwargs : Any
         Additional arguments passed through to the block transaction.
     """
-    block._startTransaction(type, forceWr, checkEach, variable, index)
+    block._startTransaction(type, forceWr, check, variable, index)
 
 
-def checkTransaction(block: Any, **kwargs: Any) -> None:
+def checkTransaction(block: rim.Block, **kwargs: Any) -> None:
     """Check completion of a block transaction.
 
     Helper function for calling the checkTransaction function in a block. This helper
@@ -71,12 +71,12 @@ def checkTransaction(block: Any, **kwargs: Any) -> None:
     block : object
         Block instance to operate on.
     **kwargs : Any
-        Additional arguments passed through to the block transaction.
+        Unused
     """
     block._checkTransaction()
 
 def writeBlocks(
-    blocks: Iterable[Any],
+    blocks: Iterable[rim.Block],
     force: bool = False,
     checkEach: bool = False,
     index: int = -1,
@@ -89,21 +89,21 @@ def writeBlocks(
 
     Parameters
     ----------
-    blocks : iterable
+    blocks : iterable[rim.Block]
         Blocks to write.
     force : bool, optional (default = False)
         Force the write even if values are unchanged.
     checkEach : bool, optional (default = False)
-        Perform per-variable verification checks.
+        Wait for completion of each block transaction before initiating the next one
     index : int, optional (default = -1)
         Optional index for array variables.
     **kwargs : Any
-        Additional arguments passed through to the block transaction.
+        Additional arguments passed through to startTransaction().
     """
     for b in blocks:
-        startTransaction(b, type=rim.Write, forceWr=force, checkEach=checkEach, index=index, **kwargs)
+        startTransaction(b, type=rim.Write, forceWr=force, check=checkEach, index=index, **kwargs)
 
-def verifyBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) -> None:
+def verifyBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: Any) -> None:
     """Verify a list of blocks efficiently.
 
     Helper function for verifying a list of blocks. Allows a custom list of blocks
@@ -112,17 +112,17 @@ def verifyBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) 
 
     Parameters
     ----------
-    blocks : iterable
+    blocks : iterable[rim.Block]
         Blocks to verify.
     checkEach : bool, optional (default = False)
-        Perform per-variable verification checks.
+        Wait for completion of each block transation before initiating the next one
     **kwargs : Any
-        Additional arguments passed through to the block transaction.
+        Additional arguments passed through to startTransaction().
     """
     for b in blocks:
-        startTransaction(b, type=rim.Verify, checkEach=checkEach, **kwargs)
+        startTransaction(b, type=rim.Verify, check=checkEach, **kwargs)
 
-def readBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) -> None:
+def readBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: Any) -> None:
     """Read a list of blocks efficiently.
 
     Helper function for reading a list of blocks. Allows a custom list of blocks
@@ -131,35 +131,35 @@ def readBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) ->
 
     Parameters
     ----------
-    blocks : iterable
+    blocks : iterable[rim.Block]
         Blocks to read.
     checkEach : bool, optional (default = False)
-        Perform per-variable verification checks.
+        Wait for completion of each block transation before initiating the next one
     **kwargs : Any
-        Additional arguments passed through to the block transaction.
+        Additional arguments passed through to startTransaction()
     """
     for b in blocks:
-        startTransaction(b, type=rim.Read, checkEach=checkEach, **kwargs)
+        startTransaction(b, type=rim.Read, check=checkEach, **kwargs)
 
-def checkBlocks(blocks: Iterable[Any], **kwargs: Any) -> None:
+def checkBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
     """Wait on block transactions for a list of blocks.
 
-    Helper function for waiting on block transactions. Allows a custom list of
-    blocks to be efficiently operated on without blocking between each transaction,
-    similar to ``Device.checkBlocks()``.
+    Helper function for waiting on block transactions to complete. 
+    Allows a custom list of blocks to be efficiently operated on 
+    without blocking between each transaction, similar to ``Device.checkBlocks()``.
 
     Parameters
     ----------
-    blocks : iterable
+    blocks : iterable[rim.Block]
         Blocks to check.
     **kwargs : Any
-        Additional arguments passed through to the block transaction.
+        Unused
     """
     for b in blocks:
         checkTransaction(b)
 
 def writeAndVerifyBlocks(
-    blocks: Iterable[Any],
+    blocks: Iterable[rim.Block],
     force: bool = False,
     checkEach: bool = False,
     index: int = -1,
@@ -173,12 +173,12 @@ def writeAndVerifyBlocks(
 
     Parameters
     ----------
-    blocks : iterable
+    blocks : iterable[rim.Block]
         Blocks to write and verify.
     force : bool, optional (default = False)
         Force the write even if values are unchanged.
     checkEach : bool, optional (default = False)
-        Perform per-variable verification checks.
+        Wait for each block transaction to complete before starting the next one
     index : int, optional (default = -1)
         Optional index for array variables.
     **kwargs : Any
@@ -188,7 +188,7 @@ def writeAndVerifyBlocks(
     verifyBlocks(blocks, checkEach=checkEach, **kwargs)
     checkBlocks(blocks)
 
-def readAndCheckBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs: Any) -> None:
+def readAndCheckBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: Any) -> None:
     """Read blocks and wait for completion.
 
     Helper function for reading a list of blocks. Allows a custom list of blocks
@@ -197,10 +197,10 @@ def readAndCheckBlocks(blocks: Iterable[Any], checkEach: bool = False, **kwargs:
 
     Parameters
     ----------
-    blocks : iterable
+    blocks : iterable[rim.Block]
         Blocks to read.
     checkEach : bool, optional (default = False)
-        Perform per-variable verification checks.
+        Wait for each block transaction to complete before starting the next one
     **kwargs : Any
         Additional arguments passed through to the block transaction.
     """
@@ -237,7 +237,10 @@ class MemoryError(Exception):
 
 
 class LocalBlock(object):
-    """Block that stores local variable values."""
+    """Back-end Block class used by LocalVariable
+
+    Stores value in local memory.
+    """
     def __init__(
         self,
         *,
@@ -278,7 +281,7 @@ class LocalBlock(object):
 
     @property
     def mode(self) -> str:
-        """Return the variable access mode."""
+        """Return the variable access mode. ('RW', 'RO', etc)."""
         return self._mode
 
     @property
@@ -316,12 +319,12 @@ class LocalBlock(object):
         """Return the list of variables in this block."""
         return self._variables
 
-    def set(self, var: Any, value: Any, index: int = -1) -> None:
+    def set(self, var: pr.LocalVariable, value: Any, index: int = -1) -> None:
         """Set the block value, optionally for an index.
 
         Parameters
         ----------
-        var : object
+        var : pr.LocalVariable
             Variable associated with this block.
         value : object
             Value to write.
@@ -359,12 +362,12 @@ class LocalBlock(object):
             if self._enable and self._localSet is not None:
                 self._localSetWrap(function=self._localSet, dev=self._device, var=self._variable, value=self._value, changed=changed)
 
-    def get(self, var: Any, index: int = -1) -> Any:
+    def get(self, var: pr.LocalVariable, index: int = -1) -> Any:
         """Get the block value, optionally for an index.
 
         Parameters
         ----------
-        var : object
+        var : pr.LocalVariable
             Variable associated with this block.
         index : int, optional (default = -1)
             Index for array variables.
@@ -382,12 +385,12 @@ class LocalBlock(object):
         else:
             return self._value
 
-    def _startTransaction(self, type: Any, forceWr: bool, checkEach: bool, variable: Any, index: int) -> None:
+    def _startTransaction(self, type: Any, forceWr: bool, check: bool, variable: pr.LocalVariable, index: int) -> None:
         """Start a transaction (local blocks perform no hardware IO)."""
         pass
 
     def _checkTransaction(self) -> None:
-        """Check status of the block and notify listeners."""
+        """Notify listeners of transaction completion"""
         if self._enable and self._variable._updateNotify:
             self._variable._queueUpdate()
 
@@ -467,37 +470,16 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ixor(self, other):
-        """
+    def _ixor(self, other: Any) -> None:
+        """In-place bitwise-xor helper for local blocks."""
 
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
         with self._lock:
             self.set(None, self.get(None) ^ other)
             if self._enable:
                 self._variable._queueUpdate()
 
     def _ior(self, other):
-        """
-
-
-        Parameters
-        ----------
-        other :
-
-
-        Returns
-        -------
-
-        """
+        """In-place bitwise-or helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) | other)
             if self._enable:
