@@ -237,18 +237,35 @@ class MemoryError(Exception):
 
 
 class LocalBlock(object):
-    """Back-end Block class used by LocalVariable
+    """Back-end Block class used by LocalVariable.
 
     Stores value in local memory.
+
+    Parameters
+    ----------
+    variable : pr.LocalVariable
+        Variable associated with this block.
+    localSet : callable
+        Setter callback. Expected signature:
+        ``localSet(dev=None, var=None, value, changed=None)``.
+    localGet : callable
+        Getter callback. Expected signature:
+        ``localGet(dev=None, var=None)``.
+    minimum : object
+        Minimum allowed value (may be ``None``).
+    maximum : object
+        Maximum allowed value (may be ``None``).
+    value : object
+        Initial value stored in the block.
     """
     def __init__(
         self,
         *,
-        variable: Any,
-        localSet: Optional[Any],
-        localGet: Optional[Any],
-        minimum: Optional[Any],
-        maximum: Optional[Any],
+        variable: pr.LocalVariable,
+        localSet: Callable[..., Any] | None,
+        localGet: Callable[..., Any] | None,
+        minimum: Any | None,
+        maximum: Any | None,
         value: Any,
     ) -> None:
         self._path      = variable.path
