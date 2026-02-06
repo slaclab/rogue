@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 import threading
-from typing import Any, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional
 
 import numpy as np
 import pyrogue as pr
