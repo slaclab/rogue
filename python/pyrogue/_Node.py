@@ -139,19 +139,18 @@ class Node(object):
 
     Parameters
     ----------
-    name :
-        global name of object
-
-    description :
-        Description of object
-
-    path :
-        full path to the node (ie. node1.node2.node3)
-
-    expand :
-
-    guiGroup :
-        arbitrary groups for gui and graphical aesthetic purposes
+    name : str
+        Global name of the node.
+    description : str, optional (default = "")
+        Human-readable description.
+    expand : bool, optional (default = True)
+        Default GUI expand state.
+    hidden : bool, optional (default = False)
+        If True, add the node to the ``Hidden`` group.
+    groups : list[str], optional
+        Groups to assign.
+    guiGroup : str, optional
+        GUI grouping label.
     """
     _nodeCount = 0
 
@@ -165,23 +164,7 @@ class Node(object):
         groups: Optional[list[str]] = None,
         guiGroup: Optional[str] = None,
     ) -> None:
-        """Initialize the node.
-
-        Parameters
-        ----------
-        name : str
-            Global name of the node.
-        description : str, optional (default = "")
-            Human-readable description.
-        expand : bool, optional (default = True)
-            Default GUI expand state.
-        hidden : bool, optional (default = False)
-            If True, add the node to the ``Hidden`` group.
-        groups : list[str], optional
-            Groups to assign.
-        guiGroup : str, optional
-            GUI grouping label.
-        """
+        """Initialize the node."""
         pr.Node._nodeCount += 1
 
         # Public attributes
