@@ -44,7 +44,7 @@ def startTransaction(
     block : object
         Block instance to operate on.
     type : {rim.Read, rim.Write, rim.Post, rim.Verify}
-        Transaction type 
+        Transaction type
     forceWr : bool, optional (default = False)
         Force the write even if block values are unchanged.
     check : bool, optional (default = False)
@@ -144,8 +144,8 @@ def readBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: A
 def checkBlocks(blocks: Iterable[rim.Block], **kwargs: Any) -> None:
     """Wait on block transactions for a list of blocks.
 
-    Helper function for waiting on block transactions to complete. 
-    Allows a custom list of blocks to be efficiently operated on 
+    Helper function for waiting on block transactions to complete.
+    Allows a custom list of blocks to be efficiently operated on
     without blocking between each transaction, similar to ``Device.checkBlocks()``.
 
     Parameters
