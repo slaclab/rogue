@@ -41,7 +41,7 @@ class BaseCommand(pr.BaseVariable):
     retValue : object, optional
         Example return value used to infer display type.
     enum : dict, optional
-        Enumeration mapping for display.
+        Mapping from object values to display strings.
     hidden : bool, optional (default = False)
         If True, add the command to the ``Hidden`` group.
     groups : object, optional
@@ -67,7 +67,7 @@ class BaseCommand(pr.BaseVariable):
         description: str = "",
         value: Any = 0,
         retValue: Optional[Any] = None,
-        enum: Optional[dict] = None,
+        enum: Optional[dict[object, str]] = None,
         hidden: bool = False,
         groups: Optional[Any] = None,
         minimum: Optional[Any] = None,
@@ -429,7 +429,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
     retValue : object, optional
         Example return value used to infer display type.
     enum : dict, optional
-        Enumeration mapping for display.
+        Mapping from object values to display strings.
     hidden : bool, optional (default = False)
         If True, add the command to the ``Hidden`` group.
     groups : object, optional
@@ -463,7 +463,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         description: str = '',
         value: Any = None,
         retValue: Any = None,
-        enum: Optional[dict] = None,
+        enum: Optional[dict[object, str]] = None,
         hidden: bool = False,
         groups: Optional[Any] = None,
         minimum: Optional[Any] = None,

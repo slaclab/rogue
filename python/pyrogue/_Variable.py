@@ -227,7 +227,7 @@ class BaseVariable(pr.Node):
     disp : object, optional (default = "{}")
         Display formatter or enumeration mapping.
     enum : dict, optional
-        Explicit enumeration mapping.
+        Mapping from object values to display strings.
     units : str, optional
         Engineering units.
     hidden : bool, optional (default = False)
@@ -276,7 +276,7 @@ class BaseVariable(pr.Node):
         mode: str = 'RW',
         value: Any = None,
         disp: Any = '{}',
-        enum: Optional[dict] = None,
+        enum: Optional[dict[object, str]] = None,
         units: Optional[str] = None,
         hidden: bool = False,
         groups: Optional[Any] = None,
@@ -1125,7 +1125,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         disp : object, optional
             Display formatter or mapping.
         enum : dict, optional
-            Enumeration mapping.
+            Mapping from object values to display strings.
         units : str, optional
             Engineering units.
         hidden : bool, optional (default = False)
@@ -1536,8 +1536,8 @@ class LocalVariable(BaseVariable):
         Access mode: ``RW``, ``RO``, or ``WO``.
     disp : object, optional (default = "{}")
         Display formatter or mapping.
-    enum : dict, optional
-        Enumeration mapping.
+        enum : dict, optional
+            Mapping from object values to display strings.
     units : str, optional
         Engineering units.
     hidden : bool, optional (default = False)
