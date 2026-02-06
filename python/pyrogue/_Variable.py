@@ -20,7 +20,7 @@ import shlex
 import sys
 import threading
 import time
-from typing import Any, Callable, Iterable as TypingIterable, List, Optional
+from typing import Any, Callable, List, Optional
 
 import numpy as np
 import pyrogue as pr
