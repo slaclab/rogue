@@ -6,12 +6,18 @@ Installing Rogue With Miniforge
 
 The following instructions describe how to install a pre-built Rogue package inside an miniforge environment. These instructions are relevant for Linux, Ubuntu on Windows and MacOS.
 
-See the section :ref:`installing_windows` for additional steps required for Windows.
+Windows installations will require you to install Ubuntu. Reference the section :ref:`installing_windows` for required steps. 
+Mac is not currently supported for rogue, and a VM or docker image is needed. Proceed to :ref:`installing_docker`. 
+
+Instructions for s3df setup are also available on `Confluence <https://confluence.slac.stanford.edu/spaces/ppareg/pages/591664140/Configure+miniforge+conda+and+Rogue+on+S3DF>`. 
 
 Getting Miniforge
-================
+=================
 
-Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). Miniforge appears to only work reliably in the bash shell.
+Download and install miniforge if you don't already have it installed on your machine. Choose an install location with a lot of available diskspace (> 5GB). 
+Miniforge appears to only work reliably in the bash shell.
+
+*Linux*
 
 .. code::
 
@@ -57,7 +63,7 @@ Alternatively you can install a specific released version of Rogue:
    $ conda create -n rogue_v6.5.0 -c conda-forge -c tidair-tag rogue=v6.5.0
 
 Using Rogue In Miniforge
-=======================
+========================
 
 No additional setup scripts need to be run Rogue in an miniforge environment. To activate and de-activate the Rogue environment you can use the following commands:
 
@@ -83,7 +89,7 @@ The following command is used to install Rogue inside and existing miniforge env
 
 
 Updating Rogue In Miniforge
-==========================
+===========================
 
 If you want to update Rogue, run the following command after activating the Rogue environment
 
@@ -92,7 +98,7 @@ If you want to update Rogue, run the following command after activating the Rogu
    $ conda update rogue -c tidair-tag
 
 Deleting Miniforge Environment
-=============================
+==============================
 
 Run the following commands to delete the miniforge environment.
 
