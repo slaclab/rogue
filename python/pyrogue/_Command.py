@@ -44,8 +44,8 @@ class BaseCommand(pr.BaseVariable):
         Mapping from object values to display strings.
     hidden : bool, optional (default = False)
         If True, add the command to the ``Hidden`` group.
-    groups : object, optional
-        Group or list of groups to assign.
+    groups : list[str], optional
+        Groups to assign.
     minimum : object, optional
         Minimum allowed value.
     maximum : object, optional
@@ -69,7 +69,7 @@ class BaseCommand(pr.BaseVariable):
         retValue: Optional[Any] = None,
         enum: Optional[dict[object, str]] = None,
         hidden: bool = False,
-        groups: Optional[Any] = None,
+        groups: Optional[list[str]] = None,
         minimum: Optional[Any] = None,
         maximum: Optional[Any] = None,
         function: Optional[Callable[..., Any]] = None,
@@ -432,8 +432,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         Mapping from object values to display strings.
     hidden : bool, optional (default = False)
         If True, add the command to the ``Hidden`` group.
-    groups : object, optional
-        Group or list of groups to assign.
+    groups : list[str], optional
+        Groups to assign.
     minimum : object, optional
         Minimum allowed value.
     maximum : object, optional
@@ -465,7 +465,7 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         retValue: Any = None,
         enum: Optional[dict[object, str]] = None,
         hidden: bool = False,
-        groups: Optional[Any] = None,
+        groups: Optional[list[str]] = None,
         minimum: Optional[Any] = None,
         maximum: Optional[Any] = None,
         function: Optional[Callable[..., Any]] = None,

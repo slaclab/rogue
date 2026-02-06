@@ -162,7 +162,7 @@ class Node(object):
         description: str = "",
         expand: bool = True,
         hidden: bool = False,
-        groups: Optional[Any] = None,
+        groups: Optional[list[str]] = None,
         guiGroup: Optional[str] = None,
     ) -> None:
         """Initialize the node.
@@ -177,8 +177,8 @@ class Node(object):
             Default GUI expand state.
         hidden : bool, optional (default = False)
             If True, add the node to the ``Hidden`` group.
-        groups : object, optional
-            Group or list of groups to assign.
+        groups : list[str], optional
+            Groups to assign.
         guiGroup : str, optional
             GUI grouping label.
         """
@@ -229,7 +229,7 @@ class Node(object):
         return self._description
 
     @property
-    def groups(self) -> List[Any]:
+    def groups(self) -> list[str]:
         """Return the node groups."""
         return self._groups
 
@@ -246,14 +246,14 @@ class Node(object):
         else:
             return group in self._groups
 
-    def filterByGroup(self, incGroups: Optional[Any], excGroups: Optional[Any]) -> bool:
+    def filterByGroup(self, incGroups: Optional[list[str]], excGroups: Optional[list[str]]) -> bool:
         """Return True if the node passes include/exclude filters.
 
         Parameters
         ----------
-        incGroups : object, optional
+        incGroups : list[str], optional
             Groups to include.
-        excGroups : object, optional
+        excGroups : list[str], optional
             Groups to exclude.
         """
         return ((incGroups is None) or (len(incGroups) == 0) or (self.inGroup(incGroups))) and \
@@ -494,8 +494,8 @@ class Node(object):
         self,
         typ: Any,
         excTyp: Optional[Any] = None,
-        incGroups: Optional[Any] = None,
-        excGroups: Optional[Any] = None,
+        incGroups: Optional[list[str]] = None,
+        excGroups: Optional[list[str]] = None,
     ) -> odict:
         """
         Get a filtered ordered dictionary of nodes.
@@ -511,9 +511,9 @@ class Node(object):
 
         excTyp : object, optional
             Type to exclude.
-        incGroups : object, optional
+        incGroups : list[str], optional
             Groups to include.
-        excGroups : object, optional
+        excGroups : list[str], optional
             Groups to exclude.
 
         Returns
@@ -533,7 +533,7 @@ class Node(object):
         """Return direct child variables (excluding commands)."""
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def variablesByGroup(self, incGroups: Optional[Any] = None, excGroups: Optional[Any] = None) -> odict:
+    def variablesByGroup(self, incGroups: Optional[list[str]] = None, excGroups: Optional[list[str]] = None) -> odict:
         """Return variables filtered by group."""
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
@@ -553,7 +553,7 @@ class Node(object):
         """Return direct child commands."""
         return self.getNodes(typ=pr.BaseCommand)
 
-    def commandsByGroup(self, incGroups: Optional[Any] = None, excGroups: Optional[Any] = None) -> odict:
+    def commandsByGroup(self, incGroups: Optional[list[str]] = None, excGroups: Optional[list[str]] = None) -> odict:
         """Return commands filtered by group."""
         return self.getNodes(typ=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
@@ -562,7 +562,7 @@ class Node(object):
         """Return direct child devices."""
         return self.getNodes(pr.Device)
 
-    def devicesByGroup(self, incGroups: Optional[Any] = None, excGroups: Optional[Any] = None) -> odict:
+    def devicesByGroup(self, incGroups: Optional[list[str]] = None, excGroups: Optional[list[str]] = None) -> odict:
         """Return devices filtered by group."""
         return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
@@ -736,8 +736,8 @@ class Node(object):
         self,
         readFirst: bool = False,
         modes: List[str] = ['RW','RO','WO'],
-        incGroups: Optional[Any] = None,
-        excGroups: Optional[Any] = ['Hidden'],
+        incGroups: Optional[list[str]] = None,
+        excGroups: Optional[list[str]] = ['Hidden'],
         recurse: bool = True,
     ) -> str:
         """Return current values as YAML text.
@@ -748,9 +748,9 @@ class Node(object):
             If True, perform a full hardware read before exporting.
         modes : list of str, optional (default = ['RW','RO','WO'])
             Variable modes to include.
-        incGroups : object, optional
+        incGroups : list[str], optional
             Groups to include.
-        excGroups : object, optional (default = ['Hidden'])
+        excGroups : list[str], optional (default = ['Hidden'])
             Groups to exclude.
         recurse : bool, optional (default = True)
             If True, recurse into child devices.
@@ -768,8 +768,8 @@ class Node(object):
         self,
         readFirst: bool = False,
         modes: List[str] = ['RW','RO','WO'],
-        incGroups: Optional[Any] = None,
-        excGroups: Optional[Any] = ['Hidden'],
+        incGroups: Optional[list[str]] = None,
+        excGroups: Optional[list[str]] = ['Hidden'],
         recurse: bool = False,
     ) -> None:
         """Print the YAML representation to stdout.
@@ -780,9 +780,9 @@ class Node(object):
             If True, perform a full hardware read before exporting.
         modes : list of str, optional (default = ['RW','RO','WO'])
             Variable modes to include.
-        incGroups : object, optional
+        incGroups : list[str], optional
             Groups to include.
-        excGroups : object, optional (default = ['Hidden'])
+        excGroups : list[str], optional (default = ['Hidden'])
             Groups to exclude.
         recurse : bool, optional (default = False)
             If True, recurse into child devices.

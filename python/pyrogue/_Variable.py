@@ -232,8 +232,8 @@ class BaseVariable(pr.Node):
         Engineering units.
     hidden : bool, optional (default = False)
         If True, add the variable to the ``Hidden`` group.
-    groups : object, optional
-        Group or list of groups to assign.
+    groups : list[str], optional
+        Groups to assign.
     minimum : object, optional
         Minimum allowed value.
     maximum : object, optional
@@ -279,7 +279,7 @@ class BaseVariable(pr.Node):
         enum: Optional[dict[object, str]] = None,
         units: Optional[str] = None,
         hidden: bool = False,
-        groups: Optional[Any] = None,
+        groups: Optional[list[str]] = None,
         minimum: Optional[Any] = None,
         maximum: Optional[Any] = None,
         lowWarning: Optional[Any] = None,
@@ -1088,7 +1088,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
                  enum=None,
                  units=None,
                  hidden=False,
-                 groups=None,
+                 groups: Optional[list[str]] = None,
                  minimum=None,
                  maximum=None,
                  lowWarning=None,
@@ -1130,8 +1130,8 @@ class RemoteVariable(BaseVariable,rim.Variable):
             Engineering units.
         hidden : bool, optional (default = False)
             If True, add the variable to the ``Hidden`` group.
-        groups : object, optional
-            Group or list of groups to assign.
+        groups : list[str], optional
+            Groups to assign.
         minimum : object, optional
             Minimum allowed value.
         maximum : object, optional
@@ -1542,8 +1542,8 @@ class LocalVariable(BaseVariable):
         Engineering units.
     hidden : bool, optional (default = False)
         If True, add the variable to the ``Hidden`` group.
-    groups : object, optional
-        Group or list of groups to assign.
+    groups : list[str], optional
+        Groups to assign.
     minimum : object, optional
         Minimum allowed value.
     maximum : object, optional

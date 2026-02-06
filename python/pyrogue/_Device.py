@@ -168,8 +168,8 @@ class Device(pr.Node,rim.Hub):
         Memory offset for the device.
     hidden : bool, optional (default = False)
         If True, add the device to the ``Hidden`` group.
-    groups : object, optional
-        Group or list of groups to assign.
+    groups : list[str], optional
+        Groups to assign.
     expand : bool, optional (default = False)
         Default GUI expand state.
     enabled : bool, optional (default = True)
@@ -194,7 +194,7 @@ class Device(pr.Node,rim.Hub):
         memBase: Optional[Any] = None,
         offset: int = 0,
         hidden: bool = False,
-        groups: Optional[Any] = None,
+        groups: Optional[list[str]] = None,
         expand: bool = False,
         enabled: bool = True,
         defaults: Optional[dict] = None,
