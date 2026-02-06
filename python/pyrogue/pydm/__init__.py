@@ -17,7 +17,8 @@ import sys
 import signal
 import pydm
 import pyrogue
-import pyrogue.pydm.data_plugins.rogue_plugin
+import pydm.data_plugins
+from pyrogue.pydm.data_plugins.rogue_plugin import RoguePlugin
 
 # Define a signal handler to ensure the application quits gracefully
 def pydmSignalHandler(sig, frame):
@@ -46,6 +47,12 @@ def runPyDM(serverList='localhost:9090', ui=None, title=None, sizeX=800, sizeY=1
     args.append(f"title='{title}'")
     args.append(f"maxListExpand={maxListExpand}")
     args.append(f"maxListSize={maxListSize}")
+
+    pydm.data_plugins.initialize_plugins_if_needed()
+
+    # Add Rogue plugin manually, if it hasn't already been added based on $PYDM_DATA_PLUGINS_PATH
+    if 'rogue' not in pydm.data_plugins.plugin_modules:
+        pydm.data_plugins.add_plugin(RoguePlugin)
 
     # Initialize the PyDM application with specified parameters
     app = pydm.PyDMApplication(ui_file=ui,
