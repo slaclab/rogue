@@ -1,0 +1,1208 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Device &mdash; Rogue v6.8.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="MemoryDevice Device Class" href="special_devices/memory_device.html" />
+    <link rel="prev" title="Root" href="../root/index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../index.html">Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../root/index.html">Root</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Device</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#device-definition">Device Definition</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#key-attributes">Key Attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#key-methods">Key Methods</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#device-read-write-operations">Device Read/Write Operations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#device-command-decorators">Device Command Decorators</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#special-device-subclasses">Special Device Subclasses</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/memory_device.html">MemoryDevice Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/run_control.html">RunControl Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/data_writer.html">DataWriter Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/data_receiver.html">DataReceiver Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/prbsrx.html">PrbsRx Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/prbstx.html">PrbsTx Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/prbspair.html">PrbsPair Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/stream_writer.html">StreamWriter Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="special_devices/process.html">Process Device Class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-device-classes">Custom Device Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#device-class-documentation">Device Class Documentation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pyrogue.Device"><code class="docutils literal notranslate"><span class="pre">Device</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#python-device-example">Python Device Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c-device-example">C++ Device Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../command/index.html">Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../variable/index.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">PyRogue Tree</a></li>
+      <li class="breadcrumb-item active">Device</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/pyrogue_tree/node/device/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="device">
+<span id="pyrogue-tree-node-device"></span><h1>Device<a class="headerlink" href="#device" title="Link to this heading"></a></h1>
+<section id="device-definition">
+<h2>Device Definition<a class="headerlink" href="#device-definition" title="Link to this heading"></a></h2>
+<p>A Device node is a container for Variable and Commands as well as other devices</p>
+<ul>
+<li><p>A Device class is a sub-class of rogue::interfaces::memory::Hub</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This allows it to serve as a memory master as well as act as a hub to other memory masters</p></li>
+<li><p>Variables (and their connected Blocks) associated with hardware will have an offset relative to the Device base address and will use the Device’s linked memory::Slave when performing register accesses</p></li>
+<li><p>Added Devices which are not already associated with a memory Slave interface will inherit the base Device’s base address and Slave interface</p></li>
+<li><p>A Device can have it’s own direct link to a memory Slave which is not related to parent.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<section id="key-attributes">
+<h3>Key Attributes<a class="headerlink" href="#key-attributes" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Devices have the following attributes, in addition to all inherited from Node:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>offset, address, memBase, enabled</p></li>
+<li><p>enabled acts as an on/off switch for invidual devices within the tree.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+<section id="key-methods">
+<h3>Key Methods<a class="headerlink" href="#key-methods" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Sub-Devices, Variables and Commands are added using the <a class="reference internal" href="#pyrogue.Device.add" title="pyrogue.Device.add"><code class="xref py py-meth docutils literal notranslate"><span class="pre">add()</span></code></a> method</p></li>
+<li><p>A special device-specific <a class="reference internal" href="#pyrogue.Device.addRemoteVariables" title="pyrogue.Device.addRemoteVariables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">addRemoteVariables</span></code></a> method allows the creation of RemoteVariable arrays</p></li>
+<li><p>Hide or Unhide all variables with <a class="reference internal" href="#pyrogue.Device.hideVariables" title="pyrogue.Device.hideVariables"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hideVariables()</span></code></a></p></li>
+<li><p>Optional override behavior for when a system-wide hardreset is generated - <code class="xref py py-meth docutils literal notranslate"><span class="pre">hardReset()</span></code></p></li>
+<li><p>Optional override for countReset - <code class="xref py py-meth docutils literal notranslate"><span class="pre">countReset()</span></code></p></li>
+</ul>
+</section>
+<section id="device-read-write-operations">
+<h3>Device Read/Write Operations<a class="headerlink" href="#device-read-write-operations" title="Link to this heading"></a></h3>
+<p>When system wide config, write and read operations are generated the blocks in each Device are manipulated by the top level Root node</p>
+<ul>
+<li><p>In a bulk config the shadow values in each variable are written by issuing the <code class="xref py py-meth docutils literal notranslate"><span class="pre">setDisp()</span></code> call of each variable with the value contained in the configuration file</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A write() transaction in each block is then generated and added to the queue</p></li>
+<li><p>A verify() transaction in each block is then generated and added to the queue</p></li>
+<li><p>The system then waits for the previous two transactions in each block to complete and then checks the result. Updated variables are then notified.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>In a bulk read operation:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A read() transaction in each block is then generated and added to the queue</p></li>
+<li><p>The system then waits for the read transaction in each block to complete and then checks the result.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>Similarly individual variable writes (from EPICS, a GUI or a script) will result in transactions occurring on each Block</p>
+<ul>
+<li><p>A variable set(write=True) issues the following sequence:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>set() the value to the variable</p></li>
+<li><p>Issue a write to the associated Block</p></li>
+<li><p>Issue a verify to the associated Block</p></li>
+<li><p>Check the result of the transactions and generate updates.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>A variable get(read=True) issues the following sequence:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Issue a read from the associated block</p></li>
+<li><p>Check the result of the transaction</p></li>
+<li><p>Return the updated value and generate updates.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>In some special Devices this above order may not work. Some Devices may require a special command sequence to be issued before and/or after each write or read transaction.</p></li>
+<li><p>The Device class allows the user to override the Device level functions that are called during these read and write operations.</p></li>
+</ul>
+<section id="custom-read-write-operations">
+<h4>Custom Read/Write Operations<a class="headerlink" href="#custom-read-write-operations" title="Link to this heading"></a></h4>
+<ul class="simple">
+<li><p>Write Transaction - <a class="reference internal" href="#pyrogue.Device.writeBlocks" title="pyrogue.Device.writeBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">writeBlocks()</span></code></a></p></li>
+<li><p>Verify Transaction - <a class="reference internal" href="#pyrogue.Device.verifyBlocks" title="pyrogue.Device.verifyBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">verifyBlocks()</span></code></a></p></li>
+<li><p>Read Transation - <a class="reference internal" href="#pyrogue.Device.readBlocks" title="pyrogue.Device.readBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">readBlocks()</span></code></a></p></li>
+<li><p>Wait on the result of multiple transations - <a class="reference internal" href="#pyrogue.Device.checkBlocks" title="pyrogue.Device.checkBlocks"><code class="xref py py-meth docutils literal notranslate"><span class="pre">checkBlocks()</span></code></a></p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="c1"># Do something before transation</span>
+   <span class="nb">super</span><span class="p">(</span><span class="n">writeBlocks</span><span class="p">,</span> <span class="bp">self</span><span class="p">)(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span>
+   <span class="c1"># Do something after transation</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">verifyBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="c1"># Do something before transation</span>
+   <span class="nb">super</span><span class="p">(</span><span class="n">verifyBlocks</span><span class="p">,</span> <span class="bp">self</span><span class="p">)(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span>
+   <span class="c1"># Do something after transation</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="c1"># Do something before transation</span>
+   <span class="nb">super</span><span class="p">(</span><span class="n">readBlocks</span><span class="p">,</span> <span class="bp">self</span><span class="p">)(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span>
+   <span class="c1"># Do something after transation</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">checkBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+   <span class="c1"># Do something before transation</span>
+   <span class="nb">super</span><span class="p">(</span><span class="n">checkBlocks</span><span class="p">,</span> <span class="bp">self</span><span class="p">)(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span>
+   <span class="c1"># Do something after transation</span>
+</pre></div>
+</div>
+</section>
+<section id="raw-read-write-device-calls">
+<h4>Raw Read/Write Device Calls<a class="headerlink" href="#raw-read-write-device-calls" title="Link to this heading"></a></h4>
+<ul>
+<li><p>In some cases the user will want to create a Device which accesses memory directly without exposing values through Variables</p>
+<ul class="simple">
+<li><p>Prom programming or reading DAC waveforms from a file</p></li>
+</ul>
+</li>
+<li><p>A Device can be created with an offset and size and access memory within its mapped space using _rawWrite and _rawRead calls</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Operations are usually triggered by a LocalCommand or LocalVariable within the device</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<p>In the following, _rawWrite and _rawRead are blocking calls
+<code class="code docutils literal notranslate"><span class="pre">def</span> <span class="pre">_rawWrite(self,</span> <span class="pre">offset,</span> <span class="pre">data,</span> <span class="pre">base=pyrogue.UInt,</span> <span class="pre">stride=4,</span> <span class="pre">wordBitSize=32):</span></code></p>
+<ul class="simple">
+<li><p>offset : Offset in bytes from Device base address</p></li>
+<li><p>data: data to write in the form of a single value or a list of values</p></li>
+<li><p>base: base class indicating the type of value(s) being written</p></li>
+<li><p>stride: the spacing between the value locations in bytes</p></li>
+<li><p>wordBitSize: the size of each value in bits</p></li>
+</ul>
+<p><code class="code docutils literal notranslate"><span class="pre">def</span> <span class="pre">_rawRead(self,</span> <span class="pre">offset,</span> <span class="pre">numWords=1,</span> <span class="pre">base=pyrogue.UInt,</span> <span class="pre">stride=4,</span> <span class="pre">wordBitSize=32,</span> <span class="pre">data=None):</span></code></p>
+<ul>
+<li><p>offset : Offset in bytes from Device base address</p></li>
+<li><p>numWords: Number of values to read (if data=None)</p></li>
+<li><p>base: base class indicating the type of value(s) being read</p></li>
+<li><p>stride: the spacing between the value locations in bytes</p></li>
+<li><p>wordBitSize: the size of each value in bits</p></li>
+<li><p>data: optional list in which the read data values will be stored</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If data list is provided the number of values read is determined by the list length</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+<section id="device-command-decorators">
+<h3>Device Command Decorators<a class="headerlink" href="#device-command-decorators" title="Link to this heading"></a></h3>
+<ul>
+<li><p>Two types of command decorators can be used in Device to create LocalCommands</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Decorators on class methods</p></li>
+<li><p>Decorators on functions created within <code class="xref py py-meth docutils literal notranslate"><span class="pre">pyrogue.Device.init()</span></code></p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Currently decorators can only be used to create LocalCommands</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This may be expanded to include RemoteCommands as well</p></li>
+<li><p>Can be detected as RemoteCommands when offset is passed in the decorator</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<section id="class-method-decorator-example">
+<h4>Class Method Decorator Example<a class="headerlink" href="#class-method-decorator-example" title="Link to this heading"></a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;readConfig&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Read config&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_readConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="p">):</span>
+</pre></div>
+</div>
+<ul>
+<li><p>The previous code is from the Root class which issues a readConfig from a file.</p></li>
+<li><p>This decorator will create a LocalCommand named <code class="code docutils literal notranslate"><span class="pre">readConfig</span></code> and pass the <code class="code docutils literal notranslate"><span class="pre">_readConfig</span></code> method as the function</p></li>
+<li><p>If name was not provided the LocalCommand would use the method name</p></li>
+<li><p>Any decorator args are passed through to the LocalCommand creation</p></li>
+<li><p>Because the method has the argument <code class="code docutils literal notranslate"><span class="pre">arg</span></code>, the LocalCommand will be configured to accept arguments. If it was not there arguments would be disabled.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">value=''</span></code> sets the arg type as string</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>The order arg in the decorator is used to control the order of the LocalCommand creation</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This command does not have an arg and value is not passed because it is not necessary</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@pyrogue</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">order</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;readAll&quot;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Read all values&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_read</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</pre></div>
+</div>
+</section>
+<section id="init-decorator-example">
+<h4>Init Decorator Example<a class="headerlink" href="#init-decorator-example" title="Link to this heading"></a></h4>
+<p>The following code is from the Lmk04828 class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+   <span class="o">...</span>
+   <span class="nd">@self</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Load the CodeLoader .MAC file&quot;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,)</span>
+   <span class="k">def</span><span class="w"> </span><span class="nf">LoadCodeLoaderMacFile</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+   <span class="o">...</span>
+</pre></div>
+</div>
+<ul>
+<li><p>This decorator will create a LocalCommand named <code class="code docutils literal notranslate"><span class="pre">LocalCodeLoaderMacFile</span></code> and pass the decorated method as the function</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Alternative a name arg could be passed to the decorator to override the name</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Any decorator args are passed through to the LocalCommand creation</p></li>
+<li><p>Because the command has the argument arg, the LocalCommand will be configured to accept arguments. If it was not there arguments would be disabled.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="code docutils literal notranslate"><span class="pre">value=''</span></code> sets the arg type as string</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</section>
+</section>
+</section>
+<section id="special-device-subclasses">
+<h2>Special Device Subclasses<a class="headerlink" href="#special-device-subclasses" title="Link to this heading"></a></h2>
+<p>There are a few special device classes that you can utilize for your development.
+Click the following links for more information on the subclasses.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Special Device Subtypes:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/memory_device.html">MemoryDevice Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/run_control.html">RunControl Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/data_writer.html">DataWriter Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/data_receiver.html">DataReceiver Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/prbsrx.html">PrbsRx Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/prbstx.html">PrbsTx Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/prbspair.html">PrbsPair Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/stream_writer.html">StreamWriter Device Class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special_devices/process.html">Process Device Class</a></li>
+</ul>
+</div>
+</section>
+<section id="custom-device-classes">
+<h2>Custom Device Classes<a class="headerlink" href="#custom-device-classes" title="Link to this heading"></a></h2>
+<p>The following example references a class defined in <cite>pyrogue/utilities/prbs.py &lt;https://github.com/slaclab/rogue/blob/master/python/pyrogue/utilities/prbs.py&gt;</cite>.</p>
+<ul>
+<li><p>This is a Device class which interfaces to an underlying c++ class which receives and checks prbs data</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Note the creation of LocalVariables which call the underlying c++ class method directly</p></li>
+<li><p>Note the countReset() method</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PrbsRx</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w"> </span><span class="sd">&quot;&quot;&quot;PRBS RX Wrapper&quot;&quot;&quot;</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkPayload</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">taps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+
+     <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Software Receiver&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
+
+     <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+
+     <span class="k">if</span> <span class="n">taps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span>
+
+     <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+         <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxEnable&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Enable&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span> <span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxEnable</span><span class="p">(),</span>
+                                    <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setRxEnable</span><span class="p">(</span><span class="n">value</span><span class="p">)))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxErrors&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Error Count&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxErrors</span><span class="p">))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Count&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxCount</span><span class="p">))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxBytes&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Bytes&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxBytes</span><span class="p">))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxRate&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX Rate&#39;</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Frames/s&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxRate</span><span class="p">))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;rxBw&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;RX BW&#39;</span><span class="p">,</span> <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes/s&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getRxBw</span><span class="p">))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;checkPayload&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Payload Check Enable&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">checkPayload</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plEnable</span><span class="p">))</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">_plEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">changed</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">checkPayload</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">resetCount</span><span class="p">()</span>
+     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">countReset</span><span class="p">()</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+     <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="n">other</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">other</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">width</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taps</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Another custom device class from the same, PrbsTx, is as follows:</p>
+<ul>
+<li><p>Note the genFrame LocalCommand which generates a call to the underlying c++ class</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It also gets the value of a pure local variable (txSize) which is passed as an arg to the c++ class</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>Note the txEnable variable which uses the changed arg to determine whether to start or stop a backup thread in the C++ class using enable and disable</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PrbsTx</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">   </span><span class="sd">&quot;&quot;&quot;PRBS TX Wrapper&quot;&quot;&quot;</span>
+
+   <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">sendCount</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">taps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+
+      <span class="n">pyrogue</span><span class="o">.</span><span class="n">Device</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Software Transmitter&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span> <span class="o">=</span> <span class="n">rogue</span><span class="o">.</span><span class="n">utilities</span><span class="o">.</span><span class="n">Prbs</span><span class="p">()</span>
+
+      <span class="k">if</span> <span class="n">width</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">taps</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">stream</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stream</span><span class="p">)</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">sendCount</span><span class="p">(</span><span class="n">sendCount</span><span class="p">)</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txSize&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Frame Size&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes&#39;</span><span class="p">,</span>
+                                       <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_txSize</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txPeriod&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Tx Period In Microseconds&#39;</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;uS&#39;</span><span class="p">,</span>
+                                       <span class="n">localSet</span><span class="o">=</span><span class="k">lambda</span> <span class="n">value</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTxPeriod</span><span class="p">(</span><span class="n">value</span><span class="p">),</span> <span class="n">localGet</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxPeriod</span><span class="p">(),</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txEnable&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;PRBS Run Enable&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_txEnable</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;genFrame&#39;</span><span class="p">,</span><span class="n">description</span><span class="o">=</span><span class="s1">&#39;Generate n frames&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+                                    <span class="n">function</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_genFrame</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txErrors&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Error Count&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxErrors</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txCount&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Count&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxCount</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txBytes&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Bytes&#39;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+                                       <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">typeStr</span><span class="o">=</span><span class="s1">&#39;UInt32&#39;</span><span class="p">,</span> <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxBytes</span><span class="p">))</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;genPayload&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Payload Generate Enable&#39;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">localSet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plEnable</span><span class="p">))</span>
+
+      <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txRate&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX Rate&#39;</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Frames/s&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxRate</span><span class="p">))</span>
+
+     <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pyrogue</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;txBw&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;TX BW&#39;</span><span class="p">,</span>  <span class="n">disp</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">{:.3e}</span><span class="s2">&quot;</span><span class="p">,</span>
+                                    <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RO&#39;</span><span class="p">,</span> <span class="n">pollInterval</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">units</span><span class="o">=</span><span class="s1">&#39;Bytes/s&#39;</span><span class="p">,</span>
+                                    <span class="n">localGet</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">getTxBw</span><span class="p">))</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">_plEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">changed</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">genPayload</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">resetCount</span><span class="p">()</span>
+     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">countReset</span><span class="p">()</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">_genFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">arg</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">genFrame</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txSize</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">_txSize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">changed</span><span class="p">):</span>
+     <span class="k">if</span> <span class="n">changed</span> <span class="ow">and</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txEnable</span><span class="o">.</span><span class="n">value</span><span class="p">())</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+         <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">_txEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">,</span><span class="n">changed</span><span class="p">):</span>
+     <span class="k">if</span> <span class="n">changed</span><span class="p">:</span>
+         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+         <span class="k">else</span><span class="p">:</span>
+             <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">txSize</span><span class="o">.</span><span class="n">value</span><span class="p">())</span>
+ <span class="k">def</span><span class="w"> </span><span class="nf">_getStreamMaster</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+     <span class="n">pyrogue</span><span class="o">.</span><span class="n">streamConnect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+     <span class="k">return</span> <span class="n">other</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">width</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">setTaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">taps</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">setTaps</span><span class="p">(</span><span class="n">taps</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">sendCount</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">en</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">sendCount</span><span class="p">(</span><span class="n">en</span><span class="p">)</span>
+
+ <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+     <span class="bp">self</span><span class="o">.</span><span class="n">_prbs</span><span class="o">.</span><span class="n">disable</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="device-class-documentation">
+<h2>Device Class Documentation<a class="headerlink" href="#device-class-documentation" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.Device">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">Device</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">memBase</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expand</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">defaults</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enableDeps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hubMin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hubMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">guiGroup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device" title="Link to this definition"></a></dt>
+<dd><p>Device class holder. TODO: Update comments</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addCustomBlock">
+<span class="sig-name descname"><span class="pre">addCustomBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.addCustomBlock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.addCustomBlock" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.add" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addInterface">
+<span class="sig-name descname"><span class="pre">addInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">interfaces</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.addInterface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.addInterface" title="Link to this definition"></a></dt>
+<dd><p>Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
+Also accepts iterables for adding multiple at once</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*interfaces</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addProtocol">
+<span class="sig-name descname"><span class="pre">addProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">protocols</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.addProtocol"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.addProtocol" title="Link to this definition"></a></dt>
+<dd><p>Add a protocol entity.
+Also accepts iterables for adding multiple at once</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*protocols</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.manage">
+<span class="sig-name descname"><span class="pre">manage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">interfaces</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.manage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.manage" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*interfaces</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.running">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">running</span></span><a class="headerlink" href="#pyrogue.Device.running" title="Link to this definition"></a></dt>
+<dd><p>Check if Device._start() has been called</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addRemoteVariables">
+<span class="sig-name descname"><span class="pre">addRemoteVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.addRemoteVariables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.addRemoteVariables" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number</strong></p></li>
+<li><p><strong>stride</strong></p></li>
+<li><p><strong>pack</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.setPollInterval">
+<span class="sig-name descname"><span class="pre">setPollInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.setPollInterval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.setPollInterval" title="Link to this definition"></a></dt>
+<dd><p>Set the poll interval for a group of variables.
+The variables param is an Iterable of strings
+If variables=None, set interval for all variables that currently have nonzero pollInterval</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong></p></li>
+<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.hideVariables">
+<span class="sig-name descname"><span class="pre">hideVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hidden</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.hideVariables"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.hideVariables" title="Link to this definition"></a></dt>
+<dd><p>Hide a list of Variables (or Variable names)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hidden</strong></p></li>
+<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.enableChanged">
+<span class="sig-name descname"><span class="pre">enableChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.enableChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.enableChanged" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.writeBlocks">
+<span class="sig-name descname"><span class="pre">writeBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.writeBlocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.writeBlocks" title="Link to this definition"></a></dt>
+<dd><p>Write all of the blocks held by this Device to memory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*</strong></p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>recurse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = True)</p></li>
+<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+<li><p><strong>checkEach</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – (Default value = -1)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.verifyBlocks">
+<span class="sig-name descname"><span class="pre">verifyBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.verifyBlocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.verifyBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform background verify</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*</strong></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>recurse<span class="classifier">bool</span></dt><dd><p>(Default value = True)</p>
+</dd>
+<dt>variable<span class="classifier">str</span></dt><dd><p>(Default value = None)</p>
+</dd>
+<dt>checkEach<span class="classifier">bool</span></dt><dd><p>(Default value = False)</p>
+</dd>
+</dl>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.readBlocks">
+<span class="sig-name descname"><span class="pre">readBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.readBlocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.readBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform background reads</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*</strong></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>recurse<span class="classifier">bool</span></dt><dd><p>(Default value = True)</p>
+</dd>
+<dt>variable<span class="classifier">str</span></dt><dd><p>(Default value = None)</p>
+</dd>
+<dt>checkEach<span class="classifier">bool</span></dt><dd><p>(Default value = False)</p>
+</dd>
+<dt>index<span class="classifier">int</span></dt><dd><p>(Default value = -1)</p>
+</dd>
+</dl>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.checkBlocks">
+<span class="sig-name descname"><span class="pre">checkBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.checkBlocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.checkBlocks" title="Link to this definition"></a></dt>
+<dd><p>Check errors in all blocks and generate variable update notifications</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*</strong></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>recurse<span class="classifier">bool</span></dt><dd><p>(Default value = True)</p>
+</dd>
+<dt>variable<span class="classifier">str</span></dt><dd><p>(Default value = None)</p>
+</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.writeAndVerifyBlocks">
+<span class="sig-name descname"><span class="pre">writeAndVerifyBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.writeAndVerifyBlocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.writeAndVerifyBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform a write, verify and check. Useful for committing any stale variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>recurse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = True)</p></li>
+<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+<li><p><strong>checkEach</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.readAndCheckBlocks">
+<span class="sig-name descname"><span class="pre">readAndCheckBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.readAndCheckBlocks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.readAndCheckBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform a read and check.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recurse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = True)</p></li>
+<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+<li><p><strong>checkEach</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.command">
+<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.command" title="Link to this definition"></a></dt>
+<dd><p>A Decorator to add inline constructor functions as commands</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.linkVariableGet">
+<span class="sig-name descname"><span class="pre">linkVariableGet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.linkVariableGet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.linkVariableGet" title="Link to this definition"></a></dt>
+<dd><p>Decorator to add inline constructor functions as LinkVariable.linkedGet functions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.genDocuments">
+<span class="sig-name descname"><span class="pre">genDocuments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/pyrogue/_Device.html#Device.genDocuments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.Device.genDocuments" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong></p></li>
+<li><p><strong>incGroups</strong></p></li>
+<li><p><strong>excGroups</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addNode">
+<span class="sig-name descname"><span class="pre">addNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodeClass</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.addNode" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodeClass</strong></p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addNodes">
+<span class="sig-name descname"><span class="pre">addNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodeClass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.addNodes" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodeClass</strong></p></li>
+<li><p><strong>number</strong></p></li>
+<li><p><strong>stride</strong></p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.addToGroup">
+<span class="sig-name descname"><span class="pre">addToGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.addToGroup" title="Link to this definition"></a></dt>
+<dd><p>Add this node to the passed group, recursive to children</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong> – variable denoting a node that has not been passed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.callRecursive">
+<span class="sig-name descname"><span class="pre">callRecursive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodeTypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.callRecursive" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong></p></li>
+<li><p><strong>nodeTypes</strong> – (Default value = None)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.commandsByGroup">
+<span class="sig-name descname"><span class="pre">commandsByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.commandsByGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pass list of include and / or exclude groups</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.description">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#pyrogue.Device.description" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns description attribute to class variable</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.deviceList">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">deviceList</span></span><a class="headerlink" href="#pyrogue.Device.deviceList" title="Link to this definition"></a></dt>
+<dd><p>Get a recursive list of devices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.devicesByGroup">
+<span class="sig-name descname"><span class="pre">devicesByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.devicesByGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pass list of include and / or exclude groups</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.filterByGroup">
+<span class="sig-name descname"><span class="pre">filterByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.filterByGroup" title="Link to this definition"></a></dt>
+<dd><p>Filter by the passed list of inclusion and exclusion groups</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – list of passed inclusion groups</p></li>
+<li><p><strong>excGroups</strong> – list of passed exclusion groups</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.find" title="Link to this definition"></a></dt>
+<dd><p>Find all child nodes that are a base class of ‘typ’
+and whose properties match all of the kwargs.
+For string properties, accepts regexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*</strong></p></li>
+<li><p><strong>recurse</strong> – (Default value = True)</p></li>
+<li><p><strong>typ</strong> – (Default value = None)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.getNodes">
+<span class="sig-name descname"><span class="pre">getNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excTyp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.getNodes" title="Link to this definition"></a></dt>
+<dd><p>Get a filtered ordered dictionary of nodes.
+pass a class type to receive a certain type of node
+class type may be a string when called over Pyro4
+exc is a class type to exclude,
+incGroups is an optional group or list of groups that this node must be part of
+excGroups is an optional group or list of groups that this node must not be part of</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typ</strong></p></li>
+<li><p><strong>excTyp</strong> – (Default value = None)</p></li>
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ordered dictionary of <a class="reference internal" href="#pyrogue.Device.nodes" title="pyrogue.Device.nodes">nodes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.getYaml">
+<span class="sig-name descname"><span class="pre">getYaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">readFirst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['RW',</span> <span class="pre">'RO',</span> <span class="pre">'WO']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['Hidden']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.getYaml" title="Link to this definition"></a></dt>
+<dd><p>Get current values as yaml data.
+modes is a list of variable modes to include.
+If readFirst=True a full read from hardware is performed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.groups">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#pyrogue.Device.groups" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns groups attribute to class variable</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.hidden">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hidden</span></span><a class="headerlink" href="#pyrogue.Device.hidden" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns hidden attribute to class variable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.inGroup">
+<span class="sig-name descname"><span class="pre">inGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.inGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.isinstance">
+<span class="sig-name descname"><span class="pre">isinstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.isinstance" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typ</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.makeRecursive">
+<span class="sig-name descname"><span class="pre">makeRecursive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodeTypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.makeRecursive" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong></p></li>
+<li><p><strong>nodeTypes</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyrogue.Device.name" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns name attribute to class variable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.node">
+<span class="sig-name descname"><span class="pre">node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.node" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.nodeList">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nodeList</span></span><a class="headerlink" href="#pyrogue.Device.nodeList" title="Link to this definition"></a></dt>
+<dd><p>Get a recursive list of nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.nodeMatch">
+<span class="sig-name descname"><span class="pre">nodeMatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.nodeMatch" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>be a single value or a list accessor:
+value
+value[9]
+value[0:1]
+value[*]
+value[:]
+Variables will only match if their depth matches the passed lookup and wildcard:
+value[*] will match a variable named value[1] but not a variable named value[2][3]
+value[*][*] will match a variable named value[2][3].
+The second return field will contain the array information if the base name
+matches an item in the non list array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.nodes">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nodes</span></span><a class="headerlink" href="#pyrogue.Device.nodes" title="Link to this definition"></a></dt>
+<dd><p>Get a ordered dictionary of all nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.removeFromGroup">
+<span class="sig-name descname"><span class="pre">removeFromGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.removeFromGroup" title="Link to this definition"></a></dt>
+<dd><p>Remove this node from the passed group, not recursive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong> – variable denoting a node that is in the passed group</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>if in group, remove from group</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Slave)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#pyrogue.Device.setName" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>C++ signature :</dt><dd><p>void setName(rogue::interfaces::memory::Slave {lvalue},std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.Device.variableList">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">variableList</span></span><a class="headerlink" href="#pyrogue.Device.variableList" title="Link to this definition"></a></dt>
+<dd><p>Get a recursive list of variables and commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.Device.variablesByGroup">
+<span class="sig-name descname"><span class="pre">variablesByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.Device.variablesByGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pass list of include and / or exclude groups</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="python-device-example">
+<h2>Python Device Example<a class="headerlink" href="#python-device-example" title="Link to this heading"></a></h2>
+<p>Below is an example of creating a Device which …</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span>
+
+<span class="c1"># Create a subclass of a Device</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDevice</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+</pre></div>
+</div>
+</section>
+<section id="c-device-example">
+<h2>C++ Device Example<a class="headerlink" href="#c-device-example" title="Link to this heading"></a></h2>
+<p>Below is an example of creating a Device class in C++.</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;rogue/interfaces/memory/Constants.h&gt;</span>
+<span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;boost/thread.hpp&gt;</span>
+
+<span class="c1">// Create a subclass of a Device</span>
+<span class="n">class</span><span class="w"> </span><span class="n">MyDevice</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">rogue</span><span class="o">::</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">public</span><span class="o">:</span>
+
+<span class="w">   </span><span class="n">protected</span><span class="o">:</span>
+
+<span class="p">};</span>
+</pre></div>
+</div>
+<p>A few notes on the above examples …</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../root/index.html" class="btn btn-neutral float-left" title="Root" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="special_devices/memory_device.html" class="btn btn-neutral float-right" title="MemoryDevice Device Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

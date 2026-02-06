@@ -1,0 +1,779 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RunControl Device Class &mdash; Rogue v6.8.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+    <link rel="next" title="DataWriter Device Class" href="data_writer.html" />
+    <link rel="prev" title="MemoryDevice Device Class" href="memory_device.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../../../index.html">PyRogue Tree</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../index.html">Node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../root/index.html">Root</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Device</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../index.html#device-definition">Device Definition</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../index.html#special-device-subclasses">Special Device Subclasses</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="memory_device.html">MemoryDevice Device Class</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">RunControl Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data_writer.html">DataWriter Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data_receiver.html">DataReceiver Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prbsrx.html">PrbsRx Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prbstx.html">PrbsTx Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="prbspair.html">PrbsPair Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="stream_writer.html">StreamWriter Device Class</a></li>
+<li class="toctree-l4"><a class="reference internal" href="process.html">Process Device Class</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#custom-device-classes">Custom Device Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#device-class-documentation">Device Class Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#python-device-example">Python Device Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../index.html#c-device-example">C++ Device Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../command/index.html">Command</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../variable/index.html">Variable</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">PyRogue Tree</a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Device</a></li>
+      <li class="breadcrumb-item active">RunControl Device Class</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../../_sources/pyrogue_tree/node/device/special_devices/run_control.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="runcontrol-device-class">
+<span id="pyrogue-tree-node-device-runcontrol"></span><h1>RunControl Device Class<a class="headerlink" href="#runcontrol-device-class" title="Link to this heading"></a></h1>
+<ul>
+<li><p><a class="reference internal" href="#pyrogue.RunControl" title="pyrogue.RunControl"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.RunControl</span></code></a> is a sub-class of <a class="reference internal" href="../index.html#pyrogue.Device" title="pyrogue.Device"><code class="xref py py-class docutils literal notranslate"><span class="pre">pyrogue.Device</span></code></a> which serves as the base class for application specific run control.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Can be used as is for most software driven data acquisition</p></li>
+<li><p>Can be sub-classed for more complex hardware and external run control</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>The RunControl object is created the following way:</p></li>
+</ul>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Rc</span> <span class="o">=</span> <span class="n">pyrogue</span><span class="o">.</span><span class="n">RunControl</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span>
+                        <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">rates</span><span class="p">,</span> <span class="n">states</span><span class="p">,</span> <span class="n">cmd</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li><p>Parameters:</p>
+<blockquote>
+<div><ul>
+<li><p>Hidden is normally True since RunControl does not appear in the normal GUI tree, instead it is represented in a special window.</p></li>
+<li><p>rates: A dictionary of rates and associated keys. The keys are application specific and represent the run rate in hz in the default class. The defaults rates are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>rates={1:’1 Hz’, 10:’10 Hz’}</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>states: A dictionary of states and associated keys. The keys are application specific. The default rates are:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>states={0:’Stopped’, 1:’Running’}</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p>cmd: Is the command to execute at each iteration when using the default software driven run() method. This can either be a pointer to a python function or pyrogue Command.</p></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+<section id="runcontrol-class-documentation">
+<h2>RunControl Class Documentation<a class="headerlink" href="#runcontrol-class-documentation" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="pyrogue.RunControl">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">pyrogue.</span></span><span class="sig-name descname"><span class="pre">RunControl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">states</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cmd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/pyrogue/_RunControl.html#RunControl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pyrogue.RunControl" title="Link to this definition"></a></dt>
+<dd><p>Special base class to control runs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>attr1</strong> – pr.Device</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.add" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>node</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addCustomBlock">
+<span class="sig-name descname"><span class="pre">addCustomBlock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">block</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addCustomBlock" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>block</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addInterface">
+<span class="sig-name descname"><span class="pre">addInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">interfaces</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addInterface" title="Link to this definition"></a></dt>
+<dd><p>Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
+Also accepts iterables for adding multiple at once</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*interfaces</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addNode">
+<span class="sig-name descname"><span class="pre">addNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodeClass</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addNode" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodeClass</strong></p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addNodes">
+<span class="sig-name descname"><span class="pre">addNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodeClass</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addNodes" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nodeClass</strong></p></li>
+<li><p><strong>number</strong></p></li>
+<li><p><strong>stride</strong></p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addProtocol">
+<span class="sig-name descname"><span class="pre">addProtocol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">protocols</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addProtocol" title="Link to this definition"></a></dt>
+<dd><p>Add a protocol entity.
+Also accepts iterables for adding multiple at once</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*protocols</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addRemoteVariables">
+<span class="sig-name descname"><span class="pre">addRemoteVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pack</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addRemoteVariables" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>number</strong></p></li>
+<li><p><strong>stride</strong></p></li>
+<li><p><strong>pack</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.addToGroup">
+<span class="sig-name descname"><span class="pre">addToGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.addToGroup" title="Link to this definition"></a></dt>
+<dd><p>Add this node to the passed group, recursive to children</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong> – variable denoting a node that has not been passed</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.callRecursive">
+<span class="sig-name descname"><span class="pre">callRecursive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodeTypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.callRecursive" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong></p></li>
+<li><p><strong>nodeTypes</strong> – (Default value = None)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.checkBlocks">
+<span class="sig-name descname"><span class="pre">checkBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.checkBlocks" title="Link to this definition"></a></dt>
+<dd><p>Check errors in all blocks and generate variable update notifications</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*</strong></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>recurse<span class="classifier">bool</span></dt><dd><p>(Default value = True)</p>
+</dd>
+<dt>variable<span class="classifier">str</span></dt><dd><p>(Default value = None)</p>
+</dd>
+</dl>
+<p><a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.command">
+<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.command" title="Link to this definition"></a></dt>
+<dd><p>A Decorator to add inline constructor functions as commands</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.commandsByGroup">
+<span class="sig-name descname"><span class="pre">commandsByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.commandsByGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pass list of include and / or exclude groups</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.description">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">description</span></span><a class="headerlink" href="#pyrogue.RunControl.description" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns description attribute to class variable</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.deviceList">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">deviceList</span></span><a class="headerlink" href="#pyrogue.RunControl.deviceList" title="Link to this definition"></a></dt>
+<dd><p>Get a recursive list of devices</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.devicesByGroup">
+<span class="sig-name descname"><span class="pre">devicesByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.devicesByGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pass list of include and / or exclude groups</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.enableChanged">
+<span class="sig-name descname"><span class="pre">enableChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.enableChanged" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>value</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.filterByGroup">
+<span class="sig-name descname"><span class="pre">filterByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.filterByGroup" title="Link to this definition"></a></dt>
+<dd><p>Filter by the passed list of inclusion and exclusion groups</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – list of passed inclusion groups</p></li>
+<li><p><strong>excGroups</strong> – list of passed exclusion groups</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typ</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.find" title="Link to this definition"></a></dt>
+<dd><p>Find all child nodes that are a base class of ‘typ’
+and whose properties match all of the kwargs.
+For string properties, accepts regexes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*</strong></p></li>
+<li><p><strong>recurse</strong> – (Default value = True)</p></li>
+<li><p><strong>typ</strong> – (Default value = None)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.genDocuments">
+<span class="sig-name descname"><span class="pre">genDocuments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.genDocuments" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong></p></li>
+<li><p><strong>incGroups</strong></p></li>
+<li><p><strong>excGroups</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.getNodes">
+<span class="sig-name descname"><span class="pre">getNodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excTyp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.getNodes" title="Link to this definition"></a></dt>
+<dd><p>Get a filtered ordered dictionary of nodes.
+pass a class type to receive a certain type of node
+class type may be a string when called over Pyro4
+exc is a class type to exclude,
+incGroups is an optional group or list of groups that this node must be part of
+excGroups is an optional group or list of groups that this node must not be part of</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>typ</strong></p></li>
+<li><p><strong>excTyp</strong> – (Default value = None)</p></li>
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>ordered dictionary of <a class="reference internal" href="#pyrogue.RunControl.nodes" title="pyrogue.RunControl.nodes">nodes</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.getYaml">
+<span class="sig-name descname"><span class="pre">getYaml</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">readFirst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">modes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['RW',</span> <span class="pre">'RO',</span> <span class="pre">'WO']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['Hidden']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.getYaml" title="Link to this definition"></a></dt>
+<dd><p>Get current values as yaml data.
+modes is a list of variable modes to include.
+If readFirst=True a full read from hardware is performed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.groups">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">groups</span></span><a class="headerlink" href="#pyrogue.RunControl.groups" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns groups attribute to class variable</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.hidden">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">hidden</span></span><a class="headerlink" href="#pyrogue.RunControl.hidden" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns hidden attribute to class variable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.hideVariables">
+<span class="sig-name descname"><span class="pre">hideVariables</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">hidden</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.hideVariables" title="Link to this definition"></a></dt>
+<dd><p>Hide a list of Variables (or Variable names)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hidden</strong></p></li>
+<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.inGroup">
+<span class="sig-name descname"><span class="pre">inGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.inGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.isinstance">
+<span class="sig-name descname"><span class="pre">isinstance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">typ</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.isinstance" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>typ</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.linkVariableGet">
+<span class="sig-name descname"><span class="pre">linkVariableGet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.linkVariableGet" title="Link to this definition"></a></dt>
+<dd><p>Decorator to add inline constructor functions as LinkVariable.linkedGet functions</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>**kwargs</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.makeRecursive">
+<span class="sig-name descname"><span class="pre">makeRecursive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodeTypes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.makeRecursive" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong></p></li>
+<li><p><strong>nodeTypes</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.manage">
+<span class="sig-name descname"><span class="pre">manage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">interfaces</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.manage" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*interfaces</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.name">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pyrogue.RunControl.name" title="Link to this definition"></a></dt>
+<dd><p>assigns and returns name attribute to class variable</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.node">
+<span class="sig-name descname"><span class="pre">node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.node" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.nodeList">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nodeList</span></span><a class="headerlink" href="#pyrogue.RunControl.nodeList" title="Link to this definition"></a></dt>
+<dd><p>Get a recursive list of nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.nodeMatch">
+<span class="sig-name descname"><span class="pre">nodeMatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.nodeMatch" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>be a single value or a list accessor:
+value
+value[9]
+value[0:1]
+value[*]
+value[:]
+Variables will only match if their depth matches the passed lookup and wildcard:
+value[*] will match a variable named value[1] but not a variable named value[2][3]
+value[*][*] will match a variable named value[2][3].
+The second return field will contain the array information if the base name
+matches an item in the non list array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.nodes">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nodes</span></span><a class="headerlink" href="#pyrogue.RunControl.nodes" title="Link to this definition"></a></dt>
+<dd><p>Get a ordered dictionary of all nodes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.readAndCheckBlocks">
+<span class="sig-name descname"><span class="pre">readAndCheckBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.readAndCheckBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform a read and check.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recurse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = True)</p></li>
+<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+<li><p><strong>checkEach</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.readBlocks">
+<span class="sig-name descname"><span class="pre">readBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.readBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform background reads</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*</strong></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>recurse<span class="classifier">bool</span></dt><dd><p>(Default value = True)</p>
+</dd>
+<dt>variable<span class="classifier">str</span></dt><dd><p>(Default value = None)</p>
+</dd>
+<dt>checkEach<span class="classifier">bool</span></dt><dd><p>(Default value = False)</p>
+</dd>
+<dt>index<span class="classifier">int</span></dt><dd><p>(Default value = -1)</p>
+</dd>
+</dl>
+<p><a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.removeFromGroup">
+<span class="sig-name descname"><span class="pre">removeFromGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.removeFromGroup" title="Link to this definition"></a></dt>
+<dd><p>Remove this node from the passed group, not recursive</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>group</strong> – variable denoting a node that is in the passed group</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>if in group, remove from group</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.running">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">running</span></span><a class="headerlink" href="#pyrogue.RunControl.running" title="Link to this definition"></a></dt>
+<dd><p>Check if Device._start() has been called</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.setName">
+<span class="sig-name descname"><span class="pre">setName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Slave)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#pyrogue.RunControl.setName" title="Link to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>C++ signature :</dt><dd><p>void setName(rogue::interfaces::memory::Slave {lvalue},std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.setPollInterval">
+<span class="sig-name descname"><span class="pre">setPollInterval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variables</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.setPollInterval" title="Link to this definition"></a></dt>
+<dd><p>Set the poll interval for a group of variables.
+The variables param is an Iterable of strings
+If variables=None, set interval for all variables that currently have nonzero pollInterval</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong></p></li>
+<li><p><strong>variables</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pyrogue.RunControl.variableList">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">variableList</span></span><a class="headerlink" href="#pyrogue.RunControl.variableList" title="Link to this definition"></a></dt>
+<dd><p>Get a recursive list of variables and commands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.variablesByGroup">
+<span class="sig-name descname"><span class="pre">variablesByGroup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">incGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">excGroups</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.variablesByGroup" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>incGroups</strong> – (Default value = None)</p></li>
+<li><p><strong>excGroups</strong> – (Default value = None)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Pass list of include and / or exclude groups</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#type" title="(in Python v3.14)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.verifyBlocks">
+<span class="sig-name descname"><span class="pre">verifyBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.verifyBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform background verify</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>*</strong></p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>recurse<span class="classifier">bool</span></dt><dd><p>(Default value = True)</p>
+</dd>
+<dt>variable<span class="classifier">str</span></dt><dd><p>(Default value = None)</p>
+</dd>
+<dt>checkEach<span class="classifier">bool</span></dt><dd><p>(Default value = False)</p>
+</dd>
+</dl>
+<p><a href="#id5"><span class="problematic" id="id6">**</span></a>kwargs :</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.writeAndVerifyBlocks">
+<span class="sig-name descname"><span class="pre">writeAndVerifyBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.writeAndVerifyBlocks" title="Link to this definition"></a></dt>
+<dd><p>Perform a write, verify and check. Useful for committing any stale variables</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>recurse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = True)</p></li>
+<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+<li><p><strong>checkEach</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pyrogue.RunControl.writeBlocks">
+<span class="sig-name descname"><span class="pre">writeBlocks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">force</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recurse</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkEach</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyrogue.RunControl.writeBlocks" title="Link to this definition"></a></dt>
+<dd><p>Write all of the blocks held by this Device to memory</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*</strong></p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>recurse</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = True)</p></li>
+<li><p><strong>variable</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><em>str</em></a>) – (Default value = None)</p></li>
+<li><p><strong>checkEach</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.14)"><em>bool</em></a>) – (Default value = False)</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.14)"><em>int</em></a>) – (Default value = -1)</p></li>
+<li><p><strong>**kwargs</strong></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="memory_device.html" class="btn btn-neutral float-left" title="MemoryDevice Device Class" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="data_writer.html" class="btn btn-neutral float-right" title="DataWriter Device Class" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

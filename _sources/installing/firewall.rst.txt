@@ -1,8 +1,8 @@
 .. _installing_firewall:
 
-####################################
+#####################################
 Rogue and Miniforge behind a firewall
-####################################
+#####################################
 
 To install rogue and miniforge behind a firewall you will need an ssl capable https proxy. I have used mitmproxy with success:
 

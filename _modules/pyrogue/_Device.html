@@ -1,0 +1,1202 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pyrogue._Device &mdash; Rogue v6.8.1 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/copybutton.css?v=76b2166b" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            Rogue
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials/index.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installing/index.html">Installing &amp; Compiling Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pyrogue_tree/index.html">PyRogue Tree</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../interfaces/index.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../utilities/index.html">Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hardware/index.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../protocols/index.html">Protocols</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../logging/index.html">Logging In Rogue</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../custom_module/index.html">Creating Custom Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../pydm/index.html">Using the PyDM Gui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../migration/index.html">Migration Notes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Rogue</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pyrogue._Device</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pyrogue._Device</h1><div class="highlight"><pre>
+<span></span><span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># Company    : SLAC National Accelerator Laboratory</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1">#  Description:</span>
+<span class="c1">#       PyRogue base module - Device Class</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="c1"># This file is part of the rogue software platform. It is subject to</span>
+<span class="c1"># the license terms in the LICENSE.txt file found in the top-level directory</span>
+<span class="c1"># of this distribution and at:</span>
+<span class="c1">#    https://confluence.slac.stanford.edu/display/ppareg/LICENSE.html.</span>
+<span class="c1"># No part of the rogue software platform, including this file, may be</span>
+<span class="c1"># copied, modified, propagated, or distributed except according to the terms</span>
+<span class="c1"># contained in the LICENSE.txt file.</span>
+<span class="c1">#-----------------------------------------------------------------------------</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">rogue.interfaces.memory</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">rim</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ft</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pyrogue</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pr</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">EnableVariable</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">enabled</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Determines if device is enabled for hardware access&#39;</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;enable&#39;</span><span class="p">,</span>
+            <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;RW&#39;</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span>
+            <span class="n">groups</span><span class="o">=</span><span class="s1">&#39;Enable&#39;</span><span class="p">,</span>
+            <span class="n">disp</span><span class="o">=</span><span class="p">{</span><span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;False&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;True&#39;</span><span class="p">,</span> <span class="s1">&#39;parent&#39;</span><span class="p">:</span> <span class="s1">&#39;ParentFalse&#39;</span><span class="p">,</span> <span class="s1">&#39;deps&#39;</span><span class="p">:</span> <span class="s1">&#39;ExtDepFalse&#39;</span><span class="p">})</span>
+
+        <span class="k">if</span> <span class="n">deps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span>   <span class="o">=</span> <span class="p">[]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_depDis</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span>   <span class="o">=</span> <span class="n">deps</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_depDis</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>  <span class="o">=</span> <span class="n">enabled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span>   <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        read : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        index : int</span>
+<span class="sd">             (Default value = -1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">             ret :</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_depDis</span><span class="p">:</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;deps&#39;</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_root</span><span class="p">:</span>
+                <span class="c1">#print(&quot;Root enable = {}&quot;.format(self._value))</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;parent&#39;</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">ret</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value :</span>
+<span class="sd">             (Default value = enabled)</span>
+<span class="sd">        write : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        index : int</span>
+<span class="sd">             (Default value = -1)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">!=</span> <span class="s1">&#39;parent&#39;</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">!=</span> <span class="s1">&#39;deps&#39;</span><span class="p">:</span>
+            <span class="n">old</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">()</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_value</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="k">if</span> <span class="n">old</span> <span class="o">!=</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">old</span> <span class="o">!=</span> <span class="s1">&#39;parent&#39;</span> <span class="ow">and</span> <span class="n">old</span> <span class="o">!=</span> <span class="s1">&#39;deps&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_updateBlockEnable</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">enableChanged</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">updateGroup</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_queueUpdate</span><span class="p">()</span>
+
+            <span class="c1"># The following concept will trigger enable listeners</span>
+            <span class="c1"># directly. This is causing lock contentions in practice</span>
+            <span class="c1"># (epics4 as an example)</span>
+
+            <span class="c1">#self._doUpdate()</span>
+            <span class="c1">#for var in self._listeners:</span>
+            <span class="c1">#    var._doUpdate()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_doUpdate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deps</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">oldEn</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lock</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_depDis</span> <span class="o">=</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deps</span><span class="p">)</span>
+
+            <span class="n">newEn</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">oldEn</span> <span class="o">!=</span> <span class="n">newEn</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">_updateBlockEnable</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">enableChanged</span><span class="p">(</span><span class="n">newEn</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_doUpdate</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">,</span><span class="n">root</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parent :</span>
+
+<span class="sd">        root :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">,</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">_parent</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">addListener</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DeviceError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="Device">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Device</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="p">,</span><span class="n">rim</span><span class="o">.</span><span class="n">Hub</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Device class holder. TODO: Update comments&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span>
+                 <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">memBase</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">groups</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">expand</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">enabled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">defaults</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">enableDeps</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">hubMin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">hubMax</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">guiGroup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize device class&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="c1"># Hub.__init__ must be called first for _setSlave to work below</span>
+        <span class="n">rim</span><span class="o">.</span><span class="n">Hub</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">offset</span><span class="p">,</span><span class="n">hubMin</span><span class="p">,</span><span class="n">hubMax</span><span class="p">)</span>
+
+        <span class="c1"># Blocks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span>     <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custBlocks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memBase</span>    <span class="o">=</span> <span class="n">memBase</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_memLock</span>    <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">RLock</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_defaults</span>   <span class="o">=</span> <span class="n">defaults</span> <span class="k">if</span> <span class="n">defaults</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Connect to memory slave</span>
+        <span class="k">if</span> <span class="n">memBase</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_setSlave</span><span class="p">(</span><span class="n">memBase</span><span class="p">)</span>
+
+        <span class="c1"># Node.__init__ can&#39;t be called until after self._memBase is created</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="n">groups</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">expand</span><span class="o">=</span><span class="n">expand</span><span class="p">,</span> <span class="n">guiGroup</span><span class="o">=</span><span class="n">guiGroup</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Making device </span><span class="si">{:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Convenience methods</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addRemoteCommands</span> <span class="o">=</span> <span class="n">ft</span><span class="o">.</span><span class="n">partial</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">addNodes</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">RemoteCommand</span><span class="p">)</span>
+
+        <span class="c1"># Variable interface to enable flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">EnableVariable</span><span class="p">(</span><span class="n">enabled</span><span class="o">=</span><span class="n">enabled</span><span class="p">,</span> <span class="n">deps</span><span class="o">=</span><span class="n">enableDeps</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;ReadDevice&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">readAndCheckBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">arg</span><span class="p">),</span>
+                                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Force read of device without recursion&#39;</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;WriteDevice&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                 <span class="n">function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">arg</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">writeAndVerifyBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span><span class="n">recurse</span><span class="o">=</span><span class="n">arg</span><span class="p">),</span>
+                                 <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Force write of device without recursion&#39;</span><span class="p">))</span>
+
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">address</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getAddress</span><span class="p">()</span>
+
+    <span class="nd">@pr</span><span class="o">.</span><span class="n">expose</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_getOffset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Device.addCustomBlock">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.addCustomBlock">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addCustomBlock</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        block :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custBlocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custBlocks</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="Device.add">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        node :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call node add</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="c1"># Adding device</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span><span class="n">Device</span><span class="p">):</span>
+
+            <span class="c1"># Device does not have a membase</span>
+            <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">_memBase</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">node</span><span class="o">.</span><span class="n">_setSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.addInterface">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.addInterface">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addInterface</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">interfaces</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master</span>
+<span class="sd">        Also accepts iterables for adding multiple at once</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *interfaces :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="n">interfaces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">abc</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interface</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">interface</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.addProtocol">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.addProtocol">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addProtocol</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">protocols</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a protocol entity.</span>
+<span class="sd">        Also accepts iterables for adding multiple at once</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *protocols :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addInterface</span><span class="p">(</span><span class="n">protocols</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.manage">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.manage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">manage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">interfaces</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *interfaces :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">interfaces</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Called recursively from Root.start when starting &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">intf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span><span class="s2">&quot;_start&quot;</span><span class="p">):</span>
+                <span class="n">intf</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">_start</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called recursively from Root.stop when exiting&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">intf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ifAndProto</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">intf</span><span class="p">,</span><span class="s2">&quot;_stop&quot;</span><span class="p">):</span>
+                <span class="n">intf</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">_stop</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Check if Device._start() has been called &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">running</span>
+
+
+<div class="viewcode-block" id="Device.addRemoteVariables">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.addRemoteVariables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">addRemoteVariables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">pack</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        number :</span>
+
+<span class="sd">        stride :</span>
+
+<span class="sd">        pack : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">pack</span><span class="p">:</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hidden</span><span class="o">=</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;hidden&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">addNodes</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="n">hidden</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># If pack specified, create a linked variable to combine everything</span>
+        <span class="k">if</span> <span class="n">pack</span><span class="p">:</span>
+            <span class="n">varList</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">linkedSet</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">write</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                dev :</span>
+
+<span class="sd">                var :</span>
+
+<span class="sd">                val :</span>
+
+<span class="sd">                write :</span>
+
+
+<span class="sd">                Returns</span>
+<span class="sd">                -------</span>
+
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="k">if</span> <span class="n">val</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">return</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">variable</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">varList</span><span class="p">,</span> <span class="n">values</span><span class="p">):</span>
+                    <span class="n">variable</span><span class="o">.</span><span class="n">setDisp</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">write</span><span class="o">=</span><span class="n">write</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">linkedGet</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">read</span><span class="p">):</span>
+<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">                Parameters</span>
+<span class="sd">                ----------</span>
+<span class="sd">                dev :</span>
+
+<span class="sd">                var :</span>
+
+<span class="sd">                read :</span>
+
+
+<span class="sd">                Returns</span>
+<span class="sd">                -------</span>
+
+<span class="sd">                &quot;&quot;&quot;</span>
+                <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">v</span><span class="o">.</span><span class="n">getDisp</span><span class="p">(</span><span class="n">read</span><span class="o">=</span><span class="n">read</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">varList</span><span class="p">]</span>
+                <span class="k">return</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+
+            <span class="n">name</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">lv</span> <span class="o">=</span> <span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">dependencies</span><span class="o">=</span><span class="n">varList</span><span class="p">,</span> <span class="n">linkedGet</span><span class="o">=</span><span class="n">linkedGet</span><span class="p">,</span> <span class="n">linkedSet</span><span class="o">=</span><span class="n">linkedSet</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">lv</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.setPollInterval">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.setPollInterval">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">setPollInterval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set the poll interval for a group of variables.</span>
+<span class="sd">        The variables param is an Iterable of strings</span>
+<span class="sd">        If variables=None, set interval for all variables that currently have nonzero pollInterval</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        interval :</span>
+
+<span class="sd">        variables : str</span>
+<span class="sd">             (Default value = None)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variables</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">pollInterval</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">setPollInterval</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.hideVariables">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.hideVariables">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hideVariables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">variables</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Hide a list of Variables (or Variable names)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        hidden :</span>
+
+<span class="sd">        variables : str</span>
+<span class="sd">             (Default value = None)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">variables</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">variables</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">variables</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">pr</span><span class="o">.</span><span class="n">BaseVariable</span><span class="p">):</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variables</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">str</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">variables</span><span class="p">[</span><span class="n">v</span><span class="p">]</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">hardReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">hardReset</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">countReset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">countReset</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Device.enableChanged">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.enableChanged">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enableChanged</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        value :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+        <span class="c1">#if value is True:</span>
+        <span class="c1">#    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)</span>
+
+<div class="viewcode-block" id="Device.writeBlocks">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.writeBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Write all of the blocks held by this Device to memory</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        * :</span>
+
+<span class="sd">        force : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        recurse : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        variable : str</span>
+<span class="sd">             (Default value = None)</span>
+<span class="sd">        checkEach : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        index : int</span>
+<span class="sd">             (Default value = -1)</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">bulkOpEn</span><span class="p">:</span>
+                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Write</span><span class="p">,</span> <span class="n">forceWr</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.verifyBlocks">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.verifyBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">verifyBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform background verify</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">              * :</span>
+
+<span class="sd">        recurse : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        variable : str</span>
+<span class="sd">             (Default value = None)</span>
+<span class="sd">        checkEach : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="c1"># Verify range is set by previous write</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">bulkOpEn</span><span class="p">:</span>
+                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Verify</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.readBlocks">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.readBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">readBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform background reads</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">              * :</span>
+
+<span class="sd">        recurse : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        variable : str</span>
+<span class="sd">             (Default value = None)</span>
+<span class="sd">        checkEach : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        index : int</span>
+<span class="sd">             (Default value = -1)</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">checkEach</span> <span class="o">=</span> <span class="n">checkEach</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">forceCheckEach</span>
+
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">block</span><span class="o">.</span><span class="n">bulkOpEn</span><span class="p">:</span>
+                    <span class="n">pr</span><span class="o">.</span><span class="n">startTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="n">rim</span><span class="o">.</span><span class="n">Read</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.checkBlocks">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.checkBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">checkBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check errors in all blocks and generate variable update notifications</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">              * :</span>
+
+<span class="sd">        recurse : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        variable : str</span>
+<span class="sd">             (Default value = None)</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">variable</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">pr</span><span class="o">.</span><span class="n">checkTransaction</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">_block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+                <span class="n">pr</span><span class="o">.</span><span class="n">checkTransaction</span><span class="p">(</span><span class="n">block</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">recurse</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">value</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.writeAndVerifyBlocks">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.writeAndVerifyBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">writeAndVerifyBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a write, verify and check. Useful for committing any stale variables</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        force : bool</span>
+<span class="sd">             (Default value = False)</span>
+<span class="sd">        recurse : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        variable : str</span>
+<span class="sd">             (Default value = None)</span>
+<span class="sd">        checkEach : bool</span>
+<span class="sd">             (Default value = False)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">writeBlocks</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verifyBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Device.readAndCheckBlocks">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.readAndCheckBlocks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">readAndCheckBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recurse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform a read and check.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        recurse : bool</span>
+<span class="sd">             (Default value = True)</span>
+<span class="sd">        variable : str</span>
+<span class="sd">             (Default value = None)</span>
+<span class="sd">        checkEach : bool</span>
+<span class="sd">             (Default value = False)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">,</span> <span class="n">checkEach</span><span class="o">=</span><span class="n">checkEach</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">checkBlocks</span><span class="p">(</span><span class="n">recurse</span><span class="o">=</span><span class="n">recurse</span><span class="p">,</span> <span class="n">variable</span><span class="o">=</span><span class="n">variable</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_updateBlockEnable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="n">block</span><span class="o">.</span><span class="n">setEnable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">devices</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">_updateBlockEnable</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_buildBlocks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+        <span class="n">remVars</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Use min block size, larger blocks can be pre-created</span>
+        <span class="n">blkSize</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blkMinAccess</span><span class="p">()</span>
+
+        <span class="c1"># Process all of the variables</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># Local variables have a 1:1 block association</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalVariable</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">_block</span><span class="p">)</span>
+
+            <span class="c1"># Align to min access, create list of remote variables</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">pr</span><span class="o">.</span><span class="n">RemoteVariable</span><span class="p">)</span> <span class="ow">and</span> <span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Before Shift variable </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> offset=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2"> bitSize=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s2"> bytes=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">_updatePath</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">_shiftOffsetDown</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="o">%</span> <span class="n">blkSize</span><span class="p">,</span> <span class="n">blkSize</span><span class="p">)</span>
+                <span class="n">remVars</span> <span class="o">+=</span> <span class="p">[</span><span class="n">n</span><span class="p">]</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Creating variable </span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2"> offset=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="si">}</span><span class="s2"> bitSize=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">bitSize</span><span class="si">}</span><span class="s2"> bytes=</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Sort var list by offset, size</span>
+        <span class="n">remVars</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">varBytes</span><span class="p">))</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">blk</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Go through sorted variable list, look for overlaps, group into blocks</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">remVars</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">blk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="p">(</span> <span class="p">(</span><span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Overlap detected var offset=</span><span class="si">{}</span><span class="s2"> block offset=</span><span class="si">{}</span><span class="s2"> block bytes=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span><span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span><span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]))</span>
+                <span class="n">n</span><span class="o">.</span><span class="n">_shiftOffsetDown</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="o">-</span> <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">blkSize</span><span class="p">)</span>
+                <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span> <span class="o">&gt;</span> <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]:</span>
+                    <span class="n">blk</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span>
+
+            <span class="c1"># We need a new block for this variable</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">blk</span> <span class="o">=</span> <span class="kc">None</span>
+
+                <span class="c1"># Look for pre-made block which overlaps</span>
+                <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_custBlocks</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span> <span class="o">&gt;=</span> <span class="n">b</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span> <span class="ow">and</span> <span class="p">((</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">)):</span>
+
+                        <span class="c1"># Just in case a variable extends past the end of pre-made block, user mistake</span>
+                        <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">varBytes</span> <span class="o">&gt;</span> <span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;Failed to add variable </span><span class="si">{n.name}</span><span class="s1"> to pre-made block with offset </span><span class="si">{b.offset}</span><span class="s1"> and size </span><span class="si">{b.size}</span><span class="s1">&#39;</span>
+                            <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+
+                        <span class="n">blk</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;offset&#39;</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="n">b</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="s1">&#39;vars&#39;</span><span class="p">:[</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;block&#39;</span><span class="p">:</span><span class="n">b</span><span class="p">}</span>
+                        <span class="k">break</span>
+
+                <span class="c1"># Block not found</span>
+                <span class="k">if</span> <span class="n">blk</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">blk</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;offset&#39;</span><span class="p">:</span><span class="n">n</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="n">n</span><span class="o">.</span><span class="n">varBytes</span><span class="p">,</span> <span class="s1">&#39;vars&#39;</span><span class="p">:[</span><span class="n">n</span><span class="p">],</span> <span class="s1">&#39;block&#39;</span><span class="p">:</span><span class="kc">None</span><span class="p">}</span>
+                    <span class="n">blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">blk</span><span class="p">)</span>
+
+        <span class="c1"># Clear pre-made list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_custBlocks</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Create new blocks and add new and pre-made blocks to device</span>
+        <span class="c1"># Add variables to the block</span>
+        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">blocks</span><span class="p">:</span>
+
+            <span class="c1"># Create new block</span>
+            <span class="k">if</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">newBlock</span> <span class="o">=</span> <span class="n">rim</span><span class="o">.</span><span class="n">Block</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Adding new block at offset </span><span class="si">{:#02x}</span><span class="s2">, size </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;size&#39;</span><span class="p">]))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">newBlock</span> <span class="o">=</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;block&#39;</span><span class="p">]</span>
+
+            <span class="c1"># Set memory slave</span>
+            <span class="n">newBlock</span><span class="o">.</span><span class="n">_setSlave</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+            <span class="c1"># Verify the block is not too small or large for the memory interface</span>
+            <span class="k">if</span> <span class="n">newBlock</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blkMaxAccess</span><span class="p">()</span> <span class="ow">or</span> <span class="n">newBlock</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blkMinAccess</span><span class="p">():</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Block size </span><span class="si">{</span><span class="n">newBlock</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s1"> is not in the range: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_blkMinAccess</span><span class="p">()</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_blkMaxAccess</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+                <span class="k">raise</span> <span class="n">pr</span><span class="o">.</span><span class="n">MemoryError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">msg</span><span class="o">=</span><span class="n">msg</span><span class="p">)</span>
+
+            <span class="c1"># Add variables to the block</span>
+            <span class="n">newBlock</span><span class="o">.</span><span class="n">addVariables</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">])</span>
+
+            <span class="c1"># Set varible block links</span>
+            <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">b</span><span class="p">[</span><span class="s1">&#39;vars&#39;</span><span class="p">]:</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">_block</span> <span class="o">=</span> <span class="n">newBlock</span>
+
+            <span class="c1"># Add to device</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">newBlock</span><span class="p">)</span>
+            <span class="n">newBlock</span><span class="o">.</span><span class="n">setEnable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">enable</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">root</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        parent :</span>
+
+<span class="sd">        root :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pr</span><span class="o">.</span><span class="n">Node</span><span class="o">.</span><span class="n">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">root</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">_rootAttached</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">root</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buildBlocks</span><span class="p">()</span>
+
+        <span class="c1"># Override defaults as dictated by the _defaults dict</span>
+        <span class="k">for</span> <span class="n">varName</span><span class="p">,</span> <span class="n">defValue</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_defaults</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">nodes</span><span class="p">,</span><span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodeMatch</span><span class="p">(</span><span class="n">varName</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">keys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
+                    <span class="n">var</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="n">defValue</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">timeout</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set timeout value on all devices &amp; blocks</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        timeout :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">block</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_blocks</span><span class="p">:</span>
+            <span class="n">block</span><span class="o">.</span><span class="n">_setTimeout</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="o">*</span><span class="mi">1000000</span><span class="p">))</span>
+
+        <span class="n">rim</span><span class="o">.</span><span class="n">Master</span><span class="o">.</span><span class="n">_setTimeout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">timeout</span><span class="o">*</span><span class="mi">1000000</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span><span class="n">Device</span><span class="p">):</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">_setTimeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Device.command">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A Decorator to add inline constructor functions as commands</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            func :</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LocalCommand</span><span class="p">(</span><span class="n">function</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">func</span>
+        <span class="k">return</span> <span class="n">_decorator</span></div>
+
+
+<div class="viewcode-block" id="Device.linkVariableGet">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.linkVariableGet">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">linkVariableGet</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decorator to add inline constructor functions as LinkVariable.linkedGet functions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        **kwargs :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">            Parameters</span>
+<span class="sd">            ----------</span>
+<span class="sd">            func :</span>
+
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">LinkVariable</span><span class="p">(</span><span class="n">linkedGet</span><span class="o">=</span><span class="n">func</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">func</span>
+        <span class="k">return</span> <span class="n">_decorator</span></div>
+
+
+<div class="viewcode-block" id="Device.genDocuments">
+<a class="viewcode-back" href="../../pyrogue_tree/node/device/index.html#pyrogue.Device.genDocuments">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">genDocuments</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span> <span class="n">excGroups</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        path :</span>
+
+<span class="sd">        incGroups :</span>
+
+<span class="sd">        excGroups :</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;.rst&#39;</span><span class="p">,</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file</span><span class="p">:</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;****************************&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;****************************&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">pr</span><span class="o">.</span><span class="n">genDocDesc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="n">plist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">getNodes</span><span class="p">(</span><span class="n">typ</span><span class="o">=</span><span class="n">pr</span><span class="o">.</span><span class="n">Process</span><span class="p">,</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
+            <span class="n">dlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">devicesByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
+            <span class="n">vlist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variablesByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
+            <span class="n">clist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">commandsByGroup</span><span class="p">(</span><span class="n">incGroups</span><span class="o">=</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="o">=</span><span class="n">excGroups</span><span class="p">)</span>
+
+            <span class="n">tlist</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">dlist</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">plist</span><span class="p">}</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tlist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.. toctree::&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   :maxdepth: 1&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   :caption: Sub Devices:&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">tlist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">genDocuments</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plist</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;.. toctree::&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   :maxdepth: 1&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;   :caption: Processes:&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">plist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;   &#39;</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span><span class="s1">&#39;_&#39;</span><span class="p">),</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">genDocuments</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="n">incGroups</span><span class="p">,</span><span class="n">excGroups</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Summary&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#######&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Variable List&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*************&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">vlist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;* </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clist</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Command List&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*************&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">clist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;* </span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Details&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#######&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vlist</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Variables&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*********&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">vlist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">_genDocs</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">clist</span><span class="p">):</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Commands&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;********&quot;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">clist</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">_genDocs</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="n">file</span><span class="o">=</span><span class="n">file</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ArrayDevice</span><span class="p">(</span><span class="n">Device</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">arrayClass</span><span class="p">,</span> <span class="n">number</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">arrayArgs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">arrayClass</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">Array&#39;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">arrayArgs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">arrayArgs</span> <span class="o">=</span> <span class="p">[{}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arrayArgs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">arrayArgs</span> <span class="o">=</span> <span class="p">[</span><span class="n">arrayArgs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">)]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">number</span><span class="p">):</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">arrayArgs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">arrayClass</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s1">[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">]&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">arrayClass</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">offset</span><span class="o">=</span><span class="n">i</span><span class="o">*</span><span class="n">stride</span><span class="p">,</span>
+                <span class="o">**</span><span class="n">args</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, SLAC National Accelerator Laboratory.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

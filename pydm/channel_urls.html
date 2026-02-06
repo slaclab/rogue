@@ -6,16 +6,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Channel URLS &mdash; Rogue v6.8.0 documentation</title>
+  <title>Channel URLS &mdash; Rogue v6.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=d169304c"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,6 +47,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../interfaces/index.html">Interfaces</a></li>
@@ -91,15 +96,15 @@
            <div itemprop="articleBody">
              
   <section id="channel-urls">
-<h1>Channel URLS<a class="headerlink" href="#channel-urls" title="Link to this heading"></a></h1>
+<span id="id1"></span><h1>Channel URLS<a class="headerlink" href="#channel-urls" title="Link to this heading"></a></h1>
 <p>When using the PyDM and Rogue widgets the user must associate the widget with a Rogue Device, Variable or Command using a channel URL. The URLs used by Rogue connected widgets are in the form:</p>
-<p>rogue://0/MyRoot.MyDevice.MyVariable</p>
+<p><code class="code docutils literal notranslate"><span class="pre">rogue://0/MyRoot.MyDevice.MyVariable</span></code></p>
 <p>The user can either use the real root name or simply the ‘root’ alias when referring to a Rogue root instance. This is usefull when creating generic debug tree associations. For example the URL used by a generic DebugTree widdget would be:</p>
-<p>rogue://0/root</p>
+<p><code class="code docutils literal notranslate"><span class="pre">rogue://0/root`</span></code></p>
 <section id="url-suffix">
 <h2>URL Suffix<a class="headerlink" href="#url-suffix" title="Link to this heading"></a></h2>
 <p>For some channels such as variables and commands a suffix can be added to the URL to direct PyDM on how to access the Rogue instance. An example suffix usage is:</p>
-<p>rogue://0/root.Device.Variable/disp</p>
+<p><code class="code docutils literal notranslate"><span class="pre">rogue://0/root.Device.Variable/disp</span></code></p>
 <p>The following suffixes are currently supported:</p>
 <blockquote>
 <div><ul class="simple">

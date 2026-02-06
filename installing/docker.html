@@ -6,16 +6,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installing Rogue Docker &mdash; Rogue v6.8.0 documentation</title>
+  <title>Installing Rogue Docker &mdash; Rogue v6.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=d169304c"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,6 +47,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
 <li class="toctree-l2"><a class="reference internal" href="miniforge_build.html">Building Rogue Inside Miniforge</a></li>
@@ -51,7 +56,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#how-to-get-the-container">How To Get The Container</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-run-the-container">How To Run The Container</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#gui-on-a-linux-os">GUI On A Linux OS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gui-on-a-max-os">GUI On A MAX OS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui-on-a-mac-os">GUI On A MAC OS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#how-to-build-a-custom-docker-image-with-rogue">How To Build A Custom Docker Image With Rogue</a></li>
 </ul>
 </li>
@@ -151,8 +156,8 @@ $ docker run -ti --net=host -e DISPLAY -v ${HOME}/.Xauthority:/root/.Xauthority 
 </pre></div>
 </div>
 </section>
-<section id="gui-on-a-max-os">
-<h2>GUI On A MAX OS<a class="headerlink" href="#gui-on-a-max-os" title="Link to this heading"></a></h2>
+<section id="gui-on-a-mac-os">
+<h2>GUI On A MAC OS<a class="headerlink" href="#gui-on-a-mac-os" title="Link to this heading"></a></h2>
 <p>First install XQuartz. Then run it from the command line using <cite>open -a XQuartz</cite>. In the XQuartz preferences, go to the “Security” tab and make sure you’ve got “Allow connections from network clients” ticked.</p>
 <p>Now run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ IP=$(ifconfig en0 | grep inet | awk &#39;$1==&quot;inet&quot; {print $2}&#39;)

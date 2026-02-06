@@ -44,6 +44,7 @@ UIntReversed
 
 .. _interfaces_memory_model_int:
 
+
 Int
 ---
 
@@ -123,3 +124,9 @@ Fixed
    :members:
    :member-order: bysource
 
+UFixed
+------
+
+.. autoclass:: pyrogue.UFixed
+   :members:
+   :member-order: bysource

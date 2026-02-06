@@ -1,8 +1,8 @@
 .. _installing_yocto:
 
-=============================
+=========================
 Setting Up Rogue In Yocto
-=============================
+=========================
 
 Step 1 - Create a new application layer
 

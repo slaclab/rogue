@@ -6,20 +6,23 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Rogue’s documentation! &mdash; Rogue v6.8.0 documentation</title>
+  <title>Welcome to Rogue’s documentation! &mdash; Rogue v6.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
 
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=d169304c"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/documentation_options.js?v=7511b455"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="_static/copybutton.js?v=f281be69"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing &amp; Compiling Rogue" href="installing/index.html" /> 
+    <link rel="next" title="Introduction" href="introduction/index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,6 +46,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pyrogue_tree/index.html">PyRogue Tree</a></li>
 <li class="toctree-l1"><a class="reference internal" href="interfaces/index.html">Interfaces</a></li>
@@ -81,11 +86,29 @@
              
   <section id="welcome-to-rogue-s-documentation">
 <h1>Welcome to Rogue’s documentation!<a class="headerlink" href="#welcome-to-rogue-s-documentation" title="Link to this heading"></a></h1>
+<p>Rogue is a SLAC Python Based Hardware Abstraction and Data Acquisition System. Look at our <a class="reference internal" href="introduction/index.html#introduction"><span class="std std-ref">Introduction</span></a> page for information about Rogue.</p>
 <p>This is currently a work in progress and updated from the doc_updates
 branch of Rogue. New documentation is being added incrementally over time.</p>
+<p>Find other helpful links(slack channel, Jira, etc) <a class="reference external" href="https://confluence.slac.stanford.edu/spaces/ppareg/pages/610487593/Rogue+Documentation+Notification+Links">on confluence</a>.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction/index.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction/index.html#goals-of-rogue">Goals of Rogue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction/index.html#structure-of-rogue">Structure of Rogue</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/index.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/starting/index.html">Starting Tutorials</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/starting/pyrogue_tree_example/p_t_device.html">Creating a Custom Pyrogue Device</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/starting/pyrogue_tree_example/p_t_root.html">Basic Pyrogue Tree Tutorial</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/starting/pyrogue_tree_example/osmemmaster.html">Python OsMemMaster Class Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/starting/pyrogue_tree_example/full_root.html">Full Example Root Code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/complex/index.html">Complex Tutorials</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installing/index.html">Installing &amp; Compiling Rogue</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installing/miniforge.html">Installing Rogue With Miniforge</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="installing/miniforge.html#getting-miniforge">Getting Miniforge</a></li>
@@ -102,6 +125,7 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l3"><a class="reference internal" href="installing/miniforge_build.html#building-rogue-in-miniforge">Building Rogue In Miniforge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installing/miniforge_build.html#using-rogue-in-miniforge">Using Rogue In Miniforge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installing/miniforge_build.html#updating-rogue-in-miniforge">Updating Rogue In Miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installing/miniforge_build.html#building-and-viewing-the-docs">Building and Viewing the Docs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installing/miniforge_build.html#deleting-miniforge-environment">Deleting Miniforge Environment</a></li>
 </ul>
 </li>
@@ -109,7 +133,7 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l3"><a class="reference internal" href="installing/docker.html#how-to-get-the-container">How To Get The Container</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installing/docker.html#how-to-run-the-container">How To Run The Container</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installing/docker.html#gui-on-a-linux-os">GUI On A Linux OS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="installing/docker.html#gui-on-a-max-os">GUI On A MAX OS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="installing/docker.html#gui-on-a-mac-os">GUI On A MAC OS</a></li>
 <li class="toctree-l3"><a class="reference internal" href="installing/docker.html#how-to-build-a-custom-docker-image-with-rogue">How To Build A Custom Docker Image With Rogue</a></li>
 </ul>
 </li>
@@ -130,7 +154,40 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pyrogue_tree/index.html">PyRogue Tree</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/node/index.html">Node</a><ul class="simple">
+<li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/node/index.html">Node</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/index.html#node-class-description">Node Class Description</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/node/root/index.html">Root</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/root/index.html#key-attributes">Key Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/root/index.html#key-methods">Key Methods</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/root/index.html#yaml-file-configuration">Yaml File Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/root/index.html#included-command-objects">Included Command Objects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/root/index.html#included-variable-objects">Included Variable Objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/node/device/index.html">Device</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/device/index.html#device-definition">Device Definition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/device/index.html#special-device-subclasses">Special Device Subclasses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/device/index.html#custom-device-classes">Custom Device Classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/device/index.html#device-class-documentation">Device Class Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/device/index.html#python-device-example">Python Device Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/device/index.html#c-device-example">C++ Device Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/node/command/index.html">Command</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/command/index.html#basecommand">BaseCommand</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/command/index.html#python-command-example">Python Command Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/command/index.html#c-command-example">C++ Command Example</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pyrogue_tree/node/variable/index.html">Variable</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/variable/link_variable/index.html">LinkVariable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/variable/local_variable/index.html">LocalVariable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/variable/remote_variable/index.html">RemoteVariable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/variable/index.html#basevariable-class-documentation">BaseVariable Class Documentation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/variable/index.html#python-variable-example">Python Variable Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pyrogue_tree/node/variable/index.html#c-variable-example">C++ Variable Example</a></li>
 </ul>
 </li>
 </ul>
@@ -171,7 +228,14 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 <li class="toctree-l3"><a class="reference internal" href="interfaces/simulation/sideband.html">Sideband Simulation</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/pyrogue/index.html">Python Interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/pyrogue/memory_stream_variable.html">Python Stream Variable</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/pyrogue/os_command_memory_slave.html">OsCommandMemorySlave</a></li>
+<li class="toctree-l3"><a class="reference internal" href="interfaces/pyrogue/zmq_server.html">Python ZMQServer</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="interfaces/sql.html">SQL Logging Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="interfaces/cpp_api.html">Wrapping Rogue In C++</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="utilities/index.html">Utilities</a><ul>
@@ -251,6 +315,11 @@ branch of Rogue. New documentation is being added incrementally over time.</p>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="protocols/uart.html">UART Protocol</a></li>
+<li class="toctree-l2"><a class="reference internal" href="protocols/pyrogue/index.html">Pyrogue Protocols</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="protocols/pyrogue/epicspvholder.html">Epics PV Holder Protocol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="protocols/pyrogue/epicspvserver.html">Epics PV Server Protocol</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="logging/index.html">Logging In Rogue</a></li>
@@ -314,7 +383,7 @@ content and flushing out errors and typos.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installing/index.html" class="btn btn-neutral float-right" title="Installing &amp; Compiling Rogue" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="introduction/index.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

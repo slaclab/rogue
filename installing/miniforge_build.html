@@ -6,16 +6,19 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Building Rogue Inside Miniforge &mdash; Rogue v6.8.0 documentation</title>
+  <title>Building Rogue Inside Miniforge &mdash; Rogue v6.8.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
       <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../_static/documentation_options.js?v=d169304c"></script>
-      <script src="../_static/doctools.js?v=9bcbadda"></script>
-      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/documentation_options.js?v=7511b455"></script>
+      <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+      <script src="../_static/copybutton.js?v=f281be69"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -44,6 +47,8 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../introduction/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials/index.html">Tutorials</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Installing &amp; Compiling Rogue</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="miniforge.html">Installing Rogue With Miniforge</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Building Rogue Inside Miniforge</a><ul>
@@ -52,6 +57,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#building-rogue-in-miniforge">Building Rogue In Miniforge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#using-rogue-in-miniforge">Using Rogue In Miniforge</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-rogue-in-miniforge">Updating Rogue In Miniforge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#building-and-viewing-the-docs">Building and Viewing the Docs</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#deleting-miniforge-environment">Deleting Miniforge Environment</a></li>
 </ul>
 </li>
@@ -132,7 +138,8 @@ $ conda env create -n rogue_build -f conda.yml
 </pre></div>
 </div>
 <p>You now have an miniforge environment named rogue_build which contains all of the packages required to build and run rogue.</p>
-<p>To activate this environment:</p>
+<p>You can alternatively clone the git repo with <cite>git clone git&#64;github.com:slaclab/rogue.git</cite>.
+To activate this environment:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ conda activate rogue_build
 </pre></div>
 </div>
@@ -175,6 +182,10 @@ $ make
 $ make install
 </pre></div>
 </div>
+</section>
+<section id="building-and-viewing-the-docs">
+<h2>Building and Viewing the Docs<a class="headerlink" href="#building-and-viewing-the-docs" title="Link to this heading"></a></h2>
+<p>Note: if edits are made to the source files, the full build process needs to be run for changes to reflect in documentation.</p>
 </section>
 <section id="deleting-miniforge-environment">
 <h2>Deleting Miniforge Environment<a class="headerlink" href="#deleting-miniforge-environment" title="Link to this heading"></a></h2>
