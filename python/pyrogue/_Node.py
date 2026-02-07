@@ -20,7 +20,7 @@ import logging
 import re
 import sys
 from collections import OrderedDict as odict
-from typing import Any, Callable, Iterable, List, Optional, Tuple
+from typing import Any, Callable, Iterable, Optional
 
 import pyrogue as pr
 
@@ -323,10 +323,10 @@ class Node(object):
             raise AttributeError('{} has no attribute {}'.format(self, name))
 
 
-    def __dir__(self) -> List[str]:
+    def __dir__(self) -> list[str]:
         return super().__dir__() + [k for k,v in self._nodes.items()]
 
-    def __reduce__(self) -> Tuple[Any, Tuple[dict]]:
+    def __reduce__(self) -> tuple[Any, tuple[dict]]:
         attr = {}
 
         attr['name']        = self._name
@@ -465,7 +465,7 @@ class Node(object):
             self.add(nodeClass(name='{:s}[{:d}]'.format(name, i), offset=offset+(i*stride), **kwargs))
 
     @property
-    def nodeList(self) -> List[Any]:
+    def nodeList(self) -> list[Any]:
         """Return a recursive list of nodes."""
         lst = []
         for key,value in self._nodes.items():
@@ -521,7 +521,7 @@ class Node(object):
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
     @property
-    def variableList(self) -> List[Any]:
+    def variableList(self) -> list[Any]:
         """Return a recursive list of variables and commands."""
         lst = []
         for key,value in self.nodes.items():
@@ -550,7 +550,7 @@ class Node(object):
         return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
     @property
-    def deviceList(self) -> List[Any]:
+    def deviceList(self) -> list[Any]:
         """Return a recursive list of devices."""
         lst = []
         for key,value in self.nodes.items():
@@ -597,7 +597,7 @@ class Node(object):
         """Return True if this node is a command."""
         return self.isinstance(pr.BaseCommand)
 
-    def find(self, *, recurse: bool = True, typ: Optional[Any] = None, **kwargs: Any) -> List[Any]:
+    def find(self, *, recurse: bool = True, typ: Optional[Any] = None, **kwargs: Any) -> list[Any]:
         """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
@@ -718,7 +718,7 @@ class Node(object):
     def getYaml(
         self,
         readFirst: bool = False,
-        modes: List[str] = ['RW','RO','WO'],
+        modes: list[str] = ['RW','RO','WO'],
         incGroups: Optional[list[str]] = None,
         excGroups: Optional[list[str]] = ['Hidden'],
         recurse: bool = True,
@@ -750,7 +750,7 @@ class Node(object):
     def printYaml(
         self,
         readFirst: bool = False,
-        modes: List[str] = ['RW','RO','WO'],
+        modes: list[str] = ['RW','RO','WO'],
         incGroups: Optional[list[str]] = None,
         excGroups: Optional[list[str]] = ['Hidden'],
         recurse: bool = False,
@@ -862,7 +862,7 @@ class Node(object):
         """
         pass
 
-    def nodeMatch(self, name: str) -> Tuple[List[Any], Optional[List[str]]]:
+    def nodeMatch(self, name: str) -> tuple[list[Any], Optional[list[str]]]:
         """Match a node name, including array-style accessors.
 
         Parameters
@@ -902,7 +902,7 @@ class Node(object):
             return _iterateDict(self._anodes[aname],keys),None
 
 
-def _iterateDict(d: dict, keys: List[str]) -> List[Any]:
+def _iterateDict(d: dict, keys: list[str]) -> list[Any]:
     """Iterate into a nested dict using array-style keys."""
     retList = []
 
@@ -943,7 +943,7 @@ def _iterateDict(d: dict, keys: List[str]) -> List[Any]:
     return retList
 
 
-def genBaseList(cls: Any) -> List[str]:
+def genBaseList(cls: Any) -> list[str]:
     """Return a list of base class names for a class."""
     ret = [str(cls)]
 

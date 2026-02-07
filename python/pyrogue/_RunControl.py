@@ -14,7 +14,7 @@
 #-----------------------------------------------------------------------------
 import threading
 import time
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 import pyrogue as pr
 
@@ -40,8 +40,8 @@ class RunControl(pr.Device):
         self,
         *,
         hidden: bool = True,
-        rates: Optional[Dict[int, str]] = None,
-        states: Optional[Dict[int, str]] = None,
+        rates: Optional[dict[int, str]] = None,
+        states: Optional[dict[int, str]] = None,
         cmd: Optional[Callable[[], None]] = None,
         **kwargs: Any,
     ) -> None:

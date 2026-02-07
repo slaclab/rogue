@@ -20,7 +20,7 @@ import shlex
 import sys
 import threading
 import time
-from typing import Any, Callable, List, Optional
+from typing import Any, Callable, Optional
 
 import numpy as np
 import pyrogue as pr
@@ -79,7 +79,7 @@ class VariableWaitClass(object):
     def __init__(
         self,
         varList: Any,
-        testFunction: Optional[Callable[[List[Any]], bool]] = None,
+        testFunction: Optional[Callable[[list[Any]], bool]] = None,
         timeout: float = 0,
     ) -> None:
         self._values   = odict()
@@ -142,7 +142,7 @@ class VariableWaitClass(object):
 
 def VariableWait(
     varList: Any,
-    testFunction: Optional[Callable[[List[Any]], bool]] = None,
+    testFunction: Optional[Callable[[list[Any]], bool]] = None,
     timeout: float = 0,
 ) -> bool:
     """
