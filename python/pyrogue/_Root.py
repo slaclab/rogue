@@ -22,7 +22,6 @@ import rogue.interfaces.memory as rim
 import threading
 import logging
 import pyrogue as pr
-import pyrogue.interfaces.stream
 import functools as ft
 import time
 import queue

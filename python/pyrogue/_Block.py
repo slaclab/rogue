@@ -262,10 +262,10 @@ class LocalBlock(object):
         self,
         *,
         variable: pr.LocalVariable,
-        localSet: Callable[..., Any] | None,
-        localGet: Callable[..., Any] | None,
-        minimum: Any | None,
-        maximum: Any | None,
+        localSet: Optional[Callable[..., Any]],
+        localGet: Optional[Callable[..., Any]],
+        minimum: Optional[Any],
+        maximum: Optional[Any],
         value: Any,
     ) -> None:
         self._path      = variable.path
