@@ -352,7 +352,7 @@ class Root(pr.Device):
     def start(self) -> None:
         """Setup the tree and start background threads for pollQueue and updateQueue.
         Call Device._start() recursively on child Nodes.
-        
+
         """
 
         if self._running:
@@ -446,12 +446,13 @@ class Root(pr.Device):
         return self._running
 
     def addVarListener(
-        self, 
-        func: Callable[..., Any], 
-        *, 
-        done: Optional[Callable[[], Any]] = None, 
-        incGroups: Optional[Union[str, list[str]]] = None, 
-        excGroups: Optional[Union[str, list[str]]] = None) -> None:
+        self,
+        func: Callable[..., Any],
+        *,
+        done: Optional[Callable[[], Any]] = None,
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+    ) -> None:
         """
         Add a variable update listener function.
         The variable path and value are passed as ``func(path, varValue)``.
@@ -472,9 +473,10 @@ class Root(pr.Device):
             self._varListeners.append((func, done, incGroups, excGroups))
 
     def _addVarListenerCpp(
-        self, 
-        func: Callable[..., Any], 
-        done: Callable[[], Any]) -> None:
+        self,
+        func: Callable[..., Any],
+        done: Callable[[], Any],
+    ) -> None:
 
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
@@ -533,9 +535,9 @@ class Root(pr.Device):
 
     def hardReset(self) -> None:
         """Generate a hard reset on all devices.
-        
+
         Called recursively on the entire tree.
-        
+
         """
         super().hardReset()
         self._clearLog()
@@ -656,10 +658,11 @@ class Root(pr.Device):
 
     @pr.expose
     def saveVariableList(
-        self, 
+        self,
         fname: str,
-        polledOnly: bool = False, 
-        incGroups: Optional[Union[str, list[str]]] = None) -> None:
+        polledOnly: bool = False,
+        incGroups: Optional[Union[str, list[str]]] = None,
+    ) -> None:
         """Save a string representing the entire tree
 
         Parameters
@@ -739,14 +742,15 @@ class Root(pr.Device):
 
     @pr.expose
     def saveYaml(
-        self, 
-        name: Optional[str], 
-        readFirst: bool, 
-        modes: Optional[list[str]] = ['RW', 'RO', 'WO'], 
-        incGroups: Optional[Union[str, list[str]]] = None, 
-        excGroups: Optional[Union[str, list[str]]] = None, 
-        autoPrefix: str = '', 
-        autoCompress: bool = False) -> bool:
+        self,
+        name: Optional[str],
+        readFirst: bool,
+        modes: Optional[list[str]] = ['RW', 'RO', 'WO'],
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        autoPrefix: str = '',
+        autoCompress: bool = False,
+    ) -> bool:
         """
         Save YAML configuration or status to a file.
 
@@ -794,12 +798,13 @@ class Root(pr.Device):
 
 
     def loadYaml(
-        self, 
-        name: Union[str, list[str]], 
-        writeEach: bool, 
-        modes: list[str], 
-        incGroups: Optional[Union[str, list[str]]] = None, 
-        excGroups: Optional[Union[str, list[str]]] = None) -> bool:
+        self,
+        name: Union[str, list[str]],
+        writeEach: bool,
+        modes: list[str],
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+    ) -> bool:
         """
         Load YAML configuration from files or directories.
 

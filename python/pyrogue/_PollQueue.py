@@ -214,7 +214,7 @@ class PollQueue(object):
     def _expiredEntries(self, time: datetime.datetime | None = None) -> Iterator[PollQueueEntry]:
         """
         An iterator of all entries that expire by a given time.
-        Use datetime.datetime.now() if no time provided. 
+        Use datetime.datetime.now() if no time provided.
         Each entry is popped from the queue before being yielded by the iterator
 
         Parameters

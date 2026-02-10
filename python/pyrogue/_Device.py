@@ -17,7 +17,7 @@ from __future__ import annotations
 import collections
 import functools as ft
 import threading
-from typing import Any, Callable, Iterable, Optional, Union
+from typing import Any, Callable, Iterable, Literal, Optional, Union
 
 import pyrogue as pr
 import rogue.interfaces.memory as rim
@@ -91,7 +91,7 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value: Union[bool, 'parent', 'deps'], write: bool = True, index: int = -1) -> None:
+    def set(self, value: Union[bool, Literal['parent', 'deps']], write: bool = True, index: int = -1) -> None:
         """Set the enable value.
 
         Parameters

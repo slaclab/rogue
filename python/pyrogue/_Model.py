@@ -86,7 +86,7 @@ def reverseBits(value: int, bitSize: int) -> int:
 def twosComplement(value: int, bitSize: int) -> int:
     """Compute the two's complement of an integer value.
     For example, if ``value = 0b1010`` and ``bitSize = 4``, then the function will return ``0b0110``.
-    
+
     Parameters
     ----------
     value : int
@@ -347,7 +347,7 @@ class UIntReversed(UInt):
     def toBytes(self, value: int) -> bytes:
         """
         Convert a python int value to a byte array.
-        
+
         Parameters
         ----------
         value : int
@@ -365,7 +365,7 @@ class UIntReversed(UInt):
     def fromBytes(self, ba: bytes) -> int:
         """
         Convert a byte array to a python int value.
-        
+
         Parameters
         ----------
         ba : bytes
@@ -403,7 +403,7 @@ class Int(UInt):
     def toBytes(self, value: int) -> bytes:
         """
         Convert a python int value to a byte array.
-        
+
         Parameters
         ----------
         value : int
@@ -428,7 +428,7 @@ class Int(UInt):
     def fromBytes(self, ba: bytes) -> int:
         """
         Convert a byte array to a python int value.
-        
+
         Parameters
         ----------
         ba : bytes
@@ -454,7 +454,7 @@ class Int(UInt):
     def fromString(self, string: str) -> int:
         """
         Convert a string to a python int value.
-        
+
         Parameters
         ----------
         string : str
@@ -465,7 +465,7 @@ class Int(UInt):
         int
             Python value.
 
-        
+
         """
         i = int(string, 0)
         # perform twos complement if necessary
@@ -519,7 +519,7 @@ class Bool(Model):
     def toBytes(self, value: bool) -> bytes:
         """
         Convert a python bool value to a byte array.
-        
+
         Parameters
         ----------
         value : bool
@@ -530,14 +530,14 @@ class Bool(Model):
         bytes
             Byte array representation of the value.
 
-        
+
         """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(self, ba: bytes) -> bool:
         """
         Convert a byte array to a python bool value.
-        
+
         Parameters
         ----------
         ba : bytes
@@ -548,13 +548,13 @@ class Bool(Model):
         bool
             Python value.
 
-        
+
         """
         return bool(int.from_bytes(ba, self.endianness, signed=self.signed))
 
     def fromString(self, string: str) -> bool:
         """Convert a string to a python bool value.
-        
+
         Parameters
         ----------
         string : str
@@ -602,7 +602,7 @@ class String(Model):
     def toBytes(self, value: str) -> bytearray:
         """
         Convert a python string value to a byte array.
-        
+
         Parameters
         ----------
         value : str
@@ -620,7 +620,7 @@ class String(Model):
     def fromBytes(self, ba: bytearray) -> str:
         """
         Convert a byte array to a python string value.
-        
+
         Parameters
         ----------
         ba : bytearray
@@ -637,7 +637,7 @@ class String(Model):
     def fromString(self, string: str) -> str:
         """
         Convert a string to a python string value.
-        
+
         Parameters
         ----------
         string : str
@@ -674,7 +674,7 @@ class Float(Model):
     def toBytes(self, value: float) -> bytearray:
         """
         Convert a python float value to a byte array.
-        
+
         Parameters
         ----------
         value : float
@@ -691,7 +691,7 @@ class Float(Model):
     def fromBytes(self, ba: bytes) -> float:
         """
         Convert a byte array to a python float value.
-        
+
         Parameters
         ----------
         ba : bytes
@@ -708,7 +708,7 @@ class Float(Model):
     def fromString(self, string: str) -> float:
         """
         Convert a string to a python float value.
-        
+
         Parameters
         ----------
         string : str

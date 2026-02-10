@@ -761,12 +761,13 @@ class Node(object):
         print(self.getYaml(readFirst=readFirst, modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse))
 
     def _getDict(
-        self, 
-        modes: list[str] = ['RW', 'RO', 'WO'], 
-        incGroups: Optional[Union[str, list[str]]] = None, 
-        excGroups: Optional[Union[str, list[str]]] = None, 
-        properties: bool = False, 
-        recurse: bool = True) -> OrderedDict[str, Any]:
+        self,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        properties: bool = False,
+        recurse: bool = True,
+    ) -> OrderedDict[str, Any]:
         """
         Get variable values in a dictionary starting from this level.
         Attributes that are Nodes are recursed.
@@ -811,12 +812,13 @@ class Node(object):
 
     def _setDict(
         self,
-        d: dict[str, str], 
-        writeEach: bool, 
-        modes: list[str], 
-        incGroups: Optional[Union[str, list[str]]] = None, 
-        excGroups: Optional[Union[str, list[str]]] = None, 
-        keys: Optional[list[str]] = None) -> None:
+        d: dict[str, str],
+        writeEach: bool,
+        modes: list[str],
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        keys: Optional[list[str]] = None,
+    ) -> None:
         """Set variable values from a dictionary.
 
         Invoked recursively to set values for entire subtree.
@@ -825,8 +827,8 @@ class Node(object):
         Parameters
         ----------
         d : dict[str, str]
-            Dictionary of variable values. 
-            Variable names are the keys. 
+            Dictionary of variable values.
+            Variable names are the keys.
             Values are the values to set using the Variable's setDisp method.
         writeEach : bool
             If True, wait for each variable write transaction to complete before setting the next variable.

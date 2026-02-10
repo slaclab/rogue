@@ -37,11 +37,13 @@ class Process(pr.Device):
     """
 
     def __init__(
-        self, 
-        *, 
-        argVariable: Optional[pr.BaseVariable] = None, 
-        returnVariable: Optional[pr.BaseVariable] = None, 
-        function: Optional[Callable[..., Any]] = None, **kwargs: Any) -> None:
+        self,
+        *,
+        argVariable: Optional[pr.BaseVariable] = None,
+        returnVariable: Optional[pr.BaseVariable] = None,
+        function: Optional[Callable[..., Any]] = None,
+        **kwargs: Any,
+    ) -> None:
         """Initialize a process device."""
 
         pr.Device.__init__(self, **kwargs)
