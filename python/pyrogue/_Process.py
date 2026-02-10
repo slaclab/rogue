@@ -21,7 +21,7 @@ from typing import Any, Callable, Optional
 import pyrogue as pr
 
 class Process(pr.Device):
-    """Special base class to execute processes.
+    """Special Device base class to execute complex or long running processes or algorythms involving Variables.
 
     Parameters
     ----------
@@ -31,11 +31,17 @@ class Process(pr.Device):
         Variable receiving return values.
     function : callable, optional
         Function to execute for the process.
+        Function can have optional arguments 'root', 'dev', 'arg'.
     **kwargs : Any
         Additional arguments forwarded to ``Device``.
     """
 
-    def __init__(self, *, argVariable: Optional[Any] = None, returnVariable: Optional[Any] = None, function: Optional[Callable[..., Any]] = None, **kwargs: Any) -> None:
+    def __init__(
+        self, 
+        *, 
+        argVariable: Optional[pr.BaseVariable] = None, 
+        returnVariable: Optional[pr.BaseVariable] = None, 
+        function: Optional[Callable[..., Any]] = None, **kwargs: Any) -> None:
         """Initialize a process device."""
 
         pr.Device.__init__(self, **kwargs)

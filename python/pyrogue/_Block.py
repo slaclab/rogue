@@ -29,7 +29,7 @@ def startTransaction(
     type: Any,
     forceWr: bool = False,
     check: bool = False,
-    variable: Optional[Any] = None,
+    variable: pr.BaseVariable = None,
     index: int = -1,
     **kwargs: Any,
 ) -> None:

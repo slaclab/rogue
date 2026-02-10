@@ -20,7 +20,7 @@ import shlex
 import sys
 import threading
 import time
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 import numpy as np
 import pyrogue as pr
@@ -897,7 +897,15 @@ class BaseVariable(pr.Node):
             if self._nativeType is np.ndarray:
                 self._ndType = v.dtype
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
+    def _setDict(
+        self,
+        d: Any,
+        writeEach: bool,
+        modes: list[str],
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        keys: Optional[list[str]] = None,
+    ) -> None:
         """
 
 
@@ -909,9 +917,10 @@ class BaseVariable(pr.Node):
 
         modes :
 
-        incGroups :
-
-        excGroups :
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
 
         keys :
 
@@ -964,7 +973,13 @@ class BaseVariable(pr.Node):
         else:
             self._log.warning(f"Skipping set for Entry {self.name} with mode {self._mode}. Enabled Modes={modes}.")
 
-    def _getDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=False):
+    def _getDict(
+        self,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        properties: bool = False,
+    ) -> Optional[Any]:
         """
 
 
@@ -972,9 +987,10 @@ class BaseVariable(pr.Node):
         ----------
         modes :
 
-        incGroups :
-
-        excGroups :
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
 
 
         Returns

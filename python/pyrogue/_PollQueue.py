@@ -19,14 +19,14 @@ import threading
 import datetime
 import itertools
 import heapq
-from typing import Any
+from typing import Any, Iterator
 
 import pyrogue as pr
 import rogue.interfaces.memory
 
 
 class PollQueueEntry(object):
-    """ """
+    """Data class for a poll queue entry."""
     def __init__(self, readTime: datetime.datetime, count: int, interval: datetime.timedelta, block: Any) -> None:
         self.readTime = readTime
         self.count    = count
@@ -49,7 +49,7 @@ class PollQueue(object):
         Root object used for update grouping.
     """
 
-    def __init__(self,*, root: Any) -> None:
+    def __init__(self, *, root: pr.Root) -> None:
         """Initialize the poll queue."""
         self._pq = [] # The heap queue
         self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
@@ -65,24 +65,24 @@ class PollQueue(object):
         self._log = pr.logInit(cls=self)
 
     def _start(self):
-        """ """
+        """Start the poll thread."""
         self._pollThread.start()
         self._log.info("PollQueue Started")
 
-    def _addEntry(self, block, interval):
-        """
+    def _addEntry(self, block: pr.Block, interval: float) -> None:
+        """Add an entry to the poll queue.
 
 
         Parameters
         ----------
-        block :
-
-        interval :
-
+        block : pr.Block
+            Block object to poll.
+        interval : float
+            Poll interval in seconds.
 
         Returns
         -------
-
+        None
         """
         with self._condLock:
             timedelta = datetime.timedelta(seconds=interval)
@@ -108,12 +108,12 @@ class PollQueue(object):
             self.blockCount -= 1
             self._condLock.notify()
 
-    def updatePollInterval(self, var: Any) -> None:
+    def updatePollInterval(self, var: pr.BaseVariable) -> None:
         """Update polling interval for a variable.
 
         Parameters
         ----------
-        var : object
+        var : pr.BaseVariable
             Variable whose poll interval changed.
         """
         with self._condLock:
@@ -211,11 +211,11 @@ class PollQueue(object):
                             pr.logException(self._log,e)
 
 
-    def _expiredEntries(self, time=None):
+    def _expiredEntries(self, time: datetime.datetime | None = None) -> Iterator[PollQueueEntry]:
         """
         An iterator of all entries that expire by a given time.
-        Use datetime.now() if no time provided. Each entry is popped from the queue before being
-        yielded by the iterator
+        Use datetime.datetime.now() if no time provided. 
+        Each entry is popped from the queue before being yielded by the iterator
 
         Parameters
         ----------
@@ -224,7 +224,7 @@ class PollQueue(object):
 
         Returns
         -------
-
+        Iterator of expired entries
         """
         with self._condLock:
             if time is None:
@@ -236,7 +236,7 @@ class PollQueue(object):
 
 
     def peek(self):
-        """ """
+        """Return (but don't pop) the top entry in the queue. """
         with self._condLock:
             if self.empty() is False:
                 return self._pq[0]
@@ -244,28 +244,29 @@ class PollQueue(object):
                 return None
 
     def empty(self):
-        """ """
+        """Return True of queue is empty, else False """
         with self._condLock:
             return len(self._pq)==0
 
     def _stop(self):
-        """ """
+        """Stop the poll queue stread """
         with self._condLock:
             self._run = False
             self._condLock.notify()
 
-    def pause(self, value):
-        """
+    def pause(self, value: bool) -> None:
+        """Pause or unpause the poll queue
 
 
         Parameters
         ----------
-        value :
+        value : bool
+            True for pause, False for unpause
 
 
         Returns
         -------
-
+        None
         """
         if value is True:
             with self._condLock:
@@ -276,7 +277,7 @@ class PollQueue(object):
                 self._condLock.notify()
 
 
-    def paused(self):
-        """ """
+    def paused(self) -> bool:
+        """Check pause state """
         with self._condLock:
             return self._pause

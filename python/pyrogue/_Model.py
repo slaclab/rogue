@@ -44,6 +44,7 @@ def wordCount(bits: int, wordSize: int) -> int:
 
 def byteCount(bits: int) -> int:
     """Return the number of bytes needed to represent a bit width.
+    Equivalent to ``wordCount(bits, 8)``.
 
     Parameters
     ----------
@@ -59,7 +60,8 @@ def byteCount(bits: int) -> int:
 
 
 def reverseBits(value: int, bitSize: int) -> int:
-    """Return the bit-reversed value.
+    """Return the bit-reversed value of an integer.
+    For example, if ``value = 0b1010`` and ``bitSize = 4``, then the function will return ``0b0101``.
 
     Parameters
     ----------
@@ -83,7 +85,8 @@ def reverseBits(value: int, bitSize: int) -> int:
 
 def twosComplement(value: int, bitSize: int) -> int:
     """Compute the two's complement of an integer value.
-
+    For example, if ``value = 0b1010`` and ``bitSize = 4``, then the function will return ``0b0110``.
+    
     Parameters
     ----------
     value : int
@@ -102,7 +105,9 @@ def twosComplement(value: int, bitSize: int) -> int:
 
 
 class ModelMeta(type):
-    """ """
+    """Metaclass for the Model class.
+    This metaclass is used to create a dictionary of subclasses of the Model class.
+    """
     def __init__(cls, *args, **kwargs):
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
@@ -119,7 +124,7 @@ class ModelMeta(type):
 
 class Model(object, metaclass=ModelMeta):
     """
-    Class which describes how a data type is represented and accessed
+    Extensible base class which describes how a data type is represented and accessed
     using the Rogue Variables and Blocks
 
     Parameters
@@ -187,6 +192,7 @@ class Model(object, metaclass=ModelMeta):
     def toBytes(self, value: Any) -> Any:
         """
         Convert the python value to byte array.
+        Implement this method in a subclass to define the conversion.
 
         Parameters
         ----------
@@ -203,7 +209,8 @@ class Model(object, metaclass=ModelMeta):
     # Called by raw read/write and when bitsize > 64
     def fromBytes(self, ba: bytearray) -> Any:
         """
-        Convert the python value to byte array.
+        Convert a byte array to a python value.
+        Implement this method in a subclass to define the conversion.
 
         Parameters
         ----------
@@ -212,14 +219,15 @@ class Model(object, metaclass=ModelMeta):
 
         Returns
         -------
-
+        Python value.
 
         """
         return None
 
     def fromString(self, string: str) -> Any:
         """
-        Convert the string to a python value.
+        Convert a string to a python value.
+        Implement this method in a subclass to define the conversion.
 
         Parameters
         ----------
@@ -228,17 +236,21 @@ class Model(object, metaclass=ModelMeta):
 
         Returns
         -------
-
+        Python value.
 
         """
         return None
 
     def minValue(self) -> Any:
-        """Return the minimum value for the Model type"""
+        """Return the minimum value for the Model type.
+        Implement this method in a subclass to define the minimum value.
+        """
         return None
 
     def maxValue(self) -> Any:
-        """Return the maximum value for the Model type"""
+        """Return the maximum value for the Model type.
+        Implement this method in a subclass to define the maximum value.
+        """
         return None
 
 
@@ -267,12 +279,14 @@ class UInt(Model):
 
         Parameters
         ----------
-        value :
+        value : int
+            Python value to convert.
 
 
         Returns
         -------
-
+        bytes
+            Byte array representation of the value.
         """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
@@ -283,12 +297,14 @@ class UInt(Model):
 
         Parameters
         ----------
-        ba :
+        ba : bytes
+            Byte array to extract value from.
 
 
         Returns
         -------
-
+        int
+            Python value.
         """
         return int.from_bytes(ba, self.endianness, signed=self.signed)
 
@@ -298,21 +314,23 @@ class UInt(Model):
 
         Parameters
         ----------
-        string :
+        string : str
+            String representation of the value.
 
 
         Returns
         -------
-
+        int
+            Python value.
         """
         return int(string, 0)
 
     def minValue(self) -> int:
-        """ """
+        """Return the minimum unisgned int (0). """
         return 0
 
     def maxValue(self) -> int:
-        """ """
+        """Return the maximum unsigned int (2**bitSize-1). """
         return (2**self.bitSize)-1
 
 
@@ -328,39 +346,43 @@ class UIntReversed(UInt):
 
     def toBytes(self, value: int) -> bytes:
         """
-
-
+        Convert a python int value to a byte array.
+        
         Parameters
         ----------
-        value :
+        value : int
+            Python int value to convert.
 
 
         Returns
         -------
-
+        bytes
+            Byte array representation of the value.
         """
         valueReverse = reverseBits(value, self.bitSize)
         return valueReverse.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(self, ba: bytes) -> int:
         """
-
-
+        Convert a byte array to a python int value.
+        
         Parameters
         ----------
-        ba :
+        ba : bytes
+            Byte array to extract value from.
 
 
         Returns
         -------
-
+        int
+            Python value.
         """
         valueReverse = int.from_bytes(ba, self.endianness, signed=self.signed)
         return reverseBits(valueReverse, self.bitSize)
 
 
 class Int(UInt):
-    """Model class for integers.
+    """Model class for signed integers.
 
     Parameters
     ----------
@@ -380,15 +402,18 @@ class Int(UInt):
     # Called by raw read/write and when bitsize > 64
     def toBytes(self, value: int) -> bytes:
         """
-
-
+        Convert a python int value to a byte array.
+        
         Parameters
         ----------
-        value :
+        value : int
+            Python int value to convert.
 
 
         Returns
         -------
+        bytes
+            Byte array representation of the value.
 
         """
         if (value < 0) and (self.bitSize < (byteCount(self.bitSize) * 8)):
@@ -402,15 +427,17 @@ class Int(UInt):
     # Called by raw read/write and when bitsize > 64
     def fromBytes(self, ba: bytes) -> int:
         """
-
-
+        Convert a byte array to a python int value.
+        
         Parameters
         ----------
-        ba :
-
+        ba : bytes
+            Byte array to extract value from.
 
         Returns
         -------
+        int
+            Python value.
 
         """
         if (self.bitSize < (byteCount(self.bitSize)*8)):
@@ -426,16 +453,19 @@ class Int(UInt):
 
     def fromString(self, string: str) -> int:
         """
-
-
+        Convert a string to a python int value.
+        
         Parameters
         ----------
-        string :
-
+        string : str
+            String representation of the value.
 
         Returns
         -------
+        int
+            Python value.
 
+        
         """
         i = int(string, 0)
         # perform twos complement if necessary
@@ -444,22 +474,26 @@ class Int(UInt):
         return i
 
     def minValue(self) -> int:
-        """ """
+        """Return the minimum signed int (-2**(bitSize-1)). """
         return -1 * (2**(self.bitSize-1))
 
     def maxValue(self) -> int:
-        """ """
+        """Return the maximum signed int (2**(bitSize-1)-1). """
         return (2**(self.bitSize-1))-1
 
 
 class UIntBE(UInt):
-    """Model class for big endian unsigned integers"""
+    """Model class for big endian unsigned integers.
+    Inherits from UInt.
+    """
 
     endianness = 'big'
 
 
 class IntBE(Int):
-    """Model class for big endian integers"""
+    """Model class for big endian integers.
+    Inherits from Int.
+    """
 
     endianness = 'big'
 
@@ -484,55 +518,65 @@ class Bool(Model):
 
     def toBytes(self, value: bool) -> bytes:
         """
-
-
+        Convert a python bool value to a byte array.
+        
         Parameters
         ----------
-        value :
-
+        value : bool
+            Python bool value to convert.
 
         Returns
         -------
+        bytes
+            Byte array representation of the value.
 
+        
         """
         return value.to_bytes(byteCount(self.bitSize), self.endianness, signed=self.signed)
 
     def fromBytes(self, ba: bytes) -> bool:
         """
-
-
+        Convert a byte array to a python bool value.
+        
         Parameters
         ----------
-        ba :
-
+        ba : bytes
+            Byte array to extract value from.
 
         Returns
         -------
+        bool
+            Python value.
 
+        
         """
         return bool(int.from_bytes(ba, self.endianness, signed=self.signed))
 
     def fromString(self, string: str) -> bool:
-        """
-
-
+        """Convert a string to a python bool value.
+        
         Parameters
         ----------
-        string :
-
+        string : str
+            String representation of the value.
 
         Returns
         -------
+        bool
+            Python value.
+        Parameters
+        ----------
+        string :
 
         """
         return str.lower(string) == "true"
 
     def minValue(self) -> int:
-        """ """
+        """Return the minimum bool (0). """
         return 0
 
     def maxValue(self) -> int:
-        """ """
+        """Return the maximum bool (1). """
         return 1
 
 
@@ -557,16 +601,17 @@ class String(Model):
 
     def toBytes(self, value: str) -> bytearray:
         """
-
-
+        Convert a python string value to a byte array.
+        
         Parameters
         ----------
-        value :
-
+        value : str
+            Python string value to convert.
 
         Returns
         -------
-
+        bytearray
+            Byte array representation of the value.
         """
         ba = bytearray(value, self.encoding)
         ba.extend(bytearray(1))
@@ -574,38 +619,40 @@ class String(Model):
 
     def fromBytes(self, ba: bytearray) -> str:
         """
-
-
+        Convert a byte array to a python string value.
+        
         Parameters
         ----------
-        ba :
-
+        ba : bytearray
+            Byte array to extract value from.
 
         Returns
         -------
-
+        str
+            Python value.
         """
         s = ba.rstrip(bytearray(1))
         return s.decode(self.encoding)
 
     def fromString(self, string: str) -> str:
         """
-
-
+        Convert a string to a python string value.
+        
         Parameters
         ----------
-        string :
-
+        string : str
+            String representation of the value.
 
         Returns
         -------
-
+        str
+            Python string value.
         """
         return string
 
 
 class Float(Model):
-    """Model class for 32-bit floats.
+    """Model class for 32-bit floating point numbers.
 
     Parameters
     ----------
@@ -626,55 +673,60 @@ class Float(Model):
 
     def toBytes(self, value: float) -> bytearray:
         """
-
-
+        Convert a python float value to a byte array.
+        
         Parameters
         ----------
-        value :
-
+        value : float
+            Python float value to convert.
 
         Returns
         -------
+        bytearray
+            Byte array representation of the value.
 
         """
         return bytearray(struct.pack(self.fstring, value))
 
     def fromBytes(self, ba: bytes) -> float:
         """
-
-
+        Convert a byte array to a python float value.
+        
         Parameters
         ----------
-        ba :
-
+        ba : bytes
+            Byte array to extract value from.
 
         Returns
         -------
+        float
+            Python value.
 
         """
         return struct.unpack(self.fstring, ba)[0]
 
     def fromString(self, string: str) -> float:
         """
-
-
+        Convert a string to a python float value.
+        
         Parameters
         ----------
-        string :
-
+        string : str
+            String representation of the value.
 
         Returns
         -------
-
+        float
+            Python value.
         """
         return float(string)
 
     def minValue(self) -> float:
-        """ """
+        """Return the minimum 32-bit float (-3.4e38). """
         return -3.4e38
 
     def maxValue(self) -> float:
-        """ """
+        """Return the maximum 32-bit float (3.4e38). """
         return 3.4e38
 
 
@@ -697,11 +749,11 @@ class Double(Float):
         self.ndType = np.dtype(np.float64)
 
     def minValue(self) -> float:
-        """ """
+        """Return the minimum 64-bit float (-1.80e308). """
         return -1.80e308
 
     def maxValue(self) -> float:
-        """ """
+        """Return the maximum 64-bit float (1.80e308). """
         return 1.80e308
 
 

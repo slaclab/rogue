@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import inspect
 import threading
-from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional, Union
 
 import pyrogue as pr
 import rogue.interfaces.memory
@@ -374,11 +374,25 @@ class BaseCommand(pr.BaseVariable):
         self._function = function
         self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
 
-    def _setDict(self, d: dict, writeEach: bool, modes: Any, incGroups: Any, excGroups: Any, keys: Any) -> None:
+    def _setDict(
+        self,
+        d: dict[Any, Any],
+        writeEach: bool,
+        modes: Any,
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        keys: Any = None,
+    ) -> None:
         """Commands do not support dict writes."""
         pass
 
-    def _getDict(self, modes: Any, incGroups: Any, excGroups: Any, properties: Any) -> None:
+    def _getDict(
+        self,
+        modes: Any,
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+        properties: Any = None,
+    ) -> None:
         """Commands do not support dict reads."""
         return None
 

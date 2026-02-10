@@ -21,30 +21,30 @@ import yaml
 import time
 import zipfile
 import inspect
-from typing import Any
+from typing import Any, Callable, Mapping, MutableMapping, Optional, Sequence, Union
 
 import pyrogue as pr
-import rogue.interfaces.stream
-import rogue.interfaces.memory
+import rogue.interfaces.stream as ris
+import rogue.interfaces.memory as rim
 
 from collections import OrderedDict as odict
 
 
-def addLibraryPath(path: Any) -> None:
+def addLibraryPath(path: Union[str, list[str]]) -> None:
     """
-    Append the past string or list of strings to the python library path.
-    Passed strings can either be relative: ../path/to/library
-    or absolute: /path/to/library
+    Append one or more paths to ``sys.path``.
 
     Parameters
     ----------
-    path : object
-        Path or list of paths to append.
+    path : str or list[str]
+        Path string or list of path strings to append. Each path may be
+        absolute (for example ``/path/to/library``) or relative to the
+        calling script location (for example ``../path/to/library``).
 
-
-    Returns
-    -------
-
+    Raises
+    ------
+    Exception
+        Raised when a path does not exist or is not readable.
     """
     if len(sys.argv) == 0:
         base = os.path.dirname(os.path.realpath(__file__))
@@ -87,28 +87,17 @@ def addLibraryPath(path: Any) -> None:
 
 
 def waitCntrlC() -> None:
-    """Helper Function To Wait For Cntrl-c"""
+    """
+    Block until ``SIGTERM`` or keyboard interrupt is received.
+    """
 
     class monitorSignal(object):
         """ """
 
         def __init__(self):
-            """ """
             self.runEnable = True
 
         def receiveSignal(self,*args):
-            """
-
-
-            Parameters
-            ----------
-            *args :
-
-
-            Returns
-            -------
-
-            """
             print("Got SIGTERM, exiting")
             self.runEnable = False
 
@@ -124,36 +113,28 @@ def waitCntrlC() -> None:
         return
 
 
-def streamConnect(source: Any, dest: Any) -> None:
+def streamConnect(source: ris.Master, dest: ris.Slave) -> None:
     """
-    Attach the passed dest object to the source a stream.
-    Connect source and destination stream devices.
-    source is either a stream master sub class or implements
-    the _getStreamMaster call to return a contained master.
-    Similarly dest is either a stream slave sub class or implements
-    the _getStreamSlave call to return a contained slave.
+    Connect a stream source object to a stream destination object.
 
     Parameters
     ----------
-    source : object
-        Stream master or wrapper.
-    dest : object
-        Stream slave or wrapper.
-
-
-    Returns
-    -------
-
+    source : ris.Master
+        Stream master instance or wrapper object implementing
+        ``_getStreamMaster()``.
+    dest : ris.Slave
+        Stream slave instance or wrapper object implementing
+        ``_getStreamSlave()``.
     """
 
     # Is object a native master or wrapped?
-    if isinstance(source,rogue.interfaces.stream.Master):
+    if isinstance(source, ris.Master):
         master = source
     else:
         master = source._getStreamMaster()
 
     # Is object a native slave or wrapped?
-    if isinstance(dest,rogue.interfaces.stream.Slave):
+    if isinstance(dest, ris.Slave):
         slave = dest
     else:
         slave = dest._getStreamSlave()
@@ -162,65 +143,42 @@ def streamConnect(source: Any, dest: Any) -> None:
 
 def streamConnectBiDir(deviceA: Any, deviceB: Any) -> None:
     """
-    Attach the passed dest object to the source a stream.
-    Connect source and destination stream devices.
-    source is either a stream master sub class or implements
-    the _getStreamMaster call to return a contained master.
-    Similarly dest is either a stream slave sub class or implements
-    the _getStreamSlave call to return a contained slave.
+    Connect two devices as bi-directional stream endpoints.
 
     Parameters
     ----------
-    deviceA :
-
-    deviceB :
-
-
-    Returns
-    -------
-
-    """
-
-    """
-    Connect deviceA and deviceB as end points to a
-    bi-directional stream. This method calls the
-    streamConnect method to perform the actual connection.
-    See streamConnect description for object requirements.
+    deviceA : object
+        First device endpoint.
+    deviceB : object
+        Second device endpoint.
     """
 
     streamConnect(deviceA,deviceB)
     streamConnect(deviceB,deviceA)
 
 
-def busConnect(source,dest):
+def busConnect(source: rim.Master, dest: rim.Slave) -> None:
     """
-    Connect the source object to the dest object for
-    memory accesses.
-    source is either a memory master sub class or implements
-    the _getMemoryMaster call to return a contained master.
-    Similarly dest is either a memory slave sub class or implements
-    the _getMemorySlave call to return a contained slave.
+    Connect a memory source object to a memory destination object.
 
     Parameters
     ----------
-    source :
-
-    dest :
-
-
-    Returns
-    -------
-
+    source : rim.Master
+        Memory master instance or wrapper object implementing
+        ``_getMemoryMaster()``.
+    dest : rim.Slave
+        Memory slave instance or wrapper object implementing
+        ``_getMemorySlave()``.
     """
 
     # Is object a native master or wrapped?
-    if isinstance(source,rogue.interfaces.memory.Master):
+    if isinstance(source,rim.Master):
         master = source
     else:
         master = source._getMemoryMaster()
 
     # Is object a native slave or wrapped?
-    if isinstance(dest,rogue.interfaces.memory.Slave):
+    if isinstance(dest,rim.Slave):
         slave = dest
     else:
         slave = dest._getMemorySlave()
@@ -228,44 +186,30 @@ def busConnect(source,dest):
     master._setSlave(slave)
 
 
-def yamlToData(stream='',fName=None):
+def yamlToData(stream: str = '', fName: Optional[str] = None) -> Any:
     """
-    Load yaml to data structure.
-    A yaml string or file path may be passed.
+    Parse YAML content into a Python data structure.
 
     Parameters
     ----------
     stream : str, optional (default = '')
         YAML content as a string.
     fName : str, optional
-        YAML file path.
+        YAML file path. If provided, file content is loaded instead of
+        ``stream``. Zip archive paths are supported.
 
     Returns
     -------
-
+    object
+        Parsed YAML data.
     """
 
     log = pr.logInit(name='yamlToData')
 
     class PyrogueLoader(yaml.Loader):
-        """ """
         pass
 
-    def include_mapping(loader, node):
-        """
-
-
-        Parameters
-        ----------
-        loader :
-
-        node :
-
-
-        Returns
-        -------
-
-        """
+    def include_mapping(loader: yaml.Loader, node: Any) -> Any:
         rel = loader.construct_scalar(node)
 
         # Filename starts with absolute path
@@ -283,21 +227,7 @@ def yamlToData(stream='',fName=None):
         # Recursive call, flatten relative jumps
         return yamlToData(fName=os.path.abspath(filename))
 
-    def construct_mapping(loader, node):
-        """
-
-
-        Parameters
-        ----------
-        loader :
-
-        node :
-
-
-        Returns
-        -------
-
-        """
+    def construct_mapping(loader: yaml.Loader, node: Any) -> odict:
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
@@ -326,39 +256,25 @@ def yamlToData(stream='',fName=None):
             return yaml.load(f.read(),Loader=PyrogueLoader)
 
 
-def dataToYaml(data):
+def dataToYaml(data: Any) -> str:
     """
-    Convert data structure to yaml
+    Convert a Python data structure to YAML text.
 
     Parameters
     ----------
-    data :
-
+    data : object
+        Data structure to serialize.
 
     Returns
     -------
-
+    str
+        YAML serialized output.
     """
 
     class PyrogueDumper(yaml.Dumper):
-        """ """
         pass
 
-    def _var_representer(dumper, data):
-        """
-
-
-        Parameters
-        ----------
-        dumper :
-
-        data :
-
-
-        Returns
-        -------
-
-        """
+    def _var_representer(dumper: yaml.Dumper, data: pr.VariableValue) -> Any:
         if isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
@@ -375,21 +291,7 @@ def dataToYaml(data):
         else:
             return dumper.represent_scalar(enc, data.valueDisp)
 
-    def _dict_representer(dumper, data):
-        """
-
-
-        Parameters
-        ----------
-        dumper :
-
-        data :
-
-
-        Returns
-        -------
-
-        """
+    def _dict_representer(dumper: yaml.Dumper, data: odict) -> Any:
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
     PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
@@ -398,22 +300,18 @@ def dataToYaml(data):
     return yaml.dump(data, Dumper=PyrogueDumper, default_flow_style=False)
 
 
-def keyValueUpdate(old, key, value):
+def keyValueUpdate(old: MutableMapping[str, Any], key: str, value: Any) -> None:
     """
-
+    Update a nested key in a mapping using dotted key notation.
 
     Parameters
     ----------
-    old :
-
-    key :
-
-    value :
-
-
-    Returns
-    -------
-
+    old : dict[str, object]
+        Mapping to modify in place.
+    key : str
+        Dotted key path (for example ``root.child.leaf``).
+    value : object
+        Value assigned to the final key.
     """
     d = old
     parts = key.split('.')
@@ -424,20 +322,16 @@ def keyValueUpdate(old, key, value):
     d[parts[-1]] = value
 
 
-def dictUpdate(old, new):
+def dictUpdate(old: MutableMapping[str, Any], new: Mapping[str, Any]) -> None:
     """
-
+    Update a mapping using flattened dotted keys and nested dictionaries.
 
     Parameters
     ----------
-    old :
-
-    new :
-
-
-    Returns
-    -------
-
+    old : dict[str, object]
+        Mapping to modify in place.
+    new : dict[str, object]
+        Update data. Keys containing ``.`` are expanded as nested keys.
     """
     for k,v in new.items():
         if '.' in k:
@@ -448,56 +342,54 @@ def dictUpdate(old, new):
             old[k] = v
 
 
-def yamlUpdate(old, new):
+def yamlUpdate(old: MutableMapping[str, Any], new: str) -> None:
     """
-
+    Update a mapping using YAML content.
 
     Parameters
     ----------
-    old :
-
-    new :
-
-
-    Returns
-    -------
-
+    old : dict[str, object]
+        Mapping to modify in place.
+    new : str
+        YAML content string parsed with :func:`pyrogue.yamlToData`.
     """
     dictUpdate(old, pr.yamlToData(new))
 
 
-def recreate_OrderedDict(name, values):
+def recreate_OrderedDict(name: str, values: Mapping[str, Any]) -> odict:
     """
-
+    Recreate an ordered dictionary from serialized state.
 
     Parameters
     ----------
-    name :
-
-    values :
-
+    name : str
+        Serialized object name.
+    values : dict[str, object]
+        Serialized values containing an ``items`` entry.
 
     Returns
     -------
-
+    collections.OrderedDict
+        Reconstructed ordered dictionary.
     """
     return odict(values['items'])
 
 # Creation function wrapper for methods with variable args
-def functionWrapper(function, callArgs):
+def functionWrapper(function: Optional[Callable[..., Any]], callArgs: Sequence[str]) -> Callable[..., Any]:
     """
-
+    Create a wrapper that forwards only supported named arguments.
 
     Parameters
     ----------
-    function :
-
-    callArgs :
-
+    function : callable or None
+        Function to wrap. If ``None``, a wrapper returning ``None`` is built.
+    callArgs : list[str]
+        Candidate argument names presented to the generated wrapper.
 
     Returns
     -------
-
+    callable
+        Generated wrapper callable.
     """
 
     if function is None:
@@ -521,22 +413,23 @@ def functionWrapper(function, callArgs):
     return eval(ls)
 
 
-def genDocTableHeader(fields, indent, width):
+def genDocTableHeader(fields: Sequence[str], indent: int, width: int) -> str:
     """
-
+    Generate a reStructuredText table header.
 
     Parameters
     ----------
-    fields :
-
-    indent :
-
-    width :
-
+    fields : list[str]
+        Column header strings.
+    indent : int
+        Number of leading spaces.
+    width : int
+        Column width.
 
     Returns
     -------
-
+    str
+        Header text including separator lines.
     """
     r = ' ' * indent + '+'
 
@@ -556,22 +449,23 @@ def genDocTableHeader(fields, indent, width):
 
     return r
 
-def genDocTableRow(fields, indent, width):
+def genDocTableRow(fields: Sequence[str], indent: int, width: int) -> str:
     """
-
+    Generate a reStructuredText table row.
 
     Parameters
     ----------
-    fields :
-
-    indent :
-
-    width :
-
+    fields : list[str]
+        Row field strings.
+    indent : int
+        Number of leading spaces.
+    width : int
+        Column width.
 
     Returns
     -------
-
+    str
+        Row text including separator line.
     """
     r = ' ' * indent + '|'
 
@@ -586,20 +480,21 @@ def genDocTableRow(fields, indent, width):
 
     return r
 
-def genDocDesc(desc, indent):
+def genDocDesc(desc: str, indent: int) -> str:
     """
-
+    Format sentence-delimited text into table-style description lines.
 
     Parameters
     ----------
-    desc :
-
-    indent :
-
+    desc : str
+        Description text split on ``.`` characters.
+    indent : int
+        Number of leading spaces for each line.
 
     Returns
     -------
-
+    str
+        Formatted description block.
     """
     r = ''
 

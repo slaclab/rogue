@@ -17,7 +17,7 @@ from __future__ import annotations
 import collections
 import functools as ft
 import threading
-from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable, Optional, Union
 
 import pyrogue as pr
 import rogue.interfaces.memory as rim
@@ -33,7 +33,7 @@ class EnableVariable(pr.BaseVariable):
     deps : iterable, optional
         Dependency variables that can disable this one.
     """
-    def __init__(self, *, enabled: bool, deps: Optional[Iterable[Any]] = None) -> None:
+    def __init__(self, *, enabled: bool, deps: Optional[Iterable[pr.BaseVariable]] = None) -> None:
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',
@@ -91,12 +91,12 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value: Any, write: bool = True, index: int = -1) -> None:
+    def set(self, value: Union[bool, 'parent', 'deps'], write: bool = True, index: int = -1) -> None:
         """Set the enable value.
 
         Parameters
         ----------
-        value : Any
+        value : bool | 'parent' | 'deps'
             New enable value.
         write : bool, optional (default = True)
             Unused for enable evaluation.
@@ -159,11 +159,11 @@ class Device(pr.Node,rim.Hub):
     Parameters
     ----------
     name : str, optional
-        Device name.
+        Device name, defaults to the class name.
     description : str, optional (default = "")
         Human-readable description.
-    memBase : object, optional
-        Optional memory interface base.
+    memBase : rim.MemorySlave, optional
+        Optional memory interface base, inherited from parent if not provided.
     offset : int, optional (default = 0)
         Memory offset for the device.
     hidden : bool, optional (default = False)
@@ -191,14 +191,14 @@ class Device(pr.Node,rim.Hub):
         *,
         name: Optional[str] = None,
         description: str = '',
-        memBase: Optional[Any] = None,
+        memBase: Optional[rim.MemorySlave] = None,
         offset: int = 0,
         hidden: bool = False,
         groups: Optional[list[str]] = None,
         expand: bool = False,
         enabled: bool = True,
         defaults: Optional[dict] = None,
-        enableDeps: Optional[Iterable[Any]] = None,
+        enableDeps: Optional[Iterable[pr.BaseVariable]] = None,
         hubMin: int = 0,
         hubMax: int = 0,
         guiGroup: Optional[str] = None,
@@ -273,7 +273,7 @@ class Device(pr.Node,rim.Hub):
             if node._memBase is None:
                 node._setSlave(self)
 
-    def addInterface(self, *interfaces: Any) -> None:
+    def addInterface(self, *interfaces: Any | Iterable[Any]) -> None:
         """Add stream or memory interfaces to manage.
 
         Parameters
@@ -814,8 +814,23 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
-    def genDocuments(self, path: str, incGroups: Any, excGroups: Any) -> None:
-        """Generate Sphinx documentation pages for this device."""
+    def genDocuments(
+        self,
+        path: str,
+        incGroups: Optional[Union[str, list[str]]] = None,
+        excGroups: Optional[Union[str, list[str]]] = None,
+    ) -> None:
+        """Generate Sphinx documentation pages for this device.
+
+        Parameters
+        ----------
+        path : str
+            Output directory path.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
+        """
 
         with open(path + '/' + self.path.replace('.','_') + '.rst','w') as file:
 

@@ -21,7 +21,7 @@ import pyrogue as pr
 
 
 class DataWriter(pr.Device):
-    """Special base class to control data files. TODO: Update comments
+    """Base class for to construction a data writer device.
 
     Parameters
     ----------

@@ -29,7 +29,7 @@ class DataReceiver(pr.Device,ris.Slave):
     typeStr : str, optional (default = 'UInt8[np]')
         Type string for the data variable.
     hideData : bool, optional (default = True)
-        If True, hide the data variable.
+        If True, hide the data variable in the GUI.
     value : object, optional (default = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'))
         Initial data value.
     enableOnStart : bool, optional (default = True)
