@@ -188,7 +188,14 @@ class VirtualNode(pr.Node):
     def _setDict(self,*args,**kwargs):
         raise pr.NodeError('_setDict not supported in VirtualNode')
 
-    def printYaml(self, readFirst=False, modes: pr.AccessModes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+    def printYaml(
+        self,
+        readFirst=False,
+        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
+        incGroups=None,
+        excGroups=['Hidden'],
+        recurse=False,
+    ):
         """Print remote YAML with selected access modes.
 
         Parameters
