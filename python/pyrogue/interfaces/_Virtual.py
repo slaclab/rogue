@@ -182,13 +182,20 @@ class VirtualNode(pr.Node):
     def _rootAttached(self,parent,root):
         raise pr.NodeError('_rootAttached not supported in VirtualNode')
 
-    def _getDict(self,modes):
+    def _getDict(self, modes: pr.AccessModes):
         raise pr.NodeError('_getDict not supported in VirtualNode')
 
     def _setDict(self,*args,**kwargs):
         raise pr.NodeError('_setDict not supported in VirtualNode')
 
-    def printYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+    def printYaml(self, readFirst=False, modes: pr.AccessModes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+        """Print remote YAML with selected access modes.
+
+        Parameters
+        ----------
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        """
         print(self.getYaml(readFirst=readFirst, modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse))
 
     def _doUpdate(self, val):

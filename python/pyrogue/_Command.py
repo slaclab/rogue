@@ -378,7 +378,7 @@ class BaseCommand(pr.BaseVariable):
         self,
         d: dict[Any, Any],
         writeEach: bool,
-        modes: Any,
+        modes: pr.AccessModes,
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         keys: Any = None,
@@ -388,7 +388,7 @@ class BaseCommand(pr.BaseVariable):
 
     def _getDict(
         self,
-        modes: Any,
+        modes: pr.AccessModes,
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         properties: Any = None,

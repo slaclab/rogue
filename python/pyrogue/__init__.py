@@ -15,6 +15,7 @@ MIN_PYTHON = (3,6)
 if sys.version_info < MIN_PYTHON:
     raise Exception("Python %s.%s or later is required.\n" % MIN_PYTHON)
 
+from pyrogue._typehints import *
 from pyrogue._Node      import *
 from pyrogue._Block     import *
 from pyrogue._Model     import *

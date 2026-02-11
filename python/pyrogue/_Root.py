@@ -745,7 +745,7 @@ class Root(pr.Device):
         self,
         name: Optional[str],
         readFirst: bool,
-        modes: Optional[list[str]] = ['RW', 'RO', 'WO'],
+        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         autoPrefix: str = '',
@@ -760,8 +760,8 @@ class Root(pr.Device):
             Destination file path. If empty, a timestamped name is generated.
         readFirst : bool
             Read values from hardware before exporting.
-        modes : list[str], optional
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -801,7 +801,7 @@ class Root(pr.Device):
         self,
         name: Union[str, list[str]],
         writeEach: bool,
-        modes: list[str],
+        modes: pr.AccessModes,
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
     ) -> bool:
@@ -814,8 +814,8 @@ class Root(pr.Device):
             Input file, directory, zip-path, or list of those entries.
         writeEach : bool
             Write each variable as it is applied.
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -898,14 +898,14 @@ class Root(pr.Device):
 
         return True
 
-    def treeDict(self, modes: list[str] = ['RW', 'RO', 'WO'], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None, properties: bool = True) -> dict[str, Any]:
+    def treeDict(self, modes: pr.AccessModes = ['RW', 'RO', 'WO'], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None, properties: bool = True) -> dict[str, Any]:
         """
         Return the root tree as a dictionary.
 
         Parameters
         ----------
-        modes : list[str], optional (default = ['RW', 'RO', 'WO'])
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group names to include.
         excGroups : str or list[str], optional
@@ -921,14 +921,14 @@ class Root(pr.Device):
         d = self._getDict(modes, incGroups, excGroups, properties=properties)
         return {self.name: d}
 
-    def treeYaml(self, modes: list[str] = ['RW', 'RO', 'WO'], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None, properties: Optional[bool] = None) -> str:
+    def treeYaml(self, modes: pr.AccessModes = ['RW', 'RO', 'WO'], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None, properties: Optional[bool] = None) -> str:
         """
         Return the root tree as YAML text.
 
         Parameters
         ----------
-        modes : list[str], optional (default = ['RW', 'RO', 'WO'])
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group names to include.
         excGroups : str or list[str], optional
@@ -945,7 +945,7 @@ class Root(pr.Device):
             properties = True
         return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
-    def setYaml(self, yml: str, writeEach: bool, modes: list[str], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> None:
+    def setYaml(self, yml: str, writeEach: bool, modes: pr.AccessModes, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> None:
         """
         Set variable values from YAML text.
 
@@ -955,8 +955,8 @@ class Root(pr.Device):
             YAML text containing values to apply.
         writeEach : bool
             Write each variable as it is applied.
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -973,7 +973,7 @@ class Root(pr.Device):
         if self.InitAfterConfig.value():
             self.initialize()
 
-    def remoteVariableDump(self, name: Optional[str], modes: list[str], readFirst: bool) -> bool:
+    def remoteVariableDump(self, name: Optional[str], modes: pr.AccessModes, readFirst: bool) -> bool:
         """
         Dump remote variable values to a file.
 
@@ -981,8 +981,8 @@ class Root(pr.Device):
         ----------
         name : str, optional
             Destination file path. If empty, a timestamped name is generated.
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         readFirst : bool
             Read values from hardware before dumping.
 
@@ -1007,7 +1007,7 @@ class Root(pr.Device):
         return True
 
 
-    def _setDictRoot(self, d: dict[str, Any], writeEach: bool, modes: list[str], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> None:
+    def _setDictRoot(self, d: dict[str, Any], writeEach: bool, modes: pr.AccessModes, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> None:
         """
         Parameters
         ----------
@@ -1015,8 +1015,8 @@ class Root(pr.Device):
             Root-level dictionary to apply.
         writeEach : bool
             Write each variable as it is applied.
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional

@@ -901,7 +901,7 @@ class BaseVariable(pr.Node):
         self,
         d: Union[dict[str, str], object],
         writeEach: bool,
-        modes: list[str],
+        modes: pr.AccessModes,
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         keys: Optional[list[str]] = None,
@@ -920,8 +920,8 @@ class BaseVariable(pr.Node):
 
         writeEach : bool
             If True, wait for each variable write transaction to complete before setting the next variable.
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -979,7 +979,7 @@ class BaseVariable(pr.Node):
 
     def _getDict(
         self,
-        modes: list[str] = ['RW', 'RO', 'WO'],
+        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         properties: bool = False,
@@ -989,7 +989,8 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        modes :
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
 
         incGroups : str or list[str], optional
             Group name or group names to include.

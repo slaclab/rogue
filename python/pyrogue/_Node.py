@@ -706,7 +706,7 @@ class Node(object):
     def getYaml(
         self,
         readFirst: bool = False,
-        modes: list[str] = ['RW','RO','WO'],
+        modes: pr.AccessModes = ['RW','RO','WO'],
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         recurse: bool = True,
@@ -717,8 +717,8 @@ class Node(object):
         ----------
         readFirst : bool, optional (default = False)
             If True, perform a full hardware read before exporting.
-        modes : list of str, optional (default = ['RW','RO','WO'])
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -738,7 +738,7 @@ class Node(object):
     def printYaml(
         self,
         readFirst: bool = False,
-        modes: list[str] = ['RW','RO','WO'],
+        modes: pr.AccessModes = ['RW','RO','WO'],
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         recurse: bool = False,
@@ -749,8 +749,8 @@ class Node(object):
         ----------
         readFirst : bool, optional (default = False)
             If True, perform a full hardware read before exporting.
-        modes : list of str, optional (default = ['RW','RO','WO'])
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -762,7 +762,7 @@ class Node(object):
 
     def _getDict(
         self,
-        modes: list[str] = ['RW', 'RO', 'WO'],
+        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         properties: bool = False,
@@ -775,8 +775,8 @@ class Node(object):
 
         Parameters
         ----------
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
 
         incGroups : str or list[str], optional
             Group name or group names to include.
@@ -814,7 +814,7 @@ class Node(object):
         self,
         d: dict[str, str],
         writeEach: bool,
-        modes: list[str],
+        modes: pr.AccessModes,
         incGroups: Optional[Union[str, list[str]]] = None,
         excGroups: Optional[Union[str, list[str]]] = None,
         keys: Optional[list[str]] = None,
@@ -832,8 +832,8 @@ class Node(object):
             Values are the values to set using the Variable's setDisp method.
         writeEach : bool
             If True, wait for each variable write transaction to complete before setting the next variable.
-        modes : list[str]
-            Variable modes to include.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
