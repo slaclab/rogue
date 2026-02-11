@@ -65,4 +65,3 @@ class VariableMonitor(object):
         if self._path == key:
             self.display(varVal.valueDisp)
 
-
