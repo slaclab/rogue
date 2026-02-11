@@ -10,11 +10,13 @@ The Node class is the base class of all devices-this includes variables, command
 * :ref:`pyrogue_tree_node_device`
 * :ref:`pyrogue_tree_node_command`
 * :ref:`pyrogue_tree_node_variable`
+* :ref:`pyrogue_tree_node_block`
 * :ref:`pyrogue_tree_node_groups`
 
 .. toctree::
    :maxdepth: 1
 
+   block/index
    groups
 
 Node Class Description

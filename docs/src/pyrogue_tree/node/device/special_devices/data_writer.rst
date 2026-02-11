@@ -7,6 +7,9 @@ DataWriter Device Class
 :py:class:`pyrogue.DataWriter` is a base device for writing received stream
 frames to files.
 
+For application use, :py:class:`pyrogue.utilities.fileio.StreamWriter` is the
+concrete subclass you should typically instantiate.
+
 It includes built-in variables and commands such as:
 
 * ``DataFile``, ``IsOpen``, ``BufferSize``, ``MaxFileSize``

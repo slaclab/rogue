@@ -123,7 +123,6 @@ There are several specialized device classes available:
    :maxdepth: 1
    :caption: Special Device Subtypes:
 
-   special_devices/memory_device
    special_devices/run_control
    special_devices/data_writer
    special_devices/data_receiver
