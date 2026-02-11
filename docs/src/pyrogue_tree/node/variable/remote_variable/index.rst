@@ -4,10 +4,46 @@
 RemoteVariable
 ==============
 
-The RemoteVariable class ...
-See the :ref:`pyrogue_tree_node_variable` documentation page for more information.
+:py:class:`pyrogue.RemoteVariable` maps a variable to hardware-accessible memory.
+For example, a register in an attached FPGA
+It is the standard choice for register-style control and monitoring.
 
-In this example ... 
+Behavior
+========
+
+A RemoteVariable is defined by register mapping metadata such as:
+
+* ``offset``
+* ``bitSize``
+* ``bitOffset``
+* optional ``base``/type model and packing parameters
+
+These define where the register exists in the hardware address space, and what type of value it is e.g. unsigned integer, floating point, etc.
+
+Read/write calls trigger block transactions through the device/root transaction
+pipeline.
+
+Example
+=======
+The following example defines a control register with a single 8-bit unsigned integer field at address offset 0x00.
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class MyDevice(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+
+           self.add(pr.RemoteVariable(
+               name='Control',
+               description='Control register field',
+               offset=0x00,
+               bitSize=8,
+               bitOffset=0,
+               mode='RW',
+               base=pr.UInt,
+           ))
 
 RemoteVariable Class Documentation
 ==================================
@@ -16,37 +52,3 @@ RemoteVariable Class Documentation
    :members:
    :member-order: bysource
    :inherited-members:
-
-
-Python RemoteVariable Example
-=============================
-
-Below is an example of creating a RemoteVariable which ...
-
-.. code-block:: python
-
-    import pyrogue
-
-    # Create a subclass of a RemoteVariable
-    class MyRemoteVariable(...):
-
-C++ RemoteVariable Example
-==========================
-
-Below is an example of creating a RemoteVariable device in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a RemoteVariable 
-   class MyRemoteVariable : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...
-

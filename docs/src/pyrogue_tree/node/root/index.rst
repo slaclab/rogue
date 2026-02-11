@@ -4,62 +4,44 @@
 Root
 ====
 
-The Root class is the fundamental building block of the :ref:`pyrogue_tree`.
-The tree hierarchy starts with a root node.
+The :py:class:`pyrogue.Root` class is the top-level node in a PyRogue tree.
+It owns the application lifecycle, coordinates bulk read/write operations,
+manages background workers (poll and update), and provides APIs for YAML
+save/load and external listeners.
 
-The root node is the base of the tree and provides tree wide access methods
-
-* These methods are used to manage and update the system tree
-* In python, the root node class is created the following way:
-
-:code:`Root = pyrogue.Root(name='name', description='description')`
-
-* Root classes should be created a sub-class of Root
+Most user applications define a subclass of ``pyrogue.Root`` and add devices
+inside ``__init__``.
 
 .. code-block:: python
 
-   class EvalBoard(pyrogue.Root):
-      def __init__(self):
-         pyrogue.Root.__init__(self,name='evalBoard',description='Evaluation Board')
+   import pyrogue as pr
 
-* Hardware interfaces (pgp, rssi, udp) can be created and linked within the Root class :py:meth:`pyrogue.Root.init` method
-* Epics and pyro servers can be started within the root class :code:`init()` method
-
-* Typical top level file utilizing our previously created root class:
-
-.. code-block:: python
-
-   if __name__ == "__main__":
-      evalBoard = EvalBoard()
-      appTop = PyQt4.QtGui.QApplication(sys.argv)
-      guiTop = pyrogue.gui.GuiTop(group='rogueTest')
-      guiTop.addTree(evalBoard)
-      appTop.exec_()
-      evalboard.stop()
+   class EvalBoard(pr.Root):
+       def __init__(self):
+           super().__init__(name='EvalBoard', description='Evaluation board root')
+           # self.add(MyDevice(...))
 
 Key Attributes
 --------------
 
-Along with all other Node class parameters, the following are also included:
+Along with inherited :ref:`Node <pyrogue_tree_node>` attributes, root adds:
 
-* running: True/False flag indicating if the Root class is running :py:meth:`pyrogue.Root.start` has been called
+* ``running``: ``True`` when :py:meth:`pyrogue.Root.start` has been called.
+* system commands and variables that support whole-tree control
+  (see sections below).
 
 Key Methods
 -----------
 
 * :py:meth:`pyrogue.Root.start`
-
 * :py:meth:`pyrogue.Root.stop`
-
-   * Stop the root class and all of its associated background threads
-
 * :py:meth:`pyrogue.Root.addVarListener`
-
-   * Add a system level variable listener. See more in :ref:`Variable <pyrogue_tree_node_variable>`
-
 * :py:meth:`pyrogue.Root.getNode`
+* :py:meth:`pyrogue.Root.saveYaml`
+* :py:meth:`pyrogue.Root.loadYaml`
+* :py:meth:`pyrogue.Root.setYaml`
 
-   * Return a node at the full path. Ex: :code:`evalBoard.AxiVersion.ScratchPad`
+``getNode`` resolves dotted paths such as ``EvalBoard.AxiVersion.ScratchPad``.
 
 Yaml File Configuration
 -----------------------
@@ -67,10 +49,13 @@ Yaml File Configuration
 Saving and Restoring Configurations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-System wide configurations and be saved to or restored from yaml strings using provided methods.
+System-wide state/configuration can be exported to YAML text/files and loaded
+back with:
 
 * :py:meth:`pyrogue.Node.getYaml` (Note: inherited from :py:class:`pyrogue.Node` class.)
 * :py:meth:`pyrogue.Root.setYaml`
+* :py:meth:`pyrogue.Root.saveYaml`
+* :py:meth:`pyrogue.Root.loadYaml`
 
 Built-in Groups
 ^^^^^^^^^^^^^^^
@@ -88,33 +73,34 @@ See :ref:`pyrogue_tree_node_groups` for full built-in group behavior and filteri
 
 Configuration Array Matching
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-In some cases there will be devices or variable that are part of an array, such as:
+YAML load supports node-array style matching and slicing.
+For example:
 
 * AmcCard[0] - DacEnable[0], DacEnable[1]
 * AmcCard[1] - DacEnable[0], DacEnable[1]
 * AmcCard[2] - DacEnable[0], DacEnable[1]
 
-In cases like this, Yaml configuration file can be setup to apply settings to multiple elements.
-Python list slicing indexes are used, as well as additional wildcards.
+Use Python-like slicing and wildcards:
 
-* To Enable Dac channel 0 in both AMCS:
+* Enable DAC channel 0 in all cards:
 
-   * AmcCard:DacEnable[0]: True
 
-* To Enable both DAC channels in AMC cards 1 and 2:
+  * ``AmcCard[:]:DacEnable[0]: True``
 
-   * AmcCard[1:3]: DacEnable: True
+* Enable both DAC channels in cards 1 and 2:
 
-* Example list splicing:
+  * ``AmcCard[1:3]: DacEnable: True``
 
-   * AmcCard[1:3] accesses AmcCards 1 & 2
-   * AmcCard[:2] accesses AmcCards 0 & 1
-   * AmcCard[:] accesses all AmcCards
+* List slicing behavior:
 
-* Example wildcard features:
+  * ``AmcCard[1:3]`` -> cards 1 and 2
+  * ``AmcCard[:2]`` -> cards 0 and 1
+  * ``AmcCard[:]`` -> all cards
 
-   * AmcCard = all cards
-   * AmcCard[*] = all cards
+* Wildcards:
+
+  * ``AmcCard`` -> all cards
+  * ``AmcCard[*]`` -> all cards
 
 Included Command Objects
 ------------------------
@@ -136,7 +122,6 @@ The following :py:class:`pyrogue.LocalCommand` objects are all created when the 
 * **GetYamlConfig**: Get configuration in YAML string.
 * **GetYamlState**: Get current state as YAML string.
 
-
 Included Variable Objects
 -------------------------
 The following :py:class:`pyrogue.LocalVariable` objects are all created when the Root node is created.
@@ -150,26 +135,6 @@ The following :py:class:`pyrogue.LocalVariable` objects are all created when the
 * **Time**: Current time in seconds since EPOCH UTC.
 * **LocalTime**: Local time.
 * **PollEn**: Polling worker.
-
-C++ Root Example
-================
-
-Below is an example of creating a root device in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a root 
-   class MyRoot : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...
 
 Root Class Documentation
 ========================

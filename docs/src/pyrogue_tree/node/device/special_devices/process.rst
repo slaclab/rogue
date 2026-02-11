@@ -4,7 +4,17 @@
 Process Device Class
 ====================
 
-Process Device is a subclass of :ref:`Device <pyrogue_tree_node_device>`
+:py:class:`pyrogue.Process` is a helper device for long-running or multi-step
+operations that should be managed as part of the tree.
+
+It provides:
+
+* start/stop commands
+* running/progress/message status variables
+* optional argument and return variables
+* optional wrapped function callback
+
+Use it when an operation needs structured status reporting and GUI visibility.
 
 Process Class Documentation
 ===========================

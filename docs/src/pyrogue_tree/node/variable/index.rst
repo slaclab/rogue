@@ -4,8 +4,17 @@
 Variable
 ========
 
-The BaseVariable class is the parent class for all child Variable Types. Click the following
-links for more information on the subtypes.
+Variables are the value-carrying nodes in the PyRogue tree. They provide:
+
+* a typed value model (display/native formatting, units, enum support)
+* access mode control (``RW``, ``RO``, ``WO``)
+* optional hardware I/O through block transactions
+* listener/update integration for GUIs and remote interfaces
+
+Variable Types
+==============
+
+PyRogue provides three primary variable subtypes:
 
 .. toctree::
    :maxdepth: 1
@@ -15,6 +24,24 @@ links for more information on the subtypes.
    local_variable/index
    remote_variable/index
 
+When to use each type
+=====================
+
+* :py:class:`pyrogue.LocalVariable`: value is computed/stored locally in Python.
+* :py:class:`pyrogue.RemoteVariable`: value maps to hardware memory/register space.
+* :py:class:`pyrogue.LinkVariable`: value is derived from one or more dependency
+  variables via custom getter/setter logic.
+
+Common attributes and behavior
+==============================
+
+Most variable classes share:
+
+* ``mode``: one of ``RW``, ``RO``, ``WO``
+* ``value`` / ``disp`` / ``enum`` / ``units``
+* ``minimum`` / ``maximum`` constraints
+* group tags and filtering behavior
+* update notifications/listeners
 
 BaseVariable Class Documentation
 ================================
@@ -23,35 +50,3 @@ BaseVariable Class Documentation
    :members:
    :member-order: bysource
    :inherited-members:
-
-Python Variable Example
-=======================
-
-Below is an example of creating a Variable which ...
-
-.. code-block:: python
-
-    import pyrogue
-
-    # Create a subclass of a Variable 
-    class MyVariable(...):
-
-C++ Variable Example
-====================
-
-Below is an example of creating a Variable device in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a Variable 
-   class MyVariable : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...

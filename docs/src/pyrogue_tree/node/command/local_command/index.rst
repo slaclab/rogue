@@ -4,52 +4,40 @@
 LocalCommand
 ============
 
-The LocalCommand class ...
+:py:class:`pyrogue.LocalCommand` is used for command behavior implemented purely
+in Python application logic.
 
-A LocalCommand is a command which does not have a 1:1 associated with a hardware element
-* Used to execute a sequence instructions within software
-* Can include sequences of variable writes or other command executions
+Typical use cases:
 
-LocalCommand Class Definition
-=============================
+* orchestration steps (load/save config, reset sequences)
+* helper operations that combine multiple variable accesses
+* non-hardware actions such as file export or software state management
+
+Example
+=======
+
+.. code-block:: python
+
+   import pyrogue as pr
+
+   class MyDevice(pr.Device):
+       def __init__(self, **kwargs):
+           super().__init__(**kwargs)
+
+           self.add(pr.LocalCommand(
+               name='SoftReset',
+               description='Run software reset sequence',
+               function=self._softReset,
+           ))
+
+       def _softReset(self):
+           # Device-specific software sequence
+           pass
+
+LocalCommand Class Documentation
+================================
 
 .. autoclass:: pyrogue.LocalCommand
    :members:
    :member-order: bysource
    :inherited-members:
-
-In this example ... 
-
-
-Python LocalCommand Example
-===========================
-
-Below is an example of creating a LocalCommand which ...
-
-.. code-block:: python
-
-    import pyrogue
-
-    # Create a subclass of a LocalCommand
-    class MyLocalCommand(...):
-
-C++ LocalCommand Example
-========================
-
-Below is an example of creating a LocalCommand device in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a LocalCommand
-   class MyLocalCommand : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...
-
