@@ -78,7 +78,7 @@ class VariableWaitClass(object):
     """
     def __init__(
         self,
-        varList: Any,
+        varList: Union[pr.BaseVariable, list[pr.BaseVariable]],
         testFunction: Optional[Callable[[list[Any]], bool]] = None,
         timeout: float = 0,
     ) -> None:
@@ -899,7 +899,7 @@ class BaseVariable(pr.Node):
 
     def _setDict(
         self,
-        d: Any,
+        d: Union[dict[str, str], object],
         writeEach: bool,
         modes: list[str],
         incGroups: Optional[Union[str, list[str]]] = None,
@@ -907,31 +907,35 @@ class BaseVariable(pr.Node):
         keys: Optional[list[str]] = None,
     ) -> None:
         """
+        Set variable values from a dictionary.
 
+        Invoked recursively from parent Device's _setDict method.
+        Override in BaseVariable subclasses to set values using setDisp method.
 
         Parameters
         ----------
-        d :
+        d : Union[dict[str, str], object]
+            If a dictionary, keys are the indexes of the array variable, values are the values to set.
+            If a single value, it is set using the Variable's setDisp method.
 
-        writeEach :
-
-        modes :
-
+        writeEach : bool
+            If True, wait for each variable write transaction to complete before setting the next variable.
+        modes : list[str]
+            Variable modes to include.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
             Group name or group names to exclude.
-
-        keys :
-
+        keys : list[str], optional
+            Keys to include.
+            If keys is not none, it should only contain one entry
+            and the variable should be a list or array variable
 
         Returns
         -------
-
+        None
         """
 
-        # If keys is not none, it should only contain one entry
-        # and the variable should be a list variable
         if keys is not None:
 
             if len(keys) != 1 or (self.nativeType is not list and self.nativeType is not np.ndarray):

@@ -26,41 +26,40 @@ import rogue.interfaces.memory as rim
 def startTransaction(
     block: rim.Block,
     *,
-    type: Any,
+    type: int,
     forceWr: bool = False,
     check: bool = False,
     variable: pr.BaseVariable = None,
     index: int = -1,
     **kwargs: Any,
 ) -> None:
-    """Start a block transaction with a stable helper API.
-
-    Helper function for calling the startTransaction function in a block. This helper
-    function ensures future changes to the API do not break custom code in a Device's
-    writeBlocks, readBlocks and checkBlocks functions.
+    """Helper function for starting a transaction on a block. 
+    
+    This helper function ensures future changes to the API do not break custom
+    code in a Device's writeBlocks, readBlocks and checkBlocks functions.
 
     Parameters
     ----------
-    block : object
-        Block instance to operate on.
+    block : rim.Block
+        Block instance to start a transaction on.
     type : {rim.Read, rim.Write, rim.Post, rim.Verify}
         Transaction type
     forceWr : bool, optional (default = False)
         Force the write even if block values are unchanged.
     check : bool, optional (default = False)
         Wait for transaction to complete before returning
-    variable : object, optional
-        Variable associated with the transaction.
+    variable : pr.BaseVariable, optional
+        Variable associated with the transaction, None for pure Block transactions.
     index : int, optional (default = -1)
         Optional index for array variables.
-    **kwargs : Any
-        Additional arguments passed through to the block transaction.
+    **kwargs : Any, optional
+        Unused, provided for future compatibility.
     """
     block._startTransaction(type, forceWr, check, variable, index)
 
 
 def checkTransaction(block: rim.Block, **kwargs: Any) -> None:
-    """Check completion of a block transaction.
+    """Wait for completion of transaction on a block.
 
     Helper function for calling the checkTransaction function in a block. This helper
     function ensures future changes to the API do not break custom code in a Device's
@@ -68,10 +67,10 @@ def checkTransaction(block: rim.Block, **kwargs: Any) -> None:
 
     Parameters
     ----------
-    block : object
+    block : rim.Block
         Block instance to operate on.
-    **kwargs : Any
-        Unused
+    **kwargs : Any, optional
+       Unused, provided for future compatibility.
     """
     block._checkTransaction()
 
@@ -247,7 +246,7 @@ class LocalBlock(object):
         Variable associated with this block.
     localSet : callable
         Setter callback. Expected signature:
-        ``localSet(dev=None, var=None, value, changed=None)``.
+        ``localSet(value, dev=None, var=None, changed=None)``.
     localGet : callable
         Getter callback. Expected signature:
         ``localGet(dev=None, var=None)``.
