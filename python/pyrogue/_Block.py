@@ -33,8 +33,8 @@ def startTransaction(
     index: int = -1,
     **kwargs: Any,
 ) -> None:
-    """Helper function for starting a transaction on a block. 
-    
+    """Helper function for starting a transaction on a block.
+
     This helper function ensures future changes to the API do not break custom
     code in a Device's writeBlocks, readBlocks and checkBlocks functions.
 
