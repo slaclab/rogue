@@ -57,6 +57,43 @@ PyRogue provides helper functions around block transaction flow:
 These helpers are used by device-level methods and are the preferred extension
 points for custom block sequencing.
 
+Implementation Boundary (Python and C++)
+========================================
+
+The block API you call from PyRogue maps to the ``rogue.interfaces.memory``
+runtime layer.
+
+In practice:
+
+* Python code invokes methods on ``pyrogue.Device`` / ``pyrogue.RemoteVariable``
+* these route into block/variable objects exposed by
+  ``rogue.interfaces.memory``
+* the underlying C++ block/variable code handles transaction staging,
+  read/write/verify behavior, stale tracking, packing/unpacking, and update
+  notification triggers
+
+Hub interaction
+===============
+
+Blocks are transaction sources; Hubs are transaction routers.
+
+During a transaction, Hub logic:
+
+* offsets addresses by local hub/device base
+* forwards transaction to downstream memory slave
+* splits transaction into sub-transactions when request size exceeds downstream
+  max-access capability
+
+This is why a variable-to-block transaction can still work cleanly across
+multi-level device trees with address translation.
+
+For deeper internals and extension patterns, see:
+
+* :ref:`interfaces_memory_blocks`
+* :ref:`interfaces_memory_hub`
+* :ref:`interfaces_memory_hub_ex`
+* :ref:`interfaces_memory_classes`
+
 Example
 =======
 

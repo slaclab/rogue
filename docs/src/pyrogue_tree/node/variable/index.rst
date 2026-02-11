@@ -43,6 +43,26 @@ Most variable classes share:
 * group tags and filtering behavior
 * update notifications/listeners
 
+Implementation Boundary (Python and C++)
+========================================
+
+For :py:class:`pyrogue.RemoteVariable`, the public Python object wraps a
+lower-level memory variable implementation from ``rogue.interfaces.memory``.
+
+This means:
+
+* Python-facing configuration (mode, formatting, limits, groups) is handled in
+  PyRogue classes
+* byte/bit packing, access-range tracking, and typed conversion paths are
+  executed in the memory interface runtime (primarily C++ block/variable logic)
+* transactions are still orchestrated through block and device APIs
+
+See also:
+
+* :ref:`pyrogue_tree_node_block`
+* :ref:`interfaces_memory_blocks`
+* :ref:`interfaces_memory_classes`
+
 BaseVariable Class Documentation
 ================================
 

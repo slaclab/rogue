@@ -77,6 +77,39 @@ Typical read flow:
 * check completion
 * return/publish updated values
 
+Implementation Boundary (Python and C++)
+----------------------------------------
+
+From a Python API perspective, you use ``pyrogue.Device`` methods such as
+``readBlocks`` and ``writeBlocks``.
+
+Under the hood, ``pyrogue.Device`` is built on the Rogue memory interface
+hub/master/slave stack. In particular, a device participates in memory routing
+as a Hub, and forwards block transactions toward downstream memory slaves.
+
+Where Hub fits in transaction flow
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The C++ Hub implementation (``src/rogue/interfaces/memory/Hub.cpp``):
+
+* applies local address offset when forwarding transactions downstream
+* can split large transactions into sub-transactions based on downstream
+  max-access limits
+* allows custom transaction translation by overriding ``_doTransaction`` in
+  Python/C++ subclasses
+
+Conceptual transaction path:
+
+* variable operation -> block transaction -> device/hub routing ->
+  downstream slave access -> completion/check -> variable update notify
+
+For deeper memory-stack behavior, see:
+
+* :ref:`interfaces_memory_blocks`
+* :ref:`interfaces_memory_hub`
+* :ref:`interfaces_memory_hub_ex`
+* :ref:`interfaces_memory_classes`
+
 Custom Read/Write Operations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
