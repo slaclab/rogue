@@ -72,6 +72,20 @@ System wide configurations and be saved to or restored from yaml strings using p
 * :py:meth:`pyrogue.Node.getYaml` (Note: inherited from :py:class:`pyrogue.Node` class.)
 * :py:meth:`pyrogue.Root.setYaml`
 
+Built-in Groups
+^^^^^^^^^^^^^^^
+
+PyRogue root-level configuration/state commands use group filtering to include or exclude
+variables and commands from bulk operations.
+
+Common built-in group names:
+
+* ``NoConfig``: excluded from configuration save/load operations.
+* ``NoState``: excluded from state snapshot/export operations.
+* ``Hidden``: hidden from normal GUI views unless explicitly included.
+
+See :ref:`pyrogue_tree_node_groups` for full built-in group behavior and filtering semantics.
+
 Configuration Array Matching
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 In some cases there will be devices or variable that are part of an array, such as:
