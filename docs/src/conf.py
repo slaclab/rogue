@@ -42,6 +42,7 @@ extensions = ['sphinx.ext.autodoc',
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
+    'sphinx_autodoc_typehints',
     'sphinx_copybutton',
     'breathe']
 
@@ -134,6 +135,8 @@ htmlhelp_basename = 'Roguedoc'
 autodoc_typehints = 'description'
 # Keep class signatures in their original combined form.
 autodoc_class_signature = 'mixed'
+# Show parameter default values in the generated type/param description.
+typehints_defaults = 'braces-after'
 # Change class attribute rendering style
 napoleon_use_ivar = True
 
