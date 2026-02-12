@@ -137,7 +137,7 @@ The following :py:class:`pyrogue.LocalVariable` objects are all created when the
 * **PollEn**: Polling worker.
 
 Root Class Documentation
-========================
+------------------------
 
 .. autoclass:: pyrogue.Root
    :members:

@@ -125,15 +125,6 @@ class NodeError(Exception):
 class Node(object):
     """Base class for nodes in the PyRogue tree.
 
-    Each node has the following public fields:
-        name: Global name of object
-        description: Description of the object.
-        groups: Group or groups this node belongs to.
-           Built-in examples: 'Hidden', 'NoState', 'NoConfig', 'NoStream', 'NoSql', 'NoServe'
-           See docs: ``pyrogue_tree/node/groups.rst``.
-        classtype: text string matching name of node sub-class
-        path: Full path to the node (ie. node1.node2.node3)
-
     Each node is associated with a parent and has a link to the top node of a tree.
     A node has a list of sub-nodes as well as each sub-node being attached as an
     attribute. This allows tree browsing using: node1.node2.node3

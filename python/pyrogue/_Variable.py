@@ -1552,8 +1552,8 @@ class LocalVariable(BaseVariable):
         Access mode: ``RW``, ``RO``, or ``WO``.
     disp : object, optional (default = "{}")
         Display formatter or mapping.
-        enum : dict, optional
-            Mapping from object values to display strings.
+    enum : dict, optional
+        Mapping from object values to display strings.
     units : str, optional
         Engineering units.
     hidden : bool, optional (default = False)
