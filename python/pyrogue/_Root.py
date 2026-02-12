@@ -898,7 +898,13 @@ class Root(pr.Device):
 
         return True
 
-    def treeDict(self, modes: list[str] = ['RW', 'RO', 'WO'], incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None, properties: bool = True) -> dict[str, Any]:
+    def treeDict(
+        self,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        properties: bool = True,
+    ) -> dict[str, Any]:
         """
         Return the root tree as a dictionary.
 
@@ -921,7 +927,13 @@ class Root(pr.Device):
         d = self._getDict(modes, incGroups, excGroups, properties=properties)
         return {self.name: d}
 
-    def treeYaml(self, modes: list[str] = ['RW', 'RO', 'WO'], incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None, properties: bool | None = None) -> str:
+    def treeYaml(
+        self,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        properties: bool | None = None,
+    ) -> str:
         """
         Return the root tree as YAML text.
 
@@ -945,7 +957,14 @@ class Root(pr.Device):
             properties = True
         return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
-    def setYaml(self, yml: str, writeEach: bool, modes: list[str], incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> None:
+    def setYaml(
+        self,
+        yml: str,
+        writeEach: bool,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> None:
         """
         Set variable values from YAML text.
 
@@ -973,7 +992,12 @@ class Root(pr.Device):
         if self.InitAfterConfig.value():
             self.initialize()
 
-    def remoteVariableDump(self, name: str | None, modes: list[str], readFirst: bool) -> bool:
+    def remoteVariableDump(
+        self,
+        name: str | None,
+        modes: list[str],
+        readFirst: bool,
+    ) -> bool:
         """
         Dump remote variable values to a file.
 
@@ -1007,7 +1031,14 @@ class Root(pr.Device):
         return True
 
 
-    def _setDictRoot(self, d: dict[str, Any], writeEach: bool, modes: list[str], incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> None:
+    def _setDictRoot(
+        self,
+        d: dict[str, Any],
+        writeEach: bool,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> None:
         """
         Parameters
         ----------

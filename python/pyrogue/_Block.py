@@ -102,7 +102,11 @@ def writeBlocks(
     for b in blocks:
         startTransaction(b, type=rim.Write, forceWr=force, check=checkEach, index=index, **kwargs)
 
-def verifyBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: Any) -> None:
+def verifyBlocks(
+    blocks: Iterable[rim.Block],
+    checkEach: bool = False,
+    **kwargs: Any,
+) -> None:
     """Verify a list of blocks efficiently.
 
     Helper function for verifying a list of blocks. Allows a custom list of blocks
@@ -121,7 +125,11 @@ def verifyBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs:
     for b in blocks:
         startTransaction(b, type=rim.Verify, check=checkEach, **kwargs)
 
-def readBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: Any) -> None:
+def readBlocks(
+    blocks: Iterable[rim.Block],
+    checkEach: bool = False,
+    **kwargs: Any,
+) -> None:
     """Read a list of blocks efficiently.
 
     Helper function for reading a list of blocks. Allows a custom list of blocks
@@ -187,7 +195,11 @@ def writeAndVerifyBlocks(
     verifyBlocks(blocks, checkEach=checkEach, **kwargs)
     checkBlocks(blocks)
 
-def readAndCheckBlocks(blocks: Iterable[rim.Block], checkEach: bool = False, **kwargs: Any) -> None:
+def readAndCheckBlocks(
+    blocks: Iterable[rim.Block],
+    checkEach: bool = False,
+    **kwargs: Any,
+) -> None:
     """Read blocks and wait for completion.
 
     Helper function for reading a list of blocks. Allows a custom list of blocks
@@ -224,7 +236,14 @@ class MemoryError(Exception):
         Size of the attempted access.
     """
 
-    def __init__(self, *, name: str, address: int, msg: str | None = None, size: int = 0) -> None:
+    def __init__(
+        self,
+        *,
+        name: str,
+        address: int,
+        msg: str | None = None,
+        size: int = 0,
+    ) -> None:
 
         self._value = f'Memory Error for {name} at address {address:#08x}'
 
@@ -401,7 +420,14 @@ class LocalBlock(object):
         else:
             return self._value
 
-    def _startTransaction(self, type: Any, forceWr: bool, check: bool, variable: pr.LocalVariable, index: int) -> None:
+    def _startTransaction(
+        self,
+        type: Any,
+        forceWr: bool,
+        check: bool,
+        variable: pr.LocalVariable,
+        index: int,
+    ) -> None:
         """Start a transaction (local blocks perform no hardware IO)."""
         pass
 

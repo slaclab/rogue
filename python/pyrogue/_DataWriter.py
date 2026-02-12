@@ -35,7 +35,14 @@ class DataWriter(pr.Device):
         Additional arguments forwarded to ``Device``.
     """
 
-    def __init__(self, *, hidden: bool = True, bufferSize: int = 0, maxFileSize: int = 0, **kwargs: Any) -> None:
+    def __init__(
+        self,
+        *,
+        hidden: bool = True,
+        bufferSize: int = 0,
+        maxFileSize: int = 0,
+        **kwargs: Any,
+    ) -> None:
         """Initialize the data writer device."""
 
         pr.Device.__init__(self,

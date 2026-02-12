@@ -27,7 +27,13 @@ import rogue.interfaces.memory
 
 class PollQueueEntry(object):
     """Data class for a poll queue entry."""
-    def __init__(self, readTime: datetime.datetime, count: int, interval: datetime.timedelta, block: Any) -> None:
+    def __init__(
+        self,
+        readTime: datetime.datetime,
+        count: int,
+        interval: datetime.timedelta,
+        block: Any,
+    ) -> None:
         self.readTime = readTime
         self.count    = count
         self.interval = interval

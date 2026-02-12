@@ -41,7 +41,11 @@ def logException(log: logging.Logger, e: Exception) -> None:
         log.exception(e)
 
 
-def logInit(cls: type[pr.Node] | None = None, name: str | None = None, path: str | None = None) -> logging.Logger:
+def logInit(
+    cls: type[pr.Node] | None = None,
+    name: str | None = None,
+    path: str | None = None,
+) -> logging.Logger:
     """Initialize a logger with a consistent PyRogue name.
 
     Parameters
@@ -221,7 +225,11 @@ class Node(object):
         else:
             return group in self._groups
 
-    def filterByGroup(self, incGroups: str | list[str] | None, excGroups: str | list[str] | None) -> bool:
+    def filterByGroup(
+        self,
+        incGroups: str | list[str] | None,
+        excGroups: str | list[str] | None,
+    ) -> bool:
         """Return True if the node passes include/exclude filters.
 
         Parameters
@@ -439,7 +447,13 @@ class Node(object):
         """Construct and add a node of ``nodeClass``."""
         self.add(nodeClass(**kwargs))
 
-    def addNodes(self, nodeClass: type[Node], number: int, stride: int, **kwargs: Any) -> None:
+    def addNodes(
+        self,
+        nodeClass: type[Node],
+        number: int,
+        stride: int,
+        **kwargs: Any,
+    ) -> None:
         """Add a series of nodes with indexed names."""
         name = kwargs.pop('name')
         offset = kwargs.pop('offset')
@@ -498,7 +512,11 @@ class Node(object):
         """Return direct child variables (excluding commands)."""
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def variablesByGroup(self, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> OrderedDict[str, pr.BaseVariable]:
+    def variablesByGroup(
+        self,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> OrderedDict[str, pr.BaseVariable]:
         """Return variables filtered by group."""
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
@@ -518,7 +536,11 @@ class Node(object):
         """Return direct child commands."""
         return self.getNodes(typ=pr.BaseCommand)
 
-    def commandsByGroup(self, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> OrderedDict[str, pr.BaseCommand]:
+    def commandsByGroup(
+        self,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> OrderedDict[str, pr.BaseCommand]:
         """Return commands filtered by group."""
         return self.getNodes(typ=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
@@ -527,7 +549,11 @@ class Node(object):
         """Return direct child devices."""
         return self.getNodes(pr.Device)
 
-    def devicesByGroup(self, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> OrderedDict[str, pr.Device]:
+    def devicesByGroup(
+        self,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> OrderedDict[str, pr.Device]:
         """Return devices filtered by group."""
         return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
@@ -579,7 +605,13 @@ class Node(object):
         """Return True if this node is a command."""
         return self.isinstance(pr.BaseCommand)
 
-    def find(self, *, recurse: bool = True, typ: type[Node] | None = None, **kwargs: Any) -> list[Node]:
+    def find(
+        self,
+        *,
+        recurse: bool = True,
+        typ: type[Node] | None = None,
+        **kwargs: Any,
+    ) -> list[Node]:
         """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
@@ -625,7 +657,12 @@ class Node(object):
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
 
-    def callRecursive(self, func: str, nodeTypes: Iterable[type[Node]] | None = None, **kwargs: Any) -> None:
+    def callRecursive(
+        self,
+        func: str,
+        nodeTypes: Iterable[type[Node]] | None = None,
+        **kwargs: Any,
+    ) -> None:
         """Call a named method on this node and matching children.
 
         Parameters
@@ -649,7 +686,11 @@ class Node(object):
                 node.callRecursive(func, nodeTypes, **kwargs)
 
     # this might be useful
-    def makeRecursive(self, func: str, nodeTypes: Iterable[type[Node]] | None = None) -> Callable[..., None]:
+    def makeRecursive(
+        self,
+        func: str,
+        nodeTypes: Iterable[type[Node]] | None = None,
+    ) -> Callable[..., None]:
         """Create a recursive wrapper for a named method.
 
         Parameters

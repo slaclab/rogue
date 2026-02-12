@@ -603,7 +603,15 @@ class BaseVariable(pr.Node):
                 self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True) -> None:
+    def set(
+        self,
+        value: Any,
+        *,
+        index: int = -1,
+        write: bool = True,
+        verify: bool = True,
+        check: bool = True,
+    ) -> None:
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -1364,7 +1372,15 @@ class RemoteVariable(BaseVariable,rim.Variable):
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True) -> None:
+    def set(
+        self,
+        value: Any,
+        *,
+        index: int = -1,
+        write: bool = True,
+        verify: bool = True,
+        check: bool = True,
+    ) -> None:
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
@@ -1636,7 +1652,15 @@ class LocalVariable(BaseVariable):
                                     value=self._default)
 
     @pr.expose
-    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True) -> None:
+    def set(
+        self,
+        value: Any,
+        *,
+        index: int = -1,
+        write: bool = True,
+        verify: bool = True,
+        check: bool = True,
+    ) -> None:
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -1871,7 +1895,15 @@ class LinkVariable(BaseVariable):
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value: Any, *, write: bool = True, index: int = -1, verify: bool = True, check: bool = True) -> None:
+    def set(
+        self,
+        value: Any,
+        *,
+        write: bool = True,
+        index: int = -1,
+        verify: bool = True,
+        check: bool = True,
+    ) -> None:
         """
 
 

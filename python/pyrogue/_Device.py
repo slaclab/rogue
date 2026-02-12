@@ -91,7 +91,12 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value: bool | Literal['parent', 'deps'], write: bool = True, index: int = -1) -> None:
+    def set(
+        self,
+        value: bool | Literal['parent', 'deps'],
+        write: bool = True,
+        index: int = -1,
+    ) -> None:
         """Set the enable value.
 
         Parameters
@@ -317,7 +322,13 @@ class Device(pr.Node,rim.Hub):
         return self.root is not None and self.root.running
 
 
-    def addRemoteVariables(self, number: int, stride: int, pack: bool = False, **kwargs: Any) -> None:
+    def addRemoteVariables(
+        self,
+        number: int,
+        stride: int,
+        pack: bool = False,
+        **kwargs: Any,
+    ) -> None:
         """Add a repeating block of remote variables.
 
         Parameters
@@ -393,7 +404,11 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
-    def setPollInterval(self, interval: float, variables: Iterable[Any] | None = None) -> None:
+    def setPollInterval(
+        self,
+        interval: float,
+        variables: Iterable[Any] | None = None,
+    ) -> None:
         """Set the poll interval for a group of variables.
 
         Parameters
@@ -410,7 +425,11 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             self.node(x).setPollInterval(interval)
 
-    def hideVariables(self, hidden: bool, variables: Iterable[Any] | None = None) -> None:
+    def hideVariables(
+        self,
+        hidden: bool,
+        variables: Iterable[Any] | None = None,
+    ) -> None:
         """Hide a list of variables or variable names.
 
         Parameters
