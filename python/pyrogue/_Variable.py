@@ -1091,65 +1091,65 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     Parameters
     ----------
-    name : str
+    name
         Variable name.
-    description : str, optional (default = "")
+    description
         Human-readable description.
-    mode : str, optional (default = "RW")
+    mode
         Access mode: ``RW``, ``RO``, or ``WO``.
-    value : object, optional
+    value
         Default value.
-    disp : object, optional
+    disp
         Display formatter or mapping.
-    enum : dict, optional
+    enum
         Mapping from object values to display strings.
-    units : str, optional
+    units
         Engineering units.
-    hidden : bool, optional (default = False)
+    hidden
         If True, add the variable to the ``Hidden`` group.
-    groups : list[str], optional
+    groups
         Groups to assign.
-    minimum : object, optional
+    minimum
         Minimum allowed value.
-    maximum : object, optional
+    maximum
         Maximum allowed value.
-    lowWarning : object, optional
+    lowWarning
         Low warning threshold.
-    lowAlarm : object, optional
+    lowAlarm
         Low alarm threshold.
-    highWarning : object, optional
+    highWarning
         High warning threshold.
-    highAlarm : object, optional
+    highAlarm
         High alarm threshold.
-    base : pyrogue.Model or callable, optional (default = ``pr.UInt``)
+    base
         Base model instance or model factory.
-    offset : int or list[int]
+    offset
         Memory offset or list of offsets.
-    numValues : int, optional (default = 0)
+    numValues
         Number of values for array variables.
-    valueBits : int, optional (default = 0)
+    valueBits
         Bits per value for array variables.
-    valueStride : int, optional (default = 0)
+    valueStride
         Bit stride between values.
-    bitSize : int or list[int], optional (default = 32)
+    bitSize
         Bit size of the variable.
-    bitOffset : int or list[int], optional (default = 0)
+    bitOffset
         Bit offset of the variable.
-    pollInterval : object, optional (default = 0)
+    pollInterval
         Polling interval.
-    updateNotify : bool, optional (default = True)
+    updateNotify
         Enable update notifications.
-    overlapEn : bool, optional (default = False)
+    overlapEn
         Allow overlapping variables.
-    bulkOpEn : bool, optional (default = True)
+    bulkOpEn
         Enable bulk operations.
-    verify : bool, optional (default = True)
+    verify
         Enable verify on write.
-    retryCount : int, optional (default = 0)
+    retryCount
         Retry count for transactions.
-    guiGroup : str, optional
+    guiGroup
         GUI grouping label.
-    **kwargs : Any
+    **kwargs
         Additional arguments forwarded to ``BaseVariable``.
     """
 
