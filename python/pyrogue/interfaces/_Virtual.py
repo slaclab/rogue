@@ -182,7 +182,7 @@ class VirtualNode(pr.Node):
     def _rootAttached(self,parent,root):
         raise pr.NodeError('_rootAttached not supported in VirtualNode')
 
-    def _getDict(self, modes: pr.AccessModes):
+    def _getDict(self, modes: list[str]):
         raise pr.NodeError('_getDict not supported in VirtualNode')
 
     def _setDict(self,*args,**kwargs):
@@ -191,7 +191,7 @@ class VirtualNode(pr.Node):
     def printYaml(
         self,
         readFirst=False,
-        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
+        modes: list[str] = ['RW', 'RO', 'WO'],
         incGroups=None,
         excGroups=['Hidden'],
         recurse=False,

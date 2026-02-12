@@ -411,7 +411,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def mode(self) -> pr.AccessMode:
+    def mode(self) -> str:
         """Return the access mode (``RW``, ``RO``, ``WO``)."""
         return self._mode
 
@@ -895,7 +895,7 @@ class BaseVariable(pr.Node):
         self,
         d: dict[str, str] | object,
         writeEach: bool,
-        modes: pr.AccessModes,
+        modes: list[str],
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         keys: list[str] | None = None,
@@ -973,7 +973,7 @@ class BaseVariable(pr.Node):
 
     def _getDict(
         self,
-        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
+        modes: list[str] = ['RW', 'RO', 'WO'],
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         properties: bool = False,

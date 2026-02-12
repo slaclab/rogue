@@ -698,7 +698,7 @@ class Node(object):
     def getYaml(
         self,
         readFirst: bool = False,
-        modes: pr.AccessModes = ['RW','RO','WO'],
+        modes: list[str] = ['RW','RO','WO'],
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         recurse: bool = True,
@@ -730,7 +730,7 @@ class Node(object):
     def printYaml(
         self,
         readFirst: bool = False,
-        modes: pr.AccessModes = ['RW','RO','WO'],
+        modes: list[str] = ['RW','RO','WO'],
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         recurse: bool = False,
@@ -754,7 +754,7 @@ class Node(object):
 
     def _getDict(
         self,
-        modes: pr.AccessModes = ['RW', 'RO', 'WO'],
+        modes: list[str] = ['RW', 'RO', 'WO'],
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         properties: bool = False,
@@ -806,7 +806,7 @@ class Node(object):
         self,
         d: dict[str, str],
         writeEach: bool,
-        modes: pr.AccessModes,
+        modes: list[str],
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         keys: list[str] | None = None,
