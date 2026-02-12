@@ -1520,7 +1520,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         Parameters
         ----------
         sValue : str
-            String representation of the value to parse.    
+            String representation of the value to parse.
 
 
         Returns
