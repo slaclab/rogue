@@ -18,6 +18,7 @@ import rogue.interfaces
 import pickle
 import time
 import threading
+from typing import Callable
 
 
 class VirtualProperty(object):
@@ -299,7 +300,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monThread = threading.Thread(target=self._monWorker)
         self._monThread.start()
 
-    def addLinkMonitor(self, function):
+    def addLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
         Add a link monitor callback function. This function will be called
         any time the link state changes. A single boolean argument will be passed to
@@ -307,20 +308,20 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         Parameters
         ----------
-        function : obj
-            Call back function with the form function(linkState)
+        function : callable
+            Callback function with the form ``function(linkState: bool)``.
         """
         if function not in self._monitors:
             self._monitors.append(function)
 
-    def remLinkMonitor(self, function):
+    def remLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
         Remove a previously added link monitor function.
 
         Parameters
         ----------
-        function : obj
-            Call back function
+        function : callable
+            Previously registered callback function.
         """
         if function in self._monitors:
             self._monitors.remove(function)

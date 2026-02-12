@@ -51,7 +51,9 @@ class BaseCommand(pr.BaseVariable):
     maximum : object, optional
         Maximum allowed value.
     function : callable, optional
-        Callback to execute when the command is invoked.
+        Callback executed when the command is invoked. The wrapper provides
+        keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
+        callback may accept any subset of these names.
     background : bool, optional (default = False)
         Reserved for background execution.
     guiGroup : str, optional
@@ -369,7 +371,9 @@ class BaseCommand(pr.BaseVariable):
         Parameters
         ----------
         function : callable
-            New callback to execute for this command.
+            New callback for this command. The wrapper provides keyword
+            arguments ``root``, ``dev``, ``cmd``, and ``arg``; the callback
+            may accept any subset of these names.
         """
         self._function = function
         self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
@@ -453,7 +457,10 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
     maximum : object, optional
         Maximum allowed value.
     function : callable, optional
-        Callback to execute when the command is invoked.
+        Callback executed when the command is invoked. The wrapper provides
+        keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
+        callback may accept any subset of these names.
+        Default to no-op for command if None.
     base : object, optional (default = ``pr.UInt``)
         Base data type for the underlying remote variable.
     offset : int, optional

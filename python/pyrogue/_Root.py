@@ -447,9 +447,9 @@ class Root(pr.Device):
 
     def addVarListener(
         self,
-        func: Callable[..., Any],
+        func: Callable[[str, pr.VariableValue], None],
         *,
-        done: Callable[[], Any] | None = None,
+        done: Callable[[], None] | None = None,
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
     ) -> None:
@@ -460,9 +460,12 @@ class Root(pr.Device):
         Parameters
         ----------
         func : callable
-            Listener callback.
+            Listener callback of the form ``func(path, varValue)`` where
+            ``path`` is a full variable path and ``varValue`` is a
+            :py:class:`pyrogue.VariableValue`.
         done : callable, optional
-            Optional callback executed after each update batch.
+            Optional callback of the form ``done()`` executed after each update
+            batch.
         incGroups : str or list[str], optional
             Group name or group names to include.
         excGroups : str or list[str], optional
@@ -474,9 +477,18 @@ class Root(pr.Device):
 
     def _addVarListenerCpp(
         self,
-        func: Callable[..., Any],
-        done: Callable[[], Any],
+        func: Callable[[str, str], None],
+        done: Callable[[], None],
     ) -> None:
+        """Add a listener callback using display-string values.
+
+        Parameters
+        ----------
+        func : callable
+            Callback of the form ``func(path, valueDisp)``.
+        done : callable
+            Callback of the form ``done()`` called after each batch.
+        """
 
         self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 

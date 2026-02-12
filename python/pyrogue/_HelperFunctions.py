@@ -375,7 +375,10 @@ def recreate_OrderedDict(name: str, values: Mapping[str, Any]) -> odict:
     return odict(values['items'])
 
 # Creation function wrapper for methods with variable args
-def functionWrapper(function: Callable[..., Any] | None, callArgs: Sequence[str]) -> Callable[..., Any]:
+def functionWrapper(
+    function: Callable[..., Any] | None,
+    callArgs: Sequence[str],
+) -> Callable[..., Any]:
     """
     Create a wrapper that forwards only supported named arguments.
 
@@ -383,6 +386,8 @@ def functionWrapper(function: Callable[..., Any] | None, callArgs: Sequence[str]
     ----------
     function : callable or None
         Function to wrap. If ``None``, a wrapper returning ``None`` is built.
+        Wrapped call sites pass keyword arguments and only the subset accepted
+        by ``function`` is forwarded.
     callArgs : list[str]
         Candidate argument names presented to the generated wrapper.
 

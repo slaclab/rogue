@@ -30,8 +30,9 @@ class Process(pr.Device):
     returnVariable : object, optional
         Variable receiving return values.
     function : callable, optional
-        Function to execute for the process.
-        Function can have optional arguments 'root', 'dev', 'arg'.
+        Process callback. The wrapper provides keyword arguments
+        ``root``, ``dev``, and ``arg``; the function may accept any subset
+        of these names.
     **kwargs : Any
         Additional arguments forwarded to ``Device``.
     """

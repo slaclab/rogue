@@ -812,7 +812,12 @@ class Device(pr.Node,rim.Hub):
                 value._setTimeout(timeout)
 
     def command(self, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-        """Decorator to add inline methods as commands."""
+        """Decorator to add inline methods as commands.
+
+        The decorated function is used as ``LocalCommand(function=...)``.
+        The command wrapper supplies keyword arguments ``root``, ``dev``,
+        ``cmd``, and ``arg``; the function may accept any subset.
+        """
         def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
@@ -823,7 +828,12 @@ class Device(pr.Node,rim.Hub):
         return _decorator
 
     def linkVariableGet(self, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
-        """Decorator to add inline ``linkedGet`` functions."""
+        """Decorator to add inline ``linkedGet`` functions.
+
+        The decorated function is used as ``LinkVariable(linkedGet=...)``.
+        The linked-get wrapper supplies keyword arguments ``dev``, ``var``,
+        ``read``, ``index``, and ``check``; the function may accept any subset.
+        """
         def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__

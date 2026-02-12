@@ -72,14 +72,15 @@ class VariableWaitClass(object):
     varList : object or list
         Variable or list of variables to monitor.
     testFunction : callable, optional
-        Predicate that evaluates the current variable values.
+        Predicate callback of the form
+        ``testFunction(varValues: list[VariableValue]) -> bool``.
     timeout : int or float, optional (default = 0)
         Time in seconds to wait before timing out. ``0`` disables timeout.
     """
     def __init__(
         self,
         varList: pr.BaseVariable | list[pr.BaseVariable],
-        testFunction: Callable[[list[Any]], bool] | None = None,
+        testFunction: Callable[[list["VariableValue"]], bool] | None = None,
         timeout: float = 0,
     ) -> None:
         self._values   = odict()
@@ -142,7 +143,7 @@ class VariableWaitClass(object):
 
 def VariableWait(
     varList: Any,
-    testFunction: Callable[[list[Any]], bool] | None = None,
+    testFunction: Callable[[list["VariableValue"]], bool] | None = None,
     timeout: float = 0,
 ) -> bool:
     """
@@ -171,7 +172,9 @@ def VariableWait(
         List of variables to monitor.
 
     testFunction :
-        Function which will test the state of the values, or None to trigger on update.
+        Function of the form
+        ``testFunction(varValues: list[VariableValue]) -> bool``.
+        Use ``None`` to trigger on update only.
 
     timeout : int, optional (default = 0)
         Timeout in seconds.
@@ -579,6 +582,14 @@ class BaseVariable(pr.Node):
                 self.__functions.append(listener)
 
     def _addListenerCpp(self, func: Callable[[str, str], None]) -> None:
+        """Add a C++/string listener callback.
+
+        Parameters
+        ----------
+        func : callable
+            Callback of the form ``func(path, valueDisp)`` where both
+            arguments are strings.
+        """
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
     def delListener(self, listener: BaseVariable | Callable[[str, VariableValue], None]) -> None:
@@ -1094,6 +1105,12 @@ class BaseVariable(pr.Node):
                 print(pr.genDocTableRow([a,astr],4,100),file=file)
 
 
+LocalSetCallback = Callable[[Any, pr.Device | None, BaseVariable | None, bool | None], Any]
+LocalGetCallback = Callable[[pr.Device | None, BaseVariable | None], Any]
+LinkedSetCallback = Callable[[pr.Device | None, BaseVariable, Any, bool, int, bool, bool], Any]
+LinkedGetCallback = Callable[[pr.Device | None, BaseVariable, bool, int, bool], Any]
+
+
 class RemoteVariable(BaseVariable,rim.Variable):
     """Remote variable backed by a memory-mapped interface.
 
@@ -1589,9 +1606,13 @@ class LocalVariable(BaseVariable):
     highAlarm : object, optional
         High alarm threshold.
     localSet : callable, optional
-        Setter callback.
+        Setter callback. Expected form:
+        ``localSet(value, dev=None, var=None, changed=None)``.
+        The callback may accept any subset of these named arguments.
     localGet : callable, optional
-        Getter callback.
+        Getter callback. Expected form:
+        ``localGet(dev=None, var=None)``.
+        The callback may accept any subset of these named arguments.
     pollInterval : object, optional (default = 0)
         Polling interval.
     updateNotify : bool, optional (default = True)
@@ -1622,8 +1643,8 @@ class LocalVariable(BaseVariable):
                  lowAlarm: Any | None = None,
                  highWarning: Any | None = None,
                  highAlarm: Any | None = None,
-                 localSet: Callable[..., Any] | None = None,
-                 localGet: Callable[..., Any] | None = None,
+                 localSet: LocalSetCallback | None = None,
+                 localGet: LocalGetCallback | None = None,
                  pollInterval: Any = 0,
                  updateNotify: bool = True,
                  typeStr: str = 'Unknown',
@@ -1821,13 +1842,22 @@ class LinkVariable(BaseVariable):
     name : str
         Variable name.
     variable : object, optional
-        Variable to link to.
+        Optional variable to link to.
+        This is a useful shortcut for linking to a variable without having to declare dependencies.
     dependencies : iterable, optional
-        Additional dependencies.
+        List of variables that this variable depends on.
     linkedSet : callable, optional
-        Setter callback.
+        Setter callback. Expected keyword arguments are
+        ``dev, var, value, write, index, verify, check``.
+        These match the parameters of BaseVariable.set().
+        The callback may accept any subset of these names.
+        Only value is required.
+        If not provided, will infer mode = 'RO'.
     linkedGet : callable, optional
-        Getter callback.
+        Getter callback. Expected keyword arguments are
+        ``dev, var, read, index, check``.
+        These match the parameters of BaseVariable.get().
+        The callback may accept any subset of these names.
     minimum : object, optional
         Minimum allowed value.
     maximum : object, optional
@@ -1840,8 +1870,8 @@ class LinkVariable(BaseVariable):
                  name: str,
                  variable: BaseVariable | None = None,
                  dependencies: Iterable[BaseVariable] | None = None,
-                 linkedSet: Callable[..., Any] | None = None,
-                 linkedGet: Callable[..., Any] | None = None,
+                 linkedSet: LinkedSetCallback | None = None,
+                 linkedGet: LinkedGetCallback | None = None,
                  minimum: Any | None = None,
                  maximum: Any | None = None,
                  **kwargs: Any) -> None: # Args passed to BaseVariable
