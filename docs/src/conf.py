@@ -136,7 +136,10 @@ autodoc_typehints = 'description'
 # Keep class signatures in their original combined form.
 autodoc_class_signature = 'mixed'
 # Show parameter default values in the generated type/param description.
-typehints_defaults = 'braces-after'
+typehints_defaults = 'comma'
+# Keep napoleon output as :param: fields so typehints extension can enrich
+# a single parameter section without duplication.
+napoleon_use_param = True
 # Change class attribute rendering style
 napoleon_use_ivar = True
 
