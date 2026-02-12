@@ -70,14 +70,14 @@ C++ AxiStreamDma Example
 
 The equivalent code in C++ is show below:
 
-.. code-block:: c
+.. code-block:: cpp
 
    #include <rogue/hardware/axi/AxiStreamDma.h>
    #include <rogue/protocols/srp/SrpV3.h>
 
    // If you want to disable zero copy execute this command first.
    // Normally you want zero copy enabled
-   rogue::hardware::axi::axiAxiStreamDma::zeroCopyDisable('/dev/datadev_0');
+   rogue::hardware::axi::AxiStreamDma::zeroCopyDisable("/dev/datadev_0");
 
    // First attach to destination 0 for register traffic, ssi enabled
    rogue::hardware::axi::AxiStreamDmaPtr regChan = rogue::hardware::axi::AxiStreamDma::create("/dev/datadev_0", 0, true);
@@ -89,7 +89,7 @@ The equivalent code in C++ is show below:
    *regChan == srp;
 
    // Create a memory master
-   MyMemMasterPtr memMast = MyMemMaster.create();
+   MyMemMasterPtr memMast = MyMemMaster::create();
 
    // Connect memory master to SRP
    *memMast >> srp;
@@ -103,5 +103,5 @@ The equivalent code in C++ is show below:
    // Create a slave
    MyCustomSlavePtr mySlave = MyCustomSlave::create();
 
-   *(*myMast >> dataChan) >> mySlave
+   *(*myMast >> dataChan) >> mySlave;
 
