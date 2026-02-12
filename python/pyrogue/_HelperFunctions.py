@@ -379,22 +379,48 @@ def functionWrapper(
     function: Callable[..., Any] | None,
     callArgs: Sequence[str],
 ) -> Callable[..., Any]:
-    """
-    Create a wrapper that forwards only supported named arguments.
+    """Build an adapter that forwards only the callback args it supports.
+
+    This helper is the compatibility layer used by many PyRogue callback
+    entry-points. Call sites can always provide a standard superset of named
+    arguments (for example ``root``, ``dev``, ``cmd``, ``arg``), while user
+    callbacks are free to accept any subset of those names.
+
+    The generated wrapper:
+
+    - receives all names listed in ``callArgs`` plus ``function``
+    - inspects ``function`` to find accepted positional/keyword-only argument
+      names
+    - forwards only overlapping names (excluding ``self``) when invoking
+      ``function``
+
+    This enables these callback styles to coexist:
+
+    - ``cb()``
+    - ``cb(arg)``
+    - ``cb(dev, arg)``
+    - ``cb(root, dev, cmd, arg)``
 
     Parameters
     ----------
     function : callable or None
-        Function to wrap. If ``None``, a wrapper returning ``None`` is built.
-        Wrapped call sites pass keyword arguments and only the subset accepted
-        by ``function`` is forwarded.
-    callArgs : list[str]
-        Candidate argument names presented to the generated wrapper.
+        Callback to adapt. If ``None``, a no-op wrapper returning ``None`` is
+        produced.
+    callArgs : Sequence[str]
+        Canonical argument-name superset the call site will provide.
 
     Returns
     -------
     callable
-        Generated wrapper callable.
+        Wrapper callable with signature ``(function, *callArgs)`` that invokes
+        ``function`` using only supported keyword arguments.
+
+    Notes
+    -----
+    - C++-bound callables may not be introspectable; in that case this wrapper
+      currently forwards no callback arguments.
+    - ``callArgs`` should contain trusted identifier strings because wrapper
+      code is generated dynamically.
     """
 
     if function is None:
