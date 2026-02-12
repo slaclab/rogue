@@ -1093,7 +1093,71 @@ class BaseVariable(pr.Node):
 
 
 class RemoteVariable(BaseVariable,rim.Variable):
-    """Remote variable backed by a memory-mapped interface."""
+    """Remote variable backed by a memory-mapped interface.
+
+    Parameters
+    ----------
+    name : str
+        Variable name.
+    description : str, optional (default = "")
+        Human-readable description.
+    mode : str, optional (default = "RW")
+        Access mode: ``RW``, ``RO``, or ``WO``.
+    value : object, optional
+        Default value.
+    disp : object, optional
+        Display formatter or mapping.
+    enum : dict, optional
+        Mapping from object values to display strings.
+    units : str, optional
+        Engineering units.
+    hidden : bool, optional (default = False)
+        If True, add the variable to the ``Hidden`` group.
+    groups : list[str], optional
+        Groups to assign.
+    minimum : object, optional
+        Minimum allowed value.
+    maximum : object, optional
+        Maximum allowed value.
+    lowWarning : object, optional
+        Low warning threshold.
+    lowAlarm : object, optional
+        Low alarm threshold.
+    highWarning : object, optional
+        High warning threshold.
+    highAlarm : object, optional
+        High alarm threshold.
+    base : pyrogue.Model or callable, optional (default = ``pr.UInt``)
+        Base model instance or model factory.
+    offset : int or list[int]
+        Memory offset or list of offsets.
+    numValues : int, optional (default = 0)
+        Number of values for array variables.
+    valueBits : int, optional (default = 0)
+        Bits per value for array variables.
+    valueStride : int, optional (default = 0)
+        Bit stride between values.
+    bitSize : int or list[int], optional (default = 32)
+        Bit size of the variable.
+    bitOffset : int or list[int], optional (default = 0)
+        Bit offset of the variable.
+    pollInterval : object, optional (default = 0)
+        Polling interval.
+    updateNotify : bool, optional (default = True)
+        Enable update notifications.
+    overlapEn : bool, optional (default = False)
+        Allow overlapping variables.
+    bulkOpEn : bool, optional (default = True)
+        Enable bulk operations.
+    verify : bool, optional (default = True)
+        Enable verify on write.
+    retryCount : int, optional (default = 0)
+        Retry count for transactions.
+    guiGroup : str, optional
+        GUI grouping label.
+    **kwargs : Any
+        Additional arguments forwarded to ``BaseVariable``.
+    """
 
     PROPS = BaseVariable.PROPS + [
         'address', 'overlapEn', 'offset', 'bitOffset', 'bitSize',
@@ -1101,101 +1165,37 @@ class RemoteVariable(BaseVariable,rim.Variable):
         'varBytes', 'bulkEn']
 
     def __init__(self, *,
-                 name,
-                 description='',
-                 mode='RW',
-                 value=None,
-                 disp=None,
-                 enum=None,
-                 units=None,
-                 hidden=False,
+                 name: str,
+                 description: str = '',
+                 mode: str = 'RW',
+                 value: Any = None,
+                 disp: Optional[Any] = None,
+                 enum: Optional[dict[object, str]] = None,
+                 units: Optional[str] = None,
+                 hidden: bool = False,
                  groups: Optional[list[str]] = None,
-                 minimum=None,
-                 maximum=None,
-                 lowWarning=None,
-                 lowAlarm=None,
-                 highWarning=None,
-                 highAlarm=None,
-                 base=pr.UInt,
-                 offset,
-                 numValues=0,
-                 valueBits=0,
-                 valueStride=0,
-                 bitSize=32,
-                 bitOffset=0,
-                 pollInterval=0,
-                 updateNotify=True,
-                 overlapEn=False,
-                 bulkOpEn=True,
-                 verify=True,
-                 retryCount=0,
-                 guiGroup=None,
-                 **kwargs):
-        """Initialize a remote variable.
-
-        Parameters
-        ----------
-        name : str
-            Variable name.
-        description : str, optional (default = "")
-            Human-readable description.
-        mode : str, optional (default = "RW")
-            Access mode: ``RW``, ``RO``, or ``WO``.
-        value : object, optional
-            Default value.
-        disp : object, optional
-            Display formatter or mapping.
-        enum : dict, optional
-            Mapping from object values to display strings.
-        units : str, optional
-            Engineering units.
-        hidden : bool, optional (default = False)
-            If True, add the variable to the ``Hidden`` group.
-        groups : list[str], optional
-            Groups to assign.
-        minimum : object, optional
-            Minimum allowed value.
-        maximum : object, optional
-            Maximum allowed value.
-        lowWarning : object, optional
-            Low warning threshold.
-        lowAlarm : object, optional
-            Low alarm threshold.
-        highWarning : object, optional
-            High warning threshold.
-        highAlarm : object, optional
-            High alarm threshold.
-        base : object, optional (default = ``pr.UInt``)
-            Base type or model.
-        offset : object
-            Memory offset or list of offsets.
-        numValues : int, optional (default = 0)
-            Number of values for array variables.
-        valueBits : int, optional (default = 0)
-            Bits per value for array variables.
-        valueStride : int, optional (default = 0)
-            Bit stride between values.
-        bitSize : int, optional (default = 32)
-            Bit size of the variable.
-        bitOffset : int, optional (default = 0)
-            Bit offset of the variable.
-        pollInterval : object, optional (default = 0)
-            Polling interval.
-        updateNotify : bool, optional (default = True)
-            Enable update notifications.
-        overlapEn : bool, optional (default = False)
-            Allow overlapping variables.
-        bulkOpEn : bool, optional (default = True)
-            Enable bulk operations.
-        verify : bool, optional (default = True)
-            Enable verify on write.
-        retryCount : int, optional (default = 0)
-            Retry count for transactions.
-        guiGroup : str, optional
-            GUI grouping label.
-        **kwargs : Any
-            Additional arguments forwarded to ``BaseVariable``.
-        """
+                 minimum: Optional[Any] = None,
+                 maximum: Optional[Any] = None,
+                 lowWarning: Optional[Any] = None,
+                 lowAlarm: Optional[Any] = None,
+                 highWarning: Optional[Any] = None,
+                 highAlarm: Optional[Any] = None,
+                 base: Union[pr.Model, Callable[[int], pr.Model]] = pr.UInt,
+                 offset: Union[int, list[int]],
+                 numValues: int = 0,
+                 valueBits: int = 0,
+                 valueStride: int = 0,
+                 bitSize: Union[int, list[int]] = 32,
+                 bitOffset: Union[int, list[int]] = 0,
+                 pollInterval: Any = 0,
+                 updateNotify: bool = True,
+                 overlapEn: bool = False,
+                 bulkOpEn: bool = True,
+                 verify: bool = True,
+                 retryCount: int = 0,
+                 guiGroup: Optional[str] = None,
+                 **kwargs: Any) -> None:
+        """Initialize a remote variable."""
 
         if disp is None:
             disp = base.defaultdisp
