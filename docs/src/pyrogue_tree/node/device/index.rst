@@ -162,6 +162,7 @@ There are several specialized device classes available:
    special_devices/prbsrx
    special_devices/prbstx
    special_devices/prbspair
+   special_devices/stream_reader
    special_devices/stream_writer
    special_devices/process
 
