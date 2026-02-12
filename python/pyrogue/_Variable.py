@@ -20,7 +20,7 @@ import shlex
 import sys
 import threading
 import time
-from typing import Any, Callable, Optional, Union
+from typing import Any, Callable, Optional, Type, Union
 
 import numpy as np
 import pyrogue as pr
@@ -363,24 +363,24 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def enum(self):
+    def enum(self) -> Optional[dict[object, str]]:
         """Return the enum mapping, if any."""
         return self._enum
 
     @property
-    def enumYaml(self):
+    def enumYaml(self) -> str:
         """Return the enum mapping as YAML."""
         return pr.dataToYaml(self._enum)
 
     @pr.expose
     @property
-    def revEnum(self):
+    def revEnum(self) -> Optional[dict[str, object]]:
         """Return the reverse enum mapping, if available."""
         return self._revEnum
 
     @pr.expose
     @property
-    def typeStr(self):
+    def typeStr(self) -> str:
         """Return the type string for this variable."""
         if self._typeStr == 'Unknown':
             v = self.value()
@@ -392,13 +392,13 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def disp(self):
+    def disp(self) -> str:
         """Return the display formatter."""
         return self._disp
 
     @pr.expose
     @property
-    def precision(self):
+    def precision(self) -> int:
         """Return the display precision for float-like values."""
         if self.nativeType is float or self.nativeType is np.ndarray:
             res = re.search(r':([0-9])\.([0-9]*)f',self._disp)
@@ -411,74 +411,74 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def mode(self):
+    def mode(self) -> pr.AccessMode:
         """Return the access mode (``RW``, ``RO``, ``WO``)."""
         return self._mode
 
     @pr.expose
     @property
-    def units(self):
+    def units(self) -> Optional[str]:
         """Return the engineering units."""
         return self._units
 
     @pr.expose
     @property
-    def minimum(self):
+    def minimum(self) -> Optional[Any]:
         """Return the minimum allowed value."""
         return self._minimum
 
     @pr.expose
     @property
-    def maximum(self):
+    def maximum(self) -> Optional[Any]:
         """Return the maximum allowed value."""
         return self._maximum
 
 
     @pr.expose
     @property
-    def hasAlarm(self):
+    def hasAlarm(self) -> bool:
         """Return True if any alarm thresholds are configured."""
         return (self._lowWarning is not None or self._lowAlarm is not None or self._highWarning is not None or self._highAlarm is not None)
 
     @pr.expose
     @property
-    def lowWarning(self):
+    def lowWarning(self) -> Optional[Any]:
         """Return the low warning threshold."""
         return self._lowWarning
 
     @pr.expose
     @property
-    def lowAlarm(self):
+    def lowAlarm(self) -> Optional[Any]:
         """Return the low alarm threshold."""
         return self._lowAlarm
 
     @pr.expose
     @property
-    def highWarning(self):
+    def highWarning(self) -> Optional[Any]:
         """Return the high warning threshold."""
         return self._highWarning
 
     @pr.expose
     @property
-    def highAlarm(self):
+    def highAlarm(self) -> Optional[Any]:
         """Return the high alarm threshold."""
         return self._highAlarm
 
     @pr.expose
     @property
-    def alarmStatus(self):
+    def alarmStatus(self) -> str:
         """Return the current alarm status."""
         stat,sevr = self._alarmState(self.value())
         return stat
 
     @pr.expose
     @property
-    def alarmSeverity(self):
+    def alarmSeverity(self) -> str:
         """Return the current alarm severity."""
         stat,sevr = self._alarmState(self.value())
         return sevr
 
-    def properties(self):
+    def properties(self) -> dict[str, Any]:
         """Return a dictionary of properties and current value."""
         d = odict()
         d['value'] = self.value()
@@ -489,7 +489,7 @@ class BaseVariable(pr.Node):
             d[p] = getattr(self, p)
         return d
 
-    def getExtraAttribute(self, name):
+    def getExtraAttribute(self, name: str) -> Optional[Any]:
         """Return an extra attribute by name, if present.
 
         Parameters
@@ -502,18 +502,14 @@ class BaseVariable(pr.Node):
         else:
             return None
 
-    def addDependency(self, dep):
-        """
-
+    def addDependency(self, dep: BaseVariable) -> None:
+        """Add a dependency variable.
+        When this variable changes, the dependency variable will be notified.
 
         Parameters
         ----------
-        dep :
-
-
-        Returns
-        -------
-
+        dep : BaseVariable
+            The dependency variable to add.
         """
         if dep not in self.__dependencies:
             self.__dependencies.append(dep)
@@ -521,12 +517,12 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def pollInterval(self):
+    def pollInterval(self) -> float:
         """Return the poll interval."""
         return self._pollInterval
 
     @pr.expose
-    def setPollInterval(self, interval):
+    def setPollInterval(self, interval: float) -> None:
         """Set the poll interval.
 
         Parameters
@@ -541,7 +537,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def lock(self):
+    def lock(self) -> Optional[threading.Lock]:
         """Return the underlying lock, if available."""
         if self._block is not None:
             return self._block._lock
@@ -550,16 +546,16 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def updateNotify(self):
+    def updateNotify(self) -> bool:
         """Return True if update notifications are enabled."""
         return self._updateNotify
 
     @property
-    def dependencies(self):
+    def dependencies(self) -> list[BaseVariable]:
         """Return registered dependency variables."""
         return self.__dependencies
 
-    def addListener(self, listener):
+    def addListener(self, listener: Union[BaseVariable, Callable[[str, VariableValue], None]]) -> None:
         """
         Add a listener Variable or function to call when variable changes.
         This is useful when chaining variables together. (ADC conversions, etc)
@@ -567,13 +563,13 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        listener : object
+        listener : BaseVariable or Callable[[str, VariableValue], None]
             Variable or callback function to notify.
 
 
         Returns
         -------
-
+        None
         """
         if isinstance(listener, BaseVariable):
             if listener not in self._listeners:
@@ -582,22 +578,22 @@ class BaseVariable(pr.Node):
             if listener not in self.__functions:
                 self.__functions.append(listener)
 
-    def _addListenerCpp(self, func):
+    def _addListenerCpp(self, func: Callable[[str, str], None]) -> None:
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
-    def delListener(self, listener):
+    def delListener(self, listener: Union[BaseVariable, Callable[[str, VariableValue], None]]) -> None:
         """
         Remove a listener Variable or function
 
         Parameters
         ----------
-        listener : object
+        listener : BaseVariable or Callable[[str, VariableValue], None]
             Variable or callback function to remove.
 
 
         Returns
         -------
-
+        None
         """
         if isinstance(listener, BaseVariable):
             if listener in self._listeners:
@@ -607,7 +603,7 @@ class BaseVariable(pr.Node):
                 self.__functions.remove(listener)
 
     @pr.expose
-    def set(self, value, *, index=-1, write=True, verify=True, check=True):
+    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True) -> None:
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -624,7 +620,7 @@ class BaseVariable(pr.Node):
         verify : bool, optional (default = True)
             If True, verify after write.
         check : bool, optional (default = True)
-            If True, check transaction completion.
+            If True, wait for the transaction to complete.
 
         Returns
         -------
@@ -633,7 +629,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def post(self, value, *, index=-1):
+    def post(self, value: Any, *, index: int = -1) -> None:
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -653,7 +649,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def get(self, *, index=-1, read=True, check=True):
+    def get(self, *, index: int = -1, read: bool = True, check: bool = True) -> Any:
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -675,7 +671,7 @@ class BaseVariable(pr.Node):
         return None
 
     @pr.expose
-    def write(self, *, verify=True, check=True):
+    def write(self, *, verify: bool = True, check: bool = True) -> None:
         """
         Force a write of the variable.
 
@@ -693,7 +689,7 @@ class BaseVariable(pr.Node):
         pass
 
     @pr.expose
-    def getVariableValue(self,read=True,index=-1):
+    def getVariableValue(self, read: bool = True, index: int = -1) -> VariableValue:
         """
         Return the value after performing a read from hardware if applicable.
         Hardware read is blocking. An error will result in a logged exception.
@@ -708,15 +704,13 @@ class BaseVariable(pr.Node):
 
         Returns
         -------
-        type
-            Hardware read is blocking. An error will result in a logged exception.
-            Listeners will be informed of the update.
+        VariableValue
 
         """
         return VariableValue(self,read=read,index=index)
 
     @pr.expose
-    def value(self, index=-1):
+    def value(self, index: int = -1) -> Any:
         """Return the current value without reading.
 
         Parameters
@@ -727,21 +721,21 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value, *, useDisp=None):
-        """
+    def genDisp(self, value: Any, *, useDisp: Optional[str] = None) -> str:
+        """Generate a display string for a value.
 
 
         Parameters
         ----------
         value : object
             Value to format for display.
-        useDisp : object, optional
-            Display formatter override.
+        useDisp : str, optional
+            Display formatter override. If None, use the variable's disp formatter.
 
 
         Returns
         -------
-
+        String representation of the Variable value for display.
         """
         try:
 
@@ -773,8 +767,8 @@ class BaseVariable(pr.Node):
             raise e
 
     @pr.expose
-    def getDisp(self, read=True, index=-1):
-        """
+    def getDisp(self, read: bool = True, index: int = -1) -> str:
+        """Perform a get() and return the display string for the value.
 
 
         Parameters
@@ -786,13 +780,13 @@ class BaseVariable(pr.Node):
 
         Returns
         -------
-
+        String representation of the Variable value for display.
         """
         return self.genDisp(self.get(read=read,index=index))
 
     @pr.expose
-    def valueDisp(self, index=-1): #, read=True, index=-1):
-        """
+    def valueDisp(self, index: int = -1) -> str: #, read=True, index=-1):
+        """Return a display string for the current value without reading.
 
 
         Parameters
@@ -802,13 +796,13 @@ class BaseVariable(pr.Node):
 
         Returns
         -------
-
+        String representation of the Variable value for display.
         """
         return self.getDisp(read=False, index=index)
 
     @pr.expose
-    def parseDisp(self, sValue):
-        """
+    def parseDisp(self, sValue: str) -> object:
+        """Parse a string representation of a value into a Python object.
 
 
         Parameters
@@ -819,7 +813,7 @@ class BaseVariable(pr.Node):
 
         Returns
         -------
-
+        Python object representation of the string value.
         """
         try:
             if not isinstance(sValue,str):
@@ -839,51 +833,51 @@ class BaseVariable(pr.Node):
             raise VariableError(msg)
 
     @pr.expose
-    def setDisp(self, sValue, write=True, index=-1):
-        """
+    def setDisp(self, sValue: str, write: bool = True, index: int = -1) -> None:
+        """Set the value of the variable using a string representation of the value.
 
 
         Parameters
         ----------
-        sValue : object
+        sValue : str
             Display-formatted value to set.
         write : bool, optional (default = True)
-            If True, perform a write transaction.
+            If True, write the value to the hardware.
         index : int, optional (default = -1)
             Optional index for array variables.
 
         Returns
         -------
-
+        None
         """
         self.set(self.parseDisp(sValue), write=write, index=index)
 
     @property
-    def nativeType(self):
+    def nativeType(self) -> Type[object]:
         """Return the native Python type."""
         return self._nativeType
 
     @property
-    def ndType(self):
+    def ndType(self) -> Type[np.dtype]:
         """Return the numpy dtype for array variables."""
         return self._ndType
 
     @property
-    def ndTypeStr(self):
+    def ndTypeStr(self) -> str:
         """Return the numpy dtype as a string."""
         return str(self.ndType)
 
-    def _setDefault(self):
+    def _setDefault(self) -> None:
         """ """
         if self._default is not None:
             self.setDisp(self._default, write=False)
 
-    def _updatePollInterval(self):
+    def _updatePollInterval(self) -> None:
         """ """
         if self.root is not None and self.root._pollQueue is not None:
             self.root._pollQueue.updatePollInterval(self)
 
-    def _finishInit(self):
+    def _finishInit(self) -> None:
         """ """
         # Set the default value but dont write
         self._setDefault()
@@ -1011,11 +1005,11 @@ class BaseVariable(pr.Node):
             return None
 
 
-    def _queueUpdate(self):
+    def _queueUpdate(self) -> None:
         """ """
         self._root._queueUpdates(self)
 
-    def _doUpdate(self):
+    def _doUpdate(self) -> None:
         """ """
         val = VariableValue(self)
 
@@ -1024,7 +1018,7 @@ class BaseVariable(pr.Node):
 
         return val
 
-    def _alarmState(self,value):
+    def _alarmState(self, value: Any) -> tuple[str, str]:
         """
 
 
@@ -1061,7 +1055,7 @@ class BaseVariable(pr.Node):
         else:
             return 'Good','Good'
 
-    def _genDocs(self,file):
+    def _genDocs(self, file: Any) -> None:
         """
 
         Parameters
@@ -1295,59 +1289,59 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def address(self):
+    def address(self) -> int:
         """Return the absolute address of the variable."""
         return self._block.address
 
     @property
-    def numValues(self):
+    def numValues(self) -> int:
         return self._numValues()
 
     @property
-    def valueBits(self):
+    def valueBits(self) -> int:
         return self._valueBits()
 
     @property
-    def valueStride(self):
+    def valueStride(self) -> int:
         return self._valueStride()
 
     @property
-    def retryCount(self):
+    def retryCount(self) -> int:
         return self._retryCount()
 
     @pr.expose
     @property
-    def varBytes(self):
+    def varBytes(self) -> int:
         """Return the byte size of the variable."""
         return self._varBytes()
 
     @pr.expose
     @property
-    def offset(self):
+    def offset(self) -> int:
         """Return the memory offset."""
         return self._offset()
 
     @pr.expose
     @property
-    def overlapEn(self):
+    def overlapEn(self) -> bool:
         """Return True if overlap is enabled."""
         return self._overlapEn()
 
     @pr.expose
     @property
-    def bitSize(self):
+    def bitSize(self) -> int:
         """Return the bit size."""
         return self._bitSize()
 
     @pr.expose
     @property
-    def bitOffset(self):
+    def bitOffset(self) -> int:
         """Return the bit offset."""
         return self._bitOffset()
 
     @pr.expose
     @property
-    def verifyEn(self):
+    def verifyEn(self) -> bool:
         """Return True if verify is enabled."""
         return self._verifyEn()
 
@@ -1359,18 +1353,18 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @pr.expose
     @property
-    def base(self):
+    def base(self) -> pr.Model:
         """Return the base model or type."""
         return self._base
 
     @pr.expose
     @property
-    def bulkEn(self):
+    def bulkEn(self) -> bool:
         """Return True if bulk operations are enabled."""
         return self._bulkOpEn
 
     @pr.expose
-    def set(self, value, *, index=-1, write=True, verify=True, check=True):
+    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True) -> None:
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking if check=True, otherwise non-blocking.
@@ -1413,7 +1407,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def post(self, value, *, index=-1):
+    def post(self, value: Any, *, index: int = -1) -> None:
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -1443,7 +1437,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def get(self, *, index=-1, read=True, check=True):
+    def get(self, *, index: int = -1, read: bool = True, check: bool = True) -> Any:
         """Return the value, optionally reading from hardware.
 
         Hardware read is blocking if check=True, otherwise non-blocking.
@@ -1473,7 +1467,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
             raise e
 
     @pr.expose
-    def write(self, *, verify=True, check=True):
+    def write(self, *, verify: bool = True, check: bool = True) -> None:
         """
         Force a write of the variable.
         Hardware write is blocking if check=True.
@@ -1503,13 +1497,14 @@ class RemoteVariable(BaseVariable,rim.Variable):
             pr.logException(self._log,e)
             raise e
 
-    def _parseDispValue(self, sValue):
-        """
+    def _parseDispValue(self, sValue: str) -> Any:
+        """Parse a string representation of a value into a Python object.
 
 
         Parameters
         ----------
-        sValue :
+        sValue : str
+            String representation of the value to parse.    
 
 
         Returns
@@ -1521,7 +1516,7 @@ class RemoteVariable(BaseVariable,rim.Variable):
         else:
             return self._base.fromString(sValue)
 
-    def _genDocs(self,file):
+    def _genDocs(self, file: Any) -> None:
         """
 
         Parameters
@@ -1596,29 +1591,29 @@ class LocalVariable(BaseVariable):
     """
 
     def __init__(self, *,
-                 name,
-                 value=None,
-                 description='',
-                 mode='RW',
-                 disp='{}',
-                 enum=None,
-                 units=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 lowWarning=None,
-                 lowAlarm=None,
-                 highWarning=None,
-                 highAlarm=None,
-                 localSet=None,
-                 localGet=None,
-                 pollInterval=0,
-                 updateNotify=True,
-                 typeStr='Unknown',
-                 bulkOpEn=True,
-                 guiGroup=None,
-                 **kwargs):
+                 name: str,
+                 value: Any = None,
+                 description: str = '',
+                 mode: str = 'RW',
+                 disp: Any = '{}',
+                 enum: Optional[dict[object, str]] = None,
+                 units: Optional[str] = None,
+                 hidden: bool = False,
+                 groups: Optional[list[str]] = None,
+                 minimum: Optional[Any] = None,
+                 maximum: Optional[Any] = None,
+                 lowWarning: Optional[Any] = None,
+                 lowAlarm: Optional[Any] = None,
+                 highWarning: Optional[Any] = None,
+                 highAlarm: Optional[Any] = None,
+                 localSet: Optional[Callable[..., Any]] = None,
+                 localGet: Optional[Callable[..., Any]] = None,
+                 pollInterval: Any = 0,
+                 updateNotify: bool = True,
+                 typeStr: str = 'Unknown',
+                 bulkOpEn: bool = True,
+                 guiGroup: Optional[str] = None,
+                 **kwargs: Any) -> None:
         """Initialize a local variable."""
 
         if value is None and localGet is None:
@@ -1641,7 +1636,7 @@ class LocalVariable(BaseVariable):
                                     value=self._default)
 
     @pr.expose
-    def set(self, value, *, index=-1, write=True, verify=True, check=True):
+    def set(self, value: Any, *, index: int = -1, write: bool = True, verify: bool = True, check: bool = True) -> None:
         """
         Set the value and write to hardware if applicable
         Writes to hardware are blocking. An error will result in a logged exception.
@@ -1679,7 +1674,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def post(self,value, *, index=-1):
+    def post(self, value: Any, *, index: int = -1) -> None:
         """
         Set the value and write to hardware if applicable using a posted write.
         This method does not call through parent.writeBlocks(), but rather
@@ -1708,7 +1703,7 @@ class LocalVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, *, index=-1, read=True, check=True):
+    def get(self, *, index: int = -1, read: bool = True, check: bool = True) -> Any:
         """
 
 
@@ -1739,58 +1734,58 @@ class LocalVariable(BaseVariable):
             self._log.error("Error reading value from variable '{}'".format(self.path))
             raise e
 
-    def __get__(self):
+    def __get__(self) -> Any:
         return self.get(read=False)
 
-    def __iadd__(self, other):
+    def __iadd__(self, other: Any) -> LocalVariable:
         self._block._iadd(other)
         return self
 
-    def __isub__(self, other):
+    def __isub__(self, other: Any) -> LocalVariable:
         self._block._isub(other)
         return self
 
-    def __imul__(self, other):
+    def __imul__(self, other: Any) -> LocalVariable:
         self._block._imul(other)
         return self
 
-    def __imatmul__(self, other):
+    def __imatmul__(self, other: Any) -> LocalVariable:
         self._block._imatmul(other)
         return self
 
-    def __itruediv__(self, other):
+    def __itruediv__(self, other: Any) -> LocalVariable:
         self._block._itruediv(other)
         return self
 
-    def __ifloordiv__(self, other):
+    def __ifloordiv__(self, other: Any) -> LocalVariable:
         self._block._ifloordiv(other)
         return self
 
-    def __imod__(self, other):
+    def __imod__(self, other: Any) -> LocalVariable:
         self._block._imod(other)
         return self
 
-    def __ipow__(self, other):
+    def __ipow__(self, other: Any) -> LocalVariable:
         self._block._ipow(other)
         return self
 
-    def __ilshift__(self, other):
+    def __ilshift__(self, other: Any) -> LocalVariable:
         self._block._ilshift(other)
         return self
 
-    def __irshift__(self, other):
+    def __irshift__(self, other: Any) -> LocalVariable:
         self._block._irshift(other)
         return self
 
-    def __iand__(self, other):
+    def __iand__(self, other: Any) -> LocalVariable:
         self._block._iand(other)
         return self
 
-    def __ixor__(self, other):
+    def __ixor__(self, other: Any) -> LocalVariable:
         self._block._ixor(other)
         return self
 
-    def __ior__(self, other):
+    def __ior__(self, other: Any) -> LocalVariable:
         self._block._ior(other)
         return self
 
@@ -1818,14 +1813,14 @@ class LinkVariable(BaseVariable):
     """
 
     def __init__(self, *,
-                 name,
-                 variable=None,
-                 dependencies=None,
-                 linkedSet=None,
-                 linkedGet=None,
-                 minimum=None,
-                 maximum=None,
-                 **kwargs): # Args passed to BaseVariable
+                 name: str,
+                 variable: Optional[BaseVariable] = None,
+                 dependencies: Optional[Iterable[BaseVariable]] = None,
+                 linkedSet: Optional[Callable[..., Any]] = None,
+                 linkedGet: Optional[Callable[..., Any]] = None,
+                 minimum: Optional[Any] = None,
+                 maximum: Optional[Any] = None,
+                 **kwargs: Any) -> None: # Args passed to BaseVariable
         """Initialize a link variable."""
 
         # Set and get functions
@@ -1871,12 +1866,12 @@ class LinkVariable(BaseVariable):
 
         self.__depBlocks = []
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: Any) -> Any:
         # Allow dependencies to be accessed as indices of self
         return self.dependencies[key]
 
     @pr.expose
-    def set(self, value, *, write=True, index=-1, verify=True, check=True):
+    def set(self, value: Any, *, write: bool = True, index: int = -1, verify: bool = True, check: bool = True) -> None:
         """
 
 
@@ -1905,7 +1900,7 @@ class LinkVariable(BaseVariable):
             raise e
 
     @pr.expose
-    def get(self, read=True, index=-1, check=True):
+    def get(self, read: bool = True, index: int = -1, check: bool = True) -> Any:
         """
 
 
@@ -1930,7 +1925,7 @@ class LinkVariable(BaseVariable):
             raise e
 
 
-    def __getBlocks(self):
+    def __getBlocks(self) -> list[pr.Block]:
         b = []
         for d in self.dependencies:
             if isinstance(d, LinkVariable):
@@ -1940,18 +1935,18 @@ class LinkVariable(BaseVariable):
 
         return b
 
-    def _finishInit(self):
+    def _finishInit(self) -> None:
         super()._finishInit()
         self.__depBlocks = self.__getBlocks()
 
     @property
-    def depBlocks(self):
+    def depBlocks(self) -> list[pr.Block]:
         """Return a list of blocks that this LinkVariable depends on."""
         return self.__depBlocks
 
     @pr.expose
     @property
-    def pollInterval(self):
+    def pollInterval(self) -> float:
 
         depIntervals = [dep.pollInterval for dep in self.dependencies if dep.pollInterval > 0]
         if len(depIntervals) == 0:
