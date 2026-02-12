@@ -20,7 +20,7 @@ import shlex
 import sys
 import threading
 import time
-from typing import Any, Callable, Optional, Type, Union
+from typing import Any, Callable, Type
 
 import numpy as np
 import pyrogue as pr
@@ -78,8 +78,8 @@ class VariableWaitClass(object):
     """
     def __init__(
         self,
-        varList: Union[pr.BaseVariable, list[pr.BaseVariable]],
-        testFunction: Optional[Callable[[list[Any]], bool]] = None,
+        varList: pr.BaseVariable | list[pr.BaseVariable],
+        testFunction: Callable[[list[Any]], bool] | None = None,
         timeout: float = 0,
     ) -> None:
         self._values   = odict()
@@ -142,7 +142,7 @@ class VariableWaitClass(object):
 
 def VariableWait(
     varList: Any,
-    testFunction: Optional[Callable[[list[Any]], bool]] = None,
+    testFunction: Callable[[list[Any]], bool] | None = None,
     timeout: float = 0,
 ) -> bool:
     """
@@ -276,22 +276,22 @@ class BaseVariable(pr.Node):
         mode: str = 'RW',
         value: Any = None,
         disp: Any = '{}',
-        enum: Optional[dict[object, str]] = None,
-        units: Optional[str] = None,
+        enum: dict[object, str] | None = None,
+        units: str | None = None,
         hidden: bool = False,
-        groups: Optional[list[str]] = None,
-        minimum: Optional[Any] = None,
-        maximum: Optional[Any] = None,
-        lowWarning: Optional[Any] = None,
-        lowAlarm: Optional[Any] = None,
-        highWarning: Optional[Any] = None,
-        highAlarm: Optional[Any] = None,
+        groups: list[str] | None = None,
+        minimum: Any | None = None,
+        maximum: Any | None = None,
+        lowWarning: Any | None = None,
+        lowAlarm: Any | None = None,
+        highWarning: Any | None = None,
+        highAlarm: Any | None = None,
         pollInterval: Any = 0,
         updateNotify: bool = True,
         typeStr: str = 'Unknown',
         bulkOpEn: bool = True,
         offset: int = 0,
-        guiGroup: Optional[str] = None,
+        guiGroup: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a base variable."""
@@ -363,7 +363,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def enum(self) -> Optional[dict[object, str]]:
+    def enum(self) -> dict[object, str] | None:
         """Return the enum mapping, if any."""
         return self._enum
 
@@ -374,7 +374,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def revEnum(self) -> Optional[dict[str, object]]:
+    def revEnum(self) -> dict[str, object] | None:
         """Return the reverse enum mapping, if available."""
         return self._revEnum
 
@@ -417,19 +417,19 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def units(self) -> Optional[str]:
+    def units(self) -> str | None:
         """Return the engineering units."""
         return self._units
 
     @pr.expose
     @property
-    def minimum(self) -> Optional[Any]:
+    def minimum(self) -> Any | None:
         """Return the minimum allowed value."""
         return self._minimum
 
     @pr.expose
     @property
-    def maximum(self) -> Optional[Any]:
+    def maximum(self) -> Any | None:
         """Return the maximum allowed value."""
         return self._maximum
 
@@ -442,25 +442,25 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def lowWarning(self) -> Optional[Any]:
+    def lowWarning(self) -> Any | None:
         """Return the low warning threshold."""
         return self._lowWarning
 
     @pr.expose
     @property
-    def lowAlarm(self) -> Optional[Any]:
+    def lowAlarm(self) -> Any | None:
         """Return the low alarm threshold."""
         return self._lowAlarm
 
     @pr.expose
     @property
-    def highWarning(self) -> Optional[Any]:
+    def highWarning(self) -> Any | None:
         """Return the high warning threshold."""
         return self._highWarning
 
     @pr.expose
     @property
-    def highAlarm(self) -> Optional[Any]:
+    def highAlarm(self) -> Any | None:
         """Return the high alarm threshold."""
         return self._highAlarm
 
@@ -489,7 +489,7 @@ class BaseVariable(pr.Node):
             d[p] = getattr(self, p)
         return d
 
-    def getExtraAttribute(self, name: str) -> Optional[Any]:
+    def getExtraAttribute(self, name: str) -> Any | None:
         """Return an extra attribute by name, if present.
 
         Parameters
@@ -537,7 +537,7 @@ class BaseVariable(pr.Node):
 
     @pr.expose
     @property
-    def lock(self) -> Optional[threading.Lock]:
+    def lock(self) -> threading.Lock | None:
         """Return the underlying lock, if available."""
         if self._block is not None:
             return self._block._lock
@@ -555,7 +555,7 @@ class BaseVariable(pr.Node):
         """Return registered dependency variables."""
         return self.__dependencies
 
-    def addListener(self, listener: Union[BaseVariable, Callable[[str, VariableValue], None]]) -> None:
+    def addListener(self, listener: BaseVariable | Callable[[str, VariableValue], None]) -> None:
         """
         Add a listener Variable or function to call when variable changes.
         This is useful when chaining variables together. (ADC conversions, etc)
@@ -581,7 +581,7 @@ class BaseVariable(pr.Node):
     def _addListenerCpp(self, func: Callable[[str, str], None]) -> None:
         self.addListener(lambda path, varValue: func(path, varValue.valueDisp))
 
-    def delListener(self, listener: Union[BaseVariable, Callable[[str, VariableValue], None]]) -> None:
+    def delListener(self, listener: BaseVariable | Callable[[str, VariableValue], None]) -> None:
         """
         Remove a listener Variable or function
 
@@ -721,7 +721,7 @@ class BaseVariable(pr.Node):
         return self.get(read=False, index=index)
 
     @pr.expose
-    def genDisp(self, value: Any, *, useDisp: Optional[str] = None) -> str:
+    def genDisp(self, value: Any, *, useDisp: str | None = None) -> str:
         """Generate a display string for a value.
 
 
@@ -893,12 +893,12 @@ class BaseVariable(pr.Node):
 
     def _setDict(
         self,
-        d: Union[dict[str, str], object],
+        d: dict[str, str] | object,
         writeEach: bool,
         modes: pr.AccessModes,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
-        keys: Optional[list[str]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        keys: list[str] | None = None,
     ) -> None:
         """
         Set variable values from a dictionary.
@@ -908,7 +908,7 @@ class BaseVariable(pr.Node):
 
         Parameters
         ----------
-        d : Union[dict[str, str], object]
+        d : dict[str, str] | object
             If a dictionary, keys are the indexes of the array variable, values are the values to set.
             If a single value, it is set using the Variable's setDisp method.
 
@@ -974,10 +974,10 @@ class BaseVariable(pr.Node):
     def _getDict(
         self,
         modes: pr.AccessModes = ['RW', 'RO', 'WO'],
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         properties: bool = False,
-    ) -> Optional[Any]:
+    ) -> Any | None:
         """
 
 
@@ -1596,23 +1596,23 @@ class LocalVariable(BaseVariable):
                  description: str = '',
                  mode: str = 'RW',
                  disp: Any = '{}',
-                 enum: Optional[dict[object, str]] = None,
-                 units: Optional[str] = None,
+                 enum: dict[object, str] | None = None,
+                 units: str | None = None,
                  hidden: bool = False,
-                 groups: Optional[list[str]] = None,
-                 minimum: Optional[Any] = None,
-                 maximum: Optional[Any] = None,
-                 lowWarning: Optional[Any] = None,
-                 lowAlarm: Optional[Any] = None,
-                 highWarning: Optional[Any] = None,
-                 highAlarm: Optional[Any] = None,
-                 localSet: Optional[Callable[..., Any]] = None,
-                 localGet: Optional[Callable[..., Any]] = None,
+                 groups: list[str] | None = None,
+                 minimum: Any | None = None,
+                 maximum: Any | None = None,
+                 lowWarning: Any | None = None,
+                 lowAlarm: Any | None = None,
+                 highWarning: Any | None = None,
+                 highAlarm: Any | None = None,
+                 localSet: Callable[..., Any] | None = None,
+                 localGet: Callable[..., Any] | None = None,
                  pollInterval: Any = 0,
                  updateNotify: bool = True,
                  typeStr: str = 'Unknown',
                  bulkOpEn: bool = True,
-                 guiGroup: Optional[str] = None,
+                 guiGroup: str | None = None,
                  **kwargs: Any) -> None:
         """Initialize a local variable."""
 
@@ -1814,12 +1814,12 @@ class LinkVariable(BaseVariable):
 
     def __init__(self, *,
                  name: str,
-                 variable: Optional[BaseVariable] = None,
-                 dependencies: Optional[Iterable[BaseVariable]] = None,
-                 linkedSet: Optional[Callable[..., Any]] = None,
-                 linkedGet: Optional[Callable[..., Any]] = None,
-                 minimum: Optional[Any] = None,
-                 maximum: Optional[Any] = None,
+                 variable: BaseVariable | None = None,
+                 dependencies: Iterable[BaseVariable] | None = None,
+                 linkedSet: Callable[..., Any] | None = None,
+                 linkedGet: Callable[..., Any] | None = None,
+                 minimum: Any | None = None,
+                 maximum: Any | None = None,
                  **kwargs: Any) -> None: # Args passed to BaseVariable
         """Initialize a link variable."""
 

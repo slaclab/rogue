@@ -15,7 +15,7 @@
 from __future__ import annotations
 
 import threading
-from typing import Any, Callable, Iterable, Optional
+from typing import Any, Callable, Iterable
 
 import numpy as np
 import pyrogue as pr
@@ -224,7 +224,7 @@ class MemoryError(Exception):
         Size of the attempted access.
     """
 
-    def __init__(self, *, name: str, address: int, msg: Optional[str] = None, size: int = 0) -> None:
+    def __init__(self, *, name: str, address: int, msg: str | None = None, size: int = 0) -> None:
 
         self._value = f'Memory Error for {name} at address {address:#08x}'
 
@@ -261,10 +261,10 @@ class LocalBlock(object):
         self,
         *,
         variable: pr.LocalVariable,
-        localSet: Optional[Callable[..., Any]],
-        localGet: Optional[Callable[..., Any]],
-        minimum: Optional[Any],
-        maximum: Optional[Any],
+        localSet: Callable[..., Any] | None,
+        localGet: Callable[..., Any] | None,
+        minimum: Any | None,
+        maximum: Any | None,
         value: Any,
     ) -> None:
         self._path      = variable.path

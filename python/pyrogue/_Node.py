@@ -20,7 +20,7 @@ import logging
 import re
 import sys
 from collections import OrderedDict as odict
-from typing import Any, Callable, Iterable, Optional, OrderedDict, Union
+from typing import Any, Callable, Iterable, OrderedDict
 
 import pyrogue as pr
 
@@ -41,7 +41,7 @@ def logException(log: logging.Logger, e: Exception) -> None:
         log.exception(e)
 
 
-def logInit(cls: Optional[Any] = None, name: Optional[str] = None, path: Optional[str] = None) -> logging.Logger:
+def logInit(cls: type[pr.Node] | None = None, name: str | None = None, path: str | None = None) -> logging.Logger:
     """Initialize a logger with a consistent PyRogue name.
 
     Parameters
@@ -153,8 +153,8 @@ class Node(object):
         description: str = "",
         expand: bool = True,
         hidden: bool = False,
-        groups: Optional[list[str]] = None,
-        guiGroup: Optional[str] = None,
+        groups: list[str] | None = None,
+        guiGroup: str | None = None,
     ) -> None:
         """Initialize the node."""
         pr.Node._nodeCount += 1
@@ -221,7 +221,7 @@ class Node(object):
         else:
             return group in self._groups
 
-    def filterByGroup(self, incGroups: Optional[Union[str, list[str]]], excGroups: Optional[Union[str, list[str]]]) -> bool:
+    def filterByGroup(self, incGroups: str | list[str] | None, excGroups: str | list[str] | None) -> bool:
         """Return True if the node passes include/exclude filters.
 
         Parameters
@@ -283,7 +283,7 @@ class Node(object):
         return self._expand
 
     @property
-    def guiGroup(self) -> Optional[str]:
+    def guiGroup(self) -> str | None:
         """Return the GUI group label."""
         return self._guiGroup
 
@@ -458,9 +458,9 @@ class Node(object):
     def getNodes(
         self,
         typ: type[Node],
-        excTyp: Optional[type[Node]] = None,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        excTyp: type[Node] | None = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
     ) -> OrderedDict[str, Node]:
         """
         Get a filtered ordered dictionary of nodes.
@@ -498,7 +498,7 @@ class Node(object):
         """Return direct child variables (excluding commands)."""
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand)
 
-    def variablesByGroup(self, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> OrderedDict[str, pr.BaseVariable]:
+    def variablesByGroup(self, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> OrderedDict[str, pr.BaseVariable]:
         """Return variables filtered by group."""
         return self.getNodes(typ=pr.BaseVariable,excTyp=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
@@ -518,7 +518,7 @@ class Node(object):
         """Return direct child commands."""
         return self.getNodes(typ=pr.BaseCommand)
 
-    def commandsByGroup(self, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> OrderedDict[str, pr.BaseCommand]:
+    def commandsByGroup(self, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> OrderedDict[str, pr.BaseCommand]:
         """Return commands filtered by group."""
         return self.getNodes(typ=pr.BaseCommand,incGroups=incGroups,excGroups=excGroups)
 
@@ -527,7 +527,7 @@ class Node(object):
         """Return direct child devices."""
         return self.getNodes(pr.Device)
 
-    def devicesByGroup(self, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> OrderedDict[str, pr.Device]:
+    def devicesByGroup(self, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> OrderedDict[str, pr.Device]:
         """Return devices filtered by group."""
         return self.getNodes(pr.Device,incGroups=incGroups,excGroups=excGroups)
 
@@ -579,7 +579,7 @@ class Node(object):
         """Return True if this node is a command."""
         return self.isinstance(pr.BaseCommand)
 
-    def find(self, *, recurse: bool = True, typ: Optional[type[Node]] = None, **kwargs: Any) -> list[Node]:
+    def find(self, *, recurse: bool = True, typ: type[Node] | None = None, **kwargs: Any) -> list[Node]:
         """
         Find all child nodes that are a base class of 'typ'
         and whose properties match all of the kwargs.
@@ -625,7 +625,7 @@ class Node(object):
                 found.extend(node.find(recurse=recurse, typ=typ, **kwargs))
         return found
 
-    def callRecursive(self, func: str, nodeTypes: Optional[Iterable[type[Node]]] = None, **kwargs: Any) -> None:
+    def callRecursive(self, func: str, nodeTypes: Iterable[type[Node]] | None = None, **kwargs: Any) -> None:
         """Call a named method on this node and matching children.
 
         Parameters
@@ -649,7 +649,7 @@ class Node(object):
                 node.callRecursive(func, nodeTypes, **kwargs)
 
     # this might be useful
-    def makeRecursive(self, func: str, nodeTypes: Optional[Iterable[type[Node]]] = None) -> Callable[..., None]:
+    def makeRecursive(self, func: str, nodeTypes: Iterable[type[Node]] | None = None) -> Callable[..., None]:
         """Create a recursive wrapper for a named method.
 
         Parameters
@@ -699,8 +699,8 @@ class Node(object):
         self,
         readFirst: bool = False,
         modes: pr.AccessModes = ['RW','RO','WO'],
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         recurse: bool = True,
     ) -> str:
         """Return current values as YAML text.
@@ -731,8 +731,8 @@ class Node(object):
         self,
         readFirst: bool = False,
         modes: pr.AccessModes = ['RW','RO','WO'],
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         recurse: bool = False,
     ) -> None:
         """Print the YAML representation to stdout.
@@ -755,8 +755,8 @@ class Node(object):
     def _getDict(
         self,
         modes: pr.AccessModes = ['RW', 'RO', 'WO'],
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         properties: bool = False,
         recurse: bool = True,
     ) -> OrderedDict[str, Any]:
@@ -807,9 +807,9 @@ class Node(object):
         d: dict[str, str],
         writeEach: bool,
         modes: pr.AccessModes,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
-        keys: Optional[list[str]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        keys: list[str] | None = None,
     ) -> None:
         """Set variable values from a dictionary.
 

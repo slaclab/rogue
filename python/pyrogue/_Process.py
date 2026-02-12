@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import threading
 import time
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 import pyrogue as pr
 
@@ -39,9 +39,9 @@ class Process(pr.Device):
     def __init__(
         self,
         *,
-        argVariable: Optional[pr.BaseVariable] = None,
-        returnVariable: Optional[pr.BaseVariable] = None,
-        function: Optional[Callable[..., Any]] = None,
+        argVariable: pr.BaseVariable | None = None,
+        returnVariable: pr.BaseVariable | None = None,
+        function: Callable[..., Any] | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a process device."""

@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import threading
 import time
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 import pyrogue as pr
 
@@ -42,9 +42,9 @@ class RunControl(pr.Device):
         self,
         *,
         hidden: bool = True,
-        rates: Optional[dict[int, str]] = None,
-        states: Optional[dict[int, str]] = None,
-        cmd: Optional[Callable[[], None]] = None,
+        rates: dict[int, str] | None = None,
+        states: dict[int, str] | None = None,
+        cmd: Callable[[], None] | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize the run-control device."""

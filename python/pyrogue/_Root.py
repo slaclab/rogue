@@ -30,7 +30,7 @@ import zipfile
 import traceback
 import datetime
 from contextlib import contextmanager
-from typing import Any, Callable, Iterator, Optional, Union
+from typing import Any, Callable, Iterator
 
 SystemLogInit = '[]'
 
@@ -174,7 +174,7 @@ class Root(pr.Device):
         self.stop()
 
     def __init__(self, *,
-                 name: Optional[str] = None,
+                 name: str | None = None,
                  description: str = '',
                  expand: bool = True,
                  timeout: float = 1.0,
@@ -449,9 +449,9 @@ class Root(pr.Device):
         self,
         func: Callable[..., Any],
         *,
-        done: Optional[Callable[[], Any]] = None,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        done: Callable[[], Any] | None = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
     ) -> None:
         """
         Add a variable update listener function.
@@ -661,7 +661,7 @@ class Root(pr.Device):
         self,
         fname: str,
         polledOnly: bool = False,
-        incGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
     ) -> None:
         """Save a string representing the entire tree
 
@@ -743,11 +743,11 @@ class Root(pr.Device):
     @pr.expose
     def saveYaml(
         self,
-        name: Optional[str],
+        name: str | None,
         readFirst: bool,
         modes: pr.AccessModes = ['RW', 'RO', 'WO'],
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         autoPrefix: str = '',
         autoCompress: bool = False,
     ) -> bool:
@@ -799,11 +799,11 @@ class Root(pr.Device):
 
     def loadYaml(
         self,
-        name: Union[str, list[str]],
+        name: str | list[str],
         writeEach: bool,
         modes: pr.AccessModes,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
     ) -> bool:
         """
         Load YAML configuration from files or directories.
@@ -898,7 +898,7 @@ class Root(pr.Device):
 
         return True
 
-    def treeDict(self, modes: pr.AccessModes = ['RW', 'RO', 'WO'], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None, properties: bool = True) -> dict[str, Any]:
+    def treeDict(self, modes: pr.AccessModes = ['RW', 'RO', 'WO'], incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None, properties: bool = True) -> dict[str, Any]:
         """
         Return the root tree as a dictionary.
 
@@ -921,7 +921,7 @@ class Root(pr.Device):
         d = self._getDict(modes, incGroups, excGroups, properties=properties)
         return {self.name: d}
 
-    def treeYaml(self, modes: pr.AccessModes = ['RW', 'RO', 'WO'], incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None, properties: Optional[bool] = None) -> str:
+    def treeYaml(self, modes: pr.AccessModes = ['RW', 'RO', 'WO'], incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None, properties: bool | None = None) -> str:
         """
         Return the root tree as YAML text.
 
@@ -945,7 +945,7 @@ class Root(pr.Device):
             properties = True
         return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
 
-    def setYaml(self, yml: str, writeEach: bool, modes: pr.AccessModes, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> None:
+    def setYaml(self, yml: str, writeEach: bool, modes: pr.AccessModes, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> None:
         """
         Set variable values from YAML text.
 
@@ -973,7 +973,7 @@ class Root(pr.Device):
         if self.InitAfterConfig.value():
             self.initialize()
 
-    def remoteVariableDump(self, name: Optional[str], modes: pr.AccessModes, readFirst: bool) -> bool:
+    def remoteVariableDump(self, name: str | None, modes: pr.AccessModes, readFirst: bool) -> bool:
         """
         Dump remote variable values to a file.
 
@@ -1007,7 +1007,7 @@ class Root(pr.Device):
         return True
 
 
-    def _setDictRoot(self, d: dict[str, Any], writeEach: bool, modes: pr.AccessModes, incGroups: Optional[Union[str, list[str]]] = None, excGroups: Optional[Union[str, list[str]]] = None) -> None:
+    def _setDictRoot(self, d: dict[str, Any], writeEach: bool, modes: pr.AccessModes, incGroups: str | list[str] | None = None, excGroups: str | list[str] | None = None) -> None:
         """
         Parameters
         ----------

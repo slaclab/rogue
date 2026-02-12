@@ -17,7 +17,7 @@ from __future__ import annotations
 import collections
 import functools as ft
 import threading
-from typing import Any, Callable, Iterable, Literal, Optional, Union
+from typing import Any, Callable, Iterable, Literal
 
 import pyrogue as pr
 import rogue.interfaces.memory as rim
@@ -33,7 +33,7 @@ class EnableVariable(pr.BaseVariable):
     deps : iterable, optional
         Dependency variables that can disable this one.
     """
-    def __init__(self, *, enabled: bool, deps: Optional[Iterable[pr.BaseVariable]] = None) -> None:
+    def __init__(self, *, enabled: bool, deps: Iterable[pr.BaseVariable] | None = None) -> None:
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',
@@ -91,7 +91,7 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value: Union[bool, Literal['parent', 'deps']], write: bool = True, index: int = -1) -> None:
+    def set(self, value: bool | Literal['parent', 'deps'], write: bool = True, index: int = -1) -> None:
         """Set the enable value.
 
         Parameters
@@ -189,19 +189,19 @@ class Device(pr.Node,rim.Hub):
     def __init__(
         self,
         *,
-        name: Optional[str] = None,
+        name: str | None = None,
         description: str = '',
-        memBase: Optional[rim.MemorySlave] = None,
+        memBase: rim.MemorySlave | None = None,
         offset: int = 0,
         hidden: bool = False,
-        groups: Optional[list[str]] = None,
+        groups: list[str] | None = None,
         expand: bool = False,
         enabled: bool = True,
-        defaults: Optional[dict] = None,
-        enableDeps: Optional[Iterable[pr.BaseVariable]] = None,
+        defaults: dict | None = None,
+        enableDeps: Iterable[pr.BaseVariable] | None = None,
         hubMin: int = 0,
         hubMax: int = 0,
-        guiGroup: Optional[str] = None,
+        guiGroup: str | None = None,
     ) -> None:
         """Initialize the device."""
         if name is None:
@@ -393,7 +393,7 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
-    def setPollInterval(self, interval: float, variables: Optional[Iterable[Any]] = None) -> None:
+    def setPollInterval(self, interval: float, variables: Iterable[Any] | None = None) -> None:
         """Set the poll interval for a group of variables.
 
         Parameters
@@ -410,7 +410,7 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             self.node(x).setPollInterval(interval)
 
-    def hideVariables(self, hidden: bool, variables: Optional[Iterable[Any]] = None) -> None:
+    def hideVariables(self, hidden: bool, variables: Iterable[Any] | None = None) -> None:
         """Hide a list of variables or variable names.
 
         Parameters
@@ -456,7 +456,7 @@ class Device(pr.Node,rim.Hub):
         *,
         force: bool = False,
         recurse: bool = True,
-        variable: Optional[Any] = None,
+        variable: Any | None = None,
         checkEach: bool = False,
         index: int = -1,
         **kwargs: Any,
@@ -496,7 +496,7 @@ class Device(pr.Node,rim.Hub):
         self,
         *,
         recurse: bool = True,
-        variable: Optional[Any] = None,
+        variable: Any | None = None,
         checkEach: bool = False,
         **kwargs: Any,
     ) -> None:
@@ -531,7 +531,7 @@ class Device(pr.Node,rim.Hub):
         self,
         *,
         recurse: bool = True,
-        variable: Optional[Any] = None,
+        variable: Any | None = None,
         checkEach: bool = False,
         index: int = -1,
         **kwargs: Any,
@@ -569,7 +569,7 @@ class Device(pr.Node,rim.Hub):
         self,
         *,
         recurse: bool = True,
-        variable: Optional[Any] = None,
+        variable: Any | None = None,
         **kwargs: Any,
     ) -> None:
         """Check block transactions and notify variable listeners.
@@ -598,7 +598,7 @@ class Device(pr.Node,rim.Hub):
         self,
         force: bool = False,
         recurse: bool = True,
-        variable: Optional[Any] = None,
+        variable: Any | None = None,
         checkEach: bool = False,
     ) -> None:
         """Write, verify, and check all blocks.
@@ -621,7 +621,7 @@ class Device(pr.Node,rim.Hub):
     def readAndCheckBlocks(
         self,
         recurse: bool = True,
-        variable: Optional[Any] = None,
+        variable: Any | None = None,
         checkEach: bool = False,
     ) -> None:
         """Read and check all blocks.
@@ -817,8 +817,8 @@ class Device(pr.Node,rim.Hub):
     def genDocuments(
         self,
         path: str,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
     ) -> None:
         """Generate Sphinx documentation pages for this device.
 
@@ -932,7 +932,7 @@ class ArrayDevice(Device):
         arrayClass: Any,
         number: int,
         stride: int = 0,
-        arrayArgs: Optional[Any] = None,
+        arrayArgs: Any | None = None,
         **kwargs: Any,
     ) -> None:
         if 'name' not in kwargs:

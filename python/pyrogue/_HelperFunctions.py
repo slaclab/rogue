@@ -21,7 +21,7 @@ import yaml
 import time
 import zipfile
 import inspect
-from typing import Any, Callable, Mapping, MutableMapping, Optional, Sequence, Union
+from typing import Any, Callable, Mapping, MutableMapping, Sequence
 
 import pyrogue as pr
 import rogue.interfaces.stream as ris
@@ -30,7 +30,7 @@ import rogue.interfaces.memory as rim
 from collections import OrderedDict as odict
 
 
-def addLibraryPath(path: Union[str, list[str]]) -> None:
+def addLibraryPath(path: str | list[str]) -> None:
     """
     Append one or more paths to ``sys.path``.
 
@@ -186,7 +186,7 @@ def busConnect(source: rim.Master, dest: rim.Slave) -> None:
     master._setSlave(slave)
 
 
-def yamlToData(stream: str = '', fName: Optional[str] = None) -> Any:
+def yamlToData(stream: str = '', fName: str | None = None) -> Any:
     """
     Parse YAML content into a Python data structure.
 
@@ -375,7 +375,7 @@ def recreate_OrderedDict(name: str, values: Mapping[str, Any]) -> odict:
     return odict(values['items'])
 
 # Creation function wrapper for methods with variable args
-def functionWrapper(function: Optional[Callable[..., Any]], callArgs: Sequence[str]) -> Callable[..., Any]:
+def functionWrapper(function: Callable[..., Any] | None, callArgs: Sequence[str]) -> Callable[..., Any]:
     """
     Create a wrapper that forwards only supported named arguments.
 

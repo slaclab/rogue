@@ -16,7 +16,7 @@ from __future__ import annotations
 
 import inspect
 import threading
-from typing import Any, Callable, Iterable, Optional, Union
+from typing import Any, Callable, Iterable
 
 import pyrogue as pr
 import rogue.interfaces.memory
@@ -63,18 +63,18 @@ class BaseCommand(pr.BaseVariable):
     def __init__(
         self,
         *,
-        name: Optional[str] = None,
+        name: str | None = None,
         description: str = "",
         value: Any = 0,
-        retValue: Optional[Any] = None,
-        enum: Optional[dict[object, str]] = None,
+        retValue: Any | None = None,
+        enum: dict[object, str] | None = None,
         hidden: bool = False,
-        groups: Optional[list[str]] = None,
-        minimum: Optional[Any] = None,
-        maximum: Optional[Any] = None,
-        function: Optional[Callable[..., Any]] = None,
+        groups: list[str] | None = None,
+        minimum: Any | None = None,
+        maximum: Any | None = None,
+        function: Callable[..., Any] | None = None,
         background: bool = False,
-        guiGroup: Optional[str] = None,
+        guiGroup: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a command variable."""
@@ -123,7 +123,7 @@ class BaseCommand(pr.BaseVariable):
 
     @pr.expose
     @property
-    def retTypeStr(self) -> Optional[str]:
+    def retTypeStr(self) -> str | None:
         """Return the display string for the return type."""
         return self._retTypeStr
 
@@ -379,8 +379,8 @@ class BaseCommand(pr.BaseVariable):
         d: dict[Any, Any],
         writeEach: bool,
         modes: pr.AccessModes,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         keys: Any = None,
     ) -> None:
         """Commands do not support dict writes."""
@@ -389,8 +389,8 @@ class BaseCommand(pr.BaseVariable):
     def _getDict(
         self,
         modes: pr.AccessModes,
-        incGroups: Optional[Union[str, list[str]]] = None,
-        excGroups: Optional[Union[str, list[str]]] = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
         properties: Any = None,
     ) -> None:
         """Commands do not support dict reads."""
@@ -477,18 +477,18 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
         description: str = '',
         value: Any = None,
         retValue: Any = None,
-        enum: Optional[dict[object, str]] = None,
+        enum: dict[object, str] | None = None,
         hidden: bool = False,
-        groups: Optional[list[str]] = None,
-        minimum: Optional[Any] = None,
-        maximum: Optional[Any] = None,
-        function: Optional[Callable[..., Any]] = None,
+        groups: list[str] | None = None,
+        minimum: Any | None = None,
+        maximum: Any | None = None,
+        function: Callable[..., Any] | None = None,
         base: Any = pr.UInt,
-        offset: Optional[int] = None,
+        offset: int | None = None,
         bitSize: int = 32,
         bitOffset: int = 0,
         overlapEn: bool = False,
-        guiGroup: Optional[str] = None,
+        guiGroup: str | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a remote command."""

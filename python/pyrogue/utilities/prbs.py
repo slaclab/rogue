@@ -14,7 +14,7 @@
 #-----------------------------------------------------------------------------
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
 
 import pyrogue
 import rogue.utilities
@@ -40,10 +40,10 @@ class PrbsRx(pyrogue.Device):
     def __init__(
         self,
         *,
-        width: Optional[int] = None,
+        width: int | None = None,
         checkPayload: bool = True,
-        taps: Optional[int] = None,
-        stream: Optional[Any] = None,
+        taps: int | None = None,
+        stream: Any | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a software PRBS receiver."""
@@ -136,9 +136,9 @@ class PrbsTx(pyrogue.Device):
         self,
         *,
         sendCount: bool = False,
-        width: Optional[int] = None,
-        taps: Optional[int] = None,
-        stream: Optional[Any] = None,
+        width: int | None = None,
+        taps: int | None = None,
+        stream: Any | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a software PRBS transmitter."""
@@ -264,11 +264,11 @@ class PrbsPair(pyrogue.Device):
 
     def __init__(
         self,
-        width: Optional[int] = None,
-        taps: Optional[int] = None,
+        width: int | None = None,
+        taps: int | None = None,
         sendCount: bool = False,
-        txStream: Optional[Any] = None,
-        rxStream: Optional[Any] = None,
+        txStream: Any | None = None,
+        rxStream: Any | None = None,
         **kwargs: Any,
     ) -> None:
         """Initialize a PRBS TX/RX pair."""
