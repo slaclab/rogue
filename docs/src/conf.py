@@ -130,8 +130,10 @@ html_static_path = ['_static']
 htmlhelp_basename = 'Roguedoc'
 
 # -- Options for Sphinx Rendering -----------------------------------------
-# Sets typehints in both signature and description.
-autodoc_typehints = 'both'
+# Render type hints in the parameter description, not signatures.
+autodoc_typehints = 'description'
+# Keep class signatures in their original combined form.
+autodoc_class_signature = 'mixed'
 # Change class attribute rendering style
 napoleon_use_ivar = True
 
