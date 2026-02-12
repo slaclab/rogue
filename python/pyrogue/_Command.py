@@ -54,6 +54,7 @@ class BaseCommand(pr.BaseVariable):
         Callback executed when the command is invoked. The wrapper provides
         keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
         callback may accept any subset of these names.
+        Default to no-op for command if None.
     background : bool, optional (default = False)
         Reserved for background execution.
     guiGroup : str, optional
