@@ -108,6 +108,9 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+html_css_files = [
+    'custom.css',
+]
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -137,6 +140,8 @@ autodoc_typehints = 'description'
 autodoc_class_signature = 'mixed'
 # Show parameter default values in the generated type/param description.
 typehints_defaults = 'comma'
+# Prefer modern union syntax (``T | None``) over ``Optional[T]`` in docs.
+always_use_bars_union = True
 # Keep napoleon output as :param: fields so typehints extension can enrich
 # a single parameter section without duplication.
 napoleon_use_param = True

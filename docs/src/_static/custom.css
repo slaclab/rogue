@@ -1,0 +1,16 @@
+/* Force Python attributes/properties to render as full-width blocks. */
+.rst-content dl.py.property,
+.rst-content dl.py.attribute {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  float: none !important;
+  clear: both;
+}
+
+.rst-content dl.py.property + dl.py.property,
+.rst-content dl.py.attribute + dl.py.attribute,
+.rst-content dl.py.property + dl.py.attribute,
+.rst-content dl.py.attribute + dl.py.property {
+  margin-top: 1rem;
+}
