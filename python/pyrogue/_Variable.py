@@ -1105,10 +1105,10 @@ class BaseVariable(pr.Node):
                 print(pr.genDocTableRow([a,astr],4,100),file=file)
 
 
-LocalSetCallback = Callable[[Any, pr.Device | None, BaseVariable | None, bool | None], Any]
-LocalGetCallback = Callable[[pr.Device | None, BaseVariable | None], Any]
-LinkedSetCallback = Callable[[pr.Device | None, BaseVariable, Any, bool, int, bool, bool], Any]
-LinkedGetCallback = Callable[[pr.Device | None, BaseVariable, bool, int, bool], Any]
+LocalSetCallback = Callable[[Any, Any, BaseVariable | None, bool | None], Any]
+LocalGetCallback = Callable[[Any, BaseVariable | None], Any]
+LinkedSetCallback = Callable[[Any, BaseVariable, Any, bool, int, bool, bool], Any]
+LinkedGetCallback = Callable[[Any, BaseVariable, bool, int, bool], Any]
 
 
 class RemoteVariable(BaseVariable,rim.Variable):
