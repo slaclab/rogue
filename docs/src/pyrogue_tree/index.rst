@@ -18,6 +18,7 @@ A common hierarchy will be a Root Node connected to any number of Device Nodes, 
 
    node/index
    node/root/index
+   node/root/poll_queue
    node/device/index
    node/command/index
    node/variable/index

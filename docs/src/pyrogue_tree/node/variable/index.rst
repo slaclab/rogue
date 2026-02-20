@@ -43,6 +43,10 @@ Most variable classes share:
 * group tags and filtering behavior
 * update notifications/listeners
 
+Polling note: variables with non-zero ``pollInterval`` participate in the root
+poll scheduler. See :ref:`pyrogue_tree_root_poll_queue` for scheduling details
+and usage patterns.
+
 Implementation Boundary (Python and C++)
 ========================================
 

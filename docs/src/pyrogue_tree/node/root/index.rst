@@ -9,6 +9,9 @@ It owns the application lifecycle, coordinates bulk read/write operations,
 manages background workers (poll and update), and provides APIs for YAML
 save/load and external listeners.
 
+For polling internals and usage patterns, see
+:ref:`pyrogue_tree_root_poll_queue`.
+
 Most user applications define a subclass of ``pyrogue.Root`` and add devices
 inside ``__init__``.
 
@@ -74,8 +77,21 @@ Key Methods
 * :py:meth:`pyrogue.Root.saveYaml`
 * :py:meth:`pyrogue.Root.loadYaml`
 * :py:meth:`pyrogue.Root.setYaml`
+* :py:meth:`pyrogue.Root.pollBlock`
 
 ``getNode`` resolves dotted paths such as ``EvalBoard.AxiVersion.ScratchPad``.
+
+Temporarily Blocking Polling
+----------------------------
+
+Use :py:meth:`pyrogue.Root.pollBlock` when you need a short critical section
+that should not race with background poll reads.
+
+.. code-block:: python
+
+   with root.pollBlock():
+       root.MyDevice.SomeControl.set(1)
+       root.MyDevice.OtherControl.set(0)
 
 ZmqServer Interface
 -------------------
