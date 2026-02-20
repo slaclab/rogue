@@ -42,8 +42,11 @@ Example
                mode='RW',
                value=self._is_running,
                localGet=lambda: self._is_running,
-               localSet=lambda value: setattr(self, '_is_running', bool(value)),
+               localSet=self._set_is_running,
            ))
+
+       def _set_is_running(self, value):
+           self._is_running = bool(value)
 
 LocalVariable Class Documentation
 =================================
