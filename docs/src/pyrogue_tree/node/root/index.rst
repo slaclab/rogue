@@ -81,6 +81,73 @@ Key Methods
 
 ``getNode`` resolves dotted paths such as ``EvalBoard.AxiVersion.ScratchPad``.
 
+Lifecycle: ``start()``, ``stop()``, and ``_rootAttached()``
+------------------------------------------------------------
+
+``Root`` owns the runtime lifecycle of the full tree.
+The call to :py:meth:`pyrogue.Root.start` is more than "start threads"; it
+finishes root attachment, final initialization, interface startup, optional
+initial read/write, and poll scheduling.
+
+What ``Root.start()`` does
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When :py:meth:`pyrogue.Root.start` is called:
+
+#. Validates the root is not already running.
+#. Calls ``Root._rootAttached()`` to attach root/parent/path references for the
+   full tree and build device blocks.
+#. Calls ``_finishInit()`` recursively on all nodes.
+#. Validates block address overlap (per slave-id address space).
+#. Applies timeout settings to nodes/blocks.
+#. Starts background workers:
+
+   * update worker thread
+   * optional heartbeat thread
+
+#. Calls :py:meth:`pyrogue.Device._start` on the root device recursively.
+   This is where managed interfaces/protocols (added with
+   :py:meth:`pyrogue.Device.addInterface`) get their ``_start()`` callback.
+   See :ref:`pyrogue_tree_node_device_managed_interfaces`.
+#. Optionally performs initial full-tree read/write depending on root settings.
+#. Starts :py:class:`pyrogue.PollQueue` and applies ``PollEn``.
+
+What ``Root.stop()`` does
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When :py:meth:`pyrogue.Root.stop` is called:
+
+#. Clears ``running`` and stops the update worker.
+#. Stops :py:class:`pyrogue.PollQueue`.
+#. Calls :py:meth:`pyrogue.Device._stop` recursively from the root.
+   This is where managed interfaces/protocols receive ``_stop()``.
+
+``_rootAttached()`` in root startup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``Root._rootAttached()`` sets:
+
+* root ``_parent`` to itself
+* root ``_root`` to itself
+* root ``_path`` to ``root.name``
+
+Then it recursively calls ``node._rootAttached(parent, root)`` across the tree.
+For each node this establishes parent/root/path/logger state before runtime
+operations begin. Device-level ``_rootAttached`` additionally builds local
+variable/block mappings and applies default overrides.
+
+``_finishInit()`` in root startup
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+After ``_rootAttached()``, :py:meth:`pyrogue.Root.start` calls
+``_finishInit()`` recursively across all nodes before worker threads and
+interfaces are started.
+
+``_finishInit()`` is the final tree-initialization stage used to complete
+node setup that depends on full tree attachment and resolved node references.
+At this point, every node has a valid parent/root/path context, so deferred
+initialization logic can run with complete hierarchy information.
+
 Temporarily Blocking Polling
 ----------------------------
 

@@ -69,6 +69,74 @@ Commonly used methods:
 * :py:meth:`pyrogue.Device.readBlocks`
 * :py:meth:`pyrogue.Device.checkBlocks`
 
+.. _pyrogue_tree_node_device_managed_interfaces:
+
+Managed Interfaces: ``addInterface()`` and ``addProtocol()``
+-------------------------------------------------------------
+
+Devices can own stream/memory/protocol helper objects that need coordinated
+startup/shutdown with the device tree.
+
+Use :py:meth:`pyrogue.Device.addInterface` (or alias
+:py:meth:`pyrogue.Device.addProtocol`) to register:
+
+* Rogue memory or stream interface objects
+* protocol servers/clients
+* any custom object that implements ``_start()`` and/or ``_stop()``
+
+At runtime:
+
+* :py:meth:`pyrogue.Device._start` calls ``_start()`` on each managed object if
+  the method exists
+* :py:meth:`pyrogue.Device._stop` calls ``_stop()`` on each managed object if
+  the method exists
+* both then recurse to child devices
+
+This is why top-level interfaces are commonly added at root scope using
+``root.addInterface(...)`` (``Root`` is a ``Device`` subclass).
+
+Lifecycle Override Points for Subclasses
+----------------------------------------
+
+The following methods are intended override points when you need custom
+behavior around startup/shutdown or transaction sequencing.
+
+Start/Stop hooks
+^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device._start`:
+  Called recursively from :py:meth:`pyrogue.Root.start`.
+  Typical use: open sockets/threads/resources, then call ``super()._start()``.
+* :py:meth:`pyrogue.Device._stop`:
+  Called recursively from :py:meth:`pyrogue.Root.stop`.
+  Typical use: stop custom resources and call ``super()._stop()`` to preserve
+  managed interface and child-device shutdown.
+* :py:meth:`pyrogue.Device._rootAttached`:
+  Called during root startup before ``_finishInit`` and before runtime threads.
+  Typical use: finalize path/root-dependent setup after calling
+  ``super()._rootAttached(parent, root)``.
+
+Operational hooks
+^^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device.initialize`
+* :py:meth:`pyrogue.Device.hardReset`
+* :py:meth:`pyrogue.Device.countReset`
+* :py:meth:`pyrogue.Device.enableChanged`
+
+These are commonly overridden to implement device-specific control behavior.
+
+Read/write sequencing hooks
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* :py:meth:`pyrogue.Device.writeBlocks`
+* :py:meth:`pyrogue.Device.verifyBlocks`
+* :py:meth:`pyrogue.Device.readBlocks`
+* :py:meth:`pyrogue.Device.checkBlocks`
+
+Override these when the default transaction ordering needs pre/post side
+effects or custom sequencing.
+
 Device Read/Write Operations
 ----------------------------
 
