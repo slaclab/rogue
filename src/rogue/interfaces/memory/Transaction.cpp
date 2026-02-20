@@ -99,7 +99,9 @@ rim::Transaction::Transaction(struct timeval timeout) : timeout_(timeout) {
 }
 
 //! Destroy object
-rim::Transaction::~Transaction() {}
+rim::Transaction::~Transaction() {
+    log_->debug("Deleting transaction type=%" PRIu32 " id=%" PRIu32 ", address=0x%016" PRIx64 ", size=%" PRIu32, type_, id_, address_, size_);
+}
 
 //! Get lock
 rim::TransactionLockPtr rim::Transaction::lock() {
