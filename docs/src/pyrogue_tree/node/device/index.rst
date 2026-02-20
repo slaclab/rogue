@@ -15,6 +15,8 @@ Devices can contain:
 * commands (local, remote)
 
 Most user-facing hardware abstractions are implemented as ``Device`` subclasses.
+At runtime, a device also participates in memory routing behavior through the
+Rogue memory hub stack.
 
 .. code-block:: python
 
@@ -41,6 +43,15 @@ device-level attributes include:
 
 The ``enable`` variable allows tree-level logic to disable a full device subtree
 for hardware access while keeping node metadata available.
+
+Relationship to Hub
+-------------------
+
+Conceptually, a device behaves as a hub in the memory routing stack:
+
+* variable/block transactions are addressed relative to the device base
+* child devices can inherit base/memory routing from parent devices
+* a child device can also be attached to an independent memory path when needed
 
 Key Methods
 -----------
