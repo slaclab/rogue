@@ -12,14 +12,48 @@ save/load and external listeners.
 Most user applications define a subclass of ``pyrogue.Root`` and add devices
 inside ``__init__``.
 
+In practice, ``Root`` is also where hardware connections are usually created and
+bound into the tree. A typical pattern is:
+
+* create a memory interface (for example AXI PCIe, TCP simulation, etc.)
+* register it with :py:meth:`pyrogue.Root.addInterface`
+* pass that interface as ``memBase`` when adding top-level devices
+* optionally add management/control interfaces (such as ZMQ) to the same root
+
 .. code-block:: python
 
    import pyrogue as pr
+   import rogue
+   import pyrogue.interfaces
+   import axipcie
 
    class EvalBoard(pr.Root):
-       def __init__(self):
-           super().__init__(name='EvalBoard', description='Evaluation board root')
-           # self.add(MyDevice(...))
+       def __init__(self, dev='/dev/datadev_0', sim=False, **kwargs):
+           super().__init__(name='EvalBoard', description='Evaluation board root', **kwargs)
+
+           # Create the memory-mapped hardware/simulation interface.
+           if sim:
+               self.memMap = rogue.interfaces.memory.TcpClient('localhost', 11000)
+           else:
+               self.memMap = rogue.hardware.axi.AxiMemMap(dev)
+
+           # Register memory interface with Root so tree transactions route correctly.
+           self.addInterface(self.memMap)
+
+           # Optional management API for GUIs/remote clients.
+           self.zmqServer = pyrogue.interfaces.ZmqServer(
+               root=self,
+               addr='127.0.0.1',
+               port=0,
+           )
+           self.addInterface(self.zmqServer)
+
+           # Add top-level devices and bind them to the same memory interface.
+           self.add(axipcie.AxiPcieCore(
+               offset=0x00000000,
+               memBase=self.memMap,
+               expand=True,
+           ))
 
 Key Attributes
 --------------
@@ -42,6 +76,24 @@ Key Methods
 * :py:meth:`pyrogue.Root.setYaml`
 
 ``getNode`` resolves dotted paths such as ``EvalBoard.AxiVersion.ScratchPad``.
+
+ZmqServer Interface
+-------------------
+
+:py:class:`pyrogue.interfaces.ZmqServer` exposes the root over a ZeroMQ control
+channel used by tools such as PyDM-based GUIs and external clients.
+
+Common initialization pattern in ``Root.__init__``:
+
+* create server: ``pyrogue.interfaces.ZmqServer(root=self, addr='127.0.0.1', port=0)``
+* add to root with :py:meth:`pyrogue.Root.addInterface`
+
+Notes:
+
+* ``port=0`` auto-selects the first available base port starting at ``9099``
+  (the server then uses ``base``, ``base+1``, and ``base+2``)
+* binding to ``127.0.0.1`` keeps the server local to the host
+* non-local deployments can bind to another interface/address as needed
 
 Yaml File Configuration
 -----------------------
