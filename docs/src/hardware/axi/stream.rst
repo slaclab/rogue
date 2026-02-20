@@ -28,6 +28,12 @@ See :ref:`hardware_axi_axi_stream_dma` for more information about the AxiStreamD
 Python AxiStreamDma Example
 ===========================
 
+This Python example does the following:
+
+#. Opens DMA destination 0 and connects it bi-directionally to an SRPv3 endpoint for register access.
+#. Connects a memory master to the SRPv3 memory slave interface so register reads and writes can be issued.
+#. Opens DMA destination 1 as a data path and routes a custom stream master through DMA into a custom stream slave.
+
 .. code-block:: python
 
    import pyrogue
@@ -68,7 +74,8 @@ Python AxiStreamDma Example
 C++ AxiStreamDma Example
 ========================
 
-The equivalent code in C++ is show below:
+The C++ example performs the same sequence as the Python example: connect SRPv3 to DMA destination 0 for register
+traffic, attach the memory master to SRPv3, then route custom stream traffic through DMA destination 1.
 
 .. code-block:: cpp
 
@@ -103,5 +110,6 @@ The equivalent code in C++ is show below:
    // Create a slave
    MyCustomSlavePtr mySlave = MyCustomSlave::create();
 
-   *(*myMast >> dataChan) >> mySlave;
+   // Connect the custom master and slave to the data DMA channel
+   *myMast >> dataChan >> mySlave;
 
