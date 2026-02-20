@@ -240,7 +240,7 @@ std::string rim::Transaction::wait() {
             done_  = true;
             error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
-            log_->warning("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
+            log_->error("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
                         type_, id_, address_, size_);
         } else {
             cond_.wait_for(lock, std::chrono::microseconds(1000));
