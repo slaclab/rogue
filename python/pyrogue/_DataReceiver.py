@@ -41,7 +41,7 @@ class DataReceiver(pr.Device,ris.Slave):
     def __init__(self,
                  typeStr: str = 'UInt8[np]',
                  hideData: bool = True,
-                 value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 value: Any = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
                  enableOnStart: bool = True,
                  **kwargs: Any) -> None:
         """Initialize the data receiver."""
@@ -155,12 +155,12 @@ class DataReceiver(pr.Device,ris.Slave):
         self.Data.set(dat,write=True)
         self.Updated.set(True,write=True)
 
-    def _start(self):
+    def _start(self) -> None:
         """ """
         super()._start()
         self.RxEnable.set(value=self._enableOnStart)
 
-    def _stop(self):
+    def _stop(self) -> None:
         """ """
         self.RxEnable.set(value=False)
         super()._stop()
