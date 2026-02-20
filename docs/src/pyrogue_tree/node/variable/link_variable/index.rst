@@ -21,6 +21,19 @@ Behavior
 * ``linkedGet``: compute displayed value from dependencies
 * ``linkedSet``: convert user value back to dependency writes
 
+LinkVariable Chaining
+=====================
+
+``LinkVariable`` dependencies can include other ``LinkVariable`` instances, so
+you can build layered conversions (for example raw ADC counts -> volts ->
+engineering quantity such as power, temperature, or calibrated sensor units).
+
+This is useful when:
+
+* one conversion step is reused by multiple higher-level views
+* you want to separate low-level scaling from calibration/application logic
+* derived values should remain readable and testable as independent nodes
+
 Examples
 ========
 
