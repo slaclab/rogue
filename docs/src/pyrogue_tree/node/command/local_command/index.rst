@@ -34,10 +34,10 @@ Example
            # Device-specific software sequence
            pass
 
-LocalCommand Class Documentation
-================================
+LocalCommand (BaseCommand Alias) Class Documentation
+====================================================
 
-.. autoclass:: pyrogue.LocalCommand
+.. autoclass:: pyrogue.BaseCommand
    :members:
    :member-order: bysource
    :inherited-members:
