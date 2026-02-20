@@ -230,6 +230,9 @@ std::string rim::Transaction::wait() {
 
     std::unique_lock<std::mutex> lock(lock_);
 
+    log_->debug("Wait Start On Transaction. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
+                type_, id_, address_, size_);
+
     while (!done_) {
         // Timeout?
         gettimeofday(&currTime, NULL);
@@ -237,11 +240,8 @@ std::string rim::Transaction::wait() {
             done_  = true;
             error_ = "Timeout waiting for register transaction " + std::to_string(id_) + " message response.";
 
-            log_->debug("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
-                        type_,
-                        id_,
-                        address_,
-                        size_);
+            log_->warning("Transaction timeout. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32,
+                        type_, id_, address_, size_);
         } else {
             cond_.wait_for(lock, std::chrono::microseconds(1000));
         }
@@ -256,6 +256,9 @@ std::string rim::Transaction::wait() {
     }
     iter_    = NULL;
     pyValid_ = false;
+
+    log_->debug("Wait Done On Transaction. type=%" PRIu32 " id=%" PRIu32 ", address=0x%" PRIx64 ", size=%" PRIu32 ", error=%s",
+                type_, id_, address_, size_, error_.c_str());
 
     return (error_);
 }

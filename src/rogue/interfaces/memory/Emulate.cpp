@@ -71,6 +71,8 @@ void rim::Emulate::doTransaction(rim::TransactionPtr tran) {
     uint64_t addr = tran->address();
     uint8_t* ptr  = tran->begin();
 
+    if ( type == 2 ) return;
+
     // printf("Got transaction address=0x%" PRIx64 ", size=%" PRIu32 ", type = %" PRIu32 "\n", addr, size, type);
 
     rogue::interfaces::memory::TransactionLockPtr tlock = tran->lock();
