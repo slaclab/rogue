@@ -130,7 +130,7 @@ class DataReceiver(pr.Device,ris.Slave):
             self.process(frame)
 
 
-    def process(self, frame: Any) -> None:
+    def process(self, frame: ris.Frame) -> None:
         """
         The user can use this method to process the data, by default a byte numpy array is generated
         This may include separating data, header and other payload sub-fields
@@ -138,7 +138,7 @@ class DataReceiver(pr.Device,ris.Slave):
 
         Parameters
         ----------
-        frame : object
+        frame : rogue.interfaces.stream.Frame
             Incoming frame to process.
 
 
