@@ -47,7 +47,7 @@ class RssiOutOfOrder(rogue.interfaces.stream.Slave, rogue.interfaces.stream.Mast
                 self._sendFrame(self._last)
                 self._last = None
 
-    def _acceptFrame(self,frame):
+    def _acceptFrame(self, frame: rogue.interfaces.stream.Frame) -> None:
 
         with self._lock:
             self._cnt += 1

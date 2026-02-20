@@ -93,7 +93,7 @@ class DataReceiver(pr.Device,ris.Slave):
         self.ByteCount.set(0)
         super().countReset()
 
-    def _acceptFrame(self, frame):
+    def _acceptFrame(self, frame: ris.Frame) -> None:
         """
 
 
