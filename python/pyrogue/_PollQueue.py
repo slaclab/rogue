@@ -34,15 +34,18 @@ class PollQueueEntry(object):
         interval: datetime.timedelta,
         block: Any,
     ) -> None:
+        """Initialize a poll-scheduler queue entry."""
         self.readTime = readTime
         self.count    = count
         self.interval = interval
         self.block    = block
 
-    def __lt__(self,other):
+    def __lt__(self, other: PollQueueEntry) -> bool:
+        """Return heap ordering by scheduled read time."""
         return self.readTime < other.readTime
 
-    def __gt__(self,other):
+    def __gt__(self, other: PollQueueEntry) -> bool:
+        """Return reverse heap ordering by scheduled read time."""
         return self.readTime > other.readTime
 
 
@@ -70,7 +73,7 @@ class PollQueue(object):
         # Setup logging
         self._log = pr.logInit(cls=self)
 
-    def _start(self):
+    def _start(self) -> None:
         """Start the poll thread."""
         self._pollThread.start()
         self._log.info("PollQueue Started")
@@ -102,14 +105,14 @@ class PollQueue(object):
             # Wake up the thread
             self._condLock.notify()
 
-    def _blockIncrement(self):
-        """ """
+    def _blockIncrement(self) -> None:
+        """Increment block count to pause poll activity in critical sections."""
         with self._condLock:
             self.blockCount += 1
             self._condLock.notify()
 
-    def _blockDecrement(self):
-        """ """
+    def _blockDecrement(self) -> None:
+        """Decrement block count and wake poll thread if needed."""
         with self._condLock:
             self.blockCount -= 1
             self._condLock.notify()
@@ -154,7 +157,7 @@ class PollQueue(object):
             elif var.pollInterval > 0:
                 self._addEntry(var._block, var.pollInterval)
 
-    def _poll(self):
+    def _poll(self) -> None:
         """Run by the poll thread"""
         while True:
 
@@ -241,7 +244,7 @@ class PollQueue(object):
                     yield entry
 
 
-    def peek(self):
+    def peek(self) -> PollQueueEntry | None:
         """Return (but don't pop) the top entry in the queue. """
         with self._condLock:
             if self.empty() is False:
@@ -249,12 +252,12 @@ class PollQueue(object):
             else:
                 return None
 
-    def empty(self):
+    def empty(self) -> bool:
         """Return True of queue is empty, else False """
         with self._condLock:
             return len(self._pq)==0
 
-    def _stop(self):
+    def _stop(self) -> None:
         """Stop the poll queue stread """
         with self._condLock:
             self._run = False

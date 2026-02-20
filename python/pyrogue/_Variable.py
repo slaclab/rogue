@@ -83,6 +83,7 @@ class VariableWaitClass(object):
         testFunction: Callable[[list["VariableValue"]], bool] | None = None,
         timeout: float = 0,
     ) -> None:
+        """Initialize a wait condition across one or more variables."""
         self._values   = odict()
         self._updated  = odict()
         self._cv       = threading.Condition()
@@ -128,6 +129,7 @@ class VariableWaitClass(object):
         return {k: self._values[k] for k in self._vlist}
 
     def _varUpdate(self, path: str, varValue: Any) -> None:
+        """Listener callback used to capture variable updates."""
         with self._cv:
             if path in self._values:
                 self._values[path] = varValue
@@ -135,6 +137,7 @@ class VariableWaitClass(object):
                 self._cv.notify()
 
     def _check(self) -> bool:
+        """Evaluate wait completion state using callback or update flags."""
         if self._testFunc is not None:
             return (self._testFunc(list(self._values.values())))
         else:
@@ -191,6 +194,7 @@ def VariableWait(
 class VariableValue(object):
     """Snapshot of a variable value with display metadata."""
     def __init__(self, var: Any, read: bool = False, index: int = -1) -> None:
+        """Capture value, display text, and alarm metadata for a variable."""
         self.value     = var.get(read=read,index=index)
         self.valueDisp = var.genDisp(self.value)
         self.disp      = var.disp
@@ -199,17 +203,20 @@ class VariableValue(object):
         self.status, self.severity = var._alarmState(self.value)
 
     def __repr__(self) -> str:
+        """Return a debug representation of stored value metadata."""
         return f'{str(self.__class__)}({self.__dict__})'
 
 
 class VariableListData(object):
     """Container describing list-type variable storage."""
     def __init__(self, numValues: int, valueBits: int, valueStride: int) -> None:
+        """Initialize list-shape metadata for array variables."""
         self.numValues   = numValues
         self.valueBits   = valueBits
         self.valueStride = valueStride
 
     def __repr__(self) -> str:
+        """Return a debug representation of list-shape metadata."""
         return f'{self.__class__}({self.__dict__})'
 
 
@@ -1320,18 +1327,22 @@ class RemoteVariable(BaseVariable,rim.Variable):
 
     @property
     def numValues(self) -> int:
+        """Return the configured number of values for array variables."""
         return self._numValues()
 
     @property
     def valueBits(self) -> int:
+        """Return number of valid bits per array value."""
         return self._valueBits()
 
     @property
     def valueStride(self) -> int:
+        """Return bit-stride between adjacent array values."""
         return self._valueStride()
 
     @property
     def retryCount(self) -> int:
+        """Return transaction retry count for this variable."""
         return self._retryCount()
 
     @pr.expose
@@ -1780,57 +1791,71 @@ class LocalVariable(BaseVariable):
             raise e
 
     def __get__(self) -> Any:
+        """Return the current local-variable value without hardware read."""
         return self.get(read=False)
 
     def __iadd__(self, other: Any) -> LocalVariable:
+        """In-place add on the local variable value."""
         self._block._iadd(other)
         return self
 
     def __isub__(self, other: Any) -> LocalVariable:
+        """In-place subtract on the local variable value."""
         self._block._isub(other)
         return self
 
     def __imul__(self, other: Any) -> LocalVariable:
+        """In-place multiply on the local variable value."""
         self._block._imul(other)
         return self
 
     def __imatmul__(self, other: Any) -> LocalVariable:
+        """In-place matrix-multiply on the local variable value."""
         self._block._imatmul(other)
         return self
 
     def __itruediv__(self, other: Any) -> LocalVariable:
+        """In-place true-division on the local variable value."""
         self._block._itruediv(other)
         return self
 
     def __ifloordiv__(self, other: Any) -> LocalVariable:
+        """In-place floor-division on the local variable value."""
         self._block._ifloordiv(other)
         return self
 
     def __imod__(self, other: Any) -> LocalVariable:
+        """In-place modulo on the local variable value."""
         self._block._imod(other)
         return self
 
     def __ipow__(self, other: Any) -> LocalVariable:
+        """In-place exponentiation on the local variable value."""
         self._block._ipow(other)
         return self
 
     def __ilshift__(self, other: Any) -> LocalVariable:
+        """In-place left-shift on the local variable value."""
         self._block._ilshift(other)
         return self
 
     def __irshift__(self, other: Any) -> LocalVariable:
+        """In-place right-shift on the local variable value."""
         self._block._irshift(other)
         return self
 
     def __iand__(self, other: Any) -> LocalVariable:
+        """In-place bitwise-and on the local variable value."""
         self._block._iand(other)
         return self
 
     def __ixor__(self, other: Any) -> LocalVariable:
+        """In-place bitwise-xor on the local variable value."""
         self._block._ixor(other)
         return self
 
     def __ior__(self, other: Any) -> LocalVariable:
+        """In-place bitwise-or on the local variable value."""
         self._block._ior(other)
         return self
 
@@ -1921,6 +1946,7 @@ class LinkVariable(BaseVariable):
         self.__depBlocks = []
 
     def __getitem__(self, key: Any) -> Any:
+        """Return dependency by index/key from ``dependencies``."""
         # Allow dependencies to be accessed as indices of self
         return self.dependencies[key]
 
@@ -1988,6 +2014,7 @@ class LinkVariable(BaseVariable):
 
 
     def __getBlocks(self) -> list[pr.Block]:
+        """Collect dependency blocks recursively for this link variable."""
         b = []
         for d in self.dependencies:
             if isinstance(d, LinkVariable):
@@ -1998,6 +2025,7 @@ class LinkVariable(BaseVariable):
         return b
 
     def _finishInit(self) -> None:
+        """Resolve dependency blocks after tree attachment."""
         super()._finishInit()
         self.__depBlocks = self.__getBlocks()
 
@@ -2009,7 +2037,7 @@ class LinkVariable(BaseVariable):
     @pr.expose
     @property
     def pollInterval(self) -> float:
-
+        """Return the minimum non-zero poll interval across dependencies."""
         depIntervals = [dep.pollInterval for dep in self.dependencies if dep.pollInterval > 0]
         if len(depIntervals) == 0:
             return 0

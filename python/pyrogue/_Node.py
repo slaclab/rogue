@@ -190,6 +190,7 @@ class Node(object):
             self.addToGroup('Hidden')
 
     def __repr__(self) -> str:
+        """Return a concise class/path representation."""
         return f'{self.__class__} - {self.path}'
 
     @property
@@ -325,9 +326,11 @@ class Node(object):
 
 
     def __dir__(self) -> list[str]:
+        """Return default attributes plus child-node names."""
         return super().__dir__() + [k for k,v in self._nodes.items()]
 
     def __reduce__(self) -> tuple[Any, tuple[dict]]:
+        """Serialize virtual-node metadata for remote interfaces."""
         attr = {}
 
         attr['name']        = self._name
@@ -356,6 +359,7 @@ class Node(object):
         return (pr.interfaces.VirtualFactory, (attr,))
 
     def __contains__(self, item: Node) -> bool:
+        """Return True if ``item`` is a direct child node."""
         return item in self.nodes.values()
 
     def add(self, node: Node | Iterable[Node]) -> None:
@@ -394,7 +398,7 @@ class Node(object):
         self._nodes[node.name] = node
 
     def _addArrayNode(self, node: Node) -> None:
-
+        """Register ``name[idx]`` children in array lookup dictionaries."""
 
         # Generic test array method
         fields = re.split('\\]\\[|\\[|\\]',node.name)
@@ -701,6 +705,7 @@ class Node(object):
             Node types to include.
         """
         def closure(**kwargs: Any) -> None:
+            """Invoke the wrapped recursive method call."""
             self.callRecursive(func, nodeTypes, **kwargs)
         return closure
 
@@ -731,7 +736,8 @@ class Node(object):
         for grp in parent.groups:
             self.addToGroup(grp)
 
-    def _finishInit(self):
+    def _finishInit(self) -> None:
+        """Finish initialization recursively on child nodes."""
         for key,value in self._nodes.items():
             value._finishInit()
 

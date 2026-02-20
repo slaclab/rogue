@@ -37,6 +37,7 @@ SystemLogInit = '[]'
 class UpdateTracker(object):
     """Track grouped variable updates for root listeners."""
     def __init__(self, q: Any) -> None:
+        """Initialize update tracking state for one worker thread."""
         self._count = 0
         self._list = {}
         self._period = 0
@@ -65,6 +66,7 @@ class UpdateTracker(object):
         self._check()
 
     def _check(self) -> None:
+        """Flush queued updates when depth or period criteria are met."""
         if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
             if len(self._list) != 0:
                 #print(f"Update fired {time.time()}")
@@ -87,6 +89,7 @@ class UpdateTracker(object):
 class RootLogHandler(logging.Handler):
     """Listen to log entries and mirror them into root log variables."""
     def __init__(self,*, root: Any) -> None:
+        """Initialize a log handler bound to a Root instance."""
         logging.Handler.__init__(self)
         self._root = root
 
@@ -169,7 +172,7 @@ class Root(pr.Device):
         self.start()
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback) -> None:
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         """Root exit."""
         self.stop()
 
@@ -182,6 +185,7 @@ class Root(pr.Device):
                  initWrite: bool = False,
                  pollEn: bool = True,
                  maxLog: int = 1000) -> None:
+        """Initialize the root node, workers, and built-in variables/commands."""
         rogue.interfaces.stream.Master.__init__(self)
 
         # Store startup parameters
@@ -554,7 +558,8 @@ class Root(pr.Device):
         super().hardReset()
         self._clearLog()
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[Any, tuple[dict]]:
+        """Return reduced state used by virtual-client serialization."""
         return pr.Node.__reduce__(self)
 
     @ft.lru_cache(maxsize=None)
@@ -1100,6 +1105,7 @@ class Root(pr.Device):
 
     # Recursively add listeners to update list
     def _recurseAddListeners(self, nvars: dict[str, Any], var: Any) -> None:
+        """Collect listener variables recursively into an update dictionary."""
         for vl in var._listeners:
             nvars[vl.path] = vl
 

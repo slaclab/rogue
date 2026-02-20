@@ -244,6 +244,7 @@ class MemoryError(Exception):
         msg: str | None = None,
         size: int = 0,
     ) -> None:
+        """Initialize a memory-access exception message."""
 
         self._value = f'Memory Error for {name} at address {address:#08x}'
 
@@ -251,6 +252,7 @@ class MemoryError(Exception):
             self._value += " " + msg
 
     def __str__(self) -> str:
+        """Return the formatted exception string."""
         return repr(self._value)
 
 
@@ -286,6 +288,7 @@ class LocalBlock(object):
         maximum: Any | None,
         value: Any,
     ) -> None:
+        """Initialize the local block wrapper for a variable."""
         self._path      = variable.path
         self._mode      = variable.mode
         self._device    = variable.parent
@@ -307,6 +310,7 @@ class LocalBlock(object):
         self._localGetWrap = pr.functionWrapper(function=self._localGet, callArgs=['dev', 'var'])
 
     def __repr__(self) -> str:
+        """Return the block path representation."""
         return repr(self._path)
 
     @property
@@ -520,7 +524,7 @@ class LocalBlock(object):
             if self._enable:
                 self._variable._queueUpdate()
 
-    def _ior(self, other):
+    def _ior(self, other: Any) -> None:
         """In-place bitwise-or helper for local blocks."""
         with self._lock:
             self.set(None, self.get(None) | other)

@@ -94,10 +94,12 @@ def waitCntrlC() -> None:
     class monitorSignal(object):
         """ """
 
-        def __init__(self):
+        def __init__(self) -> None:
+            """Initialize signal-monitor state."""
             self.runEnable = True
 
-        def receiveSignal(self,*args):
+        def receiveSignal(self, *args: Any) -> None:
+            """Handle SIGTERM by stopping the wait loop."""
             print("Got SIGTERM, exiting")
             self.runEnable = False
 
@@ -210,6 +212,7 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
         pass
 
     def include_mapping(loader: yaml.Loader, node: Any) -> Any:
+        """Resolve and load a ``!include`` YAML reference."""
         rel = loader.construct_scalar(node)
 
         # Filename starts with absolute path
@@ -228,6 +231,7 @@ def yamlToData(stream: str = '', fName: str | None = None) -> Any:
         return yamlToData(fName=os.path.abspath(filename))
 
     def construct_mapping(loader: yaml.Loader, node: Any) -> odict:
+        """Construct mappings as ``OrderedDict`` to preserve key order."""
         loader.flatten_mapping(node)
         return odict(loader.construct_pairs(node))
 
@@ -275,6 +279,7 @@ def dataToYaml(data: Any) -> str:
         pass
 
     def _var_representer(dumper: yaml.Dumper, data: pr.VariableValue) -> Any:
+        """Represent ``VariableValue`` using display formatting and YAML typing."""
         if isinstance(data.value, bool):
             enc = 'tag:yaml.org,2002:bool'
         elif data.enum is not None:
@@ -292,6 +297,7 @@ def dataToYaml(data: Any) -> str:
             return dumper.represent_scalar(enc, data.valueDisp)
 
     def _dict_representer(dumper: yaml.Dumper, data: odict) -> Any:
+        """Represent ``OrderedDict`` values while preserving key order."""
         return dumper.represent_mapping(yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG, data.items())
 
     PyrogueDumper.add_representer(pr.VariableValue, _var_representer)
@@ -426,6 +432,7 @@ def functionWrapper(
     # Build a stable no-op wrapper for unset callbacks.
     if function is None:
         def _none_wrapper(*, function: Callable[..., Any] | None = None, **kwargs: Any) -> None:
+            """No-op callback used when no user function is configured."""
             return None
         return _none_wrapper
 
@@ -449,6 +456,7 @@ def functionWrapper(
         introspection_failed = True
 
     def _wrapper(*, function: Callable[..., Any], **kwargs: Any) -> Any:
+        """Invoke callback with only supported keyword arguments."""
         if function is None:
             return None
 

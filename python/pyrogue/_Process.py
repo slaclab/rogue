@@ -114,16 +114,30 @@ class Process(pr.Device):
         if self._retVar is not None and self._retVar not in self:
             self.add(self._retVar)
 
-    def _incrementSteps(self, incr):
+    def _incrementSteps(self, incr: int) -> None:
+        """Increment step counter and update progress.
+
+        Parameters
+        ----------
+        incr : int
+            Number of steps to add.
+        """
         with self.Step.lock:
             self.Step.set(self.Step.value() + incr)
         self.Progress.set(self.Step.value()/self.TotalSteps.value())
 
-    def _setSteps(self, value):
+    def _setSteps(self, value: int) -> None:
+        """Set absolute step counter and update progress.
+
+        Parameters
+        ----------
+        value : int
+            New step index.
+        """
         self.Step.set(value)
         self.Progress.set(self.Step.value()/self.TotalSteps.value())
 
-    def _startProcess(self):
+    def _startProcess(self) -> None:
         """ """
         with self._lock:
             if self.Running.value() is False:
@@ -133,12 +147,12 @@ class Process(pr.Device):
             else:
                 self._log.warning("Process already running!")
 
-    def _stopProcess(self):
+    def _stopProcess(self) -> None:
         """ """
         with self._lock:
             self._runEn  = False
 
-    def _stop(self):
+    def _stop(self) -> None:
         """ """
         self._stopProcess()
         pr.Device._stop(self)
@@ -164,7 +178,7 @@ class Process(pr.Device):
 
         return None
 
-    def _run(self):
+    def _run(self) -> None:
         """ """
         self.Running.set(True)
 
@@ -177,7 +191,7 @@ class Process(pr.Device):
 
         self.Running.set(False)
 
-    def _process(self):
+    def _process(self) -> None:
         """ """
 
         # User has provided a function Update status at start and end and call their function

@@ -34,6 +34,7 @@ class EnableVariable(pr.BaseVariable):
         Dependency variables that can disable this one.
     """
     def __init__(self, *, enabled: bool, deps: Iterable[pr.BaseVariable] | None = None) -> None:
+        """Initialize the enable-state variable."""
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',
@@ -208,7 +209,7 @@ class Device(pr.Node,rim.Hub):
         hubMax: int = 0,
         guiGroup: str | None = None,
     ) -> None:
-        """Initialize the device."""
+        """Initialize the device node and associated interfaces."""
         if name is None:
             name = self.__class__.__name__
 
@@ -300,7 +301,7 @@ class Device(pr.Node,rim.Hub):
         """Manage additional interfaces for start/stop."""
         self._ifAndProto.extend(interfaces)
 
-    def _start(self):
+    def _start(self) -> None:
         """ Called recursively from Root.start when starting """
         for intf in self._ifAndProto:
             if hasattr(intf,"_start"):
@@ -308,7 +309,7 @@ class Device(pr.Node,rim.Hub):
         for d in self.devices.values():
             d._start()
 
-    def _stop(self):
+    def _stop(self) -> None:
         """Called recursively from Root.stop when exiting"""
         for intf in self._ifAndProto:
             if hasattr(intf,"_stop"):
@@ -353,48 +354,16 @@ class Device(pr.Node,rim.Hub):
         if pack:
             varList = getattr(self, kwargs['name']).values()
 
-            def linkedSet(dev, var, val, write):
-                """
-
-
-                Parameters
-                ----------
-                dev :
-
-                var :
-
-                val :
-
-                write :
-
-
-                Returns
-                -------
-
-                """
+            def linkedSet(dev: Any, var: pr.LinkVariable, val: str, write: bool) -> None:
+                """Split a packed display string and write each element variable."""
                 if val == '':
                     return
                 values = reversed(val.split('_'))
                 for variable, value in zip(varList, values):
                     variable.setDisp(value, write=write)
 
-            def linkedGet(dev, var, read):
-                """
-
-
-                Parameters
-                ----------
-                dev :
-
-                var :
-
-                read :
-
-
-                Returns
-                -------
-
-                """
+            def linkedGet(dev: Any, var: pr.LinkVariable, read: bool) -> str:
+                """Join element display values into one packed underscore string."""
                 values = [v.getDisp(read=read) for v in varList]
                 return '_'.join(reversed(values))
 
@@ -657,16 +626,16 @@ class Device(pr.Node,rim.Hub):
         self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
-    def _updateBlockEnable(self):
-        """ """
+    def _updateBlockEnable(self) -> None:
+        """Propagate effective enable state to this device's blocks."""
         for block in self._blocks:
             block.setEnable(self.enable.value() is True)
 
         for key,value in self.devices.items():
             value._updateBlockEnable()
 
-    def _buildBlocks(self):
-        """ """
+    def _buildBlocks(self) -> None:
+        """Build and attach memory blocks for local/remote variables."""
         remVars = []
 
         # Use min block size, larger blocks can be pre-created
@@ -758,21 +727,8 @@ class Device(pr.Node,rim.Hub):
             self._blocks.append(newBlock)
             newBlock.setEnable(self.enable.value() is True)
 
-    def _rootAttached(self, parent, root):
-        """
-
-
-        Parameters
-        ----------
-        parent :
-
-        root :
-
-
-        Returns
-        -------
-
-        """
+    def _rootAttached(self, parent: pr.Node, root: pr.Root) -> None:
+        """Attach this device into the rooted tree and build variable blocks."""
         pr.Node._rootAttached(self, parent, root)
 
         for key,value in self._nodes.items():
@@ -788,18 +744,13 @@ class Device(pr.Node,rim.Hub):
                 for var in nodes:
                     var._default = defValue
 
-    def _setTimeout(self,timeout):
-        """
-        Set timeout value on all devices & blocks
+    def _setTimeout(self, timeout: float) -> None:
+        """Set transaction timeout on this device, blocks, and child devices.
 
         Parameters
         ----------
-        timeout :
-
-
-        Returns
-        -------
-
+        timeout : float
+            Timeout in seconds.
         """
 
         for block in self._blocks:
@@ -819,6 +770,7 @@ class Device(pr.Node,rim.Hub):
         ``cmd``, and ``arg``; the function may accept any subset.
         """
         def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            """Wrap and register a method as a LocalCommand."""
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
@@ -835,6 +787,7 @@ class Device(pr.Node,rim.Hub):
         ``read``, ``index``, and ``check``; the function may accept any subset.
         """
         def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            """Wrap and register a function as LinkVariable linkedGet."""
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
@@ -964,6 +917,7 @@ class ArrayDevice(Device):
         arrayArgs: Any | None = None,
         **kwargs: Any,
     ) -> None:
+        """Initialize and populate an array-style device container."""
         if 'name' not in kwargs:
             kwargs['name'] = f'{arrayClass.__name__}Array'
         super().__init__(**kwargs)

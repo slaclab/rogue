@@ -108,11 +108,13 @@ class ModelMeta(type):
     """Metaclass for the Model class.
     This metaclass is used to create a dictionary of subclasses of the Model class.
     """
-    def __init__(cls, *args, **kwargs):
+    def __init__(cls, *args: Any, **kwargs: Any) -> None:
+        """Initialize metaclass state for model-instance caching."""
         super().__init__(*args, **kwargs)
         cls.subclasses = {}
 
-    def __call__(cls, *args, **kwargs):
+    def __call__(cls, *args: Any, **kwargs: Any) -> Any:
+        """Return cached model instances for identical constructor arguments."""
         key = cls.__name__ + str(args) + str(kwargs)
 
         if key not in cls.subclasses:
@@ -179,6 +181,7 @@ class Model(object, metaclass=ModelMeta):
     modelId     = rim.PyFunc
 
     def __init__(self, bitSize: int, binPoint: int = 0) -> None:
+        """Initialize base model metadata."""
         self.binPoint = binPoint
         self.bitSize  = bitSize
         self.name     = self.__class__.__name__
@@ -268,6 +271,7 @@ class UInt(Model):
     modelId     = rim.UInt
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize unsigned-integer model metadata."""
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
         self.ndType = np.dtype(np.uint32) if bitSize <= 32 else np.dtype(np.uint64)
@@ -341,6 +345,7 @@ class UIntReversed(UInt):
     bitReverse = True
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize reversed-bit unsigned-integer model metadata."""
         super().__init__(bitSize)
         self.ndType = None
 
@@ -396,6 +401,7 @@ class Int(UInt):
     modelId     = rim.Int
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize signed-integer model metadata."""
         super().__init__(bitSize)
         self.ndType = np.dtype(np.int32) if bitSize <= 32 else np.dtype(np.int64)
 
@@ -512,6 +518,7 @@ class Bool(Model):
     modelId     = rim.Bool
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize boolean model metadata."""
         assert bitSize == 1, f"The bitSize param of Model {self.__class__.__name__} must be 1"
         super().__init__(bitSize)
         self.ndType = np.dtype(bool)
@@ -595,6 +602,7 @@ class String(Model):
     modelId     = rim.String
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize string model metadata."""
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}({self.bitSize//8})'
 
@@ -666,6 +674,7 @@ class Float(Model):
     modelId     = rim.Float
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize 32-bit float model metadata."""
         assert bitSize == 32, f"The bitSize param of Model {self.__class__.__name__} must be 32"
         super().__init__(bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
@@ -743,6 +752,7 @@ class Double(Float):
     modelId = rim.Double
 
     def __init__(self, bitSize: int) -> None:
+        """Initialize 64-bit float model metadata."""
         assert bitSize == 64, f"The bitSize param of Model {self.__class__.__name__} must be 64"
         Model.__init__(self,bitSize)
         self.name = f'{self.__class__.__name__}{self.bitSize}'
@@ -789,6 +799,7 @@ class Fixed(Model):
     modelId = rim.Fixed
 
     def __init__(self, bitSize: int, binPoint: int) -> None:
+        """Initialize signed fixed-point model metadata."""
         super().__init__(bitSize,binPoint)
         self.name = f'Fixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)
@@ -811,6 +822,7 @@ class UFixed(Model):
     modelId = rim.Fixed
 
     def __init__(self, bitSize: int, binPoint: int) -> None:
+        """Initialize unsigned fixed-point model metadata."""
         super().__init__(bitSize,binPoint)
         self.name = f'UFixed_{self.bitSize}_{self.binPoint}'
         self.ndType = np.dtype(np.float64)

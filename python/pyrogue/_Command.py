@@ -251,6 +251,7 @@ class BaseCommand(pr.BaseVariable):
             Values to write sequentially.
         """
         def toggle(cmd: BaseCommand) -> None:
+            """Write each configured toggle value to ``cmd``."""
             for s in sets:
                 cmd.set(s)
         return toggle
@@ -277,6 +278,7 @@ class BaseCommand(pr.BaseVariable):
             Value to write when the touch function is called.
         """
         def touch(cmd: BaseCommand) -> None:
+            """Write the captured fixed value to ``cmd``."""
             cmd.set(value)
         return touch
 
@@ -328,6 +330,7 @@ class BaseCommand(pr.BaseVariable):
             Value to post.
         """
         def postedTouch(cmd: BaseCommand) -> None:
+            """Post the captured fixed value to ``cmd`` asynchronously."""
             cmd.post(value)
         return postedTouch
 
