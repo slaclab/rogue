@@ -6,6 +6,9 @@ Model
 
 The Model class define a data type for use with a Block.
 
+For a usage-focused overview of how models are used within the PyRogue tree,
+see :ref:`pyrogue_tree_model`.
+
 .. autoclass:: pyrogue.Model
    :members:
    :member-order: bysource
