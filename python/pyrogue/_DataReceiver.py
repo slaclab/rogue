@@ -12,20 +12,39 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.stream as ris
-import pyrogue as pr
+from __future__ import annotations
+
+from typing import Any
+
 import numpy
+import pyrogue as pr
+import rogue.interfaces.stream as ris
 
 
 class DataReceiver(pr.Device,ris.Slave):
-    """Data Receiver Devicer."""
+    """Data receiver device.
+
+    Parameters
+    ----------
+    typeStr : str, optional (default = 'UInt8[np]')
+        Type string for the data variable.
+    hideData : bool, optional (default = True)
+        If True, hide the data variable in the GUI.
+    value : object, optional (default = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'))
+        Initial data value.
+    enableOnStart : bool, optional (default = True)
+        If True, enable Rx on start.
+    **kwargs : Any
+        Additional arguments forwarded to ``Device``.
+    """
 
     def __init__(self,
-                 typeStr='UInt8[np]',
-                 hideData=True,
-                 value=numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
-                 enableOnStart=True,
-                 **kwargs):
+                 typeStr: str = 'UInt8[np]',
+                 hideData: bool = True,
+                 value: Any = numpy.zeros(shape=1, dtype=numpy.uint8, order='C'),
+                 enableOnStart: bool = True,
+                 **kwargs: Any) -> None:
+        """Initialize the data receiver."""
 
         pr.Device.__init__(self, **kwargs)
         ris.Slave.__init__(self)
@@ -67,14 +86,14 @@ class DataReceiver(pr.Device,ris.Slave):
                                   hidden=hideData,
                                   description='Data Frame Container'))
 
-    def countReset(self):
-        """ """
+    def countReset(self) -> None:
+        """Reset receiver counters."""
         self.FrameCount.set(0)
         self.ErrorCount.set(0)
         self.ByteCount.set(0)
         super().countReset()
 
-    def _acceptFrame(self, frame):
+    def _acceptFrame(self, frame: ris.Frame) -> None:
         """
 
 
@@ -111,7 +130,7 @@ class DataReceiver(pr.Device,ris.Slave):
             self.process(frame)
 
 
-    def process(self,frame):
+    def process(self, frame: ris.Frame) -> None:
         """
         The user can use this method to process the data, by default a byte numpy array is generated
         This may include separating data, header and other payload sub-fields
@@ -119,7 +138,8 @@ class DataReceiver(pr.Device,ris.Slave):
 
         Parameters
         ----------
-        frame :
+        frame : rogue.interfaces.stream.Frame
+            Incoming frame to process.
 
 
         Returns
@@ -135,22 +155,24 @@ class DataReceiver(pr.Device,ris.Slave):
         self.Data.set(dat,write=True)
         self.Updated.set(True,write=True)
 
-    def _start(self):
+    def _start(self) -> None:
         """ """
         super()._start()
         self.RxEnable.set(value=self._enableOnStart)
 
-    def _stop(self):
+    def _stop(self) -> None:
         """ """
         self.RxEnable.set(value=False)
         super()._stop()
 
     # source >> destination
-    def __rshift__(self,other):
+    def __rshift__(self, other: Any) -> Any:
+        """Connect this receiver to a stream destination."""
         pr.streamConnect(self,other)
         return other
 
     # destination << source
-    def __lshift__(self,other):
+    def __lshift__(self, other: Any) -> Any:
+        """Connect a stream source to this receiver."""
         pr.streamConnect(other,self)
         return other

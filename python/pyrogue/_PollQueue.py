@@ -12,34 +12,54 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import sys
 import threading
 import datetime
 import itertools
 import heapq
-import rogue.interfaces.memory
+from typing import Any, Iterator
+
 import pyrogue as pr
+import rogue.interfaces.memory
 
 
 class PollQueueEntry(object):
-    """ """
-    def __init__(self, readTime, count, interval, block):
+    """Data class for a poll queue entry."""
+    def __init__(
+        self,
+        readTime: datetime.datetime,
+        count: int,
+        interval: datetime.timedelta,
+        block: Any,
+    ) -> None:
+        """Initialize a poll-scheduler queue entry."""
         self.readTime = readTime
         self.count    = count
         self.interval = interval
         self.block    = block
 
-    def __lt__(self,other):
+    def __lt__(self, other: PollQueueEntry) -> bool:
+        """Return heap ordering by scheduled read time."""
         return self.readTime < other.readTime
 
-    def __gt__(self,other):
+    def __gt__(self, other: PollQueueEntry) -> bool:
+        """Return reverse heap ordering by scheduled read time."""
         return self.readTime > other.readTime
 
 
 class PollQueue(object):
-    """ """
+    """Poll queue scheduler.
 
-    def __init__(self,*, root):
+    Parameters
+    ----------
+    root : object
+        Root object used for update grouping.
+    """
+
+    def __init__(self, *, root: pr.Root) -> None:
+        """Initialize the poll queue."""
         self._pq = [] # The heap queue
         self._entries = {} # {Block: Entry} mapping to look up if a block is already in the queue
         self._counter = itertools.count()
@@ -53,25 +73,25 @@ class PollQueue(object):
         # Setup logging
         self._log = pr.logInit(cls=self)
 
-    def _start(self):
-        """ """
+    def _start(self) -> None:
+        """Start the poll thread."""
         self._pollThread.start()
         self._log.info("PollQueue Started")
 
-    def _addEntry(self, block, interval):
-        """
+    def _addEntry(self, block: pr.Block, interval: float) -> None:
+        """Add an entry to the poll queue.
 
 
         Parameters
         ----------
-        block :
-
-        interval :
-
+        block : pr.Block
+            Block object to poll.
+        interval : float
+            Poll interval in seconds.
 
         Returns
         -------
-
+        None
         """
         with self._condLock:
             timedelta = datetime.timedelta(seconds=interval)
@@ -85,30 +105,25 @@ class PollQueue(object):
             # Wake up the thread
             self._condLock.notify()
 
-    def _blockIncrement(self):
-        """ """
+    def _blockIncrement(self) -> None:
+        """Increment block count to pause poll activity in critical sections."""
         with self._condLock:
             self.blockCount += 1
             self._condLock.notify()
 
-    def _blockDecrement(self):
-        """ """
+    def _blockDecrement(self) -> None:
+        """Decrement block count and wake poll thread if needed."""
         with self._condLock:
             self.blockCount -= 1
             self._condLock.notify()
 
-    def updatePollInterval(self, var):
-        """
-
+    def updatePollInterval(self, var: pr.BaseVariable) -> None:
+        """Update polling interval for a variable.
 
         Parameters
         ----------
-        var :
-
-
-        Returns
-        -------
-
+        var : pr.BaseVariable
+            Variable whose poll interval changed.
         """
         with self._condLock:
             self._log.debug(f'updatePollInterval {var} - {var._pollInterval}')
@@ -142,7 +157,7 @@ class PollQueue(object):
             elif var.pollInterval > 0:
                 self._addEntry(var._block, var.pollInterval)
 
-    def _poll(self):
+    def _poll(self) -> None:
         """Run by the poll thread"""
         while True:
 
@@ -205,20 +220,20 @@ class PollQueue(object):
                             pr.logException(self._log,e)
 
 
-    def _expiredEntries(self, time=None):
+    def _expiredEntries(self, time: datetime.datetime | None = None) -> Iterator[PollQueueEntry]:
         """
         An iterator of all entries that expire by a given time.
-        Use datetime.now() if no time provided. Each entry is popped from the queue before being
-        yielded by the iterator
+        Use datetime.datetime.now() if no time provided.
+        Each entry is popped from the queue before being yielded by the iterator
 
         Parameters
         ----------
-        time :
-             (Default value = None)
+        time : datetime.datetime, optional
+            Time cutoff to use; defaults to ``datetime.datetime.now()``.
 
         Returns
         -------
-
+        Iterator of expired entries
         """
         with self._condLock:
             if time is None:
@@ -229,37 +244,38 @@ class PollQueue(object):
                     yield entry
 
 
-    def peek(self):
-        """ """
+    def peek(self) -> PollQueueEntry | None:
+        """Return (but don't pop) the top entry in the queue. """
         with self._condLock:
             if self.empty() is False:
                 return self._pq[0]
             else:
                 return None
 
-    def empty(self):
-        """ """
+    def empty(self) -> bool:
+        """Return True of queue is empty, else False """
         with self._condLock:
             return len(self._pq)==0
 
-    def _stop(self):
-        """ """
+    def _stop(self) -> None:
+        """Stop the poll queue stread """
         with self._condLock:
             self._run = False
             self._condLock.notify()
 
-    def pause(self, value):
-        """
+    def pause(self, value: bool) -> None:
+        """Pause or unpause the poll queue
 
 
         Parameters
         ----------
-        value :
+        value : bool
+            True for pause, False for unpause
 
 
         Returns
         -------
-
+        None
         """
         if value is True:
             with self._condLock:
@@ -270,7 +286,7 @@ class PollQueue(object):
                 self._condLock.notify()
 
 
-    def paused(self):
-        """ """
+    def paused(self) -> bool:
+        """Check pause state """
         with self._condLock:
             return self._pause

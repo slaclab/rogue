@@ -4,10 +4,11 @@
 PrbsTx Device Class
 ===================
 
-PrbsTx is a subclass of :ref:`Device <pyrogue_tree_node_device>`.
+:py:class:`pyrogue.utilities.prbs.PrbsTx` is a PRBS transmitter device wrapper.
 
-* Pyrogue Device wrapper around rogue::utilities::Prbs for TX path
-* Exposes Prbs transmitter methods as Variables & Commands
+It exposes TX controls and counters through variables/commands such as
+``txEnable``, ``txSize``, ``txPeriod``, ``genFrame``, and throughput/error
+counters.
 
 PrbsTx Class Documentation
 ==========================

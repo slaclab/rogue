@@ -12,37 +12,75 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory
-import pyrogue as pr
+from __future__ import annotations
+
 import inspect
 import threading
+from typing import Any, Callable, Iterable
+
+import pyrogue as pr
+import rogue.interfaces.memory
 
 
 class CommandError(Exception):
-    """
-    Exception for command errors.
-    """
+    """Raised when command execution or verification fails."""
     pass
 
 
 class BaseCommand(pr.BaseVariable):
-    """ """
+    """Base class for PyRogue commands.
 
-    def __init__(self, *,
-                 name=None,
-                 description="",
-                 value=0,
-                 retValue=None,
-                 enum=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 function=None,
-                 background=False,
-                 guiGroup=None,
-                 **kwargs):
+    Parameters
+    ----------
+    name : str, optional
+        Command name.
+    description : str, optional (default = "")
+        Human-readable description.
+    value : object, optional (default = 0)
+        Default command value.
+    retValue : object, optional
+        Example return value used to infer display type.
+    enum : dict, optional
+        Mapping from object values to display strings.
+    hidden : bool, optional (default = False)
+        If True, add the command to the ``Hidden`` group.
+    groups : list[str], optional
+        Groups to assign.
+    minimum : object, optional
+        Minimum allowed value.
+    maximum : object, optional
+        Maximum allowed value.
+    function : callable, optional
+        Callback executed when the command is invoked. The wrapper provides
+        keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
+        callback may accept any subset of these names.
+        Default to no-op for command if None.
+    background : bool, optional (default = False)
+        Reserved for background execution.
+    guiGroup : str, optional
+        GUI grouping label.
+    **kwargs : Any
+        Additional arguments forwarded to ``BaseVariable``.
+    """
 
+    def __init__(
+        self,
+        *,
+        name: str | None = None,
+        description: str = "",
+        value: Any = 0,
+        retValue: Any | None = None,
+        enum: dict[object, str] | None = None,
+        hidden: bool = False,
+        groups: list[str] | None = None,
+        minimum: Any | None = None,
+        maximum: Any | None = None,
+        function: Callable[..., Any] | None = None,
+        background: bool = False,
+        guiGroup: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize a command variable."""
         pr.BaseVariable.__init__(
             self,
             name=name,
@@ -82,31 +120,35 @@ class BaseCommand(pr.BaseVariable):
 
     @pr.expose
     @property
-    def arg(self):
-        """ """
+    def arg(self) -> bool:
+        """Return True if the command accepts an argument."""
         return self._arg
 
     @pr.expose
     @property
-    def retTypeStr(self):
-        """ """
+    def retTypeStr(self) -> str | None:
+        """Return the display string for the return type."""
         return self._retTypeStr
 
-    def __call__(self,arg=None):
-        return self._doFunc(arg)
-
-    def _doFunc(self,arg):
-        """
-        Execute command: TODO: Update comments
+    def __call__(self, arg: Any = None) -> Any:
+        """Invoke the command.
 
         Parameters
         ----------
-        arg :
+        arg : object, optional
+            Command argument. If ``None``, uses the default value.
+        """
+        return self._doFunc(arg)
 
+    def _doFunc(self, arg: Any) -> Any:
+        """Execute command callback.
 
-        Returns
-        -------
+        Execute command: TODO: Update comments.
 
+        Parameters
+        ----------
+        arg : object
+            Command argument.
         """
         if (self.parent.enable.value() is not True):
             return
@@ -133,91 +175,66 @@ class BaseCommand(pr.BaseVariable):
             raise e
 
     @pr.expose
-    def call(self,arg=None):
-        """
-
+    def call(self, arg: Any = None) -> Any:
+        """Invoke the command and return the raw result.
 
         Parameters
         ----------
-        arg : str
-             (Default value = None)
-
-        Returns
-        -------
-
+        arg : object, optional
+            Command argument.
         """
         return self.__call__(arg)
 
     @pr.expose
-    def callDisp(self,arg=None):
-        """
-
+    def callDisp(self, arg: Any = None) -> str:
+        """Invoke the command and return the display-formatted result.
 
         Parameters
         ----------
-        arg : str
-             (Default value = None)
-
-        Returns
-        -------
-
+        arg : object, optional
+            Command argument.
         """
         return self.genDisp(self.__call__(arg),useDisp=self._retDisp)
 
     @staticmethod
-    def nothing():
-        """ """
+    def nothing() -> None:
+        """No-op command handler."""
         pass
 
     @staticmethod
-    def read(cmd):
-        """
-
+    def read(cmd: BaseCommand) -> None:
+        """Read the command variable.
 
         Parameters
         ----------
-        cmd :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to read.
         """
         cmd.get(read=True)
 
     @staticmethod
-    def setArg(cmd, arg):
-        """
-
+    def setArg(cmd: BaseCommand, arg: Any) -> None:
+        """Set the command argument.
 
         Parameters
         ----------
-        cmd :
-
-        arg :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to write.
+        arg : object
+            Value to write.
         """
         cmd.set(arg)
 
     @staticmethod
-    def setAndVerifyArg(cmd, arg):
-        """
-
+    def setAndVerifyArg(cmd: BaseCommand, arg: Any) -> None:
+        """Set the argument and verify by reading it back.
 
         Parameters
         ----------
-        cmd :
-
-        arg :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to write.
+        arg : object
+            Value to write and verify.
         """
         cmd.set(arg)
         ret = cmd.get()
@@ -225,98 +242,56 @@ class BaseCommand(pr.BaseVariable):
             raise CommandError(f'Verification failed for {cmd.path}. \nSet to {arg} but read back {ret}')
 
     @staticmethod
-    def createToggle(sets):
-        """
-
+    def createToggle(sets: Iterable[Any]) -> Callable[[BaseCommand], None]:
+        """Create a toggle function that iterates over provided values.
 
         Parameters
         ----------
-        sets :
-
-
-        Returns
-        -------
-
+        sets : iterable
+            Values to write sequentially.
         """
-        def toggle(cmd):
-            """
-
-
-            Parameters
-            ----------
-            cmd :
-
-
-            Returns
-            -------
-
-            """
+        def toggle(cmd: BaseCommand) -> None:
+            """Write each configured toggle value to ``cmd``."""
             for s in sets:
                 cmd.set(s)
         return toggle
 
     @staticmethod
-    def toggle(cmd):
-        """
-
+    def toggle(cmd: BaseCommand) -> None:
+        """Toggle a command by writing 1 then 0.
 
         Parameters
         ----------
-        cmd :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to toggle.
         """
         cmd.set(1)
         cmd.set(0)
 
     @staticmethod
-    def createTouch(value):
-        """
-
+    def createTouch(value: Any) -> Callable[[BaseCommand], None]:
+        """Create a touch function that writes a fixed value.
 
         Parameters
         ----------
-        value :
-
-
-        Returns
-        -------
-
+        value : object
+            Value to write when the touch function is called.
         """
-        def touch(cmd):
-            """
-
-
-            Parameters
-            ----------
-            cmd :
-
-
-            Returns
-            -------
-
-            """
+        def touch(cmd: BaseCommand) -> None:
+            """Write the captured fixed value to ``cmd``."""
             cmd.set(value)
         return touch
 
     @staticmethod
-    def touch(cmd, arg):
-        """
-
+    def touch(cmd: BaseCommand, arg: Any) -> None:
+        """Touch the command with a provided argument or 1.
 
         Parameters
         ----------
-        cmd :
-
-        arg :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to touch.
+        arg : object
+            Value to write. If ``None``, writes ``1``.
         """
         if arg is not None:
             cmd.set(arg)
@@ -324,207 +299,125 @@ class BaseCommand(pr.BaseVariable):
             cmd.set(1)
 
     @staticmethod
-    def touchZero(cmd):
-        """
-
+    def touchZero(cmd: BaseCommand) -> None:
+        """Touch the command with 0.
 
         Parameters
         ----------
-        cmd :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to touch.
         """
         cmd.set(0)
 
     @staticmethod
-    def touchOne(cmd):
-        """
-
+    def touchOne(cmd: BaseCommand) -> None:
+        """Touch the command with 1.
 
         Parameters
         ----------
-        cmd :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to touch.
         """
         cmd.set(1)
 
     @staticmethod
-    def createPostedTouch(value):
-        """
-
+    def createPostedTouch(value: Any) -> Callable[[BaseCommand], None]:
+        """Create a posted touch function for asynchronous writes.
 
         Parameters
         ----------
-        value :
-
-
-        Returns
-        -------
-
+        value : object
+            Value to post.
         """
-        def postedTouch(cmd):
-            """
-
-
-            Parameters
-            ----------
-            cmd :
-
-
-            Returns
-            -------
-
-            """
+        def postedTouch(cmd: BaseCommand) -> None:
+            """Post the captured fixed value to ``cmd`` asynchronously."""
             cmd.post(value)
         return postedTouch
 
     @staticmethod
-    def postedTouch(cmd, arg):
-        """
-
+    def postedTouch(cmd: BaseCommand, arg: Any) -> None:
+        """Post a command value without waiting for completion.
 
         Parameters
         ----------
-        cmd :
-
-        arg :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to post.
+        arg : object
+            Value to post.
         """
         cmd.post(arg)
 
     @staticmethod
-    def postedTouchOne(cmd):
-        """
-
+    def postedTouchOne(cmd: BaseCommand) -> None:
+        """Post a value of 1.
 
         Parameters
         ----------
-        cmd :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to post.
         """
         cmd.post(1)
 
     @staticmethod
-    def postedTouchZero(cmd):
-        """
-
+    def postedTouchZero(cmd: BaseCommand) -> None:
+        """Post a value of 0.
 
         Parameters
         ----------
-        cmd :
-
-
-        Returns
-        -------
-
+        cmd : BaseCommand
+            Command to post.
         """
         cmd.post(0)
 
-    def replaceFunction(self, function):
-        """
-
+    def replaceFunction(self, function: Callable[..., Any]) -> None:
+        """Replace the command callback function.
 
         Parameters
         ----------
-        function :
-
-
-        Returns
-        -------
-
+        function : callable
+            New callback for this command. The wrapper provides keyword
+            arguments ``root``, ``dev``, ``cmd``, and ``arg``; the callback
+            may accept any subset of these names.
         """
         self._function = function
         self._functionWrap = pr.functionWrapper(function=self._function, callArgs=['root', 'dev', 'cmd', 'arg'])
 
-    def _setDict(self,d,writeEach,modes,incGroups,excGroups,keys):
-        """
-
-
-        Parameters
-        ----------
-        d :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-        keys :
-
-
-        Returns
-        -------
-
-        """
+    def _setDict(
+        self,
+        d: dict[Any, Any],
+        writeEach: bool,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        keys: Any = None,
+    ) -> None:
+        """Commands do not support dict writes."""
         pass
 
-    def _getDict(self,modes,incGroups,excGroups,properties):
-        """
-
-
-        Parameters
-        ----------
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
-
-        """
+    def _getDict(
+        self,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        properties: Any = None,
+    ) -> None:
+        """Commands do not support dict reads."""
         return None
 
-    def get(self,read=True, index=-1):
-        """
-
+    def get(self, read: bool = True, index: int = -1) -> Any:
+        """Return the cached command argument value.
 
         Parameters
         ----------
-        read : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
-
+        read : bool, optional (default = True)
+            Unused for commands.
+        index : int, optional (default = -1)
+            Unused for commands.
         """
         return self._default
 
-    def _genDocs(self,file):
-        """
-
-
-        Parameters
-        ----------
-        file :
-
-
-        Returns
-        -------
-
-        """
+    def _genDocs(self, file: Any) -> None:
+        """Emit Sphinx documentation for this command."""
         print(f".. topic:: {self.path}",file=file)
 
         print('',file=file)
@@ -545,26 +438,71 @@ LocalCommand = BaseCommand
 
 
 class RemoteCommand(BaseCommand, pr.RemoteVariable):
-    """ """
+    """Remote command backed by a memory-mapped variable.
 
-    def __init__(self, *,
-                 name,
-                 description='',
-                 value=None,
-                 retValue=None,
-                 enum=None,
-                 hidden=False,
-                 groups=None,
-                 minimum=None,
-                 maximum=None,
-                 function=None,
-                 base=pr.UInt,
-                 offset=None,
-                 bitSize=32,
-                 bitOffset=0,
-                 overlapEn=False,
-                 guiGroup=None,
-                 **kwargs):
+    Parameters
+    ----------
+    name : str
+        Command name.
+    description : str, optional (default = "")
+        Human-readable description.
+    value : object, optional
+        Default value.
+    retValue : object, optional
+        Example return value used to infer display type.
+    enum : dict, optional
+        Mapping from object values to display strings.
+    hidden : bool, optional (default = False)
+        If True, add the command to the ``Hidden`` group.
+    groups : list[str], optional
+        Groups to assign.
+    minimum : object, optional
+        Minimum allowed value.
+    maximum : object, optional
+        Maximum allowed value.
+    function : callable, optional
+        Callback executed when the command is invoked. The wrapper provides
+        keyword arguments ``root``, ``dev``, ``cmd``, and ``arg``; the
+        callback may accept any subset of these names.
+        Default to no-op for command if None.
+    base : object, optional (default = ``pr.UInt``)
+        Base data type for the underlying remote variable.
+    offset : int, optional
+        Memory offset.
+    bitSize : int, optional (default = 32)
+        Bit width of the value.
+    bitOffset : int, optional (default = 0)
+        Bit offset of the value.
+    overlapEn : bool, optional (default = False)
+        Allow overlapping remote variables.
+    guiGroup : str, optional
+        GUI grouping label.
+    **kwargs : Any
+        Additional arguments forwarded to ``RemoteVariable``.
+    """
+
+    def __init__(
+        self,
+        *,
+        name: str,
+        description: str = '',
+        value: Any = None,
+        retValue: Any = None,
+        enum: dict[object, str] | None = None,
+        hidden: bool = False,
+        groups: list[str] | None = None,
+        minimum: Any | None = None,
+        maximum: Any | None = None,
+        function: Callable[..., Any] | None = None,
+        base: Any = pr.UInt,
+        offset: int | None = None,
+        bitSize: int = 32,
+        bitOffset: int = 0,
+        overlapEn: bool = False,
+        guiGroup: str | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize a remote command."""
 
         # RemoteVariable constructor will handle assignment of most params
         BaseCommand.__init__(
@@ -596,24 +534,17 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             guiGroup=guiGroup,
             **kwargs)
 
-    def set(self, value, *,  index=-1, write=True):
-        """
-
+    def set(self, value: Any, *,  index: int = -1, write: bool = True) -> None:
+        """Write a value to the remote command variable.
 
         Parameters
         ----------
-        value :
-
-        * :
-
-        index : int
-             (Default value = -1)
-        write : bool
-             (Default value = True)
-
-        Returns
-        -------
-
+        value : object
+            Value to write.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        write : bool, optional (default = True)
+            If True, perform a hardware write transaction.
         """
         self._log.debug("{}.set({})".format(self, value))
         try:
@@ -627,22 +558,20 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             raise e
 
 
-    def get(self, *, index=-1, read=True):
-        """
-
+    def get(self, *, index: int = -1, read: bool = True) -> Any:
+        """Read a value from the remote command variable.
 
         Parameters
         ----------
-        * :
-
-        index : int
-             (Default value = -1)
-        read : bool
-             (Default value = True)
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        read : bool, optional (default = True)
+            If True, perform a hardware read transaction.
 
         Returns
         -------
-
+        object
+            Retrieved value.
         """
         try:
             if read:
@@ -654,19 +583,8 @@ class RemoteCommand(BaseCommand, pr.RemoteVariable):
             pr.logException(self._log,e)
             raise e
 
-    def _genDocs(self,file):
-        """
-
-
-        Parameters
-        ----------
-        file :
-
-
-        Returns
-        -------
-
-        """
+    def _genDocs(self, file: Any) -> None:
+        """Emit Sphinx documentation for this remote command."""
         BaseCommand._genDocs(self,file)
 
         for a in ['offset', 'bitSize', 'bitOffset', 'varBytes']:

@@ -12,6 +12,8 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
+from __future__ import annotations
+
 import sys
 import os
 import glob
@@ -20,7 +22,6 @@ import rogue.interfaces.memory as rim
 import threading
 import logging
 import pyrogue as pr
-import pyrogue.interfaces.stream
 import functools as ft
 import time
 import queue
@@ -29,42 +30,43 @@ import zipfile
 import traceback
 import datetime
 from contextlib import contextmanager
+from typing import Any, Callable, Iterator
 
 SystemLogInit = '[]'
 
 class UpdateTracker(object):
-    """
-    """
-    def __init__(self,q):
+    """Track grouped variable updates for root listeners."""
+    def __init__(self, q: Any) -> None:
+        """Initialize update tracking state for one worker thread."""
         self._count = 0
         self._list = {}
         self._period = 0
         self._last = time.time()
         self._q = q
 
-    def increment(self, period):
+    def increment(self, period: float) -> None:
         """
+        Increment active update-group depth.
 
         Parameters
         ----------
-        period : int
-            default value period = 0
-
-        Returns
-        -------
+        period : float, optional (default = 0)
+            Maximum group flush period in seconds.
         """
 
         if self._count == 0 or self._period < period:
             self._period = period
         self._count +=1
 
-    def decrement(self):
+    def decrement(self) -> None:
+        """Decrement active update-group depth."""
         if self._count != 0:
             self._count -= 1
 
         self._check()
 
-    def _check(self):
+    def _check(self) -> None:
+        """Flush queued updates when depth or period criteria are met."""
         if self._count == 0 or (self._period != 0 and (time.time() - self._last) > self._period):
             if len(self._list) != 0:
                 #print(f"Update fired {time.time()}")
@@ -72,40 +74,31 @@ class UpdateTracker(object):
                 self._q.put(self._list)
                 self._list = {}
 
-    def update(self,var):
+    def update(self, var: pr.BaseVariable) -> None:
         """
-
+        Queue a variable update.
 
         Parameters
         ----------
-        var :
-
-
-        Returns
-        -------
-
+        var : pr.BaseVariable
+            Variable object that was updated.
         """
         self._list[var.path] = var
         self._check()
 
 class RootLogHandler(logging.Handler):
-    """Class to listen to log entries and add them to syslog variable"""
-    def __init__(self,*, root):
+    """Listen to log entries and mirror them into root log variables."""
+    def __init__(self,*, root: Any) -> None:
+        """Initialize a log handler bound to a Root instance."""
         logging.Handler.__init__(self)
         self._root = root
 
-    def emit(self,record):
+    def emit(self, record: logging.LogRecord) -> None:
         """
-
-
         Parameters
         ----------
-        record :
-
-
-        Returns
-        -------
-
+        record : logging.LogRecord
+            Logging record to store in ``SystemLog``.
         """
 
         if not self._root.running:
@@ -151,44 +144,48 @@ class RootLogHandler(logging.Handler):
 
 class Root(pr.Device):
     """
-    Class which serves as the root of a tree of nodes.
+    Class which serves as the root of a tree of Nodes.
     The root is the interface point for tree level access and updates.
-    The root is a stream master which generates frames containing tree
-    configuration and status values. This allows configuration and status
-    to be stored in data files.
 
-    Attributes
+    Parameters
     ----------
-    rogue.interfaces.stream.Master :
-
-
-    pr.Device :
-
-    Returns
-    -------
-
+    name : str, optional
+        Root name. Defaults to class name.
+    description : str, optional (default = "")
+        Human-readable description.
+    expand : bool, optional (default = True)
+        Default GUI expand state.
+    timeout : float, optional (default = 1.0)
+        Transaction timeout in seconds.
+    initRead : bool, optional (default = False)
+        Perform an initial read on start.
+    initWrite : bool, optional (default = False)
+        Perform an initial write on start.
+    pollEn : bool, optional (default = True)
+        Enable polling on start.
+    maxLog : int, optional (default = 1000)
+        Maximum log entries to retain.
     """
 
-    def __enter__(self):
+    def __enter__(self) -> Root:
         """Root enter."""
         self.start()
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
         """Root exit."""
         self.stop()
 
     def __init__(self, *,
-                 name=None,
-                 description='',
-                 expand=True,
-                 timeout=1.0,
-                 initRead=False,
-                 initWrite=False,
-                 pollEn=True,
-                 maxLog=1000):
-
-        """Init the node with passed attributes"""
+                 name: str | None = None,
+                 description: str = '',
+                 expand: bool = True,
+                 timeout: float = 1.0,
+                 initRead: bool = False,
+                 initWrite: bool = False,
+                 pollEn: bool = True,
+                 maxLog: int = 1000) -> None:
+        """Initialize the root node, workers, and built-in variables/commands."""
         rogue.interfaces.stream.Master.__init__(self)
 
         # Store startup parameters
@@ -356,8 +353,11 @@ class Root(pr.Device):
         #                         description='Exit the server application'))
 
 
-    def start(self):
-        """Setup the tree. Start the polling thread."""
+    def start(self) -> None:
+        """Setup the tree and start background threads for pollQueue and updateQueue.
+        Call Device._start() recursively on child Nodes.
+
+        """
 
         if self._running:
             raise pr.NodeError("Root is already started! Can't restart!")
@@ -429,8 +429,10 @@ class Root(pr.Device):
         self.PollEn.set(self._pollEn)
 
 
-    def stop(self):
-        """Stop the polling thread. Must be called for clean exit."""
+    def stop(self) -> None:
+        """Stop background threads. Must be called for clean exit.
+        Call Device._stop() to recursively stop all Devices in the tree.
+        """
 
         self._running = False
         self._updateQueue.put(None)
@@ -443,46 +445,70 @@ class Root(pr.Device):
 
     @pr.expose
     @property
-    def running(self):
-        """
-        """
+    def running(self) -> bool:
+        """Return True if the root is running."""
         return self._running
 
-    def addVarListener(self,func,*,done=None,incGroups=None,excGroups=None):
+    def addVarListener(
+        self,
+        func: Callable[[str, pr.VariableValue], None],
+        *,
+        done: Callable[[], None] | None = None,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> None:
         """
         Add a variable update listener function.
-        The variable and value structure will be passed as args: func(path,varValue)
+        The variable path and value are passed as ``func(path, varValue)``.
 
         Parameters
         ----------
-        func :
-        done :
-        incGroups :
-        excGroups :
-
-        Returns
-        -------
+        func : callable
+            Listener callback of the form ``func(path, varValue)`` where
+            ``path`` is a full variable path and ``varValue`` is a
+            :py:class:`pyrogue.VariableValue`.
+        done : callable, optional
+            Optional callback of the form ``done()`` executed after each update
+            batch.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
         """
 
         with self._varListenLock:
-            self._varListeners.append((func,done,incGroups,excGroups))
+            self._varListeners.append((func, done, incGroups, excGroups))
 
-    def _addVarListenerCpp(self, func, done):
-        self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
-
-    @contextmanager
-    def updateGroup(self, period=0):
-        """
-
+    def _addVarListenerCpp(
+        self,
+        func: Callable[[str, str], None],
+        done: Callable[[], None],
+    ) -> None:
+        """Add a listener callback using display-string values.
 
         Parameters
         ----------
-        period :
-             (Default value = 0)
+        func : callable
+            Callback of the form ``func(path, valueDisp)``.
+        done : callable
+            Callback of the form ``done()`` called after each batch.
+        """
 
-        Returns
-        -------
+        self.addVarListener(lambda path, varValue: func(path, varValue.valueDisp), done=done)
 
+    @contextmanager
+    def updateGroup(self, period: float = 0) -> Iterator[None]:
+        """Get a context manager within which many Variable updates will be broadcast as one.
+
+        Functions that operate on and set() more than one Variable should do so within a Root.updateGroup() context.
+        This will reduce the number of update broadcasts that the Root has to make.
+
+        The optional 'period' parameter will allow broadcasts of the state every 'period' seconds, useful for long running functions.
+
+        Parameters
+        ----------
+        period : float, optional (default = 0)
+            Maximum update period in seconds.
         """
         tid = threading.get_ident()
 
@@ -502,8 +528,9 @@ class Root(pr.Device):
             self._updateTrack[tid].decrement()
 
     @contextmanager
-    def pollBlock(self):
+    def pollBlock(self) -> Iterator[None]:
         """
+        Context manager that blocks poll activity while active.
         """
 
         # At with call
@@ -518,31 +545,36 @@ class Root(pr.Device):
             self._pollQueue._blockDecrement()
 
     @pr.expose
-    def waitOnUpdate(self):
+    def waitOnUpdate(self) -> None:
         """Wait until all update queue items have been processed."""
         self._updateQueue.join()
 
-    def hardReset(self):
-        """Generate a hard reset on all devices"""
+    def hardReset(self) -> None:
+        """Generate a hard reset on all devices.
+
+        Called recursively on the entire tree.
+
+        """
         super().hardReset()
         self._clearLog()
 
-    def __reduce__(self):
+    def __reduce__(self) -> tuple[Any, tuple[dict]]:
+        """Return reduced state used by virtual-client serialization."""
         return pr.Node.__reduce__(self)
 
     @ft.lru_cache(maxsize=None)
-    def getNode(self,path):
-        """
-
+    def getNode(self, path: str) -> pr.Node:
+        """Get a Node of the tree by its path string
 
         Parameters
         ----------
-        path :
-
+        path : str
+            Node path. Accepts absolute dotted path, root name, or ``root``.
 
         Returns
         -------
-
+        pr.Node or None
+            Located node object, or ``None`` if no node matches.
         """
         obj = self
 
@@ -563,20 +595,13 @@ class Root(pr.Device):
         return obj
 
     @pr.expose
-    def saveAddressMap(self,fname):
-        """
-
+    def saveAddressMap(self, fname: str) -> None:
+        """Dump the tree address map to a file
 
         Parameters
         ----------
-        fname :
-
-        headerEn :
-             (Default value = False)
-
-        Returns
-        -------
-
+        fname : str
+            Destination file path.
         """
 
         # First form header
@@ -649,22 +674,22 @@ class Root(pr.Device):
                 f.write(line + '\n')
 
     @pr.expose
-    def saveVariableList(self,fname,polledOnly=False,incGroups=None):
-        """
-
+    def saveVariableList(
+        self,
+        fname: str,
+        polledOnly: bool = False,
+        incGroups: str | list[str] | None = None,
+    ) -> None:
+        """Save a string representing the entire tree
 
         Parameters
         ----------
-        fname :
-
-        polledOnly : bool
-             (Default value = False)
-        incGroups :
-             (Default value = None)
-
-        Returns
-        -------
-
+        fname : str
+            Destination file path.
+        polledOnly : bool, optional (default = False)
+            If True, include only polled variables.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
         """
         with open(fname,'w') as f:
             f.write("Path\t")
@@ -685,18 +710,16 @@ class Root(pr.Device):
                     f.write("{}\t".format(v.groups))
                     f.write("{}\n".format(v.description))
 
-    def _hbeatWorker(self):
-        """
-        """
+    def _hbeatWorker(self) -> None:
+        """Heartbeat worker which updates the ``Time`` variable."""
         while self._running:
             time.sleep(1)
 
             with self.updateGroup():
                 self.Time.set(time.time())
 
-    def _rootAttached(self):
-        """
-        """
+    def _rootAttached(self) -> None:
+        """Attach root references to the full node tree."""
         self._parent = self
         self._root   = self
         self._path   = self.name
@@ -710,8 +733,8 @@ class Root(pr.Device):
         for v in self.variables.values():
             v._finishInit()
 
-    def _write(self):
-        """Write all blocks"""
+    def _write(self) -> bool:
+        """Write and verify all blocks."""
         self._log.info("Start root write")
         with self.pollBlock(), self.updateGroup():
             self.writeBlocks(force=self.ForceWrite.value(), recurse=True)
@@ -723,8 +746,8 @@ class Root(pr.Device):
         self._log.info("Done root write")
         return True
 
-    def _read(self):
-        """Read all blocks"""
+    def _read(self) -> bool:
+        """Read and check all blocks."""
         self._log.info("Start root read")
         with self.pollBlock(), self.updateGroup():
             self.readBlocks(recurse=True)
@@ -735,30 +758,40 @@ class Root(pr.Device):
         return True
 
     @pr.expose
-    def saveYaml(self,name,readFirst,modes,incGroups,excGroups,autoPrefix,autoCompress):
+    def saveYaml(
+        self,
+        name: str | None,
+        readFirst: bool,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        autoPrefix: str = '',
+        autoCompress: bool = False,
+    ) -> bool:
         """
-        Save YAML configuration/status to a file. Called from command
+        Save YAML configuration or status to a file.
 
         Parameters
         ----------
-        name :
-
-        readFirst :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-        autoPrefix :
-
-        autoCompress :
-
+        name : str, optional
+            Destination file path. If empty, a timestamped name is generated.
+        readFirst : bool
+            Read values from hardware before exporting.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
+        autoPrefix : str, optional
+            Prefix for auto-generated filenames.
+        autoCompress : bool, optional
+            Generate a ``.zip`` file when auto-generating names. Default False
 
         Returns
         -------
-
+        bool
+            Returns ``True`` when export completes.
         """
 
         # Auto generate name if no arg
@@ -781,26 +814,34 @@ class Root(pr.Device):
         return True
 
 
-    def loadYaml(self,name,writeEach,modes,incGroups,excGroups):
+    def loadYaml(
+        self,
+        name: str | list[str],
+        writeEach: bool,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> bool:
         """
-        Load YAML configuration from a file. Called from command
+        Load YAML configuration from files or directories.
 
         Parameters
         ----------
-        name :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
+        name : str or list[str]
+            Input file, directory, zip-path, or list of those entries.
+        writeEach : bool
+            Write each variable as it is applied.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
 
         Returns
         -------
-
+        bool
+            Returns ``True`` when load completes.
         """
 
         # Pass arg is a python list
@@ -874,39 +915,88 @@ class Root(pr.Device):
 
         return True
 
-    def treeDict(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None):
-        d = self._getDict(modes, incGroups, excGroups, properties=True)
-        return {self.name: d}
-
-    def treeYaml(self, modes=['RW', 'RO', 'WO'], incGroups=None, excGroups=None, properties=None):
-        return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
-
-    def setYaml(self,yml,writeEach,modes,incGroups,excGroups):
+    def treeDict(
+        self,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        properties: bool = True,
+    ) -> dict[str, Any]:
         """
-        Set variable values from a yaml file
-        modes is a list of variable modes to act on.
-        writeEach is set to true if accessing a single variable at a time.
-        Writes will be performed as each variable is updated. If set to
-        false a bulk write will be performed after all of the variable updates
-        are completed. Bulk writes provide better performance when updating a large
-        quantity of variables.
+        Return the root tree as a dictionary.
 
         Parameters
         ----------
-        yml :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group names to include.
+        excGroups : str or list[str], optional
+            Group names to exclude.
+        properties : bool, optional (default = True)
+            Include variable property fields.
 
         Returns
         -------
+        dict[str, object]
+            Dictionary keyed by root name with tree data.
+        """
+        d = self._getDict(modes, incGroups, excGroups, properties=properties)
+        return {self.name: d}
 
+    def treeYaml(
+        self,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+        properties: bool | None = None,
+    ) -> str:
+        """
+        Return the root tree as YAML text.
+
+        Parameters
+        ----------
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW', 'RO', 'WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group names to include.
+        excGroups : str or list[str], optional
+            Group names to exclude.
+        properties : bool, optional
+            Include variable property fields. If ``None``, defaults to ``True``.
+
+        Returns
+        -------
+        str
+            YAML representation of the root tree.
+        """
+        if properties is None:
+            properties = True
+        return pr.dataToYaml(self.treeDict(modes, incGroups, excGroups, properties))
+
+    def setYaml(
+        self,
+        yml: str,
+        writeEach: bool,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> None:
+        """
+        Set variable values from YAML text.
+
+        Parameters
+        ----------
+        yml : str
+            YAML text containing values to apply.
+        writeEach : bool
+            Write each variable as it is applied.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
         """
         d = pr.yamlToData(yml)
 
@@ -919,22 +1009,28 @@ class Root(pr.Device):
         if self.InitAfterConfig.value():
             self.initialize()
 
-    def remoteVariableDump(self,name,modes,readFirst):
+    def remoteVariableDump(
+        self,
+        name: str | None,
+        modes: list[str],
+        readFirst: bool,
+    ) -> bool:
         """
         Dump remote variable values to a file.
 
         Parameters
         ----------
-        name :
-
-        modes :
-
-        readFirst :
-
+        name : str, optional
+            Destination file path. If empty, a timestamped name is generated.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        readFirst : bool
+            Read values from hardware before dumping.
 
         Returns
         -------
-
+        bool
+            Returns ``True`` when dump completes.
         """
 
         # Auto generate name if no arg
@@ -952,26 +1048,27 @@ class Root(pr.Device):
         return True
 
 
-    def _setDictRoot(self,d,writeEach,modes,incGroups,excGroups):
+    def _setDictRoot(
+        self,
+        d: dict[str, Any],
+        writeEach: bool,
+        modes: list[str],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> None:
         """
-
-
         Parameters
         ----------
-        d :
-
-        writeEach :
-
-        modes :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
-
+        d : dict[str, object]
+            Root-level dictionary to apply.
+        writeEach : bool
+            Write each variable as it is applied.
+        modes : list['RW' | 'WO' | 'RO']
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
         """
         for key, value in d.items():
 
@@ -985,23 +1082,17 @@ class Root(pr.Device):
                 self._log.error("Entry {} not found".format(key))
 
 
-    def _clearLog(self):
-        """Clear the system log"""
+    def _clearLog(self) -> None:
+        """Clear the system log."""
         self.SystemLog.set(SystemLogInit)
         self.SystemLogLast.set('')
 
-    def _queueUpdates(self,var):
+    def _queueUpdates(self, var: Any) -> None:
         """
-
-
         Parameters
         ----------
-        var :
-
-
-        Returns
-        -------
-
+        var : object
+            Variable object queued for listener update.
         """
         tid = threading.get_ident()
 
@@ -1013,15 +1104,16 @@ class Root(pr.Device):
                 self._updateTrack[tid].update(var)
 
     # Recursively add listeners to update list
-    def _recurseAddListeners(self, nvars, var):
+    def _recurseAddListeners(self, nvars: dict[str, Any], var: Any) -> None:
+        """Collect listener variables recursively into an update dictionary."""
         for vl in var._listeners:
             nvars[vl.path] = vl
 
             self._recurseAddListeners(nvars, vl)
 
     # Worker thread
-    def _updateWorker(self):
-        """ """
+    def _updateWorker(self) -> None:
+        """Update-thread worker for variable notifications."""
         self._log.info("Starting update thread")
 
         while True:

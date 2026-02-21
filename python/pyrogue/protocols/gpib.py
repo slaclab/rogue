@@ -21,14 +21,28 @@
 #    pip install gpib_ctypes
 
 from gpib_ctypes import Gpib # pip install gpib_ctypes
-import rogue.interfaces.memory
 import pyrogue
+import rogue.interfaces.memory
 import queue
 import threading
+from typing import Any
+
 
 class GpibController(rogue.interfaces.memory.Slave):
-    def __init__(self, *, gpibAddr, gpibBoard=0, timeout=Gpib.gpib.T1s):
-        """
+    """
+    GPIB-based memory slave interface for SCPI-style instrument control.
+
+    Translates memory-mapped read/write transactions into GPIB SCPI commands
+    using variable 'key' attributes as command prefixes.
+
+    Parameters
+    ----------
+    gpibAddr : int
+        GPIB primary address of the device.
+    gpibBoard : int, optional
+        GPIB interface board number.
+    timeout : object, optional
+        GPIB timeout constant.
         Possible Timeout Values:
             T1000s
             T300s
@@ -48,8 +62,16 @@ class GpibController(rogue.interfaces.memory.Slave):
             T30us
             T10us
             TNONE
-        """
-        super().__init__(1,4096)
+    """
+
+    def __init__(
+        self,
+        *,
+        gpibAddr: int,
+        gpibBoard: int = 0,
+        timeout: Any = Gpib.gpib.T1s,
+    ) -> None:
+        super().__init__(1, 4096)
 
         self._log = pyrogue.logInit(cls=self, name=f'GPIB.{gpibBoard}.{gpibAddr}')
         self._gpib = Gpib.Gpib(gpibBoard,gpibAddr,0,timeout)
@@ -59,17 +81,21 @@ class GpibController(rogue.interfaces.memory.Slave):
         self._workerThread.start()
         self._map = {}
 
-    def _addVariable(self, var):
+    def _addVariable(self, var: pyrogue.RemoteVariable) -> None:
+        """Register a variable for GPIB translation by offset."""
         self._map[var.offset] = var
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """Stop the worker thread."""
         self._workerQueue.put(None)
         self._workerThread.join()
 
-    def _doTransaction(self, transaction):
+    def _doTransaction(self, transaction: rogue.interfaces.memory.Transaction) -> None:
+        """Queue a memory transaction for the worker thread."""
         self._workerQueue.put(transaction)
 
-    def _worker(self):
+    def _worker(self) -> None:
+        """Worker thread that processes GPIB transactions."""
         while True:
             transaction = self._workerQueue.get()
 
@@ -121,18 +147,44 @@ class GpibController(rogue.interfaces.memory.Slave):
 
 
 class GpibDevice(pyrogue.Device):
+    """
+    PyRogue Device wrapper for GPIB instruments.
 
-    def __init__(self, *, gpibAddr, gpibBoard=0, timeout=11, **kwargs):
+    Provides a Device interface with automatic protocol and variable registration
+    for GPIB-controlled instruments using SCPI-style commands.
+
+    Parameters
+    ----------
+    gpibAddr : int
+        GPIB primary address of the instrument.
+    gpibBoard : int, optional
+        GPIB interface board number.
+    timeout : int, optional
+        Timeout value for GPIB operations.
+    **kwargs : Any
+        Additional arguments passed to :class:`pyrogue.Device`.
+    """
+
+    def __init__(
+        self,
+        *,
+        gpibAddr: int,
+        gpibBoard: int = 0,
+        timeout: int = 11,
+        **kwargs: Any,
+    ) -> None:
         self._gpib = GpibController(gpibAddr=gpibAddr, gpibBoard=gpibBoard, timeout=timeout)
         pyrogue.Device.__init__(self, memBase=self._gpib, **kwargs)
         self.addProtocol(self._gpib)
         self._nextAddr = 0
 
     @property
-    def nextAddr(self):
+    def nextAddr(self) -> int:
+        """Get the next available address for variable registration."""
         return self._nextAddr
 
-    def add(self, node):
+    def add(self, node: pyrogue.Node) -> None:
+        """Add a node and register GPIB variables that have a 'key' attribute."""
         super().add(node)
         if node.getExtraAttribute('key') is not None:
             self._gpib._addVariable(node)

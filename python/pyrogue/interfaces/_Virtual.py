@@ -18,35 +18,72 @@ import rogue.interfaces
 import pickle
 import time
 import threading
+from typing import Any, Callable
 
 
 class VirtualProperty(object):
-    def __init__(self, node, attr):
+    """Descriptor for virtual properties that fetch values from a remote client.
+
+    Parameters
+    ----------
+    node : VirtualNode
+        Virtual node instance owning this property.
+    attr : str
+        Attribute name to fetch from the remote.
+    """
+
+    def __init__(self, node: "VirtualNode", attr: str) -> None:
         self._attr = attr
         self._node = node
 
-    def __get__(self, obj=None, objtype=None):
+    def __get__(self, obj: Any = None, objtype: Any = None) -> Any:
+        """Fetch attribute value from the remote client."""
         return self._node._client._remoteAttr(self._node._path, self._attr)
 
-    def __set__(self, obj, value):
+    def __set__(self, obj: Any, value: Any) -> None:
+        """No-op setter; virtual properties are read-only."""
         pass
 
 
 class VirtualMethod(object):
-    def __init__(self, node, attr, info):
+    """Descriptor for virtual methods that invoke remote calls.
+
+    Parameters
+    ----------
+    node : VirtualNode
+        Virtual node instance owning this method.
+    attr : str
+        Attribute name to invoke on the remote.
+    info : dict[str, Any]
+        Method metadata including ``args`` and ``kwargs``.
+    """
+
+    def __init__(self, node: "VirtualNode", attr: str, info: dict[str, Any]) -> None:
         self._attr   = attr
         self._node   = node
         self._args   = info['args']
         self._kwargs = info['kwargs']
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        """Invoke the remote attribute with the given arguments."""
         return self._node._client._remoteAttr(self._node._path, self._attr, *args, **kwargs)
 
 
-def VirtualFactory(data):
+def VirtualFactory(data: dict[str, Any]) -> Any:
+    """Create a virtual class instance from serialized node data.
 
-    def __init__(self,data):
+    Parameters
+    ----------
+    data : dict
+        Serialized node data including 'funcs', 'props', 'bases', 'class', etc.
 
+    Returns
+    -------
+    Any
+        Instantiated virtual node with dynamic methods and properties.
+    """
+
+    def __init__(self, data: dict[str, Any]) -> None:
         # Add dynamic methods
         for k,v in data['funcs'].items():
             setattr(self.__class__,k,VirtualMethod(self,k,v))
@@ -76,7 +113,16 @@ def VirtualFactory(data):
 
 
 class VirtualNode(pr.Node):
-    def __init__(self, attrs):
+    """Virtual proxy node populated from remote tree metadata.
+
+    Parameters
+    ----------
+    attrs : dict[str, Any]
+        Serialized node attributes including ``name``, ``description``,
+        ``path``, ``class``, ``bases``, and ``nodes``.
+    """
+
+    def __init__(self, attrs: dict[str, Any]) -> None:
         super().__init__(name=attrs['name'],
                          description=attrs['description'],
                          expand=attrs['expand'],
@@ -98,30 +144,50 @@ class VirtualNode(pr.Node):
         # Setup logging
         self._log = pr.logInit(cls=self,name=self.name,path=self._path)
 
-    def addToGroup(self,group):
+    def addToGroup(self, group: str) -> None:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('addToGroup not supported in VirtualNode')
 
-    def removeFromGroup(self,group):
+    def removeFromGroup(self, group: str) -> None:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('removeFromGroup not supported in VirtualNode')
 
-    def add(self,node):
+    def add(self, node: "VirtualNode") -> None:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('add not supported in VirtualNode')
 
-    def callRecursive(self, func, nodeTypes=None, **kwargs):
+    def callRecursive(self, func: Callable[..., Any], nodeTypes: Any = None, **kwargs: Any) -> None:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('callRecursive not supported in VirtualNode')
 
-    def __getattr__(self, name):
+    def __getattr__(self, name: str) -> Any:
+        """Lazy-load children on first access, then resolve as a child attribute."""
         if not self._loaded:
             self._loadNodes()
         return pr.Node.__getattr__(self,name)
 
     @property
-    def nodes(self):
+    def nodes(self) -> dict[str, Any]:
+        """Child nodes keyed by name."""
         if not self._loaded:
             self._loadNodes()
         return self._nodes
 
-    def node(self, name, load=True):
+    def node(self, name: str, load: bool = True) -> "VirtualNode | None":
+        """Return child node by name, optionally loading children first.
+
+        Parameters
+        ----------
+        name : str
+            Child node name.
+        load : bool, optional (default = True)
+            If True, load child nodes before lookup.
+
+        Returns
+        -------
+        Any
+            Child node or None if not found.
+        """
         if (not self._loaded) and load:
             self._loadNodes()
 
@@ -130,21 +196,26 @@ class VirtualNode(pr.Node):
         else:
             return None
 
-    def _call(self, *args, **kwargs):
+    def _call(self, *args: Any, **kwargs: Any) -> Any:
+        """Invoke remote __call__ on this node."""
         return self._client._remoteAttr(self._path, '__call__', *args, **kwargs)
 
-    def _addListener(self, listener):
+    def _addListener(self, listener: Callable[..., Any]) -> None:
+        """Add a variable update listener."""
         if listener not in self._functions:
             self._functions.append(listener)
 
-    def _delListener(self, listener):
+    def _delListener(self, listener: Callable[..., Any]) -> None:
+        """Remove a variable update listener."""
         if listener in self._functions:
             self._functions.remove(listener)
 
-    def _addVarListener(self,func):
+    def _addVarListener(self, func: Callable[..., Any]) -> None:
+        """Forward addVarListener to the client."""
         self._client._addVarListener(func)
 
-    def _loadNodes(self):
+    def _loadNodes(self) -> None:
+        """Populate child nodes from remote metadata."""
         self._loaded = True
 
         for k,node in self._client._remoteAttr(self._path, 'nodes').items():
@@ -156,7 +227,21 @@ class VirtualNode(pr.Node):
                 self._nodes[k] = node
                 self._addArrayNode(node)
 
-    def _getNode(self,path,load=True):
+    def _getNode(self, path: str, load: bool = True) -> "VirtualNode | None":
+        """Resolve a dotted path to a node.
+
+        Parameters
+        ----------
+        path : str
+            Dotted path (e.g. 'root.Child.GrandChild').
+        load : bool, optional (default = True)
+            If True, load child nodes as needed.
+
+        Returns
+        -------
+        Any
+            Node at path or None if not found.
+        """
         obj = self
 
         if '.' in path:
@@ -175,23 +260,50 @@ class VirtualNode(pr.Node):
 
         return obj
 
-    def isinstance(self,typ):
+    def isinstance(self, typ: type["VirtualNode"]) -> bool:
+        """Check if this node's type string matches the given type."""
         cs = str(typ)
         return cs in self._bases
 
-    def _rootAttached(self,parent,root):
+    def _rootAttached(self, parent: "VirtualNode", root: "VirtualNode") -> None:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('_rootAttached not supported in VirtualNode')
 
-    def _getDict(self,modes):
+    def _getDict(self, modes: list[str]) -> Any:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('_getDict not supported in VirtualNode')
 
-    def _setDict(self,*args,**kwargs):
+    def _setDict(self, *args: Any, **kwargs: Any) -> None:
+        """Not supported; raises NodeError."""
         raise pr.NodeError('_setDict not supported in VirtualNode')
 
-    def printYaml(self, readFirst=False, modes=['RW','RO','WO'], incGroups=None, excGroups=['Hidden'], recurse=False):
+    def printYaml(
+        self,
+        readFirst: bool = False,
+        modes: list[str] = ['RW', 'RO', 'WO'],
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = ['Hidden'],
+        recurse: bool = False,
+    ) -> None:
+        """Print remote YAML with selected access modes.
+
+        Parameters
+        ----------
+        readFirst : bool, optional (default = False)
+            If ``True``, perform a read before generating YAML output.
+        modes : list['RW' | 'WO' | 'RO'], optional (default = ['RW','RO','WO'])
+            Variable modes to include. Allowed values are ``'RW'``, ``'WO'``, and ``'RO'``.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
+        recurse : bool, optional (default = False)
+            If ``True``, include child nodes recursively.
+        """
         print(self.getYaml(readFirst=readFirst, modes=modes, incGroups=incGroups, excGroups=excGroups, recurse=recurse))
 
-    def _doUpdate(self, val):
+    def _doUpdate(self, val: Any) -> None:
+        """Notify listeners of a value update."""
         for func in self._functions:
             func(self.path,val)
 
@@ -224,7 +336,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
     """
     ClientCache = {}
 
-    def __new__(cls, addr="localhost", port=9099):
+    def __new__(cls: type["VirtualClient"], addr: str = "localhost", port: int = 9099) -> "VirtualClient":
+        """Return cached client instances keyed by ``(addr, port)``."""
         newHash = hash((addr, port))
 
         if newHash in cls.ClientCache:
@@ -232,7 +345,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         else:
             return super(VirtualClient, cls).__new__(cls, addr, port)
 
-    def __init__(self, addr="localhost", port=9099):
+    def __init__(self, addr: str = "localhost", port: int = 9099) -> None:
         if hash((addr,port)) in VirtualClient.ClientCache:
             return
 
@@ -285,7 +398,7 @@ class VirtualClient(rogue.interfaces.ZmqClient):
         self._monThread = threading.Thread(target=self._monWorker)
         self._monThread.start()
 
-    def addLinkMonitor(self, function):
+    def addLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
         Add a link monitor callback function. This function will be called
         any time the link state changes. A single boolean argument will be passed to
@@ -293,29 +406,31 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         Parameters
         ----------
-        function : obj
-            Call back function with the form function(linkState)
+        function : callable
+            Callback function with the form ``function(linkState: bool)``.
         """
         if function not in self._monitors:
             self._monitors.append(function)
 
-    def remLinkMonitor(self, function):
+    def remLinkMonitor(self, function: Callable[[bool], None]) -> None:
         """
         Remove a previously added link monitor function.
 
         Parameters
         ----------
-        function : obj
-            Call back function
+        function : callable
+            Previously registered callback function.
         """
         if function in self._monitors:
             self._monitors.remove(function)
 
     @property
-    def linked(self):
+    def linked(self) -> bool:
+        """Whether the client is currently linked to the server."""
         return self._link
 
-    def _monWorker(self):
+    def _monWorker(self) -> None:
+        """Monitor link heartbeat and emit link-state callbacks."""
         while self._monEnable:
             time.sleep(1)
 
@@ -332,7 +447,8 @@ class VirtualClient(rogue.interfaces.ZmqClient):
                     mon(self._link)
 
 
-    def _remoteAttr(self, path, attr, *args, **kwargs):
+    def _remoteAttr(self, path: str, attr: str, *args: Any, **kwargs: Any) -> Any:
+        """Invoke a remote attribute on the server."""
         try:
             ret = pickle.loads(self._send(pickle.dumps({ 'path':path, 'attr':attr, 'args':args, 'kwargs':kwargs })))
         except Exception as e:
@@ -343,11 +459,13 @@ class VirtualClient(rogue.interfaces.ZmqClient):
 
         return ret
 
-    def _addVarListener(self,func):
+    def _addVarListener(self, func: Callable[..., Any]) -> None:
+        """Register a variable update listener."""
         if func not in self._varListeners:
             self._varListeners.append(func)
 
-    def _doUpdate(self,data):
+    def _doUpdate(self, data: bytes) -> None:
+        """Process variable update data from the server."""
         self._ltime = time.time()
 
         if self._root is None:
@@ -364,24 +482,31 @@ class VirtualClient(rogue.interfaces.ZmqClient):
             for func in self._varListeners:
                 func(k,val)
 
-    def stop(self):
+    def stop(self) -> None:
+        """Stop the monitor thread and release resources."""
         self._monEnable = False
 
     @property
-    def root(self):
+    def root(self) -> "VirtualNode":
+        """Return the connected virtual root node."""
         return self._root
 
-    def __hash__(self):
+    def __hash__(self) -> int:
+        """Hash based on host and port."""
         return hash((self._host, self._port))
 
-    def __eq__(self, other):
+    def __eq__(self, other: "VirtualClient") -> bool:
+        """Compare by host and port."""
         return (self.host, self.port) == (other._host, other._port)
 
-    def __ne__(self, other):
+    def __ne__(self, other: "VirtualClient") -> bool:
+        """Compare by host and port."""
         return not (self == other)
 
-    def __enter__(self):
+    def __enter__(self) -> "VirtualClient":
+        """Return self for context-manager use."""
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Stop monitoring when leaving context-manager scope."""
         self.stop()
