@@ -93,13 +93,13 @@ class EpicsPvHandler(p4p.server.thread.Handler):
     ----------
     valType : str
         EPICS value type string (for example ``'i'``, ``'f'``, ``'enum'``).
-    var : pr.BaseVariable
+    var : pyrogue.BaseVariable
         PyRogue variable/command bound to the PV.
     log : object
         Logger instance.
     """
 
-    def __init__(self, valType: str, var: pr.BaseVariable, log: Any) -> None:
+    def __init__(self, valType: str, var: pyrogue.BaseVariable, log: Any) -> None:
         self._valType = valType
         self._var = var
         self._log = log
@@ -388,7 +388,7 @@ class EpicsPvServer(object):
         self,
         *,
         base: str,
-        root: pr.Root,
+        root: pyrogue.Root,
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = None,
         pvMap: dict[str, str] | None = None,

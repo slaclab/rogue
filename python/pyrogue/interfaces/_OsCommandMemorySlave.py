@@ -76,14 +76,14 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
             except Exception as msg:
                 transaction.error(f"Transaction read error in command at {address:#08x}: {msg}")
 
-    def command(self, addr: int, base: pr.Model) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def command(self, addr: int, base: pyrogue.Model) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         """Decorator to register a function as a command at the given address.
 
         Parameters
         ----------
         addr : int
             Memory-mapped address for this command.
-        base : pr.Model
+        base : pyrogue.Model
             Object with fromBytes/toBytes for argument serialization.
 
         Returns
