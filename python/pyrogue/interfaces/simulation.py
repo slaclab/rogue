@@ -17,12 +17,21 @@ import threading
 import pyrogue
 import rogue.interfaces.stream
 import zmq
+from typing import Any, Callable
 
 
 class SideBandSim():
+    """Sideband simulator using paired ZMQ sockets.
 
-    def __init__(self,host,port):
+    Parameters
+    ----------
+    host : str
+        Hostname or IP address.
+    port : int
+        Base sideband port.
+    """
 
+    def __init__(self, host: str, port: int) -> None:
         self._log = pyrogue.logInit(cls=self, name=f'{host}.{port}')
 
         self._ctx = zmq.Context()
@@ -39,16 +48,33 @@ class SideBandSim():
         self._recvThread = threading.Thread(target=self._recvWorker)
         self._recvThread.start()
 
-    def _defaultRecvCb(self, opCode, remData):
+    def _defaultRecvCb(self, opCode: int | None, remData: int | None) -> None:
+        """Default callback that prints received opCode and remData."""
         if opCode is not None:
             print(f'Received opCode: {opCode:02x}')
         if remData is not None:
             print(f'Received remData: {remData:02x}')
 
-    def setRecvCb(self, cbFunc):
+    def setRecvCb(self, cbFunc: Callable[[int | None, int | None], Any]) -> None:
+        """Set the callback for received sideband data.
+
+        Parameters
+        ----------
+        cbFunc : callable
+            Callback of the form ``cbFunc(opCode, remData)``.
+        """
         self._recvCb = cbFunc
 
-    def send(self,opCode=None, remData=None):
+    def send(self, opCode: int | None = None, remData: int | None = None) -> None:
+        """Send opCode and/or remData on the sideband channel.
+
+        Parameters
+        ----------
+        opCode : int, optional
+            Operation code to send.
+        remData : int, optional
+            Remote data byte to send.
+        """
         ba = bytearray(4)
         if opCode is not None:
             ba[0] = 0x01
@@ -60,18 +86,22 @@ class SideBandSim():
         self._sbPush.send(ba)
         self._log.debug(f'Sent opCode: {opCode} remData: {remData}')
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """Stop the receive thread."""
         with self._lock:
             self._log.debug('Stopping receive thread')
             self._run = False
 
-    def __enter__(self):
+    def __enter__(self) -> "SideBandSim":
+        """Return self for context-manager use."""
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Stop receive worker on context-manager exit."""
         self._stop()
 
-    def _recvWorker(self):
+    def _recvWorker(self) -> None:
+        """Worker thread that receives sideband data and invokes the callback."""
         while True:
             # Exit thread when stop() called
             with self._lock:
@@ -100,24 +130,48 @@ class SideBandSim():
 
 
 class Pgp2bSim():
-    def __init__(self, vcCount, host, port):
+    """Simulated PGP2B with virtual channels and sideband.
+
+    Parameters
+    ----------
+    vcCount : int
+        Number of virtual channels.
+    host : str
+        Host address.
+    port : int
+        Base port number.
+    """
+
+    def __init__(self, vcCount: int, host: str, port: int) -> None:
         # virtual channels
         self.vc = [rogue.interfaces.stream.TcpClient(host, p) for p in range(port, port+(vcCount*2), 2)]
 
         # sideband
         self.sb = SideBandSim(host, port+8)
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """Stop the sideband simulation."""
         self.sb._stop()
 
-    def __enter__(self):
+    def __enter__(self) -> "Pgp2bSim":
+        """Return self for context-manager use."""
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Stop simulator resources on context-manager exit."""
         self._stop()
 
 
-def connectPgp2bSim(pgpA, pgpB):
+def connectPgp2bSim(pgpA: "Pgp2bSim", pgpB: "Pgp2bSim") -> None:
+    """Connect two PGP2B simulators bidirectionally.
+
+    Parameters
+    ----------
+    pgpA : Pgp2bSim
+        First PGP2B simulator.
+    pgpB : Pgp2bSim
+        Second PGP2B simulator.
+    """
     for a,b in zip(pgpA.vc, pgpB.vc):
         pyrogue.streamConnectBiDir(a, b)
 
@@ -126,8 +180,25 @@ def connectPgp2bSim(pgpA, pgpB):
 
 
 class MemEmulate(rogue.interfaces.memory.Slave):
+    """In-memory emulation of a memory slave device.
 
-    def __init__(self, *, minWidth=4, maxSize=0xFFFFFFFF, dropCount=0):
+    Parameters
+    ----------
+    minWidth : int, optional
+        Minimum access width in bytes.
+    maxSize : int, optional
+        Maximum transaction size in bytes.
+    dropCount : int, optional
+        Number of transactions to drop before accepting (for testing).
+    """
+
+    def __init__(
+        self,
+        *,
+        minWidth: int = 4,
+        maxSize: int = 0xFFFFFFFF,
+        dropCount: int = 0,
+    ) -> None:
         rogue.interfaces.memory.Slave.__init__(self,4,4)
         self._minWidth = minWidth
         self._maxSize  = maxSize
@@ -137,16 +208,20 @@ class MemEmulate(rogue.interfaces.memory.Slave):
         self._count = 0
         self._dropCount = dropCount
 
-    def _checkRange(self, address, size):
+    def _checkRange(self, address: int, size: int) -> int:
+        """Check if address range is valid. Returns 0 for valid."""
         return 0
 
-    def _doMaxAccess(self):
+    def _doMaxAccess(self) -> int:
+        """Return maximum access size."""
         return self._maxSize
 
-    def _doMinAccess(self):
+    def _doMinAccess(self) -> int:
+        """Return minimum access width."""
         return self._minWidth
 
-    def _doTransaction(self,transaction):
+    def _doTransaction(self, transaction: Any) -> None:
+        """Process a memory read or write transaction."""
         address = transaction.address()
         size    = transaction.size()
         type    = transaction.type()

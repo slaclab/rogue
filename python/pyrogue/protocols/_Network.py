@@ -17,11 +17,51 @@ import rogue.protocols.udp
 import rogue.protocols.rssi
 import rogue.protocols.packetizer
 import time
+from typing import Any
 
 
 class UdpRssiPack(pr.Device):
+    """
+    UDP-based network device with RSSI and Packetizer protocols.
 
-    def __init__(self,*, port, host='127.0.0.1', jumbo=False, wait=True, packVer=1, pollInterval=1, enSsi=True, server=False, **kwargs):
+    Combines UDP transport with reliable stream protocol (rUDP) and packetizer
+    for communication over network links.
+
+    Parameters
+    ----------
+    port : int
+        UDP port number for the connection.
+    host : str, optional
+        Host address.
+    jumbo : bool, optional
+        Enable jumbo frames.
+    wait : bool, optional
+        Wait for link-up before finishing start.
+    packVer : int, optional
+        Packetizer version (1 or 2).
+    pollInterval : int, optional
+        Poll interval in seconds for status variables.
+    enSsi : bool, optional
+        Enable SSI in the packetizer.
+    server : bool, optional
+        Run as server instead of client.
+    **kwargs : Any
+        Additional arguments passed to :class:`pyrogue.Device`.
+    """
+
+    def __init__(
+        self,
+        *,
+        port: int,
+        host: str = '127.0.0.1',
+        jumbo: bool = False,
+        wait: bool = True,
+        packVer: int = 1,
+        pollInterval: int = 1,
+        enSsi: bool = True,
+        server: bool = False,
+        **kwargs: Any,
+    ) -> None:
         super(self.__class__, self).__init__(**kwargs)
 
         # Local copy host/port arg values
@@ -284,13 +324,28 @@ class UdpRssiPack(pr.Device):
             function    = lambda: self._rssi._start()
         ))
 
-    def application(self,dest):
+    def application(self, dest: int) -> rogue.protocols.packetizer.Application:
+        """
+        Get the application interface for connecting to a destination.
+
+        Parameters
+        ----------
+        dest : object
+            Destination protocol/device to connect to.
+
+        Returns
+        -------
+        object
+            Application interface for the packetizer.
+        """
         return self._pack.application(dest)
 
-    def countReset(self):
+    def countReset(self) -> None:
+        """Reset RSSI connection counters."""
         self._rssi.resetCounters()
 
-    def _start(self):
+    def _start(self) -> None:
+        """Start RSSI/UDP transport and optionally wait for link-up."""
         # Start the RSSI connection
         self._rssi._start()
 
@@ -321,7 +376,8 @@ class UdpRssiPack(pr.Device):
 
         super()._start()
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """Stop the UDP/RSSI connection and clean up resources."""
         self._rssi._stop()
 
         # This Device may not necessarily be added to a tree

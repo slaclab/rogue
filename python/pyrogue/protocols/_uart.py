@@ -18,9 +18,35 @@ import pyrogue
 import serial
 import queue
 import threading
+from typing import Any
+
 
 class UartMemory(rogue.interfaces.memory.Slave):
-    def __init__(self, device, baud, timeout=1, **kwargs):
+    """
+    UART-based memory slave interface for register access over serial.
+
+    Implements a simple text-based protocol for reading and writing 32-bit
+    register values over a serial UART connection.
+
+    Parameters
+    ----------
+    device : str
+        Serial device path (for example ``/dev/ttyUSB0`` or ``COM1``).
+    baud : int
+        Baud rate for serial communication.
+    timeout : float, optional
+        Read timeout in seconds.
+    **kwargs : Any
+        Additional keyword arguments passed to :class:`serial.Serial`.
+    """
+
+    def __init__(
+        self,
+        device: str,
+        baud: int,
+        timeout: float = 1,
+        **kwargs: Any,
+    ) -> None:
         super().__init__(4,4096) # Set min and max size to 4 bytes
 
         self._log = pyrogue.logInit(cls=self, name=f'{device}')
@@ -30,18 +56,29 @@ class UartMemory(rogue.interfaces.memory.Slave):
         self._workerThread = threading.Thread(target=self._worker)
         self._workerThread.start()
 
-    def _stop(self):
+    def _stop(self) -> None:
+        """Stop the worker thread and close the serial port."""
         self._workerQueue.put(None)
         self._workerQueue.join()
         self.serialPort.close()
 
-    def __enter__(self):
+    def __enter__(self) -> "UartMemory":
+        """Context manager entry."""
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Context manager exit; stops the interface."""
         self._stop()
 
-    def readline(self):
+    def readline(self) -> str:
+        """
+        Read a line from the serial port until newline or carriage return.
+
+        Returns
+        -------
+        str
+            Line read from the serial port (empty on timeout).
+        """
         line = []
         while True:
             ch = self.serialPort.read().decode('ASCII')
@@ -53,11 +90,20 @@ class UartMemory(rogue.interfaces.memory.Slave):
                 break
         return ''.join(line)
 
-    def _doTransaction(self, transaction):
+    def _doTransaction(self, transaction: rogue.interfaces.memory.Transaction) -> None:
+        """
+        Queue a memory transaction for processing by the worker thread.
+
+        Parameters
+        ----------
+        transaction : object
+            Memory transaction to execute.
+        """
         self._workerQueue.put(transaction)
 
 
-    def _doWrite(self,transaction):
+    def _doWrite(self, transaction: rogue.interfaces.memory.Transaction) -> None:
+        """Execute a write transaction over the UART register protocol."""
 
         address = transaction.address()
         dataBa = bytearray(transaction.size())
@@ -96,7 +142,8 @@ class UartMemory(rogue.interfaces.memory.Slave):
         transaction.done()
 
 
-    def _doRead(self,transaction):
+    def _doRead(self, transaction: Any) -> None:
+        """Execute a read transaction over the UART register protocol."""
 
         address = transaction.address()
         size = transaction.size()
@@ -133,7 +180,8 @@ class UartMemory(rogue.interfaces.memory.Slave):
         transaction.done()
 
 
-    def _worker(self):
+    def _worker(self) -> None:
+        """Worker thread that processes queued memory transactions."""
         while True:
             transaction = self._workerQueue.get()
 

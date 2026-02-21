@@ -15,14 +15,33 @@
 
 import pyrogue
 import rogue.interfaces.stream
+from typing import Any, Callable
+
 
 class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
+    """Memory slave that maps transactions to Python functions via address-based commands.
 
-    def __init__(self, *, minWidth=4, maxSize=1024):
+    Parameters
+    ----------
+    minWidth : int, optional
+        Minimum access width in bytes.
+    maxSize : int, optional
+        Maximum transaction size in bytes.
+    """
+
+    def __init__(self, *, minWidth: int = 4, maxSize: int = 1024) -> None:
         rogue.interfaces.memory.Slave.__init__(self,minWidth,maxSize)
         self._cmdList = {}
 
-    def _doTransaction(self,transaction):
+    def _doTransaction(self, transaction: Any) -> None:
+        """
+        Execute a memory transaction as a command read or write.
+
+        Parameters
+        ----------
+        transaction : object
+            Rogue memory transaction to process.
+        """
         address = transaction.address()
         size    = transaction.size()
         type    = transaction.type()
@@ -57,8 +76,23 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
             except Exception as msg:
                 transaction.error(f"Transaction read error in command at {address:#08x}: {msg}")
 
-    def command(self, addr, base):
-        def _decorator(func):
+    def command(self, addr: int, base: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+        """Decorator to register a function as a command at the given address.
+
+        Parameters
+        ----------
+        addr : int
+            Memory-mapped address for this command.
+        base : object
+            Object with fromBytes/toBytes for argument serialization.
+
+        Returns
+        -------
+        callable
+            Decorator that registers the wrapped function.
+        """
+        def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            """Register the wrapped function at ``addr`` and return it."""
 
             if addr in self._cmdList:
                 raise pyrogue.CommandError("Duplicate address in command generation")
