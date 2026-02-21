@@ -1,39 +1,29 @@
 .. _pyrogue_tree_node_command:
 
 =======
-Command 
+Command
 =======
 
-The Command class ...
+Commands are executable nodes used to trigger actions in the tree.
 
-A Command :ref:`Node <pyrogue_tree_node>` is the management interface for executing commands within the system.
+A command is still a variable-like node (inherits from
+:py:class:`pyrogue.BaseVariable`), but its main purpose is invoking callable
+behavior.
 
-* Types of Commands
+Command types
+=============
 
-   * :py:class:`BaseCommand <pyrogue.BaseCommand>` - abstract base class for the other Command classes
-   * :py:class:`LocalCommand <pyrogue.LocalCommand>` - command without 1-1 to hardware element
-   * :py:class:`RemoteCommand <pyrogue.RemoteCommand>` - command with 1-1 to hardware element
+* :py:class:`pyrogue.BaseCommand`: base class
+* :py:class:`pyrogue.LocalCommand`: software-only command
+* :py:class:`pyrogue.RemoteCommand`: command tied to a hardware register write
 
-      * RemoteCommand is also a sub-class of :ref:`RemoteVariable <pyrogue_tree_node_variable_remote_variable>`
+Commands can be invoked either directly or with ``call``:
 
-* All commands are sub-classes of :ref:`BaseVariable <pyrogue_tree_node_variable>` and support all variable attributes
+* ``cmd(arg)``
+* ``cmd.call(arg)``
 
-* A command has a :py:meth:`function <pyrogue.BaseCommand.function>` which is called when the command is executed
-
-   * Has a set of supported args which are optional and detected by the variable
-   * Names must match the template to be matched
-   * C++ functions exposed through python are supported but no args are passed
-
-* Commands can either be executed directly or with the :py:meth:`call <pyrogue.BaseCommand.call>` method:
-
-   * command(arg)
-   * command.call(arg)
-
-BaseCommand
-===========
-
-The BaseCommand class is the parent class for all child Command Types. Click the following
-links for more information on the subtypes.
+Subtypes
+========
 
 .. toctree::
    :maxdepth: 1
@@ -43,46 +33,9 @@ links for more information on the subtypes.
    remote_command/index
 
 BaseCommand Class Documentation
--------------------------------
-
-This is the breakdown of the BaseCommand class, which is the parent class of all Commands.
-Inherits from BaseVariable class
+===============================
 
 .. autoclass:: pyrogue.BaseCommand
    :members:
    :member-order: bysource
    :inherited-members:
-
-In this example ... 
-
-Python Command Example
-======================
-
-Below is an example of creating a Command which ...
-
-.. code-block:: python
-
-    import pyrogue
-
-    # Create a subclass of a command 
-    class MyCommand(...):
-
-C++ Command Example
-===================
-
-Below is an example of creating a Command device in C++.
-
-.. code-block:: c
-
-   #include <rogue/interfaces/memory/Constants.h>
-   #include <boost/thread.hpp>
-
-   // Create a subclass of a command 
-   class MyCommand : public rogue:: ... {
-      public:
-
-      protected:
-
-   };
-
-A few notes on the above examples ...

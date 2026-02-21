@@ -26,6 +26,7 @@
 #-----------------------------------------------------------------------------
 import zmq
 import threading
+from typing import Any, Callable
 
 
 class SimpleClient(object):
@@ -62,7 +63,12 @@ class SimpleClient(object):
 
     """
 
-    def __init__(self, addr="localhost", port=9099, cb=None):
+    def __init__(
+        self,
+        addr: str = "localhost",
+        port: int = 9099,
+        cb: Callable[[str, Any], None] | None = None,
+    ) -> None:
         sport = port
         rport = port + 1
         self._ctx = zmq.Context()
@@ -78,15 +84,15 @@ class SimpleClient(object):
             self._subThread = threading.Thread(target=self._listen)
             self._subThread.start()
 
-    def _stop(self):
+    def _stop(self) -> None:
         """
         Stop the SimpleClient interface.
-        This must be called if not not using the SimpleClient in a context
+        This must be called if not using the SimpleClient in a context manager.
         """
-
         self._runEn = False
 
-    def _listen(self):
+    def _listen(self) -> None:
+        """Background subscription loop for variable updates."""
         self._sub.setsockopt(zmq.SUBSCRIBE,"".encode('utf-8'))
 
         while self._runEn:
@@ -96,7 +102,14 @@ class SimpleClient(object):
                 self._cb(k,val)
 
 
-    def _remoteAttr(self,path,attr,*args,**kwargs):
+    def _remoteAttr(
+        self,
+        path: str,
+        attr: str,
+        *args: Any,
+        **kwargs: Any,
+    ) -> Any:
+        """Send a remote attribute request and return the response."""
         msg = {'path':path,
                'attr':attr,
                'args':args,
@@ -113,7 +126,7 @@ class SimpleClient(object):
 
         return resp
 
-    def get(self,path):
+    def get(self, path: str) -> Any:
         """
         Get a variable value, initating a read
 
@@ -130,7 +143,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'get')
 
-    def getDisp(self,path):
+    def getDisp(self, path: str) -> str:
         """
         Get a variable value, in string form, initating a read
 
@@ -147,7 +160,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'getDisp')
 
-    def value(self,path):
+    def value(self, path: str) -> Any:
         """
         Get a variable value, without initating a read
 
@@ -164,7 +177,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'value')
 
-    def valueDisp(self,path):
+    def valueDisp(self, path: str) -> str:
         """
         Get a variable value, in string form, without initating a read
 
@@ -181,7 +194,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'valueDisp')
 
-    def set(self,path,value):
+    def set(self, path: str, value: Any) -> Any:
         """
         Set a variable value, using its native type
 
@@ -195,7 +208,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'set', value)
 
-    def setDisp(self,path,value):
+    def setDisp(self, path: str, value: str) -> Any:
         """
         Set a variable value, using a string representation
 
@@ -209,7 +222,7 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, 'setDisp', value)
 
-    def exec(self,path,arg=None):
+    def exec(self, path: str, arg: Any = None) -> Any:
         """
         Call a command, with the optional arg
 
@@ -228,8 +241,10 @@ class SimpleClient(object):
         """
         return self._remoteAttr(path, '__call__', arg)
 
-    def __enter__(self):
+    def __enter__(self) -> "SimpleClient":
+        """Return self for context-manager use."""
         return self
 
-    def __exit__(self, exc_type, exc_value, traceback):
+    def __exit__(self, exc_type: Any, exc_value: Any, traceback: Any) -> None:
+        """Stop background update thread on context-manager exit."""
         self._stop()

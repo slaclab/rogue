@@ -4,11 +4,11 @@
 PrbsRx Device Class
 ===================
 
-PrbsRx is a subclass of :ref:`Device <pyrogue_tree_node_device>`.
+:py:class:`pyrogue.utilities.prbs.PrbsRx` is a PRBS receiver device wrapper.
 
-* Pyrogue Device wrapper around rogue::utilities::Prbs for RX path
-* Exposes Prbs receiver methods as Variables & Commands
-* Allows PrbsRx engine to be accessed from the GUI, mesh nodes and EPICs
+It exposes receiver controls and counters as PyRogue variables/commands, for
+example ``rxEnable``, ``rxErrors``, ``rxCount``, ``rxRate``, and payload-check
+controls.
 
 PrbsRx Class Documentation
 ==========================

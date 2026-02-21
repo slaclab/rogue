@@ -12,16 +12,29 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-import rogue.interfaces.memory as rim
+from __future__ import annotations
+
 import collections
 import functools as ft
-import pyrogue as pr
 import threading
+from typing import Any, Callable, Iterable, Literal
+
+import pyrogue as pr
+import rogue.interfaces.memory as rim
 
 
 class EnableVariable(pr.BaseVariable):
-    """ """
-    def __init__(self, *, enabled, deps=None):
+    """Enable flag variable with dependency-aware reporting.
+
+    Parameters
+    ----------
+    enabled : bool
+        Initial enable state.
+    deps : iterable, optional
+        Dependency variables that can disable this one.
+    """
+    def __init__(self, *, enabled: bool, deps: Iterable[pr.BaseVariable] | None = None) -> None:
+        """Initialize the enable-state variable."""
         pr.BaseVariable.__init__(
             self,
             description='Determines if device is enabled for hardware access',
@@ -45,21 +58,20 @@ class EnableVariable(pr.BaseVariable):
         self._lock   = threading.Lock()
 
     @pr.expose
-    def get(self, read=False, index=-1):
-        """
-
+    def get(self, read: bool = False, index: int = -1) -> Any:
+        """Return the effective enable state.
 
         Parameters
         ----------
-        read : bool
-             (Default value = False)
-        index : int
-             (Default value = -1)
+        read : bool, optional (default = False)
+            Unused for enable evaluation.
+        index : int, optional (default = -1)
+            Unused for enable evaluation.
 
         Returns
-             ret :
         -------
-
+        Any
+            ``True``/``False`` or a dependency status string.
         """
         ret = self._value
 
@@ -80,22 +92,22 @@ class EnableVariable(pr.BaseVariable):
         return ret
 
     @pr.expose
-    def set(self, value, write=True, index=-1):
-        """
-
+    def set(
+        self,
+        value: bool | Literal['parent', 'deps'],
+        write: bool = True,
+        index: int = -1,
+    ) -> None:
+        """Set the enable value.
 
         Parameters
         ----------
-        value :
-             (Default value = enabled)
-        write : bool
-             (Default value = True)
-        index : int
-             (Default value = -1)
-
-        Returns
-        -------
-
+        value : bool | 'parent' | 'deps'
+            New enable value.
+        write : bool, optional (default = True)
+            Unused for enable evaluation.
+        index : int, optional (default = -1)
+            Unused for enable evaluation.
         """
         if value != 'parent' and value != 'deps':
             old = self.value()
@@ -118,8 +130,8 @@ class EnableVariable(pr.BaseVariable):
             #for var in self._listeners:
             #    var._doUpdate()
 
-    def _doUpdate(self):
-        """ """
+    def _doUpdate(self) -> Any:
+        """Update dependency state before notifying listeners."""
         if len(self._deps) != 0:
             oldEn = (self.value() is True)
 
@@ -134,21 +146,8 @@ class EnableVariable(pr.BaseVariable):
 
         return super()._doUpdate()
 
-    def _rootAttached(self,parent,root):
-        """
-
-
-        Parameters
-        ----------
-        parent :
-
-        root :
-
-
-        Returns
-        -------
-
-        """
+    def _rootAttached(self, parent: Any, root: Any) -> None:
+        """Attach enable listeners when rooted."""
         pr.Node._rootAttached(self,parent,root)
 
         if parent is not root:
@@ -156,29 +155,61 @@ class EnableVariable(pr.BaseVariable):
 
 
 class DeviceError(Exception):
-    """ """
+    """Raised for device-level errors."""
     pass
 
 
 class Device(pr.Node,rim.Hub):
-    """Device class holder. TODO: Update comments"""
+    """Base class for PyRogue devices.
 
-    def __init__(self, *,
-                 name=None,
-                 description='',
-                 memBase=None,
-                 offset=0,
-                 hidden=False,
-                 groups=None,
-                 expand=False,
-                 enabled=True,
-                 defaults=None,
-                 enableDeps=None,
-                 hubMin=0,
-                 hubMax=0,
-                 guiGroup=None):
+    Parameters
+    ----------
+    name : str, optional
+        Device name, defaults to the class name.
+    description : str, optional (default = "")
+        Human-readable description.
+    memBase : rim.MemorySlave, optional
+        Optional memory interface base, inherited from parent if not provided.
+    offset : int, optional (default = 0)
+        Memory offset for the device.
+    hidden : bool, optional (default = False)
+        If True, add the device to the ``Hidden`` group.
+    groups : list[str], optional
+        Groups to assign.
+    expand : bool, optional (default = False)
+        Default GUI expand state.
+    enabled : bool, optional (default = True)
+        Initial enable state.
+    defaults : dict, optional
+        Default variable values keyed by name.
+    enableDeps : iterable, optional
+        Enable dependency variables.
+    hubMin : int, optional (default = 0)
+        Hub minimum access size.
+    hubMax : int, optional (default = 0)
+        Hub maximum access size.
+    guiGroup : str, optional
+        GUI grouping label.
+    """
 
-        """Initialize device class"""
+    def __init__(
+        self,
+        *,
+        name: str | None = None,
+        description: str = '',
+        memBase: rim.MemorySlave | None = None,
+        offset: int = 0,
+        hidden: bool = False,
+        groups: list[str] | None = None,
+        expand: bool = False,
+        enabled: bool = True,
+        defaults: dict | None = None,
+        enableDeps: Iterable[pr.BaseVariable] | None = None,
+        hubMin: int = 0,
+        hubMax: int = 0,
+        guiGroup: str | None = None,
+    ) -> None:
+        """Initialize the device node and associated interfaces."""
         if name is None:
             name = self.__class__.__name__
 
@@ -221,45 +252,23 @@ class Device(pr.Node,rim.Hub):
 
     @pr.expose
     @property
-    def address(self):
-        """ """
+    def address(self) -> Any:
+        """Return the device base address."""
         return self._getAddress()
 
     @pr.expose
     @property
-    def offset(self):
-        """ """
+    def offset(self) -> Any:
+        """Return the device offset."""
         return self._getOffset()
 
-    def addCustomBlock(self, block):
-        """
-
-
-        Parameters
-        ----------
-        block :
-
-
-        Returns
-        -------
-
-        """
+    def addCustomBlock(self, block: Any) -> None:
+        """Add a pre-defined memory block to the device."""
         self._custBlocks.append(block)
         self._custBlocks.sort(key=lambda x: (x.offset, x.size))
 
-    def add(self,node):
-        """
-
-
-        Parameters
-        ----------
-        node :
-
-
-        Returns
-        -------
-
-        """
+    def add(self, node: Any) -> None:
+        """Add a child node to the device."""
         # Call node add
         pr.Node.add(self,node)
 
@@ -270,19 +279,13 @@ class Device(pr.Node,rim.Hub):
             if node._memBase is None:
                 node._setSlave(self)
 
-    def addInterface(self, *interfaces):
-        """
-        Add one or more rogue.interfaces.stream.Master or rogue.interfaces.memory.Master
-        Also accepts iterables for adding multiple at once
+    def addInterface(self, *interfaces: Any | Iterable[Any]) -> None:
+        """Add stream or memory interfaces to manage.
 
         Parameters
         ----------
-        *interfaces :
-
-
-        Returns
-        -------
-
+        *interfaces : Any
+            One or more interfaces or iterables of interfaces.
         """
         for interface in interfaces:
             if isinstance(interface, collections.abc.Iterable):
@@ -290,38 +293,15 @@ class Device(pr.Node,rim.Hub):
             else:
                 self._ifAndProto.append(interface)
 
-    def addProtocol(self, *protocols):
-        """
-        Add a protocol entity.
-        Also accepts iterables for adding multiple at once
-
-        Parameters
-        ----------
-        *protocols :
-
-
-        Returns
-        -------
-
-        """
+    def addProtocol(self, *protocols: Any) -> None:
+        """Add protocol entities (alias of ``addInterface``)."""
         self.addInterface(protocols)
 
-    def manage(self, *interfaces):
-        """
-
-
-        Parameters
-        ----------
-        *interfaces :
-
-
-        Returns
-        -------
-
-        """
+    def manage(self, *interfaces: Any) -> None:
+        """Manage additional interfaces for start/stop."""
         self._ifAndProto.extend(interfaces)
 
-    def _start(self):
+    def _start(self) -> None:
         """ Called recursively from Root.start when starting """
         for intf in self._ifAndProto:
             if hasattr(intf,"_start"):
@@ -329,7 +309,7 @@ class Device(pr.Node,rim.Hub):
         for d in self.devices.values():
             d._start()
 
-    def _stop(self):
+    def _stop(self) -> None:
         """Called recursively from Root.stop when exiting"""
         for intf in self._ifAndProto:
             if hasattr(intf,"_stop"):
@@ -338,29 +318,30 @@ class Device(pr.Node,rim.Hub):
             d._stop()
 
     @property
-    def running(self):
-        """ Check if Device._start() has been called """
+    def running(self) -> bool:
+        """Return True if the device is running."""
         return self.root is not None and self.root.running
 
 
-    def addRemoteVariables(self, number, stride, pack=False, **kwargs):
-        """
-
+    def addRemoteVariables(
+        self,
+        number: int,
+        stride: int,
+        pack: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        """Add a repeating block of remote variables.
 
         Parameters
         ----------
-        number :
-
-        stride :
-
-        pack : bool
-             (Default value = False)
-        **kwargs :
-
-
-        Returns
-        -------
-
+        number : int
+            Number of variables to add.
+        stride : int
+            Byte stride between instances.
+        pack : bool, optional (default = False)
+            If True, add a packed link variable for all entries.
+        **kwargs : Any
+            Arguments forwarded to ``RemoteVariable``.
         """
         if pack:
             hidden=True
@@ -373,48 +354,16 @@ class Device(pr.Node,rim.Hub):
         if pack:
             varList = getattr(self, kwargs['name']).values()
 
-            def linkedSet(dev, var, val, write):
-                """
-
-
-                Parameters
-                ----------
-                dev :
-
-                var :
-
-                val :
-
-                write :
-
-
-                Returns
-                -------
-
-                """
+            def linkedSet(dev: Any, var: pr.LinkVariable, val: str, write: bool) -> None:
+                """Split a packed display string and write each element variable."""
                 if val == '':
                     return
                 values = reversed(val.split('_'))
                 for variable, value in zip(varList, values):
                     variable.setDisp(value, write=write)
 
-            def linkedGet(dev, var, read):
-                """
-
-
-                Parameters
-                ----------
-                dev :
-
-                var :
-
-                read :
-
-
-                Returns
-                -------
-
-                """
+            def linkedGet(dev: Any, var: pr.LinkVariable, read: bool) -> str:
+                """Join element display values into one packed underscore string."""
                 values = [v.getDisp(read=read) for v in varList]
                 return '_'.join(reversed(values))
 
@@ -424,22 +373,20 @@ class Device(pr.Node,rim.Hub):
             lv = pr.LinkVariable(name=name, value='', dependencies=varList, linkedGet=linkedGet, linkedSet=linkedSet, **kwargs)
             self.add(lv)
 
-    def setPollInterval(self, interval, variables=None):
-        """
-        Set the poll interval for a group of variables.
-        The variables param is an Iterable of strings
-        If variables=None, set interval for all variables that currently have nonzero pollInterval
+    def setPollInterval(
+        self,
+        interval: float,
+        variables: Iterable[Any] | None = None,
+    ) -> None:
+        """Set the poll interval for a group of variables.
 
         Parameters
         ----------
-        interval :
-
-        variables : str
-             (Default value = None)
-
-        Returns
-        -------
-
+        interval : float
+            Polling interval in seconds.
+        variables : iterable, optional
+            Iterable of variable names or variables. If ``None``, all
+            variables with nonzero poll interval are updated.
         """
         if variables is None:
             variables = [k for k,v in self.variables.items() if v.pollInterval != 0]
@@ -447,20 +394,19 @@ class Device(pr.Node,rim.Hub):
         for x in variables:
             self.node(x).setPollInterval(interval)
 
-    def hideVariables(self, hidden, variables=None):
-        """
-        Hide a list of Variables (or Variable names)
+    def hideVariables(
+        self,
+        hidden: bool,
+        variables: Iterable[Any] | None = None,
+    ) -> None:
+        """Hide a list of variables or variable names.
 
         Parameters
         ----------
-        hidden :
-
-        variables : str
-             (Default value = None)
-
-        Returns
-        -------
-
+        hidden : bool
+            True to hide variables, False to show them.
+        variables : iterable, optional
+            Iterable of variable names or variables.
         """
         if variables is None:
             variables=self.variables.values()
@@ -471,63 +417,54 @@ class Device(pr.Node,rim.Hub):
             elif isinstance(variables[0], str):
                 self.variables[v].hidden = hidden
 
-    def initialize(self):
-        """ """
+    def initialize(self) -> None:
+        """Call ``initialize`` on all child devices."""
         for key,value in self.devices.items():
             value.initialize()
 
-    def hardReset(self):
-        """ """
+    def hardReset(self) -> None:
+        """Call ``hardReset`` on all child devices."""
         for key,value in self.devices.items():
             value.hardReset()
 
-    def countReset(self):
-        """ """
+    def countReset(self) -> None:
+        """Call ``countReset`` on all child devices."""
         for key,value in self.devices.items():
             value.countReset()
 
-    def enableChanged(self,value):
-        """
-
-
-        Parameters
-        ----------
-        value :
-
-
-        Returns
-        -------
-
-        """
+    def enableChanged(self, value: Any) -> None:
+        """Hook for reacting to enable state changes."""
         pass
 
         #if value is True:
         #    self.writeAndVerifyBlocks(force=True, recurse=True, variable=None)
 
-    def writeBlocks(self, *, force=False, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
-        """
-        Write all of the blocks held by this Device to memory
+    def writeBlocks(
+        self,
+        *,
+        force: bool = False,
+        recurse: bool = True,
+        variable: Any | None = None,
+        checkEach: bool = False,
+        index: int = -1,
+        **kwargs: Any,
+    ) -> None:
+        """Write all blocks held by this device.
 
         Parameters
         ----------
-        * :
-
-        force : bool
-             (Default value = False)
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-        index : int
-             (Default value = -1)
-        **kwargs :
-
-
-        Returns
-        -------
-
+        force : bool, optional (default = False)
+            Force the write even if values are unchanged.
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to write.
+        checkEach : bool, optional (default = False)
+            Perform per-variable verification checks.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        **kwargs : Any
+            Additional arguments passed through to the transaction.
         """
         checkEach = checkEach or self.forceCheckEach
 
@@ -543,26 +480,26 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.writeBlocks(force=force, recurse=True, checkEach=checkEach, **kwargs)
 
-    def verifyBlocks(self, *, recurse=True, variable=None, checkEach=False, **kwargs):
-        """
-        Perform background verify
+    def verifyBlocks(
+        self,
+        *,
+        recurse: bool = True,
+        variable: Any | None = None,
+        checkEach: bool = False,
+        **kwargs: Any,
+    ) -> None:
+        """Verify blocks in the background.
 
         Parameters
         ----------
-              * :
-
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-        **kwargs :
-
-
-        Returns
-        -------
-
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to verify.
+        checkEach : bool, optional (default = False)
+            Perform per-variable verification checks.
+        **kwargs : Any
+            Additional arguments passed through to the transaction.
         """
         checkEach = checkEach or self.forceCheckEach
 
@@ -578,28 +515,29 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.verifyBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def readBlocks(self, *, recurse=True, variable=None, checkEach=False, index=-1, **kwargs):
-        """
-        Perform background reads
+    def readBlocks(
+        self,
+        *,
+        recurse: bool = True,
+        variable: Any | None = None,
+        checkEach: bool = False,
+        index: int = -1,
+        **kwargs: Any,
+    ) -> None:
+        """Read blocks in the background.
 
         Parameters
         ----------
-              * :
-
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-        index : int
-             (Default value = -1)
-        **kwargs :
-
-
-        Returns
-        -------
-
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to read.
+        checkEach : bool, optional (default = False)
+            Perform per-variable verification checks.
+        index : int, optional (default = -1)
+            Optional index for array variables.
+        **kwargs : Any
+            Additional arguments passed through to the transaction.
         """
         checkEach = checkEach or self.forceCheckEach
 
@@ -615,24 +553,23 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.readBlocks(recurse=True, checkEach=checkEach, **kwargs)
 
-    def checkBlocks(self, *, recurse=True, variable=None, **kwargs):
-        """
-        Check errors in all blocks and generate variable update notifications
+    def checkBlocks(
+        self,
+        *,
+        recurse: bool = True,
+        variable: Any | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Check block transactions and notify variable listeners.
 
         Parameters
         ----------
-              * :
-
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        **kwargs :
-
-
-        Returns
-        -------
-
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to check.
+        **kwargs : Any
+            Additional arguments passed through to the transaction.
         """
         if variable is not None:
             pr.checkTransaction(variable._block, **kwargs)
@@ -645,59 +582,60 @@ class Device(pr.Node,rim.Hub):
                 for key,value in self.devices.items():
                     value.checkBlocks(recurse=True, **kwargs)
 
-    def writeAndVerifyBlocks(self, force=False, recurse=True, variable=None, checkEach=False):
-        """
-        Perform a write, verify and check. Useful for committing any stale variables
+    def writeAndVerifyBlocks(
+        self,
+        force: bool = False,
+        recurse: bool = True,
+        variable: Any | None = None,
+        checkEach: bool = False,
+    ) -> None:
+        """Write, verify, and check all blocks.
 
         Parameters
         ----------
-        force : bool
-             (Default value = False)
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-
-        Returns
-        -------
-
+        force : bool, optional (default = False)
+            Force the write even if values are unchanged.
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to write/verify.
+        checkEach : bool, optional (default = False)
+            Perform per-variable verification checks.
         """
         self.writeBlocks(force=force, recurse=recurse, variable=variable, checkEach=checkEach)
         self.verifyBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
-    def readAndCheckBlocks(self, recurse=True, variable=None, checkEach=False):
-        """
-        Perform a read and check.
+    def readAndCheckBlocks(
+        self,
+        recurse: bool = True,
+        variable: Any | None = None,
+        checkEach: bool = False,
+    ) -> None:
+        """Read and check all blocks.
 
         Parameters
         ----------
-        recurse : bool
-             (Default value = True)
-        variable : str
-             (Default value = None)
-        checkEach : bool
-             (Default value = False)
-
-        Returns
-        -------
-
+        recurse : bool, optional (default = True)
+            If True, recurse into child devices.
+        variable : object, optional
+            Optional variable to read.
+        checkEach : bool, optional (default = False)
+            Perform per-variable verification checks.
         """
         self.readBlocks(recurse=recurse, variable=variable, checkEach=checkEach)
         self.checkBlocks(recurse=recurse, variable=variable)
 
-    def _updateBlockEnable(self):
-        """ """
+    def _updateBlockEnable(self) -> None:
+        """Propagate effective enable state to this device's blocks."""
         for block in self._blocks:
             block.setEnable(self.enable.value() is True)
 
         for key,value in self.devices.items():
             value._updateBlockEnable()
 
-    def _buildBlocks(self):
-        """ """
+    def _buildBlocks(self) -> None:
+        """Build and attach memory blocks for local/remote variables."""
         remVars = []
 
         # Use min block size, larger blocks can be pre-created
@@ -789,21 +727,8 @@ class Device(pr.Node,rim.Hub):
             self._blocks.append(newBlock)
             newBlock.setEnable(self.enable.value() is True)
 
-    def _rootAttached(self, parent, root):
-        """
-
-
-        Parameters
-        ----------
-        parent :
-
-        root :
-
-
-        Returns
-        -------
-
-        """
+    def _rootAttached(self, parent: pr.Node, root: pr.Root) -> None:
+        """Attach this device into the rooted tree and build variable blocks."""
         pr.Node._rootAttached(self, parent, root)
 
         for key,value in self._nodes.items():
@@ -819,18 +744,13 @@ class Device(pr.Node,rim.Hub):
                 for var in nodes:
                     var._default = defValue
 
-    def _setTimeout(self,timeout):
-        """
-        Set timeout value on all devices & blocks
+    def _setTimeout(self, timeout: float) -> None:
+        """Set transaction timeout on this device, blocks, and child devices.
 
         Parameters
         ----------
-        timeout :
-
-
-        Returns
-        -------
-
+        timeout : float
+            Timeout in seconds.
         """
 
         for block in self._blocks:
@@ -842,32 +762,15 @@ class Device(pr.Node,rim.Hub):
             if isinstance(value,Device):
                 value._setTimeout(timeout)
 
-    def command(self, **kwargs):
+    def command(self, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+        """Decorator to add inline methods as commands.
+
+        The decorated function is used as ``LocalCommand(function=...)``.
+        The command wrapper supplies keyword arguments ``root``, ``dev``,
+        ``cmd``, and ``arg``; the function may accept any subset.
         """
-        A Decorator to add inline constructor functions as commands
-
-        Parameters
-        ----------
-        **kwargs :
-
-
-        Returns
-        -------
-
-        """
-        def _decorator(func):
-            """
-
-
-            Parameters
-            ----------
-            func :
-
-
-            Returns
-            -------
-
-            """
+        def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            """Wrap and register a method as a LocalCommand."""
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
@@ -876,32 +779,15 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
-    def linkVariableGet(self, **kwargs):
+    def linkVariableGet(self, **kwargs: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+        """Decorator to add inline ``linkedGet`` functions.
+
+        The decorated function is used as ``LinkVariable(linkedGet=...)``.
+        The linked-get wrapper supplies keyword arguments ``dev``, ``var``,
+        ``read``, ``index``, and ``check``; the function may accept any subset.
         """
-        Decorator to add inline constructor functions as LinkVariable.linkedGet functions
-
-        Parameters
-        ----------
-        **kwargs :
-
-
-        Returns
-        -------
-
-        """
-        def _decorator(func):
-            """
-
-
-            Parameters
-            ----------
-            func :
-
-
-            Returns
-            -------
-
-            """
+        def _decorator(func: Callable[..., Any]) -> Callable[..., Any]:
+            """Wrap and register a function as LinkVariable linkedGet."""
             if 'name' not in kwargs:
                 kwargs['name'] = func.__name__
 
@@ -910,22 +796,22 @@ class Device(pr.Node,rim.Hub):
             return func
         return _decorator
 
-    def genDocuments(self,path,incGroups, excGroups):
-        """
-
+    def genDocuments(
+        self,
+        path: str,
+        incGroups: str | list[str] | None = None,
+        excGroups: str | list[str] | None = None,
+    ) -> None:
+        """Generate Sphinx documentation pages for this device.
 
         Parameters
         ----------
-        path :
-
-        incGroups :
-
-        excGroups :
-
-
-        Returns
-        -------
-
+        path : str
+            Output directory path.
+        incGroups : str or list[str], optional
+            Group name or group names to include.
+        excGroups : str or list[str], optional
+            Group name or group names to exclude.
         """
 
         with open(path + '/' + self.path.replace('.','_') + '.rst','w') as file:
@@ -1007,8 +893,31 @@ class Device(pr.Node,rim.Hub):
 
 
 class ArrayDevice(Device):
-    """ """
-    def __init__(self, *, arrayClass, number, stride=0, arrayArgs=None, **kwargs):
+    """Device that instantiates an array of sub-devices.
+
+    Parameters
+    ----------
+    arrayClass : object
+        Class to instantiate for each element.
+    number : int
+        Number of devices in the array.
+    stride : int, optional (default = 0)
+        Address stride between array elements.
+    arrayArgs : object, optional
+        Per-element argument overrides.
+    **kwargs : Any
+        Additional arguments forwarded to ``Device``.
+    """
+    def __init__(
+        self,
+        *,
+        arrayClass: Any,
+        number: int,
+        stride: int = 0,
+        arrayArgs: Any | None = None,
+        **kwargs: Any,
+    ) -> None:
+        """Initialize and populate an array-style device container."""
         if 'name' not in kwargs:
             kwargs['name'] = f'{arrayClass.__name__}Array'
         super().__init__(**kwargs)
