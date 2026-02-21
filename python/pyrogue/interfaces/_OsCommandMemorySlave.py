@@ -33,7 +33,7 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
         rogue.interfaces.memory.Slave.__init__(self,minWidth,maxSize)
         self._cmdList = {}
 
-    def _doTransaction(self, transaction: Any) -> None:
+    def _doTransaction(self, transaction: rogue.interfaces.memory.Transaction) -> None:
         """
         Execute a memory transaction as a command read or write.
 
@@ -76,14 +76,14 @@ class OsCommandMemorySlave(rogue.interfaces.memory.Slave):
             except Exception as msg:
                 transaction.error(f"Transaction read error in command at {address:#08x}: {msg}")
 
-    def command(self, addr: int, base: Any) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
+    def command(self, addr: int, base: pr.Model) -> Callable[[Callable[..., Any]], Callable[..., Any]]:
         """Decorator to register a function as a command at the given address.
 
         Parameters
         ----------
         addr : int
             Memory-mapped address for this command.
-        base : object
+        base : pr.Model
             Object with fromBytes/toBytes for argument serialization.
 
         Returns

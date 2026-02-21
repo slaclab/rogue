@@ -9,7 +9,7 @@
 # copied, modified, propagated, or distributed except according to the terms
 # contained in the LICENSE.txt file.
 #-----------------------------------------------------------------------------
-
+import pyrogue
 from pyrogue.interfaces._ZmqServer import *
 from pyrogue.interfaces._Virtual   import *
 from pyrogue.interfaces._SimpleClient import *
@@ -65,7 +65,7 @@ class SystemLogMonitor(object):
 
         self._logCount = len(lst)
 
-    def varUpdated(self, key: str, varVal: Any) -> None:
+    def varUpdated(self, key: str, varVal: pyrogue.VariableValue) -> None:
         """
         Variable listener callback. Processes SystemLog variable updates.
 
@@ -73,7 +73,7 @@ class SystemLogMonitor(object):
         ----------
         key : str
             Variable path.
-        varVal : object
+        varVal : pr.VariableValue
             Variable value containing log data.
         """
         if 'SystemLog' in key:
@@ -93,7 +93,7 @@ class VariableMonitor(object):
     def __init__(self, path: str) -> None:
         self._path = path
 
-    def display(self, value: Any) -> None:
+    def display(self, value: pyrogue.VariableValue) -> None:
         """
         Print the current variable value with timestamp.
 
@@ -104,7 +104,7 @@ class VariableMonitor(object):
         """
         print("{}: {} = {}".format(time.strftime("%Y-%m-%d %H:%M:%S %Z", time.localtime(time.time())), self._path, value))
 
-    def varUpdated(self, key: str, varVal: Any) -> None:
+    def varUpdated(self, key: str, varVal: pyrogue.VariableValue) -> None:
         """
         Variable listener callback. Displays updates when the path matches.
 

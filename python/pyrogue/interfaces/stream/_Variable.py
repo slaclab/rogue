@@ -23,18 +23,18 @@ class Variable(rogue.interfaces.stream.Master):
 
     Parameters
     ----------
-    root : object
+    root : pyrogue.Root
         PyRogue root node to monitor.
-    incGroups : object, optional
+    incGroups : str | list[str] | None, optional
         Groups to include in variable updates.
-    excGroups : object, optional
+    excGroups : str | list[str] | None, optional
         Groups to exclude from variable updates.
     """
 
     def __init__(
         self,
         *,
-        root: Any,
+        root: pyrogue.Root,
         incGroups: str | list[str] | None = None,
         excGroups: str | list[str] | None = ['NoStream'],
     ) -> None:

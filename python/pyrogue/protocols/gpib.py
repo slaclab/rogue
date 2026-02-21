@@ -21,8 +21,8 @@
 #    pip install gpib_ctypes
 
 from gpib_ctypes import Gpib # pip install gpib_ctypes
-import rogue.interfaces.memory
 import pyrogue
+import rogue.interfaces.memory
 import queue
 import threading
 from typing import Any
@@ -41,8 +41,27 @@ class GpibController(rogue.interfaces.memory.Slave):
         GPIB primary address of the device.
     gpibBoard : int, optional
         GPIB interface board number.
-    timeout : object, optional
+    timeout : 
         GPIB timeout constant.
+        Possible Timeout Values:
+            T1000s
+            T300s
+            T100s
+            T30s
+            T10s
+            T3s
+            T1s
+            T300ms
+            T100ms
+            T30ms
+            T10ms
+            T3ms
+            T1ms
+            T300us
+            T100us
+            T30us
+            T10us
+            TNONE
     """
 
     def __init__(
@@ -62,7 +81,7 @@ class GpibController(rogue.interfaces.memory.Slave):
         self._workerThread.start()
         self._map = {}
 
-    def _addVariable(self, var: Any) -> None:
+    def _addVariable(self, var: pr.RemoteVariable) -> None:
         """Register a variable for GPIB translation by offset."""
         self._map[var.offset] = var
 
@@ -71,7 +90,7 @@ class GpibController(rogue.interfaces.memory.Slave):
         self._workerQueue.put(None)
         self._workerThread.join()
 
-    def _doTransaction(self, transaction: Any) -> None:
+    def _doTransaction(self, transaction: rogue.interfaces.memory.Transaction) -> None:
         """Queue a memory transaction for the worker thread."""
         self._workerQueue.put(transaction)
 
@@ -164,7 +183,7 @@ class GpibDevice(pyrogue.Device):
         """Get the next available address for variable registration."""
         return self._nextAddr
 
-    def add(self, node: Any) -> None:
+    def add(self, node: pyrogue.Node) -> None:
         """Add a node and register GPIB variables that have a 'key' attribute."""
         super().add(node)
         if node.getExtraAttribute('key') is not None:

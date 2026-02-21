@@ -376,11 +376,11 @@ class EpicsPvServer(object):
         Base string prepended to PV names.
     root : pyrogue.Root
         PyRogue root node containing variables to expose.
-    incGroups : list[str], optional
+    incGroups : str | list[str] | None, optional
         Include only variables in these groups.
-    excGroups : list[str], optional
+    excGroups : str | list[str] | None, optional
         Exclude variables in these groups.
-    pvMap : dict[str, str], optional
+    pvMap : dict[str, str] | None, optional
         Explicit path-to-PV-name mapping.
     """
 
@@ -456,7 +456,7 @@ class EpicsPvServer(object):
 
         self._server = p4p.server.Server(providers=[self._provider])
 
-    def list(self) -> Dict[str, str]:
+    def list(self) -> dict[str, str]:
         """
         Get the PyRogue path to EPICS PV name mapping.
 

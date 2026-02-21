@@ -142,7 +142,7 @@ class UartMemory(rogue.interfaces.memory.Slave):
         transaction.done()
 
 
-    def _doRead(self, transaction: Any) -> None:
+    def _doRead(self, transaction: rogue.interfaces.memory.Transaction) -> None:
         """Execute a read transaction over the UART register protocol."""
 
         address = transaction.address()

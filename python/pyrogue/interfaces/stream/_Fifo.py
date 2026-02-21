@@ -19,7 +19,7 @@ from typing import Any
 
 
 class Fifo(pyrogue.Device):
-    """Python wrapper for the AXI Stream FIFO C++ device.
+    """Pyrogue Device wrapper for the rogue.interfaces.stream.Fifo class.
 
     Parameters
     ----------
@@ -83,20 +83,20 @@ class Fifo(pyrogue.Device):
             description='Clear all counters',
             function=self._fifo.clearCnt))
 
-    def _getStreamSlave(self) -> Any:
+    def _getStreamSlave(self) -> rogue.interfaces.stream.Slave:
         """Return the underlying FIFO as a stream slave interface."""
         return self._fifo
 
-    def _getStreamMaster(self) -> Any:
+    def _getStreamMaster(self) -> rogue.interfaces.stream.Master:
         """Return the underlying FIFO as a stream master interface."""
         return self._fifo
 
-    def __lshift__(self, other: Any) -> Any:
+    def __lshift__(self, other: rogue.interfaces.stream.Master) -> rogue.interfaces.stream.Master:
         """Connect other -> self. Returns other."""
         pyrogue.streamConnect(other, self)
         return other
 
-    def __rshift__(self, other: Any) -> Any:
+    def __rshift__(self, other: rogue.interfaces.stream.Slave) -> rogue.interfaces.stream.Slave:
         """Connect self -> other. Returns other."""
         pyrogue.streamConnect(self, other)
         return other
